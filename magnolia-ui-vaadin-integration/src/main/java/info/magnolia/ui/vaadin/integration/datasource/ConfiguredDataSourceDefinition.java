@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.datasource;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Defines {@link DataSource}.
  */
@@ -43,27 +40,12 @@ public class ConfiguredDataSourceDefinition implements DataSourceDefinition {
 
     private Class<? extends DataSource> implementationClass;
 
-    private Map<String, Class<? extends ContainerProvider>> containerProviders = new HashMap<String, Class<? extends ContainerProvider>>();
-
     @Override
     public Class<? extends DataSource> getImplementationClass() {
         return implementationClass;
     }
 
-    @Override
-    public Map<String, Class<? extends ContainerProvider>> getContainerProviders() {
-        return this.containerProviders;
-    }
-
     public void setImplementationClass(Class<? extends DataSource> implementationClass) {
         this.implementationClass = implementationClass;
-    }
-
-    public void setContainerProviders(Map<String, Class<? extends ContainerProvider>> containerProviders) {
-        this.containerProviders = containerProviders;
-    }
-
-    public void addContainerProvider(String viewType, Class<? extends ContainerProvider> providerClass) {
-        this.containerProviders.put(viewType, providerClass);
     }
 }

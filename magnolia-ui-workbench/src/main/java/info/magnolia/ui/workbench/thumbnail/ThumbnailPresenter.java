@@ -73,17 +73,15 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         this.imageProvider = imageProvider;
     }
 
+    public ImageProvider getImageProvider() {
+        return imageProvider;
+    }
+
     @Override
     public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
         super.start(workbench, eventBus, viewTypeName, dataSource);
 
-        ThumbnailContainerConfiguration configuration = new ThumbnailContainerConfiguration();
-        configuration.setThumbnailHeight(73);
-        configuration.setThumbnailWidth(73);
-        configuration.setImageProvider(imageProvider);
-
-        container = dataSource.createContentViewContainer(configuration);
-
+        container = getContainer();
 
         view.setListener(this);
         view.setContainer(container);
@@ -101,8 +99,11 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    protected Container getContainer() {
-        return container;
+    public Container getContainer() {
+        ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(workbenchDefinition));
+        c.setThumbnailHeight(73);
+        c.setThumbnailWidth(73);
+        return c;
     }
 
     @Override
@@ -128,4 +129,5 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         }
         view.select(objectIds);
     }
+
 }

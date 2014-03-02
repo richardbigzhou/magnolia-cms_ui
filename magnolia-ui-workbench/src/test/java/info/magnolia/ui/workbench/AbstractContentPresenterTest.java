@@ -62,7 +62,7 @@ public class AbstractContentPresenterTest {
         }
 
         @Override
-        protected Container getContainer() {
+        public Container getContainer() {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 

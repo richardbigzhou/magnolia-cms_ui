@@ -34,12 +34,8 @@
 package info.magnolia.ui.contentapp.datasource;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
-
-import com.vaadin.data.Container;
 
 /**
  * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
@@ -55,15 +51,15 @@ public abstract class AbstractDataSource implements DataSource {
         this.componentProvider = componentProvider;
     }
 
-    @Override
-    public Container createContentViewContainer(ContainerConfiguration configuration) {
-        Class<? extends ContainerProvider> containerProviderClass = dataSourceDefinition.getContainerProviders().get(configuration.getViewTypeId());
-        if (containerProviderClass == null) {
-            containerProviderClass = getDefaultContainerProviderClass();
-        }
-        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, dataSourceDefinition, componentProvider);
-        return provider.createContainer(configuration);
-    }
-
-    protected abstract Class<? extends ContainerProvider> getDefaultContainerProviderClass();
+//    @Override
+//    public Container createContentViewContainer(ContainerConfiguration configuration) {
+//        Class<? extends ContainerProvider> containerProviderClass = dataSourceDefinition.getContainerProviders().get(configuration.getViewTypeId());
+//        if (containerProviderClass == null) {
+//            containerProviderClass = getDefaultContainerProviderClass();
+//        }
+//        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, dataSourceDefinition, componentProvider);
+//        return provider.createContainer(configuration);
+//    }
+//
+//    protected abstract Class<? extends ContainerProvider> getDefaultContainerProviderClass();
 }

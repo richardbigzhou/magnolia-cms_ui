@@ -34,6 +34,7 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreeView;
 
@@ -44,5 +45,10 @@ public class RoleTreePresenter extends TreePresenter {
 
     public RoleTreePresenter(TreeView view, ComponentProvider componentProvider) {
         super(view, componentProvider);
+    }
+
+    @Override
+    protected AbstractJcrContainer initContainer() {
+        return new RoleContainer(workbenchDefinition);
     }
 }

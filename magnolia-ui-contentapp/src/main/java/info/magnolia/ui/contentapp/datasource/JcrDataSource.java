@@ -41,7 +41,6 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -219,10 +218,5 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
             return Arrays.asList(((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType());
         }
         return null;
-    }
-
-    @Override
-    protected Class<? extends ContainerProvider> getDefaultContainerProviderClass() {
-        return FlatJcrContainerProvider.class;
     }
 }

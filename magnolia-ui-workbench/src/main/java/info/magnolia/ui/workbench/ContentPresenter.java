@@ -39,6 +39,8 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
 
+import com.vaadin.data.Container;
+
 
 /**
  * The ContentPresenter is the presenter class for a {@link ContentView}, it represents a view type in the workbench.
@@ -88,4 +90,6 @@ public interface ContentPresenter {
      * @param itemId
      */
     void expand(Object itemId);
+
+    Container getContainer();
 }

@@ -35,7 +35,6 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
@@ -239,18 +238,8 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     @Override
     public void expand(Object itemId) {}
 
-    protected ContainerConfiguration prepareContainerConfiguration(ContentPresenterDefinition presenterDefinition) {
-        ContainerConfiguration config = new ContainerConfiguration();
-        config.setViewTypeId(presenterDefinition.getViewType());
-        for (ColumnDefinition column : presenterDefinition.getColumns()) {
-            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
-            config.addProperty(propertyId, column.getType());
-            config.addSortableProperty(propertyId);
-        }
-        return config;
-    }
-
-    protected abstract Container getContainer();
+    @Override
+    public abstract Container getContainer();
 
 
     protected ContentPresenterDefinition getPresenterDefinition() {

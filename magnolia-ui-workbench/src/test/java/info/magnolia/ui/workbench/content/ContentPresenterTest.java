@@ -161,7 +161,7 @@ public class ContentPresenterTest {
         }
 
         @Override
-        protected Container getContainer() {
+        public Container getContainer() {
             return null;
         }
     }

@@ -38,7 +38,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.Refreshable;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -68,7 +70,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     @Override
     public ListView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSource dataSource) {
         super.start(workbenchDefinition, eventBus, viewTypeName, dataSource);
-        this.container = dataSource.createContentViewContainer(prepareContainerConfiguration(getPresenterDefinition()));
+        this.container = getContainer();
         view.setListener(this);
         view.setContainer(container);
         ((Table)view.asVaadinComponent()).setVisibleColumns(new Object[]{});
@@ -113,14 +115,30 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         if (container instanceof Refreshable) {
             ((Refreshable)container).refresh();
         }
-
         //container.fireItemSetChange();
     }
 
     @Override
-    protected Container getContainer() {
+    public Container getContainer() {
+        container = prepareContainerConfiguration(getPresenterDefinition());
         return container;
     }
 
+    protected Container prepareContainerConfiguration(ContentPresenterDefinition presenterDefinition) {
+        AbstractJcrContainer container = initContainer();
+        configureContainer(presenterDefinition, container);
+        return container;
+    }
 
+    protected AbstractJcrContainer initContainer() {
+        return new FlatJcrContainer(workbenchDefinition);
+    }
+
+    protected void configureContainer(ContentPresenterDefinition presenterDefinition, AbstractJcrContainer container) {
+        for (ColumnDefinition column : presenterDefinition.getColumns()) {
+            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            container.addContainerProperty(propertyId, column.getType(), null);
+            container.addSortableProperty(propertyId);
+        }
+    }
 }

@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.list.ListPresenter;
 
 import javax.inject.Inject;
@@ -63,4 +64,8 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
         refresh();
     }
 
+    @Override
+    protected AbstractJcrContainer initContainer() {
+        return new SearchJcrContainer(workbenchDefinition);
+    }
 }

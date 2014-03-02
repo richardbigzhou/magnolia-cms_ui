@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.datasource;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
@@ -87,14 +86,4 @@ public interface DataSource {
      * @return true if such a Vaadin {@link Item} exists, false - otherwise.
      */
     boolean hasItem(Object itemId);
-
-    /**
-     * Create a Vaadin {@link Container} data source for a tabular or a select Vaadin component.
-     * Should typically create a container for read operations.
-     *
-     * @param configuration configuration object that keeps the essential information
-     * about container (e.g. property ids and their types).
-     * @return Vaadin {@link Container} created n the basis of the provided configuration.
-     */
-    Container createContentViewContainer(ContainerConfiguration configuration);
 }
