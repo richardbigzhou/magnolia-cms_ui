@@ -174,8 +174,13 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public boolean isValid() {
         boolean res = true;
+        getState().errorAmount = 0;
         for (Field<?> field : getFields()) {
-            res &= field.isValid();
+            boolean isFieldValid = field.isValid();
+            if(!isFieldValid){
+                ++getState().errorAmount;
+            }
+            res &= isFieldValid;
         }
         return res;
     }
