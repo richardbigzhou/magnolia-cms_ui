@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.Set;
@@ -52,7 +52,7 @@ public class WorkbenchStatusBarPresenter {
 
     private final StatusBarView view;
 
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
 
     private EventBus eventBus;
 
@@ -60,9 +60,9 @@ public class WorkbenchStatusBarPresenter {
 
 
     @Inject
-    public WorkbenchStatusBarPresenter(StatusBarView view, DataSource dataSource) {
+    public WorkbenchStatusBarPresenter(StatusBarView view, ContentConnector contentConnector) {
         this.view = view;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
     }
 
     private void bindHandlers() {
@@ -91,12 +91,12 @@ public class WorkbenchStatusBarPresenter {
         if (!itemIds.isEmpty()) {
             setSelectedItem(itemIds.iterator().next());
         } else {
-            setSelectedItem(dataSource.getDefaultItemId());
+            setSelectedItem(contentConnector.getDefaultItemId());
         }
     }
 
     public void setSelectedItem(Object itemId) {
-        String newValue = dataSource.getItemUrlFragment(itemId);
+        String newValue = contentConnector.getItemUrlFragment(itemId);
         String newDescription = newValue;
         selectionLabel.setValue(newValue);
         selectionLabel.setDescription(newDescription);

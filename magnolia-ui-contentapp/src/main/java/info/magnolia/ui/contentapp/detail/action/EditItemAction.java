@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -63,14 +63,14 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 
     private final LocationController locationController;
 
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
 
-    public EditItemAction(EditItemActionDefinition definition, Map<Object, Item> idToItem, Item nodeItemToEdit, LocationController locationController, DataSource dataSource) {
+    public EditItemAction(EditItemActionDefinition definition, Map<Object, Item> idToItem, Item nodeItemToEdit, LocationController locationController, ContentConnector contentConnector) {
         super(definition);
         this.idToItem = idToItem;
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 //                return;
 //            }
             Object itemId = getItemId(nodeItemToEdit);
-            final String path = dataSource.getItemUrlFragment(itemId);
+            final String path = contentConnector.getItemUrlFragment(itemId);
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 

@@ -42,7 +42,7 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -80,17 +80,17 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     private String caption;
 
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
-            DetailEditorPresenter presenter, SimpleTranslator i18n, DataSource dataSource) {
+            DetailEditorPresenter presenter, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
         this.presenter = presenter;
         this.i18n = i18n;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
         bindHandlers();
     }
 
@@ -109,13 +109,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        this.itemId = dataSource.getItemIdByUrlFragment(detailLocation.getNodePath());
+        this.itemId = contentConnector.getItemIdByUrlFragment(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dataSource, detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), contentConnector, detailLocation.getVersion());
         } else {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dataSource);
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), contentConnector);
         }
         getView().setContentView(view);
         return getView();
@@ -172,20 +172,20 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             splitIndex = 1;
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
-                        Object parentItemId = dataSource.getItemIdByUrlFragment(parentNodePath);
-                        if (!dataSource.hasItem(parentItemId)) {
+                        Object parentItemId = contentConnector.getItemIdByUrlFragment(parentNodePath);
+                        if (!contentConnector.hasItem(parentItemId)) {
                             getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
                         // Item (or parent) was deleted: close subApp
-                        if (!dataSource.hasItem(itemId)) {
+                        if (!contentConnector.hasItem(itemId)) {
                             getSubAppContext().close();
                         }
                         // Item still exists: update location if necessary
                         else {
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String itemPath = dataSource.getItemUrlFragment(itemId);
+                            String itemPath = contentConnector.getItemUrlFragment(itemId);
                             if (!currentNodePath.equals(itemPath)) {
                                 DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
                                 location.updateNodePath(itemPath);

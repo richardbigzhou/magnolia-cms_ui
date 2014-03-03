@@ -38,7 +38,7 @@ import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;
@@ -62,14 +62,14 @@ public class DefaultImageProvider implements ImageProvider {
 
     private ImageProviderDefinition definition;
 
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
 
     public DefaultImageProvider() {
     }
 
-    public DefaultImageProvider(ImageProviderDefinition definition, DataSource dataSource) {
+    public DefaultImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
         this.definition = definition;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
     }
 
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
@@ -78,7 +78,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public String getPortraitPath(Object itemId) {
-        Item item = dataSource.getItem(itemId);
+        Item item = contentConnector.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             return getGeneratorImagePath(jcrAdapter.getWorkspace(), jcrAdapter.getJcrItem(), PORTRAIT_GENERATOR);
@@ -88,7 +88,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public String getThumbnailPath(Object itemId) {
-        Item item = dataSource.getItem(itemId);
+        Item item = contentConnector.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();
@@ -127,7 +127,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public Object getThumbnailResource(Object itemId, String generator) {
-        Item item = dataSource.getItem(itemId);
+        Item item = contentConnector.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();

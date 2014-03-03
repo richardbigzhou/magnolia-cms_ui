@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.datasource;
+package info.magnolia.ui.contentapp.contentconnector;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -39,8 +39,8 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
-import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,16 +48,16 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Provides {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} to the sub-apps.
+ * Provides {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} to the sub-apps.
  */
 @Singleton
-public class DataSourceProvider implements Provider<DataSource> {
+public class DataSourceProvider implements Provider<ContentConnector> {
 
     private ComponentProvider provider;
 
     private EventBus subAppEventBus;
 
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
 
     private SubAppContext ctx;
 
@@ -69,14 +69,14 @@ public class DataSourceProvider implements Provider<DataSource> {
     }
 
     @Override
-    public DataSource get() {
-        if (dataSource == null) {
+    public ContentConnector get() {
+        if (contentConnector == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
             if (subAppDescriptor instanceof ContentSubAppDescriptor) {
-                DataSourceDefinition dataSourceDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getDataSource();
-                dataSource = provider.newInstance(dataSourceDefinition.getImplementationClass(), ctx, subAppEventBus, dataSourceDefinition);
+                ContentConnectorDefinition contentConnectorDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getContentConnector();
+                contentConnector = provider.newInstance(contentConnectorDefinition.getImplementationClass(), ctx, subAppEventBus, contentConnectorDefinition);
             }
         }
-        return dataSource;
+        return contentConnector;
     }
 }

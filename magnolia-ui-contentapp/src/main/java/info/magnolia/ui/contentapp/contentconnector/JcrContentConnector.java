@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.datasource;
+package info.magnolia.ui.contentapp.contentconnector;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.jcr.util.NodeUtil;
@@ -41,8 +41,8 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
-import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -68,9 +68,9 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
- * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
+ * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
  */
-public class JcrDataSource extends AbstractDataSource implements SupportsVersions, SupportsCreation {
+public class JcrContentConnector extends AbstractContentConnector implements SupportsVersions, SupportsCreation {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -79,7 +79,7 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     private VersionManager versionManager;
 
     @Inject
-    public JcrDataSource(SubAppContext subAppContext, final VersionManager versionManager, JcrDataSourceDefinition definition, ComponentProvider componentProvider) {
+    public JcrContentConnector(SubAppContext subAppContext, final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
         super(definition, componentProvider);
         this.subAppContext = subAppContext;
         this.versionManager = versionManager;

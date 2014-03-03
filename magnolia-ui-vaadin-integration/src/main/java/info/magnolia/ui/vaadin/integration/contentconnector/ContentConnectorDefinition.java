@@ -31,14 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.datasource;
-
-import com.vaadin.data.Item;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Allows to query the versions of an item.
+ * Defines {@link ContentConnector}.
  */
-public interface SupportsVersions extends DataSource {
+public interface ContentConnectorDefinition {
 
-    Item getItemVersion(Object itemId, String version);
+    Class<? extends ContentConnector> getImplementationClass();
 }

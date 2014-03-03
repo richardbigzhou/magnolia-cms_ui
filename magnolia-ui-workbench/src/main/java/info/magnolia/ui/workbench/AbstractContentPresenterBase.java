@@ -35,7 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -74,7 +74,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     protected String viewTypeName;
 
-    protected DataSource dataSource;
+    protected ContentConnector contentConnector;
 
     private final ComponentProvider componentProvider;
 
@@ -87,11 +87,11 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSource dataSource) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
         this.viewTypeName = viewTypeName;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
         return null;
     }
 
@@ -113,7 +113,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     @Override
     public void onItemSelection(Set<Object> itemIds) {
-        Object rootItemId = dataSource.getDefaultItemId();
+        Object rootItemId = contentConnector.getDefaultItemId();
         if (itemIds == null || itemIds.isEmpty()) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             List<Object> ids = new ArrayList<Object>(1);

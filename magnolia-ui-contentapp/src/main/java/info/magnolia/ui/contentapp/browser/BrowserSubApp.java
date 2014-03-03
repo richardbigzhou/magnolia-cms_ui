@@ -47,7 +47,7 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
@@ -108,10 +108,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
-    protected DataSource dataSource;
+    protected ContentConnector contentConnector;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, DataSource dataSource) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ContentConnector contentConnector) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -119,15 +119,15 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
     }
 
     protected Object ensureLocationUpToDate(String urlFragmentPath) {
-        Object actualItemId = dataSource.getItemIdByUrlFragment(urlFragmentPath);
+        Object actualItemId = contentConnector.getItemIdByUrlFragment(urlFragmentPath);
 
         // MGNLUI-1475: item might have not been found if path doesn't exist
-        if (!dataSource.hasItem(actualItemId)) {
-            actualItemId = dataSource.getDefaultItemId();
+        if (!contentConnector.hasItem(actualItemId)) {
+            actualItemId = contentConnector.getDefaultItemId();
             BrowserLocation newLocation = getCurrentLocation();
             newLocation.updateNodePath("/");
             getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
@@ -139,10 +139,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
-        if (!dataSource.hasItem(selectedId)) {
+        if (!contentConnector.hasItem(selectedId)) {
             // nothing is selected at the moment
         } else {
-            location.updateNodePath(dataSource.getItemUrlFragment(selectedId));
+            location.updateNodePath(contentConnector.getItemUrlFragment(selectedId));
         }
     }
 
@@ -188,7 +188,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * @see Location
      */
     protected void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = dataSource.getItemUrlFragment(dataSource.getDefaultItemId());
+        String workbenchRoot = contentConnector.getItemUrlFragment(contentConnector.getDefaultItemId());
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
 

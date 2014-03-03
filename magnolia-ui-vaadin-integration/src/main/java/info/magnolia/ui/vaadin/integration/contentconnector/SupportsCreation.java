@@ -31,16 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.datasource;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import info.magnolia.ui.vaadin.integration.datasource.ConfiguredDataSourceDefinition;
+import com.vaadin.data.Item;
 
 /**
- * {@link info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition} for JCR-specific sub-apps.
+ * Interface of {@link ContentConnector} that supports creation of new items.
  */
-public class JcrDataSourceDefinition extends ConfiguredDataSourceDefinition {
+public interface SupportsCreation extends ContentConnector {
 
-    public JcrDataSourceDefinition() {
-        setImplementationClass(JcrDataSource.class);
-    }
+    Item createNew(String newItemPath);
+
 }

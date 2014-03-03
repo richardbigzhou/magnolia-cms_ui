@@ -31,15 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.datasource;
-
-import com.vaadin.data.Item;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Interface of {@link DataSource} that supports creation of new items.
+ * Defines {@link ContentConnector}.
  */
-public interface SupportsCreation extends DataSource {
+public class ConfiguredContentConnectorDefinition implements ContentConnectorDefinition {
 
-    Item createNew(String newItemPath);
+    private Class<? extends ContentConnector> implementationClass;
 
+    @Override
+    public Class<? extends ContentConnector> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<? extends ContentConnector> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
 }

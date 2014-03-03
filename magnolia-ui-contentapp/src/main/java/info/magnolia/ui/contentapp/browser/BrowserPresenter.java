@@ -50,7 +50,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ActionEvent;
@@ -111,14 +111,14 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final AppContext appContext;
 
-    protected DataSource dataSource;
+    protected ContentConnector contentConnector;
 
     private final ImageProvider imageProvider;
 
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSource dataSource, ComponentProvider componentProvider) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, ComponentProvider componentProvider) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -127,12 +127,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
         ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
         } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, dataSource);
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, contentConnector);
         }
     }
 
@@ -155,7 +155,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (dataSource.hasItem(event.getItemId())) {
+                if (contentConnector.hasItem(event.getItemId())) {
 
                     workbenchPresenter.refresh();
 
@@ -236,7 +236,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return dataSource.hasItem(itemId);
+        return contentConnector.hasItem(itemId);
     }
 
     public List<Object> getSelectedItemIds() {
@@ -352,13 +352,13 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
         List<Object> selectedIds = getSelectedItemIds();
         if (selectedIds.isEmpty()) {
-            selectedIds.add(dataSource.getDefaultItemId());
+            selectedIds.add(contentConnector.getDefaultItemId());
         }
         Iterator<Object> idIt = selectedIds.iterator();
         Map<Object, Item> idToItem = new HashMap<Object, Item>();
         while (idIt.hasNext()) {
             Object id = idIt.next();
-            Item item = dataSource.getItem(id);
+            Item item = contentConnector.getItem(id);
             idToItem.put(id, item);
             selectedItems.add(item);
         }
@@ -379,7 +379,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
         for (Object itemId : ids) {
             if (!itemId.equals(itemIdToExclude)) {
-                items.add(dataSource.getItem(itemId));
+                items.add(contentConnector.getItem(itemId));
             }
             else {
                 items.add(null);

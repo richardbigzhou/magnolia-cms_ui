@@ -31,33 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.datasource;
+package info.magnolia.ui.contentapp.contentconnector;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
-import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
+ * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
  */
-public abstract class AbstractDataSource implements DataSource {
+public abstract class AbstractContentConnector implements ContentConnector {
 
-    private DataSourceDefinition dataSourceDefinition;
+    private ContentConnectorDefinition contentConnectorDefinition;
 
     private ComponentProvider componentProvider;
 
-    public AbstractDataSource(DataSourceDefinition dataSourceDefinition, ComponentProvider componentProvider) {
-        this.dataSourceDefinition = dataSourceDefinition;
+    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
+        this.contentConnectorDefinition = contentConnectorDefinition;
         this.componentProvider = componentProvider;
     }
 
 //    @Override
 //    public Container createContentViewContainer(ContainerConfiguration configuration) {
-//        Class<? extends ContainerProvider> containerProviderClass = dataSourceDefinition.getContainerProviders().get(configuration.getViewTypeId());
+//        Class<? extends ContainerProvider> containerProviderClass = contentConnectorDefinition.getContainerProviders().get(configuration.getViewTypeId());
 //        if (containerProviderClass == null) {
 //            containerProviderClass = getDefaultContainerProviderClass();
 //        }
-//        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, dataSourceDefinition, componentProvider);
+//        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, contentConnectorDefinition, componentProvider);
 //        return provider.createContainer(configuration);
 //    }
 //

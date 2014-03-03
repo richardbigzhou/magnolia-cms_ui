@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -66,16 +66,16 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
 
     private static final Logger log = LoggerFactory.getLogger(SaveItemPropertyAction.class);
     private final EventBus eventBus;
-    private final DataSource dataSource;
+    private final ContentConnector contentConnector;
     private final Object itemId;
     private final Object propertyId;
     private final Property<?> propertyDataSource;
 
     @Inject
-    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus, DataSource dataSource, Object... args) {
+    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus, ContentConnector contentConnector, Object... args) {
         super(definition);
         this.eventBus = eventBus;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
         this.itemId = ((Set<Object>) args[0]).iterator().next();
         this.propertyId = args[1];
         this.propertyDataSource = (Property<?>) args[2];
@@ -84,7 +84,7 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
     @Override
     public void execute() throws ActionExecutionException {
 
-        Item item = dataSource.getItem(itemId);
+        Item item = contentConnector.getItem(itemId);
         // we support only JCR item adapters
         if (!(item instanceof JcrItemAdapter)) {
             return;

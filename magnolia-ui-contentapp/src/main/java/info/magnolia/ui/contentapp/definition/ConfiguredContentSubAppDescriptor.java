@@ -35,9 +35,9 @@ package info.magnolia.ui.contentapp.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
+import info.magnolia.ui.contentapp.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Simple implementation for {@link ContentSubAppDescriptor}.
@@ -50,10 +50,10 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
 
     private ImageProviderDefinition imageProvider;
 
-    private DataSourceDefinition dataSource;
+    private ContentConnectorDefinition contentConnectorDefinition;
 
     public ConfiguredContentSubAppDescriptor() {
-        setDataSource(new JcrDataSourceDefinition());
+        setContentConnector(new JcrContentConnectorDefinition());
     }
 
     @Override
@@ -71,15 +71,15 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
     }
 
     @Override
-    public DataSourceDefinition getDataSource() {
-        return dataSource;
+    public ContentConnectorDefinition getContentConnector() {
+        return contentConnectorDefinition;
     }
 
     public void setImageProvider(ImageProviderDefinition imageProvider) {
         this.imageProvider = imageProvider;
     }
 
-    public void setDataSource(DataSourceDefinition dataSource) {
-        this.dataSource = dataSource;
+    public void setContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
+        this.contentConnectorDefinition = contentConnectorDefinition;
     }
 }

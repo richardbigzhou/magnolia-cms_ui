@@ -31,21 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.datasource;
+package info.magnolia.ui.vaadin.integration.contentconnector;
+
+import com.vaadin.data.Item;
 
 /**
- * Defines {@link DataSource}.
+ * Allows to query the versions of an item.
  */
-public class ConfiguredDataSourceDefinition implements DataSourceDefinition {
+public interface SupportsVersions extends ContentConnector {
 
-    private Class<? extends DataSource> implementationClass;
-
-    @Override
-    public Class<? extends DataSource> getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(Class<? extends DataSource> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
+    Item getItemVersion(Object itemId, String version);
 }

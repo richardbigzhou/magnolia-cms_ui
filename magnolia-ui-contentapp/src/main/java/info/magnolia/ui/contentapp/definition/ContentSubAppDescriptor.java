@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.definition;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Describes a content sub app.
@@ -52,6 +52,6 @@ public interface ContentSubAppDescriptor extends SubAppDescriptor {
 
     ImageProviderDefinition getImageProvider();
 
-    DataSourceDefinition getDataSource();
+    ContentConnectorDefinition getContentConnector();
 
 }

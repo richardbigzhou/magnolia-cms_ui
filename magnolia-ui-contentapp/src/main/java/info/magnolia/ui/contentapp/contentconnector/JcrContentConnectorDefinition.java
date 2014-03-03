@@ -31,12 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.datasource;
+package info.magnolia.ui.contentapp.contentconnector;
+
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredContentConnectorDefinition;
 
 /**
- * Defines {@link DataSource}.
+ * {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition} for JCR-specific sub-apps.
  */
-public interface DataSourceDefinition {
+public class JcrContentConnectorDefinition extends ConfiguredContentConnectorDefinition {
 
-    Class<? extends DataSource> getImplementationClass();
+    public JcrContentConnectorDefinition() {
+        setImplementationClass(JcrContentConnector.class);
+    }
 }

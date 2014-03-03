@@ -44,9 +44,9 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
-import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
-import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsVersions;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     private final EditorDefinition editorDefinition;
     private final SimpleTranslator i18n;
     private String nodePath;
-    private DataSource dataSource;
+    private ContentConnector contentConnector;
     private Item item;
 
     @Inject
@@ -88,32 +88,32 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.i18n = i18n;
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType, DataSource dataSource) {
+    public View start(String nodePath, DetailView.ViewType viewType, ContentConnector contentConnector) {
 
-        return start(nodePath, viewType, dataSource, null);
+        return start(nodePath, viewType, contentConnector, null);
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType, DataSource dataSource, String versionName) {
-        this.dataSource = dataSource;
+    public View start(String nodePath, DetailView.ViewType viewType, ContentConnector contentConnector, String versionName) {
+        this.contentConnector = contentConnector;
         this.nodePath = nodePath;
         this.item = null;
 
         view.setListener(this);
-        Object itemId = dataSource.getItemIdByUrlFragment(nodePath);
+        Object itemId = contentConnector.getItemIdByUrlFragment(nodePath);
 
 
-        if (dataSource.hasItem(itemId)) {
-            if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && dataSource instanceof SupportsVersions) {
-                item = ((SupportsVersions)dataSource).getItemVersion(itemId, versionName);
-            } else if (dataSource instanceof SupportsCreation) {
-                item = dataSource.getItem(itemId);
+        if (contentConnector.hasItem(itemId)) {
+            if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && contentConnector instanceof SupportsVersions) {
+                item = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
+            } else if (contentConnector instanceof SupportsCreation) {
+                item = contentConnector.getItem(itemId);
             }
         } else {
-            if (dataSource instanceof SupportsCreation) {
+            if (contentConnector instanceof SupportsCreation) {
                 /**
                  * TODO - consider passing parent's id.
                  */
-                item = ((SupportsCreation)dataSource).createNew(nodePath);
+                item = ((SupportsCreation) contentConnector).createNew(nodePath);
             }
         }
 
@@ -129,7 +129,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     }
 
     public View update(DetailLocation location) {
-        return this.start(location.getNodePath(), location.getViewType(), dataSource, location.getVersion());
+        return this.start(location.getNodePath(), location.getViewType(), contentConnector, location.getVersion());
     }
 
     public String getNodePath() {

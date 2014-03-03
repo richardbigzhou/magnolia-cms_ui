@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
@@ -82,14 +82,14 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private EventBus eventBus;
 
-    protected DataSource dataSource;
+    protected ContentConnector contentConnector;
 
     @Inject
-    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, DataSource dataSource) {
+    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, ContentConnector contentConnector) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.statusBarPresenter = statusBarPresenter;
-        this.dataSource = dataSource;
+        this.contentConnector = contentConnector;
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
@@ -106,7 +106,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             if (presenterClass != null) {
                 presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass);
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), dataSource);
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), contentConnector);
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
@@ -136,7 +136,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public Object resolveWorkbenchRoot() {
-        return dataSource.getDefaultItemId();
+        return contentConnector.getDefaultItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
@@ -218,7 +218,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         final List<Object> selectedIds = filterExistingItems(itemIds);
         // restore selection
         if (selectedIds.isEmpty()) {
-            Object workbenchRootItemId = dataSource.getItemIdByUrlFragment(getWorkbenchDefinition().getPath());
+            Object workbenchRootItemId = contentConnector.getItemIdByUrlFragment(getWorkbenchDefinition().getPath());
             selectedIds.add(workbenchRootItemId);
         }
 
@@ -233,7 +233,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         Iterator<Object> it = itemIds.iterator();
         while (it.hasNext()) {
             Object itemId = it.next();
-            if (dataSource.hasItem(itemId)) {
+            if (contentConnector.hasItem(itemId)) {
                 filteredIds.add(itemId);
             } else {
                 WorkbenchDefinition def = getWorkbenchDefinition();

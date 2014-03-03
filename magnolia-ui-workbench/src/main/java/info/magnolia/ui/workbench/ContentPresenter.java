@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
@@ -60,10 +60,10 @@ public interface ContentPresenter {
      * @param workbenchDefinition the workbench definition that defines which data to present
      * @param eventBus the event bus to fire e.g. selection events on
      * @param viewTypeName the view type as defined in the presenter definition
-     * @param dataSource
+     * @param contentConnector
      * @return the content view
      */
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSource dataSource);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector);
 
     /**
      * Refreshes the data container and view.

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.datasource;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 import com.vaadin.data.Item;
 
@@ -39,12 +39,12 @@ import com.vaadin.data.Item;
  * Simple stateless component used to bridge arbitrary object by their identifier to a Vaadin {@link Item}
  * and vice-versa.
  */
-public interface DataSource {
+public interface ContentConnector {
 
     /**
      * Convert an item id (arbitrary object) to its string representation which can be
      * appended to a URL fragment and later be used to fetch the item id back.
-     * @see DataSource#getItemIdByUrlFragment(java.lang.String).
+     * @see ContentConnector#getItemIdByUrlFragment(java.lang.String).
      *
      * @param itemId id of an item to be converted to a string representation.
      * @return string representation of an item id.
@@ -79,7 +79,7 @@ public interface DataSource {
     Item getItem(Object itemId);
 
     /**
-     * Check whether current {@link DataSource} is capable of fetching a Vaadin {@link Item}
+     * Check whether current {@link ContentConnector} is capable of fetching a Vaadin {@link Item}
      * with a specific id.
      *
      * @param itemId id of a Vaadin {@link Item} to look up.
