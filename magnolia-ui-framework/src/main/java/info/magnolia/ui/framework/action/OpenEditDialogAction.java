@@ -34,6 +34,8 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -43,9 +45,12 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Opens a dialog for editing a node.
@@ -58,20 +63,39 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
     private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
+    }
+
+    /**
+     * @deprecated since 5.2.3 instead of use {@link #OpenEditDialogAction(OpenEditDialogActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory, info.magnolia.ui.api.context.UiContext, info.magnolia.event.EventBus, info.magnolia.i18nsystem.SimpleTranslator)}
+     */
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+        this(definition, itemToEdit, formDialogPresenterFactory, uiContext, eventBus, Components.getComponent(SimpleTranslator.class));
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        final String dialogName = getDefinition().getDialogName();
+        if(StringUtils.isBlank(dialogName)){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.no.dialog.definition", getDefinition().getName()));
+            return;
+
+        }
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
+        if(formDialogPresenter == null){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
+            return;
+        }
+        formDialogPresenter.start(itemToEdit, dialogName, uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

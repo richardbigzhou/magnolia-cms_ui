@@ -34,6 +34,8 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
@@ -45,9 +47,14 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Named;
 import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.inject.Inject;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -60,25 +67,44 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
     private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
+    private final SimpleTranslator i18n;
 
-    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    @Inject
+    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
+    }
+
+    /**
+     * @deprecated since 5.2.3 instead of use {@link #OpenCreateDialogAction(OpenCreateDialogActionDefinition, info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter, info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory, info.magnolia.ui.api.context.UiContext, info.magnolia.event.EventBus, info.magnolia.i18nsystem.SimpleTranslator)}
+     */
+    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+        this(definition, parentItem, formDialogPresenterFactory, uiContext, eventBus, Components.getComponent(SimpleTranslator.class));
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        Node parentNode = parentItem.getJcrItem();
+        final String dialogName = getDefinition().getDialogName();
+        if(StringUtils.isBlank(dialogName)){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.no.dialog.definition", getDefinition().getName()));
+            return;
 
+        }
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
+        if(formDialogPresenter == null){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
+            return;
+        }
+
+        Node parentNode = parentItem.getJcrItem();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, getDefinition().getNodeType());
 
-        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
-
-        formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        formDialogPresenter.start(item, dialogName, uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
