@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import com.vaadin.data.util.BeanItem;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
@@ -46,12 +45,14 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.framework.message.MessagesManager;
-import org.apache.commons.lang.StringUtils;
+import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * MessagePresenter.
+ * The message detail presenter.
  */
 public final class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
 
@@ -92,8 +93,8 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             messageViewDefinition = i18nizer.decorate(messageViewDefinition);
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
+            MessageItem messageItem = new MessageItem(message);
 
-            BeanItem<Message> messageItem = new BeanItem<Message>(message);
             View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 
@@ -132,7 +133,6 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
     public String getIcon(String actionName) {
         return messageActionExecutor.getActionDefinition(actionName).getIcon();
     }
-
 
     /**
      * Listener interface used to call back to parent presenter.
