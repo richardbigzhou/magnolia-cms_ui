@@ -225,17 +225,4 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     public Form asVaadinComponent() {
         return this;
     }
-
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = 0;
-        if (isValidationVisible) {
-            for (Field<?> field : fields) {
-                if (!field.isValid()) {
-                    ++getState().errorAmount;
-                }
-            }
-        }
-    }
 }
