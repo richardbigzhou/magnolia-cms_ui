@@ -81,7 +81,7 @@ public class MessageItemTest {
         Collection<String> ids = (Collection<String>) messageItem.getItemPropertyIds();
 
         // THEN
-        assertThat(ids, hasItems("sender", "message", "subject"));
+        assertThat(ids, hasItems("foo", "bar", "sender", "message", "subject"));
 
         assertEquals("1", messageItem.getItemProperty("foo").getValue());
         assertEquals("baz", messageItem.getItemProperty("bar").getValue());
