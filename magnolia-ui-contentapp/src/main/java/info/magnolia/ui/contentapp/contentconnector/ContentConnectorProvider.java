@@ -51,7 +51,7 @@ import javax.inject.Singleton;
  * Provides {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} to the sub-apps.
  */
 @Singleton
-public class DataSourceProvider implements Provider<ContentConnector> {
+public class ContentConnectorProvider implements Provider<ContentConnector> {
 
     private ComponentProvider provider;
 
@@ -62,7 +62,7 @@ public class DataSourceProvider implements Provider<ContentConnector> {
     private SubAppContext ctx;
 
     @Inject
-    public DataSourceProvider(SubAppContext ctx, final ComponentProvider provider, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    public ContentConnectorProvider(SubAppContext ctx, final ComponentProvider provider, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         this.ctx = ctx;
         this.provider = provider;
         this.subAppEventBus = subAppEventBus;
