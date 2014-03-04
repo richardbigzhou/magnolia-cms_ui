@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,6 +45,9 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests for {@link info.magnolia.ui.framework.action.OpenEditDialogAction}.
+ */
 public class OpenEditDialogActionTest {
 
     private FormDialogPresenterFactory formDialogPresenterFactory;
