@@ -91,5 +91,5 @@ public interface ContentPresenter {
      */
     void expand(Object itemId);
 
-    Container getContainer();
+    Container initializeContainer();
 }

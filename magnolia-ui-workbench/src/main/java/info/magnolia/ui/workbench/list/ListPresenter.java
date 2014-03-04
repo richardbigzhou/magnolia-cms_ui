@@ -70,7 +70,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     @Override
     public ListView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
         super.start(workbenchDefinition, eventBus, viewTypeName, contentConnector);
-        this.container = getContainer();
+        this.container = initializeContainer();
         view.setListener(this);
         view.setContainer(container);
         ((Table)view.asVaadinComponent()).setVisibleColumns(new Object[]{});
@@ -119,18 +119,18 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public Container getContainer() {
-        container = prepareContainerConfiguration(getPresenterDefinition());
+    public Container initializeContainer() {
+        container = createAndConfigureContainer(getPresenterDefinition());
         return container;
     }
 
-    protected Container prepareContainerConfiguration(ContentPresenterDefinition presenterDefinition) {
-        AbstractJcrContainer container = initContainer();
+    protected Container createAndConfigureContainer(ContentPresenterDefinition presenterDefinition) {
+        AbstractJcrContainer container = instantiateContainer();
         configureContainer(presenterDefinition, container);
         return container;
     }
 
-    protected AbstractJcrContainer initContainer() {
+    protected AbstractJcrContainer instantiateContainer() {
         return new FlatJcrContainer(workbenchDefinition);
     }
 

@@ -48,7 +48,7 @@ public class UserTreePresenter extends TreePresenter {
     }
 
     @Override
-    protected AbstractJcrContainer initContainer() {
+    protected AbstractJcrContainer instantiateContainer() {
         return new UserContainer(workbenchDefinition);
     }
 }

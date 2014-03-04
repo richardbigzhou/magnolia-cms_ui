@@ -192,7 +192,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
         if (selectedItemIds.size() == 1) {
             try {
-                item = getContainer().getItem(getSelectedItemId());
+                item = initializeContainer().getItem(getSelectedItemId());
                 // item = getSelectedItemId();
                 log.debug("com.vaadin.data.Item at {} was keyboard clicked. Firing ItemShortcutKeyEvent...", getSelectedItemId());
                 eventBus.fireEvent(new ItemShortcutKeyEvent(item, keyCode, modifierKeys));
@@ -239,7 +239,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     public void expand(Object itemId) {}
 
     @Override
-    public abstract Container getContainer();
+    public abstract Container initializeContainer();
 
 
     protected ContentPresenterDefinition getPresenterDefinition() {

@@ -48,7 +48,7 @@ public class RoleTreePresenter extends TreePresenter {
     }
 
     @Override
-    protected AbstractJcrContainer initContainer() {
+    protected AbstractJcrContainer instantiateContainer() {
         return new RoleContainer(workbenchDefinition);
     }
 }

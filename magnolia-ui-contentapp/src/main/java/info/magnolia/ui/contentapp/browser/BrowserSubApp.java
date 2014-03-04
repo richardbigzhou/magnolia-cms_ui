@@ -122,21 +122,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.contentConnector = contentConnector;
     }
 
-    protected Object ensureLocationUpToDate(String urlFragmentPath) {
-        Object actualItemId = contentConnector.getItemIdByUrlFragment(urlFragmentPath);
-
-        // MGNLUI-1475: item might have not been found if path doesn't exist
-        if (!contentConnector.hasItem(actualItemId)) {
-            actualItemId = contentConnector.getDefaultItemId();
-            BrowserLocation newLocation = getCurrentLocation();
-            newLocation.updateNodePath("/");
-            getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
-        }
-
-        return actualItemId;
-    }
-
-
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
         if (!contentConnector.hasItem(selectedId)) {
@@ -202,11 +187,18 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         }
         String query = location.getQuery();
 
-        Object itemId = ensureLocationUpToDate(path);
-        if (itemId != null) {
-            getBrowser().resync(Arrays.asList(itemId), viewType, query);
-            updateActionbar(getBrowser().getActionbarPresenter());
+        Object itemId = contentConnector.getItemIdByUrlFragment(path);
+
+        // MGNLUI-1475: item might have not been found if path doesn't exist
+        if (!contentConnector.hasItem(itemId)) {
+            itemId = contentConnector.getDefaultItemId();
+            BrowserLocation newLocation = getCurrentLocation();
+            newLocation.updateNodePath("/");
+            getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
         }
+
+        getBrowser().resync(Arrays.asList(itemId), viewType, query);
+        updateActionbar(getBrowser().getActionbarPresenter());
     }
 
 

@@ -81,7 +81,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
         super.start(workbench, eventBus, viewTypeName, contentConnector);
 
-        container = getContainer();
+        container = initializeContainer();
 
         view.setListener(this);
         view.setContainer(container);
@@ -99,7 +99,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public Container getContainer() {
+    public Container initializeContainer() {
         ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(workbenchDefinition));
         c.setThumbnailHeight(73);
         c.setThumbnailWidth(73);
