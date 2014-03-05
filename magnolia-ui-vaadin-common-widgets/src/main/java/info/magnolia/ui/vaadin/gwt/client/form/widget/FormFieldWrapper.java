@@ -128,6 +128,9 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     public void setCaption(String caption) {
         label.setInnerHTML(caption);
+        // let's show the caption as tooltip, too. This helps if the label is too long. it may contain <span class="requiredfield">*</span>
+        String toolTip = caption.replaceAll("\\<.*?\\>", "");
+        label.setTitle(toolTip);
     }
 
     @Override
