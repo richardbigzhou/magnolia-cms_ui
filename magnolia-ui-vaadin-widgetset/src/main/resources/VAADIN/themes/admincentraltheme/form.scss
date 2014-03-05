@@ -102,6 +102,7 @@ button.btn-form-help {
     color: $c10;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
     vertical-align: top; /*needed by FF*/
     line-height:25px;
     position: absolute;
