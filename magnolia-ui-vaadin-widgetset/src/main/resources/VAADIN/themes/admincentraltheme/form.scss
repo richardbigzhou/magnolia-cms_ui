@@ -96,23 +96,27 @@ button.btn-form-help {
 }
 
 .v-form-field-label {
-    text-align: right;
-    width: 140px;
-    margin-right: 12px;
-    color: $c10;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    vertical-align: top; /*needed by FF*/
-    line-height:25px;
-    position: absolute;
+  color: $c10;
+  clear: both;
+  color: #666666;
+  float: left;
+  line-height: 18px;
+  margin-left: -150px;
+  overflow: hidden;
+  padding-bottom: 10px;
+  padding-top: 4px;
+  text-align: right;
+  vertical-align: top;
+  width: 140px;
 }
 
 .v-form-field-container {
-  margin-top: 1px;
-  padding-right: 40px;
-  padding-left: 150px;
   display: block;
+  float: left;
+  margin-top: 1px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
 }
 
 .validation-hilight {
@@ -124,6 +128,7 @@ button.btn-form-help {
 .v-form-field-section {
     color: $c90;
     margin-bottom: 11px;
+    padding: 0 40px 0 150px;
 }
 
 .validation-message-inline,.help-message-inline {
@@ -256,8 +261,8 @@ fieldset {
 .v-required-field-indicator {
   color: $c90;
   font-size: 18px;
-  vertical-align: -20%;
   margin-left: 3px;
+  vertical-align: -30%;
 }
 
 /*
