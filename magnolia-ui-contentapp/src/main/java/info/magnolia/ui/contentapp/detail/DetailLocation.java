@@ -138,7 +138,7 @@ public class DetailLocation extends DefaultLocation {
         return getParameter(parameter, VERSION_PARAM_POSITION);
     }
 
-    private String getParameter(String parameter, int position) {
+    protected String getParameter(String parameter, int position) {
         String arguments[] = StringUtils.split(parameter, ':');
         if (position <= arguments.length - 1) {
             return arguments[position];
