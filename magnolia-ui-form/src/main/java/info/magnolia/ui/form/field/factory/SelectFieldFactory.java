@@ -65,7 +65,7 @@ import com.vaadin.ui.ComboBox;
 
 /**
  * Creates and initializes a selection field based on a field definition.
- *
+ * 
  * @param <D> type of definition
  */
 public class SelectFieldFactory<D extends SelectFieldDefinition> extends AbstractFieldFactory<D, Object> {
@@ -75,7 +75,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private String initialSelectedKey;
     private String optionValueName;
     private String optionLabelName;
-    private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
+    private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
     private boolean hasOptionIcon = false;
     private boolean sortOptions = true;
 
@@ -248,7 +248,8 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
         // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), (String) selectedValue);
+
+        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
             ((Collection) datasourceValue).add(selectedValue);

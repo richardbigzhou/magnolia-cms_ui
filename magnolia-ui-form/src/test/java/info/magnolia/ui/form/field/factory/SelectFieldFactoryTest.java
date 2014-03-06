@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -49,6 +50,7 @@ import javax.jcr.Node;
 
 import org.junit.Test;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
@@ -318,6 +320,24 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         assertEquals("2", items[1]);
         assertEquals("3", items[2]);
         assertEquals("1", field.getValue().toString());
+    }
+
+    @Test
+    public void testCreateDefaultValueFromLong() throws Exception {
+        // GIVEN
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+        field.removeAllItems();
+        field.addItem(1L); // long value
+
+        Property<Long> dataSource = new DefaultProperty<Long>(1L);
+
+        // WHEN
+        Object defaultValue = dialogSelect.createDefaultValue(dataSource);
+
+        // THEN
+        assertEquals("1", defaultValue.toString());
     }
 
     @Override
