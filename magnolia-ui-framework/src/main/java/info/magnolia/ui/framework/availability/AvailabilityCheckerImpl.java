@@ -37,6 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.AvailabilityRuleDefinition;
 import info.magnolia.ui.framework.availability.voters.AvailabilityShorthands;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
@@ -95,6 +96,9 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     private List<AvailabilityRule> prepareRules(AvailabilityDefinition definition) {
         List<AvailabilityRule> rules = new ArrayList<AvailabilityRule>();
         rules.addAll(prepareShorthandRules(definition));
+        for (AvailabilityRuleDefinition ruleDefinition : definition.getRules()) {
+            rules.add(componentProvider.newInstance(ruleDefinition.getImplementationClass(), ruleDefinition));
+        }
         return rules;
     }
 

@@ -95,6 +95,10 @@
       <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
       <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.api.availability.AvailabilityRuleDefinition</type>
+      <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition</implementation>
+    </type-mapping>
 
     <!-- Ui framework -->
     <type-mapping>

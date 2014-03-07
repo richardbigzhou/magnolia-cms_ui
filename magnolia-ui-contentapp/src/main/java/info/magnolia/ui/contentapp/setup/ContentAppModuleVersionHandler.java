@@ -40,6 +40,7 @@ import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
+import info.magnolia.ui.framework.setup.MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask;
 import info.magnolia.ui.framework.setup.ReplaceMultiLinkFieldDefinitionTask;
 import info.magnolia.ui.framework.setup.ReplaceSaveModeTypeFieldDefinitionTask;
 
@@ -65,6 +66,7 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new BootstrapSingleResource("", "", "/mgnl-bootstrap/ui-contentapp/config.modules.ui-admincentral.apps.configuration.subApps.browser.actions.saveItemProperty.xml"))
+                .addTask(new MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask())
         );
     }
 }
