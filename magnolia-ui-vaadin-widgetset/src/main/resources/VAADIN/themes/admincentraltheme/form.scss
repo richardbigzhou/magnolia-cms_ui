@@ -223,25 +223,38 @@ fieldset {
     padding: 0;
 }
 
-.form-content.show-all fieldset legend {
+.form-content .v-form-layout > fieldset {
+	& > legend {
     font-family: Verdana, Arial, sans-serif;
     font-size: 12px;
     font-weight: bold;
     color: black;
-    display: block !important;
     padding-left: 27px;
     padding-bottom: 18px;
-}
+    display: none;
+  }
 
-.form-content.show-all fieldset hr {
+  & > hr {
     margin: 22px 24px 0px;
     border-top: 1px solid black;
     border-bottom: 0px;
     border-right: 0px;
     border-left: 0px;
-    display:block !important;
     height: 0; /*needed by FF*/
+    display: none;
+  }
 }
+
+.form-content .show-all .v-form-layout > fieldset {
+	& > legend, & > hr {
+    display: block;
+  }
+}
+
+.form-content .v-shell-tab:last-child .v-form-layout > fieldset > hr {
+  display: none;
+}
+
 
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {

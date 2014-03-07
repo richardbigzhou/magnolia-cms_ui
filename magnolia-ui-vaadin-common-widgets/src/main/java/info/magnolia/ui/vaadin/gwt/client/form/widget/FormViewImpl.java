@@ -64,8 +64,6 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     private static final String CLASSNAME_CONTENT = "form-content";
 
-    private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
-
     private static final String ClASSNAME_ERROR = "form-error";
 
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
@@ -122,15 +120,12 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 public void onActiveTabChanged(ActiveTabChangedEvent event) {
                     lastFocused = null;
                     if (!event.isShowingAllTabs()) {
-                        contentEl.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
                         setFieldFocusHandler((FormTabWidget) event.getTab());
                     } else {
-                        contentEl.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
                         for (FormTabWidget tab : formTabs) {
                             setFieldFocusHandler(tab);
                         }
                     }
-
                 }
 
                 private void setFieldFocusHandler(FormTabWidget tab) {

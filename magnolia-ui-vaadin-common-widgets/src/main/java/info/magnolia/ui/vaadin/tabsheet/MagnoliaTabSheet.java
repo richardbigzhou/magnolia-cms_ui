@@ -83,6 +83,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
                 tabIt.getContent().setVisible(true);
             }
         }
+        getState().activeTab = null;
         getState().showAllEnabled = true;
     }
 
