@@ -102,7 +102,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         Object itemId = contentConnector.getItemIdByUrlFragment(nodePath);
 
 
-        if (contentConnector.hasItem(itemId)) {
+        if (contentConnector.canHandleItem(itemId)) {
             if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && contentConnector instanceof SupportsVersions) {
                 item = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
             } else if (contentConnector instanceof SupportsCreation) {

@@ -143,7 +143,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     @Override
-    public boolean hasItem(Object itemId) {
+    public boolean canHandleItem(Object itemId) {
         return (itemId instanceof JcrItemId) &&
                 ((JcrItemId)itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
     }

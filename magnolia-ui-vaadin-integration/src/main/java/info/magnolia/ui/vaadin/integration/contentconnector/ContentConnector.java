@@ -85,5 +85,5 @@ public interface ContentConnector {
      * @param itemId id of a Vaadin {@link Item} to look up.
      * @return true if such a Vaadin {@link Item} exists, false - otherwise.
      */
-    boolean hasItem(Object itemId);
+    boolean canHandleItem(Object itemId);
 }

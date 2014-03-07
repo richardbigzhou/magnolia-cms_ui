@@ -155,7 +155,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.hasItem(event.getItemId())) {
+                if (contentConnector.canHandleItem(event.getItemId())) {
 
                     workbenchPresenter.refresh();
 
@@ -236,7 +236,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return contentConnector.hasItem(itemId);
+        return contentConnector.canHandleItem(itemId);
     }
 
     public List<Object> getSelectedItemIds() {

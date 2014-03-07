@@ -173,13 +173,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
                         Object parentItemId = contentConnector.getItemIdByUrlFragment(parentNodePath);
-                        if (!contentConnector.hasItem(parentItemId)) {
+                        if (!contentConnector.canHandleItem(parentItemId)) {
                             getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
                         // Item (or parent) was deleted: close subApp
-                        if (!contentConnector.hasItem(itemId)) {
+                        if (!contentConnector.canHandleItem(itemId)) {
                             getSubAppContext().close();
                         }
                         // Item still exists: update location if necessary

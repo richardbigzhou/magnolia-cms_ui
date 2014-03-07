@@ -51,15 +51,7 @@ public abstract class AbstractContentConnector implements ContentConnector {
         this.componentProvider = componentProvider;
     }
 
-//    @Override
-//    public Container createContentViewContainer(ContainerConfiguration configuration) {
-//        Class<? extends ContainerProvider> containerProviderClass = contentConnectorDefinition.getContainerProviders().get(configuration.getViewTypeId());
-//        if (containerProviderClass == null) {
-//            containerProviderClass = getDefaultContainerProviderClass();
-//        }
-//        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, contentConnectorDefinition, componentProvider);
-//        return provider.createContainer(configuration);
-//    }
-//
-//    protected abstract Class<? extends ContainerProvider> getDefaultContainerProviderClass();
+    public ContentConnectorDefinition getContentConnectorDefinition() {
+        return contentConnectorDefinition;
+    }
 }

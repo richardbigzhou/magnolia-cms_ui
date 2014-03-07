@@ -124,7 +124,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
-        if (!contentConnector.hasItem(selectedId)) {
+        if (!contentConnector.canHandleItem(selectedId)) {
             // nothing is selected at the moment
         } else {
             location.updateNodePath(contentConnector.getItemUrlFragment(selectedId));
@@ -190,7 +190,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         Object itemId = contentConnector.getItemIdByUrlFragment(path);
 
         // MGNLUI-1475: item might have not been found if path doesn't exist
-        if (!contentConnector.hasItem(itemId)) {
+        if (!contentConnector.canHandleItem(itemId)) {
             itemId = contentConnector.getDefaultItemId();
             BrowserLocation newLocation = getCurrentLocation();
             newLocation.updateNodePath("/");
