@@ -145,6 +145,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
         this.enabled = enabled;
     }
 
+    @Override
     public Locale getAuthorLocale() {
         return authorLocale;
     }
