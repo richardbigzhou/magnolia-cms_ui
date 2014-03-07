@@ -50,9 +50,12 @@ import info.magnolia.ui.admincentral.dialog.action.SaveConfigDialogActionDefinit
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -63,6 +66,7 @@ import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -105,6 +109,8 @@ public class BrowserPresenterTest {
 
     private WorkbenchPresenter mockWorkbenchPresenter;
 
+    private AvailabilityChecker availabilityChecker = mock(AvailabilityChecker.class);
+
     @Before
     public void setUp() {
         // spy hooks for session move to avoid unsupported operation exception
@@ -144,7 +150,7 @@ public class BrowserPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, mockWorkbenchPresenter, null, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, mockWorkbenchPresenter, null, null, availabilityChecker);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -210,7 +216,9 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", new JcrNodeAdapter(node))).thenReturn(false);
+        Object itemId = new JcrItemId(node.getIdentifier(), WORKSPACE);
+        AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
+        when(availabilityChecker.isAvailable(availability, Arrays.asList(itemId))).thenReturn(false);
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
@@ -232,7 +240,10 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", new JcrNodeAdapter(node))).thenReturn(true);
+        Object itemId = new JcrItemId(node.getIdentifier(), WORKSPACE);
+        AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
+        when(availabilityChecker.isAvailable(availability, Arrays.asList(itemId))).thenReturn(true);
+
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
@@ -268,7 +279,8 @@ public class BrowserPresenterTest {
 
         // THEN
         // just verifying that null is passed to the isAvailable() method instead of the actual item
-        verify(actionExecutor).isAvailable("testAction", null);
+        AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
+        verify(availabilityChecker).isAvailable(availability, null);
     }
 
 }

@@ -80,8 +80,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
-
 /**
  * Test covering execution of {@link ConfirmationAction}.
  */
@@ -322,11 +320,6 @@ public class ConfirmationActionTest extends MgnlTestCase {
         @Override
         public ActionDefinition getActionDefinition(String actionName) {
             return null;
-        }
-
-        @Override
-        public boolean isAvailable(String actionName, Item... items) {
-            return false;
         }
 
         public String getExecutedActionName() {

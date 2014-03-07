@@ -31,19 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability.voters;
+package info.magnolia.ui.api.availability;
 
-import info.magnolia.ui.api.availability.AvailabilityRule;
-
-import com.vaadin.data.Item;
+import java.util.List;
 
 /**
- * Default implementation of {@link AvailabilityRule} which always returns true.
+ * Checks whether a set of data units complies to the criteria defined in an {@link AvailabilityDefinition}.
  */
-public class AlwaysTrueAvailabilityRule implements AvailabilityRule {
+public interface AvailabilityChecker {
 
-    @Override
-    public boolean isAvailable(Item... items) {
-        return true;
-    }
+    boolean isAvailable(AvailabilityDefinition definition, List<Object> ids);
 }

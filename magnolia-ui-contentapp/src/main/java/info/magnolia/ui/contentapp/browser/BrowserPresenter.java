@@ -43,6 +43,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
@@ -109,6 +111,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final ActionbarPresenter actionbarPresenter;
 
+    private AvailabilityChecker checker;
+
     private final AppContext appContext;
 
     protected ContentConnector contentConnector;
@@ -118,13 +122,14 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, ComponentProvider componentProvider) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, ComponentProvider componentProvider, AvailabilityChecker checker) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.actionbarPresenter = actionbarPresenter;
+        this.checker = checker;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.contentConnector = contentConnector;
@@ -318,8 +323,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName) {
         try {
-            List<Item> items = getSelectedItems();
-            if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+            AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+            if (checker.isAvailable(availability, getSelectedItemIds())) {
                 Object[] args = prepareActionArgs();
                 actionExecutor.execute(actionName, args);
             }
@@ -332,8 +337,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName, Set<Object> itemIds, Object... parameters) {
         try {
-            List<Item> items = getSelectedItems();
-            if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+            AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+            if (checker.isAvailable(availability, getSelectedItemIds())) {
                 List<Object> args = new ArrayList<Object>();
                 args.add(itemIds);
                 args.addAll(Arrays.asList(parameters));
@@ -367,24 +372,5 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         argList.add(idToItem);
         argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
         return argList.toArray(new Object[argList.size()]);
-    }
-
-    protected List<Item> getSelectedItems() {
-        List<Object> selectedItemIds = getSelectedItemIds();
-        return getSelectedItemsWithoutRoot(selectedItemIds, workbenchPresenter.resolveWorkbenchRoot());
-    }
-
-    protected List<Item> getSelectedItemsWithoutRoot(List<Object> ids, Object itemIdToExclude) {
-        List<Item> items = new ArrayList<Item>();
-
-        for (Object itemId : ids) {
-            if (!itemId.equals(itemIdToExclude)) {
-                items.add(contentConnector.getItem(itemId));
-            }
-            else {
-                items.add(null);
-            }
-        }
-        return items;
     }
 }

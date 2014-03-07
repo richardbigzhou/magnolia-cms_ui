@@ -88,7 +88,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, null);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, null, null);
         }
 
         @Override
@@ -109,7 +109,7 @@ public class ContentSubAppTest {
 
     private class DummyRule extends AbstractAvailabilityRule {
         @Override
-        protected boolean isAvailableForItem(com.vaadin.data.Item item) {
+        protected boolean isAvailableForItem(Object itemId) {
             return true;
         }
     }

@@ -34,7 +34,9 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -168,7 +170,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         //TODO JCR FREE FIX TEST!!!!
         //sectionToShow.setOldAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, null);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, null, null);
     }
 
     @Test

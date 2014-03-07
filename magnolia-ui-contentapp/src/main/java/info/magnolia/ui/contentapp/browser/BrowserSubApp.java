@@ -43,6 +43,8 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
@@ -66,7 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
-import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 
 /**
@@ -109,10 +110,12 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
     protected ContentConnector contentConnector;
+    private AvailabilityChecker checker;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ContentConnector contentConnector) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ContentConnector contentConnector, AvailabilityChecker checker) {
         super(subAppContext, view);
+        this.checker = checker;
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
@@ -234,10 +237,9 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             return;
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
-        List<Item> items = getSelectedItems();
 
         // Figure out which section to show, only one
-        ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
+        ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections);
 
         // If there no section matched the selection we just hide everything
         if (sectionDefinition == null) {
@@ -250,8 +252,9 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, items);
-                menuItem.setEnabled(actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()])));
+                menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition);
+                AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+                menuItem.setEnabled(checker.isAvailable(availability, browser.getSelectedItemIds()));
             }
 
             // Add group separator.
@@ -264,14 +267,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         }
     }
 
-    protected List<Item> getSelectedItems() {
-        return browser.getSelectedItems();
-    }
-
     /**
      * Add an additional menu item on the actionPopup.
      */
-    private ContextMenu.ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, List<Item> items) {
+    private ContextMenu.ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition) {
         String actionName = itemDefinition.getName();
 
         ActionDefinition action = subAppDescriptor.getActions().get(actionName);
@@ -301,11 +300,8 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             return;
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
-
-        List<Item> items = getSelectedItems();
-
         // Figure out which section to show, only one
-        ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
+        ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections);
 
         // Hide all other sections
         for (ActionbarSectionDefinition section : sections) {
@@ -321,7 +317,8 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+                    AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+                    if (checker.isAvailable(availability, browser.getSelectedItemIds())) {
                         actionbar.enable(actionName);
                     } else {
                         actionbar.disable(actionName);
@@ -331,16 +328,16 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         }
     }
 
-    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) {
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections) {
         for (ActionbarSectionDefinition section : sections) {
-            if (isSectionVisible(section, items))
+            if (isSectionVisible(section))
                 return section;
         }
         return null;
     }
 
-    private boolean isSectionVisible(ActionbarSectionDefinition section, List<Item> items) {
-        return section.getAvailability().isAvailableForItems(items);
+    private boolean isSectionVisible(ActionbarSectionDefinition section) {
+        return checker.isAvailable(section.getAvailability(), browser.getSelectedItemIds());
     }
 
     protected final BrowserPresenter getBrowser() {
@@ -421,12 +418,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         });
     }
 
-    /**
-     * TODO Call applySelectionToLocation with proper parameters (convert id to string value).
-     * 
-     * @param selectionIds
-     * @param actionbar
-     */
     private void handleSelectionChange(Set<Object> selectionIds, ActionbarPresenter actionbar) {
         BrowserLocation location = getCurrentLocation();
         applySelectionToLocation(location, selectionIds.isEmpty() ? null : selectionIds.iterator().next());

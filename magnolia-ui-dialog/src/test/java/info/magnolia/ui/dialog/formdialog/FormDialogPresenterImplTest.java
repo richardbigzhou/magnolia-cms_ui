@@ -34,13 +34,14 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
@@ -79,7 +80,7 @@ public class FormDialogPresenterImplTest {
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class));
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class), mock(AvailabilityChecker.class));
     }
 
     @Test

@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.api.availability;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.context.MgnlContext;
@@ -42,7 +41,9 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+
+import java.util.Arrays;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -78,7 +79,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        boolean isAvailable = rule.isAvailable(new JcrNodeAdapter(version));
+        Object jcrItemId = new JcrItemId(version.getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
 
         // THEN
         assertFalse(isAvailable);
@@ -90,7 +92,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Node node = NodeUtil.createPath(webSiteSession.getRootNode(), "/testNoVersion", NodeTypes.ContentNode.NAME);
 
         // WHEN
-        boolean isAvailable = rule.isAvailable(new JcrNodeAdapter(node));
+        Object jcrItemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
 
         // THEN
         assertTrue(isAvailable);
@@ -103,7 +106,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        boolean isAvailable = rule.isAvailable(new JcrNodeAdapter(version.getFrozenNode()));
+        Object jcrItemId = new JcrItemId(version.getFrozenNode().getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
 
         // THEN
         assertFalse(isAvailable);

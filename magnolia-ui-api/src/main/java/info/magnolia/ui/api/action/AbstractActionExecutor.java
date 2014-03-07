@@ -38,8 +38,6 @@ import info.magnolia.objectfactory.MgnlInstantiationException;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
  * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
  * using a {@link ComponentProvider} and binds the ActionDefinition to the Action. Subclasses need only implement {@link #getActionDefinition(String)}.
@@ -93,16 +91,5 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         } catch (MgnlInstantiationException e) {
             throw new ActionExecutionException("Could not instantiate action class for action: " + actionName, e);
         }
-    }
-
-    @Override
-    public boolean isAvailable(String actionName, Item... items) {
-
-        ActionDefinition actionDefinition = getActionDefinition(actionName);
-        if (actionDefinition == null) {
-            return false;
-        }
-
-        return actionDefinition.getAvailability().isAvailableForItems(items);
     }
 }
