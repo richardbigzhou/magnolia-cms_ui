@@ -59,6 +59,7 @@ import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
+import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 /**
  * Version handler for the pages app module.
@@ -162,7 +163,13 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new ArrayDelegateTask("",
                                 new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion"),
                                 new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/showVersions",
-                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions"))))));
+                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions")))))
+        );
+
+        register(DeltaBuilder.update("5.2.3", "")
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/browser/actions",
+                        new String[] { "add", "confirmDeletion", "edit", "editPageName", "editTemplate", "restorePreviousVersion", "import", "move", "restoreVersion" }))
+        );
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit page and edit template dialogs into light dialogs.",
@@ -172,7 +179,8 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage", "modalityLevel", "strong")),
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
-                        )));
+                        ))
+        );
     }
 
 }

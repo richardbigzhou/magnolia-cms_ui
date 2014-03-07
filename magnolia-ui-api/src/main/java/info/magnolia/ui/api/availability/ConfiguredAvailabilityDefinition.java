@@ -50,6 +50,7 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     private boolean multiple = false;
     private Collection<String> nodeTypes = new ArrayList<String>();
     private AccessDefinition access = new ConfiguredAccessDefinition();
+    private boolean writePermissionRequired;
     private Class<? extends AvailabilityRule> ruleClass;
 
     @Override
@@ -108,6 +109,15 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     @Override
     public AccessDefinition getAccess() {
         return this.access;
+    }
+
+    @Override
+    public boolean isWritePermissionRequired() {
+        return writePermissionRequired;
+    }
+
+    public void setWritePermissionRequired(boolean writePermissionRequired) {
+        this.writePermissionRequired = writePermissionRequired;
     }
 
     public void setRuleClass(Class<? extends AvailabilityRule> ruleClass) {

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -43,6 +45,7 @@ import info.magnolia.ui.api.availability.AvailabilityRule;
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -151,6 +154,18 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         if (item == null) {
             return availability.isRoot();
+        }
+
+        // Evaluate write permission if specified
+        if (availability.isWritePermissionRequired()) {
+            try {
+                Node node = item instanceof Property ? ((Property) item).getParent() : (Node) item;
+                if (!PermissionUtil.isGranted(node, Permission.WRITE)) {
+                    return false;
+                }
+            } catch (RepositoryException e) {
+                log.warn("Could not evaluate write permission for {}.", item);
+            }
         }
 
         if (!item.isNode()) {

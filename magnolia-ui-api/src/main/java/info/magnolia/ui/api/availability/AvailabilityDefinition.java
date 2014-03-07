@@ -73,6 +73,11 @@ public interface AvailabilityDefinition {
     AccessDefinition getAccess();
 
     /**
+     * If true the subject is <i>only</i> available if write permission is granted for the item on which availability is evaluated.
+     */
+    boolean isWritePermissionRequired();
+
+    /**
      * Returns the AvailabilityRule object for this subject.
      */
     Class<? extends AvailabilityRule> getRuleClass();
