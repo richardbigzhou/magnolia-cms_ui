@@ -44,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -67,9 +66,7 @@ public class FormSectionWidget extends FlowPanel {
     public FormSectionWidget() {
         super();
         getElement().appendChild(fieldSet);
-        // both only display when show all tab is active
-        horizontalRule.getStyle().setDisplay(Display.NONE);
-        legend.getStyle().setDisplay(Display.NONE);
+        fieldSet.appendChild(legend);
         fieldSet.appendChild(horizontalRule);
     }
 
@@ -101,7 +98,13 @@ public class FormSectionWidget extends FlowPanel {
         } else {
             fieldSection = (FormFieldWrapper) w;
         }
-        super.insert(fieldSection, fieldSet, beforeIndex, true);
+
+        // duplicate and patch complex panel logic to allow for keeping DOM 0 index for legend element.
+        beforeIndex = adjustIndex(fieldSection, beforeIndex);
+        fieldSection.removeFromParent();
+        getChildren().insert(fieldSection, beforeIndex);
+        DOM.insertChild(fieldSet, fieldSection.getElement(), beforeIndex + 1); // here's the index offset just for the DOM, not for this widget's child collection.
+        adopt(fieldSection);
     }
 
     @Override
@@ -137,7 +140,6 @@ public class FormSectionWidget extends FlowPanel {
 
     public void setCaption(String caption) {
         legend.setInnerText(caption);
-        fieldSet.appendChild(legend);
     }
 
     public void clearError(Widget widget) {
