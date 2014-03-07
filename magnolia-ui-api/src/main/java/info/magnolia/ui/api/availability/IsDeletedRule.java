@@ -35,15 +35,15 @@ package info.magnolia.ui.api.availability;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 /**
  * This rule returns true if the item is node and has the mgnl:deleted mixin type.
@@ -53,10 +53,10 @@ public class IsDeletedRule extends AbstractAvailabilityRule {
     private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item instanceof JcrNodeAdapter) {
-            JcrNodeAdapter jcrNodeAdapter = (JcrNodeAdapter)item;
-            Node node = jcrNodeAdapter.getJcrItem();
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             if (node != null) {
                 try {
                     return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);

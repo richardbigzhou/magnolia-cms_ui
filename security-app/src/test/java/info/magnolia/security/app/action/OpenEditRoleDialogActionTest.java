@@ -105,11 +105,11 @@ public class OpenEditRoleDialogActionTest extends RepositoryTestCase {
         private FormDialogDefinition dialogDefinition;
 
         public MockFormDialogPresenter() {
-            super(null, null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null, null);
         }
 
         @Override
-        public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
+        public DialogView start(final Item item, Object itemId, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
             this.setDialogDefinition(dialogDefinition);
             return null;
         }

@@ -31,15 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability.voters;
+package info.magnolia.ui.framework.availability.voters;
 
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.voting.Voter;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -47,37 +47,25 @@ import org.apache.commons.collections.CollectionUtils;
  * {@link Voter} implementation which returns positive result if current user obtains any of the
  * specified roles.
  */
-public class AccessGrantedToActionVoter implements Voter {
+public class AccessGrantedRule implements AvailabilityRule {
 
     public static final String DEFAULT_SUPERUSER_ROLE = "superuser";
 
-    public static final String ROLES = "roles";
+    private AccessDefinition accessDefinition;
 
-    private Collection<String> roles;
-
-    public AccessGrantedToActionVoter(Map<String, Object> accessParameters) {
-        if (accessParameters.containsKey(ROLES)) {
-            roles = ((Map<String, String>)accessParameters.get(ROLES)).values();
-        } else {
-            roles = Collections.EMPTY_LIST;
-        }
+    public AccessGrantedRule(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
     }
 
     @Override
-    public int vote(Object value) {
+    public boolean isAvailable(Collection<Object> itemIds) {
         User user = MgnlContext.getUser();
         // Validate that the user has all the required roles
         Collection<String> userRoles = user.getAllRoles();
-
+        Collection<String> roles = accessDefinition.getRoles();
         if (roles.isEmpty() || userRoles.contains(DEFAULT_SUPERUSER_ROLE) || CollectionUtils.containsAny(userRoles, roles)) {
-            return 1;
+            return true;
         }
-
-        return 0;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+        return false;
     }
 }

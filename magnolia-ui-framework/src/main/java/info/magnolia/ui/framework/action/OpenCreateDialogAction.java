@@ -78,7 +78,7 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
 
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
 
-        formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        formDialogPresenter.start(item, item.getItemId(), getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

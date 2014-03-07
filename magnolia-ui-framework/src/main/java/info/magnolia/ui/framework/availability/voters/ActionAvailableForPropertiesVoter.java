@@ -31,17 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability.voters;
+package info.magnolia.ui.framework.availability.voters;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
  * Action availability voter which returns positive result in case action is capable of
  * operating over JCR properties.
  */
-public class ActionAvailableForPropertiesVoter extends AbstractActionAvailabilityVoter {
+public class ActionAvailableForPropertiesVoter extends AbstractAvailabilityRule {
 
     private boolean propertiesAllowed;
 
@@ -54,10 +54,9 @@ public class ActionAvailableForPropertiesVoter extends AbstractActionAvailabilit
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item instanceof JcrItemAdapter) {
-            JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-            return jcrItemAdapter.getJcrItem().isNode() || propertiesAllowed;
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+            return !(itemId instanceof JcrPropertyItemId) || propertiesAllowed;
         }
         return true;
     }

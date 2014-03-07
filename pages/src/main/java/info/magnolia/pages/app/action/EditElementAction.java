@@ -85,7 +85,7 @@ public class EditElementAction extends AbstractAction<EditElementActionDefinitio
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
             final FormDialogPresenter formDialogPresenter = dialogPresenterFactory.createFormDialogPresenter(dialogId);
-            formDialogPresenter.start(item, dialogId, subAppContext, new EditorCallback() {
+            formDialogPresenter.start(item, item.getItemId(), dialogId, subAppContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {

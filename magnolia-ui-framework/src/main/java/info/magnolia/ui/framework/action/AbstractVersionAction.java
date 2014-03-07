@@ -99,7 +99,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
             item = new BeanItem(getBeanItemClass());
 
             // Perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, uiContext, getEditorCallback());
+            formDialogPresenter.start(item, item.getBean(), dialogDefinition, uiContext, getEditorCallback());
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not execute action", e);
         }

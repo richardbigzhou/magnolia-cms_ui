@@ -52,11 +52,10 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.data.Item;
 
 /**
  * Tests for {@link IsNotVersionedDetailLocationRule}.
@@ -81,14 +80,14 @@ public class IsNotVersionedDetailLocationRuleTest {
     @Test
     public void testNonVersionedDetailLocation() {
         // GIVEN
-        Item nullItem = null;
+        Object nullItem = null;
         DetailLocation detailLocation = new DetailLocation("testAppName", "testSubAppId", "testParameter");
         subAppContext.setLocation(detailLocation);
 
-        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(/*appContext*/);
+        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(appContext);
 
         // WHEN
-        boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(nullItem);
+        boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(Arrays.asList(nullItem));
 
         // THEN
         assertFalse(detailLocation.hasVersion());
@@ -98,14 +97,14 @@ public class IsNotVersionedDetailLocationRuleTest {
     @Test
     public void testVersionedDetailLocation() {
         // GIVEN
-        Item nullItem = null;
+        Object nullItem = null;
         DetailLocation detailLocation = new DetailLocation("testAppName", "testSubAppId", "/test:view:1.0");
         subAppContext.setLocation(detailLocation);
 
-        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(/*appContext*/);
+        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(appContext);
 
         // WHEN
-        boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(nullItem);
+        boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(Arrays.asList(nullItem));
 
         // THEN
         assertTrue(detailLocation.hasVersion());

@@ -31,54 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability.voters;
+package info.magnolia.ui.framework.availability.voters;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import com.vaadin.data.Item;
 
 /**
  * Action availability voter which returns positive result in case action is capable
  * of operating over root JCR items.
  */
-public class ActionAvailableForRootItemVoter extends AbstractActionAvailabilityVoter {
+public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
 
     private boolean root;
 
-    public ActionAvailableForRootItemVoter(Boolean isRoot) {
+    @Inject
+    public IsRootItemAllowedRule(Boolean isRoot) {
         root = isRoot;
     }
 
-    public ActionAvailableForRootItemVoter(String isRoot) {
-        this(Boolean.parseBoolean(isRoot));
-    }
-
-    private boolean isRoot(Object value) {
-        if (value instanceof JcrNewNodeAdapter) {
-            return false;
-        }
-
-        if (value instanceof JcrNodeAdapter) {
-            JcrNodeAdapter nodeAdapter = (JcrNodeAdapter)value;
-            Node node = nodeAdapter.getJcrItem();
+    private boolean isRoot(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             try {
                 node.getParent();
                 return false;
             } catch (RepositoryException e) {
                 return true;
             }
-
         }
         return false;
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item == null || isRoot(item)) {
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId == null || isRoot(itemId)) {
             return root;
         }
         return true;

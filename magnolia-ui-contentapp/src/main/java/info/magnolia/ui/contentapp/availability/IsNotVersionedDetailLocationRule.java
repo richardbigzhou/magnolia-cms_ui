@@ -33,30 +33,26 @@
  */
 package info.magnolia.ui.contentapp.availability;
 
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
  * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
  */
 public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
 
-    //private final AppContext appContext;
+    private final AppContext appContext;
 
     @Inject
-    public IsNotVersionedDetailLocationRule(/*AppContext appContext*/) {
-        //this.appContext = appContext;
+    public IsNotVersionedDetailLocationRule(AppContext appContext) {
+        this.appContext = appContext;
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        AppContext appContext = Components.getComponent(AppContext.class);
+    protected boolean isAvailableForItem(Object itemId) {
         DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
         return !location.hasVersion();
     }

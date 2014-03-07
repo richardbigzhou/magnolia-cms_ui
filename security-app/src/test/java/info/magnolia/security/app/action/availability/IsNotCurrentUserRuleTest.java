@@ -50,13 +50,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.Arrays;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.data.Item;
 
 /**
  * Test for the {@link IsNotCurrentUserRule}.
@@ -64,7 +64,7 @@ import com.vaadin.data.Item;
 public class IsNotCurrentUserRuleTest extends MgnlTestCase {
 
     private IsNotCurrentUserRule rule = new IsNotCurrentUserRule();
-    private Item item;
+    private Object itemId;
 
     @Override
     @Before
@@ -82,10 +82,10 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = null;
+        itemId = null;
 
         // THEN
-        assertTrue(rule.isAvailable(item));
+        assertTrue(rule.isAvailable(Arrays.asList(itemId)));
     }
 
     @Test
@@ -93,10 +93,10 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new JcrPropertyAdapter(new MockProperty("foo", "bar", new MockNode()));
+        itemId = new JcrPropertyAdapter(new MockProperty("foo", "bar", new MockNode()));
 
         // THEN
-        assertTrue(rule.isAvailable(item));
+        assertTrue(rule.isAvailable(Arrays.asList(itemId)));
     }
 
     @Test
@@ -104,10 +104,10 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new JcrNodeAdapter(new MockNode("foo"));
+        itemId = new JcrNodeAdapter(new MockNode("foo"));
 
         // THEN
-        assertTrue(rule.isAvailable(item));
+        assertTrue(rule.isAvailable(Arrays.asList(itemId)));
     }
 
     @Test
@@ -115,22 +115,22 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new JcrNodeAdapter(new MockNode("test"));
+        itemId = new JcrNodeAdapter(new MockNode("test"));
 
         // THEN
-        assertFalse(rule.isAvailable(item));
+        assertFalse(rule.isAvailable(Arrays.asList(itemId)));
     }
 
     @Test
     public void testFalseOnException() throws RepositoryException {
         // GIVEN
-        item = new JcrNodeAdapter(mock(Node.class));
-        when(((JcrItemAdapter)item).isNode()).thenReturn(true);
+        itemId = new JcrNodeAdapter(mock(Node.class));
+        when(((JcrItemAdapter) itemId).isNode()).thenReturn(true);
 
         // WHEN
-        when(((JcrItemAdapter)item).getJcrItem().getName()).thenThrow(new RepositoryException("Test exception."));
+        when(((JcrItemAdapter) itemId).getJcrItem().getName()).thenThrow(new RepositoryException("Test exception."));
 
         // THEN
-        assertFalse(rule.isAvailable(item));
+        assertFalse(rule.isAvailable(Arrays.asList(itemId)));
     }
 }

@@ -31,38 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability.voters;
+package info.magnolia.ui.framework.availability.voters;
 
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
+import java.util.Collection;
 
 /**
- * Action availability voter which returns positive result in case a specified {@link AvailabilityRule}
- * holds for an item.
+ * Action availability voter which returns positive result in case action is claimed to
+ * work with multiple items.
  */
-public class ActionAvailableForRuleVoter extends AbstractActionAvailabilityVoter {
+public class MultipleItemsAllowedRule implements AvailabilityRule {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private boolean multipleAllowed;
 
-    private AvailabilityRule rule;
+    public MultipleItemsAllowedRule(Boolean isMultipleAllowed) {
+        multipleAllowed = isMultipleAllowed;
+    }
 
-    public ActionAvailableForRuleVoter(String ruleClassName) {
-        Class<? extends AvailabilityRule> ruleClass;
-        try {
-            ruleClass = (Class<? extends AvailabilityRule>) Class.forName(ruleClassName);
-            this.rule = Components.newInstance(ruleClass);
-        } catch (ClassNotFoundException e) {
-            log.error("Failed to instantiate availability rule: " + e.getMessage(), e);
-        }
+    public MultipleItemsAllowedRule(String isMultipleAllowed) {
+        this(Boolean.parseBoolean(isMultipleAllowed));
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        return rule.isAvailable(item);
+    public boolean isAvailable(Collection<Object> itemIds) {
+        return multipleAllowed || itemIds.size() < 2;
     }
 }

@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.jcr.node2bean.TransformedBy;
-import info.magnolia.ui.api.availability.AvailabilityTransformer;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +53,7 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
 
-    private VoterBasedAvailability availability = new VoterBasedAvailability();
+    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 
     @Override
     public String getName() {
@@ -102,12 +101,11 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
     }
 
     @Override
-    public VoterBasedAvailability getAvailability() {
+    public AvailabilityDefinition getAvailability() {
         return this.availability;
     }
 
-    @TransformedBy(AvailabilityTransformer.class)
-    public void setAvailability(VoterBasedAvailability voterBasedAvailability) {
+    public void setAvailability(AvailabilityDefinition voterBasedAvailability) {
         this.availability = voterBasedAvailability;
     }
 }

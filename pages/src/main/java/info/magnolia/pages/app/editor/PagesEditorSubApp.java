@@ -58,6 +58,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -78,8 +80,10 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -110,6 +114,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final PageBarView pageBarView;
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
+    private AvailabilityChecker availabilityChecker;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -124,7 +129,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -135,6 +140,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.pageBarView = pageBarView;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
+        this.availabilityChecker = availabilityChecker;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -504,11 +510,18 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, new JcrNodeAdapter(node))) {
-                    actionbarPresenter.enable(actionName);
-                } else {
-                    actionbarPresenter.disable(actionName);
+                try {
+                    Object jcrItemId = new JcrItemId(node.getIdentifier(), workspace);
+                    AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+                    if (availabilityChecker.isAvailable(availability, Arrays.asList(jcrItemId))) {
+                        actionbarPresenter.enable(actionName);
+                    } else {
+                        actionbarPresenter.disable(actionName);
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Error occurred while trying to update action availability: " + e.getMessage(), e);
                 }
+
             }
         }
     }

@@ -170,7 +170,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
@@ -180,7 +180,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, String dialogId, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, Object itemId, String dialogId, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 

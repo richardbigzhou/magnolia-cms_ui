@@ -35,7 +35,7 @@ package info.magnolia.ui.actionbar.definition;
 
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 import java.util.List;
 
@@ -59,5 +59,5 @@ public interface ActionbarSectionDefinition {
      */
     List<ActionbarGroupDefinition> getGroups();
 
-    VoterBasedAvailability getAvailability();
+    AvailabilityDefinition getAvailability();
 }
