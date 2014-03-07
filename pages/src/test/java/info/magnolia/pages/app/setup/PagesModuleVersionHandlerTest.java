@@ -305,4 +305,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertFalse(session.propertyExists("/modules/pages/dialogs/editTemplate/form/i18nBasename"));
     }
 
+    @Test
+    public void testUpdateTo523SetsWritePermissionForPagesBrowserActions() throws Exception {
+        // GIVEN
+        Node addAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/add", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertTrue(addAction.hasNode("availability"));
+        Node availability = addAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
 }

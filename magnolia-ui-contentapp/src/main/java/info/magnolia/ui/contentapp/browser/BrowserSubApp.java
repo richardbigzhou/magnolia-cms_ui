@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
@@ -68,6 +70,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -400,6 +403,18 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
             if (rule == null || !rule.isAvailable(item)) {
                 return false;
+            }
+        }
+
+        // Evaluate write permission if specified
+        if (availability.isWritePermissionRequired()) {
+            try {
+                Node node = item instanceof Property ? ((Property) item).getParent() : (Node) item;
+                if (!PermissionUtil.isGranted(node, Permission.WRITE)) {
+                    return false;
+                }
+            } catch (RepositoryException e) {
+                log.warn("Could not evaluate write permission for {}.", item);
             }
         }
 
