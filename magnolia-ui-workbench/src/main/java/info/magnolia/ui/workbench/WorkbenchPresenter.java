@@ -233,7 +233,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         Iterator<Object> it = itemIds.iterator();
         while (it.hasNext()) {
             Object itemId = it.next();
-            if (contentConnector.hasItem(itemId)) {
+            if (contentConnector.canHandleItem(itemId)) {
                 filteredIds.add(itemId);
             } else {
                 WorkbenchDefinition def = getWorkbenchDefinition();
