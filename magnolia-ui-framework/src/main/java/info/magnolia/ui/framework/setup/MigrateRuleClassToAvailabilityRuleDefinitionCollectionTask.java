@@ -56,7 +56,7 @@ public class MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask extends 
 
     public static final String RULE_CLASS = "ruleClass";
     public static final String RULES = "rules";
-    private static final String QUERY = " select * from [nt:base] as t where name(t) = 'availability' ";
+    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
 
     public MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask() {
         super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, QUERY);
