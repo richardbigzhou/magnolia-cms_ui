@@ -41,6 +41,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -97,9 +98,10 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         assertEquals(4, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
+        String workspace = session.getWorkspace().getName();
+        assertTrue(res.contains(new JcrItemId(session.getNode("/content2/content21").getIdentifier(), workspace)));
+        assertFalse(res.contains(new JcrItemId(contentNode.getIdentifier(), workspace)));
+        assertFalse(res.contains(new JcrItemId(folderNode.getIdentifier(), workspace)));
 
     }
 
@@ -117,9 +119,10 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
+        String workspace = session.getWorkspace().getName();
+        assertTrue(res.contains(new JcrItemId(session.getNode("/content2/content21").getIdentifier(), workspace)));
+        assertFalse(res.contains(new JcrItemId(contentNode.getIdentifier(), workspace)));
+        assertFalse(res.contains(new JcrItemId(folderNode.getIdentifier(), workspace)));
     }
 
 
