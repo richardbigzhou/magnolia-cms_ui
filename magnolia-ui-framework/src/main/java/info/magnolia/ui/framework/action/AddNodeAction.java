@@ -61,7 +61,7 @@ public class AddNodeAction extends AbstractRepositoryAction<AddNodeActionDefinit
             String name = getUniqueNewItemName(node);
             node.addNode(name, getDefinition().getNodeType());
             // Pass the item which had the node added to it.
-            JcrItemId itemId = new JcrItemId(JcrItemUtil.getItemId(node), item.getWorkspace());
+            JcrItemId itemId = JcrItemUtil.getItemId(node);
             setItemIdOfChangedItem(itemId);
             setItemContentChanged(true);
         }

@@ -69,7 +69,7 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
      */
     protected void initCommonAttributes(Item jcrItem) {
         try {
-            setItemId(new JcrItemId(JcrItemUtil.getItemId(jcrItem), jcrItem.getSession().getWorkspace().getName()));
+            setItemId(JcrItemUtil.getItemId(jcrItem));
         } catch (RepositoryException e) {
             log.error("Could not retrieve workspace or path of JCR Item.", e);
             setItemId(new JcrItemId(UNIDENTIFIED, UNIDENTIFIED));

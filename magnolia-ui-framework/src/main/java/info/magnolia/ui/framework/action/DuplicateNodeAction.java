@@ -85,7 +85,7 @@ public class DuplicateNodeAction extends AbstractRepositoryAction<DuplicateNodeA
 
             activatableUpdate(duplicateNode, MgnlContext.getUser().getName());
             // Set item of the new node for the ContentChangedEvent
-            JcrItemId itemId = new JcrItemId(JcrItemUtil.getItemId(duplicateNode), item.getWorkspace());
+            JcrItemId itemId = JcrItemUtil.getItemId(duplicateNode);
             setItemIdOfChangedItem(itemId);
 
             log.debug("Created a copy of {} with new path {}", node.getPath(), newPath);

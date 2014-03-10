@@ -113,17 +113,19 @@ public class JcrItemUtil {
         return getJcrItem(workspaceName, itemId) != null;
     }
 
-    public static String getItemId(final Item jcrItem) throws RepositoryException {
+    public static JcrItemId getItemId(final Item jcrItem) throws RepositoryException {
         if (jcrItem == null) {
             return null;
         }
-        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + jcrItem.getName();
+        return jcrItem.isNode() ?
+                new JcrItemId(((Node) jcrItem).getIdentifier(), jcrItem.getSession().getWorkspace().getName()) :
+                new JcrPropertyItemId((jcrItem.getParent()).getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName());
     }
 
     /**
      * Returns the itemId for a node at the given path if it exists, otherwise returns null.
      */
-    public static String getItemId(final String workspaceName, final String absPath) throws RepositoryException {
+    public static JcrItemId getItemId(final String workspaceName, final String absPath) throws RepositoryException {
 
         if (StringUtils.isEmpty(workspaceName) || StringUtils.isEmpty(absPath)) {
             return null;

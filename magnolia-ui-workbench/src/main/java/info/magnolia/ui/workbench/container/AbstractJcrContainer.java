@@ -344,12 +344,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
 
     @Override
-    public Object nextItemId(Object itemId) {
+    public JcrItemId nextItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) + 1);
     }
 
     @Override
-    public Object prevItemId(Object itemId) {
+    public JcrItemId prevItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) - 1);
     }
 

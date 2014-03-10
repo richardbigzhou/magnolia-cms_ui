@@ -253,7 +253,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
                     NodeUtil.renameNode(node, jcrName);
 
-                    setItemId(new JcrItemId(JcrItemUtil.getItemId(node), getWorkspace()));
+                    setItemId(JcrItemUtil.getItemId(node));
                 }
             } catch (RepositoryException e) {
                 log.error("Could not rename JCR Node.", e);
