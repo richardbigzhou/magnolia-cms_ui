@@ -59,12 +59,12 @@ import org.slf4j.LoggerFactory;
  */
 public class JcrItemUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(JcrItemUtil.class);
+
     /**
      * String separating property name and node identifier.
      */
     public static final String PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR = "@";
-
-    private static final Logger log = LoggerFactory.getLogger(JcrItemUtil.class);
 
     /**
      * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
@@ -88,11 +88,10 @@ public class JcrItemUtil {
         if (itemId == null) {
             return null;
         }
-        final String nodeId = parseNodeIdentifier(itemId.getUuid());
 
         Node node;
         try {
-            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(nodeId);
+            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(itemId.getUuid());
         } catch (ItemNotFoundException e) {
             log.debug("Couldn't find item with id {} in workspace {}.", itemId, workspaceName);
             return null;
@@ -117,9 +116,12 @@ public class JcrItemUtil {
         if (jcrItem == null) {
             return null;
         }
-        return jcrItem.isNode() ?
-                new JcrItemId(((Node) jcrItem).getIdentifier(), jcrItem.getSession().getWorkspace().getName()) :
-                new JcrPropertyItemId((jcrItem.getParent()).getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName());
+
+        if (jcrItem.isNode()) {
+            return new JcrNodeItemId(((Node) jcrItem).getIdentifier(), jcrItem.getSession().getWorkspace().getName());
+        } else {
+            return new JcrPropertyItemId((jcrItem.getParent()).getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName());
+        }
     }
 
     /**

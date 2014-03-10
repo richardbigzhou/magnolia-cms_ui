@@ -34,42 +34,24 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 /**
- * {@link javax.jcr.Property} item id, holds uuid of a parent item, workspace and property names.
+ * {@link javax.jcr.Node} item id.
  */
-public class JcrPropertyItemId extends JcrItemId {
+public class JcrNodeItemId extends JcrItemId {
 
-    private String propertyName;
-
-    public JcrPropertyItemId(String uuid, String workspace,  String propertyName) {
+    public JcrNodeItemId(String uuid, String workspace) {
         super(uuid, workspace);
-        this.propertyName = propertyName;
-    }
-
-    public JcrPropertyItemId(JcrItemId parentItemId, String propertyName) {
-        this(parentItemId.getUuid(), parentItemId.getWorkspace(), propertyName);
-    }
-
-    public String getPropertyName() {
-        return propertyName;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof JcrPropertyItemId)) return false;
-        if (!super.equals(o)) return false;
-
-        JcrPropertyItemId that = (JcrPropertyItemId) o;
-
-        if (propertyName != null ? !propertyName.equals(that.propertyName) : that.propertyName != null) return false;
-
-        return true;
+        if (!(o instanceof JcrNodeItemId)) {
+            return false;
+        }
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (propertyName != null ? propertyName.hashCode() : 0);
-        return result;
+        return 29 * super.hashCode() + 7;
     }
 }

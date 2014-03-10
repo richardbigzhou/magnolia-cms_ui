@@ -34,7 +34,8 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -56,6 +57,7 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -216,7 +218,7 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        Object itemId = new JcrItemId(node.getIdentifier(), WORKSPACE);
+        Object itemId = JcrItemUtil.getItemId(node);
         AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
         when(availabilityChecker.isAvailable(availability, Arrays.asList(itemId))).thenReturn(false);
         List<Object> ids = new ArrayList<Object>(1);
@@ -240,7 +242,7 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        Object itemId = new JcrItemId(node.getIdentifier(), WORKSPACE);
+        Object itemId = JcrItemUtil.getItemId(node);
         AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
         when(availabilityChecker.isAvailable(availability, Arrays.asList(itemId))).thenReturn(true);
 

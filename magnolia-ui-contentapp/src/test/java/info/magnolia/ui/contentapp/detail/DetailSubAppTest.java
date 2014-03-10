@@ -53,7 +53,7 @@ import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -107,7 +107,7 @@ public class DetailSubAppTest {
         // mock presenter so that we can assess on currently edited itemId
         DetailEditorPresenter presenter = mock(DetailEditorPresenter.class);
         ContentConnector contentConnector = mock(ContentConnector.class);
-        doReturn(new JcrItemId("", "")).when(contentConnector).getItemIdByUrlFragment(anyString());
+        doReturn(new JcrNodeItemId("", "")).when(contentConnector).getItemIdByUrlFragment(anyString());
         doAnswer(new Answer<View>() {
 
             @Override

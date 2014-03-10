@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
@@ -137,8 +138,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final JcrItemId containerItemId = new JcrItemId(node1.getIdentifier(), workspace);
-
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         // WHEN
         final com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
 
@@ -151,7 +151,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final JcrItemId containerItemId = new JcrItemId(node1.getIdentifier(), workspace);
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
         assertNotNull(item);
 
@@ -172,8 +172,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        JcrItemId containerItemId1 = new JcrItemId(node1.getIdentifier(), workspace);
-        JcrItemId containerItemId2 = new JcrItemId(node2.getIdentifier(), workspace);
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
 
         // WHEN
@@ -190,8 +192,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        JcrItemId containerItemId1 = new JcrItemId(node1.getIdentifier(), workspace);
-        JcrItemId containerItemId2 = new JcrItemId(node2.getIdentifier(), workspace);
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
         // WHEN
         JcrItemId containerItemId1Res = jcrContainer.prevItemId(containerItemId2);
@@ -240,8 +244,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        JcrItemId containerItemId1 = new JcrItemId(node1.getIdentifier(), workspace);
-        JcrItemId containerItemId2 = new JcrItemId(node2.getIdentifier(), workspace);
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
         setSorter("name", true);
 
         // WHEN
@@ -259,8 +263,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        JcrItemId containerItemId1 = new JcrItemId(node1.getIdentifier(), workspace);
-        JcrItemId containerItemId2 = new JcrItemId(node2.getIdentifier(), workspace);
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
         jcrContainer.updateSize();
 
@@ -277,7 +283,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testAddItem() throws Exception {
         // GIVEN
         Node node1 = rootNode.addNode("node1", NodeTypes.Content.NAME);
-        JcrItemId containerItemId = new JcrItemId(node1.getIdentifier(), workspace);
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         node1.getSession().save();
         // WHEN
         com.vaadin.data.Item item = jcrContainer.addItem(containerItemId);
@@ -291,7 +297,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetContainerProperty() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
-        JcrItemId containerItemId = new JcrItemId(node1.getIdentifier(), workspace);
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         node1.getSession().save();
         // WHEN
         Property property = jcrContainer.getContainerProperty(containerItemId, "name");
@@ -322,7 +328,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        JcrItemId containerItemId2 = new JcrItemId(node2.getIdentifier(), workspace);
+
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         boolean[] ascending = { false };
 
         // WHEN
@@ -378,7 +386,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "nodeName", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final JcrItemId existingKey = new JcrItemId(node1.getIdentifier(), workspace);
+        Object existingKey = JcrItemUtil.getItemId(node1);
 
         // WHEN
         final boolean result = jcrContainer.containsId(existingKey);
@@ -579,7 +587,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node fooNode = createNode(rootNode, "foo", NodeTypes.Content.NAME, "name", "foo");
         createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
         fooNode.getSession().save();
-        JcrItemId fooItemId = new JcrItemId(fooNode.getIdentifier(), workspace);
+        JcrItemId fooItemId = JcrItemUtil.getItemId(fooNode);
         boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);

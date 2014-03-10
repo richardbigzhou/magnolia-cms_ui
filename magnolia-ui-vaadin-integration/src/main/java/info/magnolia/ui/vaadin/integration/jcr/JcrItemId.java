@@ -36,11 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import java.io.Serializable;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 27/02/14
- * Time: 19:08
- * To change this template use File | Settings | File Templates.
+ * Generic {@link javax.jcr.Item} item id, holds item uuid and the workspace name.
  */
 public class JcrItemId implements Serializable {
 

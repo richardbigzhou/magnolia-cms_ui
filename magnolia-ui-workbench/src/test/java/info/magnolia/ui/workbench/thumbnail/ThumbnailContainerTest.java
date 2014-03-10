@@ -41,7 +41,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -98,11 +98,9 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         assertEquals(4, res.size());
-        String workspace = session.getWorkspace().getName();
-        assertTrue(res.contains(new JcrItemId(session.getNode("/content2/content21").getIdentifier(), workspace)));
-        assertFalse(res.contains(new JcrItemId(contentNode.getIdentifier(), workspace)));
-        assertFalse(res.contains(new JcrItemId(folderNode.getIdentifier(), workspace)));
-
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertTrue(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertTrue(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
     @Test
@@ -120,9 +118,9 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         assertNotNull(res);
         assertEquals(1, res.size());
         String workspace = session.getWorkspace().getName();
-        assertTrue(res.contains(new JcrItemId(session.getNode("/content2/content21").getIdentifier(), workspace)));
-        assertFalse(res.contains(new JcrItemId(contentNode.getIdentifier(), workspace)));
-        assertFalse(res.contains(new JcrItemId(folderNode.getIdentifier(), workspace)));
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertTrue(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertTrue(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
 

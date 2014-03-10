@@ -40,7 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -75,7 +75,7 @@ public class HasVersionsRuleTest extends RepositoryTestCase {
         Node node = webSiteSession.getRootNode().addNode("nodeWithNoVersion", NodeTypes.Page.NAME);
 
         // WHEN
-        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object itemId = JcrItemUtil.getItemId(node);
         boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
@@ -89,7 +89,7 @@ public class HasVersionsRuleTest extends RepositoryTestCase {
         versionManager.addVersion(node);
 
         // WHEN
-        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object itemId = JcrItemUtil.getItemId(node);
         boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
@@ -104,7 +104,7 @@ public class HasVersionsRuleTest extends RepositoryTestCase {
         versionManager.addVersion(node);
 
         // WHEN
-        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object itemId = JcrItemUtil.getItemId(node);
         boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
@@ -119,7 +119,7 @@ public class HasVersionsRuleTest extends RepositoryTestCase {
         node.remove();
 
         // WHEN
-        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object itemId = JcrItemUtil.getItemId(node);
         boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
@@ -143,7 +143,7 @@ public class HasVersionsRuleTest extends RepositoryTestCase {
         Node node = webSiteSession.getRootNode().addNode("nodeThatDoesntSupportVersioning", NodeType.NT_UNSTRUCTURED);
 
         // WHEN
-        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object itemId = JcrItemUtil.getItemId(node);
         boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN

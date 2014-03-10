@@ -128,7 +128,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         }
 
         // Update itemId to new node
-        setItemId(new JcrItemId(node.getIdentifier(), getWorkspace()));
+        setItemId(JcrItemUtil.getItemId(node));
         // Update parent
         if (!appliedChanges) {
             setParent(new JcrNodeAdapter(parent));

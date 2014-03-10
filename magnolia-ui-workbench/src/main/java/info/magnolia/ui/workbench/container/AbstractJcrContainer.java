@@ -494,9 +494,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
-            final String id = node.getIdentifier();
-            log.debug("Adding node {} to cached items.", id);
-            itemIndexes.put(rowCount++, new JcrItemId(id, getWorkspace()));
+            final JcrItemId itemId = JcrItemUtil.getItemId(node);
+            log.debug("Adding node {} to cached items.", itemId.getUuid());
+            itemIndexes.put(rowCount++, itemId);
         }
 
         log.debug("Done in {} ms", System.currentTimeMillis() - start);

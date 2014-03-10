@@ -80,7 +80,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Arrays;
@@ -511,7 +511,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
                 String actionName = itemDefinition.getName();
                 try {
-                    Object jcrItemId = new JcrItemId(node.getIdentifier(), workspace);
+                    Object jcrItemId = JcrItemUtil.getItemId(node);
                     AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
                     if (availabilityChecker.isAvailable(availability, Arrays.asList(jcrItemId))) {
                         actionbarPresenter.enable(actionName);

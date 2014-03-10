@@ -44,8 +44,8 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 
 import java.util.Arrays;
 
@@ -137,7 +137,7 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         doReturn(session).when(testNode).getSession();
         doReturn("uuid").when(testNode).getIdentifier();
 
-        itemId = new JcrItemId("uuid", WORKSPACE);
+        itemId = new JcrNodeItemId("uuid", WORKSPACE);
 
         // WHEN
         when(testNode.getName()).thenThrow(new RepositoryException("Test exception."));

@@ -189,7 +189,7 @@ public class JcrItemUtilTest {
         JcrItemId propertyId = JcrItemUtil.getItemId(prop1);
         Node second = NodeUtil.createPath(rootNode, "second", NodeTypes.Content.NAME);
         JcrItemId secondNodeId = JcrItemUtil.getItemId(second);
-        JcrItemId brokenId = new JcrItemId("foo", WORKSPACE);
+        JcrItemId brokenId = new JcrNodeItemId("foo", WORKSPACE);
 
         JcrItemId[] ids = { firstNodeId, secondNodeId, propertyId, brokenId };
 

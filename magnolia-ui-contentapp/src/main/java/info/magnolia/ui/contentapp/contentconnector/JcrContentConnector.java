@@ -49,6 +49,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
@@ -91,8 +92,9 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             if (itemId instanceof JcrItemId) {
                 JcrItemId jcrItemId = (JcrItemId) itemId;
                 javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), jcrItemId);
+                String selectedPath = JcrItemUtil.getItemPath(selected);
                 String path = getPath();
-                return StringUtils.removeStart(selected.getPath(), "/".equals(path) ? "" : path);
+                return StringUtils.removeStart(selectedPath, "/".equals(path) ? "" : path);
             }
         } catch (RepositoryException e) {
             log.error("Failed to convert item id to URL fragment: " + e.getMessage(), e);
@@ -104,7 +106,13 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     @Override
     public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
-            return JcrItemUtil.getItemId(getWorkspace(), urlFragment);
+            String nodePath = parseNodePath(urlFragment);
+            JcrItemId nodeItemId = JcrItemUtil.getItemId(getWorkspace(), nodePath);
+            if (!isPropertyItemId(urlFragment)) {
+                return nodeItemId;
+            } else {
+                return new JcrPropertyItemId(nodeItemId, parsePropertyName(urlFragment));
+            }
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;
@@ -218,5 +226,25 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             return Arrays.asList(((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType());
         }
         return null;
+    }
+
+    /**
+     * String separating property name and node identifier.
+     */
+    private static final String PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR = "@";
+
+    /**
+     * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
+     */
+    private  String parseNodePath(final String urlFragment) {
+        return isPropertyItemId(urlFragment) ? urlFragment.substring(0, urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR)) : urlFragment;
+    }
+
+    private  String parsePropertyName(final String urlFragment) {
+        return urlFragment.substring(urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR) + 1);
+    }
+
+    private  boolean isPropertyItemId(final String urlFragment) {
+        return urlFragment != null && urlFragment.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
     }
 }

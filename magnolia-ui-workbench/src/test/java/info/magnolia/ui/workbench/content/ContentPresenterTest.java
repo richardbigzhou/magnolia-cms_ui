@@ -44,7 +44,7 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -93,7 +93,8 @@ public class ContentPresenterTest {
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        doReturn(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace())).when(item).getItemId();
+        Object toBeReturned = JcrItemUtil.getItemId(testNode);
+        doReturn(toBeReturned).when(item).getItemId();
         items = new HashSet<Object>();
         items.add(item.getItemId());
 
@@ -120,7 +121,7 @@ public class ContentPresenterTest {
         verify(eventBus).fireEvent(argument.capture());
         //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(items.size(), argument.getValue().getItemIds().size());
-        assertEquals(new JcrItemId(testNode.getIdentifier(), TEST_WORKSPACE_NAME), argument.getValue().getFirstItemId());
+        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getFirstItemId());
     }
 
     @Test
@@ -136,7 +137,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace()), argument.getValue().getId());
+        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getId());
     }
 
     @Test

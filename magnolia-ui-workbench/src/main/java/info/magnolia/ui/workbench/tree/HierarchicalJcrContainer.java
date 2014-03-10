@@ -101,7 +101,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
-            return new JcrItemId(item.getParent().getIdentifier(), getWorkspace());
+            return JcrItemUtil.getItemId(item.getParent());
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Cannot determine parent for itemId: " + itemId, e);
             return null;

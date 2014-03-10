@@ -41,7 +41,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.Arrays;
 
@@ -79,8 +79,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        Object jcrItemId = new JcrItemId(version.getIdentifier(), version.getSession().getWorkspace().getName());
-        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
+        Object itemId = JcrItemUtil.getItemId(version);
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
 
         // THEN
         assertFalse(isAvailable);
@@ -92,8 +92,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Node node = NodeUtil.createPath(webSiteSession.getRootNode(), "/testNoVersion", NodeTypes.ContentNode.NAME);
 
         // WHEN
-        Object jcrItemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
-        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
+        Object itemId = JcrItemUtil.getItemId(node);
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
 
         // THEN
         assertTrue(isAvailable);
@@ -106,8 +106,8 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        Object jcrItemId = new JcrItemId(version.getFrozenNode().getIdentifier(), version.getSession().getWorkspace().getName());
-        boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
+        Object itemId = JcrItemUtil.getItemId(version.getFrozenNode());
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
 
         // THEN
         assertFalse(isAvailable);
