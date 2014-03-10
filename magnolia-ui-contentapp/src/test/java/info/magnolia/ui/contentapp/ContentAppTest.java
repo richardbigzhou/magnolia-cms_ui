@@ -34,8 +34,7 @@
 package info.magnolia.ui.contentapp;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
@@ -99,7 +98,9 @@ public class ContentAppTest {
         assertNotNull(client);
     }
 
-
+    /**
+     * A client class that requires a ChooseDialogEventBus.
+     */
     public static class MockChooseDialogEventBusClient {
         @Inject
         public MockChooseDialogEventBusClient(@Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
