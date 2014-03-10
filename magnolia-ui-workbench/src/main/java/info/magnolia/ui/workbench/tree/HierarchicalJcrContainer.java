@@ -37,10 +37,9 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
@@ -166,14 +165,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         ArrayList<JcrItemId> ids = new ArrayList<JcrItemId>();
         for (Item child : children) {
             try {
-                String uuid = JcrItemUtil.getItemId(child);
-                if (child.isNode()) {
-                    ids.add(new JcrItemId(uuid, getWorkspace()));
-                } else {
-                    String propertyName = child.getName();
-                    ids.add(new JcrPropertyItemId(uuid, getWorkspace(), propertyName));
-                }
-
+                JcrItemId itemId = JcrItemUtil.getItemId(child);
+                ids.add(itemId);
             } catch (RepositoryException e) {
                 handleRepositoryException(log, "Cannot retrieve currentId", e);
             }

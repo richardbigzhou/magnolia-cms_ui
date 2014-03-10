@@ -235,6 +235,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object
         }
     }
 
+    /**
+     * Provides a list of thumbnail item ids.
+     */
     public static interface IdProvider {
         List<?> getItemIds();
     }
