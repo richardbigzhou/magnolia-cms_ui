@@ -104,7 +104,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     @Override
     public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
-            return new JcrItemId(JcrItemUtil.getItemId(getWorkspace(), urlFragment), getWorkspace());
+            return JcrItemUtil.getItemId(getWorkspace(), urlFragment);
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;

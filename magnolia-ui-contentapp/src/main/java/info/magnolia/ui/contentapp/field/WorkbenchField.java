@@ -154,8 +154,7 @@ public class WorkbenchField extends CustomField<Object> {
             String potentialPath = String.valueOf(value);
             try {
                 String workspace = workbenchDefinition.getWorkspace();
-                String uuid = JcrItemUtil.getItemId(workspace, potentialPath);
-                JcrItemId itemId = new JcrItemId(uuid, workspace);
+                JcrItemId itemId = JcrItemUtil.getItemId(workspace, potentialPath);
                 javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspace, itemId);
                 return jcrItem.isNode() ?
                     new JcrNodeAdapter((Node) jcrItem):

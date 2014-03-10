@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
@@ -102,8 +103,8 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
         chooseDialogEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                final String workspaceName = workbenchPresenter.getWorkspace();
-                final Node selected = SessionUtil.getNodeByIdentifier(workspaceName, String.valueOf(event.getFirstItemId()));
+                JcrItemId firstItemId = (JcrItemId) event.getFirstItemId();
+                final Node selected = SessionUtil.getNodeByIdentifier(firstItemId.getWorkspace(), firstItemId.getUuid());
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
