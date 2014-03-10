@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Container;
@@ -53,6 +54,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -66,7 +68,7 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private final MagnoliaTreeTable tree;
+    private MagnoliaTreeTable tree;
 
     private boolean editable;
     private final List<Object> editableColumns = new ArrayList<Object>();
@@ -79,14 +81,25 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
 
     public TreeViewImpl() {
-        this(new MagnoliaTreeTable());
+        //this(new MagnoliaTreeTable());
     }
 
     public TreeViewImpl(MagnoliaTreeTable tree) {
-        super(tree);
+        //super(tree);
+
+    }
+
+    @Override
+    protected MagnoliaTreeTable createTable(com.vaadin.data.Container container) {
+        tree = new MagnoliaTreeTable(container);
+        return tree;
+    }
+
+    @Override
+    protected void initializeTable(Table table) {
+        super.initializeTable(table);
         tree.setSortEnabled(false);
         tree.setCollapsed(tree.firstItemId(), false);
-        this.tree = tree;
     }
 
     @Override
@@ -96,7 +109,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             return;
         }
         tree.focus();
-        // expandTreeToNode(firstItemId, false);
+        expandTreeToNode(firstItemId, false);
 
         tree.setValue(null);
         for (Object id : itemIds) {
@@ -105,8 +118,40 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         tree.setCurrentPageFirstItemId(firstItemId);
     }
 
-    @Override
-    public void expand(Object itemId) {
+    public void expand(String itemId) {
+        expandTreeToNode(itemId, true);
+    }
+
+    private void expandTreeToNode(Object id, boolean expandNode) {
+        com.vaadin.data.Container.Hierarchical container = tree.getContainerDataSource();
+        Item item = container.getItem(id);
+
+        if (item == null) {
+            return;
+        }
+
+        // Determine node to expand.
+        Object node = null;
+        if (!container.areChildrenAllowed(id)) {
+            node = container.getParent(id);
+        } else {
+            if (expandNode) {
+                node = id;
+            } else {
+                Object parent = container.getParent(id);
+                // Check if item is root.
+                if (parent != null) {
+                    node = parent;
+                }
+            }
+        }
+
+        // as long as parent is within the scope of the workbench
+        while (node != null) {
+            tree.setCollapsed(node, false);
+            node = container.getParent(node);
+        }
+
     }
 
     @Override

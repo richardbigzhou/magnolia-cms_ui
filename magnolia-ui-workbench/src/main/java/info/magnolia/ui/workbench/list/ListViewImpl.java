@@ -53,6 +53,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Table.TableDragMode;
@@ -67,15 +68,19 @@ public class ListViewImpl implements ListView {
     private static final int MINIMUM_COLUMN_WIDTH = 46;
     private static final String DELETED_ROW_STYLENAME = "deleted";
 
-    private final Table table;
+    private Table table;
 
     private ListView.Listener listener;
 
     public ListViewImpl() {
-        this(new MagnoliaTable());
+        //this(new MagnoliaTable());
     }
 
     public ListViewImpl(Table table) {
+        //initializeTable(table);
+    }
+
+    protected void initializeTable(Table table) {
         table.setSizeFull();
 
         table.setImmediate(true);
@@ -188,7 +193,12 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void setContainer(Container container) {
-        table.setContainerDataSource(container);
+        table = createTable(container);
+        initializeTable(table);
+    }
+
+    protected Table createTable(Container container) {
+        return new MagnoliaTable(container);
     }
 
     @Override
@@ -219,6 +229,11 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
+    public void clearColumns() {
+        table.setVisibleColumns(new Object[]{});
+    }
+
+    @Override
     public void select(List<Object> itemIds) {
         table.setValue(null);
         if (itemIds != null && !itemIds.isEmpty()) {
@@ -234,7 +249,7 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public Table asVaadinComponent() {
+    public Component asVaadinComponent() {
         return table;
     }
 

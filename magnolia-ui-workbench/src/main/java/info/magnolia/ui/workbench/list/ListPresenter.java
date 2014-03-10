@@ -50,7 +50,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.vaadin.data.Container;
-import com.vaadin.ui.Table;
 
 /**
  * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
@@ -73,7 +72,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         this.container = initializeContainer();
         view.setListener(this);
         view.setContainer(container);
-        ((Table)view.asVaadinComponent()).setVisibleColumns(new Object[]{});
+        view.clearColumns();
 
         // build columns
         Iterator<ColumnDefinition> it = getColumnsIterator();

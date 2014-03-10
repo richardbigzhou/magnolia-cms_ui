@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
+import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.shared.ui.treetable.TreeTableState;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
@@ -55,9 +56,14 @@ public class MagnoliaTreeTable extends TreeTable {
 
     private static Logger log = LoggerFactory.getLogger(MagnoliaTreeTable.class);
 
-    public MagnoliaTreeTable() {
+    public MagnoliaTreeTable(Container dataSource) {
+        super("", dataSource);
         addStyleName("v-magnolia-table");
         setCacheRate(4);
+    }
+
+    public MagnoliaTreeTable() {
+        this(new HierarchicalContainer());
     }
 
     @Override
