@@ -66,6 +66,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.IsDeletedRule;
@@ -73,6 +74,8 @@ import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.framework.availability.AvailabilityCheckerImpl;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -142,6 +145,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private Node testContentNode;
 
     private I18nizer i18nizer;
+    private ContentConnector contentConnector;
+    private AvailabilityChecker availabilityChecker;
 
     @Before
     @Override
@@ -167,10 +172,12 @@ public class BrowserSubAppTest extends MgnlTestCase {
         initActionbarGroupsAndSections();
         initSubAppComponents();
 
-        //TODO JCR FREE FIX TEST!!!!
-        //sectionToShow.setOldAvailability(sAvailabilityAlways);
+        sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, null, null);
+
+        contentConnector = mock(ContentConnector.class);
+        availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, contentConnector, availabilityChecker);
     }
 
     @Test
@@ -274,7 +281,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
         // THEN
         assertEquals(1, visibleSections.size());
         assertTrue(visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(visibleSections.contains(SECTION_TO_SHOW));
         assertTrue(enabledActions.contains(ALWAYS));
         assertFalse(enabledActions.contains(ROOT_ONLY));
     }
@@ -370,20 +376,17 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         ConfiguredAvailabilityDefinition availabilityRootOnly = new ConfiguredAvailabilityDefinition();
         availabilityRootOnly.setRoot(true);
-        availabilityRootOnly.setNodes(false);
 
         ConfiguredAvailabilityDefinition availabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
         availabilityRootAndNodes.setRoot(true);
 
         actAlways = new ConfiguredActionDefinition();
         actAlways.setName(ALWAYS);
-        //TODO JCR FREE FIX TEST!!!!
-        //actAlways.setOldAvailability(availabilityAlways);
+        actAlways.setAvailability(availabilityAlways);
 
         actRootOnly = new ConfiguredActionDefinition();
         actRootOnly.setName(ROOT_ONLY);
-        //TODO JCR FREE FIX TEST!!!!
-        //actRootOnly.setOldAvailability(availabilityRootOnly);
+        actRootOnly.setAvailability(availabilityRootOnly);
 
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.setRoles(Arrays.asList(REQUIRED_ROLE));

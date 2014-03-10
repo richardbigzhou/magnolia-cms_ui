@@ -42,6 +42,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
@@ -78,6 +79,7 @@ public class ContentPresenterTest {
     private WorkbenchDefinition workbench;
     private Node workbenchRoot;
     private Node testNode;
+    private ContentConnector contentConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -85,12 +87,13 @@ public class ContentPresenterTest {
         workbenchRoot = NodeUtil.createPath(session.getRootNode(), TEST_WORKBENCHDEF_PATH.substring(1), NodeTypes.Content.NAME);
         testNode = NodeUtil.createPath(workbenchRoot, "testNode", NodeTypes.Content.NAME);
 
+        contentConnector = mock(ContentConnector.class);
         this.workbench = mock(WorkbenchDefinition.class);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getItemId()).thenReturn(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace()));
+        doReturn(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace())).when(item).getItemId();
         items = new HashSet<Object>();
         items.add(item.getItemId());
 
@@ -108,7 +111,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "", contentConnector);
         // WHEN
         presenter.onItemSelection(items);
 
@@ -117,30 +120,30 @@ public class ContentPresenterTest {
         verify(eventBus).fireEvent(argument.capture());
         //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(items.size(), argument.getValue().getItemIds().size());
-        assertEquals(testNode.getIdentifier(), argument.getValue().getFirstItemId());
+        assertEquals(new JcrItemId(testNode.getIdentifier(), TEST_WORKSPACE_NAME), argument.getValue().getFirstItemId());
     }
 
     @Test
     public void testOnDoubleClickFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "", contentConnector);
 
         // WHEN
-        presenter.onDoubleClick(item);
+        presenter.onDoubleClick(item.getItemId());
 
         // THEN
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(testNode.getIdentifier(), argument.getValue().getId());
+        assertEquals(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace()), argument.getValue().getId());
     }
 
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "", contentConnector);
         items = new HashSet<Object>();
         items.add(null);
 

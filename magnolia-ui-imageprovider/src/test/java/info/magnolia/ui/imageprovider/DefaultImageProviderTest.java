@@ -76,8 +76,11 @@ public class DefaultImageProviderTest {
 
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
         cipd.setOriginalImageNodeName(IMAGE_NODE_NAME);
+
         imageProvider = new DefaultImageProvider(cipd, null);
     }
+
+
 
     @After
     public void tearDown() throws Exception {

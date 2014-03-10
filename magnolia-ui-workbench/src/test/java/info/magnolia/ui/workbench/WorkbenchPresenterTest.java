@@ -34,13 +34,15 @@
 package info.magnolia.ui.workbench;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
@@ -71,7 +73,10 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         componentProvider = mock(ComponentProvider.class);
         doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
-        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter, null);
+        ContentConnector contentConnector = mock(ContentConnector.class);
+        doReturn(new Object()).when(contentConnector).getDefaultItemId();
+
+        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter, contentConnector);
         MockUtil.initMockContext();
         MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
     }
