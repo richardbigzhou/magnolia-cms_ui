@@ -45,6 +45,8 @@ import info.magnolia.ui.form.field.factory.LinkFieldFactory;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
@@ -110,7 +112,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        itemIds.add(baseNode.getIdentifier());
+        itemIds.add(JcrItemUtil.getItemId(baseNode));
 
         // WHEN
         eventBus.fireEvent(new SelectionChangedEvent(itemIds));
@@ -130,7 +132,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        itemIds.add(baseNode.getIdentifier());
+        itemIds.add(new JcrItemId(baseNode.getIdentifier(), workspaceName));
 
         // WHEN
         eventBus.fireEvent(new SelectionChangedEvent(itemIds));

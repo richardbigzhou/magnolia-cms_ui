@@ -220,7 +220,7 @@ public class BrowserPresenterTest {
         AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
         when(availabilityChecker.isAvailable(availability, Arrays.asList(itemId))).thenReturn(false);
         List<Object> ids = new ArrayList<Object>(1);
-        ids.add(node.getIdentifier());
+        ids.add(new JcrItemId(node.getIdentifier(),WORKSPACE));
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
         when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
