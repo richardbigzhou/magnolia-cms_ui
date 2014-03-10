@@ -63,7 +63,7 @@ public class SetWritePermissionForActionsTask extends AbstractRepositoryTask {
      * @param actionNames an array of action node names relative to <code>actionsPath</code> which require write permission
      */
     public SetWritePermissionForActionsTask(String actionsPath, String... actionNames) {
-        super("", "");
+        super("Update actions which need write permission to be executed", "This task sets the availability 'writePermissionRequired' criterion to true on a set of actions at " + actionsPath + ".");
         this.actionsPath = actionsPath;
         this.actionNames = actionNames;
     }

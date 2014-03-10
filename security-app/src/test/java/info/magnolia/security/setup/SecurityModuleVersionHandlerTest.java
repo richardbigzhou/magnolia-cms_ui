@@ -81,6 +81,10 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         this.setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree");
         this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability");
         this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability");
+        // for 5.2.3 update:
+        setupConfigNode("/modules/security-app/apps/security/subApps/users/actions");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actions");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actions");
     }
 
     @Override
@@ -402,4 +406,32 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/confirmDeleteGroup"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole"));
     }
+
+    @Test
+    public void testUpdateTo523SetsWritePermissionForSecuritySubappActions() throws Exception {
+        // GIVEN
+        Node editUserAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/editUser", NodeTypes.ContentNode.NAME);
+        Node addGroupAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/addGroup", NodeTypes.ContentNode.NAME);
+        Node deleteRoleAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertTrue(editUserAction.hasNode("availability"));
+        Node availability = editUserAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(addGroupAction.hasNode("availability"));
+        availability = addGroupAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(deleteRoleAction.hasNode("availability"));
+        availability = deleteRoleAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
+
 }

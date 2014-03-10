@@ -61,6 +61,7 @@ import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefin
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
+import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +191,15 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
                 .addTask(new AddDuplicateAndMoveActionsToSecurityAppTask())
+        );
+
+        register(DeltaBuilder.update("5.2.3", "")
+                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions",
+                        new String[] { "editUser", "addUser", "deleteUser", "confirmDeleteUser", "addFolder", "deleteFolder", "confirmDeleteFolder", "editFolder", "deleteItems", "duplicateUser", "moveUser", "confirmDeleteItems" }))
+                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/groups/actions",
+                        new String[] { "addGroup", "deleteGroup", "confirmDeleteGroup", "editGroup", "addFolder", "deleteFolder", "editFolder", "duplicateGroup", "moveGroup" }))
+                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/roles/actions",
+                        new String[] { "deleteRole", "confirmDeleteRole", "editRole", "addRole", "addFolder", "deleteFolder", "editFolder", "duplicateRole", "moveRole" }))
         );
     }
 
