@@ -99,11 +99,12 @@ public class FormSectionWidget extends FlowPanel {
             fieldSection = (FormFieldWrapper) w;
         }
 
-        // duplicate and patch complex panel logic to allow for keeping DOM 0 index for legend element.
+        // Patch ComplexPanel's insert logic to keep 0 index for the legend element (element is appended in the constructor).
+        // Although fieldset's legend is usually displayed on top of it regardless of its position in the DOM, this was not the case in older versions of Internet Explorer.
         beforeIndex = adjustIndex(fieldSection, beforeIndex);
         fieldSection.removeFromParent();
-        getChildren().insert(fieldSection, beforeIndex);
-        DOM.insertChild(fieldSet, fieldSection.getElement(), beforeIndex + 1); // here's the index offset just for the DOM, not for this widget's child collection.
+        getChildren().insert(fieldSection, beforeIndex); // This widget's child collection remains 0-indexed...
+        DOM.insertChild(fieldSet, fieldSection.getElement(), beforeIndex + 1); // ... but DOM insertion starts with 1.
         adopt(fieldSection);
     }
 
