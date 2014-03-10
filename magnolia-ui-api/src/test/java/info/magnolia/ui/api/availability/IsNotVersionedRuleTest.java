@@ -79,7 +79,7 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        Object jcrItemId = new JcrItemId(version.getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object jcrItemId = new JcrItemId(version.getIdentifier(), version.getSession().getWorkspace().getName());
         boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
 
         // THEN
@@ -106,7 +106,7 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         Version version = versionManager.addVersion(node);
 
         // WHEN
-        Object jcrItemId = new JcrItemId(version.getFrozenNode().getIdentifier(), webSiteSession.getWorkspace().getName());
+        Object jcrItemId = new JcrItemId(version.getFrozenNode().getIdentifier(), version.getSession().getWorkspace().getName());
         boolean isAvailable = rule.isAvailable(Arrays.asList(jcrItemId));
 
         // THEN

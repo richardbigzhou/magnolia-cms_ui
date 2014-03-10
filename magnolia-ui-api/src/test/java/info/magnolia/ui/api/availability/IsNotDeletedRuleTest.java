@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.api.availability;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -73,7 +72,8 @@ public class IsNotDeletedRuleTest extends RepositoryTestCase {
         Node node = webSiteSession.getRootNode().addNode("node1", NodeTypes.Page.NAME);
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(new JcrNodeAdapter(node));
+        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertTrue(isAvailable);
@@ -86,7 +86,8 @@ public class IsNotDeletedRuleTest extends RepositoryTestCase {
         node.addMixin(NodeTypes.Deleted.NAME);
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(new JcrNodeAdapter(node));
+        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertFalse(isAvailable);
@@ -103,7 +104,8 @@ public class IsNotDeletedRuleTest extends RepositoryTestCase {
         node.remove();
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(new JcrNodeAdapter(node));
+        Object itemId = new JcrItemId(node.getIdentifier(), webSiteSession.getWorkspace().getName());
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertFalse(isAvailable);
