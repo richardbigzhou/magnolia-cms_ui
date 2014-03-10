@@ -3,13 +3,13 @@
 @mixin shell {
 
 .v-viewport-shellapps {
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
+  //-webkit-backface-visibility: hidden;
+  //-webkit-transform: translateZ(0);
 }
 
 .v-table-body {
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
+  //-webkit-backface-visibility: hidden;
+  //-webkit-transform: translateZ(0);
 }
 
 .v-view {

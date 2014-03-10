@@ -31,48 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.availability.voters;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 /**
- * Action availability voter which returns positive result in case action is capable
- * of operating over root JCR items.
+ * Action availability voter which returns positive result in case action is
+ * capable of operating over JCR nodes.
  */
-public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
+public class JcrNodesAllowedRule extends AbstractAvailabilityRule {
 
-    private boolean root;
+    private boolean nodeAllowed;
 
-    @Inject
-    public IsRootItemAllowedRule(Boolean isRoot) {
-        root = isRoot;
+    public JcrNodesAllowedRule() {
     }
 
-    private boolean isRoot(Object itemId) {
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
-            JcrItemId jcrItemId = (JcrItemId) itemId;
-            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            try {
-                node.getParent();
-                return false;
-            } catch (RepositoryException e) {
-                return true;
-            }
-        }
-        return false;
+    public JcrNodesAllowedRule(Boolean isNodeAllowed) {
+        nodeAllowed = isNodeAllowed;
+    }
+
+    public void setNodeAllowed(boolean nodeAllowed) {
+        this.nodeAllowed = nodeAllowed;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (itemId == null || isRoot(itemId)) {
-            return root;
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            return nodeAllowed;
         }
         return true;
     }

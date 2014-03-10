@@ -31,29 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.availability.voters;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
+import java.util.Collection;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /**
- * Action availability voter which returns positive result in case action is
- * capable of operating over JCR nodes.
+ * Action availability voter which returns positive result in case action is capable
+ * of operating over any of the specified JCR node types.
  */
-public class JcrNodesAllowedRule extends AbstractAvailabilityRule {
+public class JcrItemNodeTypeAllowedRule extends AbstractAvailabilityRule {
 
-    private boolean nodeAllowed;
+    private Collection<String> nodeTypes;
 
-    public JcrNodesAllowedRule(Boolean isNodeAllowed) {
-        nodeAllowed = isNodeAllowed;
+    public JcrItemNodeTypeAllowedRule() {
+    }
+
+    public JcrItemNodeTypeAllowedRule(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
-            return nodeAllowed;
+        // if no node type defined, then valid for all node types
+        if (nodeTypes.isEmpty()) {
+            return true;
         }
+
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            // else the node must match at least one of the configured node types
+            for (String nodeType : nodeTypes) {
+                try {
+                    if (NodeUtil.isNodeType(node, nodeType)) {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    continue;
+                }
+            }
+
+            return false;
+        }
+
         return true;
     }
 }

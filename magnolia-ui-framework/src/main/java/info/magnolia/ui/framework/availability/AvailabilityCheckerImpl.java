@@ -38,14 +38,14 @@ import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.availability.AvailabilityRuleDefinition;
-import info.magnolia.ui.framework.availability.voters.AvailabilityShorthands;
+import info.magnolia.ui.framework.availability.shorthandrules.AccessGrantedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.IsRootItemAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrItemNodeTypeAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrNodesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrPropertiesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.MultipleItemsAllowedRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,6 +66,13 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     private ComponentProvider componentProvider;
 
     private ContentConnector contentConnector;
+
+    private JcrNodesAllowedRule nodesAllowedShorthandRule = new JcrNodesAllowedRule();
+    private JcrPropertiesAllowedRule propertiesAllowedShorthandRule = new JcrPropertiesAllowedRule();
+    private MultipleItemsAllowedRule multipleItemsAllowedShorthandRule = new MultipleItemsAllowedRule();
+    private IsRootItemAllowedRule isRootItemAllowedShorthandRule = new IsRootItemAllowedRule();
+    private JcrItemNodeTypeAllowedRule jcrItemNodeTypeAllowedShorthandRule = new JcrItemNodeTypeAllowedRule();
+    private AccessGrantedRule accessGrantedShorthandRule = new AccessGrantedRule();
 
     @Inject
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
@@ -103,24 +110,21 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     }
 
     private Collection<? extends AvailabilityRule> prepareShorthandRules(AvailabilityDefinition definition) {
-        List<AvailabilityRule> rules = new ArrayList<AvailabilityRule>();
-        try {
-            BeanInfo info = Introspector.getBeanInfo(definition.getClass());
-            PropertyDescriptor[] propertyDescriptors = info.getPropertyDescriptors();
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                try {
-                    AvailabilityShorthands shorthandRule = AvailabilityShorthands.fromString(propertyDescriptor.getName());
-                    Object argument = propertyDescriptor.getReadMethod().invoke(definition);
-                    rules.add(componentProvider.newInstance(shorthandRule.getRuleClass(), argument == null ? shorthandRule.getDefaultValue() : argument));
-                } catch (IllegalArgumentException ignore){}
-            }
-        } catch (IntrospectionException e) {
-            log.error("Error occurred while trying to retrieve object properties with introspection: " + e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            log.error("Error occurred while trying to prepare ctor argument for a rule: " + e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            log.error("Access violation while trying to instantiate rule object: " + e.getMessage(), e);
-        }
-        return rules;
+        nodesAllowedShorthandRule.setNodeAllowed(definition.isNodes());
+        propertiesAllowedShorthandRule.setPropertiesAllowed(definition.isProperties());
+        isRootItemAllowedShorthandRule.setRoot(definition.isRoot());
+        jcrItemNodeTypeAllowedShorthandRule.setNodeTypes(definition.getNodeTypes());
+        multipleItemsAllowedShorthandRule.setMultipleAllowed(definition.isMultiple());
+        accessGrantedShorthandRule.setAccessDefinition(definition.getAccess());
+
+        List<AvailabilityRule> shorthands = new ArrayList<AvailabilityRule>(6);
+        shorthands.add(nodesAllowedShorthandRule);
+        shorthands.add(propertiesAllowedShorthandRule);
+        shorthands.add(isRootItemAllowedShorthandRule);
+        shorthands.add(jcrItemNodeTypeAllowedShorthandRule);
+        shorthands.add(multipleItemsAllowedShorthandRule);
+        shorthands.add(accessGrantedShorthandRule);
+
+        return shorthands;
     }
 }

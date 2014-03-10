@@ -31,33 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.availability.voters;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.voting.Voter;
+
+import java.util.Collection;
+
+import org.apache.commons.collections.CollectionUtils;
 
 /**
- * Action availability voter which returns positive result in case action is capable of
- * operating over JCR properties.
+ * {@link Voter} implementation which returns positive result if current user obtains any of the
+ * specified roles.
  */
-public class ActionAvailableForPropertiesVoter extends AbstractAvailabilityRule {
+public class AccessGrantedRule implements AvailabilityRule {
 
-    private boolean propertiesAllowed;
+    public static final String DEFAULT_SUPERUSER_ROLE = "superuser";
 
-    public ActionAvailableForPropertiesVoter(Boolean isPropertiesAllowed) {
-        propertiesAllowed = isPropertiesAllowed;
+    private AccessDefinition accessDefinition;
+
+    public AccessGrantedRule() {}
+
+    public AccessGrantedRule(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
     }
 
-    public ActionAvailableForPropertiesVoter(String isPropertiesAllowed) {
-        this(Boolean.parseBoolean(isPropertiesAllowed));
+    public void setAccessDefinition(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
     }
 
     @Override
-    protected boolean isAvailableForItem(Object itemId) {
-        if (itemId instanceof JcrItemId) {
-            return !(itemId instanceof JcrPropertyItemId) || propertiesAllowed;
+    public boolean isAvailable(Collection<Object> itemIds) {
+        User user = MgnlContext.getUser();
+        // Validate that the user has all the required roles
+        Collection<String> userRoles = user.getAllRoles();
+        Collection<String> roles = accessDefinition.getRoles();
+        if (roles.isEmpty() || userRoles.contains(DEFAULT_SUPERUSER_ROLE) || CollectionUtils.containsAny(userRoles, roles)) {
+            return true;
         }
-        return true;
+        return false;
     }
 }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.availability.voters;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
@@ -49,8 +49,15 @@ public class MultipleItemsAllowedRule implements AvailabilityRule {
         multipleAllowed = isMultipleAllowed;
     }
 
+    public MultipleItemsAllowedRule() {
+    }
+
     public MultipleItemsAllowedRule(String isMultipleAllowed) {
         this(Boolean.parseBoolean(isMultipleAllowed));
+    }
+
+    public void setMultipleAllowed(boolean multipleAllowed) {
+        this.multipleAllowed = multipleAllowed;
     }
 
     @Override
