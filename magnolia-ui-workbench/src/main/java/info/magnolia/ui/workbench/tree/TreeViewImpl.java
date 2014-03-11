@@ -99,7 +99,10 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     protected void initializeTable(Table table) {
         super.initializeTable(table);
         tree.setSortEnabled(false);
-        tree.setCollapsed(tree.firstItemId(), false);
+        int size = tree.size();
+        if (size > 0) {
+            tree.setCollapsed(tree.firstItemId(), false);
+        }
     }
 
     @Override
@@ -118,7 +121,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         tree.setCurrentPageFirstItemId(firstItemId);
     }
 
-    public void expand(String itemId) {
+    @Override
+    public void expand(Object itemId) {
         expandTreeToNode(itemId, true);
     }
 
@@ -164,6 +168,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         return tree;
     }
 
+    int counter = 0;
     @Override
     public void setEditable(boolean editable) {
         if (editable) {
@@ -173,6 +178,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
                 @Override
                 public void blur(BlurEvent event) {
+                    System.out.print("Blur fired: " + ++counter);
                     Object source = event.getSource();
                     if (source instanceof Field<?>) {
                         saveItemProperty(((Field<?>) source).getPropertyDataSource());

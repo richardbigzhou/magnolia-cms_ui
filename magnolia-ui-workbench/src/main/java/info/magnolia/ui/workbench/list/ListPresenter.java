@@ -58,8 +58,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected final ListView view;
 
-    protected Container container;
-
     @Inject
     public ListPresenter(final ListView view, final ComponentProvider componentProvider) {
         super(componentProvider);
@@ -114,7 +112,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         if (container instanceof Refreshable) {
             ((Refreshable)container).refresh();
         }
-        //container.fireItemSetChange();
     }
 
     @Override

@@ -78,6 +78,8 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     private final ComponentProvider componentProvider;
 
+    protected Container container;
+
     public AbstractContentPresenterBase(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
@@ -192,7 +194,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
         if (selectedItemIds.size() == 1) {
             try {
-                item = initializeContainer().getItem(getSelectedItemId());
+                item = container.getItem(getSelectedItemId());
                 // item = getSelectedItemId();
                 log.debug("com.vaadin.data.Item at {} was keyboard clicked. Firing ItemShortcutKeyEvent...", getSelectedItemId());
                 eventBus.fireEvent(new ItemShortcutKeyEvent(item, keyCode, modifierKeys));
