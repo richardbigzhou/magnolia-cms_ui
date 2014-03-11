@@ -83,7 +83,8 @@ public class DefaultImageProvider implements ImageProvider {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             return getGeneratorImagePath(jcrAdapter.getWorkspace(), jcrAdapter.getJcrItem(), PORTRAIT_GENERATOR);
         }
-        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
+        log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
+        return null;
     }
 
     @Override
@@ -94,7 +95,8 @@ public class DefaultImageProvider implements ImageProvider {
             Node node = jcrAdapter.getJcrItem();
             return getGeneratorImagePath(jcrAdapter.getWorkspace(), node, THUMBNAIL_GENERATOR);
         }
-        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
+        log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
+        return null;
     }
 
     private String getGeneratorImagePath(String workspace, Node node, String generator) {
