@@ -99,8 +99,8 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         assertNotNull(res);
         assertEquals(4, res.size());
         assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
-        assertTrue(res.contains(JcrItemUtil.getItemId(contentNode)));
-        assertTrue(res.contains(JcrItemUtil.getItemId(folderNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
     @Test
@@ -117,10 +117,9 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         assertEquals(1, res.size());
-        String workspace = session.getWorkspace().getName();
         assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
-        assertTrue(res.contains(JcrItemUtil.getItemId(contentNode)));
-        assertTrue(res.contains(JcrItemUtil.getItemId(folderNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
 

@@ -34,7 +34,9 @@
 package info.magnolia.pages.app.editor;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
 
@@ -55,7 +57,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockRepositoryAcquiringStrategy;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
-import info.magnolia.test.mock.jcr.MockWorkspace;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
@@ -82,7 +84,6 @@ import java.util.Collection;
 import java.util.Locale;
 
 import javax.jcr.Node;
-import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
@@ -110,21 +111,18 @@ public class PagesEditorSubAppTest {
     private SimpleTranslator i18n;
     private AvailabilityChecker availabilityChecker;
     private ConfiguredEditorDefinition editorDefinition;
-    private MockWorkspace workspace;
+    //private MockWorkspace workspace;
 
     @Before
     public void setUp() throws Exception {
 
         // GIVEN
         MockWebContext ctx = new MockWebContext();
-        Session session = mock(Session.class);
-        workspace = new MockWorkspace("testWorkspace");
-        doReturn(workspace).when(session).getWorkspace();
+        MockSession session = new MockSession("testWorkspace");
 
-        MockNode component = new MockNode();
+        MockNode component = new MockNode(session);
         component.setProperty("mgnl:template", "someTemplate");
-        when(session.getNode(anyString())).thenReturn(component);
-        doReturn(true).when(session).itemExists(anyString());
+
         ctx.addSession(null, session);
         User user = mock(User.class);
         Collection<String> groups = new ArrayList<String>();

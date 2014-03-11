@@ -40,6 +40,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
@@ -65,7 +67,7 @@ import com.vaadin.ui.Table;
 public class StatusColumnFormatterTest extends RepositoryTestCase {
     private Table table;
     private Node node;
-    private String itemId;
+    private JcrItemId itemId;
     private Session session;
     private final StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
 
@@ -87,7 +89,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         node = session.getRootNode().getNode("parent");
         node.addMixin(NodeTypes.LastModified.NAME);
         node.addMixin(NodeTypes.Activatable.NAME);
-        itemId = node.getIdentifier();
+        itemId = JcrItemUtil.getItemId(node);
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(RepositoryConstants.WEBSITE);

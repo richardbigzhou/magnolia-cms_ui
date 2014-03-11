@@ -50,6 +50,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.vaadin.ui.Table;
+
 /**
  * Testing the default {@link TreeViewImpl} logic.
  */
@@ -77,7 +79,8 @@ public class TreeViewImplTest extends RepositoryTestCase {
         workbench.setPath("/");
 
         view = new TreeViewImpl();
-        view.setContainer(new HierarchicalJcrContainer(workbench));
+        Table table = view.createTable(new HierarchicalJcrContainer(workbench));
+        view.initializeTable(table);
     }
 
     @Test
@@ -115,7 +118,8 @@ public class TreeViewImplTest extends RepositoryTestCase {
         node.setProperty(NODE_PROPERTY, "112");
 
         // WHEN
-        view.select(Arrays.asList((Object)node.getIdentifier()));
+        Object itemId = JcrItemUtil.getItemId(node);
+        view.select(Arrays.asList(itemId));
 
         // THEN
         assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
