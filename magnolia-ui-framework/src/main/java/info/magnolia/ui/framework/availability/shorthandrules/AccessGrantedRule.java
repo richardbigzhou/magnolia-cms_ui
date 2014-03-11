@@ -37,14 +37,13 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AvailabilityRule;
-import info.magnolia.voting.Voter;
 
 import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
 
 /**
- * {@link Voter} implementation which returns positive result if current user obtains any of the
+ * {@link AvailabilityRule} implementation which returns positive result if current user obtains any of the
  * specified roles.
  */
 public class AccessGrantedRule implements AvailabilityRule {
