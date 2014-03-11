@@ -169,6 +169,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.2.3", "")
                 .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/browser/actions",
                         new String[] { "add", "confirmDeletion", "edit", "editPageName", "editTemplate", "restorePreviousVersion", "import", "move", "restoreVersion" }))
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
         );
 
         register(DeltaBuilder.update("5.3", "")

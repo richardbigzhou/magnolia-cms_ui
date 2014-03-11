@@ -3472,13 +3472,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-09-30T18:06:40.049+02:00</sv:value>
+              <sv:value>2014-03-11T16:26:02.842+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
