@@ -158,7 +158,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         return tree;
     }
 
-    int counter = 0;
     @Override
     public void setEditable(boolean editable) {
         if (editable) {
@@ -168,7 +167,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
                 @Override
                 public void blur(BlurEvent event) {
-                    System.out.print("Blur fired: " + ++counter);
                     Object source = event.getSource();
                     if (source instanceof Field<?>) {
                         saveItemProperty(((Field<?>) source).getPropertyDataSource());
