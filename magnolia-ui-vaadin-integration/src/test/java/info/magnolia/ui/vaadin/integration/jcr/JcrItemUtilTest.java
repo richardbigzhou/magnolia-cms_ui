@@ -58,6 +58,8 @@ import org.junit.Test;
  */
 public class JcrItemUtilTest {
 
+    public static final String WORKSPACE = "workspace";
+
     @Test
     public void testGetNodeIdentifierFrom() throws Exception {
         // GIVEN
@@ -144,34 +146,36 @@ public class JcrItemUtilTest {
     public void testGetItemIdWithProperty() throws Exception {
         // Given
         final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
-        final MockNode node = new MockNode();
+        final MockSession session = new MockSession(WORKSPACE);
+        final MockNode node = new MockNode(session);
         node.setIdentifier(nodeUuid);
         final String propertyName = "name";
         final Property property = new MockProperty(propertyName, "theName", node);
 
         // WHEN
-        final String result = JcrItemUtil.getItemId(property);
+        final JcrItemId result = JcrItemUtil.getItemId(property);
 
         // THEN
-        assertThat(result, equalTo(nodeUuid + JcrItemUtil.PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + propertyName));
+        assertEquals(result, new JcrPropertyItemId(nodeUuid, WORKSPACE, propertyName));
     }
 
     @Test
     public void testGetItemIdWithNode() throws Exception {
         // Given
         final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
-        final MockNode node = new MockNode();
+        final MockSession session = new MockSession(WORKSPACE);
+        final MockNode node = new MockNode(session);
         node.setIdentifier(nodeUuid);
 
         // WHEN
-        final String result = JcrItemUtil.getItemId(node);
+        final JcrItemId result = JcrItemUtil.getItemId(node);
 
         // THEN
-        assertThat(result, equalTo(nodeUuid));
+        assertThat(result.getUuid(), equalTo(nodeUuid));
     }
 
     @Test
-    public void testGetJrcItems() throws Exception {
+    public void testGetJcrItems() throws Exception {
         // GIVEN
         MockUtil.initMockContext();
         MockSession session = new MockSession("test");
@@ -179,15 +183,15 @@ public class JcrItemUtilTest {
         Node rootNode = session.getRootNode();
 
         Node first = NodeUtil.createPath(rootNode, "first", NodeTypes.Content.NAME);
-        String firstNodeId = JcrItemUtil.getItemId(first);
+        JcrItemId firstNodeId = JcrItemUtil.getItemId(first);
         PropertyUtil.setProperty(first, "prop1", "value1");
         Property prop1 = PropertyUtil.getProperty(first, "prop1");
-        String propertyId = JcrItemUtil.getItemId(prop1);
+        JcrItemId propertyId = JcrItemUtil.getItemId(prop1);
         Node second = NodeUtil.createPath(rootNode, "second", NodeTypes.Content.NAME);
-        String secondNodeId = JcrItemUtil.getItemId(second);
-        String brokenId = "foo";
+        JcrItemId secondNodeId = JcrItemUtil.getItemId(second);
+        JcrItemId brokenId = new JcrNodeItemId("foo", WORKSPACE);
 
-        String[] ids = { firstNodeId, secondNodeId, propertyId, brokenId };
+        JcrItemId[] ids = { firstNodeId, secondNodeId, propertyId, brokenId };
 
         // WHEN
         List<Item> items = JcrItemUtil.getJcrItems("test", Arrays.asList(ids));

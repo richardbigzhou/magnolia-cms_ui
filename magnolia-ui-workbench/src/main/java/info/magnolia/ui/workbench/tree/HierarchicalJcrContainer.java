@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -86,7 +87,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
-    public Collection<String> getChildren(Object itemId) {
+    public Collection<JcrItemId> getChildren(Object itemId) {
         long start = System.currentTimeMillis();
         Collection<Item> children = getChildren(getJcrItem(itemId));
         log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
@@ -94,13 +95,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
-    public String getParent(Object itemId) {
+    public JcrItemId getParent(Object itemId) {
         try {
             Item item = getJcrItem(itemId);
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
-            return item.getParent().getIdentifier();
+            return JcrItemUtil.getItemId(item.getParent());
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Cannot determine parent for itemId: " + itemId, e);
             return null;
@@ -108,7 +109,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
-    public Collection<String> rootItemIds() {
+    public Collection<JcrItemId> rootItemIds() {
         try {
             return createContainerIds(getRootItemIds());
         } catch (RepositoryException e) {
@@ -121,6 +122,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public void refresh() {
         resetOffset();
         clearItemIndexes();
+        fireItemSetChange();
     }
 
     @Override
@@ -159,11 +161,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return item.isNode() && !getChildren(item).isEmpty();
     }
 
-    protected Collection<String> createContainerIds(Collection<Item> children) {
-        ArrayList<String> ids = new ArrayList<String>();
+    protected Collection<JcrItemId> createContainerIds(Collection<Item> children) {
+        ArrayList<JcrItemId> ids = new ArrayList<JcrItemId>();
         for (Item child : children) {
             try {
-                ids.add(JcrItemUtil.getItemId(child));
+                JcrItemId itemId = JcrItemUtil.getItemId(child);
+                ids.add(itemId);
             } catch (RepositoryException e) {
                 handleRepositoryException(log, "Cannot retrieve currentId", e);
             }

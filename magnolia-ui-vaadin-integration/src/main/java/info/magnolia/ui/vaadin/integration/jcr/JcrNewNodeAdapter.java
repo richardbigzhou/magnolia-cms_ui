@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.ui.api.ModelConstants;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -77,7 +76,14 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         super(parentNode);
         setPrimaryNodeTypeName(nodeType);
         setNodeName(nodeName);
+        try {
+            JcrItemId parentId = JcrItemUtil.getItemId(parentNode);
+            setItemId(new JcrNewNodeItemId(parentId.getUuid(), parentId.getWorkspace(), nodeType, nodeName));
+        } catch (RepositoryException e) {
+            log.error("Failed to initialize JcrNewNodeAdapter: " + e.getMessage(), e);
+        }
     }
+
 
     /**
      * Returns item property of a new node.
@@ -129,7 +135,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         }
 
         // Update itemId to new node
-        setItemId(node.getIdentifier());
+        setItemId(JcrItemUtil.getItemId(node));
         // Update parent
         if (!appliedChanges) {
             setParent(new JcrNodeAdapter(parent));
@@ -138,6 +144,21 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         appliedChanges = true;
 
         return node;
+    }
+
+    @Override
+    public void setNodeName(String nodeName) {
+        super.setNodeName(nodeName);
+        ((JcrNewNodeItemId)getItemId()).setName(nodeName);
+    }
+
+    @Override
+    public void setItemId(JcrItemId itemId) {
+        JcrItemId actualItemId = itemId;
+        if (!(actualItemId instanceof JcrNewNodeItemId)) {
+            actualItemId = new JcrNewNodeItemId(itemId.getUuid(), itemId.getWorkspace(), getPrimaryNodeTypeName(), getNodeName());
+        }
+        super.setItemId(actualItemId);
     }
 
     /**

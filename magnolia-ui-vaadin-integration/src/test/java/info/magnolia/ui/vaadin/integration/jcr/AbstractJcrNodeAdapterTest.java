@@ -40,7 +40,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collection;
 
@@ -88,7 +87,7 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(testNode);
 
         // THEN
-        assertEquals(testNode.getIdentifier(), adapter.getItemId());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId().getUuid());
         assertEquals(testNode.getIdentifier(), adapter.getJcrItem().getIdentifier());
         assertEquals(testNode.getPrimaryNodeType().getName(), adapter.getPrimaryNodeTypeName());
     }

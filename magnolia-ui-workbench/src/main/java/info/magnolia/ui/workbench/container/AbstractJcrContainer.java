@@ -35,10 +35,11 @@ package info.magnolia.ui.workbench.container;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
@@ -78,7 +79,7 @@ import com.vaadin.data.Property;
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
  * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Refreshable {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -117,7 +118,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Item and index caches.
      */
-    private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
+    private final Map<Long, JcrItemId> itemIndexes = new HashMap<Long, JcrItemId>();
 
     private final List<String> sortableProperties = new ArrayList<String>();
 
@@ -199,7 +200,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
     }
 
-    protected Map<Long, String> getItemIndexes() {
+    protected Map<Long, JcrItemId> getItemIndexes() {
         return itemIndexes;
     }
 
@@ -220,11 +221,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public javax.jcr.Item getJcrItem(Object itemId) {
-        if (itemId == null || !(itemId instanceof String)) {
+        if (itemId == null || !(itemId instanceof JcrItemId)) {
             return null;
         }
         try {
-            return JcrItemUtil.getJcrItem(getWorkspace(), (String) itemId);
+            return JcrItemUtil.getJcrItem(getWorkspace(), (JcrItemId) itemId);
         } catch (PathNotFoundException p) {
             log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[] { itemId, getWorkspace(), p.toString() });
         } catch (RepositoryException e) {
@@ -323,7 +324,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public Object getIdByIndex(int index) {
+    public JcrItemId getIdByIndex(int index) {
         if (index < 0 || index > size - 1) {
             return null;
         }
@@ -343,17 +344,17 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
 
     @Override
-    public Object nextItemId(Object itemId) {
+    public JcrItemId nextItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) + 1);
     }
 
     @Override
-    public Object prevItemId(Object itemId) {
+    public JcrItemId prevItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) - 1);
     }
 
     @Override
-    public Object firstItemId() {
+    public JcrItemId firstItemId() {
         if (size == 0) {
             return null;
         }
@@ -364,7 +365,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public Object lastItemId() {
+    public JcrItemId lastItemId() {
         final Long lastIx = Long.valueOf(size() - 1);
         if (!itemIndexes.containsKey(lastIx)) {
             updateOffsetAndCache(size - 1);
@@ -493,9 +494,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
-            final String id = node.getIdentifier();
-            log.debug("Adding node {} to cached items.", id);
-            itemIndexes.put(rowCount++, id);
+            final JcrItemId itemId = JcrItemUtil.getItemId(node);
+            log.debug("Adding node {} to cached items.", itemId.getUuid());
+            itemIndexes.put(rowCount++, itemId);
         }
 
         log.debug("Done in {} ms", System.currentTimeMillis() - start);
@@ -686,10 +687,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Refreshes the container - clears all caches and resets size and offset. Does NOT remove sorting or filtering
      * rules!
      */
+    @Override
     public void refresh() {
         resetOffset();
         clearItemIndexes();
         updateSize();
+        fireItemSetChange();
     }
 
     protected void resetOffset() {

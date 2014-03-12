@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.jcr;
+package info.magnolia.ui.workbench.container;
 
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-
-import javax.jcr.RepositoryException;
+import com.vaadin.data.Container;
 
 /**
- * Represents a JCR Item (node or property) as a Vaadin data Item.
- *
- * @see com.vaadin.data.Item
- * @see javax.jcr.Item
+ * Extension of Vaadin {@link Container} interface which supports refreshment of the content.
  */
-public interface JcrItemAdapter extends ItemAdapter {
-
-    boolean isNode();
-
-    String getWorkspace();
-
-    JcrItemId getItemId();
-
-    /**
-     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
-     */
-    javax.jcr.Item getJcrItem();
-
-    /**
-     * Returns the JCR Item represented by this Item with any changes applied.
-     */
-    javax.jcr.Item applyChanges() throws RepositoryException;
-
-    boolean hasChangedProperties();
+public interface Refreshable extends Container {
+    void refresh();
 }
