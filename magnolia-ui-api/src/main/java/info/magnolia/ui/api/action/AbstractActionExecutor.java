@@ -35,6 +35,7 @@ package info.magnolia.ui.api.action;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionUtil;
+import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -157,7 +158,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         }
 
         // Evaluate write permission if specified
-        if (availability.isWritePermissionRequired()) {
+        if (availability.isWritePermissionRequired() && !MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE)) {
             try {
                 Node node = item instanceof Property ? ((Property) item).getParent() : (Node) item;
                 if (!PermissionUtil.isGranted(node, Permission.WRITE)) {
