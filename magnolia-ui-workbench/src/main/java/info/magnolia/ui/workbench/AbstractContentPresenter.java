@@ -99,10 +99,4 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
         return null;
     }
 
-    @Override
-    public void refresh() {
-
-    }
-
-
 }
