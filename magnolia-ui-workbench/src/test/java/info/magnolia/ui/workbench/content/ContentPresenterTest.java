@@ -44,6 +44,7 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -119,9 +120,10 @@ public class ContentPresenterTest {
         // THEN
         ArgumentCaptor<SelectionChangedEvent> argument = ArgumentCaptor.forClass(SelectionChangedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
-        //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(items.size(), argument.getValue().getItemIds().size());
-        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getFirstItemId());
+        SelectionChangedEvent event = argument.getValue();
+        assertEquals(TEST_WORKSPACE_NAME, ((JcrItemId) event.getFirstItemId()).getWorkspace());
+        assertEquals(items.size(), event.getItemIds().size());
+        assertEquals(JcrItemUtil.getItemId(testNode), event.getFirstItemId());
     }
 
     @Test
@@ -136,8 +138,9 @@ public class ContentPresenterTest {
         // THEN
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
-        //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getItemId());
+        ItemDoubleClickedEvent event = argument.getValue();
+        assertEquals(TEST_WORKSPACE_NAME, ((JcrItemId) event.getItemId()).getWorkspace());
+        assertEquals(JcrItemUtil.getItemId(testNode), event.getItemId());
     }
 
     @Test
