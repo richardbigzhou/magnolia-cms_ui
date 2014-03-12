@@ -67,6 +67,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         this(parentNode, nodeType, null);
     }
 
+    @Override
+    protected void initCommonAttributes(Item jcrItem) {}
+
     /**
      * @param parentNode Parent of the node to create.
      * @param nodeType Type node to create.
@@ -76,7 +79,14 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         super(parentNode);
         setPrimaryNodeTypeName(nodeType);
         setNodeName(nodeName);
+        try {
+            JcrItemId parentId = JcrItemUtil.getItemId(parentNode);
+            setItemId(new JcrNewNodeItemId(parentId.getUuid(), parentId.getWorkspace(), nodeName, nodeType));
+        } catch (RepositoryException e) {
+            log.error("Failed to initialize JcrNewNodeAdapter: " + e.getMessage(), e);
+        }
     }
+
 
     /**
      * Returns item property of a new node.

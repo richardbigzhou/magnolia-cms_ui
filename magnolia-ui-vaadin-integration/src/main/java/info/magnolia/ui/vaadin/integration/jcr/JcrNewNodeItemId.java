@@ -34,22 +34,54 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 /**
- * {@link javax.jcr.Node} item id.
+ * Special type of {@link JcrItemId} which identifies Vaadin {@link com.vaadin.data.Item}
+ * associated with a new {@link javax.jcr.Node}.
  */
-public class JcrNodeItemId extends JcrItemId {
+public class JcrNewNodeItemId extends JcrNodeItemId {
 
-    public JcrNodeItemId(String uuid, String workspace) {
+    private String name;
+
+    private String primaryNodeType;
+
+    public JcrNewNodeItemId(String uuid, String workspace, String primaryNodeType, String name) {
         super(uuid, workspace);
+        this.name = name;
+        this.primaryNodeType = primaryNodeType;
+    }
+
+    public JcrNewNodeItemId(String uuid, String workspace, String primaryNodeType) {
+        this(uuid, workspace, primaryNodeType, null);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPrimaryNodeType() {
+        return primaryNodeType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public boolean equals(Object o) {
-        boolean result = super.equals(o);
-        return result && o.getClass() == JcrNodeItemId.class;
+        if (this == o) return true;
+        if (!(o instanceof JcrNewNodeItemId)) return false;
+        if (!super.equals(o)) return false;
+
+        JcrNewNodeItemId that = (JcrNewNodeItemId) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return 29 * super.hashCode() + 7;
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

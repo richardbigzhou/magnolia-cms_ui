@@ -47,6 +47,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
@@ -65,8 +66,6 @@ import javax.jcr.version.Version;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 /**
  * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
@@ -131,6 +130,9 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), (JcrItemId) itemId);
             JcrItemAdapter itemAdapter;
             if (jcrItem.isNode()) {
+                if (itemId instanceof JcrNewNodeItemId) {
+                    return new JcrNewNodeAdapter((Node) jcrItem, ((JcrNewNodeItemId)itemId).getPrimaryNodeType());
+                }
                 itemAdapter = new JcrNodeAdapter((Node) jcrItem);
             } else {
                 itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
@@ -147,7 +149,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public Object getDefaultItemId() {
-        return getItemIdByUrlFragment(getWorkbenchDefinition().getPath());
+        return getItemIdByUrlFragment(getPath());
     }
 
     @Override
@@ -177,7 +179,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     @Override
-    public Item createNew(String newItemPath) {
+    public Object getNewItemId(String newItemPath) {
         SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
 
         String primaryNodeType = null;
@@ -189,7 +191,11 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
             parentPath = parentPath.isEmpty() ? "/" : parentPath;
             Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
-            return new JcrNewNodeAdapter(parent, primaryNodeType);
+            try {
+                return new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
+            } catch (RepositoryException e) {
+                log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
+            }
         }
 
         return null;

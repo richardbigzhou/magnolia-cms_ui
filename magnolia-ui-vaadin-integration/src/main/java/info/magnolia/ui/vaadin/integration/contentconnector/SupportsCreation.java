@@ -33,13 +33,17 @@
  */
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import com.vaadin.data.Item;
-
 /**
  * Interface of {@link ContentConnector} that supports creation of new items.
  */
 public interface SupportsCreation extends ContentConnector {
 
-    Item createNew(String newItemPath);
+    /**
+     * Create and return an id of a new item based on the
+     * @param newItemPath string representation of a new item.
+     * @return id of a new item.
+     * TODO: makes more sense probably to pass parent item id and a name/relative path of a new item.
+     */
+    Object getNewItemId(String newItemPath);
 
 }
