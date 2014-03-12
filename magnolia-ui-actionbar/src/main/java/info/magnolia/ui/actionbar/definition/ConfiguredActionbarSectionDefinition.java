@@ -55,6 +55,9 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 
+    public ConfiguredActionbarSectionDefinition() {
+    }
+
     @Override
     public String getName() {
         return name;
@@ -107,5 +110,6 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     public void setAvailability(AvailabilityDefinition voterBasedAvailability) {
         this.availability = voterBasedAvailability;
+        ((ConfiguredAvailabilityDefinition)availability).setMultiple(true);
     }
 }
