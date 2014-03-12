@@ -55,9 +55,6 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 
-    public ConfiguredActionbarSectionDefinition() {
-    }
-
     @Override
     public String getName() {
         return name;
