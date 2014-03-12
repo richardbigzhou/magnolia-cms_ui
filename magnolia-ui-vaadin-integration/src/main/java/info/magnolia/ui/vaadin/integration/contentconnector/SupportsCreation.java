@@ -31,27 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
-
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Interface of {@link ContentConnector} that supports creation of new items.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public interface SupportsCreation extends ContentConnector {
 
     /**
-     * Gets the definition for the action bar.
+     * Create and return an id of a new item based on the string representation.
+     * @param newItemPath string representation of a new item.
+     * @return id of a new item.
+     * TODO: makes more sense probably to pass parent item id and a name/relative path of a new item.
      */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    ContentConnectorDefinition getContentConnector();
+    Object getNewItemId(String newItemPath);
 
 }

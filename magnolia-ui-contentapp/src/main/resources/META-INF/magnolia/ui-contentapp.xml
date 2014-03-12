@@ -49,7 +49,17 @@
 
 
   <components>
+    <id>app</id>
+
+  </components>
+
+  <components>
     <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector</type>
+      <provider>info.magnolia.ui.contentapp.contentconnector.ContentConnectorProvider</provider>
+      <scope>singleton</scope>
+    </component>
 
     <component>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>

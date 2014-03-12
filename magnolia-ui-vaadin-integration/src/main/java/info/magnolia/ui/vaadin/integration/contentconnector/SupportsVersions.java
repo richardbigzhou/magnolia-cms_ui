@@ -31,27 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
-
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Allows to query the versions of an item.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public interface SupportsVersions extends ContentConnector {
 
     /**
-     * Gets the definition for the action bar.
+     * Get an item id of an item version.
+     * @param itemId source item id.
+     * @param version version id.
+     * @return id of versin item.
      */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    ContentConnectorDefinition getContentConnector();
-
+    Object getItemVersion(Object itemId, String version);
 }

@@ -31,27 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
-
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Defines {@link ContentConnector}.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public class ConfiguredContentConnectorDefinition implements ContentConnectorDefinition {
 
-    /**
-     * Gets the definition for the action bar.
-     */
-    ActionbarDefinition getActionbar();
+    private Class<? extends ContentConnector> implementationClass;
 
-    ImageProviderDefinition getImageProvider();
+    @Override
+    public Class<? extends ContentConnector> getImplementationClass() {
+        return implementationClass;
+    }
 
-    ContentConnectorDefinition getContentConnector();
-
+    public void setImplementationClass(Class<? extends ContentConnector> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
 }
