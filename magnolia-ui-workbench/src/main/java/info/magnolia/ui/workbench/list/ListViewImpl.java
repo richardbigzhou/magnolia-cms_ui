@@ -72,14 +72,6 @@ public class ListViewImpl implements ListView {
 
     private ListView.Listener listener;
 
-    public ListViewImpl() {
-        //this(new MagnoliaTable());
-    }
-
-    public ListViewImpl(Table table) {
-        //initializeTable(table);
-    }
-
     protected void initializeTable(Table table) {
         table.setSizeFull();
 

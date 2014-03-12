@@ -79,16 +79,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
 
-
-    public TreeViewImpl() {
-        //this(new MagnoliaTreeTable());
-    }
-
-    public TreeViewImpl(MagnoliaTreeTable tree) {
-        //super(tree);
-
-    }
-
     @Override
     protected MagnoliaTreeTable createTable(com.vaadin.data.Container container) {
         tree = new MagnoliaTreeTable(container);
