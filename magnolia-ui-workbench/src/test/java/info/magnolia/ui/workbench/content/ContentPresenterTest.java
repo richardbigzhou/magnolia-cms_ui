@@ -137,7 +137,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         //assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getId());
+        assertEquals(JcrItemUtil.getItemId(testNode), argument.getValue().getItemId());
     }
 
     @Test

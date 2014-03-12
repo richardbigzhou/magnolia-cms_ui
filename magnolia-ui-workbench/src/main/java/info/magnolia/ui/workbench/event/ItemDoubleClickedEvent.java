@@ -56,7 +56,7 @@ public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Hand
         this.itemId = itemId;
     }
 
-    public Object getId() {
+    public Object getItemId() {
         return itemId;
     }
 
