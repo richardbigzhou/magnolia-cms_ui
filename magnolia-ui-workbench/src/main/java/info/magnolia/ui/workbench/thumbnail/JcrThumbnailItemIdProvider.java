@@ -56,11 +56,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 27/02/14
- * Time: 11:40
- * To change this template use File | Settings | File Templates.
+ * {@link ThumbnailContainer.IdProvider} which queries item ids from JCR workspace.
+ * @see info.magnolia.ui.workbench.thumbnail.JcrThumbnailItemIdProvider#getQueryWhereClauseNodeTypes for details.
  */
 public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider {
 
