@@ -50,9 +50,6 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -156,7 +153,6 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setWorkbench(workbenchDefinition);
 
         defaultActionDefinition = new ConfiguredActionDefinition();
-        defaultActionDefinition.setImplementationClass(DummyAction.class);
 
         ConfiguredAppDescriptor appDescriptor = new ConfiguredAppDescriptor();
         appDescriptor.setName(APP_NAME);
@@ -342,16 +338,5 @@ public class BrowserPresenterTest {
         // just verifying that null is passed to the isAvailable() method instead of the actual item
 
         verify(availabilityChecker).isAvailable(eq(availability), anyList());
-    }
-
-    public class DummyAction extends AbstractAction {
-
-        public DummyAction(ActionDefinition definition) {
-            super(definition);
-        }
-
-        @Override
-        public void execute() throws ActionExecutionException {
-        }
     }
 }
