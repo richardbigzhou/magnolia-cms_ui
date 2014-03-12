@@ -62,6 +62,7 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.SubAppActionExecutor;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -76,6 +77,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
+import com.vaadin.ui.Notification;
 
 /**
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
@@ -110,10 +112,11 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     private final SimpleTranslator i18n;
 
     private AvailabilityChecker checker;
+    private ContentConnector contentConnector;
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
@@ -123,11 +126,13 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.i18nizer = i18nizer;
         this.i18n = i18n;
         this.checker = checker;
+        this.contentConnector = contentConnector;
+        Notification.show("TEST");
     }
 
-    public DetailView start(EditorDefinition editorDefinition, final Item item, DetailView.ViewType viewType, Object itemId) {
+    public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
         this.editorDefinition = editorDefinition;
-        this.item = item;
+        this.item = contentConnector.getItem(itemId);
         this.itemId = itemId;
         setItemView(viewType);
         return view;

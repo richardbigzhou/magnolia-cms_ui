@@ -49,6 +49,7 @@ import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.Locale;
 
@@ -80,7 +81,7 @@ public class FormDialogPresenterImplTest {
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class), mock(AvailabilityChecker.class));
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class), mock(AvailabilityChecker.class), mock(ContentConnector.class));
     }
 
     @Test

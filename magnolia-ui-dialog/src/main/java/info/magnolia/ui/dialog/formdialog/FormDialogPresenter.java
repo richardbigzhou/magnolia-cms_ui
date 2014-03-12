@@ -39,8 +39,6 @@ import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 
-import com.vaadin.data.Item;
-
 /**
  * Interface for {@link FormDialogPresenterImpl}.
  */
@@ -52,12 +50,11 @@ public interface FormDialogPresenter extends DialogPresenter {
     /**
      * Start the formDialogPresenter.
      *
-     * @param item The item on which the form will operate.
      * @param itemId
      * @param uiContext The layer over which the opened dialog should be presented and be modal.
      */
-    DialogView start(Item item, Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback);
+    DialogView start(Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback);
 
-    DialogView start(Item item, Object itemId, String dialogId, UiContext uiContext, EditorCallback callback);
+    DialogView start(Object itemId, String dialogId, UiContext uiContext, EditorCallback callback);
 
 }

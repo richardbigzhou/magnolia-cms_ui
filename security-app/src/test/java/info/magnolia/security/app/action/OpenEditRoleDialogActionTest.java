@@ -60,8 +60,6 @@ import javax.jcr.Session;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
-
 /**
  * Test class for {@link OpenEditRoleDialogAction}.
  */
@@ -105,11 +103,11 @@ public class OpenEditRoleDialogActionTest extends RepositoryTestCase {
         private FormDialogDefinition dialogDefinition;
 
         public MockFormDialogPresenter() {
-            super(null, null, null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null, null, null);
         }
 
         @Override
-        public DialogView start(final Item item, Object itemId, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Object itemId, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
             this.setDialogDefinition(dialogDefinition);
             return null;
         }

@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.availability.shorthandrules;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -56,7 +56,8 @@ public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
     }
 
     private boolean isRoot(Object itemId) {
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+        if (itemId instanceof JcrItemId) {
+
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             try {
@@ -75,6 +76,10 @@ public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrNewNodeItemId) {
+            return true;
+        }
+
         if (itemId == null || isRoot(itemId)) {
             return root;
         }

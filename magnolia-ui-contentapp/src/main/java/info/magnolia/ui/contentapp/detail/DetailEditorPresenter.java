@@ -96,28 +96,24 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     public View start(String nodePath, DetailView.ViewType viewType, ContentConnector contentConnector, String versionName) {
         this.contentConnector = contentConnector;
         this.nodePath = nodePath;
-        this.item = null;
 
         view.setListener(this);
         Object itemId = contentConnector.getItemIdByUrlFragment(nodePath);
 
-
         if (contentConnector.canHandleItem(itemId)) {
             if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && contentConnector instanceof SupportsVersions) {
                 item = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
-            } else if (contentConnector instanceof SupportsCreation) {
-                item = contentConnector.getItem(itemId);
             }
         } else {
             if (contentConnector instanceof SupportsCreation) {
                 /**
                  * TODO - consider passing parent's id.
                  */
-                item = ((SupportsCreation) contentConnector).createNew(nodePath);
+                itemId = ((SupportsCreation) contentConnector).getNewItemId(nodePath);
             }
         }
 
-        DetailView itemView = detailPresenter.start(editorDefinition, item, viewType, itemId);
+        DetailView itemView = detailPresenter.start(editorDefinition, viewType, itemId);
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);

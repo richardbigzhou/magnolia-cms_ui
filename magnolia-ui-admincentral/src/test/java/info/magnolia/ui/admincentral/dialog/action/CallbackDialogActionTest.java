@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.test.ComponentsTestUtil;
@@ -170,7 +169,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
@@ -180,7 +179,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, Object itemId, String dialogId, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Object itemId, String dialogId, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
