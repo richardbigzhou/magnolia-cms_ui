@@ -242,4 +242,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     private EditorDefinition getEditorDefinition() {
         return ((DetailSubAppDescriptor)subAppContext.getSubAppDescriptor()).getEditor();
     }
+
+    public Item getItem() {
+        return item;
+    }
 }

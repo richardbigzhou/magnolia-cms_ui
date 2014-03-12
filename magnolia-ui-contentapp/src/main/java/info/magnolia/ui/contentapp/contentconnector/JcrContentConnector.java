@@ -167,11 +167,11 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     @Override
-    public JcrNodeAdapter getItemVersion(Object itemId, String versionName) {
+    public Object getItemVersion(Object itemId, String versionName) {
         try {
             Node node = NodeUtil.getNodeByIdentifier(getWorkspace(), String.valueOf(itemId));
             Version version = versionManager.getVersion(node, versionName);
-            return new JcrNodeAdapter(version.getFrozenNode());
+            return JcrItemUtil.getItemId(version.getFrozenNode());
         } catch (RepositoryException e) {
             log.error("Failed to find item version for id: " + itemId, e.getMessage());
         }

@@ -33,12 +33,16 @@
  */
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import com.vaadin.data.Item;
-
 /**
  * Allows to query the versions of an item.
  */
 public interface SupportsVersions extends ContentConnector {
 
-    Item getItemVersion(Object itemId, String version);
+    /**
+     * Get an item id of an item version.
+     * @param itemId source item id.
+     * @param version version id.
+     * @return id of versin item.
+     */
+    Object getItemVersion(Object itemId, String version);
 }

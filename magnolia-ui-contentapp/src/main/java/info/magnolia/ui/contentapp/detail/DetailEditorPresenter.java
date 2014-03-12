@@ -74,7 +74,6 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     private final SimpleTranslator i18n;
     private String nodePath;
     private ContentConnector contentConnector;
-    private Item item;
 
     @Inject
     public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final SimpleTranslator i18n) {
@@ -102,7 +101,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
         if (contentConnector.canHandleItem(itemId)) {
             if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && contentConnector instanceof SupportsVersions) {
-                item = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
+                itemId = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
             }
         } else {
             if (contentConnector instanceof SupportsCreation) {
@@ -144,7 +143,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     @Override
     public void onActionbarItemClicked(String actionName) {
         try {
-           actionExecutor.execute(actionName, item);
+           actionExecutor.execute(actionName, detailPresenter.getItem());
         }
         catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
