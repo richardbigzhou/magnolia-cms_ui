@@ -194,10 +194,9 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
         if (selectedItemIds.size() == 1) {
             try {
-                item = container.getItem(getSelectedItemId());
                 // item = getSelectedItemId();
                 log.debug("com.vaadin.data.Item at {} was keyboard clicked. Firing ItemShortcutKeyEvent...", getSelectedItemId());
-                eventBus.fireEvent(new ItemShortcutKeyEvent(item, keyCode, modifierKeys));
+                eventBus.fireEvent(new ItemShortcutKeyEvent(getSelectedItemId(), keyCode, modifierKeys));
             } catch (Exception e) {
                 log.error("An error occurred while a key was pressed with a selected row in the data grid", e);
             }
