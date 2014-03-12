@@ -56,7 +56,6 @@ import com.vaadin.data.Property;
 /**
  * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
- * TODO: consider moving primary node type and node name to {@link JcrItemId} class for the sake of consistency and convenience: the meta-information would be aggregated in one place and would be accessible to the components that deal with item ids.
  */
 public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
