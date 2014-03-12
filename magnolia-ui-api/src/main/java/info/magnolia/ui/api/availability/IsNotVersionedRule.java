@@ -34,9 +34,11 @@
 package info.magnolia.ui.api.availability;
 
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
@@ -52,21 +54,23 @@ public class IsNotVersionedRule extends AbstractAvailabilityRule {
     private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-
-            if (node instanceof Version) {
-                return false;
-            }
-
-            try {
-                String workspace = node.getSession().getWorkspace().getName();
-                if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            if (node != null) {
+                if (node instanceof Version) {
                     return false;
                 }
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e);
+
+                try {
+                    String workspace = node.getSession().getWorkspace().getName();
+                    if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
+                        return false;
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e);
+                }
             }
         }
 

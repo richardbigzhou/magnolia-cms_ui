@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.api.availability;
 
-import javax.jcr.Item;
+
+import java.util.Collection;
 
 /**
  * Abstract rule class.
@@ -41,13 +42,13 @@ import javax.jcr.Item;
 public abstract class AbstractAvailabilityRule implements AvailabilityRule {
 
     @Override
-    public boolean isAvailable(Item... items) {
+    public boolean isAvailable(Collection<Object> itemIds) {
         // sanity check
-        if (items == null || items.length == 0) {
+        if (itemIds == null || itemIds.size() == 0) {
             return false;
         }
         // for selected items
-        for (Item item : items) {
+        for (Object item : itemIds) {
             // if not available for any of the items, not available at all
             if (!isAvailableForItem(item)) {
                 return false;
@@ -58,7 +59,8 @@ public abstract class AbstractAvailabilityRule implements AvailabilityRule {
 
     /**
      * This method defines the actual evaluation logic for one item.
+     * @param itemId
      */
-    protected abstract boolean isAvailableForItem(Item item);
+    protected abstract boolean isAvailableForItem(Object itemId);
 
 }

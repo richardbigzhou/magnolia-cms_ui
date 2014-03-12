@@ -31,49 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import java.util.Collection;
 
 /**
- * Definition of restrictions on when subject is available.
+ * Action availability voter which returns positive result in case action is claimed to
+ * work with multiple items.
  */
-public interface AvailabilityDefinition {
+public class MultipleItemsAllowedRule implements AvailabilityRule {
 
-    /**
-     * If true the subject is available when there's no selection.
-     */
-    boolean isRoot();
+    private boolean multipleAllowed;
 
-    /**
-     * If true the subject is available for properties.
-     */
-    boolean isProperties();
+    public MultipleItemsAllowedRule(Boolean isMultipleAllowed) {
+        multipleAllowed = isMultipleAllowed;
+    }
 
-    /**
-     * If true the subject is available for nodes.
-     */
-    boolean isNodes();
+    public MultipleItemsAllowedRule() {
+    }
 
-    /**
-     * If true, the subject is available for multiple item selection.
-     */
-    boolean isMultiple();
+    public MultipleItemsAllowedRule(String isMultipleAllowed) {
+        this(Boolean.parseBoolean(isMultipleAllowed));
+    }
 
-    /**
-     * Unless this is empty the subject is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
+    public void setMultipleAllowed(boolean multipleAllowed) {
+        this.multipleAllowed = multipleAllowed;
+    }
 
-    /**
-     * Returns the AccessDefinition object for this subject.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the collection of availability rule definitions for this subject.
-     */
-    Collection<AvailabilityRuleDefinition> getRules();
+    @Override
+    public boolean isAvailable(Collection<Object> itemIds) {
+        return multipleAllowed || itemIds.size() < 2;
+    }
 }

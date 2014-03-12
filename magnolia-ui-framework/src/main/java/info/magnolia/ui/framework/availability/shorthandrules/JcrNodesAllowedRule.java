@@ -31,49 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-
-import java.util.Collection;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Definition of restrictions on when subject is available.
+ * Action availability voter which returns positive result in case action is
+ * capable of operating over JCR nodes.
  */
-public interface AvailabilityDefinition {
+public class JcrNodesAllowedRule extends AbstractAvailabilityRule {
 
-    /**
-     * If true the subject is available when there's no selection.
-     */
-    boolean isRoot();
+    private boolean nodeAllowed;
 
-    /**
-     * If true the subject is available for properties.
-     */
-    boolean isProperties();
+    public JcrNodesAllowedRule() {
+    }
 
-    /**
-     * If true the subject is available for nodes.
-     */
-    boolean isNodes();
+    public JcrNodesAllowedRule(Boolean isNodeAllowed) {
+        nodeAllowed = isNodeAllowed;
+    }
 
-    /**
-     * If true, the subject is available for multiple item selection.
-     */
-    boolean isMultiple();
+    public void setNodeAllowed(boolean nodeAllowed) {
+        this.nodeAllowed = nodeAllowed;
+    }
 
-    /**
-     * Unless this is empty the subject is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
-
-    /**
-     * Returns the AccessDefinition object for this subject.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the collection of availability rule definitions for this subject.
-     */
-    Collection<AvailabilityRuleDefinition> getRules();
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            return nodeAllowed;
+        }
+        return true;
+    }
 }

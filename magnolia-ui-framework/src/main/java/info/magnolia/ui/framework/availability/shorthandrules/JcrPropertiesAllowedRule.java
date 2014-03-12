@@ -31,49 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-
-import java.util.Collection;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Definition of restrictions on when subject is available.
+ * Action availability voter which returns positive result in case action is capable of
+ * operating over JCR properties.
  */
-public interface AvailabilityDefinition {
+public class JcrPropertiesAllowedRule extends AbstractAvailabilityRule {
 
-    /**
-     * If true the subject is available when there's no selection.
-     */
-    boolean isRoot();
+    private boolean propertiesAllowed;
 
-    /**
-     * If true the subject is available for properties.
-     */
-    boolean isProperties();
+    public JcrPropertiesAllowedRule(Boolean isPropertiesAllowed) {
+        propertiesAllowed = isPropertiesAllowed;
+    }
 
-    /**
-     * If true the subject is available for nodes.
-     */
-    boolean isNodes();
+    public JcrPropertiesAllowedRule() {
+    }
 
-    /**
-     * If true, the subject is available for multiple item selection.
-     */
-    boolean isMultiple();
+    public JcrPropertiesAllowedRule(String isPropertiesAllowed) {
+        this(Boolean.parseBoolean(isPropertiesAllowed));
+    }
 
-    /**
-     * Unless this is empty the subject is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
+    public void setPropertiesAllowed(boolean propertiesAllowed) {
+        this.propertiesAllowed = propertiesAllowed;
+    }
 
-    /**
-     * Returns the AccessDefinition object for this subject.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the collection of availability rule definitions for this subject.
-     */
-    Collection<AvailabilityRuleDefinition> getRules();
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+            return !(itemId instanceof JcrPropertyItemId) || propertiesAllowed;
+        }
+        return true;
+    }
 }

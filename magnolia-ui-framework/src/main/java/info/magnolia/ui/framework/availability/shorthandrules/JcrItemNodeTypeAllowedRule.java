@@ -31,40 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+
+import java.util.Collection;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * This rule returns true if the item is node and has the mgnl:deleted mixin type.
+ * Action availability voter which returns positive result in case action is capable
+ * of operating over any of the specified JCR node types.
  */
-public class IsDeletedRule extends AbstractAvailabilityRule {
+public class JcrItemNodeTypeAllowedRule extends AbstractAvailabilityRule {
 
-    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
+    private Collection<String> nodeTypes;
+
+    public JcrItemNodeTypeAllowedRule() {
+    }
+
+    public JcrItemNodeTypeAllowedRule(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
+        // if no node type defined, then valid for all node types
+        if (nodeTypes.isEmpty()) {
+            return true;
+        }
+
         if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            if (node != null) {
+            // else the node must match at least one of the configured node types
+            for (String nodeType : nodeTypes) {
                 try {
-                    return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+                    if (NodeUtil.isNodeType(node, nodeType)) {
+                        return true;
+                    }
                 } catch (RepositoryException e) {
-                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+                    continue;
                 }
             }
+
+            return false;
         }
-        return false;
+
+        return true;
     }
 }

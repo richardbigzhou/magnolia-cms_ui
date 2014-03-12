@@ -31,40 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * This rule returns true if the item is node and has the mgnl:deleted mixin type.
+ * Action availability voter which returns positive result in case action is capable
+ * of operating over root JCR items.
  */
-public class IsDeletedRule extends AbstractAvailabilityRule {
+public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
 
-    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
+    private boolean root;
 
-    @Override
-    protected boolean isAvailableForItem(Object itemId) {
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+    public IsRootItemAllowedRule() {}
+
+    public IsRootItemAllowedRule(Boolean isRoot) {
+        root = isRoot;
+    }
+
+    private boolean isRoot(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            if (node != null) {
-                try {
-                    return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-                } catch (RepositoryException e) {
-                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
-                }
+            try {
+                node.getParent();
+                return false;
+            } catch (RepositoryException e) {
+                return true;
             }
         }
         return false;
+    }
+
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
+
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrNewNodeItemId) {
+            return true;
+        }
+
+        if (itemId == null || isRoot(itemId)) {
+            return root;
+        }
+        return true;
     }
 }

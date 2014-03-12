@@ -35,8 +35,10 @@ package info.magnolia.ui.api.availability;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -51,13 +53,16 @@ public class IsNotDeletedRule extends AbstractAvailabilityRule {
     private static final Logger log = LoggerFactory.getLogger(IsNotDeletedRule.class);
 
     @Override
-    public boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+    public boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            if (node != null) {
+                try {
+                    return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+                } catch (RepositoryException e) {
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+                }
             }
         }
         return true;

@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -70,7 +71,8 @@ public class IsDeletedRuleTest extends RepositoryTestCase {
         Node node = webSiteSession.getRootNode().addNode("node1", NodeTypes.Page.NAME);
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(node);
+        Object itemId = JcrItemUtil.getItemId(node);
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertFalse(isAvailable);
@@ -83,7 +85,8 @@ public class IsDeletedRuleTest extends RepositoryTestCase {
         node.addMixin(NodeTypes.Deleted.NAME);
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(node);
+        Object itemId = JcrItemUtil.getItemId(node);
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertTrue(isAvailable);
@@ -93,10 +96,11 @@ public class IsDeletedRuleTest extends RepositoryTestCase {
     public void testIsAvailableForItemThatIsDeleted() throws RepositoryException {
         // GIVEN
         Node node = webSiteSession.getRootNode().addNode("node3", NodeTypes.Page.NAME);
-        node.remove();
 
         // WHEN
-        boolean isAvailable = rule.isAvailableForItem(node);
+        Object itemId = JcrItemUtil.getItemId(node);
+        node.remove();
+        boolean isAvailable = rule.isAvailableForItem(itemId);
 
         // THEN
         assertFalse(isAvailable);

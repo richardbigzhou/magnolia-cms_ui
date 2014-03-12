@@ -31,49 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import java.util.Collection;
 
+import org.apache.commons.collections.CollectionUtils;
+
 /**
- * Definition of restrictions on when subject is available.
+ * {@link AvailabilityRule} implementation which returns positive result if current user obtains any of the
+ * specified roles.
  */
-public interface AvailabilityDefinition {
+public class AccessGrantedRule implements AvailabilityRule {
 
-    /**
-     * If true the subject is available when there's no selection.
-     */
-    boolean isRoot();
+    public static final String DEFAULT_SUPERUSER_ROLE = "superuser";
 
-    /**
-     * If true the subject is available for properties.
-     */
-    boolean isProperties();
+    private AccessDefinition accessDefinition;
 
-    /**
-     * If true the subject is available for nodes.
-     */
-    boolean isNodes();
+    public AccessGrantedRule() {}
 
-    /**
-     * If true, the subject is available for multiple item selection.
-     */
-    boolean isMultiple();
+    public AccessGrantedRule(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
+    }
 
-    /**
-     * Unless this is empty the subject is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
+    public void setAccessDefinition(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
+    }
 
-    /**
-     * Returns the AccessDefinition object for this subject.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the collection of availability rule definitions for this subject.
-     */
-    Collection<AvailabilityRuleDefinition> getRules();
+    @Override
+    public boolean isAvailable(Collection<Object> itemIds) {
+        User user = MgnlContext.getUser();
+        // Validate that the user has all the required roles
+        Collection<String> userRoles = user.getAllRoles();
+        Collection<String> roles = accessDefinition.getRoles();
+        if (roles.isEmpty() || userRoles.contains(DEFAULT_SUPERUSER_ROLE) || CollectionUtils.containsAny(userRoles, roles)) {
+            return true;
+        }
+        return false;
+    }
 }

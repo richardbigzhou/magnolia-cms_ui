@@ -33,47 +33,12 @@
  */
 package info.magnolia.ui.api.availability;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-
-import java.util.Collection;
+import java.util.List;
 
 /**
- * Definition of restrictions on when subject is available.
+ * Checks whether a set of data units complies to the criteria defined in an {@link AvailabilityDefinition}.
  */
-public interface AvailabilityDefinition {
+public interface AvailabilityChecker {
 
-    /**
-     * If true the subject is available when there's no selection.
-     */
-    boolean isRoot();
-
-    /**
-     * If true the subject is available for properties.
-     */
-    boolean isProperties();
-
-    /**
-     * If true the subject is available for nodes.
-     */
-    boolean isNodes();
-
-    /**
-     * If true, the subject is available for multiple item selection.
-     */
-    boolean isMultiple();
-
-    /**
-     * Unless this is empty the subject is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
-
-    /**
-     * Returns the AccessDefinition object for this subject.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the collection of availability rule definitions for this subject.
-     */
-    Collection<AvailabilityRuleDefinition> getRules();
+    boolean isAvailable(AvailabilityDefinition definition, List<Object> ids);
 }
