@@ -67,9 +67,6 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         this(parentNode, nodeType, null);
     }
 
-    @Override
-    protected void initCommonAttributes(Item jcrItem) {}
-
     /**
      * @param parentNode Parent of the node to create.
      * @param nodeType Type node to create.
@@ -81,7 +78,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         setNodeName(nodeName);
         try {
             JcrItemId parentId = JcrItemUtil.getItemId(parentNode);
-            setItemId(new JcrNewNodeItemId(parentId.getUuid(), parentId.getWorkspace(), nodeName, nodeType));
+            setItemId(new JcrNewNodeItemId(parentId.getUuid(), parentId.getWorkspace(), nodeType, nodeName));
         } catch (RepositoryException e) {
             log.error("Failed to initialize JcrNewNodeAdapter: " + e.getMessage(), e);
         }
@@ -147,6 +144,21 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         appliedChanges = true;
 
         return node;
+    }
+
+    @Override
+    public void setNodeName(String nodeName) {
+        super.setNodeName(nodeName);
+        ((JcrNewNodeItemId)getItemId()).setName(nodeName);
+    }
+
+    @Override
+    public void setItemId(JcrItemId itemId) {
+        JcrItemId actualItemId = itemId;
+        if (!(actualItemId instanceof JcrNewNodeItemId)) {
+            actualItemId = new JcrNewNodeItemId(itemId.getUuid(), itemId.getWorkspace(), getPrimaryNodeTypeName(), getNodeName());
+        }
+        super.setItemId(actualItemId);
     }
 
     /**
