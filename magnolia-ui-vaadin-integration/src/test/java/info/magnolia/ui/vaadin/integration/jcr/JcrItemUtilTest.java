@@ -175,7 +175,7 @@ public class JcrItemUtilTest {
     }
 
     @Test
-    public void testGetJrcItems() throws Exception {
+    public void testGetJcrItems() throws Exception {
         // GIVEN
         MockUtil.initMockContext();
         MockSession session = new MockSession("test");
