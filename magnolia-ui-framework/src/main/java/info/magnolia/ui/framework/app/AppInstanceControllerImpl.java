@@ -58,7 +58,6 @@ import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.app.SubAppLifecycleEvent;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
@@ -252,7 +251,6 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         if (subApps.containsKey(instanceId)) {
             SubAppContext subAppContext = subApps.get(instanceId).context;
             locationController.goTo(subAppContext.getLocation());
-            eventBus.fireEvent(new SubAppLifecycleEvent(subAppContext, SubAppLifecycleEvent.Type.FOCUSED));
         }
     }
 
@@ -285,7 +283,6 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         subAppDetails.componentProvider.destroy();
         subAppDetails.eventBusProtector.resetEventBuses();
         subApps.remove(instanceId);
-        eventBus.fireEvent(new SubAppLifecycleEvent(subAppDetails.context, SubAppLifecycleEvent.Type.STOPPED));
     }
 
     @Override
@@ -389,7 +386,6 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
             subApps.put(instanceId, subAppDetails);
         }
 
-        eventBus.fireEvent(new SubAppLifecycleEvent(subAppDetails.context, SubAppLifecycleEvent.Type.STARTED));
         return subAppContext;
     }
 
