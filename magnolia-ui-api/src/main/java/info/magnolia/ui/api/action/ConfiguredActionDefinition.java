@@ -138,9 +138,8 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         this.errorMessage = errorMessage;
     }
 
-    //@TransformedBy(AvailabilityDefinition.class)
-    public void setAvailability(AvailabilityDefinition voterBasedAvailability) {
-        this.availability = voterBasedAvailability;
+    public void setAvailability(AvailabilityDefinition availability) {
+        this.availability = availability;
     }
 }
 
