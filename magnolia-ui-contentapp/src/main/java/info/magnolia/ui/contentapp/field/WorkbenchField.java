@@ -34,9 +34,7 @@
 package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -103,15 +101,7 @@ public class WorkbenchField extends CustomField<Object> {
         workbenchEventbus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                try {
-                    JcrNodeAdapter firstItem = new JcrNodeAdapter(NodeUtil.getNodeByIdentifier(presenter.getWorkspace(), String.valueOf(event.getFirstItemId())));
-                    Item value = !"/".equals(firstItem.getJcrItem().getPath()) ? firstItem : new NullItem();
-                    setValue(value, false);
-                } catch (RepositoryException e) {
-                    log.error("Error occurred while selecting an item in workbench: ", e);
-                    setValue(new NullItem(), false);
-                }
-
+                setValue(event.getFirstItemId(), false);
             }
         });
 

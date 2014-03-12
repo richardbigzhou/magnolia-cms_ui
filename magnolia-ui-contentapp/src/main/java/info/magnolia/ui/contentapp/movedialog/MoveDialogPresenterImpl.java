@@ -62,6 +62,8 @@ import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -116,13 +118,16 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private I18nizer i18nizer;
 
+    private ContentConnector contentConnector;
+
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
         super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
         this.i18nizer = i18nizer;
+        this.contentConnector = contentConnector;
         dialogView.asVaadinComponent().setStyleName("choose-dialog");
     }
 
@@ -154,7 +159,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                currentHostCandidate = (event.getProperty().getValue() == null) ? null: (JcrNodeAdapter) event.getProperty().getValue();
+                currentHostCandidate = contentConnector.getItem(event.getProperty().getValue());
                 updatePossibleMoveLocations(currentHostCandidate);
 
             }
@@ -227,15 +232,18 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     protected void updatePossibleMoveLocations(Item possibleHost) {
         Set<MoveLocation> possibleLocations = new HashSet<MoveLocation>();
-        if (possibleHost != null) {
-            Iterator<Entry<MoveLocation, MovePossibilityPredicate>> it = possibilityPredicates.entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<MoveLocation, MovePossibilityPredicate> entry = it.next();
-                if (entry.getValue().isMovePossible(possibleHost)) {
-                    possibleLocations.add(entry.getKey());
-                }
+        if (possibleHost == null) {
+            possibleHost = new NullItem();
+        }
+
+        Iterator<Entry<MoveLocation, MovePossibilityPredicate>> it = possibilityPredicates.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<MoveLocation, MovePossibilityPredicate> entry = it.next();
+            if (entry.getValue().isMovePossible(possibleHost)) {
+                possibleLocations.add(entry.getKey());
             }
         }
+
         getActionArea().setPossibleMoveLocations(possibleLocations);
     }
 
