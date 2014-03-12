@@ -91,7 +91,6 @@ import com.vaadin.server.Resource;
  * </ul>
  * <p>
  * Its main configuration point is the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
- * TODO JCRFREE - consider generic id type here.
  */
 public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserView.Listener {
 
