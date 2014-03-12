@@ -49,23 +49,18 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
         super(view, componentProvider);
     }
 
-    @Override
-    public SearchJcrContainer initializeContainer() {
-        return (SearchJcrContainer) super.initializeContainer();
-    }
-
     public void search(String fulltextExpr) {
-        initializeContainer().setFullTextExpression(fulltextExpr);
+        ((SearchJcrContainer)container).setFullTextExpression(fulltextExpr);
         refresh();
     }
 
     public void clear() {
-        initializeContainer().setFullTextExpression(null);
+        ((SearchJcrContainer)container).setFullTextExpression(null);
         refresh();
     }
 
     @Override
-    protected AbstractJcrContainer instantiateContainer() {
+    protected AbstractJcrContainer createContainer() {
         return new SearchJcrContainer(workbenchDefinition);
     }
 }

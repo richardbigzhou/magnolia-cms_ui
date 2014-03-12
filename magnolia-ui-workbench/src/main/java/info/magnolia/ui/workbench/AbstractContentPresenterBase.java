@@ -239,9 +239,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     @Override
     public void expand(Object itemId) {}
 
-    @Override
-    public abstract Container initializeContainer();
-
+    protected abstract Container initializeContainer();
 
     protected ContentPresenterDefinition getPresenterDefinition() {
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();

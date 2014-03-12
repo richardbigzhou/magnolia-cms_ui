@@ -116,17 +116,12 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     @Override
     public Container initializeContainer() {
-        container = createAndConfigureContainer(getPresenterDefinition());
+        AbstractJcrContainer container = createContainer();
+        configureContainer(getPresenterDefinition(), container);
         return container;
     }
 
-    protected Container createAndConfigureContainer(ContentPresenterDefinition presenterDefinition) {
-        AbstractJcrContainer container = instantiateContainer();
-        configureContainer(presenterDefinition, container);
-        return container;
-    }
-
-    protected AbstractJcrContainer instantiateContainer() {
+    protected AbstractJcrContainer createContainer() {
         return new FlatJcrContainer(workbenchDefinition);
     }
 
