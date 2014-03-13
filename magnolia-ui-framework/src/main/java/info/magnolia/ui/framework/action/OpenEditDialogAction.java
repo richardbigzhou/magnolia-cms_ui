@@ -71,11 +71,11 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
     @Override
     public void execute() throws ActionExecutionException {
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit.getItemId(), getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

@@ -73,7 +73,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
@@ -321,11 +320,6 @@ public class ConfirmationActionTest extends MgnlTestCase {
         @Override
         public ActionDefinition getActionDefinition(String actionName) {
             return null;
-        }
-
-        @Override
-        public boolean isAvailable(String actionName, Item... items) {
-            return false;
         }
 
         public String getExecutedActionName() {

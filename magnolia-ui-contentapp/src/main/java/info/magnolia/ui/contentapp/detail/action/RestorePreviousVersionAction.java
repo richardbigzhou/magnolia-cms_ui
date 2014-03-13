@@ -94,7 +94,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
-            eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getWorkspace(), nodeItemToEdit.getItemId()));
+            eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getItemId()));
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-contentapp.actions.restorePreviousVersion.notification.success"));
         } catch (RepositoryException e) {
             subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("ui-contentapp.actions.restorePreviousVersion.notification.error"));

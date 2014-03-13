@@ -46,14 +46,15 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * UI action which allow to restore node to the state defined by the selected version.
@@ -89,7 +90,7 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
                     String versionName = (String) getItem().getItemProperty("versionName").getValue();
                     versionManager.restore(node, versionManager.getVersion(node, versionName), true);
 
-                    eventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getWorkspace(), nodeAdapter.getItemId()));
+                    eventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getItemId()));
                     uiContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-contentapp.actions.restoreVersion.notification.success"));
                 } catch (RepositoryException e) {
                     uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("ui-contentapp.actions.restoreVersion.notification.error", e.getMessage()));

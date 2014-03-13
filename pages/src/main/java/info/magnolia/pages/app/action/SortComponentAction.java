@@ -86,7 +86,7 @@ public class SortComponentAction extends AbstractAction<SortComponentActionDefin
             }
 
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(areaElement.getWorkspace(), areaElement.getPath()));
+            eventBus.fireEvent(new ContentChangedEvent(areaElement.getPath()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
