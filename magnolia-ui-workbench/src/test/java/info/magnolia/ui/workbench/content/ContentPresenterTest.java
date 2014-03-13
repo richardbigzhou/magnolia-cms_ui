@@ -168,7 +168,7 @@ public class ContentPresenterTest {
         }
 
         @Override
-        public Container initializeContainer() {
+        protected Container initializeContainer() {
             return null;
         }
     }

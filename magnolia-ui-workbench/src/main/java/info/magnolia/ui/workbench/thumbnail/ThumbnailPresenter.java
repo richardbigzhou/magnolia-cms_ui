@@ -99,7 +99,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public Container initializeContainer() {
+    protected Container initializeContainer() {
         ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(workbenchDefinition));
         c.setThumbnailHeight(73);
         c.setThumbnailWidth(73);

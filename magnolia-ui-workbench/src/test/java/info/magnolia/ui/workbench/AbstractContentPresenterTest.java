@@ -62,7 +62,7 @@ public class AbstractContentPresenterTest {
         }
 
         @Override
-        public Container initializeContainer() {
+        protected Container initializeContainer() {
             return null;
         }
 
