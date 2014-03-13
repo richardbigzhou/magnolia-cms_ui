@@ -47,6 +47,7 @@ import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -57,6 +58,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -69,7 +72,6 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -78,10 +80,14 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -109,6 +115,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final PageBarView pageBarView;
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
+    private AvailabilityChecker availabilityChecker;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -123,7 +130,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -134,6 +141,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.pageBarView = pageBarView;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
+        this.availabilityChecker = availabilityChecker;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -159,13 +167,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
 
-        actionbarPresenter.setListener(this);
-        pageBarView.setListener(this);
         ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
-        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
+        Map<String, ActionDefinition> actionDefinitions = getSubAppContext().getSubAppDescriptor().getActions();
+        actionbarPresenter.setListener(this);
+        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
+
+        pageBarView.setListener(this);
+
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
+
         goToLocation(detailLocation);
         return view;
     }
@@ -341,7 +353,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                JcrItemId itemId = (JcrItemId) event.getItemId();
+                if (itemId.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
                     try {
                         String currentNodePath = getCurrentLocation().getNodePath();
@@ -399,18 +412,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
-    }
-
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getIcon() : null;
     }
 
     @Override
@@ -511,11 +512,18 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, node)) {
-                    actionbarPresenter.enable(actionName);
-                } else {
-                    actionbarPresenter.disable(actionName);
+                try {
+                    Object jcrItemId = JcrItemUtil.getItemId(node);
+                    AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+                    if (availabilityChecker.isAvailable(availability, Arrays.asList(jcrItemId))) {
+                        actionbarPresenter.enable(actionName);
+                    } else {
+                        actionbarPresenter.disable(actionName);
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Error occurred while trying to update action availability: " + e.getMessage(), e);
                 }
+
             }
         }
     }

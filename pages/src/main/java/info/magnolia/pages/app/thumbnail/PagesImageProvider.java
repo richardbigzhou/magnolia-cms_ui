@@ -35,6 +35,7 @@ package info.magnolia.pages.app.thumbnail;
 
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 /**
  * PagesImageProvider.
@@ -44,8 +45,8 @@ public class PagesImageProvider extends DefaultImageProvider {
     /**
      * @param definition
      */
-    public PagesImageProvider(ImageProviderDefinition definition) {
-        super(definition);
+    public PagesImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
+        super(definition, contentConnector);
     }
 
 }
