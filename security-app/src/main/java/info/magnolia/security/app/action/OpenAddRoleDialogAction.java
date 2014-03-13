@@ -82,11 +82,11 @@ public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Role.NAME);
 
-        formDialogPresenter.start(item, dialogDefinition, uiContext, new EditorCallback() {
+        formDialogPresenter.start(item.getItemId(), dialogDefinition, uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

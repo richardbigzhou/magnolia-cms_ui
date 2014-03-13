@@ -36,7 +36,7 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
