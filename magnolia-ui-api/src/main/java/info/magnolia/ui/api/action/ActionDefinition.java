@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 /**
