@@ -33,18 +33,20 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.ui.contentapp.detail.DetailLocation;
-import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
-import javax.jcr.RepositoryException;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -55,30 +57,48 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final AbstractJcrNodeAdapter nodeItemToEdit;
+    private Map<Object, Item> idToItem;
+
+    private final Item nodeItemToEdit;
+
     private final LocationController locationController;
 
-    public EditItemAction(EditItemActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController) {
+    private ContentConnector contentConnector;
+
+    public EditItemAction(EditItemActionDefinition definition, Map<Object, Item> idToItem, Item nodeItemToEdit, LocationController locationController, ContentConnector contentConnector) {
         super(definition);
+        this.idToItem = idToItem;
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
+        this.contentConnector = contentConnector;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
-                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
-                        getPrimaryNodeType().getName());
+            Object itemId = getItemId(nodeItemToEdit);
+            if (contentConnector.canHandleItem(itemId)) {
+                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition(), String.valueOf(itemId));
                 return;
             }
-            final String path = nodeItemToEdit.getJcrItem().getPath();
+
+            final String path = contentConnector.getItemUrlFragment(itemId);
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
+    }
+
+    private Object getItemId(Item nodeItemToEdit) {
+        Iterator<Map.Entry<Object, Item>> entryIt = idToItem.entrySet().iterator();
+        while (entryIt.hasNext()) {
+            Map.Entry<Object, Item> entry = entryIt.next();
+            if (entry.getValue() == nodeItemToEdit) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -43,12 +42,11 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -79,18 +77,21 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
     private final EventBus adminCentralEventBus;
     private final SimpleTranslator i18n;
 
-    private String itemId;
+    private Object itemId;
+
     private String caption;
+
+    private ContentConnector contentConnector;
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
-            DetailEditorPresenter presenter, SimpleTranslator i18n) {
+            DetailEditorPresenter presenter, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
         this.presenter = presenter;
         this.i18n = i18n;
-
+        this.contentConnector = contentConnector;
         bindHandlers();
     }
 
@@ -109,17 +110,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        try {
-            this.itemId = JcrItemUtil.getItemId(getWorkspace(), detailLocation.getNodePath());
-        } catch (RepositoryException e) {
-            log.warn("Could not retrieve item at path {} in workspace {}", detailLocation.getNodePath(), getWorkspace());
-        }
+        this.itemId = contentConnector.getItemIdByUrlFragment(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), contentConnector, detailLocation.getVersion());
         } else {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), contentConnector);
         }
         getView().setContentView(view);
         return getView();
@@ -159,56 +156,46 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     private void bindHandlers() {
-
         adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 // See if workspaces match
-                if (event.getWorkspace().equals(getWorkspace())) {
+                JcrItemId eventItemId = (JcrItemId) event.getItemId();
+                if (eventItemId.getWorkspace().equals(getWorkspace())) {
                     // New item
                     if (itemId == null) {
-                        try {
-                            // Check if parent is still existing, close supApp if it doesn't
-                            String currentNodePath = getCurrentLocation().getNodePath();
+                        // Check if parent is still existing, close supApp if it doesn't
+                        String currentNodePath = getCurrentLocation().getNodePath();
 
-                            // resolve parent, removing trailing slash except for root
-                            int splitIndex = currentNodePath.lastIndexOf("/");
-                            if (splitIndex == 0) {
-                                splitIndex = 1;
-                            }
-                            String parentNodePath = currentNodePath.substring(0, splitIndex);
-
-                            if (!MgnlContext.getJCRSession(getWorkspace()).nodeExists(parentNodePath)) {
-                                getSubAppContext().close();
-                            }
-                        } catch (RepositoryException e) {
-                            log.warn("Could not determine if parent node still exists", e);
+                        // resolve parent, removing trailing slash except for root
+                        int splitIndex = currentNodePath.lastIndexOf("/");
+                        if (splitIndex == 0) {
+                            splitIndex = 1;
+                        }
+                        String parentNodePath = currentNodePath.substring(0, splitIndex);
+                        Object parentItemId = contentConnector.getItemIdByUrlFragment(parentNodePath);
+                        if (!contentConnector.canHandleItem(parentItemId)) {
+                            getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
-                        try {
-                            Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-
-                            // Item (or parent) was deleted: close subApp
-                            if (item == null) {
-                                getSubAppContext().close();
+                        // Item (or parent) was deleted: close subApp
+                        if (!contentConnector.canHandleItem(itemId)) {
+                            getSubAppContext().close();
+                        }
+                        // Item still exists: update location if necessary
+                        else {
+                            String currentNodePath = getCurrentLocation().getNodePath();
+                            String itemPath = contentConnector.getItemUrlFragment(itemId);
+                            if (!currentNodePath.equals(itemPath)) {
+                                DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
+                                location.updateNodePath(itemPath);
+                                // Update location
+                                getSubAppContext().setLocation(location);
+                                // Update Caption
+                                setCaption(location);
                             }
-                            // Item still exists: update location if necessary
-                            else {
-                                String currentNodePath = getCurrentLocation().getNodePath();
-
-                                if (!item.getPath().equals(currentNodePath)) {
-                                    DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
-                                    location.updateNodePath(item.getPath());
-                                    // Update location
-                                    getSubAppContext().setLocation(location);
-                                    // Update Caption
-                                    setCaption(location);
-                                }
-                            }
-                        } catch (RepositoryException e) {
-                            log.warn("Could not determine if node still exists", e);
                         }
                     }
                 }

@@ -41,6 +41,8 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
@@ -60,9 +62,9 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.SubAppActionExecutor;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rits.cloning.Cloner;
+import com.vaadin.data.Item;
 
 /**
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
@@ -97,7 +100,9 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private EditorDefinition editorDefinition;
 
-    private JcrNodeAdapter item;
+    private Item item;
+
+    private Object itemId;
 
     private DialogView dialogView;
 
@@ -105,9 +110,12 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private final SimpleTranslator i18n;
 
+    private AvailabilityChecker checker;
+    private ContentConnector contentConnector;
+
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
@@ -116,11 +124,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.executor = executor;
         this.i18nizer = i18nizer;
         this.i18n = i18n;
+        this.checker = checker;
+        this.contentConnector = contentConnector;
     }
 
-    public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
+    public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
         this.editorDefinition = editorDefinition;
-        this.item = item;
+        this.item = contentConnector.getItem(itemId);
+        this.itemId = itemId;
         setItemView(viewType);
         return view;
     }
@@ -156,10 +167,10 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         Map<String, ActionDefinition> subAppActions = subAppContext.getSubAppDescriptor().getActions();
         List<ActionDefinition> filteredActions = new LinkedList<ActionDefinition>();
         List<FormActionItemDefinition> editorActions = editorDefinition.getActions();
-        boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
-            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter) item).getJcrItem())))) {
+            AvailabilityDefinition availability = executor.getActionDefinition(editorAction.getName()).getAvailability();
+            if (def != null && checker.isAvailable(availability, Arrays.asList(itemId))) {
                 filteredActions.add(def);
             } else {
                 log.debug("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
@@ -194,7 +205,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void onSuccess(String actionName) {
-        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+        eventBus.fireEvent(new ContentChangedEvent(itemId));
         // setItemView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
@@ -224,5 +235,13 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
             subAppContext.getAppContext().sendLocalMessage(error);
         }
+    }
+
+    private EditorDefinition getEditorDefinition() {
+        return ((DetailSubAppDescriptor)subAppContext.getSubAppDescriptor()).getEditor();
+    }
+
+    public Item getItem() {
+        return item;
     }
 }

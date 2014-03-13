@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import com.vaadin.ui.ComponentContainer;
 
