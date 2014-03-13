@@ -47,6 +47,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Container;
+
 /**
  * Tests.
  */
@@ -57,6 +59,11 @@ public class AbstractContentPresenterTest {
     private class DummyContentPresenter extends AbstractContentPresenter {
         private DummyContentPresenter(final ComponentProvider componentProvider) {
             super(componentProvider);
+        }
+
+        @Override
+        public Container initializeContainer() {
+            return null;
         }
 
         @Override

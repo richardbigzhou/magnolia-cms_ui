@@ -35,15 +35,21 @@ package info.magnolia.ui.workbench.list;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.container.Refreshable;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import com.vaadin.data.Container;
 
 /**
  * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
@@ -52,8 +58,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected final ListView view;
 
-    protected AbstractJcrContainer container;
-
     @Inject
     public ListPresenter(final ListView view, final ComponentProvider componentProvider) {
         super(componentProvider);
@@ -61,12 +65,12 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        super.start(workbench, eventBus, viewTypeName);
-
-        this.container = createContainer(workbench);
+    public ListView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
+        super.start(workbenchDefinition, eventBus, viewTypeName, contentConnector);
+        this.container = initializeContainer();
         view.setListener(this);
         view.setContainer(container);
+        view.clearColumns();
 
         // build columns
         Iterator<ColumnDefinition> it = getColumnsIterator();
@@ -76,7 +80,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             String title = column.getLabel();
-            container.addContainerProperty(propertyId, column.getType(), null);
 
             if (column.getWidth() > 0) {
                 view.addColumn(propertyId, title, column.getWidth());
@@ -89,34 +92,44 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             if (column.getFormatterClass() != null) {
                 view.setColumnFormatter(propertyId, getComponentProvider().newInstance(column.getFormatterClass(), column));
             }
-
-            if (column.isSortable()) {
-                container.addSortableProperty(propertyId);
-            }
         }
 
         return view;
     }
 
     @Override
-    public void select(List<String> itemIds) {
-        view.select(itemIds);
+    public void select(List<Object> itemIds) {
+        List<Object> objectIds = new ArrayList<Object>();
+        for (Object itemId : itemIds) {
+            objectIds.add(itemId);
+        }
+        view.select(objectIds);
     }
 
     @Override
     public void refresh() {
         // This will update the row count and display the newly created items.
-        container.refresh();
-        container.fireItemSetChange();
+        if (container instanceof Refreshable) {
+            ((Refreshable)container).refresh();
+        }
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
-    }
-
-    protected AbstractJcrContainer getContainer() {
+    @Override
+    public Container initializeContainer() {
+        AbstractJcrContainer container = createContainer();
+        configureContainer(getPresenterDefinition(), container);
         return container;
     }
 
+    protected AbstractJcrContainer createContainer() {
+        return new FlatJcrContainer(workbenchDefinition);
+    }
 
+    protected void configureContainer(ContentPresenterDefinition presenterDefinition, AbstractJcrContainer container) {
+        for (ColumnDefinition column : presenterDefinition.getColumns()) {
+            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            container.addContainerProperty(propertyId, column.getType(), null);
+            container.addSortableProperty(propertyId);
+        }
+    }
 }

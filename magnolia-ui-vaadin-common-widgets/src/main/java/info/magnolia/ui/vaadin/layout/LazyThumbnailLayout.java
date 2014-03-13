@@ -65,10 +65,10 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private Ordered container;
 
     // Maps thumbnailId to itemId
-    private final BiMap<String, String> mapper = HashBiMap.create();
+    private final BiMap<String, Object> mapper = HashBiMap.create();
     private final AtomicInteger counter = new AtomicInteger();
 
-    private String selectedItemId;
+    private Object selectedItemId;
 
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
 
@@ -128,7 +128,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private void onThumbnailSelected(Object itemId) {
         for (final ThumbnailSelectionListener listener : selectionListeners) {
-            listener.onThumbnailSelected(String.valueOf(itemId));
+            listener.onThumbnailSelected(itemId);
         }
     }
 
@@ -142,7 +142,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         while (id != null && i < amount) {
             Object resource = container.getContainerProperty(id, "thumbnail").getValue();
             boolean isRealResource = resource instanceof Resource;
-            String thumbnailId = mapItemIdToThumbnailId((String) id);
+            String thumbnailId = mapItemIdToThumbnailId(id);
             String iconFontId = isRealResource ? null : String.valueOf(resource);
             if (isRealResource) {
                 setResource(thumbnailId, (Resource) resource);
@@ -158,7 +158,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     /**
      * Adds the itemId to the internal mapping or if it's already mapped returns the existing key.
      */
-    private String mapItemIdToThumbnailId(String itemId) {
+    private String mapItemIdToThumbnailId(Object itemId) {
         if (itemId == null) {
             return null;
         }
@@ -241,7 +241,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         return (ThumbnailLayoutState) super.getState(markAsDirty);
     }
 
-    public void setSelectedItemId(String selectedItemId) {
+    public void setSelectedItemId(Object selectedItemId) {
         this.selectedItemId = selectedItemId;
     }
 
@@ -249,21 +249,21 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
      * Listener interface for thumbnail selection.
      */
     public interface ThumbnailSelectionListener {
-        void onThumbnailSelected(String itemId);
+        void onThumbnailSelected(Object itemId);
     }
 
     /**
      * Listener for thumbnail double clicks.
      */
     public interface ThumbnailDblClickListener {
-        void onThumbnailDblClicked(String itemId);
+        void onThumbnailDblClicked(Object itemId);
     }
 
     /**
      * Listener for thumbnail right clicks.
      */
     public interface ThumbnailRightClickListener {
-        void onThumbnailRightClicked(String itemId, int clickX, int clickY);
+        void onThumbnailRightClicked(Object itemId, int clickX, int clickY);
     }
 
     /**

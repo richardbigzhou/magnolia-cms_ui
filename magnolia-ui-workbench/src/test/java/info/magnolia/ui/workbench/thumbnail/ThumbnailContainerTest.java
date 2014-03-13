@@ -41,6 +41,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -80,7 +81,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         configuredWorkbench.setPath("/");
         configuredWorkbench.setNodeTypes(nodeTypes);
 
-        container = new ThumbnailContainer(configuredWorkbench, new DefaultImageProvider());
+        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(configuredWorkbench));
     }
 
     @Test
@@ -92,15 +93,14 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
         assertEquals(4, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
-
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
     @Test
@@ -112,14 +112,14 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
 
