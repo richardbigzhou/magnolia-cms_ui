@@ -42,4 +42,5 @@ import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 public interface ContentAppDescriptor extends AppDescriptor {
 
     ChooseDialogDefinition getChooseDialog();
+
 }

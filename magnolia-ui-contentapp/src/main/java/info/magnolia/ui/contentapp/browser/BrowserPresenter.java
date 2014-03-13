@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,42 +36,41 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -111,28 +110,33 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final ActionbarPresenter actionbarPresenter;
 
-    private final ImageProvider imageProvider;
+    private AvailabilityChecker checker;
 
     private final AppContext appContext;
 
+    protected ContentConnector contentConnector;
+
+    private final ImageProvider imageProvider;
+
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
+                                final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, ComponentProvider componentProvider, AvailabilityChecker checker) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.actionbarPresenter = actionbarPresenter;
+        this.checker = checker;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-
+        this.contentConnector = contentConnector;
         ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
         } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, contentConnector);
         }
     }
 
@@ -140,7 +144,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         actionbarPresenter.setListener(this);
 
         WorkbenchView workbenchView = workbenchPresenter.start(subAppDescriptor.getWorkbench(), subAppDescriptor.getImageProvider(), subAppEventBus);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
@@ -155,7 +159,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getWorkspace().equals(getWorkspace())) {
+                if (contentConnector.canHandleItem(event.getItemId())) {
 
                     workbenchPresenter.refresh();
 
@@ -166,14 +170,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                     }
 
                     // use just the first selected item to show the preview image
-                    String itemId = getSelectedItemIds().get(0);
-                    try {
-                        if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                            refreshActionbarPreviewImage(itemId, event.getWorkspace());
-                        }
-                    } catch (RepositoryException e) {
-                        log.warn("Unable to get node or property [{}] for preview image", itemId, e);
+                    Object itemId = getSelectedItemIds().get(0);
+                    if (verifyItemExists(itemId)) {
+                        refreshActionbarPreviewImage(itemId);
                     }
+
                 }
             }
         });
@@ -183,7 +184,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
                 // if exactly one node is selected, use it for preview
-                refreshActionbarPreviewImage(event.getFirstItemId(), event.getWorkspace());
+                refreshActionbarPreviewImage(event.getFirstItemId());
             }
         });
 
@@ -203,11 +204,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             }
         });
 
-        subAppEventBus.addHandler(ItemEditedEvent.class, new ItemEditedEvent.Handler() {
+        subAppEventBus.addHandler(ActionEvent.class, new ActionEvent.Handler() {
 
             @Override
-            public void onItemEdited(ItemEditedEvent event) {
-                editItem(event);
+            public void onAction(ActionEvent event) {
+                executeAction(event.getActionName(), event.getItemIds(), event.getParameters());
             }
         });
 
@@ -229,7 +230,20 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         });
     }
 
-    public List<String> getSelectedItemIds() {
+    private void refreshActionbarPreviewImage(Object itemId) {
+        Object previewResource = getPreviewImageForId(itemId);
+        if (previewResource instanceof Resource) {
+            getActionbarPresenter().setPreview((Resource) previewResource);
+        } else {
+            getActionbarPresenter().setPreview(null);
+        }
+    }
+
+    protected boolean verifyItemExists(Object itemId) {
+        return contentConnector.canHandleItem(itemId);
+    }
+
+    public List<Object> getSelectedItemIds() {
         return workbenchPresenter.getSelectedIds();
     }
 
@@ -253,99 +267,29 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return actionbarPresenter;
     }
 
-    public String getWorkspace() {
-        return workbenchPresenter.getWorkspace();
-    }
-
     /**
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final List<String> itemIds, final String viewType, final String query) {
+    public void resync(final List<Object> itemIds, final String viewType, final String query) {
         workbenchPresenter.resynch(itemIds, viewType, query);
     }
 
-    private void refreshActionbarPreviewImage(final String itemId, final String workspace) {
-        if (StringUtils.isBlank(itemId)) {
-            actionbarPresenter.setPreview(null);
-        } else {
-            if (imageProvider != null) {
-                Object previewResource = imageProvider.getThumbnailResourceById(workspace, itemId, ImageProvider.PORTRAIT_GENERATOR);
-                if (previewResource instanceof Resource) {
-                    actionbarPresenter.setPreview((Resource) previewResource);
-                } else {
-                    actionbarPresenter.setPreview(null);
-                }
-            }
+    protected Object getPreviewImageForId(Object itemId) {
+        if (imageProvider != null) {
+            return imageProvider.getThumbnailResource(itemId, ImageProvider.PORTRAIT_GENERATOR);
         }
-    }
-
-    private void editItem(ItemEditedEvent event) {
-        Item item = event.getItem();
-
-        // we support only JCR item adapters
-        if (!(item instanceof JcrItemAdapter)) {
-            return;
-        }
-
-        // don't save if no value changes occurred on adapter
-        if (!((JcrItemAdapter) item).hasChangedProperties()) {
-            return;
-        }
-
-        if (item instanceof AbstractJcrNodeAdapter) {
-            // Saving JCR Node, getting updated node first
-            AbstractJcrNodeAdapter nodeAdapter = (AbstractJcrNodeAdapter) item;
-            try {
-                // get modifications
-                Node node = nodeAdapter.applyChanges();
-                node.getSession().save();
-            } catch (RepositoryException e) {
-                log.error("Could not save changes to node", e);
-            }
-
-        } else if (item instanceof JcrPropertyAdapter) {
-            // Saving JCR Property, update it first
-            JcrPropertyAdapter propertyAdapter = (JcrPropertyAdapter) item;
-            try {
-                // get parent first because once property is updated, it won't exist anymore if the name changes
-                Node parent = propertyAdapter.getJcrItem().getParent();
-
-                // get modifications
-                propertyAdapter.applyChanges();
-                parent.getSession().save();
-
-                // update workbench selection in case the property changed name
-                List<String> ids = new ArrayList<String>();
-                ids.add(JcrItemUtil.getItemId(propertyAdapter.getJcrItem()));
-                workbenchPresenter.select(ids);
-
-            } catch (RepositoryException e) {
-                log.error("Could not save changes to property", e);
-            }
-        }
+        return null;
     }
 
     @Override
-    public void onActionbarItemClicked(String itemName) {
-        executeAction(itemName);
+    public void onActionbarItemClicked(String actionName) {
+        executeAction(actionName);
     }
 
     @Override
     public void onActionBarSelection(String actionName) {
         executeAction(actionName);
-    }
-
-    @Override
-    public String getLabel(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
     /**
@@ -378,38 +322,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName) {
         try {
-            if (getSelectedItemIds().size() == 1) {
-                // This is done this way, because most actions do not support multiple items, and expect just one Item
-                // in the constructor. So if we passed List<Item> containing this one Item to the ActionExecutor, it'd
-                // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
-                // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
-                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-                String workbenchRootId = JcrItemUtil.getItemId(getWorkspace(), subAppDescriptor.getWorkbench().getPath());
-                boolean isWorkbenchRoot = JcrItemUtil.getItemId(item).equals(workbenchRootId);
-                // if the item is workbench root (i.e. no real item is selected), we have to pass null to the isAvailable method
-                if (actionExecutor.isAvailable(actionName, isWorkbenchRoot ? null : item)) {
-                    actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
-                }
-            } else {
-                List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
-                List<javax.jcr.Item> jcrItems = new ArrayList<javax.jcr.Item>(getSelectedItemIds().size());
-                for (String itemId : getSelectedItemIds()) {
-                    javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-                    jcrItems.add(item);
-                    JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
-                    items.add(adapter);
-                }
-                if (actionExecutor.isAvailable(actionName, jcrItems.toArray(new javax.jcr.Item[] {}))) {
-                    actionExecutor.execute(actionName, items);
-                }
+            AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+            if (checker.isAvailable(availability, getSelectedItemIds())) {
+                Object[] args = prepareActionArgs();
+                actionExecutor.execute(actionName, args);
             }
-        } catch (PathNotFoundException p) {
-            Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
-            appContext.sendLocalMessage(error);
-        } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemIds().get(0), e.getMessage());
-            log.error("An error occurred while executing action [{}]", actionName, e);
-            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
@@ -417,4 +334,42 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         }
     }
 
+    private void executeAction(String actionName, Set<Object> itemIds, Object... parameters) {
+        try {
+            AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+            if (checker.isAvailable(availability, getSelectedItemIds())) {
+                List<Object> args = new ArrayList<Object>();
+                args.add(itemIds);
+                args.addAll(Arrays.asList(parameters));
+                actionExecutor.execute(actionName, new Object[] { args.toArray() });
+            }
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
+        }
+    }
+
+    protected Object[] prepareActionArgs() {
+        List<Object> argList = new ArrayList<Object>();
+        List<Item> selectedItems = new ArrayList<Item>();
+
+        List<Object> selectedIds = getSelectedItemIds();
+        if (selectedIds.isEmpty()) {
+            selectedIds.add(contentConnector.getDefaultItemId());
+        }
+        Iterator<Object> idIt = selectedIds.iterator();
+        Map<Object, Item> idToItem = new HashMap<Object, Item>();
+        while (idIt.hasNext()) {
+            Object id = idIt.next();
+            Item item = contentConnector.getItem(id);
+            idToItem.put(id, item);
+            selectedItems.add(item);
+        }
+
+        argList.add(selectedItems);
+        argList.add(idToItem);
+        argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
+        return argList.toArray(new Object[argList.size()]);
+    }
 }
