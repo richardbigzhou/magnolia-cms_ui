@@ -78,11 +78,19 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     private VersionManager versionManager;
 
+    private JcrItemId defaultItemId;
+
     @Inject
     public JcrContentConnector(SubAppContext subAppContext, final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
         super(definition, componentProvider);
         this.subAppContext = subAppContext;
         this.versionManager = versionManager;
+        try {
+            this.defaultItemId = JcrItemUtil.getItemId(getWorkspace(), getPath());
+        } catch (RepositoryException e) {
+            log.error("Failed to retrieve default id: " + e.getMessage(), e);
+            this.defaultItemId = null;
+        }
     }
 
     @Override
@@ -105,12 +113,13 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     @Override
     public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
-            String nodePath = parseNodePath(urlFragment);
+            String fullFragment = ("/".equals(getPath()) ? "" : getPath()) + urlFragment;
+            String nodePath = parseNodePath(fullFragment);
             JcrItemId nodeItemId = JcrItemUtil.getItemId(getWorkspace(), nodePath);
-            if (!isPropertyItemId(urlFragment)) {
+            if (!isPropertyItemId(fullFragment)) {
                 return nodeItemId;
             } else {
-                return new JcrPropertyItemId(nodeItemId, parsePropertyName(urlFragment));
+                return new JcrPropertyItemId(nodeItemId, parsePropertyName(fullFragment));
             }
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
@@ -149,7 +158,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public Object getDefaultItemId() {
-        return getItemIdByUrlFragment(getPath());
+        return defaultItemId;
     }
 
     @Override
@@ -179,17 +188,19 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     @Override
-    public Object getNewItemId(String newItemPath) {
+    public Object getNewItemId(String newItemPath, Object typeDefinition) {
         SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
 
         String primaryNodeType = null;
-        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
+        if (typeDefinition instanceof String) {
+            primaryNodeType = String.valueOf(typeDefinition);
+        } else if (subAppDescriptor instanceof DetailSubAppDescriptor) {
             primaryNodeType = ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType().getName();
         }
 
         if (primaryNodeType != null) {
             String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
-            parentPath = parentPath.isEmpty() ? "/" : parentPath;
+            parentPath = parentPath.isEmpty() ? getPath() : parentPath;
             Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
             try {
                 return new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);

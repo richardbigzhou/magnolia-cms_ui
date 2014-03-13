@@ -42,7 +42,7 @@ public interface SupportsVersions extends ContentConnector {
      * Get an item id of an item version.
      * @param itemId source item id.
      * @param version version id.
-     * @return id of versin item.
+     * @return id of version item.
      */
     Object getItemVersion(Object itemId, String version);
 }
