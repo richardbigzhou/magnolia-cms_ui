@@ -237,26 +237,21 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     private void setEditing(Object itemId, Object propertyId) {
 
-        // if (itemId != null && propertyId != null) {
-        // Item item = getItem(itemId);
-        // Property<?> property = item.getItemProperty(propertyId);
-        // } else {
-        // if ((bypassedColumnGenerator = tree.getColumnGenerator(propertyId)) != null) {
-        // tree.removeGeneratedColumn(propertyId);
-        // }
-        // }
-        // } else {
-        // if (bypassedColumnGenerator != null) {
-        // addGeneratedColumn(editingPropertyId, bypassedColumnGenerator);
-        // bypassedColumnGenerator = null;
-        // }
-        // }
+        // restore generated column if it was disabled for editing
+        if (bypassedColumnGenerator != null) {
+            tree.addGeneratedColumn(fieldFactory.getEditingPropertyId(), bypassedColumnGenerator);
+            bypassedColumnGenerator = null;
+        }
 
         if (editable && editableColumns.contains(propertyId)) {
             if (itemId == null || propertyId == null) {
                 tree.focus();
                 fieldFactory.setEditing(null, null);
             } else {
+                // disable generated column for editing
+                if ((bypassedColumnGenerator = tree.getColumnGenerator(propertyId)) != null) {
+                    tree.removeGeneratedColumn(propertyId);
+                }
                 fieldFactory.setEditing(itemId, propertyId);
             }
         } else {
