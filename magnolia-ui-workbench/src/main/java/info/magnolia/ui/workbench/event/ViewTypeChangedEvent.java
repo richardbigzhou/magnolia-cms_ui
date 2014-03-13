@@ -47,6 +47,7 @@ public class ViewTypeChangedEvent implements Event<ViewTypeChangedEvent.Handler>
     public interface Handler extends EventHandler {
 
         void onViewChanged(ViewTypeChangedEvent event);
+
     }
 
     private String viewType;

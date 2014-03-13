@@ -43,44 +43,37 @@ import info.magnolia.event.EventHandler;
  */
 public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
+    private Object itemId;
+
     /**
      * Handles {@link ContentChangedEvent} events.
      */
     public interface Handler extends EventHandler {
 
         void onContentChanged(ContentChangedEvent event);
+
     }
-
-    private String workspace;
-
-    private String itemId;
 
     /**
      * Whether the contents of an item changed. Set to true if a property or subnode changed.
      */
     private boolean itemContentChanged = false;
 
-    public ContentChangedEvent(String workspace, String itemId) {
-        this.workspace = workspace;
+    public ContentChangedEvent(Object itemId) {
         this.itemId = itemId;
     }
 
-    public ContentChangedEvent(String workspace, String itemId, boolean itemContentsChanged) {
-        this.workspace = workspace;
-        this.itemId = itemId;
+    public ContentChangedEvent(Object itemId, boolean itemContentsChanged) {
+        this(itemId);
         this.itemContentChanged = itemContentsChanged;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getItemId() {
-        return itemId;
     }
 
     public boolean isItemContentChanged() {
         return itemContentChanged;
+    }
+
+    public Object getItemId() {
+        return itemId;
     }
 
     @Override
