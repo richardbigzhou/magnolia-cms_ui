@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -49,6 +48,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vaadin.data.Item;
+
 /**
  * Opens a move dialog for a collections of node adapters that need to be transferred.
  */
@@ -60,7 +61,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
 
     private JcrNodeAdapter sourceNodeAdapter;
 
-    private List<JcrNodeAdapter> sourceNodeAdapters;
+    private List<Item> sourceNodeAdapters;
 
     private MoveDialogPresenter moveDialogPresenter;
 
@@ -70,7 +71,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             OpenMoveDialogActionDefinition definition,
             AppContext appContext,
             ComponentProvider componentProvider,
-            JcrNodeAdapter sourceNodeAdapter,
+            Item sourceNodeAdapter,
             MoveDialogPresenter moveDialogPresenter) {
         this(definition, appContext, componentProvider, moveDialogPresenter, Arrays.asList(sourceNodeAdapter));
     }
@@ -80,7 +81,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             AppContext appContext,
             ComponentProvider componentProvider,
             MoveDialogPresenter moveDialogPresenter,
-            List<JcrNodeAdapter> sourceNodeAdapters) {
+            List<Item> sourceNodeAdapters) {
         super(definition);
         this.appContext = appContext;
         this.componentProvider = componentProvider;
