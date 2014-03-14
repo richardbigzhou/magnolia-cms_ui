@@ -77,7 +77,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
             Object itemId = getItemId(nodeItemToEdit);
-            if (contentConnector.canHandleItem(itemId)) {
+            if (!contentConnector.canHandleItem(itemId)) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition(), String.valueOf(itemId));
                 return;
             }
