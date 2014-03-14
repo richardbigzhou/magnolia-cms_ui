@@ -42,10 +42,15 @@ import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.vaadin.data.Item;
 
 /**
  * Opens a dialog for editing a node.
@@ -54,28 +59,31 @@ import javax.inject.Named;
  */
 public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDefinition> {
 
-    private final JcrItemAdapter itemToEdit;
+    private final Item itemToEdit;
     private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
+    private Map<Object, Item> idToItem;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Item itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, ContentConnector contentConnector, Map<Object, Item> idToItem) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.idToItem = idToItem;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        final Object itemId = getItemId(itemToEdit);
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
-        formDialogPresenter.start(itemToEdit.getItemId(), getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        formDialogPresenter.start(itemId, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(itemId));
                 formDialogPresenter.closeDialog();
             }
 
@@ -84,5 +92,16 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
                 formDialogPresenter.closeDialog();
             }
         });
+    }
+
+    private Object getItemId(Item nodeItemToEdit) {
+        Iterator<Map.Entry<Object, Item>> entryIt = idToItem.entrySet().iterator();
+        while (entryIt.hasNext()) {
+            Map.Entry<Object, Item> entry = entryIt.next();
+            if (entry.getValue() == nodeItemToEdit) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }
