@@ -135,7 +135,6 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
     @Override
     public void onViewTypeChanged(final DetailView.ViewType viewType) {
-        // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
     @Override
