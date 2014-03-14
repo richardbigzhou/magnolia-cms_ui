@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,6 +50,7 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     private boolean multiple = false;
     private Collection<String> nodeTypes = new ArrayList<String>();
     private AccessDefinition access = new ConfiguredAccessDefinition();
+    private boolean writePermissionRequired;
     private Collection<? extends AvailabilityRuleDefinition> rules = new ArrayList<AvailabilityRuleDefinition>();
 
     @Override
@@ -108,6 +109,15 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     @Override
     public AccessDefinition getAccess() {
         return this.access;
+    }
+
+    @Override
+    public boolean isWritePermissionRequired() {
+        return writePermissionRequired;
+    }
+
+    public void setWritePermissionRequired(boolean writePermissionRequired) {
+        this.writePermissionRequired = writePermissionRequired;
     }
 
     @Override

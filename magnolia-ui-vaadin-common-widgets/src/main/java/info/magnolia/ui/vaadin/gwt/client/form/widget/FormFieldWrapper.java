@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -128,6 +128,11 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     public void setCaption(String caption) {
         label.setInnerHTML(caption);
+        if (caption != null) {
+            // let's show the caption as tooltip, too. This helps if the label is too long. it may contain <span class="requiredfield">*</span>
+            String toolTip = caption.replaceAll("\\<.*?\\>", "");
+            label.setTitle(toolTip);
+        }
     }
 
     @Override

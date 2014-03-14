@@ -159,7 +159,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-05-22T14:58:41.246+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.290+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -169,6 +169,9 @@
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -220,7 +223,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-07-18T14:15:53.426+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.300+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -230,6 +233,9 @@
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -333,13 +339,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-05-22T16:43:07.036+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.308+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -394,13 +403,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-06-06T17:26:43.021+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.315+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -455,13 +467,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-06-06T17:26:43.021+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.331+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -882,11 +897,37 @@
             <sv:value>2013-02-25T12:33:11.857+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2013-05-09T14:59:03.997+02:00</sv:value>
+            <sv:value>2014-03-07T08:26:44.341+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
           </sv:property>
+          <sv:node sv:name="availability">
+            <sv:property sv:name="jcr:primaryType" sv:type="Name">
+              <sv:value>mgnl:contentNode</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>077229a3-8d55-4323-a74b-b902b13da747</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:createdBy" sv:type="String">
+              <sv:value>admin</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:created" sv:type="Date">
+              <sv:value>2014-03-07T08:26:44.347+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:createdBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+              <sv:value>2014-03-07T08:26:44.347+01:00</sv:value>
+            </sv:property>
+            <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+              <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>
+          </sv:node>
         </sv:node>
         <sv:node sv:name="showPreviousVersion">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -1145,7 +1186,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-05-22T16:57:59.003+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.356+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -1155,6 +1196,9 @@
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -1259,7 +1303,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-09-17T13:34:35.074+02:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.368+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -1269,6 +1313,9 @@
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -1408,13 +1455,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2014-01-17T16:50:43.712+01:00</sv:value>
+              <sv:value>2014-03-07T08:26:44.375+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.HasVersionsRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -3422,13 +3472,16 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-09-30T18:06:40.049+02:00</sv:value>
+              <sv:value>2014-03-11T16:26:02.842+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule</sv:value>
+            </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>

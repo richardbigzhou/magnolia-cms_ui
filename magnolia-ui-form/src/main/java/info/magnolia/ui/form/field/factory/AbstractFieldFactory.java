@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -135,13 +134,11 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * - the item is an instance of {@link ItemAdapter} and this is a new Item (Not yet stored in the related datasource).<br>
      * - the item is not an instance of {@link ItemAdapter}.<br>
      * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.<br>
-     * - the field is a hidden field and is not already set.
      */
     public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
         this.field.setPropertyDataSource(property);
 
-        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew()) || (!(item instanceof ItemAdapter) && property.getValue() == null) ||
-                (definition instanceof HiddenFieldDefinition && property.getValue() == null)) {
+        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew()) || (!(item instanceof ItemAdapter) && property.getValue() == null)) {
             setPropertyDataSourceDefaultValue(property);
         }
     }

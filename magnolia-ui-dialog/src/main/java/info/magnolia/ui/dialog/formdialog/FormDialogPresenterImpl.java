@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -124,7 +124,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         buildView(dialogDefinition);
 
-        final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
+        final OverlayCloser overlayCloser = uiContext.openOverlay(getView(), getView().getModalityLevel());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
@@ -136,14 +136,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void buildView(FormDialogDefinition dialogDefinition) {
-        final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
-        final Dialog dialog = new Dialog(decoratedDialogDefinition);
+        final Dialog dialog = new Dialog(dialogDefinition);
 
-        // setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog)); // TODO check and delete/uncomment - and remove the next line
-        formBuilder.buildForm(getView(), decoratedDialogDefinition.getForm(), item, dialog);
+        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
 
-        final String description = decoratedDialogDefinition.getDescription();
-        final String label = decoratedDialogDefinition.getLabel();
+        final String description = dialogDefinition.getDescription();
+        final String label = dialogDefinition.getLabel();
 
         if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             getView().setDescription(description);

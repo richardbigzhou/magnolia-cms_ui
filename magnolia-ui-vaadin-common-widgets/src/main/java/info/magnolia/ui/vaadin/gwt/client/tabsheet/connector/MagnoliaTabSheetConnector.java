@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -134,7 +134,11 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final MagnoliaTabWidget tab = event.getTab();
+                MagnoliaTabWidget tab = event.getTab();
+                if (view.isShowingAllTabs()) {
+                    view.setActiveTab(tab);
+                    tab = null; // force preloader and animation when returning to same tab for consistency reasons
+                }
                 if (tab != view.getActiveTab() && event.isNotifyServer()) {
                     view.showPreloader();
                     view.clearTabs();
@@ -149,6 +153,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
                 rpc.setShowAll();
                 view.showAllTabContents(true);
                 view.getTabContainer().showAll(true);
+                fireEvent(new ActiveTabChangedEvent(true, false));
             }
 
         });

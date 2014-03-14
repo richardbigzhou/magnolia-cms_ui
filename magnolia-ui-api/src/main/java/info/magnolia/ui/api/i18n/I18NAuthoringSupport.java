@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -53,5 +53,7 @@ public interface I18NAuthoringSupport {
     void i18nize(HasComponents fieldContainer, Locale locale);
 
     String createI18NURI(Node node, Locale locale);
+
+    Locale getAuthorLocale();
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
@@ -151,10 +152,14 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
                 addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
             }
+            if (definition.getModalityLevel() == ModalityLevel.LIGHT) {
+                view.addShortcut(new CloseDialogShortcutListener(KeyCode.ESCAPE));
+            }
         } else {
             log.warn("The current Vaadin UI was null when starting {}, as a result dialog keyboard shortcuts will not work.", this);
         }
         this.view.setActionAreaView(editorActionAreaView);
+        this.view.setModalityLevel(definition.getModalityLevel());
         return this.view;
     }
 
@@ -163,7 +168,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     protected Object[] getActionParameters(String actionName) {
-        return new Object[]{this};
+        return new Object[] { this };
     }
 
     @Override
@@ -201,5 +206,20 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     protected I18nizer getI18nizer() {
         return i18nizer;
+    }
+
+    /**
+     * A shortcut listener used to close this dialog.
+     */
+    protected final class CloseDialogShortcutListener extends ShortcutListener {
+
+        public CloseDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            closeDialog();
+        }
     }
 }

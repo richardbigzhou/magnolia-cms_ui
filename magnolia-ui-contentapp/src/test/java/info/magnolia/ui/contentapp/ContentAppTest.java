@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -99,7 +99,7 @@ public class ContentAppTest {
     }
 
     /**
-     * The Class MockChooseDialogEventBusClient.
+     * A client class that requires a ChooseDialogEventBus.
      */
     public static class MockChooseDialogEventBusClient {
         @Inject

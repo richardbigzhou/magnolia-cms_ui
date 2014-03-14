@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,15 +45,12 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.util.BeanItem;
-
 /**
- * MessagePresenter.
+ * The message detail presenter.
  */
 public final class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
 
@@ -94,8 +91,8 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             messageViewDefinition = i18nizer.decorate(messageViewDefinition);
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
+            MessageItem messageItem = new MessageItem(message);
 
-            BeanItem<Message> messageItem = new BeanItem<Message>(message);
             View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 
@@ -124,6 +121,17 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             throw new RuntimeException("Could not execute action " + actionName, e);
         }
     }
+
+    @Override
+    public String getLabel(String actionName) {
+        return messageActionExecutor.getActionDefinition(actionName).getLabel();
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        return messageActionExecutor.getActionDefinition(actionName).getIcon();
+    }
+
 
     /**
      * Listener interface used to call back to parent presenter.

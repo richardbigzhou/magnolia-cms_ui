@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
@@ -54,6 +55,17 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
         field.setValue(definition.getDefaultValue());
         field.setVisible(false);
         return field;
+    }
+
+    /**
+     * Make sure default value is always used for input hidden if current value is null.
+     */
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        if (property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
+        }
+        field.setPropertyDataSource(property);
     }
 
 }

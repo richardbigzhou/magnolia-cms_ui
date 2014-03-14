@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -91,6 +91,7 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
             field.addValueChangeListener(selectionListener);
+            field.setWidth(100, Unit.PERCENTAGE);
 
             root.addComponent(field);
         }

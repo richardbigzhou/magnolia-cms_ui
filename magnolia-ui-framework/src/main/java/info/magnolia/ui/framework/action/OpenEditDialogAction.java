@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,8 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -43,6 +45,8 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -51,6 +55,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.vaadin.data.Item;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Opens a dialog for editing a node.
@@ -64,21 +70,34 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
     private final UiContext uiContext;
     private final EventBus eventBus;
     private Map<Object, Item> idToItem;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Item itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, ContentConnector contentConnector, Map<Object, Item> idToItem) {
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Item itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n, ContentConnector contentConnector, Map<Object, Item> idToItem) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
         this.idToItem = idToItem;
+        this.i18n = i18n;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        final String dialogName = getDefinition().getDialogName();
+        if(StringUtils.isBlank(dialogName)){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.no.dialog.definition", getDefinition().getName()));
+            return;
+
+        }
+        
         final Object itemId = getItemId(itemToEdit);
-        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
+        if(formDialogPresenter == null){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
+            return;
+        }
         formDialogPresenter.start(itemId, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override

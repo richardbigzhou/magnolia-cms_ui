@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -174,8 +174,13 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public boolean isValid() {
         boolean res = true;
+        getState().errorAmount = 0;
         for (Field<?> field : getFields()) {
-            res &= field.isValid();
+            boolean isFieldValid = field.isValid();
+            if(!isFieldValid){
+                ++getState().errorAmount;
+            }
+            res &= isFieldValid;
         }
         return res;
     }
@@ -224,18 +229,5 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public Form asVaadinComponent() {
         return this;
-    }
-
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = 0;
-        if (isValidationVisible) {
-            for (Field<?> field : fields) {
-                if (!field.isValid()) {
-                    ++getState().errorAmount;
-                }
-            }
-        }
     }
 }

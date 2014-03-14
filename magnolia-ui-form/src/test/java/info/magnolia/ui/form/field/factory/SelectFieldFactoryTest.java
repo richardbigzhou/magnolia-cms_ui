@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -49,6 +50,7 @@ import javax.jcr.Node;
 
 import org.junit.Test;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
@@ -61,7 +63,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
 
     @Test
-    public void simpleSelectFieldTest() throws Exception {
+    public void createField() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
@@ -72,14 +74,14 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals(true, field instanceof ComboBox);
+        assertTrue(field instanceof ComboBox);
         Collection<?> items = ((ComboBox) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
 
     @Test
-    public void selectFieldTest_DefaultSelected() throws Exception {
+    public void createFieldSelectsDefaultOptionIfConfigured() throws Exception {
         // GIVEN
         SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
@@ -96,7 +98,21 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectFieldTest_OptionValueNotSet() throws Exception {
+    public void createFieldSelectsFirstOptionIfNoDefaultConfigured() throws Exception {
+        // GIVEN
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN first option is selected
+        assertEquals("1", field.getValue().toString());
+    }
+
+    @Test
+    public void createFieldUsesNodeNamesIfOptionValuesAreNotSet() throws Exception {
         // GIVEN
         List<SelectFieldOptionDefinition> options = definition.getOptions();
         for (SelectFieldOptionDefinition option : options) {
@@ -118,8 +134,10 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectFieldTest_SavedDefaultSelected() throws Exception {
+    public void createFieldDoesntSelectDefaultIfValueAlreadyExists() throws Exception {
         // GIVEN
+        SelectFieldOptionDefinition option = definition.getOptions().get(1);
+        option.setSelected(true);
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
@@ -134,7 +152,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectFieldTest_RemoteOptions() throws Exception {
+    public void createFieldWorksWithRemoteOptions() throws Exception {
         // GIVEN
         // Create a Options node.
         Node options = session.getRootNode().addNode("options");
@@ -163,7 +181,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectFieldTest_RemoteOptionsFilterNodeType() throws Exception {
+    public void createFieldWithRemoteOptionsIgnoresNonMgnlNodeTypes() throws Exception {
         // GIVEN
         // Create a Options node.
         Node options = session.getRootNode().addNode("options");
@@ -192,7 +210,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectFieldTest_RemoteOptions_OtherValueANdLabelName() throws Exception {
+    public void createFieldWorksWithDifferentOptionValueAndLabelNames() throws Exception {
         // GIVEN
         // Create a Options node.
         Node options = session.getRootNode().addNode("options");
@@ -226,7 +244,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectOptionsAreSortedAlphabeticallyAscendingByDefault() throws Exception {
+    public void createFieldSortsOptionsAlphabeticallyAscendingByDefault() throws Exception {
         // GIVEN
         ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -261,10 +279,11 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         assertEquals("2", items[0]);
         assertEquals("1", items[1]);
         assertEquals("3", items[2]);
+        assertEquals("2", field.getValue().toString());
     }
 
     @Test
-    public void selectOptionsAreNotSortedIfSoSpecified() throws Exception {
+    public void createFieldDoesntSortOptionsIfSpecified() throws Exception {
         // GIVEN
         ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -300,6 +319,25 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         assertEquals("1", items[0]);
         assertEquals("2", items[1]);
         assertEquals("3", items[2]);
+        assertEquals("1", field.getValue().toString());
+    }
+
+    @Test
+    public void testCreateDefaultValueFromLong() throws Exception {
+        // GIVEN
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+        field.removeAllItems();
+        field.addItem(1L); // long value
+
+        Property<Long> dataSource = new DefaultProperty<Long>(1L);
+
+        // WHEN
+        Object defaultValue = dialogSelect.createDefaultValue(dataSource);
+
+        // THEN
+        assertEquals("1", defaultValue.toString());
     }
 
     @Override

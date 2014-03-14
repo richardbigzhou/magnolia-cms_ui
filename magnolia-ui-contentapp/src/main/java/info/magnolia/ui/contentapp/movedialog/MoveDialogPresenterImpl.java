@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -128,12 +129,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.appContext = appContext;
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
-        dialogView.asVaadinComponent().setStyleName("choose-dialog");
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[]{nodesToMove, callback, appContext, getHostCandidate()};
+        return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
     }
 
     @Override
@@ -154,8 +154,9 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 imageProviderDefinition,
                 workbenchPresenter,
                 eventBus);
-
-        dialogView.setContent(new ViewAdapter(field));
+        ViewAdapter viewAdapter = new ViewAdapter(field);
+        viewAdapter.asVaadinComponent().addStyleName("choose-dialog");
+        dialogView.setContent(viewAdapter);
         field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -171,13 +172,14 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
-                ((ResettableEventBus)eventBus).reset();
+                ((ResettableEventBus) eventBus).reset();
             }
         });
         super.start(dialogDefinition, appContext);
         updatePossibleMoveLocations(getHostCandidate());
 
         getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().addStyleName("commit");
+        getView().setClosable(true);
         return dialogView;
     }
 
@@ -189,7 +191,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         Cloner cloner = new Cloner();
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
-
 
         workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
@@ -278,6 +279,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         actionAreaDefinition.setSecondaryActions(secondaryActions);
 
         def.setActionArea(actionAreaDefinition);
+        def.setModalityLevel(ModalityLevel.LIGHT);
         return def;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -44,12 +45,16 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.google.inject.Inject;
 import com.vaadin.data.Item;
 
 /**
@@ -65,8 +70,10 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
     private final EventBus eventBus;
     private ContentConnector contentConnector;
     private Map<Object, Item> idToItem;
+    private final SimpleTranslator i18n;
 
-    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, Item parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, ContentConnector contentConnector, Map<Object, Item> idToItem) {
+    @Inject
+    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, Item parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n, ContentConnector contentConnector, Map<Object, Item> idToItem) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
@@ -74,19 +81,30 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
         this.eventBus = eventBus;
         this.contentConnector = contentConnector;
         this.idToItem = idToItem;
+        this.i18n = i18n;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        final String dialogName = getDefinition().getDialogName();
+        if(StringUtils.isBlank(dialogName)){
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.no.dialog.definition", getDefinition().getName()));
+            return;
 
+        }
+        
         Object parentId = getItemId(parentItem);
 
         if (contentConnector instanceof SupportsCreation) {
             final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(contentConnector.getItemUrlFragment(parentId), getDefinition().getNodeType());
 
             final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
-
-            formDialogPresenter.start(itemId, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+            
+            if(formDialogPresenter == null){
+                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
+                return;
+            }
+            formDialogPresenter.start(itemId, dialogName, uiContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {

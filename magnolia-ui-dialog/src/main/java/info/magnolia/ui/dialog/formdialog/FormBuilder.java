@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -70,10 +70,10 @@ import com.vaadin.ui.TextArea;
  */
 public class FormBuilder {
 
-    private FieldFactoryFactory fieldFactoryFactory;
-    private I18nContentSupport i18nContentSupport;
-    private I18NAuthoringSupport i18nAuthoringSupport;
-    private ComponentProvider componentProvider;
+    private final FieldFactoryFactory fieldFactoryFactory;
+    private final I18nContentSupport i18nContentSupport;
+    private final I18NAuthoringSupport i18nAuthoringSupport;
+    private final ComponentProvider componentProvider;
 
     @Inject
     public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport,
@@ -112,7 +112,7 @@ public class FormBuilder {
                 if (jcrItem.isNode()) {
                     List<Locale> locales = i18nAuthoringSupport.getAvailableLocales((Node) jcrItem);
                     view.setAvailableLocales(locales);
-                    view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+                    view.setCurrentLocale(i18nAuthoringSupport.getAuthorLocale() != null ? i18nAuthoringSupport.getAuthorLocale() : i18nContentSupport.getFallbackLocale());
                 }
             }
         }

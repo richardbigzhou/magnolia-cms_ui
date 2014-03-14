@@ -19,7 +19,7 @@
     &.v-button-commit {
       background-color: $c40;
     }
-    
+
     .v-ui:not(.tablet) &.commit:hover,
     .v-ui:not(.tablet) &.v-button-commit:hover {
       background-color: $c44;
@@ -42,7 +42,13 @@
   .v-button-inline,
   .v-nativebutton-inline {
     background-color: transparent;
-  	color: $c10;
+    color: $c10;
+    font-size: 20px;
+    padding: 0;
+    margin-left: 4px;
+    width: 24px;
+    height: 24px;
+    line-height: 1;
   }
 
   .v-button-link {
@@ -61,7 +67,7 @@
   cursor: pointer;
   outline: none !important;
   @include box-sizing(content-box);
-  
+
   .v-ui:not(.tablet) &:hover {
     background-color: $c14;
     color: $c10;

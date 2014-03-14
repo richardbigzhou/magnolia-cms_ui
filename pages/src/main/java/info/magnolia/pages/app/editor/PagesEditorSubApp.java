@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -72,6 +72,7 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -418,6 +419,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     public void languageSelected(Locale locale) {
         if (locale != null && !locale.equals(currentLocale)) {
             this.currentLocale = locale;
+            if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
+                ((DefaultI18NAuthoringSupport) i18NAuthoringSupport).setAuthorLocale(locale);
+            }
             doGoToLocation(getCurrentLocation());
         }
     }
@@ -512,18 +516,11 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                try {
-                    Object jcrItemId = JcrItemUtil.getItemId(node);
-                    AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
-                    if (availabilityChecker.isAvailable(availability, Arrays.asList(jcrItemId))) {
-                        actionbarPresenter.enable(actionName);
-                    } else {
-                        actionbarPresenter.disable(actionName);
-                    }
-                } catch (RepositoryException e) {
-                    log.error("Error occurred while trying to update action availability: " + e.getMessage(), e);
+                if (actionExecutor.isAvailable(actionName, node)) {
+                    actionbarPresenter.enable(actionName);
+                } else {
+                    actionbarPresenter.disable(actionName);
                 }
-
             }
         }
     }

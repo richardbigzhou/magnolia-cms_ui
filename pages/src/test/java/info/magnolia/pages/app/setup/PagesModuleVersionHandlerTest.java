@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -303,6 +303,43 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(session.propertyExists("/modules/pages/apps/pages/class"));
         assertEquals(ConfiguredContentAppDescriptor.class.getName(), session.getProperty("/modules/pages/apps/pages/class").getString());
         assertFalse(session.propertyExists("/modules/pages/dialogs/editTemplate/form/i18nBasename"));
+    }
+
+    @Test
+    public void testUpdateTo523SetsWritePermissionForPagesBrowserActions() throws Exception {
+        // GIVEN
+        Node addAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/add", NodeTypes.ContentNode.NAME);
+        Node editAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/detail/actions/edit", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertTrue(addAction.hasNode("availability"));
+        Node availability = addAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(editAction.hasNode("availability"));
+        availability = editAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
+    
+    @Test
+    public void testDialogsAreAddedModalityLevelProperty() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/pages/dialogs/editPage");
+        this.setupConfigNode("/modules/pages/dialogs/createPage");
+        this.setupConfigNode("/modules/pages/dialogs/editTemplate");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertEquals("light", session.getProperty("/modules/pages/dialogs/editPage/modalityLevel").getString());
+        assertEquals("strong", session.getProperty("/modules/pages/dialogs/createPage/modalityLevel").getString());
+        assertEquals("light", session.getProperty("/modules/pages/dialogs/editTemplate/modalityLevel").getString());
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -99,7 +99,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     @Override
     public ChooseDialogView start(DialogDefinition definition, UiContext uiContext) {
         getExecutor().setDialogDefinition(definition);
-        return (ChooseDialogView)super.start(definition, uiContext);
+        return (ChooseDialogView) super.start(definition, uiContext);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 field.setValue(selectedItemId);
             }
 
-            final OverlayCloser closer = appContext.openOverlay(getView());
+            final OverlayCloser closer = appContext.openOverlay(getView(), getView().getModalityLevel());
             getView().setCaption(definition.getLabel());
             getView().addDialogCloseHandler(new DialogCloseHandler() {
                 @Override
@@ -155,11 +155,11 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem()};
+        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem() };
     }
 
     @Override
     protected DialogActionExecutor getExecutor() {
-        return (DialogActionExecutor)super.getExecutor();
+        return (DialogActionExecutor) super.getExecutor();
     }
 }

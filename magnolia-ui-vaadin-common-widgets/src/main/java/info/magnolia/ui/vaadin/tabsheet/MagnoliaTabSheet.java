@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -83,6 +83,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
                 tabIt.getContent().setVisible(true);
             }
         }
+        getState().activeTab = null;
         getState().showAllEnabled = true;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -138,7 +138,7 @@ public class DetailLocation extends DefaultLocation {
         return getParameter(parameter, VERSION_PARAM_POSITION);
     }
 
-    private String getParameter(String parameter, int position) {
+    protected String getParameter(String parameter, int position) {
         String arguments[] = StringUtils.split(parameter, ':');
         if (position <= arguments.length - 1) {
             return arguments[position];

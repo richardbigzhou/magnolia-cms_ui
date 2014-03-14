@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -75,7 +75,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private String initialSelectedKey;
     private String optionValueName;
     private String optionLabelName;
-    private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
+    private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
     private boolean hasOptionIcon = false;
     private boolean sortOptions = true;
 
@@ -221,6 +221,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
+     * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
+     */
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
+        }
+        super.setPropertyDataSourceAndDefaultValue(property);
+    }
+
+    /**
      * Set the value selected.
      * Set selectedItem to the last stored value.
      * If not yet stored, set initialSelectedKey as selectedItem
@@ -234,10 +245,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
         } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
-            selectedValue = definition.getOptions().get(0).getValue();
+            selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
         // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), (String) selectedValue);
+
+        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
             ((Collection) datasourceValue).add(selectedValue);

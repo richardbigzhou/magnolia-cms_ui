@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -78,7 +78,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     protected String getModuleDescriptorPath() {
         return "/META-INF/magnolia/ui-framework.xml";
     }
-
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
@@ -313,5 +312,19 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertFalse(session.nodeExists("/modules/ui-framework/fieldTypes/compositField"));
         assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
+    }
+
+    @Test
+    public void testDialogsAreAddedModalityLevelProperty() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/dialogs/rename");
+        this.setupConfigNode("/modules/ui-framework/dialogs/folder");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/rename/modalityLevel").getString());
+        assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/folder/modalityLevel").getString());
     }
 }
