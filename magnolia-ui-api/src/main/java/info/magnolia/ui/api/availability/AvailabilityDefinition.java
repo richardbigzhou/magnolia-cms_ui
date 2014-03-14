@@ -75,5 +75,5 @@ public interface AvailabilityDefinition {
     /**
      * Returns the collection of availability rule definitions for this subject.
      */
-    Collection<AvailabilityRuleDefinition> getRules();
+    Collection<? extends AvailabilityRuleDefinition> getRules();
 }

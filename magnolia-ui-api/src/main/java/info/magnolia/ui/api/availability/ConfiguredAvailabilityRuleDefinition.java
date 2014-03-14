@@ -38,14 +38,14 @@ package info.magnolia.ui.api.availability;
  */
 public class ConfiguredAvailabilityRuleDefinition implements AvailabilityRuleDefinition {
 
-    private Class<AvailabilityRule> implementationClass;
+    private Class<? extends AvailabilityRule> implementationClass;
 
     @Override
     public Class<? extends AvailabilityRule> getImplementationClass() {
         return this.implementationClass;
     }
 
-    public void setImplementationClass(Class<AvailabilityRule> implementationClass) {
+    public void setImplementationClass(Class<? extends AvailabilityRule> implementationClass) {
         this.implementationClass = implementationClass;
     }
 }
