@@ -35,7 +35,6 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -45,7 +44,6 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
@@ -54,9 +52,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.data.Item;
-
 import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
 
 /**
  * Opens a dialog for editing a node.

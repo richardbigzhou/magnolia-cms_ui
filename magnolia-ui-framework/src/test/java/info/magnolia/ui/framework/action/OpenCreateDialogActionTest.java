@@ -69,7 +69,7 @@ public class OpenCreateDialogActionTest {
 
         when(i18n.translate("ui-framework.actions.no.dialog.definition", "testAction")).thenReturn("No dialog defined for action: testAction");
 
-        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n);
+        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n, null, null);
 
         // WHEN
         action.execute();
@@ -88,7 +88,7 @@ public class OpenCreateDialogActionTest {
         when(i18n.translate("ui-framework.actions.dialog.not.registered", "testDialog")).thenReturn("Dialog [testDialog] is not registered.");
         when(formDialogPresenterFactory.createFormDialogPresenter("testDialog")).thenReturn(null);
 
-        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n);
+        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n, null, null);
 
         // WHEN
         action.execute();
