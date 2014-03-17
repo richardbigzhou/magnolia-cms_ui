@@ -36,10 +36,12 @@ package info.magnolia.security.app.dialog.field;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -84,7 +86,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         PropertyUtil.setProperty(french, "enabled", false);
 
         ctx.addSession(RepositoryConstants.CONFIG, session);
-        MgnlContext.setInstance(ctx);
+        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
         // definition
         definition = new SystemLanguagesFieldDefinition();
