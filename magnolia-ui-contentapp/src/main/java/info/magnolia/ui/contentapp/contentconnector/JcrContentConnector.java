@@ -81,7 +81,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     private JcrItemId defaultItemId;
 
     @Inject
-    public JcrContentConnector(SubAppContext subAppContext, final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
+    public JcrContentConnector(SubAppContext subAppContext, final VersionManager versionManager, ConfiguredJcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
         super(definition, componentProvider);
         this.subAppContext = subAppContext;
         this.versionManager = versionManager;
@@ -163,8 +163,9 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public boolean canHandleItem(Object itemId) {
-        return (itemId instanceof JcrItemId) &&
-                ((JcrItemId)itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
+        // XXXX  ???
+        log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.", new Object[] { itemId, getWorkspace(), getPath() });
+        return (itemId instanceof JcrItemId) && ((JcrItemId)itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
     }
 
     protected WorkbenchDefinition getWorkbenchDefinition() {
@@ -213,20 +214,20 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     private String getPath() {
         SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
         if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getPath();
-        }
+            return ((JcrContentConnectorDefinition)getContentConnectorDefinition()).getPath();
 
+        }
         return "/";
     }
 
     private String getWorkspace() {
         SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
         if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getWorkspace();
+            return((JcrContentConnectorDefinition)getContentConnectorDefinition()).getWorkspace();
         }
 
         if (subAppDescriptor instanceof DetailSubAppDescriptor) {
-            return ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getWorkspace();
+            return ((JcrContentConnectorDefinition)getContentConnectorDefinition()).getWorkspace();
         }
         return null;
     }

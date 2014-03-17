@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.thumbnail;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.contentapp.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
@@ -74,7 +75,7 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
     @Override
     public List<?> getItemIds() {
         List<JcrItemId> uuids = new ArrayList<JcrItemId>();
-        String workspaceName = workbenchDefinition.getWorkspace();
+        String workspaceName =  ((JcrContentConnectorDefinition) workbenchDefinition.getContentConnector()).getWorkspace();
         final String query = constructQuery();
         try {
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
@@ -112,8 +113,9 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
 
     protected String prepareFilterQueryStatement() {
         String nodeTypes = getQueryWhereClauseNodeTypes();
-        boolean pathIsNotRoot = StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath());
-        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE('" + workbenchDefinition.getPath() + "')" : "");
+        String path = ((JcrContentConnectorDefinition) workbenchDefinition.getContentConnector()).getPath();
+        boolean pathIsNotRoot = StringUtils.isNotBlank(path) && !"/".equals(path);
+        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE('" + path + "')" : "");
 
     }
 

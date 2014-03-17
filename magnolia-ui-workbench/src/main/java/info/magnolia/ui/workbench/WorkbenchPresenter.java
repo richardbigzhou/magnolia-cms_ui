@@ -111,11 +111,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     List<Object> ids = new ArrayList<Object>(1);
-                    if (workbenchDefinition.getWorkspace() != null) {
-                        Object workbenchRootItemId = resolveWorkbenchRoot();
-                        ids.add(workbenchRootItemId);
-                        activePresenter.setSelectedItemIds(ids);
-                    }
+                    Object workbenchRootItemId = resolveWorkbenchRoot();
+                    ids.add(workbenchRootItemId);
+                    activePresenter.setSelectedItemIds(ids);
                 }
                 view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
 
@@ -142,10 +140,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
-        }
-
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
     }
 
@@ -196,9 +190,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
     }
 
-    public String getWorkspace() {
-        return workbenchDefinition.getWorkspace();
-    }
 
     public List<Object> getSelectedIds() {
         return activePresenter.getSelectedItemIds();
@@ -218,7 +209,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         final List<Object> selectedIds = filterExistingItems(itemIds);
         // restore selection
         if (selectedIds.isEmpty()) {
-            Object workbenchRootItemId = contentConnector.getItemIdByUrlFragment(getWorkbenchDefinition().getPath());
+            Object workbenchRootItemId = contentConnector.getDefaultItemId();
             selectedIds.add(workbenchRootItemId);
         }
 
@@ -237,7 +228,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 filteredIds.add(itemId);
             } else {
                 WorkbenchDefinition def = getWorkbenchDefinition();
-                log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.", new Object[] { itemId, def.getWorkspace(), def.getPath() });
             }
         }
         return filteredIds;

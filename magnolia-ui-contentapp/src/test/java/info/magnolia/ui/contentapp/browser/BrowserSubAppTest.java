@@ -69,7 +69,7 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.availability.IsDeletedRule;
+import info.magnolia.ui.framework.availability.IsDeletedRule;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
@@ -321,9 +321,11 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private void initBrowser() {
 
+
+        // TODO FIX
         ConfiguredWorkbenchDefinition wbDef = new ConfiguredWorkbenchDefinition();
-        wbDef.setWorkspace(WORKSPACE);
-        wbDef.setPath(ROOT_PATH);
+        //wbDef.setWorkspace(WORKSPACE);
+        //wbDef.setPath(ROOT_PATH);
 
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);

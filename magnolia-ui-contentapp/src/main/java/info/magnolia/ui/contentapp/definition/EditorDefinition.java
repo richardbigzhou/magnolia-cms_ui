@@ -55,8 +55,6 @@ public interface EditorDefinition {
     @I18nText
     String getDescription();
 
-    String getWorkspace();
-
     NodeTypeDefinition getNodeType();
 
     FormDefinition getForm();

@@ -56,8 +56,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private String description;
 
-    private String workspace;
-
     private NodeTypeDefinition nodeType;
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
@@ -79,10 +77,10 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         return description;
     }
 
-    @Override
-    public String getWorkspace() {
-        return workspace;
-    }
+//    @Override
+//    public String getWorkspace() {
+//        return workspace;
+//    }
 
     @Override
     public NodeTypeDefinition getNodeType() {
@@ -106,9 +104,9 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.description = description;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
+//    public void setWorkspace(String workspace) {
+//        this.workspace = workspace;
+//    }
 
     public void setForm(FormDefinition form) {
         this.form = form;

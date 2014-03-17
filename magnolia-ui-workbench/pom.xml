@@ -30,6 +30,10 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-contentapp</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

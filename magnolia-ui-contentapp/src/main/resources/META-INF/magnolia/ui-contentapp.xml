@@ -31,6 +31,12 @@
           <type>info.magnolia.ui.contentapp.ContentAppDescriptor</type>
           <implementation>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</implementation>
       </type-mapping>
+    
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.contentconnector.ConfiguredJcrContentConnectorDefinition</implementation>
+    </type-mapping>
+    
   </components>
 
 

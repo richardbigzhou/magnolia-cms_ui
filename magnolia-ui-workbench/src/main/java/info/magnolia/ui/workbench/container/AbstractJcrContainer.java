@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.container;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.contentapp.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -623,13 +624,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
+     * @return if ((JcrContentConnectorDefinition)workbenchDefinition.getContentConnector()).getPath() is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
      */
     protected final String getQueryWhereClauseWorkspacePath() {
         // By default, search the root and therefore do not need a query clause.
         String whereClauseWorkspacePath = "";
-        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
-            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        String path = ((JcrContentConnectorDefinition)workbenchDefinition.getContentConnector()).getPath();
+        if (StringUtils.isNotBlank(path) && !"/".equals(path)) {
+            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, path);
         }
         log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
         return whereClauseWorkspacePath;
@@ -676,7 +678,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public String getWorkspace() {
-        return workbenchDefinition.getWorkspace();
+        return ((JcrContentConnectorDefinition)workbenchDefinition.getContentConnector()).getWorkspace();
     }
 
     public Set<NodeType> getSearchableNodeTypes() {
@@ -762,12 +764,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
 
         final Set<NodeType> searchableNodeTypes = new HashSet<NodeType>();
-        if (workbenchDefinition.getWorkspace() == null) {
+        if (getWorkspace() == null) {
             // no workspace, no searchable types
             return searchableNodeTypes;
         }
         try {
-            final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getNodeTypeManager();
+            final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(getWorkspace()).getWorkspace().getNodeTypeManager();
 
             for (NodeTypeDefinition def : nodeTypeDefinition) {
                 final String nodeTypeName = def.getName();

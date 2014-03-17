@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -46,10 +47,6 @@ import java.util.List;
 public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String name;
-
-    private String workspace;
-
-    private String path = "/";
 
     private String defaultOrder;
 
@@ -65,6 +62,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
     private boolean includeSystemNodes;
+
+    private ContentConnectorDefinition contentConnectorDefinition;
 
     @Override
     public String getName() {
@@ -106,23 +105,34 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.includeSystemNodes = includeSystemNodes;
     }
 
+//    @Override
+//    public String getWorkspace() {
+//        return workspace;
+//    }
+//
+//    public void setWorkspace(String workspace) {
+//        this.workspace = workspace;
+//    }
+//
+//    @Override
+//    public String getPath() {
+//        return path;
+//    }
+//
+//    public void setPath(String path) {
+//        this.path = path;
+//    }
+
     @Override
-    public String getWorkspace() {
-        return workspace;
+    public ContentConnectorDefinition getContentConnector(){
+        return contentConnectorDefinition;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
+    public void  setContentConnector(ContentConnectorDefinition contentConnectorDefinition){
+        this.contentConnectorDefinition = contentConnectorDefinition;
     }
 
-    @Override
-    public String getPath() {
-        return path;
-    }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     @Override
     public boolean isDialogWorkbench() {

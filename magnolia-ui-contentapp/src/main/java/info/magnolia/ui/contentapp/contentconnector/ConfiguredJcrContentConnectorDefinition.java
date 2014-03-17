@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.availability;
+package info.magnolia.ui.contentapp.contentconnector;
 
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.api.availability.AvailabilityRule;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
-
-import java.util.Arrays;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredContentConnectorDefinition;
 
 /**
- * This rule returns true, if the item is node of the mgnl:page type, has a subnode of the same type, and is not deleted (i.e. has not the mgnl:deleted mixin type).
+ * {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition} for JCR-specific sub-apps.
  */
-public class PageHasSubpagesAndIsNotDeletedRule extends AbstractAvailabilityRule {
+public class ConfiguredJcrContentConnectorDefinition extends ConfiguredContentConnectorDefinition implements JcrContentConnectorDefinition {
+
+    private String workspace;
+    private String path = "/";
+
+    public ConfiguredJcrContentConnectorDefinition() {
+        setImplementationClass(JcrContentConnector.class);
+    }
 
     @Override
-    public boolean isAvailableForItem(Object itemId) {
-        AvailabilityRule hasSubpages = new PageHasSubpagesRule();
-        AvailabilityRule isNotDeleted = new IsNotDeletedRule();
-        return (hasSubpages.isAvailable(Arrays.asList(itemId)) && isNotDeleted.isAvailable(Arrays.asList(itemId)));
+    public String getWorkspace() {
+        return workspace;
     }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
+
+
 }

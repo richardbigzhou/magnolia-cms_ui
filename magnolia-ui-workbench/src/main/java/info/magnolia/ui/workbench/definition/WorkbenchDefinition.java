@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.i18nsystem.I18nable;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -46,13 +47,6 @@ import java.util.List;
 public interface WorkbenchDefinition extends Serializable {
 
     String getName();
-
-    String getWorkspace();
-
-    /**
-     * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
-     */
-    String getPath();
 
     /**
      * @return all configured NodeTypes.
@@ -95,5 +89,11 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the list of configured views.<br>
      */
     List<ContentPresenterDefinition> getContentViews();
+
+    /**
+     *
+     * @returns the ContentConnectorDefinition
+     */
+    ContentConnectorDefinition getContentConnector();
 
 }

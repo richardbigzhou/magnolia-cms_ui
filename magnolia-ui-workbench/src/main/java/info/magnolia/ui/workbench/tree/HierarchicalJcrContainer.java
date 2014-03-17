@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.contentapp.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -329,7 +330,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * Only used in tests.
      */
     String getPathInTree(Item item) throws RepositoryException {
-        String base = getWorkbenchDefinition().getPath();
+        String base =  ((JcrContentConnectorDefinition)getWorkbenchDefinition()).getPath();
         return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
     }
 
@@ -338,6 +339,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private Node getRootNode() throws RepositoryException {
-        return getSession().getNode(getWorkbenchDefinition().getPath());
+        return getSession().getNode(((JcrContentConnectorDefinition)getWorkbenchDefinition()).getPath());
     }
 }
