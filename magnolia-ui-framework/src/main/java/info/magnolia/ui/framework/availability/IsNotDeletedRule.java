@@ -31,50 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Availability rule for non-versioned items.
+ * This rule returns true if the item is not a node, or if it is a node and has NOT the mgnl:deleted mixin type.
  */
-public class IsNotVersionedRule extends AbstractAvailabilityRule {
+public class IsNotDeletedRule extends AbstractAvailabilityRule {
 
-    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
+    private static final Logger log = LoggerFactory.getLogger(IsNotDeletedRule.class);
 
     @Override
-    protected boolean isAvailableForItem(Object itemId) {
+    public boolean isAvailableForItem(Object itemId) {
         if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             if (node != null) {
-                if (node instanceof Version) {
-                    return false;
-                }
-
                 try {
-                    String workspace = node.getSession().getWorkspace().getName();
-                    if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
-                        return false;
-                    }
+                    return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
                 } catch (RepositoryException e) {
-                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e);
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
                 }
             }
         }
-
         return true;
     }
-
 }

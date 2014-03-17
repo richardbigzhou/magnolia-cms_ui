@@ -31,24 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This rule returns true if the item is node and has the mgnl:deleted mixin type.
+ * Availability rule for non-versioned items.
  */
-public class IsDeletedRule extends AbstractAvailabilityRule {
+public class IsNotVersionedRule extends AbstractAvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 
@@ -58,13 +60,22 @@ public class IsDeletedRule extends AbstractAvailabilityRule {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             if (node != null) {
+                if (node instanceof Version) {
+                    return false;
+                }
+
                 try {
-                    return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+                    String workspace = node.getSession().getWorkspace().getName();
+                    if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
+                        return false;
+                    }
                 } catch (RepositoryException e) {
-                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e);
                 }
             }
         }
-        return false;
+
+        return true;
     }
+
 }

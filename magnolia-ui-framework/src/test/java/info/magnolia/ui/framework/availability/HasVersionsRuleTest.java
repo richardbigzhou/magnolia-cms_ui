@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability;
 
 import static org.junit.Assert.*;
 

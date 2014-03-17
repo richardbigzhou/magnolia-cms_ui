@@ -31,30 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
+import java.util.Arrays;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.Version;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests for {@link IsNotDeletedRule}.
+ * Tests for {@link IsNotVersionedRule}.
  */
-public class IsNotDeletedRuleTest extends RepositoryTestCase {
+public class IsNotVersionedRuleTest extends RepositoryTestCase {
 
-    private IsNotDeletedRule rule;
+    private VersionManager versionManager;
+    private IsNotVersionedRule rule;
     private Session webSiteSession;
 
     @Override
@@ -63,49 +68,46 @@ public class IsNotDeletedRuleTest extends RepositoryTestCase {
         super.setUp();
 
         webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
-        rule = new IsNotDeletedRule();
+        versionManager = VersionManager.getInstance();
+        rule = new IsNotVersionedRule();
     }
 
     @Test
-    public void testIsAvailableForItemThatIsNotDeleted() throws RepositoryException {
+    public void testWithVersion() throws RepositoryException {
         // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node1", NodeTypes.Page.NAME);
+        Node node = NodeUtil.createPath(webSiteSession.getRootNode(), "/testWithVersion", NodeTypes.ContentNode.NAME);
+        Version version = versionManager.addVersion(node);
+
+        // WHEN
+        Object itemId = JcrItemUtil.getItemId(version);
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
+
+        // THEN
+        assertFalse(isAvailable);
+    }
+
+    @Test
+    public void testWithNode() throws RepositoryException {
+        // GIVEN
+        Node node = NodeUtil.createPath(webSiteSession.getRootNode(), "/testNoVersion", NodeTypes.ContentNode.NAME);
 
         // WHEN
         Object itemId = JcrItemUtil.getItemId(node);
-        boolean isAvailable = rule.isAvailableForItem(itemId);
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
 
         // THEN
         assertTrue(isAvailable);
     }
 
     @Test
-    public void testIsAvailableForItemThatIsMarkedAsDeleted() throws RepositoryException {
+    public void testWithFrozenVersionNode() throws RepositoryException {
         // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node2", NodeTypes.Page.NAME);
-        node.addMixin(NodeTypes.Deleted.NAME);
+        Node node = NodeUtil.createPath(webSiteSession.getRootNode(), "/testFrozenVersion", NodeTypes.ContentNode.NAME);
+        Version version = versionManager.addVersion(node);
 
         // WHEN
-        Object itemId = JcrItemUtil.getItemId(node);
-        boolean isAvailable = rule.isAvailableForItem(itemId);
-
-        // THEN
-        assertFalse(isAvailable);
-    }
-
-    /**
-     * TODO: Fix availability rule. This rule should be unavailable for items which have "really" been deleted.
-     */
-    @Ignore("MGNLUI-2038: Ignore until the rule is fixed.")
-    @Test
-    public void testIsAvailableForItemThatIsDeleted() throws RepositoryException {
-        // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node3", NodeTypes.Page.NAME);
-        node.remove();
-
-        // WHEN
-        Object itemId = JcrItemUtil.getItemId(node);
-        boolean isAvailable = rule.isAvailableForItem(itemId);
+        Object itemId = JcrItemUtil.getItemId(version.getFrozenNode());
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
 
         // THEN
         assertFalse(isAvailable);
