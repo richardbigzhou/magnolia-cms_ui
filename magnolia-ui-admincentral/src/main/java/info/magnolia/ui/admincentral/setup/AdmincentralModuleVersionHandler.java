@@ -51,6 +51,7 @@ import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeAfterTask;
 import info.magnolia.module.delta.OrderNodeBeforeTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
@@ -222,6 +223,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Reconfigure activate action of configuration app", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate",
                         new PartialBootstrapTask("Reconfigure activate action of configuration app", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/activate/params")))
         );
+        register(DeltaBuilder.update("5.2.4", "")
+                .addTask(new PartialBootstrapTask("Edit user profile dialog", "Add edit user profile dialog", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/editUserProfile"))
+                .addTask(new PartialBootstrapTask("Edit user profile action", "Add edit user profile action to user menu", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.userMenu.xml", "/userMenu/actions/editUserProfile"))
+                .addTask(new OrderNodeToFirstPositionTask("Order edit user profile action to first position in user menu", "modules/ui-admincentral/config/userMenu/actions/editUserProfile"))
+        );
+
 
     }
 
