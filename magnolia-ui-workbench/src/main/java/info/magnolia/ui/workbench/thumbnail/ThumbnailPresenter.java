@@ -42,9 +42,7 @@ import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.container.Refreshable;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -107,27 +105,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onItemSelection(Set<Object> itemIds) {
-        super.onItemSelection(itemIds);
-    }
-
-    @Override
-    public void onDoubleClick(Object itemId) {
-        super.onDoubleClick(itemId);
-    }
-
-    @Override
-    public void onRightClick(Object itemId, int clickX, int clickY) {
-        super.onRightClick(itemId, clickX, clickY);
-    }
-
-    @Override
     public void select(List<Object> itemIds) {
-        List<Object> objectIds = new ArrayList<Object>();
-        for (Object itemId : itemIds) {
-            objectIds.add(itemId);
-        }
-        view.select(objectIds);
+        view.select(itemIds);
     }
-
 }
