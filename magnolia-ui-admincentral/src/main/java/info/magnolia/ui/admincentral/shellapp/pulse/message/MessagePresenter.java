@@ -45,9 +45,10 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The message detail presenter.
@@ -121,17 +122,6 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             throw new RuntimeException("Could not execute action " + actionName, e);
         }
     }
-
-    @Override
-    public String getLabel(String actionName) {
-        return messageActionExecutor.getActionDefinition(actionName).getLabel();
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        return messageActionExecutor.getActionDefinition(actionName).getIcon();
-    }
-
 
     /**
      * Listener interface used to call back to parent presenter.

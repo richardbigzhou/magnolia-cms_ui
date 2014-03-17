@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
