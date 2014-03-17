@@ -198,15 +198,13 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             primaryNodeType = ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType().getName();
         }
 
-        if (primaryNodeType != null) {
-            String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
-            parentPath = parentPath.isEmpty() ? getPath() : parentPath;
-            Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
-            try {
-                return new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
-            } catch (RepositoryException e) {
-                log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
-            }
+        String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
+        parentPath = parentPath.isEmpty() ? getPath() : parentPath;
+        Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
+        try {
+            return new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
+        } catch (RepositoryException e) {
+            log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
         }
 
         return null;
