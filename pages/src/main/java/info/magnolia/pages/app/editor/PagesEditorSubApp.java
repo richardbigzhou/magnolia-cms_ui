@@ -516,10 +516,16 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, node)) {
-                    actionbarPresenter.enable(actionName);
-                } else {
-                    actionbarPresenter.disable(actionName);
+                AvailabilityDefinition availabilityDefinition = actionExecutor.getActionDefinition(actionName).getAvailability();
+                try {
+                    Object itemId = JcrItemUtil.getItemId(node);
+                    if (availabilityChecker.isAvailable(availabilityDefinition, Arrays.asList(itemId))) {
+                        actionbarPresenter.enable(actionName);
+                    } else {
+                        actionbarPresenter.disable(actionName);
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Failed to update action availability: " + e.getMessage(), e);
                 }
             }
         }
