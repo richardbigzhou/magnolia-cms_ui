@@ -65,6 +65,7 @@ import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -153,7 +154,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 workbenchDefinition,
                 imageProviderDefinition,
                 workbenchPresenter,
-                eventBus);
+                eventBus,
+                contentConnector);
         ViewAdapter viewAdapter = new ViewAdapter(field);
         viewAdapter.asVaadinComponent().addStyleName("choose-dialog");
         dialogView.setContent(viewAdapter);
@@ -192,7 +194,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
 
-        workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
         workbenchDefinition.setEditable(false);
 
@@ -298,7 +299,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             return currentHostCandidate;
         } else {
             try {
-                return new JcrNodeAdapter(MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getRootNode());
+                String workspace = ((JcrContentConnector)contentConnector).getContentConnectorDefinition().getWorkspace();
+                return new JcrNodeAdapter(MgnlContext.getJCRSession(workspace).getRootNode());
             } catch (RepositoryException e) {
                 return null;
             }
