@@ -42,7 +42,8 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
@@ -73,7 +74,11 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         componentProvider = mock(ComponentProvider.class);
         doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
-        ContentConnector contentConnector = mock(ContentConnector.class);
+        JcrContentConnector contentConnector = mock(JcrContentConnector.class);
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.setWorkspace(WORKSPACE);
+        connectorDefinition.setPath(ROOT_PATH);
+        doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
         doReturn(new Object()).when(contentConnector).getDefaultItemId();
 
         presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter, contentConnector);
@@ -86,8 +91,6 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
         presenter.start(workbenchDefinition, null, null);
@@ -104,8 +107,6 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
         presenter.start(workbenchDefinition, null, null);

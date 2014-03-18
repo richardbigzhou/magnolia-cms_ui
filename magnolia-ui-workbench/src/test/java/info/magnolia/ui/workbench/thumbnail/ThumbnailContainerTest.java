@@ -41,10 +41,10 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ import org.junit.Test;
 public class ThumbnailContainerTest extends RepositoryTestCase {
 
     private Session session;
-    private ConfiguredWorkbenchDefinition configuredWorkbench;
+    private ConfiguredJcrContentConnectorDefinition contentConnectorDefinition;
     private ThumbnailContainer container;
 
     @Override
@@ -76,12 +76,12 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         nodeType.setName(NodeTypes.Content.NAME);
         nodeTypes.add(nodeType);
 
-        configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(RepositoryConstants.CONFIG);
-        configuredWorkbench.setPath("/");
-        configuredWorkbench.setNodeTypes(nodeTypes);
+        contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setPath("/");
+        contentConnectorDefinition.setWorkspace(RepositoryConstants.CONFIG);
+        contentConnectorDefinition.setNodeTypes(nodeTypes);
 
-        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(configuredWorkbench));
+        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(contentConnectorDefinition));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
     @Test
     public void testGetAllIdentifiersForSubPath() throws RepositoryException {
         // GIVEN
-        configuredWorkbench.setPath("/content2");
+        contentConnectorDefinition.setPath("/content2");
         NodeUtil.createPath(session.getRootNode(), "/content2/content21", NodeTypes.Content.NAME);
         Node contentNode = NodeUtil.createPath(session.getRootNode(), "/content2/contentNode", NodeTypes.ContentNode.NAME);
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
@@ -121,6 +121,5 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
         assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
-
 
 }

@@ -60,8 +60,10 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyAction;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -121,10 +123,11 @@ public class BrowserPresenterTest {
 
     private ActionExecutor actionExecutor;
 
-    private ContentConnector contentConnector;
+    private JcrContentConnector contentConnector;
     private Node node;
     private JcrNodeAdapter adapter;
     private ConfiguredActionDefinition defaultActionDefinition;
+    private ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
 
     @Before
     public void setUp() throws RepositoryException {
@@ -144,8 +147,6 @@ public class BrowserPresenterTest {
 
         // initialize test instance
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
 
@@ -171,7 +172,10 @@ public class BrowserPresenterTest {
         actionExecutor = mock(ActionExecutor.class);
 
 
-        contentConnector = mock(ContentConnector.class);
+        connectorDefinition.setWorkspace(WORKSPACE);
+        connectorDefinition.setPath(ROOT_PATH);
+        contentConnector = mock(JcrContentConnector.class);
+        doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
         node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         adapter = new JcrNodeAdapter(node);
         doReturn(adapter).when(contentConnector).getItem(anyObject());
@@ -274,7 +278,6 @@ public class BrowserPresenterTest {
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(new JcrItemId(node.getIdentifier(),WORKSPACE));
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
         subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
@@ -300,7 +303,6 @@ public class BrowserPresenterTest {
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
         subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
@@ -321,18 +323,17 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         WorkbenchDefinition wb = mock(WorkbenchDefinition.class);
-        when(wb.getWorkspace()).thenReturn(WORKSPACE);
-        when(wb.getPath()).thenReturn(node.getPath());
+        //when(wb.getWorkspace()).thenReturn(WORKSPACE);
+        //when(wb.getPath()).thenReturn(node.getPath());
         browserSubAppDescriptor.setWorkbench(wb);
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         AvailabilityDefinition availability = testActionDefinition.getAvailability();
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(JcrItemUtil.getItemId(node)));
 
         // THEN
         // just verifying that null is passed to the isAvailable() method instead of the actual item

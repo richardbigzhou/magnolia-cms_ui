@@ -40,14 +40,15 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -92,8 +93,6 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         itemId = JcrItemUtil.getItemId(node);
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(RepositoryConstants.WEBSITE);
-        configuredWorkbench.setPath("/parent");
 
         // Add view
         ConfiguredContentPresenterDefinition contentView = new TreePresenterDefinition();
@@ -108,11 +107,15 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
 
         NodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
-        configuredWorkbench.addNodeType(nodeTypeDefinition);
+
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.setPath("/parent");
+        connectorDefinition.setWorkspace(RepositoryConstants.WEBSITE);
+        connectorDefinition.addNodeType(nodeTypeDefinition);
 
         ConfiguredWorkbenchDefinition workbenchDefinition = configuredWorkbench;
 
-        HierarchicalJcrContainer hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition);
+        HierarchicalJcrContainer hierarchicalJcrContainer = new HierarchicalJcrContainer(connectorDefinition);
 
         table = new Table();
         table.setContainerDataSource(hierarchicalJcrContainer);
@@ -179,5 +182,4 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         assertNotNull(res);
         assertEquals("", res.toString());
     }
-
 }

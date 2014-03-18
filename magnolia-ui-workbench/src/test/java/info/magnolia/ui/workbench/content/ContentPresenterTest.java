@@ -90,8 +90,8 @@ public class ContentPresenterTest {
 
         contentConnector = mock(ContentConnector.class);
         this.workbench = mock(WorkbenchDefinition.class);
-        when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
-        when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
+//        when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
+//        when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
         Object toBeReturned = JcrItemUtil.getItemId(testNode);

@@ -37,9 +37,9 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import java.util.Arrays;
 
@@ -74,12 +74,13 @@ public class TreeViewImplTest extends RepositoryTestCase {
         super.setUp();
         session = MgnlContext.getJCRSession(WORKSPACE);
 
-        ConfiguredWorkbenchDefinition workbench = new ConfiguredWorkbenchDefinition();
-        workbench.setWorkspace(WORKSPACE);
-        workbench.setPath("/");
-
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         view = new TreeViewImpl();
-        Table table = view.createTable(new HierarchicalJcrContainer(workbench));
+
+        connectorDefinition.setPath("/");
+        connectorDefinition.setWorkspace(WORKSPACE);
+
+        Table table = view.createTable(new HierarchicalJcrContainer(connectorDefinition));
         view.initializeTable(table);
     }
 
@@ -160,5 +161,4 @@ public class TreeViewImplTest extends RepositoryTestCase {
         assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
         assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
     }
-
 }
