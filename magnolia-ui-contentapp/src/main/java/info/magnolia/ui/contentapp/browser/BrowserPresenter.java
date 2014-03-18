@@ -34,7 +34,6 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -50,7 +49,6 @@ import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
@@ -108,7 +106,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final ActionbarPresenter actionbarPresenter;
 
-    private final AvailabilityChecker checker;
+    private final AvailabilityChecker availabilityChecker;
 
     private final AppContext appContext;
 
@@ -117,25 +115,28 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     private final ImageProvider imageProvider;
 
     @Inject
-    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-                                final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, ComponentProvider componentProvider, AvailabilityChecker checker) {
-        this.workbenchPresenter = workbenchPresenter;
-        this.actionExecutor = actionExecutor;
+    public BrowserPresenter(
+            BrowserView view,
+            SubAppContext subAppContext,
+            ActionExecutor actionExecutor,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+            @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
+            ContentConnector contentConnector,
+            ImageProvider imageProvider,
+            WorkbenchPresenter workbenchPresenter,
+            ActionbarPresenter actionbarPresenter,
+            AvailabilityChecker availabilityChecker) {
         this.view = view;
-        this.admincentralEventBus = admincentralEventBus;
-        this.subAppEventBus = subAppEventBus;
-        this.actionbarPresenter = actionbarPresenter;
-        this.checker = checker;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.actionExecutor = actionExecutor;
+        this.admincentralEventBus = admincentralEventBus;
+        this.subAppEventBus = subAppEventBus;
         this.contentConnector = contentConnector;
-        ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
-        if (imageProviderDefinition == null) {
-            this.imageProvider = null;
-        } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, contentConnector);
-        }
+        this.imageProvider = imageProvider;
+        this.workbenchPresenter = workbenchPresenter;
+        this.actionbarPresenter = actionbarPresenter;
+        this.availabilityChecker = availabilityChecker;
     }
 
     public BrowserView start() {
@@ -327,7 +328,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     private void executeAction(String actionName) {
         try {
             AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
-            if (checker.isAvailable(availability, getSelectedItemIds())) {
+            if (availabilityChecker.isAvailable(availability, getSelectedItemIds())) {
                 Object[] args = prepareActionArgs();
                 actionExecutor.execute(actionName, args);
             }
@@ -341,7 +342,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     private void executeAction(String actionName, Set<Object> itemIds, Object... parameters) {
         try {
             AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
-            if (checker.isAvailable(availability, getSelectedItemIds())) {
+            if (availabilityChecker.isAvailable(availability, getSelectedItemIds())) {
                 List<Object> args = new ArrayList<Object>();
                 args.add(itemIds);
                 args.addAll(Arrays.asList(parameters));
