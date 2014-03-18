@@ -77,7 +77,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         nodeTypes.add(nodeType);
 
         contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        contentConnectorDefinition.setPath("/");
+        contentConnectorDefinition.setRootPath("/");
         contentConnectorDefinition.setWorkspace(RepositoryConstants.CONFIG);
         contentConnectorDefinition.setNodeTypes(nodeTypes);
 
@@ -106,7 +106,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
     @Test
     public void testGetAllIdentifiersForSubPath() throws RepositoryException {
         // GIVEN
-        contentConnectorDefinition.setPath("/content2");
+        contentConnectorDefinition.setRootPath("/content2");
         NodeUtil.createPath(session.getRootNode(), "/content2/content21", NodeTypes.Content.NAME);
         Node contentNode = NodeUtil.createPath(session.getRootNode(), "/content2/contentNode", NodeTypes.ContentNode.NAME);
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);

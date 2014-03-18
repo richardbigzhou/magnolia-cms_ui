@@ -628,7 +628,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected final String getQueryWhereClauseWorkspacePath() {
         // By default, search the root and therefore do not need a query clause.
         String whereClauseWorkspacePath = "";
-        String path = contentConnectorDefinition.getPath();
+        String path = contentConnectorDefinition.getRootPath();
         if (StringUtils.isNotBlank(path) && !"/".equals(path)) {
             whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, path);
         }

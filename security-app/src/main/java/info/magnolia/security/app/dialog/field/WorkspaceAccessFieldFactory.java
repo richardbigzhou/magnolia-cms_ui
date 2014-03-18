@@ -289,7 +289,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
         final ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         contentConnectorDefinition.setWorkspace(getFieldDefinition().getWorkspace());
-        contentConnectorDefinition.setPath("/");
+        contentConnectorDefinition.setRootPath("/");
         contentConnectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
         // node types
         contentConnectorDefinition.setNodeTypes(resolveNodeTypes());

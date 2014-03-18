@@ -51,7 +51,7 @@ public class ConfiguredJcrContentConnectorDefinition extends ConfiguredContentCo
 
     private String workspace;
 
-    private String path = "/";
+    private String rootPath = "/";
 
     public ConfiguredJcrContentConnectorDefinition() {
         setImplementationClass(JcrContentConnector.class);
@@ -67,12 +67,12 @@ public class ConfiguredJcrContentConnectorDefinition extends ConfiguredContentCo
     }
 
     @Override
-    public String getPath() {
-        return path;
+    public String getRootPath() {
+        return rootPath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setRootPath(String path) {
+        this.rootPath = path;
     }
 
     @Override

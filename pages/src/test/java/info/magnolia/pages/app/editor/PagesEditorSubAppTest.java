@@ -149,7 +149,7 @@ public class PagesEditorSubAppTest {
 
 
         connectorDefinition.setWorkspace("testWorkspace");
-        connectorDefinition.setPath("/");
+        connectorDefinition.setRootPath("/");
         contentConnector = new JcrContentConnector(versionManager, connectorDefinition, null);
 
 

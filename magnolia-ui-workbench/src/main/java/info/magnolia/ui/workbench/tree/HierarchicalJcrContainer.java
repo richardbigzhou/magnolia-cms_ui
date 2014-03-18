@@ -329,7 +329,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * Only used in tests.
      */
     String getPathInTree(Item item) throws RepositoryException {
-        String base =  ((JcrContentConnectorDefinition) getConfiguration()).getPath();
+        String base =  ((JcrContentConnectorDefinition) getConfiguration()).getRootPath();
         return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
     }
 
@@ -338,6 +338,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private Node getRootNode() throws RepositoryException {
-        return getSession().getNode(((JcrContentConnectorDefinition) getConfiguration()).getPath());
+        return getSession().getNode(((JcrContentConnectorDefinition) getConfiguration()).getRootPath());
     }
 }

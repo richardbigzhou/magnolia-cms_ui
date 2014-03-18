@@ -183,7 +183,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     private String getPath() {
-        return getContentConnectorDefinition().getPath();
+        return getContentConnectorDefinition().getRootPath();
     }
 
     private String getWorkspace() {

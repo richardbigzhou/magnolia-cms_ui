@@ -109,7 +109,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
 
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        connectorDefinition.setPath("/parent");
+        connectorDefinition.setRootPath("/parent");
         connectorDefinition.setWorkspace(RepositoryConstants.WEBSITE);
         connectorDefinition.addNodeType(nodeTypeDefinition);
 

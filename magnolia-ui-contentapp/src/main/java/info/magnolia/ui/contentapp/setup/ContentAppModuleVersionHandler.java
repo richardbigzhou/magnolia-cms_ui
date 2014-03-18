@@ -43,6 +43,7 @@ import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 import info.magnolia.ui.framework.setup.ChangeJcrDependentAvailabilityRuleClassesFqcnTask;
 import info.magnolia.ui.framework.setup.MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask;
 import info.magnolia.ui.framework.setup.MigrateWorkspaceAndPathToContentConnector;
+import info.magnolia.ui.framework.setup.RenameContentConnectorPathPropertyTask;
 import info.magnolia.ui.framework.setup.ReplaceMultiLinkFieldDefinitionTask;
 import info.magnolia.ui.framework.setup.ReplaceSaveModeTypeFieldDefinitionTask;
 
@@ -71,6 +72,7 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
                 .addTask(new ChangeJcrDependentAvailabilityRuleClassesFqcnTask())
                 .addTask(new MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask())
                 .addTask(new MigrateWorkspaceAndPathToContentConnector())
+                .addTask(new RenameContentConnectorPathPropertyTask())
         );
     }
 }

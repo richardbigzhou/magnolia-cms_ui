@@ -72,7 +72,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         // Init
         ConfiguredJcrContentConnectorDefinition configuredConnector = new ConfiguredJcrContentConnectorDefinition();
         configuredConnector.setWorkspace(workspace);
-        configuredConnector.setPath("/");
+        configuredConnector.setRootPath("/");
 
         ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
         nt.setName("mgnl:content");
@@ -108,7 +108,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-        connectorDefinition.setPath("/");
+        connectorDefinition.setRootPath("/");
     }
 
     @Test
@@ -163,7 +163,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWhenWorkspacePathIsNotRoot() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("foo");
-        connectorDefinition.setPath("/qux");
+        connectorDefinition.setRootPath("/qux");
 
         // WHEN
         String stmt = jcrContainer.getQueryWhereClause();

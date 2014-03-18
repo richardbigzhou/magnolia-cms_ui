@@ -66,12 +66,12 @@ public class SecurityApp extends ContentApp {
             }
             BrowserSubAppDescriptor browserSubAppDescriptor = (BrowserSubAppDescriptor) first;
             JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnectorDefinition)browserSubAppDescriptor);
-            String path = connectorDefinition.getPath();
+            String path = connectorDefinition.getRootPath();
             getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", subAppDescriptor.getName(), path));
         }
         BrowserSubAppDescriptor browserSubAppDescriptor = (BrowserSubAppDescriptor) first;
         JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnectorDefinition)browserSubAppDescriptor);
-        String path = connectorDefinition.getPath();
+        String path = connectorDefinition.getRootPath();
         getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", first.getName(), path));
     }
 

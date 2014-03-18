@@ -407,7 +407,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryWithoutSortWithPathClause() throws Exception {
         // GIVEN
-        connectorDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(false);
@@ -495,7 +495,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClauseWorkspacePathWithPath() throws Exception {
         // GIVEN
-        connectorDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -508,7 +508,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWorkspacePathWithRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
-        connectorDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -520,7 +520,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClauseWorkspacePathWithNull() throws Exception {
         // GIVEN
-        connectorDefinition.setPath(null);
+        connectorDefinition.setRootPath(null);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -533,7 +533,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWorkspacePathWithEmptyString() throws Exception {
         // GIVEN
         final String testPath = "";
-        connectorDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -545,7 +545,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClausePrependWhereKeywordWhenWorkspacePathIsNotRoot() {
         // GIVEN
-        connectorDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
         final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // WHEN
@@ -559,7 +559,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseReturnsEmptyStringWhenWorkspacePathIsRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
-        connectorDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();

@@ -77,7 +77,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         view = new TreeViewImpl();
 
-        connectorDefinition.setPath("/");
+        connectorDefinition.setRootPath("/");
         connectorDefinition.setWorkspace(WORKSPACE);
 
         Table table = view.createTable(new HierarchicalJcrContainer(connectorDefinition));

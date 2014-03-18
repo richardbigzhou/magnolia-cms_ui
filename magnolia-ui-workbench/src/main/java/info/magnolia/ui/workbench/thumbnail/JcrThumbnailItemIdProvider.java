@@ -112,7 +112,7 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
 
     protected String prepareFilterQueryStatement() {
         String nodeTypes = getQueryWhereClauseNodeTypes();
-        String path = definition.getPath();
+        String path = definition.getRootPath();
         boolean pathIsNotRoot = StringUtils.isNotBlank(path) && !"/".equals(path);
         return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE('" + path + "')" : "");
 

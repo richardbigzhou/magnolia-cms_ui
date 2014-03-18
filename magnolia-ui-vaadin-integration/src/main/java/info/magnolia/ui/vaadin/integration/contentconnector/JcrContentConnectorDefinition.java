@@ -69,7 +69,7 @@ public interface JcrContentConnectorDefinition extends ContentConnectorDefinitio
     /**
      * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
      */
-    String getPath();
+    String getRootPath();
 
 
 }

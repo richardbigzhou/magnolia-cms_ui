@@ -113,7 +113,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         //workbenchDefinition = configuredWorkbench;
         connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        connectorDefinition.setPath("/");
+        connectorDefinition.setRootPath("/");
         connectorDefinition.setWorkspace(WORKSPACE);
         connectorDefinition.addNodeType(nodeTypeDefinition);
         hierarchicalJcrContainer = new HierarchicalJcrContainer(connectorDefinition);
@@ -270,7 +270,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals(node2.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
 
         // WHEN
-        connectorDefinition.setPath("/node2");
+        connectorDefinition.setRootPath("/node2");
         res = hierarchicalJcrContainer.getRootItemIds();
 
         // THEN
@@ -379,7 +379,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals("/node1", hierarchicalJcrContainer.getPathInTree(node1));
 
         // WHEN
-        connectorDefinition.setPath("/node1");
+        connectorDefinition.setRootPath("/node1");
 
         // THEN
         assertEquals("", hierarchicalJcrContainer.getPathInTree(node1));
@@ -392,7 +392,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         // WHEN
-        connectorDefinition.setPath("/node1");
+        connectorDefinition.setRootPath("/node1");
         Item res = hierarchicalJcrContainer.getJcrItem(JcrItemUtil.getItemId(node1));
 
         // THEN

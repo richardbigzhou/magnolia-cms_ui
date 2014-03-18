@@ -77,7 +77,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         JcrContentConnector contentConnector = mock(JcrContentConnector.class);
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         connectorDefinition.setWorkspace(WORKSPACE);
-        connectorDefinition.setPath(ROOT_PATH);
+        connectorDefinition.setRootPath(ROOT_PATH);
         doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
         doReturn(new Object()).when(contentConnector).getDefaultItemId();
 

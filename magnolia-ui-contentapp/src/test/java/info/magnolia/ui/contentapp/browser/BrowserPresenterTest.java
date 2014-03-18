@@ -173,7 +173,7 @@ public class BrowserPresenterTest {
 
 
         connectorDefinition.setWorkspace(WORKSPACE);
-        connectorDefinition.setPath(ROOT_PATH);
+        connectorDefinition.setRootPath(ROOT_PATH);
         contentConnector = mock(JcrContentConnector.class);
         doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
         node = session.getRootNode().addNode(DUMMY_NODE_NAME);
