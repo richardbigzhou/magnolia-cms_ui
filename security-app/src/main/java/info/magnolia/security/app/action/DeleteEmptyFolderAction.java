@@ -34,6 +34,7 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.JCRSessionOp;
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -41,7 +42,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.action.DeleteItemAction;
+import info.magnolia.ui.framework.action.DeleteAction;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -59,23 +60,18 @@ import javax.jcr.Session;
  *
  * @see DeleteEmptyFolderActionDefinition
  */
-public class DeleteEmptyFolderAction extends DeleteItemAction {
+public class DeleteEmptyFolderAction extends DeleteAction<DeleteEmptyFolderActionDefinition> {
 
-    private DeleteEmptyFolderActionDefinition definition;
-
-    public DeleteEmptyFolderAction(DeleteEmptyFolderActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, eventBus, uiContext, i18n);
-        this.definition = definition;
+    public DeleteEmptyFolderAction(DeleteEmptyFolderActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n);
     }
 
-    public DeleteEmptyFolderAction(DeleteEmptyFolderActionDefinition definition, List<JcrItemAdapter> items, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, items, eventBus, uiContext, i18n);
-        this.definition = definition;
+    public DeleteEmptyFolderAction(DeleteEmptyFolderActionDefinition definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, items, commandsManager, eventBus, uiContext, i18n);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-
+    public void onPreExecute() throws Exception {
         final List<JcrItemAdapter> items = getItems();
 
         if (!items.isEmpty()) {
@@ -96,14 +92,14 @@ public class DeleteEmptyFolderAction extends DeleteItemAction {
                 });
 
                 if (!empty) {
-                    getUiContext().openNotification(MessageStyleTypeEnum.ERROR, false, definition.getFolderNotEmptyErrorMessage());
-                    return;
+                    getUiContext().openNotification(MessageStyleTypeEnum.ERROR, false, getDefinition().getFolderNotEmptyErrorMessage());
+                    throw new ActionExecutionException("Folder is not empty");
                 }
 
             } catch (RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
         }
-        super.execute();
+        super.onPreExecute();
     }
 }
