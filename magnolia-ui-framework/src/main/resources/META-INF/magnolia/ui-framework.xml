@@ -193,8 +193,8 @@
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
-      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
