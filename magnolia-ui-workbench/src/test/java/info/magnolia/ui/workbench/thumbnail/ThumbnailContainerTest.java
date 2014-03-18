@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.thumbnail;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
@@ -41,8 +42,10 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
@@ -81,7 +84,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         contentConnectorDefinition.setWorkspace(RepositoryConstants.CONFIG);
         contentConnectorDefinition.setNodeTypes(nodeTypes);
 
-        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(contentConnectorDefinition));
+        container = new ThumbnailContainer(new DefaultImageProvider(mock(ImageProviderDefinition.class), mock(ContentConnector.class)), new JcrThumbnailItemIdProvider(contentConnectorDefinition));
     }
 
     @Test

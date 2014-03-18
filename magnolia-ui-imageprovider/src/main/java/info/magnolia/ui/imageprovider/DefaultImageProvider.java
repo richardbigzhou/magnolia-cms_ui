@@ -65,9 +65,6 @@ public class DefaultImageProvider implements ImageProvider {
 
     private ContentConnector contentConnector;
 
-    public DefaultImageProvider() {
-    }
-
     @Inject
     public DefaultImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
         this.definition = definition;

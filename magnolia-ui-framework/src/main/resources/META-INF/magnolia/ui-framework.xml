@@ -243,16 +243,6 @@
       <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
     </component>
 
-    <!-- Image provider -->
-    <component>
-      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
-      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
-    </component>
-
     <component>
       <type>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView</type>
       <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl</implementation>
