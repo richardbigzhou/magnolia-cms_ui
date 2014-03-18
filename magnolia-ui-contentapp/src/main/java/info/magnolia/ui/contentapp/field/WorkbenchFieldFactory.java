@@ -36,6 +36,7 @@ package info.magnolia.ui.contentapp.field;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
 import javax.inject.Inject;
@@ -54,21 +55,24 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     private WorkbenchPresenter workbenchPresenter;
 
     private EventBus eventBus;
+    private ContentConnector contentConnector;
 
     @Inject
     public WorkbenchFieldFactory(
             WorkbenchFieldDefinition definition,
             Item relatedFieldItem,
             WorkbenchPresenter workbenchPresenter,
-            @Named(ChooseDialogEventBus.NAME)EventBus eventBus) {
+            @Named(ChooseDialogEventBus.NAME)EventBus eventBus,
+            ContentConnector contentConnector) {
         super(definition, relatedFieldItem);
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
         this.eventBus = eventBus;
+        this.contentConnector = contentConnector;
     }
 
     @Override
     protected Field<Object> createFieldComponent() {
-        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus);
+        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus, contentConnector);
     }
 }

@@ -35,11 +35,9 @@ package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -49,10 +47,6 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Arrays;
 import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,17 +70,20 @@ public class WorkbenchField extends CustomField<Object> {
 
     private WorkbenchDefinition workbenchDefinition;
 
-    private WorkbenchPresenter presenter;
+    private ContentConnector contentConnector;
 
-    private WorkbenchView view;
+    private WorkbenchPresenter presenter;
 
     private EventBus workbenchEventbus;
 
-    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter, EventBus eventBus) {
+    private WorkbenchView view;
+
+    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter, EventBus eventBus, ContentConnector contentConnector) {
         this.workbenchDefinition = definition;
         this.imageProvider = imageProvider;
         this.presenter = presenter;
         this.workbenchEventbus = eventBus;
+        this.contentConnector = contentConnector;
     }
 
     @Override
@@ -141,19 +138,7 @@ public class WorkbenchField extends CustomField<Object> {
                 return null;
             }
 
-            String potentialPath = String.valueOf(value);
-            try {
-                String workspace = workbenchDefinition.getWorkspace();
-                JcrItemId itemId = JcrItemUtil.getItemId(workspace, potentialPath);
-                javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspace, itemId);
-                return jcrItem.isNode() ?
-                    new JcrNodeAdapter((Node) jcrItem):
-                    new JcrPropertyAdapter((Property) jcrItem);
-            } catch (RepositoryException e) {
-                log.warn("Unable to set the selected item", potentialPath, e);
-            }
-
-            return null;
+            return contentConnector.getItem(value);
         }
 
         @Override
