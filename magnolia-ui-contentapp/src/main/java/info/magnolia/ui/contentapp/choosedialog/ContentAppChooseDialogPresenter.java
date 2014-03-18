@@ -104,7 +104,6 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
         workbench.setDialogWorkbench(true);
-        workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
 
         ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());

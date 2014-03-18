@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Definition of a choose dialog.
@@ -45,4 +46,6 @@ public interface ChooseDialogDefinition extends DialogDefinition {
 
     @Override
     Class<? extends ChooseDialogPresenter> getPresenterClass();
+
+    ContentConnectorDefinition getContentConnector();
 }
