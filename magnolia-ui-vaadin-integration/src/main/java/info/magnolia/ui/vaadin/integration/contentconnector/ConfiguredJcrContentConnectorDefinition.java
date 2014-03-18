@@ -31,16 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.contentconnector;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredContentConnectorDefinition;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition} for JCR-specific sub-apps.
  */
 public class ConfiguredJcrContentConnectorDefinition extends ConfiguredContentConnectorDefinition implements JcrContentConnectorDefinition {
 
+    private String defaultOrder;
+
+    private List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
+
+    private boolean includeProperties = false;
+
+    private boolean includeSystemNodes;
+
     private String workspace;
+
     private String path = "/";
 
     public ConfiguredJcrContentConnectorDefinition() {
@@ -65,7 +75,43 @@ public class ConfiguredJcrContentConnectorDefinition extends ConfiguredContentCo
         this.path = path;
     }
 
+    @Override
+    public List<NodeTypeDefinition> getNodeTypes() {
+        return nodeTypes;
+    }
 
+    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
 
+    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
+        nodeTypes.add(nodeTypeDefinition);
+    }
 
+    @Override
+    public boolean isIncludeProperties() {
+        return includeProperties;
+    }
+
+    public void setIncludeProperties(boolean includeProperties) {
+        this.includeProperties = includeProperties;
+    }
+
+    @Override
+    public boolean isIncludeSystemNodes() {
+        return includeSystemNodes;
+    }
+
+    public void setIncludeSystemNodes(boolean includeSystemNodes) {
+        this.includeSystemNodes = includeSystemNodes;
+    }
+
+    @Override
+    public String getDefaultOrder() {
+        return defaultOrder;
+    }
+
+    public void setDefaultOrder(String defaultOrder) {
+        this.defaultOrder = defaultOrder;
+    }
 }

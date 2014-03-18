@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.Item;
+import info.magnolia.objectfactory.ComponentProvider;
 
 /**
- * Stub implementation of {@link ContentConnector} interface. Does no conversion between item id and item.
+ * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
  */
-public class DefaultContentConnector implements ContentConnector {
+public abstract class AbstractContentConnector implements ContentConnector {
 
-    @Override
-    public String getItemUrlFragment(Object itemId) {
-        return StringUtils.EMPTY;
+    private ContentConnectorDefinition contentConnectorDefinition;
+
+    private ComponentProvider componentProvider;
+
+    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
+        this.contentConnectorDefinition = contentConnectorDefinition;
+        this.componentProvider = componentProvider;
     }
 
-    @Override
-    public Object getItemIdByUrlFragment(String urlFragment) {
-        return new NullItem();
-    }
-
-    @Override
-    public Object getDefaultItemId() {
-        return new NullItem();
-    }
-
-    @Override
-    public Item getItem(Object itemId) {
-        return itemId instanceof Item ? (Item)itemId : new NullItem();
-    }
-
-    @Override
-    public boolean canHandleItem(Object itemId) {
-        return itemId instanceof Item;
+    public ContentConnectorDefinition getContentConnectorDefinition() {
+        return contentConnectorDefinition;
     }
 }

@@ -31,37 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Defines a node type to be displayed in a workbench.
+ * Configuration for a definition of a NodeType. e.g. used for inclusion in a tree.
  *
- * @see WorkbenchDefinition
+ * @see info.magnolia.jcr.util.NodeTypes
  */
-public interface NodeTypeDefinition {
+public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
-    /**
-     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
-     *
-     * @see info.magnolia.jcr.util.NodeTypes
-     * @see org.apache.jackrabbit.JcrConstants
-     */
-    String getName();
+    private String name;
 
-    /**
-     * Specifies the icon to use for this node type.
-     */
-    String getIcon();
+    private String icon;
 
-    /**
-     * Specifies whether to include only the exact node type and ignore sub types.
-     */
-    boolean isStrict();
+    private boolean strict;
 
-    /**
-     * Determines whether the current node will be displayed in lists and searches. I.e. a node type <code>mgnl:folder</code> will likely be excluded from being displayed in a "flat" list view, therefore its value will be <code>true</code>.
-     * 
-     * @return <code>false</code> by default, unless diversely set.
-     */
-    boolean isHideInList();
+    private boolean hideInList;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
+    @Override
+    public boolean isHideInList() {
+        return this.hideInList;
+    }
+
+    public void setHideInList(boolean hideInList) {
+        this.hideInList = hideInList;
+    }
 }

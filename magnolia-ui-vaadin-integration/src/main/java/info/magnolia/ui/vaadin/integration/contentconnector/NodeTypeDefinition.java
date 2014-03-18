@@ -31,56 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Configuration for a definition of a NodeType. e.g. used for inclusion in a tree.
- *
- * @see info.magnolia.jcr.util.NodeTypes
+ * Defines a node type to be displayed in a workbench.
  */
-public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
+public interface NodeTypeDefinition {
 
-    private String name;
+    /**
+     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
+     *
+     * @see info.magnolia.jcr.util.NodeTypes
+     * @see org.apache.jackrabbit.JcrConstants
+     */
+    String getName();
 
-    private String icon;
+    /**
+     * Specifies the icon to use for this node type.
+     */
+    String getIcon();
 
-    private boolean strict;
+    /**
+     * Specifies whether to include only the exact node type and ignore sub types.
+     */
+    boolean isStrict();
 
-    private boolean hideInList;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    @Override
-    public boolean isStrict() {
-        return strict;
-    }
-
-    public void setStrict(boolean strict) {
-        this.strict = strict;
-    }
-
-    @Override
-    public boolean isHideInList() {
-        return this.hideInList;
-    }
-
-    public void setHideInList(boolean hideInList) {
-        this.hideInList = hideInList;
-    }
+    /**
+     * Determines whether the current node will be displayed in lists and searches. I.e. a node type <code>mgnl:folder</code> will likely be excluded from being displayed in a "flat" list view, therefore its value will be <code>true</code>.
+     * 
+     * @return <code>false</code> by default, unless diversely set.
+     */
+    boolean isHideInList();
 }

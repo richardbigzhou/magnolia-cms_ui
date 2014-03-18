@@ -31,18 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.contentconnector;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
-import info.magnolia.ui.vaadin.integration.contentconnector.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -51,11 +45,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -74,16 +63,13 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private SubAppContext subAppContext;
-
     private VersionManager versionManager;
 
     private JcrItemId defaultItemId;
 
     @Inject
-    public JcrContentConnector(SubAppContext subAppContext, final VersionManager versionManager, ConfiguredJcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
+    public JcrContentConnector(final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
         super(definition, componentProvider);
-        this.subAppContext = subAppContext;
         this.versionManager = versionManager;
         try {
             this.defaultItemId = JcrItemUtil.getItemId(getWorkspace(), getPath());
@@ -168,14 +154,6 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         return (itemId instanceof JcrItemId) && ((JcrItemId)itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
     }
 
-    protected WorkbenchDefinition getWorkbenchDefinition() {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
-        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench();
-        }
-        return null;
-    }
-
     @Override
     public Object getItemVersion(Object itemId, String versionName) {
         try {
@@ -190,15 +168,8 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public Object getNewItemId(String newItemPath, Object typeDefinition) {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
 
-        String primaryNodeType = null;
-        if (typeDefinition instanceof String) {
-            primaryNodeType = String.valueOf(typeDefinition);
-        } else if (subAppDescriptor instanceof DetailSubAppDescriptor) {
-            primaryNodeType = ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType().getName();
-        }
-
+        String primaryNodeType = String.valueOf(typeDefinition);
         String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
         parentPath = parentPath.isEmpty() ? getPath() : parentPath;
         Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
@@ -212,36 +183,16 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     private String getPath() {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
-        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((JcrContentConnectorDefinition)getContentConnectorDefinition()).getPath();
-
-        }
-        return "/";
+        return getContentConnectorDefinition().getPath();
     }
 
     private String getWorkspace() {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
-        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return((JcrContentConnectorDefinition)getContentConnectorDefinition()).getWorkspace();
-        }
-
-        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
-            return ((JcrContentConnectorDefinition)getContentConnectorDefinition()).getWorkspace();
-        }
-        return null;
+        return getContentConnectorDefinition().getWorkspace();
     }
 
-    private Collection<NodeTypeDefinition> getNodeTypes() {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
-        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getNodeTypes();
-        }
-
-        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
-            return Arrays.asList(((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType());
-        }
-        return null;
+    @Override
+    public JcrContentConnectorDefinition getContentConnectorDefinition() {
+        return (JcrContentConnectorDefinition) super.getContentConnectorDefinition();
     }
 
     /**

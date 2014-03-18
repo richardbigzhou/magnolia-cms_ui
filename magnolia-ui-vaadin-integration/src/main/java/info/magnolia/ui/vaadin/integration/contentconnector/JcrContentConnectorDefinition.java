@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.contentconnector;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+import java.util.List;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * Defines a JcrContentConnector. Contains all elements which defines a JcrContentConnector configuration.
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public interface JcrContentConnectorDefinition extends ContentConnectorDefinition {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
+    /**
+     * @return all configured NodeTypes.
+     */
+    List<NodeTypeDefinition> getNodeTypes();
 
-    private ComponentProvider componentProvider;
+    /**
+     * @return whether properties should be displayed as well (or just nodes)
+     */
+    boolean isIncludeProperties();
 
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
-        this.componentProvider = componentProvider;
-    }
+    /**
+     * @return whether nodes used by the system should be included, for instance nodes internal to the operations of the JCR implementation.
+     */
+    boolean isIncludeSystemNodes();
 
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
-    }
+    /**
+     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
+     */
+    String getDefaultOrder();
+
+    /**
+     *
+     * @return the name of the workspace the JcrContentConnector is bound to.
+     */
+    String getWorkspace();
+
+    /**
+     * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
+     */
+    String getPath();
+
+
 }
