@@ -37,7 +37,7 @@ import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaD
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 
 import java.util.List;
 
@@ -77,11 +77,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         return description;
     }
 
-//    @Override
-//    public String getWorkspace() {
-//        return workspace;
-//    }
-
     @Override
     public NodeTypeDefinition getNodeType() {
         return nodeType;
@@ -103,10 +98,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
     public void setDescription(String description) {
         this.description = description;
     }
-
-//    public void setWorkspace(String workspace) {
-//        this.workspace = workspace;
-//    }
 
     public void setForm(FormDefinition form) {
         this.form = form;

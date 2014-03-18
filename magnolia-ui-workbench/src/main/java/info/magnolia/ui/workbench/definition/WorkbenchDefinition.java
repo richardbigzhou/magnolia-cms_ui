@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -49,29 +48,9 @@ public interface WorkbenchDefinition extends Serializable {
     String getName();
 
     /**
-     * @return all configured NodeTypes.
-     */
-    List<NodeTypeDefinition> getNodeTypes();
-
-    /**
-     * @return whether properties should be displayed as well (or just nodes)
-     */
-    boolean isIncludeProperties();
-
-    /**
-     * @return whether nodes used by the system should be included, for instance nodes internal to the operations of the JCR implementation.
-     */
-    boolean isIncludeSystemNodes();
-
-    /**
      * Define if this workbench is used for Dialog.
      */
     boolean isDialogWorkbench();
-
-    /**
-     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
-     */
-    String getDefaultOrder();
 
     /**
      * Checks if workbench can edit tree view inplace.
@@ -89,11 +68,4 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the list of configured views.<br>
      */
     List<ContentPresenterDefinition> getContentViews();
-
-    /**
-     *
-     * @returns the ContentConnectorDefinition
-     */
-    ContentConnectorDefinition getContentConnector();
-
 }
