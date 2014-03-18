@@ -61,7 +61,7 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
     private static final String CONTENTCONNECTOR_NODENAME = "contentConnector";
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";
-    public static final String SUB_APPS_NODE_NAME = "subApps";
+    public static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -77,7 +77,7 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
 
         try {
             Node subAppNode = node.getParent();
-            if (!SUB_APPS_NODE_NAME.equals(subAppNode.getName())) {
+            if (!subAppNode.hasProperty(SUB_APP_CLASS_PROPERTY)) {
                 return;
             }
 
