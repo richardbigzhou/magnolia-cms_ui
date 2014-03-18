@@ -36,10 +36,12 @@ package info.magnolia.ui.workbench;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -87,7 +89,8 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
 
     private NodeTypeDefinition getNodeTypeDefinitionForNode(Node node) throws RepositoryException {
         String primaryNodeTypeName = node.getPrimaryNodeType().getName();
-        for (NodeTypeDefinition nodeTypeDefinition : workbenchDefinition.getNodeTypes()) {
+        JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnector)contentConnector).getContentConnectorDefinition();
+        for (NodeTypeDefinition nodeTypeDefinition : connectorDefinition.getNodeTypes()) {
             if (nodeTypeDefinition.isStrict()) {
                 if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
                     return nodeTypeDefinition;

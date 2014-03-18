@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -128,6 +129,6 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
     @Override
     protected AbstractJcrContainer createContainer() {
-        return new HierarchicalJcrContainer(workbenchDefinition);
+        return new HierarchicalJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 }

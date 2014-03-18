@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.list.ListPresenter;
 
@@ -61,6 +62,6 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
 
     @Override
     protected AbstractJcrContainer createContainer() {
-        return new SearchJcrContainer(workbenchDefinition);
+        return new SearchJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 }

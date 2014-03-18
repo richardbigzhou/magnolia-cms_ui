@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.list;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
@@ -122,7 +123,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     protected AbstractJcrContainer createContainer() {
-        return new FlatJcrContainer(workbenchDefinition);
+        return new FlatJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 
     protected void configureContainer(ContentPresenterDefinition presenterDefinition, AbstractJcrContainer container) {

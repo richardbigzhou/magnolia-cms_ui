@@ -37,6 +37,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.container.Refreshable;
@@ -98,7 +100,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
 
     @Override
     public Container initializeContainer() {
-        ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(workbenchDefinition));
+        JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnector)contentConnector).getContentConnectorDefinition();
+        ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(connectorDefinition));
         c.setThumbnailHeight(73);
         c.setThumbnailWidth(73);
         return c;
