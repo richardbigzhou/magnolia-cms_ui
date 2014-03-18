@@ -34,6 +34,7 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreeView;
@@ -49,6 +50,6 @@ public class UserTreePresenter extends TreePresenter {
 
     @Override
     protected AbstractJcrContainer createContainer() {
-        return new UserContainer(workbenchDefinition);
+        return new UserContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 }

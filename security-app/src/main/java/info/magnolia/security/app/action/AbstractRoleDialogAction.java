@@ -48,8 +48,8 @@ import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.Node;

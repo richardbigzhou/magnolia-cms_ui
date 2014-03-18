@@ -34,7 +34,7 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import javax.jcr.Item;
@@ -52,8 +52,8 @@ public class RoleContainer extends HierarchicalJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(RoleContainer.class);
 
-    public RoleContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public RoleContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
     }
 
     @Override
