@@ -43,7 +43,6 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -161,8 +160,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 // See if workspaces match
-                JcrItemId eventItemId = (JcrItemId) event.getItemId();
-                if (eventItemId.getWorkspace().equals(getWorkspace())) {
+                if (contentConnector.canHandleItem(event.getItemId())) {
                     // New item
                     if (itemId == null) {
                         // Check if parent is still existing, close supApp if it doesn't
@@ -201,12 +199,6 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                 }
             }
         });
-
-    }
-
-    protected String getWorkspace() {
-        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        return subAppDescriptor.getEditor().getWorkspace();
     }
 
     /**
