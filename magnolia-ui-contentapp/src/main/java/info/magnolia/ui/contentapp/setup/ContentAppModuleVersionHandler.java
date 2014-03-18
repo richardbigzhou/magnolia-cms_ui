@@ -68,8 +68,8 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new BootstrapSingleResource("", "", "/mgnl-bootstrap/ui-contentapp/config.modules.ui-admincentral.apps.configuration.subApps.browser.actions.saveItemProperty.xml"))
-                .addTask(new MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask())
                 .addTask(new ChangeJcrDependentAvailabilityRuleClassesFqcnTask())
+                .addTask(new MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask())
                 .addTask(new MigrateWorkspaceAndPathToContentConnector())
         );
     }

@@ -33,19 +33,21 @@
  */
 package info.magnolia.ui.framework.setup;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.repository.RepositoryConstants;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A migration task to move
+ * A migration task to move.
  * <ul>
  * <li>properties workspace, path from workbench and add the to a new node called contentConnector which is added to workbench</li>
  * <li>property workspace from Editor to a new node called contentConnector which is added to Editor </li>
@@ -58,9 +60,8 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
     private static final String EDITOR_NODENAME = "editor";
     private static final String CONTENTCONNECTOR_NODENAME = "contentConnector";
 
-    private static final String WORSPACE_PROPERTY = "workspace";
-    private static final String PATH_PROPERTY = "path";
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";
+    public static final String SUB_APPS_NODE_NAME = "subApps";
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -75,42 +76,49 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
     protected void operateOnNode(InstallContext installContext, Node node) {
 
         try {
-            String workspace = null;
-            String path = null;
+            Node subAppNode = node.getParent();
+            if (!SUB_APPS_NODE_NAME.equals(subAppNode.getName())) {
+                return;
+            }
+
+            Node contentConnectorNode = subAppNode.hasNode(CONTENTCONNECTOR_NODENAME) ? subAppNode.getNode(CONTENTCONNECTOR_NODENAME) : subAppNode.addNode(CONTENTCONNECTOR_NODENAME, NodeTypes.ContentNode.NAME);
 
             // workbench
-            if (node.hasProperty(WORSPACE_PROPERTY)) {
-                workspace = node.getProperty(WORSPACE_PROPERTY).getString();
-            }
-
             if (WORKBENCH_NODENAME.equals(node.getName())) {
-                if (node.hasProperty(PATH_PROPERTY)) {
-                    path = node.getProperty(PATH_PROPERTY).getString();
-                }
-                if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(workspace)) {
-                    Node contentConnector = node.getParent().addNode(CONTENTCONNECTOR_NODENAME, "mgnl:contentNode");
-                    contentConnector.setProperty(WORKBENCH_NODENAME, workspace);
-                    contentConnector.setProperty(PATH_PROPERTY, path);
-                } else {
-                    log.info("Found " + WORKBENCH_NODENAME + "-node (" + node.getPath() + "@" + node.getSession().getWorkspace() + ") which is eventually not properly configured: Could not find both path and workspace. Did not migrate this node; configure it manually if required.");
-                }
-
+                migrateProperty("workspace", node, contentConnectorNode);
+                migrateProperty("path", node, contentConnectorNode);
+                migrateProperty("includeProperties", node, contentConnectorNode);
+                migrateProperty("includeSystemNodes", node, contentConnectorNode);
+                migrateProperty("defaultOrder", node, contentConnectorNode);
+                migrateNode("nodeTypes", node, contentConnectorNode, installContext.getJCRSession(RepositoryConstants.CONFIG));
             }
-
             // editor
             else {
-                if (StringUtils.isNotBlank(workspace)) {
-                    Node contentConnector = node.getParent().addNode(CONTENTCONNECTOR_NODENAME, "mgnl:contentNode");
-                    contentConnector.setProperty(WORKBENCH_NODENAME, workspace);
-                } else {
-                    log.info("Found " + EDITOR_NODENAME + "-node (" + node.getPath() + "@" + node.getSession().getWorkspace() + ") which is eventually not properly configured: missing workbench. Did not migrate this node; configure it manually; configure it manually if required.");
-                }
+                migrateProperty("workspace", node, contentConnectorNode);
             }
-
-
         } catch (RepositoryException e) {
             log.error("Unable to process app node ", e);
         }
 
+    }
+
+    private void migrateNode(String nodeName, Node sourceNode, Node destNode, Session jcrSession) throws RepositoryException {
+        if (sourceNode.hasNode(nodeName)) {
+            if (destNode.hasNode(nodeName)) {
+                destNode.getNode(nodeName).remove();
+            }
+
+            jcrSession.move(sourceNode.getNode(nodeName).getPath(), destNode.getPath() + "/" + nodeName);
+        }
+    }
+
+    private void migrateProperty(String propertyName, Node sourceNode, Node destNode) throws RepositoryException {
+        if (sourceNode.hasProperty(propertyName)) {
+            Property sourceNodeProperty = sourceNode.getProperty(propertyName);
+            destNode.setProperty(propertyName, sourceNodeProperty.getString());
+            sourceNodeProperty.remove();
+        } else {
+            log.info("Found node in " + RepositoryConstants.CONFIG + ") which is eventually not properly configured: Could not find both path and workspace. Did not migrate this node; configure it manually if required.");
+        }
     }
 }

@@ -37,6 +37,9 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.repository.RepositoryConstants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -50,25 +53,21 @@ import org.slf4j.LoggerFactory;
 public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask {
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
-    public static final String RULE_CLASS = "ruleClass";
-
-    private static String hasVersionsRuleOldFqcn = "info.magnolia.ui.api.availability.HasVersionsRule";
-    private static String hasVersionsRuleNewFqcn = "info.magnolia.ui.framework.availability.HasVersionsRule";
-    private static String iIsDeletedRuleOldFqcn = "info.magnolia.ui.api.availability.IsDeletedRule";
-    private static String iIsDeletedRuleNewFqcn = "info.magnolia.ui.framework.availability.IsDeletedRule";
-    private static String iIsNotDeletedRuleOldFqcn = "info.magnolia.ui.api.availability.IsNotDeletedRule";
-    private static String iIsNotDeletedRuleNewFqcn = "info.magnolia.ui.framework.availability.IsNotDeletedRule";
-    private static String iIsNotVersionedRuleOldFqcn = "info.magnolia.ui.api.availability.IsNotVersionedRule";
-    private static String iIsNotVersionedRuleNewFqcn = "info.magnolia.ui.framework.availability.IsNotVersionedRule";
-
-
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    public static final String RULE_CLASS = "ruleClass";
+
+    private Map<String, String> classMappings = new HashMap<String, String>();
 
     public ChangeJcrDependentAvailabilityRuleClassesFqcnTask() {
         super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
                 "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, QUERY);
+
+        classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
     }
 
     @Override
@@ -76,15 +75,8 @@ public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask
         try {
             if (node.hasProperty(RULE_CLASS)) {
                 String classRulePropertyValue = node.getProperty(RULE_CLASS).getString();
-
-                if(hasVersionsRuleOldFqcn.equals(classRulePropertyValue)){
-                    node.setProperty(RULE_CLASS,hasVersionsRuleNewFqcn);
-                }else if(iIsDeletedRuleOldFqcn.equals(classRulePropertyValue)){
-                    node.setProperty(RULE_CLASS, iIsDeletedRuleNewFqcn);
-                }else if(iIsNotDeletedRuleOldFqcn.equals(classRulePropertyValue)){
-                    node.setProperty(RULE_CLASS, iIsNotDeletedRuleNewFqcn);
-                }else if(iIsNotVersionedRuleOldFqcn.equals(classRulePropertyValue)){
-                    node.setProperty(RULE_CLASS, iIsNotVersionedRuleNewFqcn);
+                if (classMappings.containsKey(classRulePropertyValue)) {
+                    node.setProperty(RULE_CLASS, classMappings.get(classRulePropertyValue));
                 }
             }
         } catch (RepositoryException e) {
