@@ -36,13 +36,12 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.contentapp.contentconnector.JcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,8 +82,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
     }
 
-    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public HierarchicalJcrContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
     }
 
     @Override
@@ -199,7 +198,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 }
             }
 
-            if (getWorkbenchDefinition().isIncludeProperties()) {
+            if (getConfiguration().isIncludeProperties()) {
                 ArrayList<Property> properties = new ArrayList<Property>();
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
@@ -222,12 +221,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     protected boolean isNodeVisible(Node node) throws RepositoryException {
 
-        if (!getWorkbenchDefinition().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
+        if (!getConfiguration().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
             return false;
         }
 
         String primaryNodeTypeName = node.getPrimaryNodeType().getName();
-        for (NodeTypeDefinition nodeTypeDefinition : getWorkbenchDefinition().getNodeTypes()) {
+        for (NodeTypeDefinition nodeTypeDefinition : getConfiguration().getNodeTypes()) {
             if (nodeTypeDefinition.isStrict()) {
                 if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
                     return true;
@@ -330,7 +329,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * Only used in tests.
      */
     String getPathInTree(Item item) throws RepositoryException {
-        String base =  ((JcrContentConnectorDefinition)getWorkbenchDefinition()).getPath();
+        String base =  ((JcrContentConnectorDefinition) getConfiguration()).getPath();
         return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
     }
 
@@ -339,6 +338,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private Node getRootNode() throws RepositoryException {
-        return getSession().getNode(((JcrContentConnectorDefinition)getWorkbenchDefinition()).getPath());
+        return getSession().getNode(((JcrContentConnectorDefinition) getConfiguration()).getPath());
     }
 }
