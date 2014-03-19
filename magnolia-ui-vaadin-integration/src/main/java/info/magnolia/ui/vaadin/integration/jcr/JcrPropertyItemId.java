@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,43 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-
-import javax.jcr.RepositoryException;
-
 /**
- * Represents a JCR Item (node or property) as a Vaadin data Item.
- *
- * @see com.vaadin.data.Item
- * @see javax.jcr.Item
+ * {@link javax.jcr.Property} item id, holds uuid of a parent item, workspace and property names.
  */
-public interface JcrItemAdapter extends ItemAdapter {
+public class JcrPropertyItemId extends JcrItemId {
 
-    boolean isNode();
+    private String propertyName;
 
-    String getWorkspace();
+    public JcrPropertyItemId(String uuid, String workspace,  String propertyName) {
+        super(uuid, workspace);
+        this.propertyName = propertyName;
+    }
 
-    JcrItemId getItemId();
+    public JcrPropertyItemId(JcrItemId parentItemId, String propertyName) {
+        this(parentItemId.getUuid(), parentItemId.getWorkspace(), propertyName);
+    }
 
-    /**
-     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
-     */
-    javax.jcr.Item getJcrItem();
+    public String getPropertyName() {
+        return propertyName;
+    }
 
-    /**
-     * Returns the JCR Item represented by this Item with any changes applied.
-     */
-    javax.jcr.Item applyChanges() throws RepositoryException;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof JcrPropertyItemId)) return false;
+        if (!super.equals(o)) return false;
 
-    boolean hasChangedProperties();
+        JcrPropertyItemId that = (JcrPropertyItemId) o;
+
+        if (propertyName != null ? !propertyName.equals(that.propertyName) : that.propertyName != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (propertyName != null ? propertyName.hashCode() : 0);
+        return result;
+    }
 }

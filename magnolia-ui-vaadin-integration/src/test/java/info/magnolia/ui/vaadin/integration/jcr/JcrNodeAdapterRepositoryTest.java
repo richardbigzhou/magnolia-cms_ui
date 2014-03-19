@@ -40,7 +40,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Arrays;
 import java.util.HashSet;

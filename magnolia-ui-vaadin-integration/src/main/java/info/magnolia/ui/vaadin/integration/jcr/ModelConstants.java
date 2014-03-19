@@ -33,33 +33,13 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-
-import javax.jcr.RepositoryException;
-
 /**
- * Represents a JCR Item (node or property) as a Vaadin data Item.
- *
- * @see com.vaadin.data.Item
- * @see javax.jcr.Item
+ * Constants used UI Model layer and higher.
  */
-public interface JcrItemAdapter extends ItemAdapter {
-
-    boolean isNode();
-
-    String getWorkspace();
-
-    JcrItemId getItemId();
+public interface ModelConstants {
 
     /**
-     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
+     * Defines what value is used to indicate it is the name of {@link javax.jcr.Item} - not a property of a {@link javax.jcr.Node}.
      */
-    javax.jcr.Item getJcrItem();
-
-    /**
-     * Returns the JCR Item represented by this Item with any changes applied.
-     */
-    javax.jcr.Item applyChanges() throws RepositoryException;
-
-    boolean hasChangedProperties();
+    public static final String JCR_NAME = "jcrName";
 }

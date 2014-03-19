@@ -39,7 +39,6 @@ import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collections;
 

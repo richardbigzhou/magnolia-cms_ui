@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,47 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-
-import javax.jcr.RepositoryException;
+import java.io.Serializable;
 
 /**
- * Represents a JCR Item (node or property) as a Vaadin data Item.
- *
- * @see com.vaadin.data.Item
- * @see javax.jcr.Item
+ * Generic {@link javax.jcr.Item} item id, holds item uuid and the workspace name.
  */
-public interface JcrItemAdapter extends ItemAdapter {
+public class JcrItemId implements Serializable {
 
-    boolean isNode();
+    private String uuid;
 
-    String getWorkspace();
+    private String workspace;
 
-    JcrItemId getItemId();
+    public JcrItemId(String uuid, String workspace) {
+        this.workspace = workspace;
+        this.uuid = uuid;
+    }
 
-    /**
-     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
-     */
-    javax.jcr.Item getJcrItem();
+    public String getUuid() {
+        return uuid;
+    }
 
-    /**
-     * Returns the JCR Item represented by this Item with any changes applied.
-     */
-    javax.jcr.Item applyChanges() throws RepositoryException;
+    public String getWorkspace() {
+        return workspace;
+    }
 
-    boolean hasChangedProperties();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof JcrItemId)) return false;
+
+        JcrItemId jcrItemId = (JcrItemId) o;
+
+        if (uuid != null ? !uuid.equals(jcrItemId.uuid) : jcrItemId.uuid != null) return false;
+        if (workspace != null ? !workspace.equals(jcrItemId.workspace) : jcrItemId.workspace != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (workspace != null ? workspace.hashCode() : 0);
+        return result;
+    }
 }

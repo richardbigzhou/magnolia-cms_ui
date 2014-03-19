@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.api;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 /**
- * Constants used UI Model layer and higher.
+ * {@link javax.jcr.Node} item id.
  */
-public interface ModelConstants {
+public class JcrNodeItemId extends JcrItemId {
 
-    /**
-     * Defines what value is used to indicate it is the name of {@link javax.jcr.Item} - not a property of a {@link javax.jcr.Node}.
-     */
-    public static final String JCR_NAME = "jcrName";
+    public JcrNodeItemId(String uuid, String workspace) {
+        super(uuid, workspace);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = super.equals(o);
+        return result && o.getClass() == JcrNodeItemId.class;
+    }
+
+    @Override
+    public int hashCode() {
+        return 29 * super.hashCode() + 7;
+    }
 }
