@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -45,7 +46,6 @@ import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.field.image.ViewImageField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;

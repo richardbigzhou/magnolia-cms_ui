@@ -139,22 +139,16 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     @Override
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
-        MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
-        ActionbarPresenter actionbarPresenter = new ActionbarPresenter(i18n);
-        ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
-        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
-        AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
-        MediaEditorPresenter mediaEditorPresenter =
-                new MediaEditorPresenterImpl(
-                        definition,
-                        eventBus,
-                        view,
-                        actionbarPresenter,
-                        dialogPresenter,
-                        appContext,
-                        i18n);
 
+        AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
+        MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
+        ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
         ((MediaEditorActionExecutor) mediaActionExecutor).setDef(definition);
+
+        ActionbarPresenter actionBarPresenter = mediaEditorComponentProvider.getComponent(ActionbarPresenter.class);
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
+        MediaEditorPresenter mediaEditorPresenter = new MediaEditorPresenterImpl(definition, eventBus, view, actionBarPresenter, dialogPresenter, appContext, i18n);
+
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);
         return mediaEditorPresenter;
     }
