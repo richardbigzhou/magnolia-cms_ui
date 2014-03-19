@@ -36,24 +36,25 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -286,6 +287,14 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
     protected void openChooseDialog(final TextField textField) {
         final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
+        final ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setWorkspace(getFieldDefinition().getWorkspace());
+        contentConnectorDefinition.setRootPath("/");
+        contentConnectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+        // node types
+        contentConnectorDefinition.setNodeTypes(resolveNodeTypes());
+        def.setContentConnector(contentConnectorDefinition);
+
         final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
         final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
         fieldDef.setWorkbench(wbDef);
@@ -318,14 +327,9 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         }
 
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(getFieldDefinition().getWorkspace());
-        workbenchDefinition.setPath("/");
         workbenchDefinition.setDialogWorkbench(true);
         workbenchDefinition.setEditable(false);
-        workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
 
-        // node types
-        workbenchDefinition.setNodeTypes(resolveNodeTypes());
 
         // content views
         ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();

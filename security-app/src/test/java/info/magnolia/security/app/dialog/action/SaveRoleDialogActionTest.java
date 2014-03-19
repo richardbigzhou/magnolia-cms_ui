@@ -58,7 +58,7 @@ import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;

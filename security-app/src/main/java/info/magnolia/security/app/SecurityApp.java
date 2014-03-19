@@ -41,6 +41,7 @@ import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 
 import javax.inject.Inject;
 
@@ -63,10 +64,14 @@ public class SecurityApp extends ContentApp {
                 first = subAppDescriptor;
                 continue;
             }
-            String path = ((BrowserSubAppDescriptor)subAppDescriptor).getWorkbench().getPath();
+            BrowserSubAppDescriptor browserSubAppDescriptor = (BrowserSubAppDescriptor) first;
+            JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnectorDefinition)browserSubAppDescriptor);
+            String path = connectorDefinition.getRootPath();
             getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", subAppDescriptor.getName(), path));
         }
-        String path = ((BrowserSubAppDescriptor) first).getWorkbench().getPath();
+        BrowserSubAppDescriptor browserSubAppDescriptor = (BrowserSubAppDescriptor) first;
+        JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnectorDefinition)browserSubAppDescriptor);
+        String path = connectorDefinition.getRootPath();
         getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", first.getName(), path));
     }
 

@@ -74,11 +74,11 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
 
         FormDialogDefinition dialogDefinition = getDialogDefinition("role");
 
-        formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit.getItemId(), dialogDefinition, uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 
