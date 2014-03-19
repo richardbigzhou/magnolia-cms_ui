@@ -95,11 +95,12 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
         try {
             final FormDialogDefinition dialogDefinition = buildNewComponentDialog();
 
+            // TODO JCR FREE - needs review and most likely an adaptation to the changes.
             // Using a beanItem instead of an jcrItem
             item = new BeanItem(getBeanItemClass());
 
             // Perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, uiContext, getEditorCallback());
+            formDialogPresenter.start(item.getBean(), dialogDefinition, uiContext, getEditorCallback());
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not execute action", e);
         }

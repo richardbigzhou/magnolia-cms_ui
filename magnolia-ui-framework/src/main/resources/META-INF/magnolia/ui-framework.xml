@@ -95,6 +95,10 @@
       <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
       <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.api.availability.AvailabilityRuleDefinition</type>
+      <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition</implementation>
+    </type-mapping>
 
     <!-- Ui framework -->
     <type-mapping>
@@ -189,8 +193,8 @@
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
-      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
@@ -250,11 +254,6 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView</type>
       <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl</implementation>
     </component>
@@ -270,11 +269,6 @@
       <implementation>info.magnolia.ui.dialog.BaseDialogViewImpl</implementation>
     </component>
 
-    <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
-    </component>
-
     <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
@@ -285,26 +279,12 @@
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
-    <!-- Form -->
-    <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormView</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.ItemFormView</implementation>
-    </component>
     <!-- Ui framework-->
     <type-mapping>
       <type>info.magnolia.ui.api.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
     </type-mapping>
 
-    <!-- Dialog -->
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter</type>
-      <implementation>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl</implementation>
-    </type-mapping>
   </components>
 
   <components>
@@ -313,29 +293,7 @@
       <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
       <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
     </component>
-  </components>
 
-  <components>
-    <id>app</id>
-
-    <component>
-      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
-      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
-    </component>
-
-    <!-- Dialog -->
-    <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-
-    <!-- Form -->
-    <component>
-      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
-      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
-    </component>
-
-    <!-- Workbench -->
     <component>
       <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
       <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
@@ -343,6 +301,11 @@
     <component>
       <type>info.magnolia.ui.workbench.WorkbenchView</type>
       <implementation>info.magnolia.ui.workbench.WorkbenchViewImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
+      <implementation>info.magnolia.ui.framework.availability.AvailabilityCheckerImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.workbench.list.ListView</type>
@@ -364,6 +327,21 @@
       <type>info.magnolia.ui.workbench.StatusBarView</type>
       <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
+  </components>
+
+  <components>
+    <id>app</id>
+
+    <component>
+      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
+    </component>
+
+    <!-- Form -->
+    <component>
+      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
+    </component>
 
     <!--<component>-->
     <!--<type>info.magnolia.event.EventBus</type>-->
@@ -373,6 +351,40 @@
 
   <components>
     <id>subapp</id>
+
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchView</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchViewImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
+      <implementation>info.magnolia.ui.framework.availability.AvailabilityCheckerImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.list.ListView</type>
+      <implementation>info.magnolia.ui.workbench.list.ListViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.tree.TreeView</type>
+      <implementation>info.magnolia.ui.workbench.tree.TreeViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
+      <implementation>info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.search.SearchView</type>
+      <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.StatusBarView</type>
+      <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
+    </component>
 
     <!-- Form -->
     <component>
@@ -432,6 +444,16 @@
     <type-mapping>
       <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenter</type>
       <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenterImpl</implementation>
+    </type-mapping>
+
+    <!-- Dialog -->
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl</implementation>
     </type-mapping>
   </components>
 </module>

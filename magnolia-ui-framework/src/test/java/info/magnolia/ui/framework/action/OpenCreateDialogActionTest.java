@@ -40,10 +40,15 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Tests for {@link info.magnolia.ui.framework.action.OpenCreateDialogAction}.
@@ -69,7 +74,7 @@ public class OpenCreateDialogActionTest {
 
         when(i18n.translate("ui-framework.actions.no.dialog.definition", "testAction")).thenReturn("No dialog defined for action: testAction");
 
-        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n);
+        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), mock(JcrContentConnector.class), new HashMap<Object, Item>(), i18n);
 
         // WHEN
         action.execute();
@@ -88,7 +93,7 @@ public class OpenCreateDialogActionTest {
         when(i18n.translate("ui-framework.actions.dialog.not.registered", "testDialog")).thenReturn("Dialog [testDialog] is not registered.");
         when(formDialogPresenterFactory.createFormDialogPresenter("testDialog")).thenReturn(null);
 
-        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), i18n);
+        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), mock(JcrContentConnector.class), new HashMap<Object, Item>(), i18n);
 
         // WHEN
         action.execute();

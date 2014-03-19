@@ -86,7 +86,7 @@ public class DeleteEmptyFolderAction extends DeleteItemAction {
                     @Override
                     public Boolean exec(Session session) throws RepositoryException {
                         for (JcrItemAdapter item : items) {
-                            Item jcrItem = JcrItemUtil.getJcrItem(workspaceName, item.getItemId());
+                            Item jcrItem = JcrItemUtil.getJcrItem(item.getItemId());
                             if (jcrItem.isNode() && NodeUtil.getNodes((Node) jcrItem).iterator().hasNext()) {
                                 return false;
                             }

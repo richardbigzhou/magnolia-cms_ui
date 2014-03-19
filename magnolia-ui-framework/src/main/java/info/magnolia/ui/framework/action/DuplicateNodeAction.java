@@ -41,6 +41,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
@@ -84,7 +85,8 @@ public class DuplicateNodeAction extends AbstractRepositoryAction<DuplicateNodeA
 
             activatableUpdate(duplicateNode, MgnlContext.getUser().getName());
             // Set item of the new node for the ContentChangedEvent
-            setItemIdOfChangedItem(JcrItemUtil.getItemId(duplicateNode));
+            JcrItemId itemId = JcrItemUtil.getItemId(duplicateNode);
+            setItemIdOfChangedItem(itemId);
 
             log.debug("Created a copy of {} with new path {}", node.getPath(), newPath);
         }

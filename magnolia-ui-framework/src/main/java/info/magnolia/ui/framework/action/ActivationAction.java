@@ -98,7 +98,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     @Override
     protected void onPostExecute() throws Exception {
-        admincentralEventBus.fireEvent(new ContentChangedEvent(jcrItemAdapter.getWorkspace(), jcrItemAdapter.getItemId()));
+        admincentralEventBus.fireEvent(new ContentChangedEvent(jcrItemAdapter.getItemId()));
 
         Context context = MgnlContext.getInstance();
         // yes, this is inverted, because a chain returns false when it is finished.

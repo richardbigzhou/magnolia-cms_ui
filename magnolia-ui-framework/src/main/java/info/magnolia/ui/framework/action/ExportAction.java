@@ -75,7 +75,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         super(definition, item, commandsManager, uiContext, i18n);
         try {
             // Create a temporary file that will hold the data created by the export command.
-            fileOutput = File.createTempFile(item.getItemId(), ".xml", Path.getTempDirectory());
+            fileOutput = File.createTempFile(item.getItemId().getUuid(), ".xml", Path.getTempDirectory());
             // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
             fileOutputStream = new FileOutputStream(fileOutput);
         } catch (Exception e) {
