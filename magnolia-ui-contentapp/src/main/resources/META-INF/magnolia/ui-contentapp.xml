@@ -31,6 +31,12 @@
           <type>info.magnolia.ui.contentapp.ContentAppDescriptor</type>
           <implementation>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</implementation>
       </type-mapping>
+    
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition</type>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition</implementation>
+    </type-mapping>
+    
   </components>
 
 
@@ -40,16 +46,32 @@
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
       <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
     </component>
+
     <component>
+      <type>info.magnolia.ui.dialog.actionarea.DialogActionExecutor</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.DialogActionExecutor</implementation>
+    </component>
+
+    <type-mapping>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
-    </component>
+    </type-mapping>
   </components>
 
 
 
   <components>
+    <id>app</id>
+
+  </components>
+
+  <components>
     <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector</type>
+      <provider>info.magnolia.ui.contentapp.contentconnector.ContentConnectorProvider</provider>
+      <scope>singleton</scope>
+    </component>
 
     <component>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.field;
+package info.magnolia.ui.contentapp.choosedialog;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.event.ChooseDialogEventBus;
-import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.workbench.WorkbenchPresenter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.Singleton;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.google.inject.Provider;
+
 
 /**
- * Factory capable of producing {@link WorkbenchField}.
+ * {@link ContentConnector} provider for choose dialogs.
  */
-public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDefinition, Object> {
+@Singleton
+public class ChooseDialogContentConnectorProvider implements Provider<ContentConnector> {
 
-    private WorkbenchFieldDefinition definition;
+    private ComponentProvider componentProvider;
 
-    private WorkbenchPresenter workbenchPresenter;
-
-    private EventBus eventBus;
-    private ContentConnector contentConnector;
+    private ContentConnectorDefinition contentConnectorDefinition;
 
     @Inject
-    public WorkbenchFieldFactory(
-            WorkbenchFieldDefinition definition,
-            Item relatedFieldItem,
-            WorkbenchPresenter workbenchPresenter,
-            @Named(ChooseDialogEventBus.NAME)EventBus eventBus,
-            ContentConnector contentConnector) {
-        super(definition, relatedFieldItem);
-        this.definition = definition;
-        this.workbenchPresenter = workbenchPresenter;
-        this.eventBus = eventBus;
-        this.contentConnector = contentConnector;
+    public ChooseDialogContentConnectorProvider(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
+        this.contentConnectorDefinition = contentConnectorDefinition;
+        this.componentProvider = componentProvider;
     }
 
     @Override
-    protected Field<Object> createFieldComponent() {
-        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus, contentConnector);
+    public ContentConnector get() {
+        return componentProvider.newInstance(contentConnectorDefinition.getImplementationClass(), contentConnectorDefinition);
     }
 }

@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 
 import java.util.ArrayList;
 
@@ -91,7 +92,7 @@ public class ContentAppTest {
     @Test
     public void testCreateChooseDialogComponentProvider() throws Exception {
         //WHEN
-        GuiceComponentProvider chooseDialogProvider = (GuiceComponentProvider) app.createChooseDialogComponentProvider();
+        GuiceComponentProvider chooseDialogProvider = (GuiceComponentProvider) app.createChooseDialogComponentProvider(new ConfiguredChooseDialogDefinition());
         MockChooseDialogEventBusClient client = chooseDialogProvider.newInstance(MockChooseDialogEventBusClient.class);
 
         //THEN

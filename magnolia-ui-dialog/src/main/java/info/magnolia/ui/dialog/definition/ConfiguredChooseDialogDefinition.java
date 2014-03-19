@@ -36,6 +36,7 @@ package info.magnolia.ui.dialog.definition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Implementation of {@link ChooseDialogDefinition}.
@@ -43,6 +44,8 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 public class ConfiguredChooseDialogDefinition extends ConfiguredDialogDefinition implements ChooseDialogDefinition {
 
     private FieldDefinition field;
+
+    private ContentConnectorDefinition contentConnector = null;
 
     public ConfiguredChooseDialogDefinition() {
         this(ChooseDialogPresenter.class);
@@ -73,5 +76,13 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredDialogDefinition
     @Override
     public Class<? extends ChooseDialogPresenter> getPresenterClass() {
         return (Class<? extends ChooseDialogPresenter>) super.getPresenterClass();
+    }
+
+    public ContentConnectorDefinition getContentConnector() {
+        return contentConnector;
+    }
+
+    public void setContentConnector(ContentConnectorDefinition contentConnector) {
+        this.contentConnector = contentConnector;
     }
 }

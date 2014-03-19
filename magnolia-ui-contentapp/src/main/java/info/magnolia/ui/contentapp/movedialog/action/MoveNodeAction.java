@@ -43,6 +43,7 @@ import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.framework.action.AbstractMultiItemAction;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -97,10 +98,10 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
         Item firstItem = getItems().get(0);
         if (firstItem instanceof JcrNodeAdapter) {
             JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) firstItem;
-            String itemIdOfChangedItem;
+            JcrItemId itemIdOfChangedItem;
             try {
                 itemIdOfChangedItem = JcrItemUtil.getItemId(nodeAdapter.getJcrItem());
-                admincentralEventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getWorkspace(), itemIdOfChangedItem));
+                admincentralEventBus.fireEvent(new ContentChangedEvent(itemIdOfChangedItem));
                 callback.onMovePerformed(targetItem, moveLocation);
             } catch (RepositoryException e) {
                 callback.onMoveCancelled();
