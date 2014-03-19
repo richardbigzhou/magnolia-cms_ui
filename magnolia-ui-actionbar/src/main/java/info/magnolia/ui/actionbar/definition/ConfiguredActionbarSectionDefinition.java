@@ -102,10 +102,11 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     @Override
     public AvailabilityDefinition getAvailability() {
-        return availability;
+        return this.availability;
     }
 
-    public void setAvailability(AvailabilityDefinition availability) {
-        this.availability = availability;
+    public void setAvailability(AvailabilityDefinition voterBasedAvailability) {
+        this.availability = voterBasedAvailability;
+        ((ConfiguredAvailabilityDefinition)availability).setMultiple(true);
     }
 }
