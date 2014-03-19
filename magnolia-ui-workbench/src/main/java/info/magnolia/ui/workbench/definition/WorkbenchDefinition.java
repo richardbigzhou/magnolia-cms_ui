@@ -47,37 +47,10 @@ public interface WorkbenchDefinition extends Serializable {
 
     String getName();
 
-    String getWorkspace();
-
-    /**
-     * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
-     */
-    String getPath();
-
-    /**
-     * @return all configured NodeTypes.
-     */
-    List<NodeTypeDefinition> getNodeTypes();
-
-    /**
-     * @return whether properties should be displayed as well (or just nodes)
-     */
-    boolean isIncludeProperties();
-
-    /**
-     * @return whether nodes used by the system should be included, for instance nodes internal to the operations of the JCR implementation.
-     */
-    boolean isIncludeSystemNodes();
-
     /**
      * Define if this workbench is used for Dialog.
      */
     boolean isDialogWorkbench();
-
-    /**
-     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
-     */
-    String getDefaultOrder();
 
     /**
      * Checks if workbench can edit tree view inplace.
@@ -95,5 +68,4 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the list of configured views.<br>
      */
     List<ContentPresenterDefinition> getContentViews();
-
 }

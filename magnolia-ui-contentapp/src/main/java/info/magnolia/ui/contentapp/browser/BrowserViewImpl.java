@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
 import org.vaadin.peter.contextmenu.ContextMenu;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,55 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.event;
+package info.magnolia.ui.contentapp.browser.action;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-
-import java.io.Serializable;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Event fired when the inplace editing field value was edited.
+ * Defines an action for saving an item's property via inplace-editing.
  */
-public class ItemEditedEvent implements Event<ItemEditedEvent.Handler> {
+public class SaveItemPropertyActionDefinition extends ConfiguredActionDefinition {
 
-    /**
-     * Event listener that should react to item edited events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onItemEdited(ItemEditedEvent event);
+    public SaveItemPropertyActionDefinition() {
+        setImplementationClass(SaveItemPropertyAction.class);
     }
 
-    /**
-     * Event notifier that should register item edited events.
-     */
-    public interface Notifier extends Serializable {
-
-        void addItemEditedListener(ItemEditedEvent.Handler listener);
-
-        void removeItemEditedListener(ItemEditedEvent.Handler listener);
-    }
-
-    private final Item item;
-
-    /**
-     * Instantiates a new item edited event.
-     *
-     * @param item the item that has been edited.
-     */
-    public ItemEditedEvent(Item item) {
-        this.item = item;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemEdited(this);
-    }
 }

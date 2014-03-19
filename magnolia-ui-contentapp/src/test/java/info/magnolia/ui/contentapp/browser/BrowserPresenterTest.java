@@ -34,7 +34,11 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -47,29 +51,44 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyAction;
+import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import com.vaadin.data.Property;
 
 /**
  * Tests covering business logic in {@link BrowserPresenter}.
@@ -96,14 +115,22 @@ public class BrowserPresenterTest {
 
     private BrowserPresenter presenter;
 
-    private ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor;
-
-    private ActionExecutor actionExecutor;
+    private ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
 
     private WorkbenchPresenter mockWorkbenchPresenter;
 
+    private AvailabilityChecker availabilityChecker = mock(AvailabilityChecker.class);
+
+    private ActionExecutor actionExecutor;
+
+    private JcrContentConnector contentConnector;
+    private Node node;
+    private JcrNodeAdapter adapter;
+    private ConfiguredActionDefinition defaultActionDefinition;
+    private ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+
     @Before
-    public void setUp() {
+    public void setUp() throws RepositoryException {
         // spy hooks for session move to avoid unsupported operation exception
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
@@ -112,19 +139,21 @@ public class BrowserPresenterTest {
         MgnlContext.setInstance(ctx);
 
         initBrowserPresenter();
+
     }
 
-    private void initBrowserPresenter() {
+    private void initBrowserPresenter() throws RepositoryException {
+
+
         // initialize test instance
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
 
-        browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
         browserSubAppDescriptor.setName(SUB_APP_NAME);
         browserSubAppDescriptor.setWorkbench(workbenchDefinition);
+
+        defaultActionDefinition = new ConfiguredActionDefinition();
 
         ConfiguredAppDescriptor appDescriptor = new ConfiguredAppDescriptor();
         appDescriptor.setName(APP_NAME);
@@ -139,9 +168,19 @@ public class BrowserPresenterTest {
         EventBus adminCentralEventBus = mock(EventBus.class);
         mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
+
         actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter);
+
+        connectorDefinition.setWorkspace(WORKSPACE);
+        connectorDefinition.setRootPath(ROOT_PATH);
+        contentConnector = mock(JcrContentConnector.class);
+        doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
+        node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        adapter = new JcrNodeAdapter(node);
+        doReturn(adapter).when(contentConnector).getItem(anyObject());
+
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, mockWorkbenchPresenter, contentConnector, null, availabilityChecker);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -161,15 +200,31 @@ public class BrowserPresenterTest {
     @Test
     public void testEditItem() throws Exception {
         // GIVEN
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        SaveItemPropertyActionDefinition definition = new SaveItemPropertyActionDefinition();
+        definition.setImplementationClass(SaveItemPropertyAction.class);
+        browserSubAppDescriptor.getActions().put("SaveItemPropertyAction", definition);
+
         node.addMixin(LastModified.NAME);
         node.setProperty(DUMMY_PROPERTY_NAME, false);
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        Set<Object> ids = new HashSet<Object>();
+        ids.add(adapter.getItemId());
+        doReturn(true).when(availabilityChecker).isAvailable(eq(definition.getAvailability()), anyList());
+
         boolean newValue = true;
-        adapter.getItemProperty(DUMMY_PROPERTY_NAME).setValue(newValue);
+        Property<Boolean> itemProperty = adapter.getItemProperty(DUMMY_PROPERTY_NAME);
+        itemProperty.setValue(newValue);
+        final SaveItemPropertyAction action = new SaveItemPropertyAction(definition, mock(EventBus.class), contentConnector, ids, DUMMY_PROPERTY_NAME, itemProperty);
+        doReturn(definition).when(actionExecutor).getActionDefinition("SaveItemPropertyAction");
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                action.execute();
+                return false;
+            }
+        }).when(actionExecutor).execute(eq("SaveItemPropertyAction"), anyVararg());
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
+        subAppEventBus.fireEvent(new ActionEvent(SaveItemPropertyAction.class.getSimpleName(), adapter.getItemId(), DUMMY_PROPERTY_NAME, itemProperty));
 
         // THEN
         assertEquals(newValue, node.getProperty(DUMMY_PROPERTY_NAME).getBoolean());
@@ -178,16 +233,30 @@ public class BrowserPresenterTest {
     @Test
     public void testEditItemDoesNotUpdateLastModifiedWithoutChanges() throws Exception {
         // GIVEN
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        node.setProperty(DUMMY_PROPERTY_NAME, false);
         LastModified.update(node);
-        AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.applyChanges()).thenReturn(node);
+
+        Property<?> itemProperty = adapter.getItemProperty(DUMMY_PROPERTY_NAME);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
 
+        Set<Object> ids = new HashSet<Object>();
+        ids.add(adapter.getItemId());
+
+        SaveItemPropertyActionDefinition definition = new SaveItemPropertyActionDefinition();
+        final SaveItemPropertyAction action = new SaveItemPropertyAction(definition, mock(EventBus.class), contentConnector, ids, DUMMY_PROPERTY_NAME, itemProperty);
+        doReturn(definition).when(actionExecutor).getActionDefinition("SaveItemPropertyAction");
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                action.execute();
+                return false;
+            }
+        }).when(actionExecutor).execute(eq("SaveItemPropertyAction"), anyVararg());
+
         // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
+        subAppEventBus.fireEvent(new ActionEvent(SaveItemPropertyAction.class.getSimpleName(), adapter.getItemId(), DUMMY_PROPERTY_NAME, itemProperty));
 
         // THEN
         assertNotNull(LastModified.getLastModified(node));
@@ -199,19 +268,19 @@ public class BrowserPresenterTest {
     @Test
     public void defaultActionIsNotExecutedWhenNotAvailableForSelectedItem() throws Exception {
         // GIVEN
+        doReturn(defaultActionDefinition).when(actionExecutor).getActionDefinition("testDefaultAction");
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         actionbar.setDefaultAction("testDefaultAction");
         browserSubAppDescriptor.setActionbar(actionbar);
 
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(false);
-        List<String> ids = new ArrayList<String>(1);
-        ids.add(node.getIdentifier());
+        when(availabilityChecker.isAvailable(eq(defaultActionDefinition.getAvailability()), anyList())).thenReturn(false);
+
+        List<Object> ids = new ArrayList<Object>(1);
+        ids.add(new JcrItemId(node.getIdentifier(),WORKSPACE));
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
 
         // THEN
         // just verifying that the method has NOT been called with the proper action name, not the Item(s) passed to it
@@ -221,48 +290,54 @@ public class BrowserPresenterTest {
     @Test
     public void defaultActionIsExecutedWhenAvailableForSelectedItem() throws Exception {
         // GIVEN
+        doReturn(defaultActionDefinition).when(actionExecutor).getActionDefinition(anyString());
+
+
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         actionbar.setDefaultAction("testDefaultAction");
         browserSubAppDescriptor.setActionbar(actionbar);
 
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(true);
-        List<String> ids = new ArrayList<String>(1);
+        AvailabilityDefinition availability = actionExecutor.getActionDefinition("testDefaultAction").getAvailability();
+        when(availabilityChecker.isAvailable(eq(availability), anyList())).thenReturn(true);
+
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
 
         // THEN
         // just verifying that the method has been called with the proper action name, not the Item(s) passed to it
-        verify(actionExecutor).execute(eq("testDefaultAction"), anyObject());
+        verify(actionExecutor).execute(eq("testDefaultAction"), anyVararg());
     }
 
     @Test
     public void passesNullToActionExecutorIsAvailableWhenWorkbenchRootIsSelected() throws Exception {
         // GIVEN
+        ConfiguredActionDefinition testActionDefinition = new ConfiguredActionDefinition();
+        doReturn(testActionDefinition).when(actionExecutor).getActionDefinition(anyString());
+
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         actionbar.setDefaultAction("testAction");
         browserSubAppDescriptor.setActionbar(actionbar);
 
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         WorkbenchDefinition wb = mock(WorkbenchDefinition.class);
-        when(wb.getWorkspace()).thenReturn(WORKSPACE);
-        when(wb.getPath()).thenReturn(node.getPath());
+        //when(wb.getWorkspace()).thenReturn(WORKSPACE);
+        //when(wb.getPath()).thenReturn(node.getPath());
         browserSubAppDescriptor.setWorkbench(wb);
-        List<String> ids = new ArrayList<String>(1);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
-        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
+
+        AvailabilityDefinition availability = testActionDefinition.getAvailability();
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(JcrItemUtil.getItemId(node)));
 
         // THEN
         // just verifying that null is passed to the isAvailable() method instead of the actual item
-        verify(actionExecutor).isAvailable("testAction", null);
-    }
 
+        verify(availabilityChecker).isAvailable(eq(availability), anyList());
+    }
 }
