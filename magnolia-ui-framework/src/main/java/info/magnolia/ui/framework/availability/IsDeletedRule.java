@@ -31,30 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.availability;
+package info.magnolia.ui.framework.availability;
 
-import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
+ * This rule returns true if the item is node and has the mgnl:deleted mixin type.
  */
-public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
+public class IsDeletedRule extends AbstractAvailabilityRule {
 
-    private final AppContext appContext;
-
-    @Inject
-    public IsNotVersionedDetailLocationRule(AppContext appContext) {
-        this.appContext = appContext;
-    }
+    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
-        return !location.hasVersion();
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            if (node != null) {
+                try {
+                    return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+                } catch (RepositoryException e) {
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+                }
+            }
+        }
+        return false;
     }
-
 }

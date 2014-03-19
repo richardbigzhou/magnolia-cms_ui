@@ -78,7 +78,7 @@ public interface AvailabilityDefinition {
     boolean isWritePermissionRequired();
 
     /**
-     * Returns the AvailabilityRule object for this subject.
+     * Returns the collection of availability rule definitions for this subject.
      */
-    Class<? extends AvailabilityRule> getRuleClass();
+    Collection<? extends AvailabilityRuleDefinition> getRules();
 }

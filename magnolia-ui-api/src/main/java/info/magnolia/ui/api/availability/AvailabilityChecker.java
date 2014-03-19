@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,12 @@
  */
 package info.magnolia.ui.api.availability;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 /**
- * This rule returns true if the item is not a node, or if it is a node and has NOT the mgnl:deleted mixin type.
+ * Checks whether a set of data units complies to the criteria defined in an {@link AvailabilityDefinition}.
  */
-public class IsNotDeletedRule extends AbstractAvailabilityRule {
+public interface AvailabilityChecker {
 
-    private static final Logger log = LoggerFactory.getLogger(IsNotDeletedRule.class);
-
-    @Override
-    public boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
-            }
-        }
-        return true;
-    }
+    boolean isAvailable(AvailabilityDefinition definition, List<Object> ids);
 }

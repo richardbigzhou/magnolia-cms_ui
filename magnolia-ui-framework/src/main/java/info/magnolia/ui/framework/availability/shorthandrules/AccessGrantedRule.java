@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import java.util.Collection;
 
+import org.apache.commons.collections.CollectionUtils;
+
 /**
- * Abstract rule class.
+ * {@link AvailabilityRule} implementation which returns positive result if current user obtains any of the
+ * specified roles.
  */
-public abstract class AbstractAvailabilityRule implements AvailabilityRule {
+public class AccessGrantedRule implements AvailabilityRule {
+
+    public static final String DEFAULT_SUPERUSER_ROLE = "superuser";
+
+    private AccessDefinition accessDefinition;
+
+    public AccessGrantedRule() {}
+
+    public AccessGrantedRule(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
+    }
+
+    public void setAccessDefinition(AccessDefinition accessDefinition) {
+        this.accessDefinition = accessDefinition;
+    }
 
     @Override
     public boolean isAvailable(Collection<?> itemIds) {
-        // sanity check
-        if (itemIds == null || itemIds.size() == 0) {
-            return false;
+        User user = MgnlContext.getUser();
+        // Validate that the user has all the required roles
+        Collection<String> userRoles = user.getAllRoles();
+        Collection<String> roles = accessDefinition.getRoles();
+        if (roles.isEmpty() || userRoles.contains(DEFAULT_SUPERUSER_ROLE) || CollectionUtils.containsAny(userRoles, roles)) {
+            return true;
         }
-        // for selected items
-        for (Object item : itemIds) {
-            // if not available for any of the items, not available at all
-            if (!isAvailableForItem(item)) {
-                return false;
-            }
-        }
-        return true;
+        return false;
     }
-
-    /**
-     * This method defines the actual evaluation logic for one item.
-     * @param itemId
-     */
-    protected abstract boolean isAvailableForItem(Object itemId);
-
 }

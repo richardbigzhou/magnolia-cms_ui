@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.api.action;
 
-import javax.jcr.Item;
 
 /**
  * Responsible for executing actions, doing lookups of action definitions based on action names and evaluating if an
@@ -59,12 +58,4 @@ public interface ActionExecutor {
      * @return the action definition for the supplied action name or null if not found
      */
     ActionDefinition getActionDefinition(String actionName);
-
-    /**
-     * Evaluates if an action is available for the current user. This involves checking if the user has the required
-     * permission to use the action and if the action is available for a specific item.
-     *
-     * @see info.magnolia.ui.api.availability.AvailabilityDefinition
-     */
-    boolean isAvailable(String actionName, Item... items);
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * This rule returns true if the item is node and has the mgnl:deleted mixin type.
+ * Action availability rule which returns positive result in case action is
+ * capable of operating over JCR nodes.
  */
-public class IsDeletedRule extends AbstractAvailabilityRule {
+public class JcrNodesAllowedRule extends AbstractAvailabilityRule {
 
-    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
+    private boolean nodeAllowed;
+
+    public JcrNodesAllowedRule() {
+    }
+
+    public JcrNodesAllowedRule(Boolean isNodeAllowed) {
+        nodeAllowed = isNodeAllowed;
+    }
+
+    public void setNodeAllowed(boolean nodeAllowed) {
+        this.nodeAllowed = nodeAllowed;
+    }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
-            }
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            return nodeAllowed;
         }
-        return false;
+        return true;
     }
 }

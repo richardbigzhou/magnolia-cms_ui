@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
-
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
+package info.magnolia.ui.api.availability;
 
 /**
- * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
- * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
- * definition classes implementing this interface that allows supplying additional parameters to the action.
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- * 
- * @see Action
- * @see ActionExecutor
+ * Default implementation of {@link AvailabilityRuleDefinition}.
  */
-@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
-public interface ActionDefinition {
+public class ConfiguredAvailabilityRuleDefinition implements AvailabilityRuleDefinition {
 
-    String getName();
+    private Class<? extends AvailabilityRule> implementationClass;
 
-    @I18nText
-    String getLabel();
+    @Override
+    public Class<? extends AvailabilityRule> getImplementationClass() {
+        return this.implementationClass;
+    }
 
-    String getIcon();
-
-    String getI18nBasename();
-
-    @I18nText
-    String getDescription();
-
-    @I18nText
-    String getSuccessMessage();
-
-    @I18nText
-    String getFailureMessage();
-
-    @I18nText
-    String getErrorMessage();
-
-    Class<? extends Action> getImplementationClass();
-
-    AvailabilityDefinition getAvailability();
+    public void setImplementationClass(Class<? extends AvailabilityRule> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
 }

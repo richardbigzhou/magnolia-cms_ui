@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
-import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
+ * Action availability rule which returns positive result in case action is capable
+ * of operating over root JCR items.
  */
-public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
+public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
 
-    private final AppContext appContext;
+    private boolean root;
 
-    @Inject
-    public IsNotVersionedDetailLocationRule(AppContext appContext) {
-        this.appContext = appContext;
+    public IsRootItemAllowedRule() {}
+
+    public IsRootItemAllowedRule(Boolean isRoot) {
+        root = isRoot;
+    }
+
+    private boolean isRoot(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            try {
+                node.getParent();
+                return false;
+            } catch (RepositoryException e) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setRoot(boolean root) {
+        this.root = root;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
-        return !location.hasVersion();
-    }
+        if (itemId instanceof JcrNewNodeItemId) {
+            return true;
+        }
 
+        if (itemId == null || isRoot(itemId)) {
+            return root;
+        }
+        return true;
+    }
 }

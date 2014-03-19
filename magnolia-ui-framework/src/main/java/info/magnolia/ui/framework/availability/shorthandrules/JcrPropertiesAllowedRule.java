@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
- * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
- * definition classes implementing this interface that allows supplying additional parameters to the action.
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- * 
- * @see Action
- * @see ActionExecutor
+ * Action availability rule which returns positive result in case action is capable of
+ * operating over JCR properties.
  */
-@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
-public interface ActionDefinition {
+public class JcrPropertiesAllowedRule extends AbstractAvailabilityRule {
 
-    String getName();
+    private boolean propertiesAllowed;
 
-    @I18nText
-    String getLabel();
+    public JcrPropertiesAllowedRule(Boolean isPropertiesAllowed) {
+        propertiesAllowed = isPropertiesAllowed;
+    }
 
-    String getIcon();
+    public JcrPropertiesAllowedRule() {
+    }
 
-    String getI18nBasename();
+    public JcrPropertiesAllowedRule(String isPropertiesAllowed) {
+        this(Boolean.parseBoolean(isPropertiesAllowed));
+    }
 
-    @I18nText
-    String getDescription();
+    public void setPropertiesAllowed(boolean propertiesAllowed) {
+        this.propertiesAllowed = propertiesAllowed;
+    }
 
-    @I18nText
-    String getSuccessMessage();
-
-    @I18nText
-    String getFailureMessage();
-
-    @I18nText
-    String getErrorMessage();
-
-    Class<? extends Action> getImplementationClass();
-
-    AvailabilityDefinition getAvailability();
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+            return !(itemId instanceof JcrPropertyItemId) || propertiesAllowed;
+        }
+        return true;
+    }
 }

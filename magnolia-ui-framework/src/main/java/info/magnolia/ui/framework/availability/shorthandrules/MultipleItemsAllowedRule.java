@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
+
+import java.util.Collection;
 
 /**
- * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
- * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
- * definition classes implementing this interface that allows supplying additional parameters to the action.
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- * 
- * @see Action
- * @see ActionExecutor
+ * Action availability rule which returns positive result in case action is claimed to
+ * work with multiple items.
  */
-@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
-public interface ActionDefinition {
+public class MultipleItemsAllowedRule implements AvailabilityRule {
 
-    String getName();
+    private boolean multipleAllowed;
 
-    @I18nText
-    String getLabel();
+    public MultipleItemsAllowedRule(Boolean isMultipleAllowed) {
+        multipleAllowed = isMultipleAllowed;
+    }
 
-    String getIcon();
+    public MultipleItemsAllowedRule() {
+    }
 
-    String getI18nBasename();
+    public MultipleItemsAllowedRule(String isMultipleAllowed) {
+        this(Boolean.parseBoolean(isMultipleAllowed));
+    }
 
-    @I18nText
-    String getDescription();
+    public void setMultipleAllowed(boolean multipleAllowed) {
+        this.multipleAllowed = multipleAllowed;
+    }
 
-    @I18nText
-    String getSuccessMessage();
-
-    @I18nText
-    String getFailureMessage();
-
-    @I18nText
-    String getErrorMessage();
-
-    Class<? extends Action> getImplementationClass();
-
-    AvailabilityDefinition getAvailability();
+    @Override
+    public boolean isAvailable(Collection<?> itemIds) {
+        return multipleAllowed || itemIds.size() < 2;
+    }
 }

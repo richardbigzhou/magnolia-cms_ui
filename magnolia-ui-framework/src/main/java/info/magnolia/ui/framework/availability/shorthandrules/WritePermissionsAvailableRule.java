@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 
 /**
- * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
- * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
- * definition classes implementing this interface that allows supplying additional parameters to the action.
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- * 
- * @see Action
- * @see ActionExecutor
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule} implementation which returns positive result
+ * if current user is granted with write permissions for the items.
  */
-@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
-public interface ActionDefinition {
+public class WritePermissionsAvailableRule extends AbstractAvailabilityRule {
 
-    String getName();
+    private boolean isWritePermissionRequired = false;
 
-    @I18nText
-    String getLabel();
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        return !isWritePermissionRequired || MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE);
+    }
 
-    String getIcon();
-
-    String getI18nBasename();
-
-    @I18nText
-    String getDescription();
-
-    @I18nText
-    String getSuccessMessage();
-
-    @I18nText
-    String getFailureMessage();
-
-    @I18nText
-    String getErrorMessage();
-
-    Class<? extends Action> getImplementationClass();
-
-    AvailabilityDefinition getAvailability();
+    public void setWritePermissionRequired(boolean writePermissionRequired) {
+        isWritePermissionRequired = writePermissionRequired;
+    }
 }

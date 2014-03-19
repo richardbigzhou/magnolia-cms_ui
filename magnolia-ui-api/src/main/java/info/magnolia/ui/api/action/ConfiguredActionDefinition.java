@@ -47,10 +47,10 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
-    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
     private String errorMessage;
+    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 
     @Override
     public String getName() {
@@ -108,11 +108,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     @Override
     public AvailabilityDefinition getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(AvailabilityDefinition availability) {
-        this.availability = availability;
+        return this.availability;
     }
 
     @Override
@@ -140,6 +136,10 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public void setAvailability(AvailabilityDefinition availability) {
+        this.availability = availability;
     }
 }
 
