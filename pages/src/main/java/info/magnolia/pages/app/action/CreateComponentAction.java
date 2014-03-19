@@ -43,7 +43,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -64,6 +63,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -126,7 +126,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            this.dialogView = formDialogPresenter.start(item, dialogDefinition, subAppContext, new ComponentCreationCallback(item, formDialogPresenter));
+            this.dialogView = formDialogPresenter.start(item.getItemId(), dialogDefinition, subAppContext, new ComponentCreationCallback(item, formDialogPresenter));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
@@ -135,12 +135,11 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private void openDialog(final JcrNodeAdapter item, String dialogId) {
 
         final FormDialogPresenter dialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogId);
-
-        dialogPresenter.start(item, dialogId, subAppContext, new EditorCallback() {
+        dialogPresenter.start(item.getItemId(), dialogId, subAppContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getItemId()));
                 dialogPresenter.closeDialog();
             }
 
@@ -229,7 +228,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                         log.error("Exception caught: {}", e.getMessage(), e);
                     }
 
-                    eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                    eventBus.fireEvent(new ContentChangedEvent(item.getItemId()));
                 }
             } catch (RegistrationException e) {
                 log.error("Exception caught: {}", e.getMessage(), e);
