@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

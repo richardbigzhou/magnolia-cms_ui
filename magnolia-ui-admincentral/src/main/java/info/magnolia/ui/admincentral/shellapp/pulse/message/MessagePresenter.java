@@ -98,7 +98,7 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 
-            view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar()));
+            view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar(), messageViewDefinition.getActions()));
         } catch (RegistrationException e) {
             throw new RuntimeException("Could not retrieve messageView for " + messageView, e);
         }
@@ -122,16 +122,6 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action " + actionName, e);
         }
-    }
-
-    @Override
-    public String getLabel(String actionName) {
-        return messageActionExecutor.getActionDefinition(actionName).getLabel();
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        return messageActionExecutor.getActionDefinition(actionName).getIcon();
     }
 
     /**

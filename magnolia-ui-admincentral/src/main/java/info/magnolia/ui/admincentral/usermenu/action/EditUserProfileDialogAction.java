@@ -100,7 +100,7 @@ public class EditUserProfileDialogAction extends AbstractAction<EditUserProfileD
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 
