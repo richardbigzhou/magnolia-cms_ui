@@ -49,17 +49,17 @@ public interface ContentView extends View {
 
     /**
      * Selects the items with given IDs in the content view.
-     * 
+     *
      * @param itemIds IDs
      */
-    void select(List<String> itemIds);
+    void select(List<Object> itemIds);
 
     /**
      * Expands an item if the view supports it.
-     * 
+     *
      * @param itemId ID
      */
-    void expand(String itemId);
+    void expand(Object itemId);
 
     void onShortcutKey(int keyCode, int[] modifierKeys);
 
@@ -73,11 +73,11 @@ public interface ContentView extends View {
      */
     public interface Listener {
 
-        void onItemSelection(Set<String> items);
+        void onItemSelection(Set<Object> items);
 
-        void onDoubleClick(Item item);
+        void onDoubleClick(Object itemId);
 
-        void onRightClick(Item item, int clickX, int clickY);
+        void onRightClick(Object itemId, int clickX, int clickY);
 
         void onShortcutKey(int keyCode, int... modifierKeys);
 

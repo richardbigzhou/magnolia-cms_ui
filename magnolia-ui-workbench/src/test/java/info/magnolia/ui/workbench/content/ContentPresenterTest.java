@@ -42,7 +42,10 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -58,6 +61,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.vaadin.data.Container;
+
 /**
  * Tests for ContentPresenter.
  */
@@ -66,7 +71,7 @@ public class ContentPresenterTest {
     protected EventBus eventBus;
 
     protected JcrItemAdapter item;
-    protected Set<String> items;
+    protected Set<Object> items;
 
     protected static final String TEST_WORKSPACE_NAME = "test";
 
@@ -75,6 +80,7 @@ public class ContentPresenterTest {
     private WorkbenchDefinition workbench;
     private Node workbenchRoot;
     private Node testNode;
+    private ContentConnector contentConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -82,13 +88,15 @@ public class ContentPresenterTest {
         workbenchRoot = NodeUtil.createPath(session.getRootNode(), TEST_WORKBENCHDEF_PATH.substring(1), NodeTypes.Content.NAME);
         testNode = NodeUtil.createPath(workbenchRoot, "testNode", NodeTypes.Content.NAME);
 
+        contentConnector = mock(ContentConnector.class);
         this.workbench = mock(WorkbenchDefinition.class);
-        when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
-        when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
+//        when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
+//        when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getItemId()).thenReturn(testNode.getIdentifier());
-        items = new HashSet<String>();
+        Object toBeReturned = JcrItemUtil.getItemId(testNode);
+        doReturn(toBeReturned).when(item).getItemId();
+        items = new HashSet<Object>();
         items.add(item.getItemId());
 
         MockContext ctx = new MockContext();
@@ -105,40 +113,42 @@ public class ContentPresenterTest {
     public void testOnItemSelectionFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
+        presenter.start(workbench, eventBus, "", contentConnector);
         // WHEN
         presenter.onItemSelection(items);
 
         // THEN
         ArgumentCaptor<SelectionChangedEvent> argument = ArgumentCaptor.forClass(SelectionChangedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
-        assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(items.size(), argument.getValue().getItemIds().size());
-        assertEquals(testNode.getIdentifier(), argument.getValue().getFirstItemId());
+        SelectionChangedEvent event = argument.getValue();
+        assertEquals(TEST_WORKSPACE_NAME, ((JcrItemId) event.getFirstItemId()).getWorkspace());
+        assertEquals(items.size(), event.getItemIds().size());
+        assertEquals(JcrItemUtil.getItemId(testNode), event.getFirstItemId());
     }
 
     @Test
     public void testOnDoubleClickFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
+        presenter.start(workbench, eventBus, "", contentConnector);
 
         // WHEN
-        presenter.onDoubleClick(item);
+        presenter.onDoubleClick(item.getItemId());
 
         // THEN
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
-        assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(testNode.getIdentifier(), argument.getValue().getPath());
+        ItemDoubleClickedEvent event = argument.getValue();
+        assertEquals(TEST_WORKSPACE_NAME, ((JcrItemId) event.getItemId()).getWorkspace());
+        assertEquals(JcrItemUtil.getItemId(testNode), event.getItemId());
     }
 
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
-        items = new HashSet<String>();
+        presenter.start(workbench, eventBus, "", contentConnector);
+        items = new HashSet<Object>();
         items.add(null);
 
         // WHEN
@@ -155,6 +165,11 @@ public class ContentPresenterTest {
 
         @Override
         public void refresh() {
+        }
+
+        @Override
+        protected Container initializeContainer() {
+            return null;
         }
     }
 }

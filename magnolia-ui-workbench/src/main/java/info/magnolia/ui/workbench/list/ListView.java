@@ -53,4 +53,5 @@ public interface ListView extends ContentView {
 
     void setColumnFormatter(String propertyId, ColumnFormatter formatter);
 
+    void clearColumns();
 }

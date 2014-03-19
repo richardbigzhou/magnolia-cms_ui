@@ -34,8 +34,8 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.container.OrderBy;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
 import java.util.ArrayList;
@@ -87,8 +87,8 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final String illegalFullTextChars = "-+)\"\\";
 
-    public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public SearchJcrContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
         whereCauseNodeTypes = super.getQueryWhereClauseNodeTypes();
 
         for (NodeType nt : getSearchableNodeTypes()) {

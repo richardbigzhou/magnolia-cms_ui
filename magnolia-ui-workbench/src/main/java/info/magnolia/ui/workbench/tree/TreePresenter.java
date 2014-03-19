@@ -35,9 +35,12 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
@@ -51,7 +54,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.TreeTable;
 
@@ -60,6 +63,7 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
+    private static final String SAVE_ACTION_NAME = "saveItemProperty";
     private static final Logger log = LoggerFactory.getLogger(TreePresenter.class);
 
     @Inject
@@ -68,11 +72,11 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName);
+    public TreeView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
+        TreeView view = (TreeView) super.start(workbenchDefinition, eventBus, viewTypeName, contentConnector);
 
         // inplace-editing
-        if (workbench.isEditable()) {
+        if (workbenchDefinition.isEditable()) {
 
             List<Object> editableColumns = new ArrayList<Object>();
 
@@ -90,7 +94,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         }
 
         // Drag and Drop
-        Class<? extends DropConstraint> dropConstraintClass = workbench.getDropConstraintClass();
+        Class<? extends DropConstraint> dropConstraintClass = workbenchDefinition.getDropConstraintClass();
         if (dropConstraintClass != null) {
             DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
             DropHandler dropHandler = new TreeViewDropHandler((TreeTable) view.asVaadinComponent(), constraint);
@@ -106,33 +110,25 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         ((TreeView) view).setDragAndDropHandler(null);
     }
 
-    @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new HierarchicalJcrContainer(workbench);
-    }
-
     // TREE VIEW LISTENER IMPL
 
     @Override
-    public void onItemEdited(Item item) {
-        try {
-            if (item != null) {
-                log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
-                eventBus.fireEvent(new ItemEditedEvent(item));
-            } else {
-                log.warn("Null item edited");
-            }
-        } catch (Exception e) {
-            log.error("An error occurred while double clicking on a row in the data grid", e);
+    public void onItemEdited(Object itemId, Object propertyId, Property<?> propertyDataSource) {
+        if (itemId != null && propertyId != null) {
+            eventBus.fireEvent(new ActionEvent(SAVE_ACTION_NAME, itemId, propertyId, propertyDataSource));
         }
 
         // Clear preOrder cache of itemIds in case node was renamed
-        getContainer().fireItemSetChange();
+        refresh();
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
         view.expand(itemId);
     }
 
+    @Override
+    protected AbstractJcrContainer createContainer() {
+        return new HierarchicalJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
+    }
 }

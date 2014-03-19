@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.workbench.list;
 
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
  * A flat implementation of {@link info.magnolia.ui.workbench.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
 
-    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public FlatJcrContainer(JcrContentConnectorDefinition connectorDefinition) {
+        super(connectorDefinition);
     }
 }

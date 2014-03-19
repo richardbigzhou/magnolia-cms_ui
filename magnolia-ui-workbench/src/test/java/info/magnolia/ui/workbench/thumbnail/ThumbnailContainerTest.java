@@ -41,9 +41,10 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ import org.junit.Test;
 public class ThumbnailContainerTest extends RepositoryTestCase {
 
     private Session session;
-    private ConfiguredWorkbenchDefinition configuredWorkbench;
+    private ConfiguredJcrContentConnectorDefinition contentConnectorDefinition;
     private ThumbnailContainer container;
 
     @Override
@@ -75,12 +76,12 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         nodeType.setName(NodeTypes.Content.NAME);
         nodeTypes.add(nodeType);
 
-        configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(RepositoryConstants.CONFIG);
-        configuredWorkbench.setPath("/");
-        configuredWorkbench.setNodeTypes(nodeTypes);
+        contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setRootPath("/");
+        contentConnectorDefinition.setWorkspace(RepositoryConstants.CONFIG);
+        contentConnectorDefinition.setNodeTypes(nodeTypes);
 
-        container = new ThumbnailContainer(configuredWorkbench, new DefaultImageProvider());
+        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(contentConnectorDefinition));
     }
 
     @Test
@@ -92,35 +93,33 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
         assertEquals(4, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
-
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
 
     @Test
     public void testGetAllIdentifiersForSubPath() throws RepositoryException {
         // GIVEN
-        configuredWorkbench.setPath("/content2");
+        contentConnectorDefinition.setRootPath("/content2");
         NodeUtil.createPath(session.getRootNode(), "/content2/content21", NodeTypes.Content.NAME);
         Node contentNode = NodeUtil.createPath(session.getRootNode(), "/content2/contentNode", NodeTypes.ContentNode.NAME);
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
         assertEquals(1, res.size());
-        assertTrue(res.contains(session.getNode("/content2/content21").getIdentifier()));
-        assertFalse(res.contains(contentNode.getIdentifier()));
-        assertFalse(res.contains(folderNode.getIdentifier()));
+        assertTrue(res.contains(JcrItemUtil.getItemId(session.getNode("/content2/content21"))));
+        assertFalse(res.contains(JcrItemUtil.getItemId(contentNode)));
+        assertFalse(res.contains(JcrItemUtil.getItemId(folderNode)));
     }
-
 
 }

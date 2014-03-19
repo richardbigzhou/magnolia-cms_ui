@@ -37,8 +37,9 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.util.Arrays;
 
@@ -48,6 +49,8 @@ import javax.jcr.Session;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.vaadin.ui.Table;
 
 /**
  * Testing the default {@link TreeViewImpl} logic.
@@ -71,12 +74,14 @@ public class TreeViewImplTest extends RepositoryTestCase {
         super.setUp();
         session = MgnlContext.getJCRSession(WORKSPACE);
 
-        ConfiguredWorkbenchDefinition workbench = new ConfiguredWorkbenchDefinition();
-        workbench.setWorkspace(WORKSPACE);
-        workbench.setPath("/");
-
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         view = new TreeViewImpl();
-        view.setContainer(new HierarchicalJcrContainer(workbench));
+
+        connectorDefinition.setRootPath("/");
+        connectorDefinition.setWorkspace(WORKSPACE);
+
+        Table table = view.createTable(new HierarchicalJcrContainer(connectorDefinition));
+        view.initializeTable(table);
     }
 
     @Test
@@ -90,17 +95,17 @@ public class TreeViewImplTest extends RepositoryTestCase {
         node.setProperty(NODE_PROPERTY, "112");
 
         // initial state
-        assertTrue(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
-        assertTrue(view.asVaadinComponent().isCollapsed(parent.getIdentifier()));
-        assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
-        assertTrue(view.asVaadinComponent().isCollapsed(child.getIdentifier()));
+        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
+        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
+        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
+        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(child)));
 
         // WHEN
-        view.select(Arrays.asList(node.getIdentifier()));
+        view.select(Arrays.asList((Object)JcrItemUtil.getItemId(node)));
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
-        assertFalse(view.asVaadinComponent().isCollapsed(parent.getIdentifier()));
+        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
+        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
     }
 
     @Test
@@ -114,7 +119,8 @@ public class TreeViewImplTest extends RepositoryTestCase {
         node.setProperty(NODE_PROPERTY, "112");
 
         // WHEN
-        view.select(Arrays.asList(node.getIdentifier()));
+        Object itemId = JcrItemUtil.getItemId(node);
+        view.select(Arrays.asList(itemId));
 
         // THEN
         assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
@@ -129,7 +135,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         visibleRoot.addNode(NODE_PARENT);
 
         // WHEN
-        view.select(Arrays.asList(visibleRoot.getIdentifier()));
+        view.select(Arrays.asList((Object)visibleRoot.getIdentifier()));
 
         // THEN
         assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
@@ -145,15 +151,14 @@ public class TreeViewImplTest extends RepositoryTestCase {
         node.addNode(NODE_CHILD);
         node.setProperty(NODE_PROPERTY, "112");
 
-        String propertyFakeId = node.getIdentifier() + AbstractJcrContainer.PROPERTY_NAME_AND_UUID_SEPARATOR + NODE_PROPERTY;
+        Object propertyFakeId = new JcrPropertyItemId(node.getIdentifier(), WORKSPACE, NODE_PROPERTY);
 
         // WHEN
-        view.select(Arrays.asList(propertyFakeId));
+        view.select(Arrays.asList((Object)propertyFakeId));
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
-        assertFalse(view.asVaadinComponent().isCollapsed(parent.getIdentifier()));
-        assertFalse(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
+        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
+        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
+        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
     }
-
 }

@@ -37,11 +37,12 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.jcr.Session;
@@ -62,26 +63,27 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     private String colName1 = "name";
     private String colName2 = "shortname";
     private Session session;
-    private ConfiguredWorkbenchDefinition configuredWorkbench;
+    private ConfiguredJcrContentConnectorDefinition connectorDefinition;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         // Init
-        configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(workspace);
-        configuredWorkbench.setPath("/");
+        ConfiguredJcrContentConnectorDefinition configuredConnector = new ConfiguredJcrContentConnectorDefinition();
+        configuredConnector.setWorkspace(workspace);
+        configuredConnector.setRootPath("/");
+
         ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
         nt.setName("mgnl:content");
         nt.setStrict(true);
 
-        configuredWorkbench.addNodeType(nt);
+        configuredConnector.addNodeType(nt);
 
         // Add view
         ConfiguredContentPresenterDefinition contentView = new SearchPresenterDefinition();
-
-        configuredWorkbench.addContentView(contentView);
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addContentView(contentView);
 
         // Add columns
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
@@ -96,8 +98,8 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         contentView.addColumn(colDef1);
         contentView.addColumn(colDef2);
 
-        jcrContainer = new SearchJcrContainer(configuredWorkbench);
-
+        connectorDefinition = configuredConnector;
+        jcrContainer = new SearchJcrContainer(connectorDefinition);
         // Init session
         session = MgnlContext.getJCRSession(workspace);
     }
@@ -106,7 +108,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-        configuredWorkbench.setPath("/");
+        connectorDefinition.setRootPath("/");
     }
 
     @Test
@@ -161,7 +163,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWhenWorkspacePathIsNotRoot() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("foo");
-        configuredWorkbench.setPath("/qux");
+        connectorDefinition.setRootPath("/qux");
 
         // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
@@ -223,10 +225,10 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
         nt.setName("mgnl:folder");
-        configuredWorkbench.addNodeType(nt);
+        connectorDefinition.addNodeType(nt);
 
         // inclusion of mgnl:folder happens at construction time
-        SearchJcrContainer jcrContainer = new SearchJcrContainer(configuredWorkbench);
+        SearchJcrContainer jcrContainer = new SearchJcrContainer(connectorDefinition);
 
         // WHEN
         String stmt = jcrContainer.getQueryWhereClause();

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.container;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.list.ListPresenter;
-
-import javax.inject.Inject;
+import com.vaadin.data.Container;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Extension of Vaadin {@link Container} interface which supports refreshment of the content.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
-
-    @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
-
-    public void search(String fulltextExpr) {
-        ((SearchJcrContainer)container).setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        ((SearchJcrContainer)container).setFullTextExpression(null);
-        refresh();
-    }
-
-    @Override
-    protected AbstractJcrContainer createContainer() {
-        return new SearchJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
-    }
+public interface Refreshable extends Container {
+    void refresh();
 }
