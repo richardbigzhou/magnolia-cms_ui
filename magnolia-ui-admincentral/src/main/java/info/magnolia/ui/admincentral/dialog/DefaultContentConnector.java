@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.admincentral.dialog;
+
+import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
 
 /**
- * Defines a node type to be displayed in a workbench.
- *
- * @see WorkbenchDefinition
+ * Stub implementation of {@link ContentConnector} interface. Does no conversion between item id and item.
  */
-public interface NodeTypeDefinition {
+public class DefaultContentConnector implements ContentConnector {
 
-    /**
-     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
-     *
-     * @see info.magnolia.jcr.util.NodeTypes
-     * @see org.apache.jackrabbit.JcrConstants
-     */
-    String getName();
+    @Override
+    public String getItemUrlFragment(Object itemId) {
+        return StringUtils.EMPTY;
+    }
 
-    /**
-     * Specifies the icon to use for this node type.
-     */
-    String getIcon();
+    @Override
+    public Object getItemIdByUrlFragment(String urlFragment) {
+        return new NullItem();
+    }
 
-    /**
-     * Specifies whether to include only the exact node type and ignore sub types.
-     */
-    boolean isStrict();
+    @Override
+    public Object getDefaultItemId() {
+        return new NullItem();
+    }
 
-    /**
-     * Determines whether the current node will be displayed in lists and searches. I.e. a node type <code>mgnl:folder</code> will likely be excluded from being displayed in a "flat" list view, therefore its value will be <code>true</code>.
-     * 
-     * @return <code>false</code> by default, unless diversely set.
-     */
-    boolean isHideInList();
+    @Override
+    public Item getItem(Object itemId) {
+        return itemId instanceof Item ? (Item)itemId : new NullItem();
+    }
+
+    @Override
+    public boolean canHandleItem(Object itemId) {
+        return itemId instanceof Item;
+    }
 }

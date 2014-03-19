@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 /**
- * Configuration for a definition of a NodeType. e.g. used for inclusion in a tree.
- *
- * @see info.magnolia.jcr.util.NodeTypes
+ * Defines {@link ContentConnector}.
  */
-public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
+public interface ContentConnectorDefinition {
 
-    private String name;
-
-    private String icon;
-
-    private boolean strict;
-
-    private boolean hideInList;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    @Override
-    public boolean isStrict() {
-        return strict;
-    }
-
-    public void setStrict(boolean strict) {
-        this.strict = strict;
-    }
-
-    @Override
-    public boolean isHideInList() {
-        return this.hideInList;
-    }
-
-    public void setHideInList(boolean hideInList) {
-        this.hideInList = hideInList;
-    }
+    Class<? extends ContentConnector> getImplementationClass();
 }
