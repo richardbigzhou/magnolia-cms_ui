@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
