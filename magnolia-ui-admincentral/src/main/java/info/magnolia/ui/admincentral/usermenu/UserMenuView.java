@@ -43,7 +43,7 @@ public interface UserMenuView extends View {
 
     void setListener(Listener listener);
 
-    void addAction(String name, String label);
+    void addAction(String name, String label, String icon);
 
     void setCaption(String caption);
 
