@@ -47,7 +47,7 @@ public class ConfirmationActionDefinition extends ConfiguredActionDefinition {
     private String cancelActionName;
     private String proceedLabel;
     private String cancelLabel;
-    private boolean defaultCancel = true;
+    private boolean defaultCancel;
 
     public ConfirmationActionDefinition() {
         setImplementationClass(ConfirmationAction.class);
