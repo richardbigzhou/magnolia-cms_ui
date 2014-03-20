@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
@@ -468,5 +469,27 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         //THEN
         assertFalse("ICEPush MIMEMapping is gone", session.itemExists("/server/MIMEMapping/icepush"));
+    }
+
+    @Test
+    public void testUpdateTo524AddsEditUserProfileCapabilityAndIcons() throws Exception {
+        // GIVEN
+        Node dialogs = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.Content.NAME);
+        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config", NodeTypes.Content.NAME);
+        Node actions = NodeUtil.createPath(config, "userMenu/actions", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(actions, "logout", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
+
+        // THEN
+        assertTrue(dialogs.hasNode("editUserProfile"));
+        assertTrue(actions.hasNode("logout"));
+        assertTrue(actions.getNode("logout").hasProperty("icon"));
+        assertTrue(actions.hasNode("editUserProfile"));
+        assertTrue(actions.getNode("editUserProfile").hasProperty("icon"));
+        NodeIterator it = actions.getNodes();
+        assertEquals("editUserProfile", it.nextNode().getName());
+        assertEquals("logout", it.nextNode().getName());
     }
 }
