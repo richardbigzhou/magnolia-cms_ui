@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup;
+package info.magnolia.ui.contentapp.setup;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
@@ -50,15 +51,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
  */
-public class MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask extends QueryTask {
+public class MigrateAvailabilityRulesTask extends QueryTask {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(MigrateAvailabilityRulesTask.class);
 
     public static final String RULE_CLASS = "ruleClass";
     public static final String RULES = "rules";
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
 
-    public MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask() {
+    protected MigrateAvailabilityRulesTask() {
         super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, QUERY);
     }
 
@@ -75,7 +76,7 @@ public class MigrateRuleClassToAvailabilityRuleDefinitionCollectionTask extends 
                 ruleClassProperty.remove();
             }
         } catch (RepositoryException e) {
-            log.error("Unable to process app node ", e);
+            throw new RuntimeRepositoryException("Failed to migrate availability-rules.",e);
         }
     }
 
