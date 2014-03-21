@@ -44,7 +44,6 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
@@ -68,13 +67,13 @@ import com.vaadin.data.Item;
 /**
  * Save user dialog action.
  */
-public class SaveUserDialogAction extends SaveDialogAction {
+public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
     private SecuritySupport securitySupport;
 
-    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
+    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
     }
@@ -96,8 +95,15 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
         try {
-
-            UserManager userManager = securitySupport.getUserManager();
+            String userManagerRealm = getDefinition().getUserManagerRealm();
+            if (StringUtils.isBlank(userManagerRealm)){
+                log.debug("userManagerRealm property is not defined -> will try to get realm from node path");
+                userManagerRealm = resolveUserManagerRealm(userItem);
+            }
+            UserManager userManager = securitySupport.getUserManager(userManagerRealm);
+            if (userManager == null){
+                throw new ActionExecutionException("User cannot be created. No user manager with realm name " + userManagerRealm + " is defined.");
+            }
 
             String newUserName = (String) userItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
             String newPassword = (String) userItem.getItemProperty(PROPERTY_PASSWORD).getValue();
@@ -162,6 +168,15 @@ public class SaveUserDialogAction extends SaveDialogAction {
         } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
         }
+    }
+
+    private String resolveUserManagerRealm(final JcrNodeAdapter userItem) throws RepositoryException{
+        String userPath = userItem.getJcrItem().getPath();
+        if (userItem instanceof JcrNewNodeAdapter && !"/".equals(userPath)) {
+            //parent JCR item is returned so we need enclose path with "/" to handle correctly in case when user is placed directly under realm root
+            userPath += "/";
+        }
+        return StringUtils.substringBetween(userPath, "/");
     }
 
     private void storeCollectionAsNodeWithProperties(Node parentNode, String name, Collection<String> values) throws RepositoryException {
