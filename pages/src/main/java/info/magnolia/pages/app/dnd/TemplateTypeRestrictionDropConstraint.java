@@ -33,6 +33,7 @@
  */
 package info.magnolia.pages.app.dnd;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -67,11 +68,23 @@ public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
         Node sourceNode = applyChanges(sourceItem);
         Node targetNode = applyChanges(targetItem);
         if (sourceNode != null && targetNode != null) {
+            Node tempTargetNode = null;
             try {
                 TemplateDefinition sourceTemplateDefinition = templateAssignment.getAssignedTemplateDefinition(sourceNode);
-                return templateAssignment.getAvailableTemplates(targetNode).contains(sourceTemplateDefinition);
+                tempTargetNode = targetNode.addNode("temp", targetNode.getPrimaryNodeType().getName());
+                return templateAssignment.getAvailableTemplates(tempTargetNode).contains(sourceTemplateDefinition);
             } catch (RegistrationException e) {
                 log.error("Failed to validate template compatibility for drag-and-drop: " + e.getMessage(), e);
+            } catch (RepositoryException e) {
+                log.error("Failed to validate template compatibility for drag-and-drop: " + e.getMessage(), e);
+            } finally {
+                if (tempTargetNode != null) {
+                    try {
+                        sourceNode.getSession().removeItem(tempTargetNode.getPath());
+                    } catch (RepositoryException e) {
+                        throw new RuntimeRepositoryException(e);
+                    }
+                }
             }
         }
         return false;
