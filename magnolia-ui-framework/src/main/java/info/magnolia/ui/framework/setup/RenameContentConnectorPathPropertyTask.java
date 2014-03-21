@@ -53,8 +53,8 @@ public class RenameContentConnectorPathPropertyTask extends QueryTask {
 
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'contentConnector' ";
-    private static final String PATH_PROPERTY = "path";
-    private static final String ROOTPATH_PROPERTY = "rootPath";
+    public static final String PATH_PROPERTY = "path";
+    public static final String ROOTPATH_PROPERTY = "rootPath";
 
 
     public RenameContentConnectorPathPropertyTask() {

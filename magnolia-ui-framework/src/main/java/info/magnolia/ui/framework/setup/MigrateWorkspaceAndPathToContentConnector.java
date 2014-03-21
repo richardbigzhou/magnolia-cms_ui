@@ -56,8 +56,8 @@ import org.slf4j.LoggerFactory;
 public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
 
 
-    private static final String WORKBENCH_NODENAME = "workbench";
-    private static final String EDITOR_NODENAME = "editor";
+    public static final String WORKBENCH_NODENAME = "workbench";
+    public static final String EDITOR_NODENAME = "editor";
     private static final String CONTENTCONNECTOR_NODENAME = "contentConnector";
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";

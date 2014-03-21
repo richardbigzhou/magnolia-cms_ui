@@ -37,6 +37,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.repository.RepositoryConstants;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,16 +59,9 @@ public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask
 
     public static final String RULE_CLASS = "ruleClass";
 
-    private Map<String, String> classMappings = new HashMap<String, String>();
-
     public ChangeJcrDependentAvailabilityRuleClassesFqcnTask() {
         super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
                 "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, QUERY);
-
-        classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
     }
 
     @Override
@@ -75,12 +69,24 @@ public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask
         try {
             if (node.hasProperty(RULE_CLASS)) {
                 String classRulePropertyValue = node.getProperty(RULE_CLASS).getString();
-                if (classMappings.containsKey(classRulePropertyValue)) {
-                    node.setProperty(RULE_CLASS, classMappings.get(classRulePropertyValue));
+                if (getClassMapping().containsKey(classRulePropertyValue)) {
+                    node.setProperty(RULE_CLASS, getClassMapping().get(classRulePropertyValue));
                 }
             }
         } catch (RepositoryException e) {
             log.error("Unable to process app node ", e);
         }
     }
+
+    public final static Map<String, String> getClassMapping(){
+        Map<String, String> classMappings = new HashMap<String, String>();
+
+        classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
+        classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
+
+        return  Collections.unmodifiableMap(classMappings);
+    }
+
 }
