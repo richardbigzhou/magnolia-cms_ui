@@ -31,43 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup;
+package info.magnolia.ui.contentapp.setup;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.repository.RepositoryConstants;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A task which is changing values for availability@ruleClass-properties in the config app- for a few classes which have been moved from
  * package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.
  */
-public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask {
+public class ChangeAvailabilityRuleClassesTask extends QueryTask {
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
+    private static  Map<String, String> classMapping;
+    protected static final String RULE_CLASS = "ruleClass";
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-
-    public static final String RULE_CLASS = "ruleClass";
-
-    private Map<String, String> classMappings = new HashMap<String, String>();
-
-    public ChangeJcrDependentAvailabilityRuleClassesFqcnTask() {
+    protected ChangeAvailabilityRuleClassesTask() {
         super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
                 "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, QUERY);
-
-        classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
     }
 
     @Override
@@ -75,12 +65,25 @@ public class ChangeJcrDependentAvailabilityRuleClassesFqcnTask extends QueryTask
         try {
             if (node.hasProperty(RULE_CLASS)) {
                 String classRulePropertyValue = node.getProperty(RULE_CLASS).getString();
-                if (classMappings.containsKey(classRulePropertyValue)) {
-                    node.setProperty(RULE_CLASS, classMappings.get(classRulePropertyValue));
+                if (getClassMapping().containsKey(classRulePropertyValue)) {
+                    node.setProperty(RULE_CLASS, getClassMapping().get(classRulePropertyValue));
                 }
             }
         } catch (RepositoryException e) {
-            log.error("Unable to process app node ", e);
+            throw new RuntimeRepositoryException("Failed to change availability-rule-classes.", e);
         }
     }
+
+    public final static Map<String, String> getClassMapping() {
+        if (classMapping == null) {
+            classMapping = new HashMap<String, String>();
+            classMapping.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
+            classMapping = Collections.unmodifiableMap(classMapping);
+        }
+        return classMapping;
+    }
+
 }

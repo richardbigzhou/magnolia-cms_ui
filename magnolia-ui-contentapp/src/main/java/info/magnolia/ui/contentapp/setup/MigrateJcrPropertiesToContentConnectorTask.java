@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup;
+package info.magnolia.ui.contentapp.setup;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
@@ -43,30 +44,26 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * A migration task to move.
- * <ul>
- * <li>properties workspace, path from workbench and add the to a new node called contentConnector which is added to workbench</li>
- * <li>property workspace from Editor to a new node called contentConnector which is added to Editor </li>
- * </ul>
+ * A migration task to move properties <i>workspace</i>, <i>path</i>, <i>includeProperties</i>, <i>includeSystemNodes</i>, <i>defaultOrder</i> and <i>nodeTypes</i>
+ * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>)  and adding them to a new node
+ * <i>contentConnector</i> which is added to <i>workbench</i> or <i>editor</i>.<br/>
+ * The property path is renamed to rootPath.
  */
-public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
+public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
 
     private static final String WORKBENCH_NODENAME = "workbench";
     private static final String EDITOR_NODENAME = "editor";
     private static final String CONTENTCONNECTOR_NODENAME = "contentConnector";
+    private static final String PATH_PROPERTY = "path";
+    private static final String ROOTPATH_PROPERTY = "rootPath";
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";
-    public static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
-
-    private Logger log = LoggerFactory.getLogger(getClass());
+    protected static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
 
 
-    public MigrateWorkspaceAndPathToContentConnector() {
+    protected MigrateJcrPropertiesToContentConnectorTask() {
         super("Migrate properties workspace, path from workbench and migrate workspace from editor and add them to a node called contentConnector and add this new node to workbench respectively editor.",
                 "Migrating properties workspace, path from workbench and migrating workspace from editor and adding them to a node called contentConnector and adding the new node to workbench respectively editor.",
                 RepositoryConstants.CONFIG, QUERY);
@@ -97,7 +94,7 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
                 migrateProperty("workspace", node, contentConnectorNode);
             }
         } catch (RepositoryException e) {
-            log.error("Unable to process app node ", e);
+            throw new RuntimeRepositoryException("Failed to migrate JCR-properties to contentConnector.",e);
         }
 
     }
@@ -112,13 +109,19 @@ public class MigrateWorkspaceAndPathToContentConnector extends QueryTask {
         }
     }
 
+    /*
+     * Moving a property by a given name from the source node (workbench or editor) to the destination.-node (contentConnector).
+     * If the attribute from the source-node is 'path', it will change its name to 'rootPath'.
+     */
     private void migrateProperty(String propertyName, Node sourceNode, Node destNode) throws RepositoryException {
         if (sourceNode.hasProperty(propertyName)) {
             Property sourceNodeProperty = sourceNode.getProperty(propertyName);
-            destNode.setProperty(propertyName, sourceNodeProperty.getString());
+            if (!PATH_PROPERTY.equals(propertyName)) {
+                destNode.setProperty(propertyName, sourceNodeProperty.getString());
+            } else {
+                destNode.setProperty(ROOTPATH_PROPERTY, sourceNodeProperty.getString());
+            }
             sourceNodeProperty.remove();
-        } else {
-            log.info("Found node in " + RepositoryConstants.CONFIG + ") which is eventually not properly configured: Could not find both path and workspace. Did not migrate this node; configure it manually if required.");
         }
     }
 }
