@@ -40,4 +40,18 @@ import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
  */
 public class SaveUserDialogActionDefinition extends SaveDialogActionDefinition {
 
+    private String userManagerRealm;
+
+    public SaveUserDialogActionDefinition() {
+        setImplementationClass(SaveUserDialogAction.class);
+    }
+
+    public String getUserManagerRealm() {
+        return userManagerRealm;
+    }
+
+    public void setUserManagerRealm(String userManagerRealm) {
+        this.userManagerRealm = userManagerRealm;
+    }
+
 }

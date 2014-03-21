@@ -211,6 +211,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true)),
                     new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
                         new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
+                .addTask(new NodeExistsDelegateTask("Reconfigure save action of user dialog", "/modules/security-app/dialogs/user/actions/commit",
+                        new CheckAndModifyPropertyValueTask("/modules/security-app/dialogs/user/actions/commit", "class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition", "info.magnolia.security.app.dialog.action.SaveUserDialogActionDefinition")))
+
         );
 
         register(DeltaBuilder.update("5.3", "")
