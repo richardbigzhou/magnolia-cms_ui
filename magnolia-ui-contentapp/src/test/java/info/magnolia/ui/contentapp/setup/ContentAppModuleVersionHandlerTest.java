@@ -146,34 +146,12 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         assertTrue(!installCtxSession.nodeExists("/modules/abc/config/detail/contentConnector"));
     }
 
-//    /**
-//     * testing the RenameContentConnectorPathPropertyTask-class
-//     * @throws Exception
-//     */
-//    @Test
-//    public void testUpdateTo53_renameContentConnectorPathPropertyTask() throws Exception{
-//        // GIVEN
-//        Node  contentConnector = NodeUtil.createPath(session.getRootNode(),"/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/contentConnector", NodeTypes.ContentNode.NAME);
-//        contentConnector.setProperty(RenameContentConnectorPathPropertyTask.PATH_PROPERTY, "/");
-//        Node  justAnotherNode = NodeUtil.createPath(session.getRootNode(),"/modules/ui-admincentral/apps/xxx/config", NodeTypes.ContentNode.NAME);
-//        justAnotherNode.setProperty(RenameContentConnectorPathPropertyTask.PATH_PROPERTY, "/");
-//        session.save();
-//
-//        // WHEN
-//        InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
-//
-//        // THEN
-//        assertTrue(contentConnector.hasProperty(RenameContentConnectorPathPropertyTask.ROOTPATH_PROPERTY));
-//        assertTrue(!contentConnector.hasProperty(RenameContentConnectorPathPropertyTask.PATH_PROPERTY));
-//        assertTrue(!justAnotherNode.hasProperty(RenameContentConnectorPathPropertyTask.ROOTPATH_PROPERTY));
-//        assertTrue(justAnotherNode.hasProperty(RenameContentConnectorPathPropertyTask.PATH_PROPERTY));
-//    }
 
     /**
      * testing MigrateAvailabilityRulesTask
      * @throws Exception
      */
-    //XXXX@Test
+    @Test
     public void testUpdateTo53_migrateAvailabilityRulesTask() throws Exception{
         // GIVEN
         String className = "info.magnolia.ui.api.availability.HasVersionsRule";
@@ -203,7 +181,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
     /**
      * testing ChangeAvailabilityRuleClassesTask
      */
-    //XXXX@Test
+    @Test
     public void testUpdateTo53_changeAvailabilityRuleClassesTask() throws Exception{
         // GIVEN
         Map<String,String> classMappings = ChangeAvailabilityRuleClassesTask.getClassMapping();
@@ -215,7 +193,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
             String newExceptedClass = classMappings.get(oldClass);
             StringBuilder ruleNodeOldPath =  new StringBuilder("/modules/").append(i).append("/apps/abc/browser/actions/someAction/availability");
             StringBuilder ruleNodeNewPath =  new StringBuilder(ruleNodeOldPath).append("/rules/").append(StringUtils.substringAfterLast(oldClass, "."));
-            createNodeWithRuleClassProperty(ruleNodeOldPath.toString(), oldClass);
+            createNodeWithOldRuleClassProperty(ruleNodeOldPath.toString(), oldClass);
             newNodePathNewClassMap.put(ruleNodeNewPath.toString(), newExceptedClass);
             i++;
         }
@@ -235,7 +213,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         }
     }
 
-    private void createNodeWithRuleClassProperty(String nodePath, String ruleClassName) throws Exception{
+    private void createNodeWithOldRuleClassProperty(String nodePath, String ruleClassName) throws Exception{
         Node availabilityContentNode1 = NodeUtil.createPath(session.getRootNode(),nodePath, NodeTypes.ContentNode.NAME);
         availabilityContentNode1.setProperty("ruleClass", ruleClassName);
     }
@@ -266,7 +244,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
 
 
 
-    //XXXX@Test
+    @Test
     public void testUpdateTo5_15_1ChangePackageName() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Node path = contentapp.addNode("path", NodeTypes.ContentNode.NAME);
@@ -281,7 +259,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         assertEquals(MoveNodeActionDefinition.class.getName(), path.getProperty("moveNodeActionDefinition").getString());
     }
 
-    //XXXX@Test
+    @Test
     public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
         // GIVEN
         this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps");
@@ -302,7 +280,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         assertEquals(ConfiguredContentAppDescriptor.class.getCanonicalName(), session.getProperty("/modules/ui-admincentral/apps/stkSiteApp/class").getString());
     }
 
-    //XXXX@Test
+    @Test
     public void testUpdateTo53AddsSaveItemPropertyAction() throws Exception {
         // GIVEN
         setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions");
