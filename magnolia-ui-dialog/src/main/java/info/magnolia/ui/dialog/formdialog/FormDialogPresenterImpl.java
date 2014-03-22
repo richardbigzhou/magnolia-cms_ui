@@ -122,7 +122,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         start(dialogDefinition, uiContext);
 
-        buildView(dialogDefinition);
+        buildView(getDefinition());
 
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView(), getView().getModalityLevel());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
@@ -187,6 +187,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected Object[] getActionParameters(String actionName) {
         return new Object[] { this, item, callback };
+    }
+
+    @Override
+    protected FormDialogDefinition getDefinition() {
+        return (FormDialogDefinition) super.getDefinition();
     }
 
     /**
