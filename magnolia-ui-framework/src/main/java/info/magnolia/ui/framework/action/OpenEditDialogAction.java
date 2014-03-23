@@ -46,9 +46,6 @@ import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -67,17 +64,17 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
     private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
-    private Map<Object, Item> idToItem;
     private final SimpleTranslator i18n;
+    private final ContentConnector contentConnector;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Item itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n, ContentConnector contentConnector, Map<Object, Item> idToItem) {
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, Item itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
-        this.idToItem = idToItem;
+        this.contentConnector = contentConnector;
         this.i18n = i18n;
     }
 
@@ -90,13 +87,13 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
 
         }
         
-        final Object itemId = getItemId(itemToEdit);
+        final Object itemId = contentConnector.getItemId(itemToEdit);
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
         if(formDialogPresenter == null){
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
             return;
         }
-        formDialogPresenter.start(itemId, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
@@ -109,16 +106,5 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
                 formDialogPresenter.closeDialog();
             }
         });
-    }
-
-    private Object getItemId(Item nodeItemToEdit) {
-        Iterator<Map.Entry<Object, Item>> entryIt = idToItem.entrySet().iterator();
-        while (entryIt.hasNext()) {
-            Map.Entry<Object, Item> entry = entryIt.next();
-            if (entry.getValue() == nodeItemToEdit) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 }

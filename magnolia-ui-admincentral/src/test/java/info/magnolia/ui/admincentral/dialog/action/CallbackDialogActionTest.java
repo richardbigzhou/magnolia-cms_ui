@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import static org.junit.Assert.assertEquals;
+
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.test.ComponentsTestUtil;
@@ -51,10 +53,12 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import com.vaadin.data.Item;
 
 /**
  * Main test class for {@link info.magnolia.ui.dialog.action.CallbackDialogAction} and {@link info.magnolia.ui.dialog.action.CallbackDialogActionDefinition}.
@@ -169,7 +173,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
@@ -179,7 +183,12 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Object itemId, String dialogId, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, String dialogId, UiContext uiContext, EditorCallback callback) {
+            return null;
+        }
+
+        @Override
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback, ContentConnector contentConnector) {
             return null;
         }
 

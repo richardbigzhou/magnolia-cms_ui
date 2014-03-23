@@ -40,9 +40,6 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,17 +54,14 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private Map<Object, Item> idToItem;
-
     private final Item nodeItemToEdit;
 
     private final LocationController locationController;
 
     private ContentConnector contentConnector;
 
-    public EditItemAction(EditItemActionDefinition definition, Map<Object, Item> idToItem, Item nodeItemToEdit, LocationController locationController, ContentConnector contentConnector) {
+    public EditItemAction(EditItemActionDefinition definition, Item nodeItemToEdit, LocationController locationController, ContentConnector contentConnector) {
         super(definition);
-        this.idToItem = idToItem;
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
         this.contentConnector = contentConnector;
@@ -76,7 +70,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            Object itemId = getItemId(nodeItemToEdit);
+            Object itemId = contentConnector.getItemId(nodeItemToEdit);
             if (!contentConnector.canHandleItem(itemId)) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition(), String.valueOf(itemId));
                 return;
@@ -89,16 +83,5 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
         } catch (Exception e) {
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
-    }
-
-    private Object getItemId(Item nodeItemToEdit) {
-        Iterator<Map.Entry<Object, Item>> entryIt = idToItem.entrySet().iterator();
-        while (entryIt.hasNext()) {
-            Map.Entry<Object, Item> entry = entryIt.next();
-            if (entry.getValue() == nodeItemToEdit) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 }

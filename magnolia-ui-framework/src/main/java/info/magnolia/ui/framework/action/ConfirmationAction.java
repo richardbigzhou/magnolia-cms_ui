@@ -39,14 +39,14 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -64,26 +64,29 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
 
     private static final Logger log = LoggerFactory.getLogger(ConfirmationAction.class);
 
-    private final List<JcrItemAdapter> items;
+    private final List<? extends Item> items;
     private final UiContext uiContext;
     private final ActionExecutor actionExecutor;
     private final SimpleTranslator i18n;
+    private ContentConnector contentConnector;
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
+    public ConfirmationAction(ConfirmationActionDefinition definition, Item item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition);
-        this.items = new ArrayList<JcrItemAdapter>(1);
-        this.items.add(item);
+        this.contentConnector = contentConnector;
+        this.items = Arrays.asList(item);
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
         this.i18n = i18n;
     }
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
+    @Inject
+    public ConfirmationAction(ConfirmationActionDefinition definition, List<? extends Item> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
         this.i18n = i18n;
+        this.contentConnector = contentConnector;
     }
 
     @Override
@@ -137,8 +140,10 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
 
     protected String getListOfItemPaths() {
         StringBuilder builder = new StringBuilder("<ul>");
-        for (JcrItemAdapter item : items) {
-            builder.append("<li>").append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</li>");
+        for (Item item : items) {
+            Object itemId = contentConnector.getItemId(item);
+            String path = contentConnector.getItemUrlFragment(itemId);
+            builder.append("<li>").append(path).append("</li>");
         }
         builder.append("</ul>");
         return builder.toString();

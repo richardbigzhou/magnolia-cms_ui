@@ -55,7 +55,6 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     private WorkbenchPresenter workbenchPresenter;
 
     private EventBus eventBus;
-    private ContentConnector contentConnector;
 
     @Inject
     public WorkbenchFieldFactory(
@@ -68,11 +67,10 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
         this.eventBus = eventBus;
-        this.contentConnector = contentConnector;
     }
 
     @Override
     protected Field<Object> createFieldComponent() {
-        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus, contentConnector);
+        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus);
     }
 }
