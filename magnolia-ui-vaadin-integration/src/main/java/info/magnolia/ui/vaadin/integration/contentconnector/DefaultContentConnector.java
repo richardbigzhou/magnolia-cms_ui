@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.integration.contentconnector;
 
 import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -63,6 +62,11 @@ public class DefaultContentConnector implements ContentConnector {
     @Override
     public Item getItem(Object itemId) {
         return itemId instanceof Item ? (Item)itemId : new NullItem();
+    }
+
+    @Override
+    public Object getItemId(Item item) {
+        return item;
     }
 
     @Override

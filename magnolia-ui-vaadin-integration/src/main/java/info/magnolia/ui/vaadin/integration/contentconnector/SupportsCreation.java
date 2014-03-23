@@ -41,11 +41,10 @@ public interface SupportsCreation extends ContentConnector {
     /**
      * Create and return an id of a new item based on the string representation.
      *
-     * @param newItemPath string representation of a new item.
+     * @param parentId string representation of a new item.
      * @param typeDefinition definition object which specifies the type of the newly created item.
      * @return id of a new item.
-     * TODO: makes more sense probably to pass parent item id and a name/relative path of a new item.
      */
-    Object getNewItemId(String newItemPath, Object typeDefinition);
+    Object getNewItemId(Object parentId, Object typeDefinition);
 
 }

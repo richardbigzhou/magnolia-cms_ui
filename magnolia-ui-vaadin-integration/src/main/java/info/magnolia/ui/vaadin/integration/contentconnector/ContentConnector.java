@@ -79,6 +79,13 @@ public interface ContentConnector {
     Item getItem(Object itemId);
 
     /**
+     * Get item id.
+     * @param item Item id of which is to be returned.
+     * @return id of an item.
+     */
+    Object getItemId(Item item);
+
+    /**
      * Check whether current {@link ContentConnector} is capable of fetching a Vaadin {@link Item}
      * with a specific id.
      *

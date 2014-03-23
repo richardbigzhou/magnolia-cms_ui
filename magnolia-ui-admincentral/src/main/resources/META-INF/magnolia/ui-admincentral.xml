@@ -126,7 +126,7 @@
 
     <component>
       <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.DefaultContentConnector</implementation>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector</implementation>
     </component>
 
     <component>
