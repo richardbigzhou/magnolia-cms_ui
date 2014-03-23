@@ -38,6 +38,9 @@ import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
+import com.vaadin.data.Item;
 
 /**
  * Interface for {@link FormDialogPresenterImpl}.
@@ -48,13 +51,43 @@ public interface FormDialogPresenter extends DialogPresenter {
     FormView getView();
 
     /**
-     * Start the formDialogPresenter.
+     * Starts (builds and renders) a form dialog component.
      *
-     * @param itemId
-     * @param uiContext The layer over which the opened dialog should be presented and be modal.
+     *
+     *
+     * @param item
+     * @param dialogDefinition definition of the dialog.
+     * @param uiContext current UI context (normally this is sub-app context).
+     * @param callback callback fired when the form dialog finishes its work.
+     * @return resulting {@link DialogView}.
      */
-    DialogView start(Object itemId, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback);
+    DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback);
 
-    DialogView start(Object itemId, String dialogId, UiContext uiContext, EditorCallback callback);
+    /**
+     * Starts (builds and renders) a form dialog component.
+     *
+     *
+     *
+     * @param item
+     * @param dialogId id of the dialog.
+     * @param uiContext current UI context (normally this is sub-app context).
+     * @param callback callback fired when the form dialog finishes its work.
+     * @return resulting {@link DialogView}.
+     */
+    DialogView start(Item item, String dialogId, UiContext uiContext, EditorCallback callback);
+
+    /**
+     * Starts (builds and renders) a form dialog component. {@link ContentConnector} parameter allows
+     * for specifying concrete connector to be used within the dialog.
+     *
+     *
+     * @param item id of a Vaadin item used as a dialogs data-source.
+     * @param dialogDefinition definition of the dialog.
+     * @param uiContext current UI context (normally this is sub-app context).
+     * @param callback callback fired when the form dialog finishes its work.
+     * @param contentConnector specific content connector to be used in the dialog.
+     * @return resulting {@link DialogView}.
+     */
+    DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback, ContentConnector contentConnector);
 
 }

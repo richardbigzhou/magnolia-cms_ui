@@ -51,6 +51,9 @@ import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -75,7 +78,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private I18nContentSupport i18nContentSupport;
 
-    private Item item;
+    private Object itemId;
 
     private ChooseDialogCallback callback;
 
@@ -117,7 +120,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             field.addValueChangeListener(new ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    item = (Item) event.getProperty().getValue();
+                    itemId = event.getProperty().getValue();
                 }
             });
             getView().setCaption(definition.getLabel());
@@ -155,7 +158,9 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem() };
+        Set<Object> selected = new HashSet<Object>();
+        selected.add(itemId != null ? itemId : new Object());
+        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
     }
 
     @Override

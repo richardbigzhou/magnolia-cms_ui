@@ -47,7 +47,8 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDe
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
@@ -301,10 +302,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         def.setField(fieldDef);
         ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
             @Override
-            public void onItemChosen(String actionName, Item item) {
+            public void onItemChosen(String actionName, Object value) {
                 try {
-                    if (item instanceof JcrItemAdapter) {
-                        textField.setValue(((JcrItemAdapter) item).getJcrItem().getPath());
+                    if (value instanceof JcrItemId) {
+                        JcrItemId jcrItemId = (JcrItemId) value;
+                        textField.setValue(JcrItemUtil.getJcrItem(jcrItemId).getPath());
                     } else {
                         textField.setValue("/");
                     }

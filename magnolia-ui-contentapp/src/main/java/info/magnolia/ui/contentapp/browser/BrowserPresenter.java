@@ -63,10 +63,8 @@ import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -341,7 +339,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 List<Object> args = new ArrayList<Object>();
                 args.add(itemIds);
                 args.addAll(Arrays.asList(parameters));
-                actionExecutor.execute(actionName, new Object[] { args.toArray() });
+                actionExecutor.execute(actionName, new Object[] { args.toArray(new Object[args.size()]) });
             }
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
@@ -359,16 +357,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             selectedIds.add(contentConnector.getDefaultItemId());
         }
         Iterator<Object> idIt = selectedIds.iterator();
-        Map<Object, Item> idToItem = new HashMap<Object, Item>();
         while (idIt.hasNext()) {
-            Object id = idIt.next();
-            Item item = contentConnector.getItem(id);
-            idToItem.put(id, item);
-            selectedItems.add(item);
+            selectedItems.add(contentConnector.getItem(idIt.next()));
         }
 
         argList.add(selectedItems);
-        argList.add(idToItem);
         argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
         return argList.toArray(new Object[argList.size()]);
     }

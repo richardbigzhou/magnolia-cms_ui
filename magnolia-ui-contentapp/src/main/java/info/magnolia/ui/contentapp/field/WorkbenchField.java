@@ -70,20 +70,17 @@ public class WorkbenchField extends CustomField<Object> {
 
     private WorkbenchDefinition workbenchDefinition;
 
-    private ContentConnector contentConnector;
-
     private WorkbenchPresenter presenter;
 
     private EventBus workbenchEventbus;
 
     private WorkbenchView view;
 
-    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter, EventBus eventBus, ContentConnector contentConnector) {
+    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter, EventBus eventBus) {
         this.workbenchDefinition = definition;
         this.imageProvider = imageProvider;
         this.presenter = presenter;
         this.workbenchEventbus = eventBus;
-        this.contentConnector = contentConnector;
     }
 
     @Override
@@ -115,7 +112,6 @@ public class WorkbenchField extends CustomField<Object> {
     @Override
     public void setPropertyDataSource(com.vaadin.data.Property newDataSource) {
         super.setPropertyDataSource(null);
-        setConverter(new ItemStringConverter());
     }
 
     @Override
@@ -125,36 +121,5 @@ public class WorkbenchField extends CustomField<Object> {
 
     public WorkbenchPresenter getPresenter() {
         return presenter;
-    }
-
-    private class ItemStringConverter implements Converter<Object, Item> {
-        @Override
-        public Item convertToModel(Object value, Class<? extends Item> targetType, Locale locale) throws ConversionException {
-            if (value instanceof  Item) {
-                return (Item)value;
-            }
-
-            if (!(value instanceof JcrItemId)) {
-                return null;
-            }
-
-            return contentConnector.getItem(value);
-        }
-
-        @Override
-        public Object convertToPresentation(Item value, Class<?> targetType, Locale locale) throws ConversionException {
-            return value;
-        }
-
-        @Override
-        public Class<Item> getModelType() {
-            return Item.class;
-        }
-
-        @Override
-        public Class<Object> getPresentationType() {
-            return Object.class;
-
-        }
     }
 }

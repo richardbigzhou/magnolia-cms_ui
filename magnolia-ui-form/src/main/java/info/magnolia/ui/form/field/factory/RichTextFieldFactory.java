@@ -39,7 +39,8 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
@@ -242,13 +243,13 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     private void openLinkDialog(String path, String workspace) {
         appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, null, new ChooseDialogCallback() {
             @Override
-            public void onItemChosen(String actionName, Item chosenValue) {
-                if (!(chosenValue instanceof JcrItemAdapter)) {
+            public void onItemChosen(String actionName, Object chosenValue) {
+                if (!(chosenValue instanceof JcrItemId)) {
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
                     return;
                 }
                 try {
-                    javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+                    javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem((JcrItemId) chosenValue);
                     if (!jcrItem.isNode()) {
                         return;
                     }

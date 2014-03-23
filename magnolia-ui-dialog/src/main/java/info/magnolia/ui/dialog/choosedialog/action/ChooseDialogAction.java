@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.dialog.choosedialog.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+
+import java.util.Set;
 
 /**
  * Base action class for choose dialogs.
@@ -48,13 +49,13 @@ public class ChooseDialogAction extends AbstractAction<ChooseDialogActionDefinit
 
     private ChooseDialogCallback callback;
 
-    private Item item;
+    private Object itemId;
 
-    public ChooseDialogAction(ChooseDialogPresenter presenter, ChooseDialogActionDefinition definition, ChooseDialogCallback callback, Item item) {
+    public ChooseDialogAction(ChooseDialogPresenter presenter, ChooseDialogActionDefinition definition, ChooseDialogCallback callback, Set<Object> selected) {
         super(definition);
         this.presenter = presenter;
         this.callback = callback;
-        this.item = item;
+        this.itemId = selected.iterator().next();
     }
 
     public ChooseDialogAction(ChooseDialogPresenter presenter, ChooseDialogActionDefinition definition, ChooseDialogCallback callback) {
@@ -63,8 +64,8 @@ public class ChooseDialogAction extends AbstractAction<ChooseDialogActionDefinit
 
     @Override
     public void execute() throws ActionExecutionException {
-        if (getDefinition().isCallSuccess() && item != null) {
-            callback.onItemChosen(getDefinition().getSuccessActionName(), item);
+        if (getDefinition().isCallSuccess() && itemId != null) {
+            callback.onItemChosen(getDefinition().getSuccessActionName(), itemId);
         } else {
             callback.onCancel();
         }
