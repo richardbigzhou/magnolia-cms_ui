@@ -58,13 +58,19 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
 
     private final AppController appController;
     private final UiContext uiContext;
-    private final ComponentProvider componentProvider;
+    private ComponentProvider componentProvider;
 
     @Inject
     public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.appController = appController;
         this.uiContext = uiContext;
+        this.componentProvider = componentProvider;
+    }
+
+    @Override
+    public void setComponentProvider(ComponentProvider componentProvider) {
+        super.setComponentProvider(componentProvider);
         this.componentProvider = componentProvider;
     }
 

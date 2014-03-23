@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.api.app;
 
-import com.vaadin.data.Item;
-
 /**
  * Called on choose dialog completion.
  */
@@ -42,5 +40,5 @@ public interface ChooseDialogCallback {
 
     void onCancel();
 
-    void onItemChosen(String actionName, Item item);
+    void onItemChosen(String actionName, Object itemId);
 }

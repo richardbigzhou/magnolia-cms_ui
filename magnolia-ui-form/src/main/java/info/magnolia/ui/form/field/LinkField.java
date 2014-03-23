@@ -33,6 +33,25 @@
  */
 package info.magnolia.ui.form.field;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.form.field.component.ContentPreviewComponent;
+import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
@@ -47,22 +66,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ChooseDialogCallback;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.form.field.component.ContentPreviewComponent;
-import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
-import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
  * A base custom field comprising a text field and a button placed to its immediate right.
@@ -71,6 +74,7 @@ import javax.jcr.RepositoryException;
  */
 public class LinkField extends CustomField<String> {
     private static final Logger log = LoggerFactory.getLogger(LinkField.class);
+    private final ContentConnector contentConnector;
 
     /**
      * Normal {@link TextField} only exposing the fireValueChange(... that is by default protected.
@@ -106,6 +110,7 @@ public class LinkField extends CustomField<String> {
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
+        this.contentConnector = componentProvider.getComponent(ContentConnector.class);
         setImmediate(true);
     }
 
@@ -246,11 +251,12 @@ public class LinkField extends CustomField<String> {
 
                 appController.openChooseDialog(definition.getAppName(), uiContext, textField.getValue(), new ChooseDialogCallback() {
                     @Override
-                    public void onItemChosen(String actionName, final Item chosenValue) {
+                    public void onItemChosen(String actionName, final Object chosenValue) {
+                        Item chosenItem = contentConnector.getItem(chosenValue);
                         String propertyName = definition.getTargetPropertyToPopulate();
                         String newValue = null;
-                        if (chosenValue != null && !(chosenValue instanceof NullItem)) {
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+                        if (chosenItem != null && !(chosenItem instanceof NullItem)) {
+                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenItem).getJcrItem();
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
                                 try {

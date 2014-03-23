@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -67,6 +68,7 @@ public class DefaultImageProvider implements ImageProvider {
     public DefaultImageProvider() {
     }
 
+    @Inject
     public DefaultImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
         this.definition = definition;
         this.contentConnector = contentConnector;

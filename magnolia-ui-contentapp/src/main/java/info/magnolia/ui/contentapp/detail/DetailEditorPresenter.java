@@ -103,10 +103,8 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             }
         } else {
             if (contentConnector instanceof SupportsCreation) {
-                /**
-                 * TODO - consider passing parent's id.
-                 */
-                itemId = ((SupportsCreation) contentConnector).getNewItemId(nodePath, editorDefinition.getNodeType().getName());
+                Object parentId = contentConnector.getItemIdByUrlFragment(StringUtils.substringBeforeLast(nodePath, "/"));
+                itemId = ((SupportsCreation) contentConnector).getNewItemId(parentId, editorDefinition.getNodeType().getName());
             }
         }
 

@@ -67,7 +67,6 @@ import com.vaadin.data.Item;
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter, EditorValidator {
 
-    private Object itemId;
     private EditorCallback callback;
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
@@ -94,10 +93,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public DialogView start(Object itemId, String dialogId, final UiContext uiContext, EditorCallback callback) {
+    public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback, ContentConnector contentConnector) {
+        this.contentConnector = contentConnector;
+        return start(item, dialogDefinition, uiContext, callback);
+    }
+
+    @Override
+    public DialogView start(Item item, String dialogId, final UiContext uiContext, EditorCallback callback) {
         try {
             FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.getDialogDefinition(dialogId);
-            return start(itemId, dialogDefinition, uiContext, callback);
+            return start(item, dialogDefinition, uiContext, callback);
         } catch (RegistrationException e) {
             throw new RuntimeException("No dialogDefinition found for " + dialogId, e);
         }
@@ -109,15 +114,14 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
      *
-     * @param itemId passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
+     * @param item
      * @param dialogDefinition
      * @param uiContext
      */
     @Override
-    public DialogView start(Object itemId, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
-        this.itemId = itemId;
+    public DialogView start(Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
         this.callback = callback;
-        this.item = contentConnector.getItem(itemId);
+        this.item = item;
         getExecutor().setDialogDefinition(dialogDefinition);
 
         start(dialogDefinition, uiContext);
@@ -177,7 +181,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         List<ActionDefinition> result = new LinkedList<ActionDefinition>();
         for (ActionDefinition action : getDefinition().getActions().values()) {
             ActionDefinition actionDefinition = getExecutor().getActionDefinition(action.getName());
-            if (checker.isAvailable(actionDefinition.getAvailability(), Arrays.asList(itemId))) {
+            if (checker.isAvailable(actionDefinition.getAvailability(), Arrays.asList(contentConnector.getItemId(item)))) {
                 result.add(action);
             }
         }
