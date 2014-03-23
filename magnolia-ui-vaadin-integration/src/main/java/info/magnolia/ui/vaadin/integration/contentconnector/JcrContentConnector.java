@@ -34,8 +34,6 @@
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
 import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
@@ -55,6 +53,8 @@ import javax.jcr.version.Version;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
@@ -101,6 +101,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         try {
             String fullFragment = ("/".equals(getPath()) ? "" : getPath()) + urlFragment;
             String nodePath = parseNodePath(fullFragment);
+            nodePath = !StringUtils.isBlank(nodePath) ? nodePath : getPath();
             JcrItemId nodeItemId = JcrItemUtil.getItemId(getWorkspace(), nodePath);
             if (!isPropertyItemId(fullFragment)) {
                 return nodeItemId;
@@ -143,6 +144,14 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     @Override
+    public Object getItemId(Item item) {
+        if (item instanceof JcrItemAdapter) {
+            return ((JcrItemAdapter)item).getItemId();
+        }
+        return null;
+    }
+
+    @Override
     public Object getDefaultItemId() {
         return defaultItemId;
     }
@@ -159,7 +168,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     @Override
     public Object getItemVersion(Object itemId, String versionName) {
         try {
-            Node node = NodeUtil.getNodeByIdentifier(getWorkspace(), String.valueOf(itemId));
+            Node node = (Node) JcrItemUtil.getJcrItem((JcrItemId) itemId);
             Version version = versionManager.getVersion(node, versionName);
             return JcrItemUtil.getItemId(version.getFrozenNode());
         } catch (RepositoryException e) {
@@ -168,15 +177,17 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         return null;
     }
 
+    private static final String NEW_NODE_NAME = "untitled";
+
     @Override
-    public Object getNewItemId(String newItemPath, Object typeDefinition) {
+    public Object getNewItemId(Object parentId, Object typeDefinition) {
 
         String primaryNodeType = String.valueOf(typeDefinition);
-        String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
-        parentPath = parentPath.isEmpty() ? getPath() : parentPath;
-        Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
         try {
-            return new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
+            Node parent = (Node)JcrItemUtil.getJcrItem((JcrItemId)parentId);
+            JcrNewNodeItemId jcrNewNodeItemId = new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
+            jcrNewNodeItemId.setName(NEW_NODE_NAME);
+            return jcrNewNodeItemId;
         } catch (RepositoryException e) {
             log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
         }

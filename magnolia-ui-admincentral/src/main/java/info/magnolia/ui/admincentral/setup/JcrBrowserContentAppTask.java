@@ -113,21 +113,21 @@ public class JcrBrowserContentAppTask extends AbstractTask {
         try {
             Node subappsNode = NodeUtil.createPath(appNode, "subApps", NodeTypes.ContentNode.NAME);
             subappsNode.setProperty("extends", "/modules/ui-admincentral/apps/configuration/subApps");
-            Node workbenchNode = NodeUtil.createPath(subappsNode, "browser/workbench", NodeTypes.ContentNode.NAME);
+            Node contentConnectorNode = NodeUtil.createPath(subappsNode, "browser/contentConnector", NodeTypes.ContentNode.NAME);
 
             if (StringUtils.isBlank(workspace)) {
                 throw new TaskExecutionException("workspace cannot be null or empty");
             }
-            workbenchNode.setProperty("workspace", workspace);
+            contentConnectorNode.setProperty("workspace", workspace);
 
             if (StringUtils.isNotBlank(rootPath)) {
                 if (!rootPath.startsWith("/")) {
                     throw new TaskExecutionException(String.format("Expected an absolute path for workspace [%s] but got [%s] instead.", workspace, rootPath));
                 }
-                workbenchNode.setProperty("path", rootPath);
+                contentConnectorNode.setProperty("rootPath", rootPath);
             }
             if (mainNodeType != null) {
-                Node nodeType = NodeUtil.createPath(workbenchNode, "nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
+                Node nodeType = NodeUtil.createPath(contentConnectorNode, "nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
                 String icon = mainNodeType.getIcon();
                 String name = mainNodeType.getName();
                 nodeType.setProperty("icon", StringUtils.defaultIfEmpty(icon, "icon-node-content"));
