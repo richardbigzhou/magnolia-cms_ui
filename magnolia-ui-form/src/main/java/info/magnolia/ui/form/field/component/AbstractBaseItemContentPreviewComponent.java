@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.component;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
@@ -63,7 +64,6 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
 
     public AbstractBaseItemContentPreviewComponent(String workspace) {
         super(workspace);
-        setImageProvider();
         // Always set the root layout as CompositionRoot.
         this.rootLayout = new HorizontalLayout();
         setCompositionRoot(rootLayout);
@@ -97,7 +97,7 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
     @Override
     public Component refreshContentPreview(Item item) {
         Image thumbnail = new Image();
-        String path = imageProvider.getPortraitPath(item);
+        String path = imageProvider.getPortraitPath(((JcrItemAdapter)item).getItemId());
         if (StringUtils.isNotBlank(path)) {
             thumbnail = new Image("", new ExternalResource(path));
             thumbnail.addStyleName("file-preview-area");

@@ -154,8 +154,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 workbenchDefinition,
                 imageProviderDefinition,
                 workbenchPresenter,
-                eventBus,
-                contentConnector);
+                eventBus);
         ViewAdapter viewAdapter = new ViewAdapter(field);
         viewAdapter.asVaadinComponent().addStyleName("choose-dialog");
         dialogView.setContent(viewAdapter);

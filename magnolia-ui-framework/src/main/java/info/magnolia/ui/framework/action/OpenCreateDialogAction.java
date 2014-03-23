@@ -47,9 +47,6 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -69,28 +66,26 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
     private final UiContext uiContext;
     private final EventBus eventBus;
     private ContentConnector contentConnector;
-    private Map<Object, Item> idToItem;
     private final SimpleTranslator i18n;
 
     @Inject
-    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, Item parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, ContentConnector contentConnector, Map<Object, Item> idToItem, SimpleTranslator i18n) {
+    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, Item parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, ContentConnector contentConnector, SimpleTranslator i18n) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
         this.contentConnector = contentConnector;
-        this.idToItem = idToItem;
         this.i18n = i18n;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        Object parentId = getItemId(parentItem);
+        Object parentId = contentConnector.getItemId(parentItem);
 
         if (contentConnector instanceof SupportsCreation) {
-            final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(contentConnector.getItemUrlFragment(parentId), getDefinition().getNodeType());
+            final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(parentId, getDefinition().getNodeType());
 
             final String dialogName = getDefinition().getDialogName();
             if(StringUtils.isBlank(dialogName)){
@@ -106,7 +101,7 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
                 return;
             }
             
-            formDialogPresenter.start(itemId, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+            formDialogPresenter.start(contentConnector.getItem(itemId), getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -120,16 +115,5 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
                 }
             });
         }
-    }
-
-    private Object getItemId(Item nodeItemToEdit) {
-        Iterator<Map.Entry<Object, Item>> entryIt = idToItem.entrySet().iterator();
-        while (entryIt.hasNext()) {
-            Map.Entry<Object, Item> entry = entryIt.next();
-            if (entry.getValue() == nodeItemToEdit) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 }
