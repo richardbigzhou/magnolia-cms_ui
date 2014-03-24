@@ -33,9 +33,21 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link info.magnolia.ui.api.availability.AvailabilityRule} implementation which returns positive result
@@ -43,11 +55,23 @@ import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
  */
 public class WritePermissionsAvailableRule extends AbstractAvailabilityRule {
 
+    private static Logger log = LoggerFactory.getLogger(WritePermissionsAvailableRule.class);
+
     private boolean isWritePermissionRequired = false;
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        return !isWritePermissionRequired || MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE);
+        if (isWritePermissionRequired && !MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE) && (itemId instanceof JcrItemId)) {
+            Item jcrItem = null;
+            try {
+                jcrItem = JcrItemUtil.getJcrItem((JcrItemId)itemId);
+                Node node = jcrItem instanceof Property ? jcrItem.getParent() : (Node) jcrItem;
+                return PermissionUtil.isGranted(node, Permission.WRITE);
+            } catch (RepositoryException e) {
+                log.warn("Could not evaluate write permission for {}.", jcrItem);
+            }
+        }
+        return true;
     }
 
     public void setWritePermissionRequired(boolean writePermissionRequired) {
