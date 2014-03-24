@@ -52,7 +52,8 @@ import javax.jcr.RepositoryException;
 public class ChangeAvailabilityRuleClassesTask extends QueryTask {
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
-    public static final String RULE_CLASS = "ruleClass";
+    private static  Map<String, String> classMapping;
+    protected static final String RULE_CLASS = "ruleClass";
 
     protected ChangeAvailabilityRuleClassesTask() {
         super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
@@ -74,14 +75,15 @@ public class ChangeAvailabilityRuleClassesTask extends QueryTask {
     }
 
     public final static Map<String, String> getClassMapping() {
-        Map<String, String> classMappings = new HashMap<String, String>();
-
-        classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
-        classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
-
-        return Collections.unmodifiableMap(classMappings);
+        if (classMapping == null) {
+            classMapping = new HashMap<String, String>();
+            classMapping.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
+            classMapping.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
+            classMapping = Collections.unmodifiableMap(classMapping);
+        }
+        return classMapping;
     }
 
 }

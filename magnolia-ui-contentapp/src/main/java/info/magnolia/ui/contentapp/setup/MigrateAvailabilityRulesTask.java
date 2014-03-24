@@ -45,18 +45,14 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
  */
 public class MigrateAvailabilityRulesTask extends QueryTask {
 
-    private Logger log = LoggerFactory.getLogger(MigrateAvailabilityRulesTask.class);
-
-    public static final String RULE_CLASS = "ruleClass";
-    public static final String RULES = "rules";
+    protected static final String RULE_CLASS = "ruleClass";
+    protected static final String RULES = "rules";
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
 
     protected MigrateAvailabilityRulesTask() {

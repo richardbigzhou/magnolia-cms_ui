@@ -46,7 +46,7 @@ import javax.jcr.Session;
 
 /**
  * A migration task to move properties <i>workspace</i>, <i>path</i>, <i>includeProperties</i>, <i>includeSystemNodes</i>, <i>defaultOrder</i> and <i>nodeTypes</i>
- * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>)  and add them to a new node
+ * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>)  and adding them to a new node
  * <i>contentConnector</i> which is added to <i>workbench</i> or <i>editor</i>.<br/>
  * The property path is renamed to rootPath.
  */
@@ -60,7 +60,7 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
     private static final String ROOTPATH_PROPERTY = "rootPath";
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";
-    public static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
+    protected static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
 
 
     protected MigrateJcrPropertiesToContentConnectorTask() {
@@ -82,16 +82,16 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
             // workbench
             if (WORKBENCH_NODENAME.equals(node.getName())) {
-                migrateProperty("workspace", node, contentConnectorNode, installContext);
-                migrateProperty("path", node, contentConnectorNode, installContext);
-                migrateProperty("includeProperties", node, contentConnectorNode, installContext);
-                migrateProperty("includeSystemNodes", node, contentConnectorNode, installContext);
-                migrateProperty("defaultOrder", node, contentConnectorNode, installContext);
+                migrateProperty("workspace", node, contentConnectorNode);
+                migrateProperty("path", node, contentConnectorNode);
+                migrateProperty("includeProperties", node, contentConnectorNode);
+                migrateProperty("includeSystemNodes", node, contentConnectorNode);
+                migrateProperty("defaultOrder", node, contentConnectorNode);
                 migrateNode("nodeTypes", node, contentConnectorNode, installContext.getJCRSession(RepositoryConstants.CONFIG));
             }
             // editor
             else {
-                migrateProperty("workspace", node, contentConnectorNode, installContext);
+                migrateProperty("workspace", node, contentConnectorNode);
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException("Failed to migrate JCR-properties to contentConnector.",e);
@@ -109,7 +109,11 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
         }
     }
 
-    private void migrateProperty(String propertyName, Node sourceNode, Node destNode, InstallContext installContext) throws RepositoryException {
+    /*
+     * moving a property by a given name from the source node (workbench or editor) to the dest.-node (contentConnector).
+     * If the attribute from the source-node is 'path', it will change its name to 'rootPath'
+     */
+    private void migrateProperty(String propertyName, Node sourceNode, Node destNode) throws RepositoryException {
         if (sourceNode.hasProperty(propertyName)) {
             Property sourceNodeProperty = sourceNode.getProperty(propertyName);
             if (!PATH_PROPERTY.equals(propertyName)) {
