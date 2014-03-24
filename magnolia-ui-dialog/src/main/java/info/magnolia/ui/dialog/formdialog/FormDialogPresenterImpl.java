@@ -122,10 +122,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
-        getExecutor().setDialogDefinition(dialogDefinition);
 
         start(dialogDefinition, uiContext);
-
+        getExecutor().setDialogDefinition(getDefinition());
         buildView(getDefinition());
 
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView(), getView().getModalityLevel());
@@ -180,8 +179,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     protected Iterable<ActionDefinition> filterActions() {
         List<ActionDefinition> result = new LinkedList<ActionDefinition>();
         for (ActionDefinition action : getDefinition().getActions().values()) {
-            ActionDefinition actionDefinition = getExecutor().getActionDefinition(action.getName());
-            if (checker.isAvailable(actionDefinition.getAvailability(), Arrays.asList(contentConnector.getItemId(item)))) {
+            if (checker.isAvailable(action.getAvailability(), Arrays.asList(contentConnector.getItemId(item)))) {
                 result.add(action);
             }
         }

@@ -54,8 +54,6 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
-import net.sf.cglib.proxy.Enhancer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +62,8 @@ import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
+
+import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -123,14 +123,15 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     @Override
-    public DialogView start(DialogDefinition definition, UiContext uiContext) {
+    public DialogView start(DialogDefinition dialogDefinition, UiContext uiContext) {
         this.uiContext = uiContext;
         // ChooseDialogDefinition is already enhanced as it is obtained via ContentAppDescriptor.getChooseDialog() at ContentApp.openChooseDialog(..)
-        if (Enhancer.isEnhanced(definition.getClass())) {
-            this.definition = definition;
+        if (Enhancer.isEnhanced(dialogDefinition.getClass())) {
+            this.definition = dialogDefinition;
         } else {
-            this.definition = i18nizer.decorate(definition);
+            this.definition = i18nizer.decorate(dialogDefinition);
         }
+
         this.editorActionAreaPresenter = componentProvider.newInstance(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
