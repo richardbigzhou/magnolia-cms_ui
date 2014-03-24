@@ -110,8 +110,8 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
     }
 
     /*
-     * moving a property by a given name from the source node (workbench or editor) to the dest.-node (contentConnector).
-     * If the attribute from the source-node is 'path', it will change its name to 'rootPath'
+     * Moving a property by a given name from the source node (workbench or editor) to the destination.-node (contentConnector).
+     * If the attribute from the source-node is 'path', it will change its name to 'rootPath'.
      */
     private void migrateProperty(String propertyName, Node sourceNode, Node destNode) throws RepositoryException {
         if (sourceNode.hasProperty(propertyName)) {
