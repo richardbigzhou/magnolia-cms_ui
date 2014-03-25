@@ -72,7 +72,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         super(definition, componentProvider);
         this.versionManager = versionManager;
         try {
-            this.defaultItemId = JcrItemUtil.getItemId(getWorkspace(), getPath());
+            this.defaultItemId = JcrItemUtil.getItemId(getWorkspace(), getRootPath());
         } catch (RepositoryException e) {
             log.error("Failed to retrieve default id: " + e.getMessage(), e);
             this.defaultItemId = null;
@@ -86,7 +86,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
                 JcrItemId jcrItemId = (JcrItemId) itemId;
                 javax.jcr.Item selected = JcrItemUtil.getJcrItem(jcrItemId);
                 String selectedPath = JcrItemUtil.getItemPath(selected);
-                String path = getPath();
+                String path = getRootPath();
                 return StringUtils.removeStart(selectedPath, "/".equals(path) ? "" : path);
             }
         } catch (RepositoryException e) {
@@ -99,9 +99,9 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     @Override
     public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
-            String fullFragment = ("/".equals(getPath()) ? "" : getPath()) + urlFragment;
+            String fullFragment = ("/".equals(getRootPath()) ? "" : getRootPath()) + urlFragment;
             String nodePath = parseNodePath(fullFragment);
-            nodePath = !StringUtils.isBlank(nodePath) ? nodePath : getPath();
+            nodePath = !StringUtils.isBlank(nodePath) ? nodePath : getRootPath();
             JcrItemId nodeItemId = JcrItemUtil.getItemId(getWorkspace(), nodePath);
             if (!isPropertyItemId(fullFragment)) {
                 return nodeItemId;
@@ -199,7 +199,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         return null;
     }
 
-    private String getPath() {
+    private String getRootPath() {
         return getContentConnectorDefinition().getRootPath();
     }
 
