@@ -134,49 +134,48 @@
   .light-dialog-panel {
     width: 400px;
     padding: 0;
-    text-align: center;
     color: black;
-    padding-bottom: 5px;
-    border: solid 1px;
-    box-shadow: 7px 7px 10px $c10;
-
-    margin-right: 15px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
-    margin-bottom: 15px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
-    margin-top: 5px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
-    margin-left: 5px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
+    border: solid 1px $c14;
+    box-shadow: 6px 6px 6px rgba(0,0,0,.25);
+    margin: 0px 13px 13px 0px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
   }
 
-  .light-dialog-panel .dialog-header {
-    background-color: transparent;
-  }
-  .light-dialog-panel .dialog-header button.btn-form-help {
-    display: none;
+  .light-dialog-panel {
+    .dialog-header { background-color: transparent; }
+    button.btn-form-help { display: none; }
+    .m-closebutton {
+      position: relative;
+      color: $c10;
+      margin: -5px -9px 0px 7px
+    }
   }
 
   .light-dialog-panel .dialog-content {
-    padding: 0 42px;
-    width: auto;
+    font-size: 12px;
+    padding: 0 44px;
     overflow: auto;
     max-height: 200px;
     position: relative;
+    top: -26px;
   }
 
   .light-dialog-panel .dialog-footer {
-    display: inline-block;
     background-color: transparent;
-    margin-top: 20px;
-    margin-bottom: 9px;
+    margin-top: 0;
+    padding-bottom: 9px;
   }
 
   .light-dialog-panel .title {
+    font-size: 12px;
     font-weight: bold;
     padding-bottom: 5px;
   }
 
   .dialog-icon {
+    font-size: 30px !important;
     position: absolute;
-    top: -4px;
-    left: 10px;
+    top: -7px;
+    left: 9px;
   }
 
   .light-dialog-panel button,
@@ -196,106 +195,13 @@
     content: "]";
   }
 
-/* MessageTypes: Info */
-
-  .light-dialog-panel.msginfo {
-    border-color: #A1ADAF;
-    backround: $c23;
-  }
-  .v-app .v-ui .light-dialog-panel.msginfo .m-closebutton {
-    color: $c20;
-    &:hover, &:active, &:focus {
-      color: #A1ADAF;
-    }
-  }
-  .light-dialog-panel.msginfo .btn-dialog:focus {
-    background: $c20;
-  }
-  .light-dialog-panel.msginfo button {
-    background: #75868a;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msginfo .btn-dialog:focus:hover {
-    background: $c22;
-    color: #2b6879;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msginfo button:hover {
-    background: #acc4ca;
-  }
-  .v-app .v-ui .light-dialog-panel.msginfo .btn-dialog:focus:active {
-    background: $c80;
-    color: $c20;
-  }
-  .v-app .v-ui .light-dialog-panel.msginfo button:active {
-    background: $c80;
-  }
-
-/* MessageTypes: Warn */
-
+  .light-dialog-panel.msginfo { backround: $c24; }
   .light-dialog-panel.msgwarn {
     background: $c64;
-    border-color: #BEB099;
-  }
-  .light-dialog-panel.msgwarn .m-closebutton {
-    color: #F6A51C;
-  }
-  .light-dialog-panel.msgwarn .m-closebutton:focus {
-     color: $c10;
-  }
-  .light-dialog-panel.msgwarn .btn-dialog:focus {
-    background: $c60;
-    color: $c10;
-  }
-  .light-dialog-panel.msgwarn button {
-    background: #a3926c;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msgwarn .btn-dialog:focus:hover {
-    background: $c62;
-    color: $c10;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msgwarn button:hover {
-    background: #efd79e;
-    color: $c10;
-  }
-  .v-app .v-ui .light-dialog-panel.msgwarn .btn-dialog:focus:active {
-    background: $c80;
-    color: $c60;
-  }
-  .v-app .v-ui .light-dialog-panel.msgwarn button:active {
-    background: $c80;
-    color: $c10;
+    border-color: $c15;
   }
 
-/* MessageTypes: Error */
-  .light-dialog-panel.msgerror {
-    background: $c74;
-    border-color: #AE9D9D;
-  }
-  .light-dialog-panel.msgerror .m-closebutton {
-    color: $c70;
-  }
-  .light-dialog-panel.msgerror .m-closebutton:focus {
-    color: $c73;
-  }
-  .light-dialog-panel.msgerror .btn-dialog:focus {
-    background: $c70;
-  }
-  .light-dialog-panel.msgerror button {
-    background: #8f7b7b;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msgerror .btn-dialog:focus:hover {
-    background: $c73;
-    color: $c70;
-  }
-  .v-ui:not(.tablet) .light-dialog-panel.msgerror button:hover {
-    background: #d2b5b5;
-  }
-  .v-app .v-ui .light-dialog-panel.msgerror .btn-dialog:focus:active {
-    background: $c80;
-    color: $c70;
-  }
-  .v-app .v-ui .light-dialog-panel.msgerror button:active {
-    background: $c80;
-  }
+  .light-dialog-panel.msgerror { background: $c75; }
 
 /* Notifications */
 
@@ -306,25 +212,28 @@
     width: 400px;
   }
 
+  .light-dialog-panel.notification-dialog .dialog-content {
+    top: -3px;
+  }
+
   .notification-dialog >.icon {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 4px;
+    left: 9px;
   }
 
-  .notification-dialog .m-closebutton {
-    background-color: transparent;
-    float: right;
-    padding: 0;
-    font-size: 15px;
+  .light-dialog-panel.notification-dialog .v-nativebutton-close {
+    background-color: transparent !important;
+    border: none;
     position: absolute;
-    top: 6px;
-    right: 12px;
-  }
+    top: 5px;
+    right: 7px;
+    z-index: 5;
+    margin: 0;
+    width: 28px;
+    height: 28px;
 
-  .notification-dialog-selected {
-    border-width: 2px;
-    margin-left: -1px;
+    .m-closebutton { margin: 0; padding: 0; }
   }
 
 /* Lightbox */
