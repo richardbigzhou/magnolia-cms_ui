@@ -151,7 +151,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             id = container.nextItemId(id);
             ++i;
         }
-        getState().lastQueried = StringUtils.defaultString(mapItemIdToThumbnailId((String) id), "null");
+        getState().lastQueried = StringUtils.defaultString(mapItemIdToThumbnailId(id), "null");
         return thumbnails;
     }
 
