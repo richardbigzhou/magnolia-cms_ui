@@ -49,6 +49,7 @@ import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -82,10 +83,15 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass(), cb);
+        BaseDialog dialog = createAlertDialog(viewToShow, type.getCssClass());
         dialog.showCloseButton();
 
-        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(dialog), ModalityLevel.LIGHT);
+        Panel panel = new Panel();
+        panel.setHeight("100%");
+        panel.setWidth(null);
+        panel.setContent(dialog);
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(panel), ModalityLevel.LIGHT);
+        addCloseHandler(dialog, confirmButtonText, overlayCloser, cb);
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
     }
 
@@ -118,21 +124,28 @@ public abstract class OverlayPresenter implements OverlayLayer {
         return dialog;
     }
 
-    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String styleName, final AlertCallback cb) {
+    private BaseDialog createAlertDialog(View contentView, String styleName) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(styleName);
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
-        HorizontalLayout footer = new HorizontalLayout();
+        return dialog;
+    }
+
+    private void addCloseHandler(BaseDialog dialog, String confirmButtonText, final OverlayCloser overlayCloser, final AlertCallback cb) {
+        CssLayout footer = new CssLayout();
+        footer.setWidth(100, Unit.PERCENTAGE);
+        footer.addStyleName("v-align-right");
         Button confirmButton = new Button(confirmButtonText, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 cb.onOk();
+                overlayCloser.close();
             }
         });
         confirmButton.focus();
         footer.addComponent(confirmButton);
-        return dialog;
+        dialog.setFooterToolbar(footer);
     }
 
     private View createConfirmationView(final MessageStyleType type, final String title, final String body) {

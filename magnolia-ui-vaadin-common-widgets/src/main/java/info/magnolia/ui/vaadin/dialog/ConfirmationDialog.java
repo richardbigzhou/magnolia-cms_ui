@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
 /**
@@ -66,7 +65,8 @@ public class ConfirmationDialog extends LightDialog {
     }
 
     public void init(String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
-        HorizontalLayout footer = new HorizontalLayout();
+        CssLayout footer = new CssLayout();
+        footer.addStyleName("v-align-right");
 
         confirmButton = new Button(confirmLabel, new ClickListener() {
             @Override
@@ -88,11 +88,9 @@ public class ConfirmationDialog extends LightDialog {
         cancelButton.addStyleName("btn-dialog");
         cancelButton.addStyleName("cancel");
         confirmButton.addStyleName("btn-dialog");
-        confirmButton.addStyleName("confirm");
+        confirmButton.addStyleName("commit");
 
-        footer.setComponentAlignment(confirmButton, Alignment.MIDDLE_RIGHT);
-        footer.setComponentAlignment(cancelButton, Alignment.MIDDLE_LEFT);
-        footer.setSpacing(true);
+        footer.setWidth(100, Unit.PERCENTAGE);
         setFooterToolbar(footer);
 
         // Add a class to the default button
