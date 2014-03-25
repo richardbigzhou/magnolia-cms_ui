@@ -216,7 +216,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         activePresenter.setSelectedItemIds(selectedIds);
         activePresenter.select(selectedIds);
         // Only send event if items are not empty (do exist)
-        eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(itemIds)));
+        eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(selectedIds)));
     }
 
     protected List<Object> filterExistingItems(List<Object> itemIds) {
@@ -226,8 +226,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             Object itemId = it.next();
             if (contentConnector.canHandleItem(itemId)) {
                 filteredIds.add(itemId);
-            } else {
-                WorkbenchDefinition def = getWorkbenchDefinition();
             }
         }
         return filteredIds;

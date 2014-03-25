@@ -161,16 +161,22 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
                     workbenchPresenter.refresh();
 
-                    workbenchPresenter.select(getSelectedItemIds());
+                    List<Object> existingSelectedItemIds = new ArrayList<Object>(getSelectedItemIds());
+                    Iterator<Object> it = existingSelectedItemIds.iterator();
+                    while (it.hasNext()) {
+                        if (!verifyItemExists(it.next())) {
+                            it.remove();
+                        }
+                    }
+                    workbenchPresenter.select(existingSelectedItemIds);
 
                     if (event.isItemContentChanged()) {
                         workbenchPresenter.expand(event.getItemId());
                     }
 
                     // use just the first selected item to show the preview image
-                    Object itemId = getSelectedItemIds().get(0);
-                    if (verifyItemExists(itemId)) {
-                        refreshActionbarPreviewImage(itemId);
+                    if (!existingSelectedItemIds.isEmpty() && verifyItemExists(existingSelectedItemIds.get(0))) {
+                        refreshActionbarPreviewImage(existingSelectedItemIds.get(0));
                     }
 
                 }
@@ -238,7 +244,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return contentConnector.canHandleItem(itemId);
+        return contentConnector.getItem(itemId) != null;
     }
 
     public List<Object> getSelectedItemIds() {
