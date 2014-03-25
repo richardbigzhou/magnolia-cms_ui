@@ -124,12 +124,16 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         javax.jcr.Item jcrItem;
         try {
             jcrItem = JcrItemUtil.getJcrItem((JcrItemId) itemId);
+            if (jcrItem == null) {
+                return null;
+            }
             JcrItemAdapter itemAdapter;
             if (jcrItem.isNode()) {
                 if (itemId instanceof JcrNewNodeItemId) {
-                    return new JcrNewNodeAdapter((Node) jcrItem, ((JcrNewNodeItemId)itemId).getPrimaryNodeType());
+                    itemAdapter = new JcrNewNodeAdapter((Node) jcrItem, ((JcrNewNodeItemId)itemId).getPrimaryNodeType());
+                } else {
+                    itemAdapter = new JcrNodeAdapter((Node) jcrItem);
                 }
-                itemAdapter = new JcrNodeAdapter((Node) jcrItem);
             } else {
                 itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
             }
@@ -158,11 +162,11 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public boolean canHandleItem(Object itemId) {
-        boolean canHandle = (itemId instanceof JcrItemId) && ((JcrItemId) itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
-        if (!canHandle) {
-            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.", new Object[] { itemId, getWorkspace(), getPath() });
+        if (itemId instanceof JcrItemId) {
+            JcrItemId jcrId = (JcrItemId) itemId;
+            return jcrId.getWorkspace().equalsIgnoreCase(getWorkspace());
         }
-        return canHandle;
+        return false;
     }
 
     @Override
