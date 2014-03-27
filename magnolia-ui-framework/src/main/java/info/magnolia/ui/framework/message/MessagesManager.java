@@ -51,11 +51,13 @@ public interface MessagesManager {
         void messageSent(Message message);
 
         void messageCleared(Message message);
+
+        void messageRemoved(String id);
     }
 
     /**
      * Beware: this method is for registering message listeners and should only be used by the entry point of our application AdmincentralUI where we register a dispatcher.
-     *         If you'll use it to register your own MessageListeners this likely to introduce a memory leak. You should listen to the MessageEvent instead.
+     * If you'll use it to register your own MessageListeners this likely to introduce a memory leak. You should listen to the MessageEvent instead.
      */
     void registerMessagesListener(String userName, MessageListener listener);
 
@@ -84,7 +86,7 @@ public interface MessagesManager {
 
     /**
      * Returns a message.
-     *
+     * 
      * @param userName name of the user
      * @return list of messages kept for the user
      */
@@ -92,7 +94,7 @@ public interface MessagesManager {
 
     /**
      * Send message to a specific user.
-     *
+     * 
      * @param userName name of the user to receive the message
      * @param message message to send
      */
@@ -100,7 +102,7 @@ public interface MessagesManager {
 
     /**
      * Send message to a specific group.
-     *
+     * 
      * @param groupName name of the group to receive the message
      * @param message message to send
      */
@@ -108,21 +110,21 @@ public interface MessagesManager {
 
     /**
      * Send message to the current user.
-     *
+     * 
      * @param message message to send
      */
     void sendLocalMessage(Message message);
 
     /**
      * Sends a message to all users.
-     *
+     * 
      * @param message message to send
      */
     void broadcastMessage(Message message);
 
     /**
      * Marks a message as cleared.
-     *
+     * 
      * @param userName name of the user the message belongs to
      * @param messageId id of message
      */

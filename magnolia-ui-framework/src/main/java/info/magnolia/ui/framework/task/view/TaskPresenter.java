@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
+package info.magnolia.ui.framework.task.view;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import java.util.Map;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Definition used for building a view for messages.
+ * Presenter used to build a view for a {@link info.magnolia.ui.api.task.Task}. Can be retrieved using {@link info.magnolia.ui.framework.task.definition.TaskDefinition}.
  */
-@I18nable
-public interface MessageViewDefinition {
+public interface TaskPresenter {
 
-    String getId();
-
-    String getI18nBasename();
-
-    Map<String, ActionDefinition> getActions();
-
-    FormDefinition getForm();
-
-    ActionbarDefinition getActionbar();
+    View start();
 }

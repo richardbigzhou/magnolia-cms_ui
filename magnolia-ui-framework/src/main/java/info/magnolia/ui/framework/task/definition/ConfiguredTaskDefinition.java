@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.framework.task.definition;
 
-import info.magnolia.event.EventHandler;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.framework.task.view.TaskPresenter;
+
+import java.util.List;
 
 /**
- * Handler of {link {@link MessageEvent}.
+ * Configured {@link TaskDefinition}.
  */
-public interface MessageEventHandler extends EventHandler {
+public class ConfiguredTaskDefinition implements TaskDefinition {
 
-    void messageSent(MessageEvent event);
+    private List<ActionDefinition> actions;
+    private Class<? extends TaskPresenter> presenterClass;
 
-    void messageCleared(MessageEvent event);
+    @Override
+    public List<ActionDefinition> getActions() {
+        return actions;
+    }
 
-    void messageRemoved(MessageEvent messageEvent);
+    @Override
+    public Class<? extends TaskPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
+    public void setActions(List<ActionDefinition> actions) {
+        this.actions = actions;
+    }
+
+    public void setPresenterClass(Class<? extends TaskPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
 }

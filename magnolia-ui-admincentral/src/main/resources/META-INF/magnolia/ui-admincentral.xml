@@ -21,13 +21,13 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry</implementation>
     </component>
 
     <type-mapping>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredItemViewDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition</type>
@@ -80,20 +80,32 @@
       <implementation>info.magnolia.ui.actionbar.ActionbarViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksViewImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.usermenu.UserMenuView</type>
@@ -102,10 +114,6 @@
     <component>
       <type>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</type>
       <implementation>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
 
 

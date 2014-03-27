@@ -31,12 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
+
+import javax.inject.Inject;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.Component;
@@ -44,22 +46,20 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
-import javax.inject.Inject;
-
 /**
- * View implementation of {@link MessageView}.
+ * View implementation of {@link ItemView}.
  */
-public final class MessageViewImpl extends HorizontalLayout implements MessageView {
+public final class ItemViewImpl extends HorizontalLayout implements ItemView {
 
     private CssLayout messageContainer = new CssLayout();
     private CssLayout actionbarContainer = new CssLayout();
     private Label title = new Label();
-    private MessageView.Listener listener;
+    private ItemView.Listener listener;
     private View messageView;
     private final SimpleTranslator i18n;
 
     @Inject
-    public MessageViewImpl(SimpleTranslator i18n) {
+    public ItemViewImpl(SimpleTranslator i18n) {
         this.i18n = i18n;
         construct();
     }
@@ -88,7 +88,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     }
 
     @Override
-    public void setMessageView(View view) {
+    public void setItemView(View view) {
         if (messageView != null) {
             messageContainer.replaceComponent(messageView.asVaadinComponent(), view.asVaadinComponent());
         } else {
@@ -114,7 +114,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     }
 
     @Override
-    public void setListener(MessageView.Listener listener) {
+    public void setListener(ItemView.Listener listener) {
         this.listener = listener;
     }
 
@@ -124,7 +124,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
             setStyleName("back-button");
 
             Icon icon = new Icon("arrow2_w", 16);
-            Label label = new Label(i18n.translate("pulse.messages.back"));
+            Label label = new Label(i18n.translate("pulse.items.back"));
             label.setSizeUndefined();
             addComponent(icon);
             addComponent(label);

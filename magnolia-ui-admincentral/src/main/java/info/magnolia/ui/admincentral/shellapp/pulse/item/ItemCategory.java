@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
-
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 /**
- * Provides a message view definition.
- *
- * @see MessageViewDefinitionRegistry
+ * Enumeration for the category types.
  */
-public interface MessageViewDefinitionProvider {
-    String getId();
+public enum ItemCategory {
+    ALL("pulse.items.all"),
+    MESSAGES("pulse.items.messages"),
+    TASKS("pulse.items.tasks"),
+    PROBLEM("pulse.messages.problems"),
+    INFO("pulse.messages.info"),
+    PENDING("pulse.tasks.pending"),
+    ONGOING("pulse.tasks.ongoing"),
+    DONE("pulse.tasks.done");
 
-    MessageViewDefinition getMessageViewDefinition() throws RegistrationException;
+    private String key;
+
+    private ItemCategory(final String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
 }

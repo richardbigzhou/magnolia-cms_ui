@@ -31,71 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.definition;
 
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A definition of a configured message view.
+ * Definition used for building a view for pulse items.
  */
-public class ConfiguredMessageViewDefinition implements MessageViewDefinition {
+@I18nable
+public interface ItemViewDefinition {
 
-    private String id;
+    String getId();
 
-    private String i18nBasename;
+    String getI18nBasename();
 
-    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+    Map<String, ActionDefinition> getActions();
 
-    private FormDefinition form;
+    FormDefinition getForm();
 
-    private ActionbarDefinition actionbar;
-
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return this.i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    @Override
-    public Map<String, ActionDefinition> getActions() {
-        return actions;
-    }
-
-    public void setActions(Map<String, ActionDefinition> actions) {
-        this.actions = actions;
-    }
-    @Override
-    public FormDefinition getForm() {
-        return form;
-    }
-
-    public void setForm(FormDefinition form) {
-        this.form = form;
-    }
-
-    @Override
-    public ActionbarDefinition getActionbar() {
-        return actionbar;
-    }
-
-    public void setActionbar(ActionbarDefinition actionbar) {
-        this.actionbar = actionbar;
-    }
+    ActionbarDefinition getActionbar();
 }

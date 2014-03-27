@@ -49,8 +49,9 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryTab;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.ItemCategoryTab;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,7 +61,7 @@ import org.junit.Test;
  * PulseMessageCategoryNavigatorTest.
  */
 public class PulseMessageCategoryNavigatorTest {
-    private PulseMessageCategoryNavigator categoryNavigator;
+    private PulseItemCategoryNavigator categoryNavigator;
     private SystemContext sysCtx;
     private Context ctx;
     private SimpleTranslator i18n;
@@ -82,7 +83,7 @@ public class PulseMessageCategoryNavigatorTest {
 
         i18n = mock(SimpleTranslator.class);
         when(i18n.translate("pulse.messages.problems")).thenReturn("Problems");
-        categoryNavigator = new PulseMessageCategoryNavigator(i18n);
+        categoryNavigator = new PulseItemCategoryNavigator(i18n);
     }
 
     @After
@@ -94,7 +95,7 @@ public class PulseMessageCategoryNavigatorTest {
     @Test
     public void categoryLabelWithCurrentLocaleAsEnglish() throws Exception {
         // WHEN
-        MessageCategoryTab tab = categoryNavigator.new MessageCategoryTab(MessageCategory.PROBLEM);
+        ItemCategoryTab tab = categoryNavigator.new ItemCategoryTab(ItemCategory.PROBLEM);
         // THEN
         assertEquals("Problems", tab.getLabel());
     }

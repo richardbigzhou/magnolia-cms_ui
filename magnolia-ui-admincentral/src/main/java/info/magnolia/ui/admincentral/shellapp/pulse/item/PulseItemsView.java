@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.activity;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.view.View;
+
+import java.util.Collection;
+import java.util.Set;
+
+import com.vaadin.data.Container;
 
 /**
- * An entry in the activity stream for a user.
+ * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
  */
-public class ActivityStreamEntry {
+public interface PulseItemsView extends View {
 
-    private String id;
-    private long timestamp;
-    private MessageType type;
-    private String label;
-    private String message;
+    static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
+
+    void setDataSource(Container dataSource);
+
+    void setListener(Listener listener);
+
+    void refresh();
+
+    void updateCategoryBadgeCount(ItemCategory type, int count);
+
+    /**
+     * Listener interface to call back to {@link PulseItemsPresenter}.
+     */
+    public interface Listener {
+
+        void filterByItemCategory(ItemCategory category);
+
+        void onItemClicked(String itemId);
+
+        Object getParent(Object child);
+
+        Collection<?> getGroup(Object parent);
+
+        void setGrouping(boolean checked);
+
+        void deleteItems(Set<String> itemsIds);
+    }
+
 }

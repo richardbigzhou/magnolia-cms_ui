@@ -43,16 +43,25 @@ public class MessageEvent implements Event<MessageEventHandler> {
 
     private Message message;
     private boolean cleared;
+    private String id;
+    private boolean removed;
 
     public MessageEvent(Message message, boolean cleared) {
         this.message = message;
         this.cleared = cleared;
     }
 
+    public MessageEvent(String id, boolean removed) {
+        this.id = id;
+        this.removed = removed;
+    }
+
     @Override
     public void dispatch(MessageEventHandler handler) {
         if (cleared) {
             handler.messageCleared(this);
+        } else if (removed) {
+            handler.messageRemoved(this);
         } else {
             handler.messageSent(this);
         }
@@ -65,4 +74,13 @@ public class MessageEvent implements Event<MessageEventHandler> {
     public boolean isCleared() {
         return cleared;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
 }

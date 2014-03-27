@@ -46,7 +46,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
@@ -76,7 +76,7 @@ public class PulseMessagesViewImplTest {
 
         when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
 
-        ComponentsTestUtil.setImplementation(MessageCategory.class, MessageCategory.class);
+        ComponentsTestUtil.setImplementation(ItemCategory.class, ItemCategory.class);
     }
 
     @After

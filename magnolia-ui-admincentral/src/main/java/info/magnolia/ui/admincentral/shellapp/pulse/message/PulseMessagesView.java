@@ -33,44 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
-
-import java.util.Collection;
-import java.util.Set;
-
-import com.vaadin.data.Container;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
 
 /**
  * Messages Pulse tab UI.
  */
-public interface PulseMessagesView extends PulseSubView {
-
-    void setDataSource(Container dataSource);
-
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void updateCategoryBadgeCount(MessageCategory type, int count);
-
-    /**
-     * Listener interface to call back to {@link PulseMessagesPresenter}.
-     */
-    public interface Listener{
-
-        void filterByMessageCategory(PulseMessageCategoryNavigator.MessageCategory category);
-
-        void onMessageClicked(String itemId);
-
-        Object getParent(Object child);
-
-        Collection<?> getGroup(Object parent);
-
-        void setGrouping(boolean checked);
-
-        void deleteMessages(Set<String> messageIds);
-    }
-
+public interface PulseMessagesView extends PulseItemsView {
 
 }

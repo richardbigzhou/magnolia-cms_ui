@@ -248,6 +248,11 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     }
 
     @Override
+    public void messageRemoved(MessageEvent messageEvent) {
+        // no op
+    }
+
+    @Override
     public void registerApps(List<String> appNames) {
         magnoliaShell.doRegisterApps(appNames);
     }
@@ -349,5 +354,4 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     public void exitFullScreenMode() {
         setFullScreen(false);
     }
-
 }

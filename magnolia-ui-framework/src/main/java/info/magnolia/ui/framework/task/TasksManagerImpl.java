@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.dashboard;
+package info.magnolia.ui.framework.task;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+import info.magnolia.ui.api.task.Task;
 
-import com.vaadin.ui.HasComponents;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Dashboard Pulse tab UI.
+ * Default implementation of {@link TasksManager}.
  */
-public interface PulseDashboardView extends PulseSubView {
+public class TasksManagerImpl implements TasksManager {
+
+    Map<Long, Task> tasks = new HashMap<Long, Task>();
 
     @Override
-    public HasComponents asVaadinComponent();
+    public void claim(long taskId, String userId) {
+        tasks.get(taskId).setStatus(Task.Status.Reserved);
+        // persist
+        // event for ui, possibly not part of spike
+    }
+
+    @Override
+    public void addTask(Task task) {
+        task.setStatus(Task.Status.Created);
+        long id = tasks.size();
+        tasks.put(id, task);
+    }
 }

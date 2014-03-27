@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.framework.task.definition;
 
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.framework.task.view.TaskPresenter;
 
-import com.vaadin.ui.HasComponents;
+import java.util.List;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Definition used for defining actions used for executing {@link info.magnolia.ui.api.task.Task}'s.
  */
-public interface PulseSubView extends View {
+public interface TaskDefinition {
 
-    @Override
-    HasComponents asVaadinComponent();
+    List<ActionDefinition> getActions();
+
+    Class<? extends TaskPresenter> getPresenterClass();
 }

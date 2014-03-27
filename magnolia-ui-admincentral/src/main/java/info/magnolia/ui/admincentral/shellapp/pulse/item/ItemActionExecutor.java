@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.activity;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import java.util.List;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import javax.inject.Inject;
 
 /**
- * Manager for the users activity streams.
- *
- * need persistence
- *
- * need to clean up old entries
- *
- * can you post to more than one user? all? by group?
+ * ItemActionExecutor.
  */
-public interface ActivityStreamManager {
+public final class ItemActionExecutor extends AbstractActionExecutor {
 
-    /**
-     * Returns the activity stream for a user, entries sorted most recent first.
-     */
-    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
+    private ItemViewDefinition itemViewDefinition;
 
-    /**
-     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
-     * already in the instance is ignored.
-     */
-    void postEntry(String userId, ActivityStreamEntry entry);
+    @Inject
+    public ItemActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        return itemViewDefinition.getActions().get(actionName);
+    }
+
+    public void setMessageViewDefinition(ItemViewDefinition itemViewDefinition) {
+        this.itemViewDefinition = itemViewDefinition;
+    }
 }
