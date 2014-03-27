@@ -50,6 +50,7 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -78,6 +79,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private I18nContentSupport i18nContentSupport;
 
+    private ContentConnector contentConnector;
+
     private Object itemId;
 
     private ChooseDialogCallback callback;
@@ -92,9 +95,11 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             DialogActionExecutor executor,
             ChooseDialogView view,
             I18nizer i18nizer,
-            SimpleTranslator i18n) {
+            SimpleTranslator i18n,
+            ContentConnector contentConnector) {
         super(componentProvider, executor, view, i18nizer, i18n);
         this.fieldFactoryFactory = fieldFactoryFactory;
+        this.contentConnector = contentConnector;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
     }
@@ -160,7 +165,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     public Object[] getActionParameters(String actionName) {
         Set<Object> selected = new HashSet<Object>();
         selected.add(itemId != null ? itemId : new Object());
-        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
+        Item item = contentConnector.getItem(itemId);
+        return new Object[] { actionName, item == null ? new NullItem() : item, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
     }
 
     @Override
