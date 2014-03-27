@@ -78,4 +78,16 @@ public class LocalMessageDispatcher implements MessageListener {
             VaadinSession.setCurrent(previous);
         }
     }
+
+    @Override
+    public void messageRemoved(String id) {
+        VaadinSession previous = VaadinSession.getCurrent();
+        try {
+            VaadinSession.setCurrent(vaadinSession);
+            eventBus.fireEvent(new MessageEvent(id, true));
+        } finally {
+            VaadinSession.setCurrent(previous);
+        }
+
+    }
 }

@@ -31,11 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
 
 import java.util.List;
 import java.util.Set;
@@ -43,35 +43,34 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 /**
- * Maintains a registry of message view providers registered by id.
- * @see ConfiguredMessageViewDefinitionManager
+ * Maintains a registry of item view providers registered by id.
  */
 @Singleton
-public class MessageViewDefinitionRegistry {
+public class ItemViewDefinitionRegistry {
 
-    private final RegistryMap<String, MessageViewDefinitionProvider> registry = new RegistryMap<String, MessageViewDefinitionProvider>() {
+    private final RegistryMap<String, ItemViewDefinitionProvider> registry = new RegistryMap<String, ItemViewDefinitionProvider>() {
 
         @Override
-        protected String keyFromValue(MessageViewDefinitionProvider value) {
+        protected String keyFromValue(ItemViewDefinitionProvider value) {
             return value.getId();
         }
     };
 
-    public MessageViewDefinition get(String id) throws RegistrationException {
-        MessageViewDefinitionProvider provider;
+    public ItemViewDefinition get(String id) throws RegistrationException {
+        ItemViewDefinitionProvider provider;
         try {
             provider = registry.getRequired(id);
         } catch (RegistrationException e) {
-            throw new RegistrationException("No message view definition registered for id: " + id, e);
+            throw new RegistrationException("No item view definition registered for id: " + id, e);
         }
-        return provider.getMessageViewDefinition();
+        return provider.getItemViewDefinition();
     }
 
-    public void register(MessageViewDefinitionProvider provider) {
+    public void register(ItemViewDefinitionProvider provider) {
         registry.put(provider);
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<MessageViewDefinitionProvider> providers) {
+    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<ItemViewDefinitionProvider> providers) {
         return registry.removeAndPutAll(registeredIds, providers);
     }
 }

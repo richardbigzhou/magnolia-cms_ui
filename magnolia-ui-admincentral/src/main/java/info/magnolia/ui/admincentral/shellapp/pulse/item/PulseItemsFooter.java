@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
+
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
@@ -54,18 +56,18 @@ import com.vaadin.ui.TreeTable;
 /**
  * PulseMessagesFooter.
  */
-public final class PulseMessagesFooter extends CustomComponent {
+public final class PulseItemsFooter extends CustomComponent {
 
     private HorizontalLayout footer;
     private NativeButton actionPopupTrigger;
-    private TreeTable messageTable;
+    private TreeTable itemsTable;
     private Label status;
-    private PulseMessagesView.Listener listener;
+    private PulseItemsView.Listener listener;
     private final SimpleTranslator i18n;
 
-    public PulseMessagesFooter(final TreeTable messageTable, SimpleTranslator i18n) {
+    public PulseItemsFooter(final TreeTable itemsTable, SimpleTranslator i18n) {
         super();
-        this.messageTable = messageTable;
+        this.itemsTable = itemsTable;
         this.i18n = i18n;
         construct();
         setCompositionRoot(footer);
@@ -94,12 +96,12 @@ public final class PulseMessagesFooter extends CustomComponent {
 
             @Override
             public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-                final Set<String> selectedItems = (Set<String>) messageTable.getValue();
+                final Set<String> selectedItems = (Set<String>) itemsTable.getValue();
                 if (selectedItems == null || selectedItems.isEmpty()) {
                     // nothing to do here
                     return;
                 }
-                listener.deleteMessages(selectedItems);
+                listener.deleteItems(selectedItems);
             }
         });
 
@@ -124,16 +126,16 @@ public final class PulseMessagesFooter extends CustomComponent {
         int totalMessages = 0;
         int totalSelected = 0;
 
-        for (Object id : messageTable.getItemIds()) {
+        for (Object id : itemsTable.getItemIds()) {
             // skip generated header rows when grouping messages
-            if (((String) id).startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (((String) id).startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 continue;
             }
             totalMessages++;
         }
-        for (String id : (Set<String>) messageTable.getValue()) {
+        for (String id : (Set<String>) itemsTable.getValue()) {
             // skip generated header rows when grouping messages
-            if (id.startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (id.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 continue;
             }
             totalSelected++;
@@ -143,7 +145,7 @@ public final class PulseMessagesFooter extends CustomComponent {
         status.setValue(i18n.translate("pulse.footer.status", totalMessagesAsString, selectedMessagesAsString));
     }
 
-    public void setListener(final PulseMessagesView.Listener listener) {
+    public void setListener(final PulseItemsView.Listener listener) {
         this.listener = listener;
     }
 

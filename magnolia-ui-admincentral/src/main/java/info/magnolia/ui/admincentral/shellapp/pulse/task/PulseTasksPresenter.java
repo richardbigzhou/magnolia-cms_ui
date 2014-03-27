@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.task.Task;
+import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.message.MessageEvent;
-import info.magnolia.ui.framework.message.MessageEventHandler;
-import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
+import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
@@ -55,30 +55,28 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
 /**
- * Presenter of {@link PulseMessagesView}.
+ * Presenter of {@link PulseTasksView}.
  */
-public final class PulseMessagesPresenter implements PulseMessagesView.Listener, MessageEventHandler {
+public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     public static final String NEW_PROPERTY_ID = "new";
-    public static final String TYPE_PROPERTY_ID = "type";
-    public static final String SUBJECT_PROPERTY_ID = "subject";
-    public static final String TEXT_PROPERTY_ID = "text";
+    public static final String TASK_PROPERTY_ID = "task";
+    public static final String STATUS_PROPERTY_ID = "status";
     public static final String SENDER_PROPERTY_ID = "sender";
     public static final String DATE_PROPERTY_ID = "date";
-    public static final String QUICKDO_PROPERTY_ID = "quickdo";
+    public static final String SENT_TO_PROPERTY_ID = "sentTo";
+    public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
 
-    private final PulseMessagesView view;
+    private final PulseItemsView view;
 
     private HierarchicalContainer container;
 
-    private final MessagesManager messagesManager;
+    private final TasksManager tasksManager;
 
     private final ShellImpl shell;
 
@@ -86,11 +84,17 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
     private Listener listener;
 
     @Inject
-    public PulseMessagesPresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
+    public PulseTasksPresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseTasksView view, final ShellImpl shellImpl, final TasksManager tasksManager) {
         this.view = view;
         this.shell = shellImpl;
-        this.messagesManager = messagesManager;
-        admincentralEventBus.addHandler(MessageEvent.class, this);
+        this.tasksManager = tasksManager;
+        // admincentralEventBus.addHandler(MessageEvent.class, this);
+
+        /*
+         * shell.setIndication(
+         * ShellAppType.PULSE,
+         * tasksManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+         */
     }
 
     public View start() {
@@ -103,8 +107,8 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         container = createMessageDataSource();
         view.setDataSource(container);
         view.refresh();
-        for (MessageType type : MessageType.values()) {
-            doUnreadMessagesUpdate(type, 0);
+        for (Status status : Status.values()) {
+            doTasksStatusUpdate(status, 0);
         }
     }
 
@@ -112,42 +116,23 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         this.listener = listener;
     }
 
-    @Override
-    public void messageSent(MessageEvent event) {
-        final Message message = event.getMessage();
-        addMessageAsItem(message);
-
-        if (grouping) {
-            buildTree();
-        }
-        final MessageType type = message.getType();
-        doUnreadMessagesUpdate(type, 1);
-    }
-
-    @Override
-    public void messageCleared(MessageEvent event) {
-        final Message message = event.getMessage();
-        assignPropertiesFromMessage(message, container.getItem(message.getId()));
-
-        final MessageType type = message.getType();
-        doUnreadMessagesUpdate(type, -1);
-    }
-
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
         container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
-        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
-        container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(TASK_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(STATUS_PROPERTY_ID, String.class, null);
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(SENT_TO_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(ASSIGNED_TO_PROPERTY_ID, String.class, null);
         container.addContainerProperty(DATE_PROPERTY_ID, Date.class, null);
-        container.addContainerProperty(QUICKDO_PROPERTY_ID, String.class, null);
 
         createSuperItems();
 
-        for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
-            addMessageAsItem(message);
-        }
+        /*
+         * for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
+         * addMessageAsItem(message);
+         * }
+         */
 
         container.addContainerFilter(sectionFilter);
 
@@ -155,12 +140,15 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
     }
 
     private void createSuperItems() {
-        for (MessageType type : MessageType.values()) {
-            Object itemId = getSuperItem(type);
-            Item item = container.addItem(itemId);
-            item.getItemProperty(TYPE_PROPERTY_ID).setValue(type);
-            container.setChildrenAllowed(itemId, true);
-        }
+        // TODO iterate over task status
+        /*
+         * for (MessageType type : MessageType.values()) {
+         * Object itemId = getSuperItem(type);
+         * Item item = container.addItem(itemId);
+         * item.getItemProperty(STATUS_PROPERTY_ID).setValue(type);
+         * container.setChildrenAllowed(itemId, true);
+         * }
+         */
     }
 
     private void clearSuperItemFromMessages() {
@@ -225,7 +213,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
 
         @Override
         public boolean appliesToProperty(Object propertyId) {
-            return TYPE_PROPERTY_ID.equals(propertyId);
+            return STATUS_PROPERTY_ID.equals(propertyId);
         }
 
         private boolean isTypeGroupEmpty(Object typeId) {
@@ -243,7 +231,8 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
             // Skip super items
             if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = container.getItem(itemId);
-                MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
+                // TODO assign to status type
+                MessageType type = (MessageType) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
                 Object parentItemId = getSuperItem(type);
                 Item parentItem = container.getItem(parentItemId);
                 if (parentItem != null) {
@@ -253,23 +242,17 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         }
     }
 
-    private void addMessageAsItem(Message message) {
+    private void addTaskAsItem(Task task) {
         // filter out local messages that have id == null
-        if (message.getId() != null) {
-            final Item item = container.addItem(message.getId());
-            container.setChildrenAllowed(message.getId(), false);
-            assignPropertiesFromMessage(message, item);
-        }
+
+        final Item item = container.addItem(task.getId());
+        container.setChildrenAllowed(task.getId(), false);
+        assignPropertiesFromTask(task, item);
     }
 
-    private void assignPropertiesFromMessage(Message message, final Item item) {
-        if (item != null && message != null) {
-            item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
-            item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
-            item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
-            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getSubject(), 55));
-            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 75));
-            item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
+    private void assignPropertiesFromTask(Task task, final Item item) {
+        if (item != null && task != null) {
+
         }
     }
 
@@ -287,13 +270,10 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
 
             @Override
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-                final MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
+                final MessageType type = (MessageType) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
 
+                System.out.println("TODO filter tasks...");
                 switch (category) {
-                case PROBLEM:
-                    return type == MessageType.ERROR || type == MessageType.WARNING;
-                case INFO:
-                    return type == MessageType.INFO;
                 default:
                     return true;
                 }
@@ -301,7 +281,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
 
             @Override
             public boolean appliesToProperty(Object propertyId) {
-                return TYPE_PROPERTY_ID.equals(propertyId);
+                return STATUS_PROPERTY_ID.equals(propertyId);
             }
 
         };
@@ -309,51 +289,36 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
     }
 
     @Override
-    public void onItemClicked(String messageId) {
-        listener.openMessage(messageId);
-        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    public void onItemClicked(String itemId) {
+        listener.openMessage(itemId);
+        // messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
     @Override
-    public void deleteItems(final Set<String> messageIds) {
-        if (messageIds == null || messageIds.isEmpty()) {
+    public void deleteItems(final Set<String> itemIds) {
+        if (itemIds == null || itemIds.isEmpty()) {
             return;
         }
         final String userName = MgnlContext.getUser().getName();
-        int deletedMessages = 0;
-        for (String messageId : messageIds) {
-            Message message = messagesManager.getMessageById(userName, messageId);
-            if (message == null) {
-                continue;
-            }
-            messagesManager.removeMessage(userName, messageId);
-            if (!message.isCleared()) {
-                deletedMessages++;
-            }
-        }
-        shell.updateShellAppIndication(ShellAppType.PULSE, -deletedMessages);
+        int messagesDeleted = 0;
+
+        System.out.println("TODO deleting tasks...");
+        shell.updateShellAppIndication(ShellAppType.PULSE, -messagesDeleted);
+        /*
+         * Refreshes the view to display the updated underlying data.
+         */
+        initView();
     }
 
-    private void doUnreadMessagesUpdate(final MessageType type, int decrementOrIncrement) {
+    private void doTasksStatusUpdate(final Task.Status status, int decrementOrIncrement) {
 
         shell.updateShellAppIndication(ShellAppType.PULSE, decrementOrIncrement);
 
         int count = 0;
         final String userName = MgnlContext.getUser().getName();
 
-        switch (type) {
+        System.out.println("TODO update tasks...");
 
-        case ERROR:
-        case WARNING:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
-            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.WARNING);
-            view.updateCategoryBadgeCount(ItemCategory.PROBLEM, count);
-            break;
-        case INFO:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
-            view.updateCategoryBadgeCount(ItemCategory.INFO, count);
-            break;
-        }
     }
 
     /**
@@ -363,15 +328,8 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         public void openMessage(String messageId);
     }
 
-    public int getNumberOfUnclearedMessagesForCurrentUser() {
-        return messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName());
-    }
-
-    @Override
-    public void messageRemoved(MessageEvent messageEvent) {
-        /*
-         * Refreshes the view to display the updated underlying data.
-         */
-        initView();
+    public int getNumberOfPendingTasksForCurrentUser() {
+        // TODO implement
+        return 0;
     }
 }

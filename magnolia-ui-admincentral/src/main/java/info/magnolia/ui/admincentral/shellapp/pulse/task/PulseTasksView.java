@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import info.magnolia.event.EventHandler;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
 
 /**
- * Handler of {link {@link MessageEvent}.
+ * Tasks Pulse tab UI.
  */
-public interface MessageEventHandler extends EventHandler {
+public interface PulseTasksView extends PulseItemsView {
 
-    void messageSent(MessageEvent event);
-
-    void messageCleared(MessageEvent event);
-
-    void messageRemoved(MessageEvent messageEvent);
 }

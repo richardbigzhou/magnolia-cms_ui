@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.CategoryChangedEvent;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.ItemCategoryChangedListener;
 import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
@@ -48,27 +53,51 @@ public final class PulseViewImpl implements PulseView {
 
     private final CssLayout layout = new CssLayout();
 
-    private View pulseView;
+    private final PulseItemCategoryNavigator navigator;
+
+    private Listener listener;
 
     @Inject
-    public PulseViewImpl() {
+    public PulseViewImpl(final SimpleTranslator i18n) {
         layout.addStyleName("v-pulse");
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
+        navigator = new PulseItemCategoryNavigator(i18n, false, ItemCategory.MESSAGES, ItemCategory.TASKS);
+        navigator.showGroupByType(false);
+        navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
+
+            @Override
+            public void itemCategoryChanged(CategoryChangedEvent event) {
+                final ItemCategory category = event.getCategory();
+                listener.onCategoryChange(category);
+            }
+        });
+        layout.addComponentAsFirst(navigator);
     }
 
     @Override
-    public void setPulseView(View view) {
-        if (pulseView != null) {
-            layout.removeComponent(pulseView.asVaadinComponent());
+    public void setPulseSubView(View view) {
+        if (layout.getComponentCount() == 2) {
+            Component oldView = layout.getComponent(1);
+            layout.removeComponent(oldView);
         }
-        this.pulseView = view;
-        layout.addComponent(view.asVaadinComponent());
+        layout.addComponent(view.asVaadinComponent(), 1);
     }
 
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void updateCategoryBadgeCount(ItemCategory category, int count) {
+        navigator.updateCategoryBadgeCount(category, count);
+
     }
 
 }

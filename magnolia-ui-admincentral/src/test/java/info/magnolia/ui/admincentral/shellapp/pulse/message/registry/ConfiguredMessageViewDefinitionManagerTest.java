@@ -54,8 +54,9 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredItemViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -86,7 +87,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
 
     private Session session;
     private ModuleRegistry moduleRegistry;
-    private MessageViewDefinitionRegistry messageViewRegistry;
+    private ItemViewDefinitionRegistry messageViewRegistry;
 
 
     @Before
@@ -96,13 +97,13 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
-        ComponentsTestUtil.setImplementation(MessageViewDefinition.class, ConfiguredMessageViewDefinition.class);
+        ComponentsTestUtil.setImplementation(ItemViewDefinition.class, ConfiguredItemViewDefinition.class);
         ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);
         ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
         ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-                A_MESSAGE_VIEW_PATH + ".class=" + ConfiguredMessageViewDefinition.class.getName(),
+                A_MESSAGE_VIEW_PATH + ".class=" + ConfiguredItemViewDefinition.class.getName(),
                 A_MESSAGE_VIEW_PATH + "/form/tabs/taba",
                 A_MESSAGE_VIEW_PATH + "/form/tabs/taba.label=labelA",
                 B_MESSAGE_VIEW_PATH + "/actions/actionb",
@@ -118,7 +119,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         moduleRegistry = mock(ModuleRegistry.class);
         when(moduleRegistry.getModuleNames()).thenReturn(moduleNames);
 
-        messageViewRegistry = new MessageViewDefinitionRegistry();
+        messageViewRegistry = new ItemViewDefinitionRegistry();
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl();
@@ -135,11 +136,11 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         messageViewManager.start();
 
         // THEN
-        MessageViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
+        ItemViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
         assertNotNull(aMessageView);
         assertEquals("labelA", aMessageView.getForm().getTabs().get(0).getLabel());
 
-        MessageViewDefinition bMessageView = messageViewRegistry.get("bModule:bMessageView");
+        ItemViewDefinition bMessageView = messageViewRegistry.get("bModule:bMessageView");
         assertNotNull(bMessageView);
         assertEquals("labelB", bMessageView.getActions().get("actionb").getLabel());
 
@@ -168,7 +169,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
 
         // THEN
         // Make sure messageView a is there.
-        MessageViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
+        ItemViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
         assertNotNull(aMessageView);
 
         // WHEN
@@ -194,7 +195,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
 
         // THEN
         // Make sure messageView a is there.
-        MessageViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
+        ItemViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
         assertNotNull(aMessageView);
 
         // WHEN

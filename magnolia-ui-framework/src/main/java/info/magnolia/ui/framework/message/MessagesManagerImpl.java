@@ -173,6 +173,7 @@ public class MessagesManagerImpl implements MessagesManager {
     @Override
     public void removeMessage(String userName, String messageId) {
         messageStore.removeMessageById(userName, messageId);
+        sendMessageRemovedEvent(userName, messageId);
     }
 
     @Override
@@ -186,6 +187,17 @@ public class MessagesManagerImpl implements MessagesManager {
             if (listenerList != null) {
                 for (final MessageListener listener : listenerList) {
                     listener.messageCleared(message);
+                }
+            }
+        }
+    }
+
+    private void sendMessageRemovedEvent(String userName, String id) {
+        synchronized (listeners) {
+            final List<MessageListener> listenerList = listeners.get(userName);
+            if (listenerList != null) {
+                for (final MessageListener listener : listenerList) {
+                    listener.messageRemoved(id);
                 }
             }
         }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 
@@ -49,35 +49,40 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
- * Message category navigation component in Pulse.
+ * Generic item category navigation component in Pulse. An item can be e.g. a Task, a Message, etc.
  */
-public final class PulseMessageCategoryNavigator extends CssLayout {
+public final class PulseItemCategoryNavigator extends CssLayout {
 
     private CheckBox groupByTypeCheckBox;
 
-    private Map<MessageCategory, MessageCategoryTab> messageCategoryTabs = new HashMap<MessageCategory, MessageCategoryTab>();
+    private Map<ItemCategory, ItemCategoryTab> itemCategoryTabs = new HashMap<ItemCategory, ItemCategoryTab>();
 
     private final SimpleTranslator i18n;
 
-    public PulseMessageCategoryNavigator(SimpleTranslator i18n) {
+    public PulseItemCategoryNavigator(SimpleTranslator i18n, ItemCategory... categories) {
         super();
         this.i18n = i18n;
         setStyleName("navigator");
-        construct();
+        construct(categories);
     }
 
-    private void construct() {
+    public PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupByType, ItemCategory... categories) {
+        this(i18n, categories);
+        showGroupByType(showGroupByType);
+    }
+
+    private void construct(ItemCategory... categories) {
         setSizeUndefined();
-        for (final MessageCategory category : MessageCategory.values()) {
-            MessageCategoryTab tab = new MessageCategoryTab(category);
-            if (category == MessageCategory.ALL) {
+        for (final ItemCategory category : categories) {
+            ItemCategoryTab tab = new ItemCategoryTab(category);
+            if (category == ItemCategory.ALL) {
                 tab.setActive(true);
             }
-            messageCategoryTabs.put(category, tab);
+            itemCategoryTabs.put(category, tab);
             addComponent(tab);
         }
 
-        groupByTypeCheckBox = new CheckBox(i18n.translate("pulse.messages.groupby"));
+        groupByTypeCheckBox = new CheckBox(i18n.translate("pulse.items.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
@@ -93,70 +98,50 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     /**
-     * Enumeration for the category types.
-     */
-    public enum MessageCategory {
-        ALL("pulse.messages.all"),
-        WORK_ITEM("pulse.messages.workitems"),
-        PROBLEM("pulse.messages.problems"),
-        INFO("pulse.messages.info");
-
-        private String key;
-
-        private MessageCategory(final String key) {
-            this.key = key;
-        }
-
-        public String getKey() {
-            return key;
-        }
-    }
-
-    /**
      * Category changed event.
      */
     public static class CategoryChangedEvent extends Component.Event {
 
-        public static final java.lang.reflect.Method MESSAGE_CATEGORY_CHANGED;
+        public static final java.lang.reflect.Method ITEM_CATEGORY_CHANGED;
 
         static {
             try {
-                MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged", new Class[] { CategoryChangedEvent.class });
+                ITEM_CATEGORY_CHANGED = ItemCategoryChangedListener.class.getDeclaredMethod("itemCategoryChanged", new Class[] { CategoryChangedEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
         }
 
-        private final MessageCategory category;
+        private final ItemCategory category;
 
-        public CategoryChangedEvent(Component source, MessageCategory category) {
+        public CategoryChangedEvent(Component source, ItemCategory category) {
             super(source);
             this.category = category;
         }
 
-        public MessageCategory getCategory() {
+        public ItemCategory getCategory() {
             return category;
         }
     }
 
     /**
-     * MessageCategoryChangedListener.
+     * ItemCategoryChangedListener.
      */
-    public interface MessageCategoryChangedListener {
+    public interface ItemCategoryChangedListener {
 
-        public void messageCategoryChanged(final CategoryChangedEvent event);
+        public void itemCategoryChanged(final CategoryChangedEvent event);
     }
 
-    public void addCategoryChangeListener(final MessageCategoryChangedListener listener) {
-        addListener("category_changed", CategoryChangedEvent.class, listener, CategoryChangedEvent.MESSAGE_CATEGORY_CHANGED);
+    public void addCategoryChangeListener(final ItemCategoryChangedListener listener) {
+        addListener("category_changed", CategoryChangedEvent.class, listener, CategoryChangedEvent.ITEM_CATEGORY_CHANGED);
     }
 
-    private void fireCategoryChangedEvent(MessageCategory category) {
+    private void fireCategoryChangedEvent(ItemCategory category) {
         Iterator<Component> iterator = iterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
-            if (component instanceof MessageCategoryTab) {
-                MessageCategoryTab button = (MessageCategoryTab) component;
+            if (component instanceof ItemCategoryTab) {
+                ItemCategoryTab button = (ItemCategoryTab) component;
                 button.setActive(button.category == category);
             }
         }
@@ -164,15 +149,15 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     /**
-     * Message category button.
+     * Item category button.
      */
-    public class MessageCategoryTab extends HorizontalLayout {
+    public class ItemCategoryTab extends HorizontalLayout {
 
-        private final MessageCategory category;
+        private final ItemCategory category;
         private final Label categoryLabel;
         private final Label badge;
 
-        public MessageCategoryTab(MessageCategory category) {
+        public ItemCategoryTab(ItemCategory category) {
             super();
             this.category = category;
             this.addStyleName("navigator-tab");
@@ -191,7 +176,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
 
                 @Override
                 public void layoutClick(LayoutClickEvent event) {
-                    fireCategoryChangedEvent(MessageCategoryTab.this.category);
+                    fireCategoryChangedEvent(ItemCategoryTab.this.category);
                 }
             });
 
@@ -205,7 +190,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             }
         }
 
-        public void updateMessagesCount(int count) {
+        public void updateItemsCount(int count) {
             if (count <= 0) {
                 badge.setVisible(false);
             } else {
@@ -223,7 +208,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
         }
     }
 
-    public void updateCategoryBadgeCount(MessageCategory category, int count) {
-        messageCategoryTabs.get(category).updateMessagesCount(count);
+    public void updateCategoryBadgeCount(ItemCategory category, int count) {
+        itemCategoryTabs.get(category).updateItemsCount(count);
     }
 }

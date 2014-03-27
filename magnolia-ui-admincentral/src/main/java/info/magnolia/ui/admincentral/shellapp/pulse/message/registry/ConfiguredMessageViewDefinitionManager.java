@@ -39,6 +39,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,18 +65,18 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Set<String> registeredIds = new HashSet<String>();
-    private final MessageViewDefinitionRegistry messageViewDefinitionRegistry;
+    private final ItemViewDefinitionRegistry itemViewDefinitionRegistry;
 
     @Inject
-    public ConfiguredMessageViewDefinitionManager(ModuleRegistry moduleRegistry, MessageViewDefinitionRegistry messageViewDefinitionRegistry) {
+    public ConfiguredMessageViewDefinitionManager(ModuleRegistry moduleRegistry, ItemViewDefinitionRegistry itemViewDefinitionRegistry) {
         super(MESSAGE_VIEW_CONFIG_NODE_NAME, moduleRegistry);
-        this.messageViewDefinitionRegistry = messageViewDefinitionRegistry;
+        this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
     }
 
     @Override
     protected void reload(List<Node> nodes) throws RepositoryException {
 
-        final List<MessageViewDefinitionProvider> providers = new ArrayList<MessageViewDefinitionProvider>();
+        final List<ItemViewDefinitionProvider> providers = new ArrayList<ItemViewDefinitionProvider>();
 
         for (Node node : nodes) {
 
@@ -85,7 +87,7 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
                     for (Node messageViewNode : NodeUtil.getNodes(current, NodeTypes.ContentNode.NAME)) {
                         // Handle as messageView only if it has sub nodes indicating that it is actually representing a messageView.
                         // This will filter the fields in messageViews used by the extends mechanism.
-                        MessageViewDefinitionProvider provider = createProvider(messageViewNode);
+                        ItemViewDefinitionProvider provider = createProvider(messageViewNode);
                         if (provider != null) {
                             providers.add(provider);
                         }
@@ -95,10 +97,10 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
         }
 
-        this.registeredIds = messageViewDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
+        this.registeredIds = itemViewDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
     }
 
-    protected MessageViewDefinitionProvider createProvider(Node messageViewNode) throws RepositoryException {
+    protected ItemViewDefinitionProvider createProvider(Node messageViewNode) throws RepositoryException {
 
         final String id = createId(messageViewNode);
 

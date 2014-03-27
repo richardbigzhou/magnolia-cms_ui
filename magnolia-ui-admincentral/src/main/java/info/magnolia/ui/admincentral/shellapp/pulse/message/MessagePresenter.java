@@ -37,9 +37,10 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.view.View;
@@ -54,12 +55,12 @@ import org.apache.commons.lang.StringUtils;
 /**
  * The message detail presenter.
  */
-public final class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
+public final class MessagePresenter implements ItemView.Listener, ActionbarPresenter.Listener {
 
-    private final MessageView view;
+    private final ItemView view;
     private MessagesManager messagesManager;
-    private MessageActionExecutor messageActionExecutor;
-    private MessageViewDefinitionRegistry messageViewDefinitionRegistry;
+    private ItemActionExecutor itemActionExecutor;
+    private ItemViewDefinitionRegistry itemViewDefinitionRegistry;
     private FormBuilder formbuilder;
     private ActionbarPresenter actionbarPresenter;
     private Listener listener;
@@ -67,11 +68,11 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
     private I18nizer i18nizer;
 
     @Inject
-    public MessagePresenter(MessageView view, MessagesManager messagesManager, MessageActionExecutor messageActionExecutor, MessageViewDefinitionRegistry messageViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public MessagePresenter(ItemView view, MessagesManager messagesManager, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
         this.view = view;
         this.messagesManager = messagesManager;
-        this.messageActionExecutor = messageActionExecutor;
-        this.messageViewDefinitionRegistry = messageViewDefinitionRegistry;
+        this.itemActionExecutor = itemActionExecutor;
+        this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
         this.formbuilder = formbuilder;
         this.actionbarPresenter = actionbarPresenter;
         this.i18nizer = i18nizer;
@@ -89,16 +90,16 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             if (StringUtils.isNotEmpty(specificMessageView)) {
                 messageView = specificMessageView;
             }
-            MessageViewDefinition messageViewDefinition = messageViewDefinitionRegistry.get(messageView);
-            messageViewDefinition = i18nizer.decorate(messageViewDefinition);
+            ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(messageView);
+            itemViewDefinition = i18nizer.decorate(itemViewDefinition);
 
-            messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
+            itemActionExecutor.setMessageViewDefinition(itemViewDefinition);
             MessageItem messageItem = new MessageItem(message);
 
-            View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
-            view.setMessageView(mView);
+            View mView = formbuilder.buildView(itemViewDefinition.getForm(), messageItem);
+            view.setItemView(mView);
 
-            view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar(), messageViewDefinition.getActions()));
+            view.setActionbarView(actionbarPresenter.start(itemViewDefinition.getActionbar(), itemViewDefinition.getActions()));
         } catch (RegistrationException e) {
             throw new RuntimeException("Could not retrieve messageView for " + messageView, e);
         }
@@ -117,7 +118,7 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
     @Override
     public void onActionbarItemClicked(String actionName) {
         try {
-            messageActionExecutor.execute(actionName, message, this, messageActionExecutor);
+            itemActionExecutor.execute(actionName, message, this, itemActionExecutor);
 
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action " + actionName, e);

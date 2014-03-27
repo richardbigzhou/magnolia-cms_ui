@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.framework.message;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
@@ -96,10 +95,15 @@ public class LocalMessageDispatcherTest {
         dispatcher.messageCleared(clearedMessage);
         Thread.sleep(100);
 
+        dispatcher.messageRemoved("1");
+        Thread.sleep(100);
+
         // THEN
-        assertEquals(2, events.size());
+        assertEquals(3, events.size());
         assertEquals("subject", events.get(0).getMessage().getSubject());
         assertEquals("cleared message", events.get(1).getMessage().getMessage());
+        assertEquals("1", events.get(2).getId());
+        assertTrue(events.get(2).isRemoved());
     }
 
     @Test
@@ -152,6 +156,11 @@ public class LocalMessageDispatcherTest {
 
         @Override
         public void messageCleared(MessageEvent event) {
+            events.add(event);
+        }
+
+        @Override
+        public void messageRemoved(MessageEvent event) {
             events.add(event);
         }
     }

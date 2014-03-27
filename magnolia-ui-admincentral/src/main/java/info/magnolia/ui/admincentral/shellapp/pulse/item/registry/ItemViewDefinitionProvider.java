@@ -31,34 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.registry;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
-import info.magnolia.ui.api.action.AbstractActionExecutor;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import javax.inject.Inject;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
 
 /**
- * MessageActionExecutor.
+ * Provides an item view definition.
+ * 
+ * @see ItemViewDefinitionRegistry
  */
-public final class MessageActionExecutor extends AbstractActionExecutor {
+public interface ItemViewDefinitionProvider {
+    String getId();
 
-    private MessageViewDefinition messageViewDefinition;
-
-    @Inject
-    public MessageActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-
-    }
-
-    @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        return messageViewDefinition.getActions().get(actionName);
-    }
-
-    public void setMessageViewDefinition(MessageViewDefinition messageViewDefinition) {
-        this.messageViewDefinition = messageViewDefinition;
-    }
+    ItemViewDefinition getItemViewDefinition() throws RegistrationException;
 }

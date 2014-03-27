@@ -35,82 +35,32 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Pulse shell app.
  */
-public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener, MessagePresenter.Listener {
+public final class PulseShellApp implements ShellApp {
 
-    private static final Logger log = LoggerFactory.getLogger(PulseShellApp.class);
-
-    private PulseView pulseView;
-    private PulseMessagesPresenter messages;
-    private MessagePresenter messagePresenter;
-    private ShellImpl shell;
-
-    private enum PulseViewType {
-        LIST, DETAIL
-    }
-
-    /*
-     * we keep the current message view type as we need it to know in order to refresh the list (i.e. call showList()) or not. We don't want to refresh the list of messages when we're showing a message detail
-     * but we need to do it when e.g. the list view is the current one and a new message arrives. Not doing so would display the new message not sorted correctly and with title and text displayed as null.
-     */
-    private PulseViewType currentViewType = PulseViewType.LIST;
+    private PulsePresenter presenter;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, PulseMessagesPresenter messages, MessagePresenter messagePresenter, ShellImpl shell) {
-        this.pulseView = pulseView;
-        this.messages = messages;
-        this.messagePresenter = messagePresenter;
-        this.shell = shell;
-        messages.setListener(this);
-        messagePresenter.setListener(this);
+    public PulseShellApp(PulsePresenter presenter, ShellImpl shell) {
+        this.presenter = presenter;
     }
 
     @Override
     public View start(ShellAppContext context) {
-        pulseView.setPulseView(messages.start());
-        return pulseView;
+        return presenter.start();
     }
 
     @Override
     public void locationChanged(Location location) {
-        if ("pulse".equals(location.getAppName()) && location.getParameter().contains("messages")) {
-            String[] params = location.getParameter().split("/");
-            if (params.length == 2) {
-                String messageId = params[1];
-                openMessage(messageId);
-            } else {
-                log.warn("Got a request to open a message detail but found no message id in the location parameters. Location was [{}]", location);
-            }
-        } else {
-            shell.hideAllMessages();
-            if (currentViewType == PulseViewType.LIST) {
-                showList();
-            }
-        }
+        // nothing to do?
     }
 
-    @Override
-    public void openMessage(String messageId) {
-        pulseView.setPulseView(messagePresenter.start(messageId));
-        currentViewType = PulseViewType.DETAIL;
-    }
-
-    @Override
-    public void showList() {
-        pulseView.setPulseView(messages.start());
-        currentViewType = PulseViewType.LIST;
-    }
 }

@@ -37,8 +37,9 @@ import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredItemViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionProvider;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -48,16 +49,16 @@ import javax.jcr.RepositoryException;
  * ConfiguredMessageViewDefinitionProvider.
  */
 @Singleton
-public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefinitionProvider {
+public class ConfiguredMessageViewDefinitionProvider implements ItemViewDefinitionProvider {
     private final String id;
 
-    private final ConfiguredMessageViewDefinition messageViewDefinition;
+    private final ConfiguredItemViewDefinition itemViewDefinition;
 
     public ConfiguredMessageViewDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
         this.id = id;
-        this.messageViewDefinition = (ConfiguredMessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
-        if (this.messageViewDefinition != null) {
-            this.messageViewDefinition.setId(id);
+        this.itemViewDefinition = (ConfiguredItemViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, ItemViewDefinition.class);
+        if (this.itemViewDefinition != null) {
+            this.itemViewDefinition.setId(id);
         }
     }
 
@@ -67,7 +68,7 @@ public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefin
     }
 
     @Override
-    public MessageViewDefinition getMessageViewDefinition() throws RegistrationException {
-        return messageViewDefinition;
+    public ItemViewDefinition getItemViewDefinition() throws RegistrationException {
+        return itemViewDefinition;
     }
 }

@@ -48,6 +48,10 @@
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.framework.task.TasksManager</type>
+      <implementation>info.magnolia.ui.framework.task.TasksManagerImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -58,6 +62,10 @@
     <component>
       <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager</type>
       <implementation>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.framework.task.TasksManager</type>
+      <implementation>info.magnolia.ui.framework.task.TasksManagerImpl</implementation>
     </component>
 
     <!-- Form -->

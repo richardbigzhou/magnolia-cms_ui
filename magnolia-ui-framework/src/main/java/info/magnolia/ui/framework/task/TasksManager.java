@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.framework.task;
 
-
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.task.Task;
 
 /**
- * View interface for displaying a message.
+ * Manages {@link Task}'s.
  */
-public interface MessageView extends View {
+public interface TasksManager {
+    void claim(long taskId, String userId);
 
-    void setMessageView(View formView);
-    void setActionbarView(View actionbarView);
-    void setListener(Listener listener);
-
-    void setTitle(String subject);
-
-    /**
-     * Listener interface used for communicating with the presenter.
-     */
-    public interface Listener {
-        void onNavigateToList();
-    }
+    void addTask(Task task);
 }

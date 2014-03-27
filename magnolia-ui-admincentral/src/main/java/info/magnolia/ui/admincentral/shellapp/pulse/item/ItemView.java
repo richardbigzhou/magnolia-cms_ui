@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.activity;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
+
+import info.magnolia.ui.api.view.View;
 
 /**
- * The type of entries in the activity stream.
+ * View interface for displaying a generic item, e.g. a message or task.
  */
-public enum ActivityStreamEntryType {
+public interface ItemView extends View {
 
-    ACCEPTED, REJECTED, URGENT
+    void setItemView(View formView);
+
+    void setActionbarView(View actionbarView);
+
+    void setListener(Listener listener);
+
+    void setTitle(String subject);
+
+    /**
+     * Listener interface used for communicating with the presenter.
+     */
+    public interface Listener {
+        void onNavigateToList();
+    }
 }
