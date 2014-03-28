@@ -56,9 +56,12 @@ import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
@@ -76,6 +79,8 @@ public class ConfiguredDialogDefinitionManagerTest {
     private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
     private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
     private static final String C_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/cDialog";
+    private static final String GENERIC_FIELD_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/field";
+    private static final String EXTENDING_FIELD_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/field";
 
     private ModuleRegistry moduleRegistry;
 
@@ -96,7 +101,9 @@ public class ConfiguredDialogDefinitionManagerTest {
                 A_DIALOG_PATH + "/form/tabs/taba",
                 A_DIALOG_PATH + "/form/tabs/taba.label=label",
                 B_DIALOG_PATH + "/actions/actionb",
-                B_DIALOG_PATH + "/actions/actionb.label=label"
+                B_DIALOG_PATH + "/actions/actionb.label=label",
+                GENERIC_FIELD_PATH + ".class=" + TextFieldDefinition.class.getName(),
+                EXTENDING_FIELD_PATH + ".extends=" + GENERIC_FIELD_PATH
         );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -186,6 +193,26 @@ public class ConfiguredDialogDefinitionManagerTest {
         assertDialogDefinitionIsRemoved("bModule:bDialog");
         // and dialog c is present.
         dialogRegistry.getDialogDefinition("bModule:cDialog");
+    }
+
+    @Test
+    public void testOnlyDialogsAreRegisteredWhenExtendingFeatureIsUsed() throws Exception {
+        // GIVEN
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry) {
+            @Override
+            protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {
+                if (dialogNode.getName().equals("field")) {
+                    fail("should not happen");
+                }
+                return null;
+            };
+        };
+
+        // WHEN
+        dialogManager.start();
+
+        // THEN
+        // should not fail
     }
 
     private void assertDialogDefinitionIsRemoved(final String dialogId) {
