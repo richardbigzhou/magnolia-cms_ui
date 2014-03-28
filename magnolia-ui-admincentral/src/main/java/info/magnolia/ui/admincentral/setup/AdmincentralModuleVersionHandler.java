@@ -223,12 +223,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Reconfigure activate action of configuration app", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate",
                         new PartialBootstrapTask("Reconfigure activate action of configuration app", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/activate/params")))
         );
+
         register(DeltaBuilder.update("5.2.4", "")
-                .addTask(new PartialBootstrapTask("Edit user profile dialog", "Add edit user profile dialog", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/editUserProfile"))
-                .addTask(new PartialBootstrapTask("Edit user profile action", "Add edit user profile action to user menu", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.userMenu.xml", "/userMenu/actions/editUserProfile"))
+                .addTask(new NodeExistsDelegateTask("Logout icon", "This task adds an icon to logout user menu entry.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/userMenu/actions/logout",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/userMenu/actions/logout", "icon", "icon-redo")))
+                .addTask(new PartialBootstrapTask("Edit user profile dialog", "This task adds dialog to edit user profile.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/editUserProfile"))
+                .addTask(new PartialBootstrapTask("Edit user profile action", "This taks adds the edit user profile action to user menu.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.userMenu.xml", "/userMenu/actions/editUserProfile"))
                 .addTask(new OrderNodeToFirstPositionTask("Order edit user profile action to first position in user menu", "modules/ui-admincentral/config/userMenu/actions/editUserProfile"))
         );
-
 
     }
 
