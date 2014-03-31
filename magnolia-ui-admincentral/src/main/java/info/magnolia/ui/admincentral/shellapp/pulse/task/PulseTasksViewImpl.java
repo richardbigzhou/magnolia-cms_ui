@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,12 +39,14 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.GeneratedRow;
@@ -60,6 +62,7 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
     public PulseTasksViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.items.date") },
+                i18n.translate("pulse.tasks.empty"),
                 ItemCategory.ALL, ItemCategory.PENDING, ItemCategory.ONGOING, ItemCategory.DONE);
 
         constructTable();
@@ -69,9 +72,9 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         getItemTable().addGeneratedColumn(NEW_PROPERTY_ID, newTaskColumnGenerator);
         getItemTable().setColumnWidth(NEW_PROPERTY_ID, 100);
         getItemTable().addGeneratedColumn(TASK_PROPERTY_ID, taskColumnGenerator);
-        getItemTable().setColumnWidth(TASK_PROPERTY_ID, 50);
-        getItemTable().addGeneratedColumn(STATUS_PROPERTY_ID, taskColumnGenerator);
-        getItemTable().setColumnWidth(STATUS_PROPERTY_ID, 450);
+        getItemTable().setColumnWidth(TASK_PROPERTY_ID, 200);
+        getItemTable().addGeneratedColumn(STATUS_PROPERTY_ID, taskStatusColumnGenerator);
+        getItemTable().setColumnWidth(STATUS_PROPERTY_ID, 100);
         getItemTable().addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         getItemTable().setColumnWidth(DATE_PROPERTY_ID, 150);
 
@@ -87,10 +90,20 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
          * acts as a placeholder for grouping sub section. This row
          * generator must render those special items.
          */
-        Property<?> property = item.getItemProperty(STATUS_PROPERTY_ID);
+        Property<Status> property = item.getItemProperty(STATUS_PROPERTY_ID);
         GeneratedRow generated = new GeneratedRow();
 
-        // TODO return correct generated row
+        switch (property.getValue()) {
+        case Created:
+            generated.setText("", "", getI18n().translate("pulse.tasks.pending"));
+            break;
+        case InProgress:
+            generated.setText("", "", getI18n().translate("pulse.tasks.ongoing"));
+            break;
+        case Completed:
+            generated.setText("", "", getI18n().translate("pulse.tasks.done"));
+            break;
+        }
         return generated;
     }
 
@@ -103,18 +116,46 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                 final Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
                 final Boolean isNew = newProperty != null && newProperty.getValue();
                 if (isNew) {
-                    final Label newMessage = new Label();
-                    newMessage.setSizeUndefined();
-                    newMessage.addStyleName("icon-tick");
-                    newMessage.addStyleName("new-message");
-                    return newMessage;
+                    final Label newTask = new Label();
+                    newTask.setSizeUndefined();
+                    newTask.addStyleName("icon-tick");
+                    newTask.addStyleName("new-message");
+                    return newTask;
                 }
             }
             return null;
         }
     };
 
+    private Table.ColumnGenerator taskStatusColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (STATUS_PROPERTY_ID.equals(columnId)) {
+                final Property<Status> status = source.getContainerProperty(itemId, columnId);
+                Label label = new Label();
+                switch (status.getValue()) {
+                case Created:
+                    label.setValue(getI18n().translate("pulse.tasks.pending"));
+                    break;
+                case InProgress:
+                    label.setValue(getI18n().translate("pulse.tasks.ongoing"));
+                    break;
+                case Completed:
+                    label.setValue(getI18n().translate("pulse.tasks.done"));
+                    break;
+                default:
+                    break;
+                }
+                return label;
+            }
+            return null;
+        }
+    };
+
     /**
+     * TODO
      * a description of the work item and the content item it affects. It consists of:
      * an icon representing the work flow (not the work item itself).
      * This is typically the same icon as used by the action, which triggered the work flow, but this must be configurable.
@@ -131,14 +172,17 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         public Object generateCell(Table source, Object itemId, Object columnId) {
 
             if (TASK_PROPERTY_ID.equals(columnId)) {
+                final Property<String> text = source.getContainerProperty(itemId, columnId);
 
-                final Label messageTypeIcon = new Label();
-                messageTypeIcon.setSizeUndefined();
-                messageTypeIcon.addStyleName("icon");
-                messageTypeIcon.addStyleName("message-type");
-                messageTypeIcon.addStyleName("icon-work-item");
-                return messageTypeIcon;
+                final Label textLabel = new Label();
+                textLabel.setSizeUndefined();
+                textLabel.addStyleName("icon");
+                textLabel.addStyleName("message-type");
+                textLabel.addStyleName("icon-work-item");
+                textLabel.setContentMode(ContentMode.HTML);
+                // textLabel.setValue("<strong>" + StringEscapeUtils.escapeXml(text.getValue()) + "</strong>");
 
+                return textLabel;
             }
             return null;
         }

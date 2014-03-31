@@ -104,6 +104,10 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemViewImpl</implementation>
     </component>

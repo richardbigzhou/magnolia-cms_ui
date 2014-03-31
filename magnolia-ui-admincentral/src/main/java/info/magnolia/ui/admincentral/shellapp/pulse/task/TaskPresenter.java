@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
@@ -42,35 +42,36 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.integration.MessageItem;
+import info.magnolia.ui.framework.task.TasksStore;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.util.BeanItem;
+
 /**
- * The message detail presenter.
+ * The task detail presenter.
  */
-public final class MessagePresenter implements ItemView.Listener, ActionbarPresenter.Listener {
+public final class TaskPresenter implements ItemView.Listener, ActionbarPresenter.Listener {
 
     private final ItemView view;
-    private MessagesManager messagesManager;
+    private TasksStore tasksStore;
     private ItemActionExecutor itemActionExecutor;
     private ItemViewDefinitionRegistry itemViewDefinitionRegistry;
     private FormBuilder formbuilder;
     private ActionbarPresenter actionbarPresenter;
     private Listener listener;
-    private Message message;
+    private Task task;
     private I18nizer i18nizer;
 
     @Inject
-    public MessagePresenter(ItemView view, MessagesManager messagesManager, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public TaskPresenter(ItemView view, TasksStore tasksStore, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
         this.view = view;
-        this.messagesManager = messagesManager;
+        this.tasksStore = tasksStore;
         this.itemActionExecutor = itemActionExecutor;
         this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
         this.formbuilder = formbuilder;
@@ -81,31 +82,33 @@ public final class MessagePresenter implements ItemView.Listener, ActionbarPrese
         actionbarPresenter.setListener(this);
     }
 
-    public View start(String messageId) {
+    public View start(String taskId) {
         final String userId = MgnlContext.getUser().getName();
-        this.message = messagesManager.getMessageById(userId, messageId);
-        if (this.message == null) {
-            throw new RuntimeException("Could not retrieve message with id [" + messageId + "] for user [" + userId + "]");
+        this.task = tasksStore.getTaskById(Long.valueOf(taskId));
+        if (this.task == null) {
+            throw new RuntimeException("Could not retrieve task with id [" + taskId + "] for user [" + userId + "]");
         }
-        String messageView = "ui-admincentral:default";
-        view.setTitle(message.getSubject());
+        String taskView = "ui-admincentral:default";
+        view.setTitle(task.getName());
         try {
-            final String specificMessageView = message.getView();
-            if (StringUtils.isNotEmpty(specificMessageView)) {
-                messageView = specificMessageView;
+            // uses the task name to map a view with the same name.
+            // TODO this is hardcoded and just temporary, until we'll have TaskRegistry
+            final String specificTaskView = "pages:" + task.getName();
+            if (StringUtils.isNotEmpty(specificTaskView)) {
+                taskView = specificTaskView;
             }
-            ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(messageView);
+            ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(taskView);
             itemViewDefinition = i18nizer.decorate(itemViewDefinition);
 
             itemActionExecutor.setMessageViewDefinition(itemViewDefinition);
-            MessageItem messageItem = new MessageItem(message);
+            BeanItem<Task> taskItem = new BeanItem<Task>(task);
 
-            View mView = formbuilder.buildView(itemViewDefinition.getForm(), messageItem);
+            View mView = formbuilder.buildView(itemViewDefinition.getForm(), taskItem);
             view.setItemView(mView);
 
             view.setActionbarView(actionbarPresenter.start(itemViewDefinition.getActionbar(), itemViewDefinition.getActions()));
         } catch (RegistrationException e) {
-            throw new RuntimeException("Could not retrieve messageView for " + messageView, e);
+            throw new RuntimeException("Could not retrieve messageView for " + taskView, e);
         }
         return view;
     }
@@ -122,7 +125,7 @@ public final class MessagePresenter implements ItemView.Listener, ActionbarPrese
     @Override
     public void onActionbarItemClicked(String actionName) {
         try {
-            itemActionExecutor.execute(actionName, message, this, itemActionExecutor);
+            itemActionExecutor.execute(actionName, task, this, itemActionExecutor);
 
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action " + actionName, e);
