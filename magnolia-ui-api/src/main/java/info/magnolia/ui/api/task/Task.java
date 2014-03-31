@@ -35,6 +35,8 @@ package info.magnolia.ui.api.task;
 
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Models a task assigned to a user or group.
  */
@@ -45,16 +47,72 @@ public class Task {
     private int priority;
     private String name;
     private String comment;
-    private long groupId;
+    private String groupIds;
+
+    private String actorIds;
+
+    private String actorId;
     private boolean skippable;
+
     private Map<String, Object> content;
 
+    private Map<String, Object> results;
     public long getId() {
         return id;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
     public Status getStatus() {
         return status;
+    }
+
+    public String getActorIds() {
+        return actorIds;
+    }
+
+    public String getGroupIds() {
+        return groupIds;
+    }
+
+    public String getActorId() {
+        return actorId;
+    }
+
+    public boolean isSkippable() {
+        return skippable;
+    }
+
+    /**
+     * The data a user needs to complete a task.
+     */
+    public Map<String, Object> getContent() {
+        return content;
+    }
+
+    /**
+     * The results of a user completing a task.
+     */
+    public Map<String, Object> getResult() {
+        return results;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setPriority(int priority) {
@@ -69,32 +127,28 @@ public class Task {
         this.comment = comment;
     }
 
-    public void setGroupId(long groupId) {
-        this.groupId = groupId;
+    public void setGroupId(String groupIds) {
+        this.groupIds = groupIds;
     }
 
-    public long getGroupId() {
-        return groupId;
+    public void setActorIds(String actorIds) {
+        this.actorIds = actorIds;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
     }
 
     public void setSkippable(boolean skippable) {
         this.skippable = skippable;
     }
 
-    public boolean isSkippable() {
-        return skippable;
-    }
-
     public void setContent(Map<String, Object> content) {
         this.content = content;
     }
 
-    public Map<String, Object> getContent() {
-        return content;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
     }
 
     /**
@@ -102,5 +156,10 @@ public class Task {
      */
     public enum Status {
         Created, Ready, Reserved, InProgress, Suspended, Completed, Failed, Error, Exited, Obsolete
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

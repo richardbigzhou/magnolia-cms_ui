@@ -1,0 +1,105 @@
+/**
+ * This file Copyright (c) 2014 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.framework.action;
+
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.task.Task;
+import info.magnolia.ui.framework.task.TasksManager;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Abstract action for a human task action.
+ * 
+ * @param <D> {@link info.magnolia.ui.api.action.ActionDefinition}.
+ */
+public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extends AbstractAction<D> {
+    protected static final Logger log = LoggerFactory.getLogger(AbstractHumanTaskAction.class);
+
+    protected static final String DECISION = "decision";
+
+    private Task task;
+    private TasksManager tasksManager;
+    private Shell shell;
+
+    public AbstractHumanTaskAction(D definition, Task task, TasksManager tasksManager, Shell shell) {
+        super(definition);
+        this.task = task;
+        this.tasksManager = tasksManager;
+        this.shell = shell;
+    }
+
+    @Override
+    public final void execute() throws ActionExecutionException {
+        log.debug("About to execute Task [{}]", task);
+        try {
+            canExecuteTask(task);
+            executeTask(tasksManager, task);
+        } catch (IllegalStateException ex) {
+            shell.openNotification(MessageStyleTypeEnum.WARNING, true, ex.getMessage());
+        } catch (Exception ex) {
+            log.error("An error occurred while trying to execute workflow human task [{}]", task, ex);
+            shell.openNotification(MessageStyleTypeEnum.ERROR, false, getDefinition().getErrorMessage() + "<br/><br/>Error: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Subclasses need to implement this method to actually execute the task.
+     */
+    protected abstract void executeTask(TasksManager tasksManager, Task task);
+
+    /**
+     * Subclasses can override this method to check if the current task can actually be executed, e.g. by checking the current Task status.
+     * Default implementation does nothing.
+     * 
+     * @throws IllegalStateException if a task status doesn't allow this action to be executed (e.g. trying to complete a task which is not in progress). In general, subclasses can throw this exception for any reason
+     * they deem should cause the current task execution to be aborted.
+     * @See {@link info.magnolia.ui.api.task.Task.Status}
+     */
+    protected void canExecuteTask(Task task) throws IllegalStateException {
+        // no-op
+    }
+
+    /**
+     * Subclasses can use the shell e.g. to display success notifications.
+     */
+    protected Shell getShell() {
+        return shell;
+    }
+}

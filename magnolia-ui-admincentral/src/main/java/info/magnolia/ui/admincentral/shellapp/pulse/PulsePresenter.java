@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
@@ -51,21 +52,24 @@ import javax.inject.Named;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, MessagePresenter.Listener, MessageEventHandler {
+public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, TaskPresenter.Listener, MessageEventHandler {
 
     private PulseView view;
     private PulseMessagesPresenter messagesPresenter;
     private PulseTasksPresenter tasksPresenter;
     private MessagePresenter detailMessagePresenter;
+    private TaskPresenter detailTaskPresenter;
     private ShellImpl shell;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
-            final PulseMessagesPresenter messagesPresenter, final PulseTasksPresenter tasksPresenter, final MessagePresenter detailMessagePresenter) {
+            final PulseMessagesPresenter messagesPresenter, final PulseTasksPresenter tasksPresenter, final MessagePresenter detailMessagePresenter,
+            final TaskPresenter detailTaskPresenter) {
         this.view = view;
         this.messagesPresenter = messagesPresenter;
         this.tasksPresenter = tasksPresenter;
         this.detailMessagePresenter = detailMessagePresenter;
+        this.detailTaskPresenter = detailTaskPresenter;
         this.shell = shell;
         admincentralEventBus.addHandler(MessageEvent.class, this);
 
@@ -75,7 +79,9 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     public View start() {
         view.setListener(this);
         messagesPresenter.setListener(this);
+        tasksPresenter.setListener(this);
         detailMessagePresenter.setListener(this);
+        detailTaskPresenter.setListener(this);
 
         view.setPulseSubView(messagesPresenter.start());
 
@@ -114,6 +120,11 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void messageRemoved(MessageEvent messageEvent) {
         view.updateCategoryBadgeCount(ItemCategory.MESSAGES, messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser());
+    }
+
+    @Override
+    public void openTask(String taskId) {
+        view.setPulseSubView(detailTaskPresenter.start(taskId));
     }
 
     private void updatePendingMessagesAndTasksCount() {

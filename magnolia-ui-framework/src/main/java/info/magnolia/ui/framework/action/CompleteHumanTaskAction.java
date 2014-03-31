@@ -31,31 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.framework.action;
 
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.task.Task;
+import info.magnolia.ui.api.task.Task.Status;
+import info.magnolia.ui.framework.task.TasksManager;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Default implementation of {@link TasksManager}.
+ * Action for completing a human task.
  */
-public class TasksManagerImpl implements TasksManager {
+public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHumanTaskActionDefinition> {
 
-    Map<Long, Task> tasks = new HashMap<Long, Task>();
 
-    @Override
-    public void claim(long taskId, String userId) {
-        tasks.get(taskId).setStatus(Task.Status.Reserved);
-        // persist
-        // event for ui, possibly not part of spike
+    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, Shell shell) {
+        super(definition, task, taskManager, shell);
     }
 
     @Override
-    public void addTask(Task task) {
-        task.setStatus(Task.Status.Created);
-        long id = tasks.size();
-        tasks.put(id, task);
+    protected void executeTask(TasksManager taskManager, Task task) {
+        log.debug("About to complete human task named [{}]", task.getName());
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put(DECISION , getDefinition().getDecision());
+        taskManager.complete(task.getId(), result);
+        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
+    }
+
+    @Override
+    protected void canExecuteTask(Task task) throws IllegalStateException {
+        if (task.getStatus() != Status.InProgress) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only in progress tasks can be completed.");
+        }
     }
 }

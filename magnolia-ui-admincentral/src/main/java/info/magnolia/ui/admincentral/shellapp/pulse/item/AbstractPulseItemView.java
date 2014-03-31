@@ -215,14 +215,14 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
     };
 
     @Inject
-    public AbstractPulseItemView(Shell shell, SimpleTranslator i18n, String[] order, String[] headers, ItemCategory... categories) {
+    public AbstractPulseItemView(Shell shell, SimpleTranslator i18n, String[] order, String[] headers, String emptyMessage, ItemCategory... categories) {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
         footer = new PulseItemsFooter(itemTable, i18n);
         navigator = new PulseItemCategoryNavigator(i18n, categories);
         root.setSizeFull();
-        construct();
+        construct(emptyMessage);
     }
 
     @Override
@@ -261,7 +261,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         return root;
     }
 
-    private void construct() {
+    private void construct(String emptyMessage) {
         root.addComponent(navigator);
         navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
@@ -289,7 +289,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
 
         emptyPlaceHolder = new Label();
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", i18n.translate("pulse.messages.empty")));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", emptyMessage));
         emptyPlaceHolder.addStyleName("emptyplaceholder");
 
         root.addComponent(emptyPlaceHolder);
@@ -310,7 +310,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         itemTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                final String itemId = (String) event.getItemId();
+                final String itemId = String.valueOf(event.getItemId());
                 // clicking on the group type header does nothing.
                 if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                     return;
@@ -364,7 +364,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
     }
 
     /**
-     * A row generator draws grouping headers if such are present in container. Default implementation return null.
+     * A row generator draws grouping headers if such are present in the container. Default implementation returns null.
      */
     protected GeneratedRow generateGroupingRow(Item item) {
         return null;
