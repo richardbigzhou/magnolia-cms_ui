@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.setup;
+package info.magnolia.ui.contentapp.setup.for5_3;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
@@ -52,6 +51,7 @@ import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
+import info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;

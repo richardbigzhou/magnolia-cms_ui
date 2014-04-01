@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.setup;
+package info.magnolia.ui.contentapp.setup.for5_3;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
@@ -41,6 +41,7 @@ import info.magnolia.repository.RepositoryConstants;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -49,6 +50,9 @@ import javax.jcr.Session;
  * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>)  and adding them to a new node
  * <i>contentConnector</i> which is added to <i>workbench</i> or <i>editor</i>.<br/>
  * The property path is renamed to rootPath.
+ *
+ * This task normally is not meant to be used standalone.
+ * @see ContentAppMigrationTask
  */
 public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
@@ -59,14 +63,18 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
     private static final String PATH_PROPERTY = "path";
     private static final String ROOTPATH_PROPERTY = "rootPath";
 
-    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "'";
+    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "' and isdescendantnode('%s')";
     protected static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
 
 
-    protected MigrateJcrPropertiesToContentConnectorTask() {
+    public MigrateJcrPropertiesToContentConnectorTask(String path) {
         super("Migrate properties workspace, path from workbench and migrate workspace from editor and add them to a node called contentConnector and add this new node to workbench respectively editor.",
                 "Migrating properties workspace, path from workbench and migrating workspace from editor and adding them to a node called contentConnector and adding the new node to workbench respectively editor.",
-                RepositoryConstants.CONFIG, QUERY);
+                RepositoryConstants.CONFIG, String.format(QUERY, path));
+    }
+
+    public MigrateJcrPropertiesToContentConnectorTask() {
+        this("/");
     }
 
     @Override
@@ -74,7 +82,7 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
         try {
             Node subAppNode = node.getParent();
-            if (!subAppNode.hasProperty(SUB_APP_CLASS_PROPERTY)) {
+            if (!"subApps".equals(subAppNode.getParent().getName())) {
                 return;
             }
 
@@ -92,6 +100,16 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
             // editor
             else {
                 migrateProperty("workspace", node, contentConnectorNode);
+            }
+
+            boolean nodeCleared = !node.getNodes().hasNext();
+            for (final PropertyIterator it = node.getProperties(); nodeCleared && it.hasNext();) {
+                final String propertyName = it.nextProperty().getName();
+                nodeCleared = propertyName.startsWith(NodeTypes.MGNL_PREFIX) || propertyName.startsWith(NodeTypes.JCR_PREFIX);
+            }
+
+            if (nodeCleared) {
+                node.remove();
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException("Failed to migrate JCR-properties to contentConnector.",e);

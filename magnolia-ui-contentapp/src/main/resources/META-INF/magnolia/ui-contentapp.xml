@@ -114,9 +114,8 @@
 
   <dependencies>
     <dependency>
-      <name>ui-framework</name>
-      <version>${project.version}/*</version>
+      <name>ui-admincentral</name>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
-
 </module>

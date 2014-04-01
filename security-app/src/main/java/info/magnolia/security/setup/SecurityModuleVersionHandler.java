@@ -60,6 +60,7 @@ import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
+import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
@@ -211,6 +212,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                     new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
                         new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
         );
+
+        register(DeltaBuilder.update("5.3", "")
+                .addTask(new ContentAppMigrationTask("/modules/security-app")));
     }
 
     @Override

@@ -35,24 +35,14 @@ package info.magnolia.ui.contentapp.detail.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Base ContentApp ItemActionDefinition.
  */
 public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
 
-    private String nodeType = StringUtils.EMPTY;
     private String appName;
+
     private String subAppId;
-
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
 
     public String getAppName() {
         return appName;

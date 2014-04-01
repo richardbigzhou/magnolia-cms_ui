@@ -49,7 +49,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +77,6 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
-                log.warn("RestorePreviousVersionAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
-                        getPrimaryNodeType().getName());
-                return;
-            }
             final String path = nodeItemToEdit.getJcrItem().getPath();
 
             // Get last version.

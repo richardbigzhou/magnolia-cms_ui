@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.setup;
+package info.magnolia.ui.contentapp.setup.for5_3;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.module.InstallContext;
@@ -48,16 +48,23 @@ import javax.jcr.RepositoryException;
 /**
  * A task which is changing values for availability@ruleClass-properties in the config app- for a few classes which have been moved from
  * package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.
+ *
+ * This task normally is not meant to be used standalone.
+ * @see ContentAppMigrationTask
  */
 public class ChangeAvailabilityRuleClassesTask extends QueryTask {
 
-    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
+    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' and isdescendantnode('%s')";
     private static  Map<String, String> classMapping;
     protected static final String RULE_CLASS = "ruleClass";
 
-    protected ChangeAvailabilityRuleClassesTask() {
+    public ChangeAvailabilityRuleClassesTask(String path) {
         super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
-                "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, QUERY);
+                "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, String.format(QUERY, path));
+    }
+
+    public ChangeAvailabilityRuleClassesTask() {
+        this("/");
     }
 
     @Override
