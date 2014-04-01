@@ -68,6 +68,7 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
                 .addTask(new ChangeAvailabilityRuleClassesTask())
                 .addTask(new MigrateAvailabilityRulesTask())
                 .addTask(new MigrateJcrPropertiesToContentConnectorTask())
+                .addTask(new MoveActionNodeTypeRestrictionToAvailabilityTask())
         );
     }
 }
