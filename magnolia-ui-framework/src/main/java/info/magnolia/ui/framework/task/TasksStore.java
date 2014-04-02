@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.task;
 import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.api.task.Task.Status;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Manages {@link Task}'s.
@@ -48,15 +48,14 @@ public interface TasksStore {
 
     void addTask(Task task);
 
-    Collection<Task> findAllTasksByUser(String userId);
+    List<Task> findAllTasksByUser(String userId);
 
-    Collection<Task> findTasksByUserAndStatus(String userId, Collection<Status> status);
+    List<Task> findTasksByUserAndStatus(String userId, List<Status> status);
 
     Task getTaskById(long taskId);
 
     void removeTask(long taskId);
 
-    Collection<Task> getAllTasks();
+    List<Task> getAllTasks();
 
-    Collection<Task> findTasksByUserAndStatus(String userId, Status status);
 }

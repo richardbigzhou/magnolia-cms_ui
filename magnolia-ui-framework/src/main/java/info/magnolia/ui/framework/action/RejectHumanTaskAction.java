@@ -41,7 +41,6 @@ import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.task.TasksManager;
-import info.magnolia.ui.framework.task.TasksStore;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.HashMap;
@@ -81,7 +80,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
 
                 task.setComment(String.valueOf(comment));
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put(DECISION , getDefinition().getDecision());
+                result.put(DECISION, getDefinition().getDecision());
                 log.debug("About to reject human task named [{}]", task.getName());
                 taskManager.complete(task.getId(), result);
 

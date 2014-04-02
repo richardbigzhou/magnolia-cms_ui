@@ -37,7 +37,6 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.framework.task.TasksManager;
-import info.magnolia.ui.framework.task.TasksStore;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**

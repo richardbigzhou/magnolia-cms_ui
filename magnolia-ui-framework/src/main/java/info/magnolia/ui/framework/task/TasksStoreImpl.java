@@ -37,8 +37,8 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.api.task.Task.Status;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,12 +86,12 @@ public class TasksStoreImpl implements TasksStore {
     }
 
     @Override
-    public Collection<Task> getAllTasks() {
-        return tasks.values();
+    public List<Task> getAllTasks() {
+        return new ArrayList<Task>(tasks.values());
     }
 
     @Override
-    public Collection<Task> findAllTasksByUser(String userId) {
+    public List<Task> findAllTasksByUser(String userId) {
         List<Task> userTasks = new LinkedList<Task>();
         for (Task task : tasks.values()) {
             if (userId.equals(task.getActorId())) {
@@ -111,14 +111,9 @@ public class TasksStoreImpl implements TasksStore {
     }
 
     @Override
-    public Collection<Task> findTasksByUserAndStatus(String userId, Status status) {
-        return findTasksByUserAndStatus(userId, Arrays.asList(status));
-    }
-
-    @Override
-    public Collection<Task> findTasksByUserAndStatus(String userId, Collection<Status> status) {
-        Collection<Task> userTasks = findAllTasksByUser(userId);
-        Collection<Task> tasks = new LinkedList<Task>();
+    public List<Task> findTasksByUserAndStatus(String userId, List<Status> status) {
+        List<Task> userTasks = findAllTasksByUser(userId);
+        List<Task> tasks = new LinkedList<Task>();
         for (Task task : userTasks) {
             if (status.contains(task.getStatus())) {
                 tasks.add(task);

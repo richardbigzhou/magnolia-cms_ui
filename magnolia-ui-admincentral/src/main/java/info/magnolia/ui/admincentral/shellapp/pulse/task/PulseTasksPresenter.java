@@ -49,6 +49,7 @@ import info.magnolia.ui.framework.task.TasksStore;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -333,15 +334,15 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         switch (status) {
 
         case Created:
-            count = tasksStore.findTasksByUserAndStatus(userName, Status.Created).size();
+            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Created)).size();
             view.updateCategoryBadgeCount(ItemCategory.PENDING, count);
             break;
         case InProgress:
-            count = tasksStore.findTasksByUserAndStatus(userName, Status.InProgress).size();
+            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
             view.updateCategoryBadgeCount(ItemCategory.ONGOING, count);
             break;
         case Completed:
-            count = tasksStore.findTasksByUserAndStatus(userName, Status.Completed).size();
+            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Completed)).size();
             view.updateCategoryBadgeCount(ItemCategory.DONE, count);
             break;
         default:
@@ -357,6 +358,6 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Status.Created).size();
+        return tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
     }
 }

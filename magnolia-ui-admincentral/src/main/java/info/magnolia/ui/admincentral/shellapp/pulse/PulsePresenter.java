@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter.Listener;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter;
@@ -52,7 +53,7 @@ import javax.inject.Named;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, TaskPresenter.Listener, MessageEventHandler {
+public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, TaskPresenter.Listener, MessageEventHandler, Listener {
 
     private PulseView view;
     private PulseMessagesPresenter messagesPresenter;
