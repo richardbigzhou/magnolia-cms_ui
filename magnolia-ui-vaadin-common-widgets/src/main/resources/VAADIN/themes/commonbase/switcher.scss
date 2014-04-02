@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+@mixin switcher {
+
+  .switcher {
+    vertical-align: middle;
+  }
+
+  .switcherArrow {
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .v-widget.switcherArrow {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .switcher .v-caption {
+    height: 0;
+  }
+
+  .switcherArrow.disabled {
+    cursor: default;
+  }
+
+  .switcher .v-filterselect.v-filterselect-focus .v-filterselect-button, .switcher .v-filterselect.focus .v-filterselect-button {
+    background: url("imgs/sprites_white.png") no-repeat scroll -5px -6px rgba(0, 0, 0, 0);
+  }
+
+  .switcher .v-filterselect .v-filterselect-button, .switcher .v-filterselect .v-filterselect-button {
+    background: url("imgs/sprites_white.png") no-repeat scroll -5px -6px rgba(0, 0, 0, 0);
+  }
+
+  .switcher.has-description .v-filterselect {
+    height: 23px;
+  }
+
+  .switcherItemDescription.descriptionLabel{
+    font-size: 10px;
+    margin: 0px 0px 4px 8px;
+  }
+
+  .switcher.greenSwitcher.switcherBorder, .switcher.blackSwitcher.switcherBorder {
+    padding: 0;
+    padding-top: 1px;
+    border-top: 2px solid  #ffffff;
+    border-bottom: 2px solid  #ffffff;;
+  }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* color-variant "green"  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+  .switcher.greenSwitcher {
+    border: 1px solid $c40;
+  }
+
+  .switcher.greenSwitcher .switcherArrow {
+    color: #fff;
+  }
+
+  .switcher.greenSwitcher .switcherArrow.disabled {
+    color: $c41;
+  }
+
+  .switcher.greenSwitcher, switcher.greenSwitcher .v-filterselect-input, .switcher.greenSwitcher v-filterselect,
+  .switcher.greenSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-button, .switcher.greenSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-button:focus {
+    background-color: $c40;
+    color: #fff;
+  }
+
+  .switcher.greenSwitcher .v-filterselect-input {
+    border: 1px solid $c40;
+    background-color: $c40;
+    color: #fff;
+  }
+
+  .switcher.greenSwitcher .v-filterselect-input:focus {
+    border-color: $c40;
+    background-color: $c40;
+    color: #fff;
+  }
+
+  .switcher.greenSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-input, .switcher.greenSwitcher .v-filterselect.focus .v-filterselect-input{
+    border-color: $c40;
+  }
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* color-variant "black"  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+  .switcher.blackSwitcher {
+    border: 1px solid $c90;
+  }
+
+  .switcher.blackSwitcher .switcherArrow {
+    color: #fff;
+  }
+
+  .switcher.blackSwitcher .switcherArrow.disabled {
+    color: $c91;
+  }
+
+  .switcher.blackSwitcher, switcher.blackSwitcher .v-filterselect-input, .switcher.blackSwitcher v-filterselect,
+  .switcher.blackSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-button, .switcher.blackSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-button:focus {
+    background-color: $c90;
+    color: #fff;
+  }
+
+  .switcher.blackSwitcher .v-filterselect-input {
+    border: 1px solid $c90;
+    background-color: $c90;
+    color: #fff;
+  }
+
+  .switcher.blackSwitcher .v-filterselect-input:focus {
+    border-color: $c90;
+    background-color: $c90;
+    color: #fff;
+  }
+
+  .switcher.blackSwitcher .v-filterselect.v-filterselect-focus .v-filterselect-input, .switcher.blackSwitcher .v-filterselect.focus .v-filterselect-input{
+    border-color: $c90;
+  }
+
+
+}
+
