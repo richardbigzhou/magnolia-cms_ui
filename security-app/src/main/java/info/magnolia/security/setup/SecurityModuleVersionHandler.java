@@ -201,6 +201,16 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/roles/actions",
                         new String[] { "deleteRole", "confirmDeleteRole", "editRole", "addRole", "addFolder", "deleteFolder", "editFolder", "duplicateRole", "moveRole" }))
         );
+
+        register(DeltaBuilder.update("5.2.4", "")
+                .addTask(new ArrayDelegateTask("Add confirmation dialogs for folder deletion",
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteFolder"),
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteFolder"),
+                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder",
+                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true)),
+                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
+                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
+        );
     }
 
     @Override
