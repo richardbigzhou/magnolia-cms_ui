@@ -31,25 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.availability;
 
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.api.task.Task;
+import info.magnolia.ui.api.task.Task.Status;
+import info.magnolia.ui.framework.task.TasksStore;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Magnolia TasksManager interface.
+ * A base abstract action availability rule class based on a task status.
  */
-public interface TasksManager {
-    void claim(long taskId, String userId);
+public abstract class AbstractTaskStatusRule extends AbstractAvailabilityRule {
 
-    void addTask(Task task, HashMap<String, Object> content);
+    protected static final Logger log = LoggerFactory.getLogger(AbstractTaskStatusRule.class);
 
-    Collection<Task> getAllTasks();
+    private TasksStore store;
 
-    void complete(long taskId, Map<String, Object> results);
+    @Inject
+    public AbstractTaskStatusRule(TasksStore store) {
+        this.store = store;
+    }
 
-    void removeTask(long id);
+    @Override
+    public final boolean isAvailableForItem(Object itemId) {
+        Task task = store.getTaskById(Long.valueOf((String) itemId));
+        if (task == null) {
+            log.warn("Could not get a Task with id [{}]. Availability rule will return true", itemId);
+            return true;
+        }
+        return isAvailableForCurrentStatus(task.getStatus());
+    }
+
+    protected abstract boolean isAvailableForCurrentStatus(Status status);
 }

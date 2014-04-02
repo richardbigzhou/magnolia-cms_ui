@@ -31,25 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.availability;
 
-import info.magnolia.ui.api.task.Task;
+import info.magnolia.ui.api.task.Task.Status;
+import info.magnolia.ui.framework.task.TasksStore;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import javax.inject.Inject;
 
 /**
- * Magnolia TasksManager interface.
+ * This rule returns true if the task status is completed.
  */
-public interface TasksManager {
-    void claim(long taskId, String userId);
+public final class CanDeleteTaskRule extends AbstractTaskStatusRule {
 
-    void addTask(Task task, HashMap<String, Object> content);
+    @Inject
+    public CanDeleteTaskRule(TasksStore store) {
+        super(store);
+    }
 
-    Collection<Task> getAllTasks();
-
-    void complete(long taskId, Map<String, Object> results);
-
-    void removeTask(long id);
+    @Override
+    protected boolean isAvailableForCurrentStatus(Status status) {
+        return status == Status.Completed;
+    }
 }
