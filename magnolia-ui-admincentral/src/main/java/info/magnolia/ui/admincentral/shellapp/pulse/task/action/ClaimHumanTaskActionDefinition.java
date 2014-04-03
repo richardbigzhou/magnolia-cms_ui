@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 

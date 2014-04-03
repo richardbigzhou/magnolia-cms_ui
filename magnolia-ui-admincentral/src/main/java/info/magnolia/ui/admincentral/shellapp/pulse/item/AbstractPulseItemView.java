@@ -65,6 +65,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public abstract class AbstractPulseItemView implements PulseItemsView {
 
+    public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
+
     private final String[] order;
 
     private final String[] headers;

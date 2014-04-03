@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -56,12 +57,14 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
 
     private Task task;
     private TasksManager tasksManager;
+    private TaskPresenter taskPresenter;
     private Shell shell;
 
-    public AbstractHumanTaskAction(D definition, Task task, TasksManager tasksManager, Shell shell) {
+    public AbstractHumanTaskAction(D definition, Task task, TasksManager tasksManager, TaskPresenter taskPresenter, Shell shell) {
         super(definition);
         this.task = task;
         this.tasksManager = tasksManager;
+        this.taskPresenter = taskPresenter;
         this.shell = shell;
     }
 
@@ -101,5 +104,12 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
      */
     protected Shell getShell() {
         return shell;
+    }
+
+    /**
+     * Subclasses can use the TaskPresenter to interact back with it and its parent presenter, i.e. PulsePresenter.
+     */
+    public TaskPresenter getTaskPresenter() {
+        return taskPresenter;
     }
 }

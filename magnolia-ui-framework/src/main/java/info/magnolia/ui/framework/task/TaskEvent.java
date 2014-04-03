@@ -31,40 +31,77 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.framework.task;
 
-import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.event.Event;
 import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
-import info.magnolia.ui.framework.task.TasksManager;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Action for completing a human task.
+ * Task event.
  */
-public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHumanTaskActionDefinition> {
+public class TaskEvent implements Event<TaskEventHandler> {
 
+    private Task task;
+    private boolean added;
+    private boolean claimed;
+    private boolean completed;
+    private long id;
+    private boolean removed;
+    private String userId;
 
-    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, Shell shell) {
-        super(definition, task, taskManager, shell);
+    public TaskEvent(Task task, boolean added) {
+        this.task = task;
+        this.added = added;
+
+    }
+
+    public TaskEvent(long id, boolean claimed, boolean completed, boolean removed, String userId) {
+        this.id = id;
+        this.removed = removed;
+        this.claimed = claimed;
+        this.completed = completed;
+        this.userId = userId;
     }
 
     @Override
-    protected void executeTask(TasksManager taskManager, Task task) {
-        log.debug("About to complete human task named [{}]", task.getName());
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(DECISION , getDefinition().getDecision());
-        taskManager.complete(task.getId(), result);
-        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
-    }
-
-    @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Status.InProgress) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only in progress tasks can be completed.");
+    public void dispatch(TaskEventHandler handler) {
+        if (added) {
+            handler.taskAdded(this);
+        } else if (removed) {
+            handler.taskRemoved(this);
+        } else if (claimed) {
+            handler.taskClaimed(this);
+        } else {
+            handler.taskCompleted(this);
         }
     }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public boolean isAdded() {
+        return added;
+    }
+
+    public boolean isClaimed() {
+        return claimed;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
 }

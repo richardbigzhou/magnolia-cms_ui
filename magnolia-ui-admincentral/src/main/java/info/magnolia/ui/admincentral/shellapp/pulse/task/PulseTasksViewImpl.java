@@ -56,12 +56,12 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class PulseTasksViewImpl extends AbstractPulseItemView implements PulseTasksView {
 
-    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, DATE_PROPERTY_ID };
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, SENT_TO_PROPERTY_ID, DATE_PROPERTY_ID };
 
     @Inject
     public PulseTasksViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
-                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.items.date") },
+                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.items.date") },
                 i18n.translate("pulse.tasks.empty"),
                 ItemCategory.ALL, ItemCategory.PENDING, ItemCategory.ONGOING, ItemCategory.DONE);
 

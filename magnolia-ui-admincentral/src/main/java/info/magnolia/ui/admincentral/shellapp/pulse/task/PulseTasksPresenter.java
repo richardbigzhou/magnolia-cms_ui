@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView.GROUP_PLACEHOLDER_ITEMID;
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -98,8 +98,6 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         this.shell = shellImpl;
         this.tasksStore = tasksStore;
         this.i18n = i18n;
-        // TODO add handler for TaskEvent(s)
-        // admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     public View start() {
@@ -127,13 +125,13 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         container.addContainerProperty(TASK_PROPERTY_ID, String.class, null);
         container.addContainerProperty(STATUS_PROPERTY_ID, Status.class, Status.Created);
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(SENT_TO_PROPERTY_ID, String.class, null);
         container.addContainerProperty(ASSIGNED_TO_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(SENT_TO_PROPERTY_ID, String.class, null);
         container.addContainerProperty(DATE_PROPERTY_ID, Date.class, null);
 
         createSuperItems();
 
-        for (Task task : tasksStore.findAllTasksByUser(MgnlContext.getUser().getName())) {
+        for (Task task : tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.InProgress, Status.Completed))) {
             addTaskAsItem(task);
         }
 
@@ -249,6 +247,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         assignPropertiesFromTask(task, item);
     }
 
+    @SuppressWarnings("unchecked")
     private void assignPropertiesFromTask(Task task, final Item item) {
         if (item != null && task != null) {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Status.Created);
@@ -256,8 +255,8 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             item.getItemProperty(SENDER_PROPERTY_ID).setValue("a sender");
             item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
-            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId(), ""));
-            item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + " - " + StringUtils.defaultString(task.getActorIds()));
+            item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId(), ""));
+            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + " - " + StringUtils.defaultString(task.getActorIds()));
         }
     }
 
@@ -301,7 +300,6 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     @Override
     public void onItemClicked(String itemId) {
         listener.openTask(itemId);
-        // messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
     @Override

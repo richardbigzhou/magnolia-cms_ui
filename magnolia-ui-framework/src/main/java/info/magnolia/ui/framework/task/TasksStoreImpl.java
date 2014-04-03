@@ -114,7 +114,12 @@ public class TasksStoreImpl implements TasksStore {
     public List<Task> findTasksByUserAndStatus(String userId, List<Status> status) {
         List<Task> userTasks = findAllTasksByUser(userId);
         List<Task> tasks = new LinkedList<Task>();
+
         for (Task task : userTasks) {
+            // filter out claimed tasks assigned to a different user
+            if (!userId.equals(task.getActorId()) && task.getStatus() != Status.Created) {
+                continue;
+            }
             if (status.contains(task.getStatus())) {
                 tasks.add(task);
             }

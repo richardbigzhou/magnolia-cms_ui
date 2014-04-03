@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.api.task.Task.Status;
@@ -41,26 +42,28 @@ import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**
- * Action for claiming a human task.
+ * Action for deleting a human task.
  */
-public class ClaimHumanTaskAction extends AbstractHumanTaskAction<ClaimHumanTaskActionDefinition> {
+public class DeleteHumanTaskAction extends AbstractHumanTaskAction<DeleteHumanTaskActionDefinition> {
 
-    public ClaimHumanTaskAction(ClaimHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, Shell shell) {
-        super(definition, task, tasksManager, shell);
-    }
-
-    @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Status.Created) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only unclaimed tasks can be claimed.");
-        }
+    public DeleteHumanTaskAction(DeleteHumanTaskActionDefinition definition, Task task, TaskPresenter taskPresenter, TasksManager taskManager, Shell shell) {
+        super(definition, task, taskManager, taskPresenter, shell);
     }
 
     @Override
     protected void executeTask(TasksManager taskManager, Task task) {
-        final String userId = MgnlContext.getUser().getName();
-        log.debug("User [{}] is claiming workflow human task named [{}]", userId, task.getName());
-        taskManager.claim(task.getId(), userId);
+        log.debug("About to delete human task named [{}]", task.getName());
+        taskManager.removeTask(task.getId());
+        getTaskPresenter().onNavigateToList();
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
+    }
+
+    @Override
+    protected void canExecuteTask(Task task) throws IllegalStateException {
+        final String currentUser = MgnlContext.getUser().getName();
+
+        if (task.getStatus() != Status.Completed || !currentUser.equals(task.getActorId())) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only completed tasks assigned to yourself can be deleted.");
+        }
     }
 }

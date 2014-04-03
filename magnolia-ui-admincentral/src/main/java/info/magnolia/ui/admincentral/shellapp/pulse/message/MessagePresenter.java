@@ -63,13 +63,6 @@ public final class MessagePresenter extends ItemPresenter<Message> {
         this.messagesManager = messagesManager;
     }
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener {
-        void showList();
-    }
-
     @Override
     protected String getItemViewName(Message item) {
         return item.getView();

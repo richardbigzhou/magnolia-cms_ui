@@ -31,34 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
-import info.magnolia.ui.framework.task.TasksManager;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+import info.magnolia.ui.framework.action.OpenEditDialogActionDefinition;
 
 /**
- * Action for deleting a human task.
+ * Action definition for {@link RejectHumanTaskAction}.
  */
-public class DeleteHumanTaskAction extends AbstractHumanTaskAction<DeleteHumanTaskActionDefinition> {
+public class RejectHumanTaskActionDefinition extends OpenEditDialogActionDefinition {
 
-    public DeleteHumanTaskAction(DeleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, Shell shell) {
-        super(definition, task, taskManager, shell);
+    private String decision;
+
+    public RejectHumanTaskActionDefinition() {
+        setImplementationClass(RejectHumanTaskAction.class);
     }
 
-    @Override
-    protected void executeTask(TasksManager taskManager, Task task) {
-        log.debug("About to delete human task named [{}]", task.getName());
-        taskManager.removeTask(task.getId());
-        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
+    public String getDecision() {
+        return decision;
     }
 
-    @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Status.Completed) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only completed tasks can be deleted.");
-        }
+    public void setDecision(String decision) {
+        this.decision = decision;
     }
+
 }

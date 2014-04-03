@@ -35,21 +35,43 @@ package info.magnolia.ui.framework.task;
 
 import info.magnolia.ui.api.task.Task;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Magnolia TasksManager interface.
  */
 public interface TasksManager {
+    /**
+     * TaskListener.
+     */
+    public interface TaskListener {
+
+        void taskClaimed(long id, String userId);
+
+        void taskAdded(Task task);
+
+        void taskRemoved(long id);
+
+        void taskCompleted(long id);
+    }
+
     void claim(long taskId, String userId);
 
-    void addTask(Task task, HashMap<String, Object> content);
+    void addTask(Task task, Map<String, Object> content);
 
-    Collection<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     void complete(long taskId, Map<String, Object> results);
 
     void removeTask(long id);
+
+    /**
+     * Beware: this method is for registering task listeners and should only be used by the entry point of our application AdmincentralUI where we register a dispatcher.
+     * If you'll use it to register your own TaskListeners this is likely to introduce a memory leak. You should listen to the TaskEvent instead.
+     */
+    void registerTasksListener(String userName, TaskListener listener);
+
+    void unregisterTasksListener(String userName, TaskListener listener);
+
 }

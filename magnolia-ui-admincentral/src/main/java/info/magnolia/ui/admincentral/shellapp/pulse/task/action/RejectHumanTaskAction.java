@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.Context;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.task.Task;
@@ -61,8 +62,8 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
     private final UiContext uiContext;
 
     @Inject
-    public RejectHumanTaskAction(RejectHumanTaskActionDefinition definition, Task task, TasksManager taskManager, FormDialogPresenter formDialogPresenter, UiContext uiContext, Shell shell) {
-        super(definition, task, taskManager, shell);
+    public RejectHumanTaskAction(RejectHumanTaskActionDefinition definition, Task task, TasksManager taskManager, TaskPresenter taskPresenter, FormDialogPresenter formDialogPresenter, UiContext uiContext, Shell shell) {
+        super(definition, task, taskManager, taskPresenter, shell);
         this.formDialogPresenter = formDialogPresenter;
         this.uiContext = uiContext;
     }
@@ -82,9 +83,14 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
                 Map<String, Object> result = new HashMap<String, Object>();
                 result.put(DECISION, getDefinition().getDecision());
                 log.debug("About to reject human task named [{}]", task.getName());
-                taskManager.complete(task.getId(), result);
+
+                long taskId = task.getId();
+                taskManager.complete(taskId, result);
 
                 formDialogPresenter.closeDialog();
+
+                getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
+
                 getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
             }
 
