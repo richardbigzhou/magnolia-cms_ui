@@ -434,4 +434,20 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
     }
 
+    @Test
+    public void testUpdateTo524() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+    }
+
 }
