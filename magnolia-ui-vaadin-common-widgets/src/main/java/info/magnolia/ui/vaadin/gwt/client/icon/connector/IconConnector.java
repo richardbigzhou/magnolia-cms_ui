@@ -62,10 +62,6 @@ public class IconConnector extends AbstractComponentConnector {
         return (IconWidget) super.getWidget();
     }
 
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
-    }
-
     @Override
     public IconState getState() {
         return (IconState) super.getState();
