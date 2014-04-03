@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter.Listener;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter;
@@ -45,6 +44,8 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.shell.ShellImpl;
+import info.magnolia.ui.framework.task.TaskEvent;
+import info.magnolia.ui.framework.task.TaskEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import javax.inject.Inject;
@@ -53,7 +54,7 @@ import javax.inject.Named;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, TaskPresenter.Listener, MessageEventHandler, Listener {
+public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, MessageEventHandler, TaskEventHandler {
 
     private PulseView view;
     private PulseMessagesPresenter messagesPresenter;
@@ -61,6 +62,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     private MessagePresenter detailMessagePresenter;
     private TaskPresenter detailTaskPresenter;
     private ShellImpl shell;
+    private ItemCategory selectedCategory;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
@@ -73,6 +75,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         this.detailTaskPresenter = detailTaskPresenter;
         this.shell = shell;
         admincentralEventBus.addHandler(MessageEvent.class, this);
+        admincentralEventBus.addHandler(TaskEvent.class, this);
 
         updatePendingMessagesAndTasksCount();
     }
@@ -91,6 +94,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void onCategoryChange(ItemCategory category) {
+        selectedCategory = category;
         if (category == ItemCategory.MESSAGES) {
             view.setPulseSubView(messagesPresenter.start());
         } else if (category == ItemCategory.TASKS) {
@@ -105,7 +109,11 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void showList() {
-        view.setPulseSubView(messagesPresenter.start());
+        if (selectedCategory == ItemCategory.TASKS) {
+            view.setPulseSubView(tasksPresenter.start());
+        } else {
+            view.setPulseSubView(messagesPresenter.start());
+        }
     }
 
     @Override
@@ -128,6 +136,26 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.setPulseSubView(detailTaskPresenter.start(taskId));
     }
 
+    @Override
+    public void taskClaimed(TaskEvent taskEvent) {
+        updatePendingMessagesAndTasksCount();
+    }
+
+    @Override
+    public void taskAdded(TaskEvent taskEvent) {
+        updatePendingMessagesAndTasksCount();
+    }
+
+    @Override
+    public void taskRemoved(TaskEvent taskEvent) {
+        // nothing to here
+    }
+
+    @Override
+    public void taskCompleted(TaskEvent taskEvent) {
+        // nothing to do here
+    }
+
     private void updatePendingMessagesAndTasksCount() {
         int unclearedMessages = messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser();
         int pendingTasks = tasksPresenter.getNumberOfPendingTasksForCurrentUser();
@@ -138,4 +166,12 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.updateCategoryBadgeCount(ItemCategory.TASKS, pendingTasks);
     }
 
+    @Override
+    public void updateDetailView(final String itemId) {
+        if (selectedCategory == ItemCategory.TASKS) {
+            openTask(itemId);
+        } else {
+            openMessage(itemId);
+        }
+    }
 }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView.GROUP_PLACEHOLDER_ITEMID;
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -262,6 +262,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void assignPropertiesFromMessage(Message message, final Item item) {
         if (item != null && message != null) {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());

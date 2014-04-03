@@ -63,7 +63,6 @@ public final class PulseViewImpl implements PulseView {
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
         navigator = new PulseItemCategoryNavigator(i18n, false, ItemCategory.MESSAGES, ItemCategory.TASKS);
-        navigator.showGroupByType(false);
         navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
             @Override
@@ -97,7 +96,6 @@ public final class PulseViewImpl implements PulseView {
     @Override
     public void updateCategoryBadgeCount(ItemCategory category, int count) {
         navigator.updateCategoryBadgeCount(category, count);
-
     }
 
 }

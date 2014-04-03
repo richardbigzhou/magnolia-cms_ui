@@ -61,13 +61,6 @@ public final class TaskPresenter extends ItemPresenter<Task> {
         this.taskStore = taskStore;
     }
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener {
-        void showList();
-    }
-
     @Override
     protected String getItemViewName(Task item) {
         return "pages:" + item.getName();

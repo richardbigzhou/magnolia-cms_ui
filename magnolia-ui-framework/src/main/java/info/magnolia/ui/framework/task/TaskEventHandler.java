@@ -31,25 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.framework.task;
+
+import info.magnolia.event.EventHandler;
 
 /**
- * Action definition for {@link RejectHumanTaskAction}.
+ * Handler of {@link TaskEvent}.
  */
-public class RejectHumanTaskActionDefinition extends OpenEditDialogActionDefinition {
+public interface TaskEventHandler extends EventHandler {
 
-    private String decision;
+    void taskClaimed(TaskEvent taskEvent);
 
-    public RejectHumanTaskActionDefinition() {
-        setImplementationClass(RejectHumanTaskAction.class);
-    }
+    void taskAdded(TaskEvent taskEvent);
 
-    public String getDecision() {
-        return decision;
-    }
+    void taskRemoved(TaskEvent taskEvent);
 
-    public void setDecision(String decision) {
-        this.decision = decision;
-    }
-
+    void taskCompleted(TaskEvent taskEvent);
 }

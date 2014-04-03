@@ -39,7 +39,7 @@ import info.magnolia.ui.api.task.Task.Status;
 import java.util.List;
 
 /**
- * Manages {@link Task}'s.
+ * Manages {@link Task}s.
  */
 public interface TasksStore {
     void claim(long taskId, String userId);

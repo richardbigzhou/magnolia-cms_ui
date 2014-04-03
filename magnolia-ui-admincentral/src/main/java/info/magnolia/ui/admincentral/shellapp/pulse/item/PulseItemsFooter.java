@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView.GROUP_PLACEHOLDER_ITEMID;
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
@@ -54,7 +54,7 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TreeTable;
 
 /**
- * PulseMessagesFooter.
+ * PulseItemsFooter.
  */
 public final class PulseItemsFooter extends CustomComponent {
 

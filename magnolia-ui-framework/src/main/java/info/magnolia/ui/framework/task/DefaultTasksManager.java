@@ -35,8 +35,7 @@ package info.magnolia.ui.framework.task;
 
 import info.magnolia.ui.api.task.Task;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultTasksManager implements TasksManager {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(DefaultTasksManager.class);
 
     @Override
     public void claim(long taskId, String userId) {
@@ -55,12 +54,12 @@ public class DefaultTasksManager implements TasksManager {
     }
 
     @Override
-    public void addTask(Task task, HashMap<String, Object> content) {
+    public void addTask(Task task, Map<String, Object> content) {
         log.warn("Not implemented.");
     }
 
     @Override
-    public Collection<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         log.warn("Not implemented.");
         return null;
     }
@@ -74,4 +73,17 @@ public class DefaultTasksManager implements TasksManager {
     public void removeTask(long id) {
         log.warn("Not implemented.");
     }
+
+    @Override
+    public void registerTasksListener(String userName, TaskListener listener) {
+        log.warn("Not implemented.");
+
+    }
+
+    @Override
+    public void unregisterTasksListener(String userName, TaskListener listener) {
+        log.warn("Not implemented.");
+
+    }
+
 }

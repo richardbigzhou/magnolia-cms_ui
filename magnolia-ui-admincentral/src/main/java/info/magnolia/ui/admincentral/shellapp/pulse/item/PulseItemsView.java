@@ -45,8 +45,6 @@ import com.vaadin.data.Container;
  */
 public interface PulseItemsView extends View {
 
-    static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
-
     void setDataSource(Container dataSource);
 
     void setListener(Listener listener);

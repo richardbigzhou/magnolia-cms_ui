@@ -31,17 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Action definition for {@link DeleteHumanTaskAction}.
+ * Action definition for {@link CompleteHumanTaskAction}.
  */
 
-public class DeleteHumanTaskActionDefinition extends ConfiguredActionDefinition {
+public class CompleteHumanTaskActionDefinition extends ConfiguredActionDefinition {
 
-    public DeleteHumanTaskActionDefinition() {
-        setImplementationClass(DeleteHumanTaskAction.class);
+    private String decision;
+
+    public CompleteHumanTaskActionDefinition() {
+        setImplementationClass(CompleteHumanTaskAction.class);
+    }
+
+    public String getDecision() {
+        return decision;
+    }
+
+    public void setDecision(String decision) {
+        this.decision = decision;
     }
 }

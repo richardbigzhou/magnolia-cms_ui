@@ -105,6 +105,7 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
 
             View mView = formbuilder.buildView(itemViewDefinition.getForm(), asBeanItem(item));
             view.setItemView(mView);
+
             for (Entry<String, ActionDefinition> entry : itemViewDefinition.getActions().entrySet()) {
                 final String actionName = entry.getValue().getName();
                 AvailabilityDefinition availability = itemActionExecutor.getActionDefinition(actionName).getAvailability();
@@ -135,6 +136,11 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
         listener.showList();
     }
 
+    @Override
+    public void onUpdateDetailView(String itemId) {
+        listener.updateDetailView(itemId);
+    }
+
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -154,5 +160,7 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
      */
     public interface Listener {
         void showList();
+
+        void updateDetailView(String itemId);
     }
 }

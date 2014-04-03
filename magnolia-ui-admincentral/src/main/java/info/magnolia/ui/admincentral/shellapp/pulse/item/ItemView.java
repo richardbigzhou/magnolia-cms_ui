@@ -53,5 +53,7 @@ public interface ItemView extends View {
      */
     public interface Listener {
         void onNavigateToList();
+
+        void onUpdateDetailView(String itemId);
     }
 }
