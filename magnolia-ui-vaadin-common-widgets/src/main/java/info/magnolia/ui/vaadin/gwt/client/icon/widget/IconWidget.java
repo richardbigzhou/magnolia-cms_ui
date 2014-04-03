@@ -52,32 +52,16 @@ public class IconWidget extends Widget {
 
     private String iconName;
 
-    private boolean innerIcon;
-
     public IconWidget() {
         setElement(root);
         setStylePrimaryName(CLASSNAME);
         initDefaultStyles();
     }
 
-    public void setInnerIcon(boolean innerIcon) {
-        this.innerIcon = innerIcon;
-    }
-
     private void initDefaultStyles() {
-        if (!innerIcon) {
-            Style style = root.getStyle();
-            style.setFontSize(SIZE_DEFAULT, Unit.PX);
-            style.setProperty("lineHeight", "1");
-        }
-    }
-
-    public void updateInnerStyles() {
         Style style = root.getStyle();
-        style.setFontSize(1, Unit.EM);
-        if (innerIcon) {
-            style.setMarginLeft(-1, Unit.EM);
-        }
+        style.setFontSize(SIZE_DEFAULT, Unit.PX);
+        style.setProperty("lineHeight", "1");
     }
 
     public void setIconName(String iconName) {
@@ -89,8 +73,10 @@ public class IconWidget extends Widget {
     }
 
     public void setSize(int value) {
-        if (!innerIcon) {
+        if (value >= 0) {
             root.getStyle().setFontSize(value, Unit.PX);
+        } else {
+            root.getStyle().setFontSize(1, Unit.EM);
         }
     }
 

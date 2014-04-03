@@ -44,6 +44,7 @@ public class InfoIcon extends CompositeIcon {
 
     public InfoIcon(int size) {
         super(
+                new Icon("shape-circle-plus", size, "#fff"),
                 new Icon("shape-circle", size, Icon.COLOR_INFO),
                 new Icon("info_mark", size, "#fff"));
     }

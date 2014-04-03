@@ -48,7 +48,7 @@ public class Icon extends AbstractComponent {
 
     public transient static final String COLOR_WARNING = "#ffbf28";
 
-    public transient static final String COLOR_INFO = "#999";
+    public transient static final String COLOR_INFO = "#4b8e9e";
 
     public transient static final String COLOR_GREEN_BADGE = "#689600";
 
