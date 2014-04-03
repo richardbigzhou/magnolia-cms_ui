@@ -79,6 +79,7 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
     private Session session;
 
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
@@ -109,6 +110,7 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
     }
 
     @After
+    @Override
     public void tearDown() throws Exception {
         super.tearDown();
         commandsManager.clear();
