@@ -21,15 +21,16 @@
     }
 
     .v-ui:not(.tablet) &.commit:hover,
-    .v-ui:not(.tablet) &.v-button-commit:hover {
-      background-color: $c44;
-      color: $c40;
+    .v-ui:not(.tablet) &.commit:focus,
+    .v-ui:not(.tablet) &.v-button-commit:hover,
+    .v-ui:not(.tablet) &.v-button-commit:focus {
+      background-color: $c31;
     }
 
     .v-ui:not(.tablet) &.commit.v-disabled:hover,
-    .v-ui:not(.tablet) &.v-button-commit.v-disabled:hover {
-      background-color: $c40;
-      color: $c80;
+    .v-ui:not(.tablet) &.commit.v-disabled:focus,
+    .v-ui:not(.tablet) &.v-button-commit.v-disabled:hover,
+    .v-ui:not(.tablet) &.v-button-commit.v-disabled:focus {
     }
 
     .v-app .v-ui &.commit:active,
@@ -68,9 +69,9 @@
   outline: none !important;
   @include box-sizing(content-box);
 
-  .v-ui:not(.tablet) &:hover {
-    background-color: $c14;
-    color: $c10;
+  .v-ui:not(.tablet) &:hover,
+  .v-ui:not(.tablet) &:focus {
+    background-color: #444;
   }
 
   .v-app .v-ui &:active {
@@ -78,9 +79,9 @@
     color: $c10;
   }
 
-  .v-ui:not(.tablet) &.v-disabled:hover {
-    background-color: $c10;
-    color: $c80;
+  .v-ui:not(.tablet) &.v-disabled:hover,
+  .v-ui:not(.tablet) &.v-disabled:focus {
+    opacity: 0.4;
   }
 
   &:-moz-focusring {
