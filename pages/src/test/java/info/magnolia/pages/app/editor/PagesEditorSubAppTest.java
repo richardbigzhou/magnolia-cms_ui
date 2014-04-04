@@ -80,6 +80,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,6 +117,7 @@ public class PagesEditorSubAppTest {
 
     private ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
     private JcrContentConnector contentConnector;
+    private StatusBarView statusBarView;
     //private MockWorkspace workspace;
 
     @Before
@@ -171,6 +173,7 @@ public class PagesEditorSubAppTest {
         when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
 
         pageBarView = mock(PageBarView.class);
+        statusBarView = mock(StatusBarView.class);
 
         ComponentsTestUtil.setImplementation(TemplateAvailability.class, ConfiguredTemplateAvailability.class);
         definition = new ConfiguredTemplateDefinition(new ConfiguredTemplateAvailability());
@@ -189,7 +192,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -211,7 +214,7 @@ public class PagesEditorSubAppTest {
         element.setMoveable(true);
         element.setDeletable(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -234,7 +237,7 @@ public class PagesEditorSubAppTest {
         AreaElement element = new AreaElement(null, null, null, null);
         element.setAddible(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -285,7 +288,7 @@ public class PagesEditorSubAppTest {
         when(availabilityChecker.isAvailable(eq(unavailableActionDefinition.getAvailability()), anyList())).thenReturn(false);
         when(availabilityChecker.isAvailable(eq(availableActionDefinition.getAvailability()), anyList())).thenReturn(true);
 
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
 
         // param 'view' means preview
         editor.start(new PagesLocation("/:view"));
@@ -302,7 +305,7 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPagePreviewSetMgnlPreviewRequestParameter() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
 
         // WHEN
         // param 'view' means preview
@@ -315,7 +318,7 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPageEditSetsMgnlPreviewToFalse() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
         editor.start(new PagesLocation("/:view"));
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
 
@@ -329,7 +332,7 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPagePreviewSetsMgnlPreviewToTrue() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
         editor.start(new PagesLocation("/:edit"));
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
 
