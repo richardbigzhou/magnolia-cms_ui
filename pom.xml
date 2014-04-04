@@ -153,11 +153,6 @@
       </dependency>
       <dependency>
         <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-widget-editor</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -338,7 +333,6 @@
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-common-widgets</module>
     <module>magnolia-ui-widget-editor</module>
-    <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
     <module>about-app</module>

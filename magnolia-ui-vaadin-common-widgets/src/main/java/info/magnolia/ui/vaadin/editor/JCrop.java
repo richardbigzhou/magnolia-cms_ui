@@ -49,16 +49,16 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScriptFunction;
 
 /**
- * An {@link Image} extension that operates JCrop JQuery plugin ({@link http://deepliquid.com/content/Jcrop.html}). 
+ * An {@link Image} extension that operates JCrop JQuery plugin ({@link http://deepliquid.com/content/Jcrop.html}).
  */
-@JavaScript({"js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
+@JavaScript({ "jquery.color.js", "jquery.Jcrop.min.js", "jcrop_connector.js" })
 public class JCrop extends AbstractJavaScriptExtension {
 
     @Override
     public CroppableImage getParent() {
         return (CroppableImage)super.getParent();
     }
-    
+
     public JCrop(JCropHandler handler) {
         addFunction("doOnSelect", new JavaScriptFunction() {
             @Override
@@ -68,7 +68,7 @@ public class JCrop extends AbstractJavaScriptExtension {
                 getParent().fireEvent(new JCropSelectionEvent(getParent(), area));
             }
         });
-        
+
         addFunction("doOnRelease", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
@@ -76,7 +76,7 @@ public class JCrop extends AbstractJavaScriptExtension {
                 getParent().fireEvent(new JCropReleaseEvent(getParent()));
             }
         });
-        
+
         addFunction("onCreated", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
@@ -84,7 +84,7 @@ public class JCrop extends AbstractJavaScriptExtension {
             }
         });
     }
-    
+
     protected SelectionArea AreaFromJSON(JSONObject json) {
         try {
             return new SelectionArea(json.getInt("x"), json.getInt("y"), json.getInt("w"), json.getInt("h"));
@@ -92,7 +92,7 @@ public class JCrop extends AbstractJavaScriptExtension {
             return new SelectionArea();
         }
     }
-    
+
     @Override
     public void attach() {
         super.attach();
@@ -106,12 +106,12 @@ public class JCrop extends AbstractJavaScriptExtension {
     protected JCropState getState(boolean markAsDirty) {
         return (JCropState)super.getState(markAsDirty);
     }
-    
+
     @Override
     public JCropState getState() {
         return (JCropState) super.getState();
     }
-    
+
     @Override
     protected Class<Image> getSupportedParentType() {
         return Image.class;
@@ -120,19 +120,19 @@ public class JCrop extends AbstractJavaScriptExtension {
     public void setAspectRatio(double aspectRatio) {
         getState().aspectRatio = aspectRatio;
     }
-    
+
     public void animateTo(SelectionArea area) {
         callFunction("animateTo", new JSONObject(area));
     }
-    
+
     public boolean isCropVisible() {
         return getState().isVisible;
     }
-    
+
     public void setCropVisible(boolean isVisible) {
         getState().isVisible = isVisible;
     }
-    
+
     public void enable() {
         callFunction("enable");
     }
@@ -150,7 +150,7 @@ public class JCrop extends AbstractJavaScriptExtension {
             c.addStyleName("crop-status" + getConnectorId());
         }
     }
-    
+
     public void setBackgroundColor(String color) {
         getState().backgroundColor = color;
     }

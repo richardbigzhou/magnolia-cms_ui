@@ -39,10 +39,6 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-mediaeditor</artifactId>
     </dependency>
     <dependency>
