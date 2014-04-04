@@ -280,13 +280,14 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
             FieldValidatorFactory validatorFactory = this.fieldValidatorFactoryFactory.createFieldValidatorFactory(validatorDefinition, item);
             if (validatorFactory != null) {
-                this.field.addValidator(validatorFactory.createValidator());
+                field.addValidator(validatorFactory.createValidator());
             } else {
                 log.warn("Not able to create Validation for the following definition {}", definition.toString());
             }
         }
         // Set Required
         if (definition.isRequired()) {
+            field.setInvalidCommitted(true);
             field.setRequired(true);
             field.setRequiredError(definition.getRequiredErrorMessage());
         }
