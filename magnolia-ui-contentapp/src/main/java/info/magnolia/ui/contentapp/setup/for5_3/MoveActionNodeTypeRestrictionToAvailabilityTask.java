@@ -40,7 +40,6 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition;
 import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
 import info.magnolia.ui.contentapp.detail.action.RestorePreviousVersionActionDefinition;
 
@@ -70,8 +69,12 @@ public class MoveActionNodeTypeRestrictionToAvailabilityTask extends QueryTask {
     public static final String NODE_TYPES = "nodeTypes";
     public static final String QUERY_BASE = "select * from [mgnl:contentNode] as t where ";
 
+    /**
+     * The list of the common classes could also contain {@link info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition}
+     * but its <code>nodeType</code> property could have been used for purposes different from availability checking. In reality that
+     * property was not used at all, so in order to avoid problems with it - we skip {@link info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition}.
+     */
     private static Class<?>[] commonActionDefinitionClasses = new Class[] {
-            CreateItemActionDefinition.class,
             EditItemActionDefinition.class,
             RestorePreviousVersionActionDefinition.class,
     };
