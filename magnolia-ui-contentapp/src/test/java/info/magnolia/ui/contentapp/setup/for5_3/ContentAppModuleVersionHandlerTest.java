@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.setup;
+package info.magnolia.ui.contentapp.setup.for5_3;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
@@ -52,6 +51,7 @@ import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
+import info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -120,9 +120,9 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // GIVEN
         String workspaceName = "dam";
         String path = "/";
-        setUpDummyContentAppWithBrowserAndDetail("/modules/dam/apps/assets/subApps/browser", "/modules/dam/apps/assets/subApps/detail", workspaceName, path, true);
-        setUpDummyContentAppWithBrowserAndDetail("/modules/xxx/apps/assets/subApps/browser", null, "someWsName", "/xyz", false);
-        setUpDummyContentAppWithBrowserAndDetail(null, null, "/modules/abc/config/detail", "/xyz", false);
+        setUpDummyContentAppWithBrowserAndDetail("/modules/ui-admincentral/apps/assets/subApps/browser", "/modules/ui-admincentral/apps/assets/subApps/detail", workspaceName, path, true);
+        setUpDummyContentAppWithBrowserAndDetail("/modules/ui-admincentral/apps/assets1/browser", null, "someWsName", "/xyz", false);
+        setUpDummyContentAppWithBrowserAndDetail(null, null, "/modules/ui-admincentral/config/detail", "/xyz", false);
 
         // WHEN
         InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
@@ -130,10 +130,10 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // THEN
         Session installCtxSession = installContext.getJCRSession("config");
 
-        assertTrue(installCtxSession.nodeExists("/modules/dam/apps/assets/subApps/browser/contentConnector"));
-        assertTrue(installCtxSession.nodeExists("/modules/dam/apps/assets/subApps/detail/contentConnector"));
+        assertTrue(installCtxSession.nodeExists("/modules/ui-admincentral/apps/assets/subApps/browser/contentConnector"));
+        assertTrue(installCtxSession.nodeExists("/modules/ui-admincentral/apps/assets/subApps/detail/contentConnector"));
         // node and workspace are moved properly
-        Node contentConnectorNode = installCtxSession.getNode("/modules/dam/apps/assets/subApps/browser/contentConnector");
+        Node contentConnectorNode = installCtxSession.getNode("/modules/ui-admincentral/apps/assets/subApps/browser/contentConnector");
         // path was renamed to rootPath
         assertTrue(contentConnectorNode.hasProperty("rootPath"));
         assertEquals(path, PropertyUtil.getString(contentConnectorNode, "rootPath"));
@@ -142,8 +142,8 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // didn't move "any" prop
         assertEquals(null, PropertyUtil.getString(contentConnectorNode, "foo"));
         // do not migrate if it's not the subnode of a subapp
-        assertTrue(!installCtxSession.nodeExists("/modules/xxx/apps/assets/subApps/browser/contentConnector"));
-        assertTrue(!installCtxSession.nodeExists("/modules/abc/config/detail/contentConnector"));
+        assertTrue(!installCtxSession.nodeExists("/modules/ui-admincentral/apps/assets1/browser/contentConnector"));
+        assertTrue(!installCtxSession.nodeExists("/modules/ui-admincentral/config/detail/contentConnector"));
     }
 
 
@@ -156,11 +156,12 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // GIVEN
         String className = "info.magnolia.ui.api.availability.HasVersionsRule";
 
-        String availabilityContentNodePath = "/modules/groovy/apps/groovy/subApps/browser/actions/showVersions/availability";
+
+        String availabilityContentNodePath = "/modules/ui-admincentral/apps/groovy/subApps/browser/actions/showVersions/availability";
         Node availabilityContentNode = NodeUtil.createPath(session.getRootNode(),availabilityContentNodePath, NodeTypes.ContentNode.NAME);
         availabilityContentNode.setProperty("ruleClass", className);
 
-        String availabilityFolderNodePath = "/modules/abc/apps/groovy/subApps/browser/actions/showVersions/availability";
+        String availabilityFolderNodePath = "/modules/ui-admincentral/apps/groovy1/subApps/browser/actions/showVersions/availability";
         Node folderNode = NodeUtil.createPath(session.getRootNode(),availabilityContentNodePath, NodeTypes.Folder.NAME);
         folderNode.setProperty("ruleClass", className);
 
@@ -170,11 +171,13 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
 
         // THEN
-        String ruleContentNodePath = availabilityContentNodePath+"/rules/"+StringUtils.substringAfterLast(className, ".");
-        String ruleFolderNodePath = availabilityFolderNodePath+"/rules/"+StringUtils.substringAfterLast(className, ".");
-        assertTrue(installContext.getJCRSession("config").nodeExists(ruleContentNodePath));
-        assertNotNull(PropertyUtil.getString(installContext.getJCRSession("config").getNode(ruleContentNodePath),"implementationClass"));
-        assertTrue(!installContext.getJCRSession("config").nodeExists(ruleFolderNodePath));
+        Session session = installContext.getJCRSession("config");
+        String ruleContentNodePath = availabilityContentNodePath + "/rules/" + StringUtils.substringAfterLast(className, ".");
+        String ruleFolderNodePath = availabilityFolderNodePath + "/rules/" + StringUtils.substringAfterLast(className, ".");
+
+        assertTrue(session.nodeExists(ruleContentNodePath));
+        assertNotNull(PropertyUtil.getString(session.getNode(ruleContentNodePath), "implementationClass"));
+        assertTrue(!session.nodeExists(ruleFolderNodePath));
     }
 
 
@@ -186,12 +189,12 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // GIVEN
         Map<String,String> classMappings = ChangeAvailabilityRuleClassesTask.getClassMapping();
         Map<String, String> newNodePathNewClassMap = new HashMap<String, String>();
-        int i=0;
+        int i = 0;
         Iterator<String> classMappingsIterator =  classMappings.keySet().iterator();
         while(classMappingsIterator.hasNext()){
             String oldClass = classMappingsIterator.next();
             String newExceptedClass = classMappings.get(oldClass);
-            StringBuilder ruleNodeOldPath =  new StringBuilder("/modules/").append(i).append("/apps/abc/browser/actions/someAction/availability");
+            StringBuilder ruleNodeOldPath =  new StringBuilder("/modules/ui-admincentral/").append(i).append("/apps/abc/browser/actions/someAction/availability");
             StringBuilder ruleNodeNewPath =  new StringBuilder(ruleNodeOldPath).append("/rules/").append(StringUtils.substringAfterLast(oldClass, "."));
             createNodeWithOldRuleClassProperty(ruleNodeOldPath.toString(), oldClass);
             newNodePathNewClassMap.put(ruleNodeNewPath.toString(), newExceptedClass);
@@ -219,13 +222,13 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
     }
 
 
-    private void setUpDummyContentAppWithBrowserAndDetail(String browserSubAppPath, String detailSubAppPath, String workspaceName, String path, boolean setSubappClassProperty) throws Exception{
-        if(StringUtils.isNotBlank(browserSubAppPath)){
-            String workbenchPath = browserSubAppPath+"/workbench";
+    private void setUpDummyContentAppWithBrowserAndDetail(String browserSubAppPath, String detailSubAppPath, String workspaceName, String path, boolean subAppClass) throws Exception{
+        if (StringUtils.isNotBlank(browserSubAppPath)) {
+            String workbenchPath = browserSubAppPath + "/workbench";
             NodeUtil.createPath(session.getRootNode(), workbenchPath, NodeTypes.ContentNode.NAME);
             Node workbench = session.getNode(workbenchPath);
-            if(setSubappClassProperty){
-                workbench.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY,"some.class");
+            if(subAppClass){
+                workbench.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY, "some.class");
             }
             workbench.setProperty("workspace", workspaceName);
             workbench.setProperty("path" , path);
@@ -233,9 +236,9 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         }
         if(StringUtils.isNotBlank(detailSubAppPath)){
             String editorPath = detailSubAppPath+"/editor";
-            Node editor = NodeUtil.createPath(session.getRootNode(), editorPath, NodeTypes.ContentNode.NAME);
-            if(setSubappClassProperty){
-                editor.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY,"some.class");
+            Node editor = NodeUtil.createPath(session.getRootNode(), editorPath, NodeTypes.ContentNode.NAME, true);
+            if(subAppClass){
+                editor.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY, "some.class");
             }
             editor.setProperty("workspace", workspaceName);
         }

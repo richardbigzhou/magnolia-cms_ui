@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.setup;
+package info.magnolia.ui.contentapp.setup.for5_3;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
@@ -48,15 +48,22 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
+ *
+ * This task normally is not meant to be used standalone.
+ * @see ContentAppMigrationTask
  */
 public class MigrateAvailabilityRulesTask extends QueryTask {
 
     protected static final String RULE_CLASS = "ruleClass";
     protected static final String RULES = "rules";
-    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' ";
+    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' and isdescendantnode('%s')";
 
-    protected MigrateAvailabilityRulesTask() {
-        super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, QUERY);
+    public MigrateAvailabilityRulesTask(String path) {
+        super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, String.format(QUERY, path));
+    }
+
+    public MigrateAvailabilityRulesTask() {
+        this("/");
     }
 
     @Override
