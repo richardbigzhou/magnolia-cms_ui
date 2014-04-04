@@ -35,6 +35,8 @@ package info.magnolia.ui.contentapp.detail.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Base ContentApp ItemActionDefinition.
  */
@@ -43,6 +45,8 @@ public abstract class AbstractItemActionDefinition extends ConfiguredActionDefin
     private String appName;
 
     private String subAppId;
+
+    private String nodeType = StringUtils.EMPTY;
 
     public String getAppName() {
         return appName;
@@ -58,5 +62,31 @@ public abstract class AbstractItemActionDefinition extends ConfiguredActionDefin
 
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
+    }
+
+    /**
+     * Get the node type associated with action.
+     *
+     * @deprecated since 5.3 because the property has been used for availability purposes only and so should be defined
+     * in {@link info.magnolia.ui.api.availability.AvailabilityDefinition}.
+     * The existing configuration entries are handled by migration tasks.
+     * @see info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask
+     * @see info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask
+     */
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    /**
+     * Set the node type associated with action.
+     *
+     * @deprecated since 5.3 because the property has been used for availability purposes only and so should be defined
+     * in {@link info.magnolia.ui.api.availability.AvailabilityDefinition}.
+     * The existing configuration entries are handled by migration tasks.
+     * @see info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask
+     * @see info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 }
