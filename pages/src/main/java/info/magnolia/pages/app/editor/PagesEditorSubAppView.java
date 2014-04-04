@@ -37,6 +37,7 @@ import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.ui.workbench.StatusBarView;
 
 /**
  * PagesEditorSubAppView.
@@ -56,6 +57,8 @@ public interface PagesEditorSubAppView extends ContentSubAppView {
     void setPageBarView(PageBarView pageBarView);
 
     void setPageEditorView(PageEditorView pageEditor);
+
+    void setStatusBarView(StatusBarView statusBarView);
 
     /**
      * Use this method to add an action bar to this sub app view.

@@ -86,6 +86,7 @@ import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +120,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
     private AvailabilityChecker availabilityChecker;
+    private final StatusBarView statusBarView;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -133,7 +135,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker, ContentConnector contentConnector) {
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+            ContentConnector contentConnector, StatusBarView statusBarView) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -145,6 +148,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
         this.availabilityChecker = availabilityChecker;
+        this.statusBarView = statusBarView;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = ((JcrContentConnector)contentConnector).getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -180,6 +184,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
+        view.setStatusBarView(statusBarView);
+
+        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
 
         goToLocation(detailLocation);
         return view;
