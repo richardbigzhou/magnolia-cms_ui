@@ -436,7 +436,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertEquals("info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+        assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
         assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/app"));
         assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/icon"));
 
@@ -458,7 +458,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertEquals("", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes").getString());
     }
 
-
     @Test
     public void testICEPushMimeMappingRemovedIn522() throws Exception {
         // GIVEN
@@ -467,7 +466,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
 
-        //THEN
+        // THEN
         assertFalse("ICEPush MIMEMapping is gone", session.itemExists("/server/MIMEMapping/icepush"));
     }
 
@@ -491,5 +490,17 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         NodeIterator it = actions.getNodes();
         assertEquals("editUserProfile", it.nextNode().getName());
         assertEquals("logout", it.nextNode().getName());
+    }
+
+    @Test
+    public void testUpdateTo524ChangesConfigurationAppClass() throws Exception {
+        // GIVEN
+        setupConfigProperty("modules/ui-admincentral/apps/configuration", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
+
+        // THEN
+        assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
     }
 }
