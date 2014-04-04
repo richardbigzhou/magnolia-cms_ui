@@ -13,7 +13,7 @@
     <sv:value>info.magnolia.ui.contentapp.ContentApp</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor</sv:value>
+    <sv:value>info.magnolia.ui.contentapp.ContentAppDescriptor</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
