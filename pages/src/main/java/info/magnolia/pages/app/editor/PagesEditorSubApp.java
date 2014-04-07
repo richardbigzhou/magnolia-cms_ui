@@ -43,6 +43,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.link.LinkUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
@@ -80,6 +81,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.List;
 import java.util.Locale;
@@ -110,6 +112,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final PageBarView pageBarView;
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
+    private final StatusBarView statusBarView;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -121,10 +124,20 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private Locale currentLocale;
     private String caption;
 
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
+     */
+    @Deprecated
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, Components.getComponent(StatusBarView.class));
+    }
+
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, StatusBarView statusBarView) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -135,6 +148,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.pageBarView = pageBarView;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
+        this.statusBarView = statusBarView;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -167,6 +181,16 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
+        view.setStatusBarView(statusBarView);
+
+        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
         goToLocation(detailLocation);
         return view;
     }

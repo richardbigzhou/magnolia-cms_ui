@@ -33,19 +33,31 @@
  */
 package info.magnolia.pages.app.editor;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.ui.workbench.StatusBarView;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -67,9 +79,27 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private PageBarView pageBarView;
 
-    @Inject
+    private StatusBarView statusBarView;
+
+    private final SubAppContext subAppContext;
+
+    private final SimpleTranslator i18n;
+
+    private HorizontalLayout activationStatus;
+
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubAppViewImpl#PagesEditorSubAppViewImpl(info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.app.SubAppContext, info.magnolia.i18nsystem.SimpleTranslator) instead.
+     */
+    @Deprecated
     public PagesEditorSubAppViewImpl(PageBarView pageBarView) {
+        this(pageBarView, Components.getComponent(SubAppContext.class), Components.getComponent(SimpleTranslator.class));
+    }
+
+    @Inject
+    public PagesEditorSubAppViewImpl(PageBarView pageBarView, SubAppContext subAppContext, SimpleTranslator i18n) {
         this.pageBarView = pageBarView;
+        this.subAppContext = subAppContext;
+        this.i18n = i18n;
 
         root.setSizeFull();
         root.setStyleName("pageeditor");
@@ -126,6 +156,22 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     }
 
     @Override
+    public void setStatusBarView(StatusBarView statusBarView) {
+        DetailLocation location = DetailLocation.wrap(this.subAppContext.getLocation());
+        String nodePath = location.getNodePath();
+        HorizontalLayout status = getActivationStatus(nodePath);
+        if (this.statusBarView == null) {
+            this.statusBarView = statusBarView;
+            this.statusBarView.addComponent(status, Alignment.MIDDLE_CENTER);
+            container.addComponent(this.statusBarView.asVaadinComponent());
+        } else {
+            this.statusBarView.removeComponent(activationStatus);
+            this.statusBarView.addComponent(status, Alignment.MIDDLE_CENTER);
+        }
+        this.activationStatus = status;
+    }
+
+    @Override
     public Component asVaadinComponent() {
         return root;
     }
@@ -141,4 +187,44 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     public void setContentView(View view) {
 
     }
+
+    private HorizontalLayout getActivationStatus(String nodePath) {
+        Integer status;
+        String icon = "activation-status ";
+        String text = i18n.translate("pages.editPage.statusBar.unpublished");
+        try {
+            Node node = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE).getNode(nodePath);
+            status = NodeTypes.Activatable.getActivationStatus(node);
+        } catch (RepositoryException e) {
+            status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
+        }
+
+        switch (status) {
+        case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
+            icon += "color-yellow icon-status-orange";
+            text = i18n.translate("pages.editPage.statusBar.modified");
+            break;
+        case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
+            icon += "color-green icon-status-green";
+            text = i18n.translate("pages.editPage.statusBar.published");
+            break;
+        default:
+            icon += "color-red icon-status-red";
+        }
+
+        Label iconLabel = new Label();
+        iconLabel.addStyleName(icon);
+
+        Label textLabel = new Label();
+        textLabel.addStyleName("activationstatus");
+        textLabel.setValue(text);
+
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.addStyleName("statusbar");
+        layout.addComponent(iconLabel);
+        layout.addComponent(textLabel);
+
+        return layout;
+    }
+
 }
