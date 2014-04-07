@@ -60,7 +60,7 @@ public final class PulseShellApp implements ShellApp {
 
     @Override
     public void locationChanged(Location location) {
-        // nothing to do? TODO remove?
+        presenter.showList();
     }
 
 }

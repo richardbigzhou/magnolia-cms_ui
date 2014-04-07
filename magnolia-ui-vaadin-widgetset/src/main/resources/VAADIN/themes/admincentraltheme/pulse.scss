@@ -342,7 +342,7 @@
 }
 .v-pulse .message-type {
   color: $c12;
-  font-size: 30px;
+  font-size: 20px;
 }
 .v-pulse .message-type.error {
   color: $c70;
@@ -374,6 +374,11 @@
 .v-pulse .footer .status {
   position:absolute;
   right: 20px;
+}
+
+.v-pulse .task .task-title {
+  display: inline;
+  margin-left: 10px;
 }
 
 }

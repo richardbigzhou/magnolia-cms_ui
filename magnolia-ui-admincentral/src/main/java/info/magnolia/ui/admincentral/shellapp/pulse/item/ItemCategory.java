@@ -42,7 +42,7 @@ public enum ItemCategory {
     TASKS("pulse.items.tasks"),
     PROBLEM("pulse.messages.problems"),
     INFO("pulse.messages.info"),
-    PENDING("pulse.tasks.pending"),
+    UNCLAIMED("pulse.tasks.unclaimed"),
     ONGOING("pulse.tasks.ongoing"),
     DONE("pulse.tasks.done");
 

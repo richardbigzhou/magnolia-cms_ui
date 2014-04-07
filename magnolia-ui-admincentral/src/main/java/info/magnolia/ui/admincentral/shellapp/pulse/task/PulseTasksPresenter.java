@@ -74,7 +74,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     public static final String TASK_PROPERTY_ID = "task";
     public static final String STATUS_PROPERTY_ID = "status";
     public static final String SENDER_PROPERTY_ID = "sender";
-    public static final String DATE_PROPERTY_ID = "date";
+    public static final String LAST_CHANGE_PROPERTY_ID = "date";
     public static final String SENT_TO_PROPERTY_ID = "sentTo";
     public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
 
@@ -127,7 +127,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
         container.addContainerProperty(ASSIGNED_TO_PROPERTY_ID, String.class, null);
         container.addContainerProperty(SENT_TO_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(DATE_PROPERTY_ID, Date.class, null);
+        container.addContainerProperty(LAST_CHANGE_PROPERTY_ID, Date.class, null);
 
         createSuperItems();
 
@@ -252,8 +252,8 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         if (item != null && task != null) {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Status.Created);
             item.getItemProperty(TASK_PROPERTY_ID).setValue(task.getName());
-            item.getItemProperty(SENDER_PROPERTY_ID).setValue("a sender");
-            item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date());
+            item.getItemProperty(SENDER_PROPERTY_ID).setValue("system");
+            item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getLastChange());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
             item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId(), ""));
             item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + " - " + StringUtils.defaultString(task.getActorIds()));
@@ -277,7 +277,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
                 final Status type = (Status) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
 
                 switch (category) {
-                case PENDING:
+                case UNCLAIMED:
                     return type == Status.Created;
                 case ONGOING:
                     return type == Status.InProgress;
@@ -333,7 +333,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
         case Created:
             count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Created)).size();
-            view.updateCategoryBadgeCount(ItemCategory.PENDING, count);
+            view.updateCategoryBadgeCount(ItemCategory.UNCLAIMED, count);
             break;
         case InProgress:
             count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
