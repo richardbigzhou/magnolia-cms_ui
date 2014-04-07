@@ -43,6 +43,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.link.LinkUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
@@ -131,6 +132,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
     private Locale currentLocale;
     private String caption;
+
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
+     */
+    @Deprecated
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector) {
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
+    }
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,

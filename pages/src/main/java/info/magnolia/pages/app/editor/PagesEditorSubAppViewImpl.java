@@ -36,6 +36,7 @@ package info.magnolia.pages.app.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -89,6 +90,14 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     private final SimpleTranslator i18n;
 
     private HorizontalLayout activationStatus;
+
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubAppViewImpl#PagesEditorSubAppViewImpl(info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.app.SubAppContext, info.magnolia.i18nsystem.SimpleTranslator) instead.
+     */
+    @Deprecated
+    public PagesEditorSubAppViewImpl(PageBarView pageBarView) {
+        this(pageBarView, Components.getComponent(SubAppContext.class), Components.getComponent(SimpleTranslator.class));
+    }
 
     @Inject
     public PagesEditorSubAppViewImpl(PageBarView pageBarView, SubAppContext subAppContext, SimpleTranslator i18n) {
