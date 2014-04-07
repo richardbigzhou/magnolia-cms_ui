@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.api.task;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -57,6 +58,9 @@ public class Task {
     private Map<String, Object> content;
 
     private Map<String, Object> results;
+
+    private Date lastChange;
+
     public long getId() {
         return id;
     }
@@ -149,6 +153,14 @@ public class Task {
 
     public void setResults(Map<String, Object> results) {
         this.results = results;
+    }
+
+    public Date getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(Date lastChange) {
+        this.lastChange = lastChange;
     }
 
     /**

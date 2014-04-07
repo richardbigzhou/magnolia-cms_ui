@@ -95,11 +95,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void onCategoryChange(ItemCategory category) {
         selectedCategory = category;
-        if (category == ItemCategory.MESSAGES) {
-            view.setPulseSubView(messagesPresenter.start());
-        } else if (category == ItemCategory.TASKS) {
-            view.setPulseSubView(tasksPresenter.start());
-        }
+        showList();
     }
 
     @Override
