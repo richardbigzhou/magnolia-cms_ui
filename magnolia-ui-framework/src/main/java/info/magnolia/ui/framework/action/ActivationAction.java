@@ -66,6 +66,8 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
     private final EventBus admincentralEventBus;
     private final UiContext uiContext;
 
+    private SimpleTranslator i18n;
+
 
     @Inject
     public ActivationAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager,
@@ -74,6 +76,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
         this.jcrItemAdapter = item;
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;
+        this.i18n = i18n;
     }
 
     @Override
@@ -103,7 +106,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
         Context context = MgnlContext.getInstance();
         // yes, this is inverted, because a chain returns false when it is finished.
         boolean success = !(Boolean) context.getAttribute(COMMAND_RESULT);
-        String message = getMessage(success);
+        String message = i18n.translate(getMessage(success));
         MessageStyleTypeEnum messageStyleType = success ? MessageStyleTypeEnum.INFO : MessageStyleTypeEnum.ERROR;
 
         if (StringUtils.isNotBlank(message)) {
@@ -112,7 +115,11 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
     }
 
     protected String getMessage(boolean success) {
-        return success ? getDefinition().getSuccessMessage() : getDefinition().getFailureMessage();
+        if (success) {
+            return getDefinition().getSuccessMessage();
+        } else {
+            return getFailureMessage() != null ? getFailureMessage() : getDefinition().getFailureMessage();
+        }
     }
 
     protected String getErrorMessage() {
