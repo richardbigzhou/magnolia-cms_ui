@@ -39,21 +39,30 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+import org.quartz.JobDetail;
+import org.quartz.ObjectAlreadyExistsException;
+import org.quartz.Scheduler;
+import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +73,11 @@ import org.slf4j.LoggerFactory;
  */
 public class AbstractCommandAction<D extends CommandActionDefinition> extends AbstractMultiItemAction<D> {
 
+    public static final String COMMAND_RESULT = "command_result";
+
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandAction.class);
+
+    private static AtomicInteger idx = new AtomicInteger();
 
     private CommandsManager commandsManager;
 
@@ -72,35 +85,42 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private Map<String, Object> params;
 
-    private final UiContext uiContext;
+    private SimpleTranslator i18n;
 
-    private final SimpleTranslator i18n;
+    private Object schedulerModule;
 
-    public static final String COMMAND_RESULT = "command_result";
+    private String commandName;
+
+    private String catalogName;
+
+    private String failureMessage;
 
 
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, uiContext);
-        this.commandsManager = commandsManager;
-        this.uiContext = uiContext;
-        this.i18n = i18n;
-        // Init Command.
-        String commandName = getDefinition().getCommand();
-        String catalog = getDefinition().getCatalog();
-        this.command = getCommandsManager().getCommand(catalog, commandName);
+        init(commandsManager, i18n);
     }
 
 
     public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
+        init(commandsManager, i18n);
+    }
+
+    private void init(final CommandsManager commandsManager, final SimpleTranslator i18n) {
         this.commandsManager = commandsManager;
-        this.uiContext = uiContext;
         this.i18n = i18n;
         // Init Command.
-        String commandName = getDefinition().getCommand();
-        String catalog = getDefinition().getCatalog();
-        this.command = getCommandsManager().getCommand(catalog, commandName);
+        commandName = getDefinition().getCommand();
+        catalogName = getDefinition().getCatalog();
+        this.command = getCommandsManager().getCommand(catalogName, commandName);
+        // Scheduler is used only until long-running-actions-concept is implemented. Do not pollute constructors by adding it there.
+        ModuleRegistry registry = Components.getComponent(ModuleRegistry.class);
+        if (registry.isModuleRegistered("scheduler")) {
+            schedulerModule = registry.getModuleInstance("scheduler");
+        }
     }
+
 
     /**
      * Builds a map of parameters which will be passed to the current command
@@ -165,7 +185,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     @Override
     protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
-
+        failureMessage = null;
         try {
             onPreExecute();
         } catch (Exception e) {
@@ -181,15 +201,56 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] {  getDefinition().getCommand(),  getDefinition().getCatalog(), getParams() });
 
-            boolean result = commandsManager.executeCommand(command, getParams());
-            MgnlContext.getInstance().setAttribute(COMMAND_RESULT, result, Context.LOCAL_SCOPE);
+            boolean stopProcessing = false;
+            if (isInvokeAsynchronously()) {
+                try {
+                    // get quartz scheduler (same instance as scheduler module)
+                    // due to creation of circular dependency, we can't simply import mgnl scheduler, yet we want to use same factory initialized scheduler in case someone customized it and we want to have all jobs in same group for monitoring purposes
+                    Scheduler scheduler = (Scheduler) schedulerModule.getClass().getMethod("getScheduler").invoke(schedulerModule);
+                    // create trigger
+                    Calendar cal = Calendar.getInstance();
+                    // wait for requested period of time before invocation
+                    cal.add(Calendar.SECOND, getDefinition().getDelay());
+
+                    String userName = MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName();
+                    String jobName = "UI Action triggered execution of [" + (StringUtils.isNotEmpty(catalogName) ? (commandName + ":") : "") + commandName + "] by user [" + StringUtils.defaultIfEmpty(userName, "") + "].";
+                    // allowParallel jobs false/true => remove index, or keep index
+                    if (getDefinition().isParallel()) {
+                        jobName += " (" + idx.getAndIncrement() + ")";
+                    }
+                    SimpleTrigger trigger = new SimpleTrigger(jobName, "magnolia", cal.getTime());
+                    // create job definition
+                    final JobDetail jd = new JobDetail(jobName, "magnolia", this.getClass().forName("info.magnolia.module.scheduler.CommandJob"));
+                    jd.getJobDataMap().put("command", commandName);
+                    jd.getJobDataMap().put("catalog", catalogName);
+                    jd.getJobDataMap().put("params", getParams());
+
+                    // start the job
+                    scheduler.scheduleJob(jd, trigger);
+                    // false == all ok, just stop processing. Seems actions are taking up the signaling used by commands (facepalm)
+                    stopProcessing = false;
+                } catch (ObjectAlreadyExistsException e) {
+                    // unfortunately this old version doesn't have any better method of checking whether job already exists
+                    // if the job with same name already exists, it was either started by someone else and we don't allow this type of job to be executed multiple times
+                    failureMessage = "ui-framework.abstractcommand.parallelExecutionNotAllowed";
+                    stopProcessing = true;
+                }
+            } else {
+                stopProcessing = commandsManager.executeCommand(command, getParams());
+            }
+            MgnlContext.getInstance().setAttribute(COMMAND_RESULT, stopProcessing, Context.LOCAL_SCOPE);
             onPostExecute();
             log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
             onError(e);
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
+            log.debug(e.getMessage(), e);
             throw new ActionExecutionException(e);
         }
+    }
+
+    protected boolean isInvokeAsynchronously() {
+        return getDefinition().isAsynchronous() && schedulerModule != null;
     }
 
     /**
@@ -215,7 +276,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     protected void onError(Exception e) {
         String message = i18n.translate("ui-framework.abstractcommand.executionfailure");
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
+        getUiContext().openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
     /**
@@ -234,6 +295,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     @Override
     protected String getFailureMessage() {
         // by default, we expect the command-based actions to be limited to single-item
-        return null;
+        return failureMessage;
     }
 }

@@ -57,6 +57,8 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -102,6 +104,8 @@ public class AbstractCommandActionTest {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+
+        ComponentsTestUtil.setImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
 
         WebContext webContext = mock(WebContext.class);
         when(webContext.getContextPath()).thenReturn("/foo");

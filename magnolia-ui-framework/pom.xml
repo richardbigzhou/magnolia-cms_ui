@@ -77,6 +77,18 @@
       <artifactId>commons-compress</artifactId>
       <version>1.0</version>
     </dependency>
+     <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <!-- keep version number in sync w/ m-m-scheduler -->
+      <version>1.8.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
