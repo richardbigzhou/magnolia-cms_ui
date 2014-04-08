@@ -82,7 +82,7 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
         try {
             Node subAppNode = node.getParent();
-            if (!"subApps".equals(subAppNode.getParent().getName())) {
+            if (!"subApps".equals(subAppNode.getParent().getName()) && !subAppNode.hasProperty("subAppClass")) {
                 return;
             }
 
@@ -105,7 +105,7 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
             boolean nodeCleared = !node.getNodes().hasNext();
             for (final PropertyIterator it = node.getProperties(); nodeCleared && it.hasNext();) {
                 final String propertyName = it.nextProperty().getName();
-                nodeCleared = propertyName.startsWith(NodeTypes.MGNL_PREFIX) || propertyName.startsWith(NodeTypes.JCR_PREFIX);
+                nodeCleared = propertyName.startsWith(NodeTypes.MGNL_PREFIX) || propertyName.startsWith(NodeTypes.JCR_PREFIX) || propertyName.equals("extends");
             }
 
             if (nodeCleared) {
