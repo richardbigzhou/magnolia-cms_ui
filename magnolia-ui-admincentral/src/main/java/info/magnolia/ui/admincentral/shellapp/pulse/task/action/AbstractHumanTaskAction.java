@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -109,7 +107,7 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
     /**
      * Subclasses can use the TaskPresenter to interact back with it and its parent presenter, i.e. PulsePresenter.
      */
-    public TaskPresenter getTaskPresenter() {
+    protected TaskPresenter getTaskPresenter() {
         return taskPresenter;
     }
 }

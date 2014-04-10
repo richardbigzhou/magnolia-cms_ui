@@ -34,8 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -68,7 +66,7 @@ public class RetryHumanTaskAction extends AbstractHumanTaskAction<RetryHumanTask
     protected void canExecuteTask(Task task) throws IllegalStateException {
         final String currentUser = MgnlContext.getUser().getName();
         if (task.getStatus() != Task.Status.Failed || !currentUser.equals(task.getActorId())) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only in progress tasks assigned to yourself can be completed.");
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only failed tasks assigned to yourself can be retried.");
         }
     }
 }
