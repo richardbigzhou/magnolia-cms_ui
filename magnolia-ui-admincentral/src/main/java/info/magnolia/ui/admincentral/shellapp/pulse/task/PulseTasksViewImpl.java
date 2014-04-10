@@ -48,6 +48,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
@@ -171,7 +173,7 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
 
             if (TASK_PROPERTY_ID.equals(columnId)) {
                 final Property<String> text = source.getContainerProperty(itemId, columnId);
-                return new TaskCellComponent(text.getValue());
+                return new TaskCellComponent(itemId, text.getValue());
             }
             return null;
         }
@@ -189,10 +191,10 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
      * if several items are affected, the number and type of affected items (e.g. "5 contacts", "3 articles").
      * for content items hosted on sites, this would also show the name of the sites affected by the work flow.
      */
-    private static final class TaskCellComponent extends CustomComponent {
+    private final class TaskCellComponent extends CustomComponent {
         private CssLayout root = new CssLayout();
 
-        public TaskCellComponent(final String text) {
+        public TaskCellComponent(final Object itemId, final String text) {
             final Label icon = new Label();
             icon.setSizeUndefined();
             icon.addStyleName("icon");
@@ -209,6 +211,14 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             addStyleName("task");
 
             setCompositionRoot(root);
+
+            root.addLayoutClickListener(new LayoutClickListener() {
+
+                @Override
+                public void layoutClick(LayoutClickEvent event) {
+                    onItemClicked(event, itemId);
+                }
+            });
         }
     }
 }

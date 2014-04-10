@@ -52,6 +52,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -312,18 +313,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         itemTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                final String itemId = String.valueOf(event.getItemId());
-                // clicking on the group type header does nothing.
-                if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
-                    return;
-                }
-                if (event.isDoubleClick()) {
-                    listener.onItemClicked(itemId);
-                } else {
-                    if (itemTable.isSelected(itemId)) {
-                        itemTable.unselect(itemId);
-                    }
-                }
+                onItemClicked(event, event.getItemId());
             }
         });
 
@@ -378,5 +368,20 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
 
     protected TreeTable getItemTable() {
         return itemTable;
+    }
+
+    protected void onItemClicked(ClickEvent event, final Object itemId) {
+        String itemIdAsString = String.valueOf(itemId);
+        // clicking on the group type header does nothing.
+        if (itemIdAsString.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+            return;
+        }
+        if (event.isDoubleClick()) {
+            listener.onItemClicked(itemIdAsString);
+        } else {
+            if (itemTable.isSelected(itemIdAsString)) {
+                itemTable.unselect(itemIdAsString);
+            }
+        }
     }
 }
