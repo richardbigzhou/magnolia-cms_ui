@@ -44,7 +44,8 @@ public enum ItemCategory {
     INFO("pulse.messages.info"),
     UNCLAIMED("pulse.tasks.unclaimed"),
     ONGOING("pulse.tasks.ongoing"),
-    DONE("pulse.tasks.done");
+    DONE("pulse.tasks.done"),
+    FAILED("pulse.tasks.failed");
 
     private String key;
 

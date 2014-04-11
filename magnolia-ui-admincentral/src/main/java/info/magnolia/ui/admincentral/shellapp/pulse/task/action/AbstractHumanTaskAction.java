@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.slf4j.Logger;
@@ -93,7 +93,7 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
      * 
      * @throws IllegalStateException if a task status doesn't allow this action to be executed (e.g. trying to complete a task which is not in progress). In general, subclasses can throw this exception for any reason
      * they deem should cause the current task execution to be aborted.
-     * @See {@link info.magnolia.ui.api.task.Task.Status}
+     * @See {@link Task.Status}
      */
     protected void canExecuteTask(Task task) throws IllegalStateException {
         // no-op

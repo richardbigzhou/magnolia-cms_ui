@@ -36,10 +36,10 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 import static info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.task.Task.Status;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
@@ -67,7 +67,7 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
-                ItemCategory.ALL, ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE);
+                ItemCategory.ALL, ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE, ItemCategory.FAILED);
 
         constructTable();
     }
@@ -106,6 +106,9 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             break;
         case Completed:
             generated.setText("", "", getI18n().translate("pulse.tasks.done"));
+            break;
+        case Failed:
+            generated.setText("", "", getI18n().translate("pulse.tasks.failed"));
             break;
         }
         return generated;
@@ -148,6 +151,9 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                     break;
                 case Completed:
                     label.setValue(getI18n().translate("pulse.tasks.done"));
+                    break;
+                case Failed:
+                    label.setValue(getI18n().translate("pulse.tasks.failed"));
                     break;
                 default:
                     break;

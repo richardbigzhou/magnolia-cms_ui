@@ -31,47 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.ui.api.task.Task;
-
-import java.util.List;
-import java.util.Map;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Magnolia TasksManager interface.
+ * RetryHumanTaskActionDefinition.
  */
-public interface TasksManager {
-    /**
-     * TaskListener.
-     */
-    public interface TaskListener {
-
-        void taskClaimed(long id, String userId);
-
-        void taskAdded(Task task);
-
-        void taskRemoved(long id);
-
-        void taskCompleted(long id);
+public class RetryHumanTaskActionDefinition extends ConfiguredActionDefinition {
+    public RetryHumanTaskActionDefinition() {
+        setImplementationClass(RetryHumanTaskAction.class);
     }
-
-    void claim(long taskId, String userId);
-
-    void addTask(Task task, Map<String, Object> content);
-
-    List<Task> getAllTasks();
-
-    void complete(long taskId, Map<String, Object> results);
-
-    void removeTask(long id);
-
-    /**
-     * Beware: this method is for registering task listeners and should only be used by the entry point of our application AdmincentralUI where we register a dispatcher.
-     * If you'll use it to register your own TaskListeners this is likely to introduce a memory leak. You should listen to the TaskEvent instead.
-     */
-    void registerTasksListener(String userName, TaskListener listener);
-
-    void unregisterTasksListener(String userName, TaskListener listener);
-
 }

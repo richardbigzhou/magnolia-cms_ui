@@ -34,11 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
-import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**
@@ -52,7 +51,7 @@ public class ClaimHumanTaskAction extends AbstractHumanTaskAction<ClaimHumanTask
 
     @Override
     protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Status.Created) {
+        if (task.getStatus() != Task.Status.Created) {
             throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only unclaimed tasks can be claimed.");
         }
     }
@@ -62,7 +61,7 @@ public class ClaimHumanTaskAction extends AbstractHumanTaskAction<ClaimHumanTask
         final String userId = MgnlContext.getUser().getName();
         log.debug("User [{}] is claiming workflow human task named [{}]", userId, task.getName());
 
-        long taskId = task.getId();
+        String taskId = task.getId();
         taskManager.claim(taskId, userId);
         getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
 

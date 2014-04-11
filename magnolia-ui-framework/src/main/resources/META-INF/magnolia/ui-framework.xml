@@ -48,10 +48,6 @@
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.task.TasksStore</type>
-      <implementation>info.magnolia.ui.framework.task.TasksStoreImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -62,14 +58,6 @@
     <component>
       <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager</type>
       <implementation>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.task.TasksStore</type>
-      <implementation>info.magnolia.ui.framework.task.TasksStoreImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.task.TasksManager</type>
-      <implementation>info.magnolia.ui.framework.task.DefaultTasksManager</implementation>
     </component>
 
     <!-- Form -->
@@ -96,6 +84,12 @@
     <component>
       <type>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</type>
       <implementation>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</implementation>
+    </component>
+
+    <!-- Task Event Dispatcher -->
+    <component>
+      <type>info.magnolia.ui.framework.task.LocalTaskDispatcherManager</type>
+      <implementation>info.magnolia.ui.framework.task.LocalTaskDispatcherManager</implementation>
     </component>
 
     <!-- Ui Api -->

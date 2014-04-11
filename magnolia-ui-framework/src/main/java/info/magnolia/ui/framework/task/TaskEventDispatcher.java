@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.availability;
+package info.magnolia.ui.framework.task;
 
-import info.magnolia.ui.api.task.Task.Status;
-import info.magnolia.ui.framework.task.TasksStore;
-
-import javax.inject.Inject;
+import info.magnolia.task.TaskEvent;
 
 /**
- * This rule returns true if the task status is completed.
+ * TaskEventDispatcher.
  */
-public final class CanDeleteTaskRule extends AbstractTaskStatusRule {
+public interface TaskEventDispatcher {
 
-    @Inject
-    public CanDeleteTaskRule(TasksStore store) {
-        super(store);
-    }
-
-    @Override
-    protected boolean isAvailableForCurrentStatus(Status status) {
-        return status == Status.Completed;
-    }
+    void onTaskEvent(TaskEvent task);
 }

@@ -40,26 +40,25 @@ import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.inject.Inject;
 
 /**
- * Action for completing a human task.
+ * RetryHumanTaskAction.
  */
-public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHumanTaskActionDefinition> {
+public class RetryHumanTaskAction extends AbstractHumanTaskAction<RetryHumanTaskActionDefinition> {
 
-    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TaskPresenter taskPresenter, TasksManager taskManager, Shell shell) {
-        super(definition, task, taskManager, taskPresenter, shell);
+    @Inject
+    public RetryHumanTaskAction(RetryHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, TaskPresenter taskPresenter, Shell shell) {
+        super(definition, task, tasksManager, taskPresenter, shell);
     }
 
     @Override
-    protected void executeTask(TasksManager taskManager, Task task) {
-        log.debug("About to complete human task named [{}]", task.getName());
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(DECISION, getDefinition().getDecision());
+    protected void executeTask(TasksManager tasksManager, Task task) {
+        log.debug("About to retry completion of human task named [{}]", task.getName());
+
         String taskId = task.getId();
 
-        taskManager.complete(taskId, result);
+        tasksManager.complete(taskId, task.getResult());
         getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
 
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
@@ -68,7 +67,7 @@ public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHum
     @Override
     protected void canExecuteTask(Task task) throws IllegalStateException {
         final String currentUser = MgnlContext.getUser().getName();
-        if (task.getStatus() != Task.Status.InProgress || !currentUser.equals(task.getActorId())) {
+        if (task.getStatus() != Task.Status.Failed || !currentUser.equals(task.getActorId())) {
             throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only in progress tasks assigned to yourself can be completed.");
         }
     }

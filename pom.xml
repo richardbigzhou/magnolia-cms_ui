@@ -166,6 +166,12 @@
         <artifactId>magnolia-ui-workbench</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>info.magnolia.task</groupId>
+        <artifactId>task-management</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
 
       <!-- Other deps: -->
       <dependency>
