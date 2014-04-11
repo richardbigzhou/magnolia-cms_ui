@@ -34,11 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
-import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**
@@ -62,7 +61,7 @@ public class DeleteHumanTaskAction extends AbstractHumanTaskAction<DeleteHumanTa
     protected void canExecuteTask(Task task) throws IllegalStateException {
         final String currentUser = MgnlContext.getUser().getName();
 
-        if (task.getStatus() != Status.Completed || !currentUser.equals(task.getActorId())) {
+        if (task.getStatus() != Task.Status.Completed || !currentUser.equals(task.getActorId())) {
             throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only completed tasks assigned to yourself can be deleted.");
         }
     }

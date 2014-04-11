@@ -34,9 +34,8 @@
 package info.magnolia.ui.framework.task;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.task.TaskEvent;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.framework.task.TasksManager.TaskListener;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +45,7 @@ import com.vaadin.server.VaadinSession;
 /**
  * Dispatches Task events on an {@link EventBus} for a certain user.
  */
-public class LocalTaskDispatcher implements TaskListener {
+public class LocalTaskDispatcher implements TaskEventDispatcher {
 
     private EventBus eventBus;
     private VaadinSession vaadinSession;
@@ -58,46 +57,14 @@ public class LocalTaskDispatcher implements TaskListener {
     }
 
     @Override
-    public void taskClaimed(long id, String userId) {
+    public void onTaskEvent(TaskEvent taskEvent) {
         VaadinSession previous = VaadinSession.getCurrent();
         try {
             VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new TaskEvent(id, true, false, false, userId));
+            eventBus.fireEvent(taskEvent);
         } finally {
             VaadinSession.setCurrent(previous);
         }
     }
 
-    @Override
-    public void taskAdded(Task task) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new TaskEvent(task, true));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
-    }
-
-    @Override
-    public void taskCompleted(long id) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new TaskEvent(id, false, true, false, null));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
-    }
-
-    @Override
-    public void taskRemoved(long id) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new TaskEvent(id, false, false, true, null));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
-    }
 }

@@ -54,7 +54,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.task.LocalTaskDispatcher;
-import info.magnolia.ui.framework.task.TasksManager;
+import info.magnolia.ui.framework.task.LocalTaskDispatcherManager;
 
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class AdmincentralUI extends UI {
     private LocalMessageDispatcher messageDispatcher;
     private String userName;
 
-    private TasksManager tasksManager;
+    private LocalTaskDispatcherManager taskDispatcherManager;
     private LocalTaskDispatcher taskDispatcher;
 
     @Override
@@ -127,14 +127,14 @@ public class AdmincentralUI extends UI {
         messagesManager.registerMessagesListener(userName, messageDispatcher);
 
         taskDispatcher = componentProvider.newInstance(LocalTaskDispatcher.class, getSession());
-        tasksManager = Components.getComponent(TasksManager.class);
-        tasksManager.registerTasksListener(userName, taskDispatcher);
+        taskDispatcherManager = Components.getComponent(LocalTaskDispatcherManager.class);
+        taskDispatcherManager.registerLocalTasksListener(userName, taskDispatcher);
     }
 
     @Override
     public void detach() {
         messagesManager.unregisterMessagesListener(userName, messageDispatcher);
-        tasksManager.unregisterTasksListener(userName, taskDispatcher);
+        taskDispatcherManager.unregisterLocalTasksListener(userName, taskDispatcher);
         try {
             // make sure the error handler covers the detach phase (it does not happen in service phase).
             super.detach();

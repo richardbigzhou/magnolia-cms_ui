@@ -34,14 +34,13 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.Context;
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.task.TasksManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.HashMap;
@@ -84,7 +83,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
                 result.put(DECISION, getDefinition().getDecision());
                 log.debug("About to reject human task named [{}]", task.getName());
 
-                long taskId = task.getId();
+                String taskId = task.getId();
                 taskManager.complete(taskId, result);
 
                 formDialogPresenter.closeDialog();
@@ -103,7 +102,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
 
     @Override
     protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Status.InProgress) {
+        if (task.getStatus() != Task.Status.InProgress) {
             throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only in progress tasks can be rejected.");
         }
     }

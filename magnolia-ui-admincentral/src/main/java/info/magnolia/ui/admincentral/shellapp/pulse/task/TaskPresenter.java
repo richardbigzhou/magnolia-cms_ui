@@ -34,15 +34,15 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksStore;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
-import info.magnolia.ui.api.task.Task;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
-import info.magnolia.ui.framework.task.TasksStore;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public final class TaskPresenter extends ItemPresenter<Task> {
 
     @Override
     protected Task getPulseItemById(String itemId) {
-        return taskStore.getTaskById(Long.valueOf(itemId));
+        return taskStore.getTaskById(itemId);
     }
 
     @Override

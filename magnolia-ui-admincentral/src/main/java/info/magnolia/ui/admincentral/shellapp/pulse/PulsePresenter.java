@@ -44,8 +44,8 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.framework.task.TaskEvent;
-import info.magnolia.ui.framework.task.TaskEventHandler;
+import info.magnolia.task.TaskEvent;
+import info.magnolia.task.TaskEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import javax.inject.Inject;
@@ -149,7 +149,12 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void taskCompleted(TaskEvent taskEvent) {
-        // nothing to do here
+        // nothing to here
+    }
+
+    @Override
+    public void taskFailed(TaskEvent taskEvent) {
+        updatePendingMessagesAndTasksCount();
     }
 
     private void updatePendingMessagesAndTasksCount() {

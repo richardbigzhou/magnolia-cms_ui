@@ -41,8 +41,9 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
+import info.magnolia.task.Task;
+import info.magnolia.task.TaskEvent;
+import info.magnolia.task.TaskEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,30 +81,31 @@ public class LocalTaskDispatcherTest {
 
         // WHEN
         Task task = new Task();
-        task.setId(0);
+        task.setId("0");
         task.setName("foo");
-        task.setStatus(Status.Created);
+        task.setStatus(Task.Status.Created);
 
-        dispatcher.taskAdded(task);
+        dispatcher.onTaskEvent(new TaskEvent(task));
         Thread.sleep(100);
 
         Task claimed = new Task();
-        claimed.setId(1);
+        claimed.setId(String.valueOf(1));
         claimed.setName("foo");
-        claimed.setStatus(Status.InProgress);
-
-        dispatcher.taskClaimed(claimed.getId(), "peter");
+        claimed.setStatus(Task.Status.InProgress);
+        claimed.setActorId("peter");
+        dispatcher.onTaskEvent(new TaskEvent(claimed));
         Thread.sleep(100);
 
-        dispatcher.taskRemoved(1);
+        claimed.setStatus(Task.Status.Removed);
+        dispatcher.onTaskEvent(new TaskEvent(claimed));
         Thread.sleep(100);
 
         // THEN
         assertEquals(3, events.size());
         assertEquals("foo", events.get(0).getTask().getName());
-        assertTrue(events.get(1).isClaimed());
-        assertEquals(1, events.get(2).getId());
-        assertTrue(events.get(2).isRemoved());
+        assertEquals("peter", events.get(1).getTask().getActorId());
+        assertEquals("1", events.get(2).getTask().getId());
+        assertEquals(Task.Status.Removed, events.get(2).getTask().getStatus());
     }
 
     @Test
@@ -118,27 +120,28 @@ public class LocalTaskDispatcherTest {
 
         // WHEN
         Task task = new Task();
-        task.setId(0);
+        task.setId("0");
         task.setName("foo");
-        task.setStatus(Status.Created);
+        task.setStatus(Task.Status.Created);
 
-        dispatcher.taskAdded(task);
+        dispatcher.onTaskEvent(new TaskEvent(task));
         Thread.sleep(100);
 
         Task claimed = new Task();
-        claimed.setId(1);
+        claimed.setId("1");
         claimed.setName("foo");
-        claimed.setStatus(Status.InProgress);
+        claimed.setActorId("peter");
+        claimed.setStatus(Task.Status.InProgress);
 
-        dispatcher.taskClaimed(claimed.getId(), "peter");
+        dispatcher.onTaskEvent(new TaskEvent(claimed));
         Thread.sleep(100);
 
         // THEN
         assertEquals(4, events.size());
         assertEquals("foo", events.get(0).getTask().getName());
         assertEquals("foo", events.get(1).getTask().getName());
-        assertTrue(events.get(2).isClaimed());
-        assertTrue(events.get(3).isClaimed());
+        assertEquals(Task.Status.InProgress, events.get(2).getTask().getStatus());
+        assertEquals(Task.Status.InProgress, events.get(3).getTask().getStatus());
     }
 
     private static class CollectingTaskEventHandler implements TaskEventHandler {
@@ -166,6 +169,11 @@ public class LocalTaskDispatcherTest {
 
         @Override
         public void taskCompleted(TaskEvent taskEvent) {
+            events.add(taskEvent);
+        }
+
+        @Override
+        public void taskFailed(TaskEvent taskEvent) {
             events.add(taskEvent);
         }
     }

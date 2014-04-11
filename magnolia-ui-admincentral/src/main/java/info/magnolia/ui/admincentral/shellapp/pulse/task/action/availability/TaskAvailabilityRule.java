@@ -31,31 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
-import info.magnolia.ui.api.task.Task;
-import info.magnolia.ui.api.task.Task.Status;
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Manages {@link Task}s.
+ * TaskAvailabilityRule.
  */
-public interface TasksStore {
-    void claim(long taskId, String userId);
+public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
-    void complete(long taskId);
+    protected static final Logger log = LoggerFactory.getLogger(TaskAvailabilityRule.class);
 
-    void addTask(Task task);
+    private TaskAvailabilityRuleDefinition definition;
+    private TasksManager tasksManager;
 
-    List<Task> findAllTasksByUser(String userId);
+    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition, TasksManager tasksManager) {
+        this.definition = definition;
+        this.tasksManager = tasksManager;
+    }
 
-    List<Task> findTasksByUserAndStatus(String userId, List<Status> status);
-
-    Task getTaskById(long taskId);
-
-    void removeTask(long taskId);
-
-    List<Task> getAllTasks();
+    @Override
+    public final boolean isAvailableForItem(Object itemId) {
+        Task task = tasksManager.getTaskById((String) itemId);
+        if (task == null) {
+            log.warn("Could not get a Task with id [{}]. Availability rule will return false", itemId);
+            return false;
+        }
+        return task.getStatus().equals(definition.getStatus());
+    }
 
 }

@@ -31,59 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
-import info.magnolia.ui.api.task.Task;
-
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.task.Task.Status;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 
 /**
- * DefaultTasksManager.
+ * TaskAvailabilityRuleDefinition.
  */
-public class DefaultTasksManager implements TasksManager {
+public class TaskAvailabilityRuleDefinition extends ConfiguredAvailabilityRuleDefinition {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultTasksManager.class);
+    private Status status;
 
-    @Override
-    public void claim(long taskId, String userId) {
-        log.warn("Not implemented.");
+    public TaskAvailabilityRuleDefinition() {
+        setImplementationClass(TaskAvailabilityRule.class);
     }
 
-    @Override
-    public void addTask(Task task, Map<String, Object> content) {
-        log.warn("Not implemented.");
+    public Status getStatus() {
+        return status;
     }
 
-    @Override
-    public List<Task> getAllTasks() {
-        log.warn("Not implemented.");
-        return null;
+    public void setStatus(Status status) {
+        this.status = status;
     }
-
-    @Override
-    public void complete(long taskId, Map<String, Object> results) {
-        log.warn("Not implemented.");
-    }
-
-    @Override
-    public void removeTask(long id) {
-        log.warn("Not implemented.");
-    }
-
-    @Override
-    public void registerTasksListener(String userName, TaskListener listener) {
-        log.warn("Not implemented.");
-
-    }
-
-    @Override
-    public void unregisterTasksListener(String userName, TaskListener listener) {
-        log.warn("Not implemented.");
-
-    }
-
 }

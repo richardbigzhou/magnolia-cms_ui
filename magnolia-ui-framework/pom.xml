@@ -65,6 +65,11 @@
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
     </dependency>
     <dependency>
+      <groupId>info.magnolia.task</groupId>
+      <artifactId>task-management</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-server</artifactId>
     </dependency>
