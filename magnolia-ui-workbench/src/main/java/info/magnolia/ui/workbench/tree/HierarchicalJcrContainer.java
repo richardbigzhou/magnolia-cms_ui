@@ -267,7 +267,19 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             return false;
         }
         try {
-            NodeUtil.moveNode((Node) source, (Node) target);
+            final Node targetNode = (Node) target;
+            if (source.isNode()) {
+                NodeUtil.moveNode((Node) source, targetNode);
+            } else {
+                // JCR props can't be moved, we gotta recreate w/ same value and delete
+                Property movedProperty = (Property) source;
+                if (movedProperty.isMultiple()) {
+                    targetNode.setProperty(movedProperty.getName(), movedProperty.getValues());
+                } else {
+                    targetNode.setProperty(movedProperty.getName(), movedProperty.getValue());
+                }
+                movedProperty.remove();
+            }
             source.getSession().save();
             return true;
         } catch (RepositoryException re) {
@@ -309,8 +321,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      */
     private boolean basicMoveCheck(Item source, Item target) {
         try {
-            // One or both are not node... do nothing
-            if (!target.isNode() || !source.isNode()) {
+            // target must be node, to allow moving in
+            if (!target.isNode()) {
                 return false;
             }
             // Source and origin are the same... do nothing
