@@ -78,6 +78,7 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredDialogDefinition
         return (Class<? extends ChooseDialogPresenter>) super.getPresenterClass();
     }
 
+    @Override
     public ContentConnectorDefinition getContentConnector() {
         return contentConnector;
     }

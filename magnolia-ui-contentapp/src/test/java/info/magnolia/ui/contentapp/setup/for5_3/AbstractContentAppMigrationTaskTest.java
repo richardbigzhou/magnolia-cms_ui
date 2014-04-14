@@ -114,7 +114,7 @@ public abstract class AbstractContentAppMigrationTaskTest extends ModuleVersionH
     public abstract String getPath();
 
     /**
-     * Returns the version which is installed before the update-process takes place
+     * Returns the version which is installed before the update-process takes place.
      */
     public abstract Version getCurrentlyInstalledVersion();
 

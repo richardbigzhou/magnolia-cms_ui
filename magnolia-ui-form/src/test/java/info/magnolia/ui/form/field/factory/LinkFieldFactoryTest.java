@@ -58,6 +58,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
 
     private MockComponentProvider componentProvider;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         componentProvider = new MockComponentProvider();

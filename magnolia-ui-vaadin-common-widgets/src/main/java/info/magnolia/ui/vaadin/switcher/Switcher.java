@@ -209,6 +209,7 @@ public class Switcher extends CustomField<Object> implements Container.Viewer {
      * <p>The value of the select is the selected item id.</p>
      * Sets the value to the underlying {@link ComboBox}.
      */
+    @Override
     public void setValue(Object newValue) {
         if (newValue == null) {
             return;
@@ -244,6 +245,7 @@ public class Switcher extends CustomField<Object> implements Container.Viewer {
      * Such a ValueChangeListener would be notified not only when a user is changing the value directly with the wrapped {@link ComboBox},
      * but also fired when the arrows (back, forward) are used.
      */
+    @Override
     public void addValueChangeListener(Property.ValueChangeListener valueChangeListener) {
         combobox.addValueChangeListener(valueChangeListener);
     }

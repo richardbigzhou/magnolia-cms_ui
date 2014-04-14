@@ -60,7 +60,9 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-
+/**
+ * Tests for the {@link SaveUserDialogAction}.
+ */
 public class SaveUserDialogActionTest extends MgnlTestCase {
 
     private SaveUserDialogActionDefinition definition;
