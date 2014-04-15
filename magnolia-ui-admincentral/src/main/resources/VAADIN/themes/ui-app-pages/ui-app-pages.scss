@@ -15,13 +15,25 @@
     .v-verticallayout-editor {
       padding-top: 20px;
       padding-left: 40px;
-      padding-bottom: 40px;
+      padding-bottom: 15px;
     }
 
     .v-csslayout-actionbar {
       padding-top: 20px;
       padding-bottom: 40px;
       overflow: visible;
+    }
+
+    .v-slot .v-slot-statusbar {
+      padding-top: 3px;
+    }
+
+    .statusbar .activationstatus {
+      font-size: 13px;
+      color: #666;
+      vertical-align: middle;
+      text-align: center;
+      padding-top: 2px;
     }
   }
 
