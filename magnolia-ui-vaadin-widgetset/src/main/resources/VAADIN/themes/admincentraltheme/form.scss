@@ -83,6 +83,29 @@ button.btn-form-help {
     top: -1px;
 }
 
+  .help-icon {
+    position: absolute;
+    line-height: 1;
+    margin-top: -1px;
+  }
+
+  .help-icon .icon-help-l {
+    color: $c12;
+    font-size: 28px;
+  }
+
+
+  .help-icon.highlighted .icon-shape-circle-plus, .help-icon.highlighted .icon-help-mark {
+    color: $c80;
+    font-size: 28px;
+  }
+
+  .icon.help-icon.highlighted .icon-shape-circle {
+    color: $c20;
+    font-size: 28px;
+  }
+
+
 .form-panel .field-container {
     color: $c12;
 }
