@@ -68,7 +68,7 @@ public class DialogHeaderWidget extends FlowPanel {
 
     protected Widget toolbar;
 
-    protected boolean isDescriptionVisible = false;
+    protected static boolean isDescriptionVisible = false;
 
     protected boolean hasDescription = false;
 
@@ -76,12 +76,22 @@ public class DialogHeaderWidget extends FlowPanel {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
-            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
+            onDescriptionVisibility();
         }
     });
+
+    private void onDescriptionVisibility() {
+        if (hasDescription) {
+            descriptionPanel.setVisible(isDescriptionVisible);
+        }
+        callback.onDescriptionVisibilityChanged(isDescriptionVisible);
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        onDescriptionVisibility();
+    }
 
     public DialogHeaderWidget(DialogHeaderCallback callback) {
         this.callback = callback;
@@ -104,7 +114,6 @@ public class DialogHeaderWidget extends FlowPanel {
             }
         }, ClickEvent.getType());
 
-
         headerPanel.addClassName(CLASSNAME_HEADER);
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
@@ -125,6 +134,9 @@ public class DialogHeaderWidget extends FlowPanel {
         content.setText(description);
         descriptionPanel.insert(content, 0);
         hasDescription = !description.isEmpty();
+        if (hasDescription) {
+            descriptionPanel.setVisible(isDescriptionVisible);
+        }
     }
 
     public void setCaption(String caption) {
