@@ -67,7 +67,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     private Container container;
 
     @Inject
-    public ThumbnailPresenter(ThumbnailView view, ImageProvider imageProvider, ComponentProvider componentProvider) {
+    public ThumbnailPresenter(final ThumbnailView view, final ImageProvider imageProvider, ComponentProvider componentProvider) {
         super(componentProvider);
         this.view = view;
         this.imageProvider = imageProvider;

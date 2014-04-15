@@ -34,7 +34,11 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -56,7 +60,6 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyAction;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
-import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
@@ -114,7 +117,7 @@ public class BrowserPresenterTest {
 
     private ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
 
-    private WorkbenchPresenter workbenchPresenter;
+    private WorkbenchPresenter mockWorkbenchPresenter;
 
     private AvailabilityChecker availabilityChecker = mock(AvailabilityChecker.class);
 
@@ -141,6 +144,7 @@ public class BrowserPresenterTest {
 
     private void initBrowserPresenter() throws RepositoryException {
 
+
         // initialize test instance
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
@@ -158,12 +162,12 @@ public class BrowserPresenterTest {
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(browserSubAppDescriptor, mockShell);
 
-        BrowserView browserView = mock(BrowserView.class);
+        BrowserView mockView = mock(BrowserView.class);
         subAppEventBus = new SimpleEventBus();
 
-        EventBus admincentralEventBus = mock(EventBus.class);
-        workbenchPresenter = mock(WorkbenchPresenter.class);
-        ActionbarPresenter actionBarPresenter = mock(ActionbarPresenter.class);
+        EventBus adminCentralEventBus = mock(EventBus.class);
+        mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
+        ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
 
         actionExecutor = mock(ActionExecutor.class);
 
@@ -176,9 +180,7 @@ public class BrowserPresenterTest {
         adapter = new JcrNodeAdapter(node);
         doReturn(adapter).when(contentConnector).getItem(anyObject());
 
-        ImageProvider imageProvider = mock(ImageProvider.class);
-
-        presenter = new BrowserPresenter(browserView, subAppContext, actionExecutor, admincentralEventBus, subAppEventBus, contentConnector, imageProvider, workbenchPresenter, actionBarPresenter, availabilityChecker);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, mockWorkbenchPresenter, contentConnector, null, availabilityChecker);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -275,7 +277,7 @@ public class BrowserPresenterTest {
 
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(new JcrItemId(node.getIdentifier(),WORKSPACE));
-        when(workbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
 
         // WHEN
         subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
@@ -300,7 +302,7 @@ public class BrowserPresenterTest {
 
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
-        when(workbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
 
         // WHEN
         subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
@@ -326,7 +328,7 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setWorkbench(wb);
         List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
-        when(workbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
 
         AvailabilityDefinition availability = testActionDefinition.getAvailability();
 

@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
@@ -103,7 +104,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             ContentPresenter presenter;
             Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             if (presenterClass != null) {
-                presenter = componentProvider.newInstance(presenterClass);
+                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass);
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
                 ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), contentConnector);
 
@@ -140,6 +141,19 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
+    }
+
+    protected ContentPresenter newPresenterInstance(ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition, Class<? extends ContentPresenter> presenterClass) {
+        ContentPresenter presenter;
+        List<Object> args = new ArrayList<Object>();
+        args.add(componentProvider);
+        if (imageProviderDefinition != null) {
+            ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+            args.add(imageProvider);
+        }
+
+        presenter = componentProvider.newInstance(presenterClass, args.toArray(new Object[args.size()]));
+        return presenter;
     }
 
     @Override
