@@ -78,10 +78,10 @@ public class HelpIconWidget extends IconWidget implements ToggleIcon {
         addStyleName(CLASSNAME);
         getElement().appendChild(innerSpan1);
         innerSpan1.addClassName(helpWithCircleClassName);
-        innerSpan1.setAttribute("style", "font-size: 24px; line-height: 1;");
-        innerSpan2.setAttribute("style", "font-size: 1em; line-height: 1; margin-left: -1em;");
+        innerSpan1.setAttribute("style", "line-height: 1;");
+        innerSpan2.setAttribute("style", "line-height: 1; margin-left: -1em;");
         innerSpan2.addClassName("icon-shape-circle");
-        innerSpan3.setAttribute("style", "font-size: 1em; line-height: 1; margin-left: -1em;");
+        innerSpan3.setAttribute("style", "line-height: 1; margin-left: -1em;");
         innerSpan3.addClassName("icon-help-mark");
 
         if (autoToggle) {
