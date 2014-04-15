@@ -86,6 +86,9 @@ public class MessagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         Node devApps = NodeUtil.createPath(session.getRootNode(), "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(devApps, "dummyApp", NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(devApps, "messages", NodeTypes.ContentNode.NAME);
+        Node messages = NodeUtil.createPath(session.getRootNode(), "modules/messages-app/apps/messages", NodeTypes.ContentNode.NAME);
+        messages.setProperty("icon", "icon");
+        messages.setProperty("label", "label");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.2"));
@@ -95,6 +98,8 @@ public class MessagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(devApps.hasNode("messages"));
         assertEquals("messages", it.nextNode().getName());
         assertEquals("dummyApp", it.nextNode().getName());
+        assertFalse(messages.hasProperty("icon"));
+        assertFalse(messages.hasProperty("label"));
     }
 
     @Test

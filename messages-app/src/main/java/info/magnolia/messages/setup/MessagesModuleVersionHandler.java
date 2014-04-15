@@ -37,6 +37,8 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
+import info.magnolia.module.delta.PropertyExistsDelegateTask;
+import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
@@ -54,10 +56,14 @@ public class MessagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.0", "")
                 .addTask(new ConvertAclToAppPermissionTask("Convert permissions for Messages app", "Convert ACL permissions for old 'Messages' menu to new 'messages-app' permission",
-                        "/.magnolia/pages/messages", "/modules/messages-app/apps/messages ", true)));
+                        "/.magnolia/pages/messages", "/modules/messages-app/apps/messages", true)));
 
         register(DeltaBuilder.update("5.2", "")
                 .addTask(new OrderNodeToFirstPositionTask("Reorder Messages in DEV", "This reorders the Messages app as first in the Dev group in the applauncher.", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps/messages"))
+                .addTask(new PropertyExistsDelegateTask("Remove icon property", "/modules/messages-app/apps/messages", "icon",
+                        new RemovePropertyTask("", "/modules/messages-app/apps/messages", "icon")))
+                .addTask(new PropertyExistsDelegateTask("Remove icon property", "/modules/messages-app/apps/messages", "label",
+                        new RemovePropertyTask("", "/modules/messages-app/apps/messages", "label")))
                 );
     }
 
