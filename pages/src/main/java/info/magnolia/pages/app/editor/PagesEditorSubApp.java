@@ -210,8 +210,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         detailLocation.updateNodePath(path);
         setPageEditorParameters(detailLocation);
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
+        view.setStatusBarView(statusBarView); // update page status bar
         pageEditorPresenter.updateParameters(parameters);
-
     }
 
     /**
