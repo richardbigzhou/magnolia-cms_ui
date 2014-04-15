@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Window.Location;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -82,11 +83,27 @@ public class ElementProcessor {
 
         if (element.hasTagName("A")) {
 
-            if (preview || isNavigation(element)) {
+            if (isNavigation(element)) {
                 registerOnclick(element);
             } else {
-                disableLink(element);
-                removeHover(element);
+                if (preview) {
+                    String target = element.getAttribute("target");
+                    if (target == null || "".equals(target) || "_self".equalsIgnoreCase(target)) {
+                        String href = element.getAttribute("href");
+                        if (href != null) {
+                            if (href.startsWith("/") ||
+                                    href.startsWith("./") ||
+                                    href.startsWith("../") ||
+                                    href.startsWith(".") ||
+                                    href.startsWith(Location.getProtocol() + "//" + Location.getHost())) {
+                                registerOnclick(element);
+                            }
+                        }
+                    }
+                } else {
+                    disableLink(element);
+                    removeHover(element);
+                }
             }
         }
 
