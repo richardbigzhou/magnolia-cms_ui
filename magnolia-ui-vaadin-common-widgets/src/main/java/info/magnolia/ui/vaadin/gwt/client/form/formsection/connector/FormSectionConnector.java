@@ -65,6 +65,14 @@ public class FormSectionConnector extends AbstractLayoutConnector {
                 getWidget().focus(((ComponentConnector) component).getWidget());
             }
         });
+
+
+        final Iterator<Map.Entry<Connector, String>> entryIt = getState().helpDescriptions.entrySet().iterator();
+        while (entryIt.hasNext()) {
+            Map.Entry<Connector, String> entry = entryIt.next();
+            getWidget().setFieldDescription(((ComponentConnector)entry.getKey()).getWidget(), entry.getValue());
+        }
+
     }
 
     private final StateChangeHandler childErrorMessageHandler = new StateChangeHandler() {

@@ -48,6 +48,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
 
@@ -62,7 +63,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     private Element root;
 
-    private Button helpButton = new Button();
+    private final HelpIconWidget helpButton = new HelpIconWidget(false);
 
     private Button errorAction = new Button();
 
@@ -81,7 +82,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         construct();
         setHelpEnabled(false);
 
-        helpButton.addClickHandler(new ClickHandler() {
+        helpButton.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (helpSection == null) {
@@ -90,24 +91,31 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
                     hideHelp();
                 }
             }
-        });
+        }, ClickEvent.getType());
+
     }
 
-    protected void hideHelp() {
-        remove(helpSection);
+    public void hideHelp() {
+        if(helpSection!=null){
+            remove(helpSection);
+        }
         helpSection = null;
+        helpButton.showUnObtrusiveState();
     }
 
-    protected void showHelp() {
+    public void showHelp() {
+        if(helpDescription==null || "".equals(helpDescription)){
+            return;
+        }
         helpSection = InlineMessageWidget.createHelpMessage();
         helpSection.setMessage(helpDescription);
         add(helpSection, root);
+        helpButton.showObtrusiveState();
     }
 
     private void construct() {
         label.addClassName("v-form-field-label");
         fieldWrapper.addClassName("v-form-field-container");
-        helpButton.addStyleName("action-form-help");
         errorAction.addStyleName("action-validation");
 
         root.appendChild(label);
@@ -177,6 +185,11 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         this.helpDescription = description;
         if (helpSection != null && getWidgetIndex(helpSection) >= 0) {
             helpSection.setMessage(helpDescription);
+        }
+        if(description!=null && !"".equals(description)){
+            helpButton.setVisible(true);
+        }else{
+            helpButton.setVisible(false);
         }
     }
 
