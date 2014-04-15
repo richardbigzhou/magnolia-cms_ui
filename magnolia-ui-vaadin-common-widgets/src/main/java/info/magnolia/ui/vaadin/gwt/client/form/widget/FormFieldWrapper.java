@@ -96,7 +96,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void hideHelp() {
-        if(helpSection!=null){
+        if (helpSection != null) {
             remove(helpSection);
         }
         helpSection = null;
@@ -104,7 +104,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void showHelp() {
-        if(helpDescription==null || "".equals(helpDescription)){
+        if (helpDescription == null || "".equals(helpDescription)) {
             return;
         }
         helpSection = InlineMessageWidget.createHelpMessage();
@@ -125,6 +125,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void showError(final String errorDescription) {
+        helpButton.setVisible(false);
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-highlight");
         if (errorSection == null) {
@@ -168,27 +169,31 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
         fieldWrapper.removeClassName("validation-hilight");
         errorAction.setVisible(false);
+        if (helpDescription != null && !"".equals(helpDescription)) {
+            helpButton.setVisible(true);
+        }
     }
 
     public void setHelpEnabled(boolean isHelpEnabled) {
-        helpButton.setVisible(
-                isHelpEnabled &&
-                helpDescription != null &&
-                !"".equals(helpDescription) &&
-                !errorAction.isVisible());
-        if (!isHelpEnabled && helpSection != null ) {
+        helpButton.setVisible(helpDescription != null && !"".equals(helpDescription) && !errorAction.isVisible());
+        if (!isHelpEnabled && helpSection != null) {
             hideHelp();
+            return;
+        }
+        if (helpButton.isVisible() && helpSection == null) {
+            showHelp();
         }
     }
+
 
     public void setHelpDescription(String description) {
         this.helpDescription = description;
         if (helpSection != null && getWidgetIndex(helpSection) >= 0) {
             helpSection.setMessage(helpDescription);
         }
-        if(description!=null && !"".equals(description)){
+        if (description != null && !"".equals(description)) {
             helpButton.setVisible(true);
-        }else{
+        } else {
             helpButton.setVisible(false);
         }
     }

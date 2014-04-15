@@ -118,6 +118,9 @@ public class FormSectionWidget extends FlowPanel {
     }
 
     public void setDescriptionVisible(boolean isAccessible) {
+        for (final FormFieldWrapper fs : sections.values()) {
+            fs.setHelpEnabled(isAccessible);
+        }
     }
 
     public List<FormFieldWrapper> getFields() {
