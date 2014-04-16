@@ -41,9 +41,9 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
 /**
- * This class is an {@code IconWidget} which can be toggled (implementing {@code ToggleIcon});
- * it shows a "?" which indicates some help. <br/>
- *
+ * This class is an {@code IconWidget} which can be toggled.
+ * It shows a "?" which indicates some help.
+ * <br/>
  * Note, that there is no corresponding Vaadin-server-class available.
  *
  */
@@ -96,7 +96,7 @@ public class HelpIconWidget extends IconWidget implements ToggleIcon {
 
 
     /**
-     * Toggles the icon, which means changes the symbol of the icon from  "obtrusive" to "unobtrusive"
+     * Toggles the icon, which means changes the symbol of the icon from  "obtrusive" to "unobtrusive".
      */
     @Override
     public void toggle() {
