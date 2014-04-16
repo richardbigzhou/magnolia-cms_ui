@@ -35,8 +35,12 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.CloseButton;
 
+import java.util.Date;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.storage.client.Storage;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
@@ -68,20 +72,54 @@ public class DialogHeaderWidget extends FlowPanel {
 
     protected Widget toolbar;
 
-    protected boolean isDescriptionVisible = false;
+    private static String IS_DESCRIPTION_VISIBLE = "magnolia.widget.DialogHeaderWidget.isDescriptionVisible";
+
+    protected static boolean isDescriptionVisible = false;
 
     protected boolean hasDescription = false;
 
     protected final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
-            isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
-            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
+            setDescriptionVisible(!isDescriptionVisible());
+            onDescriptionVisibility();
         }
     });
+
+    private void onDescriptionVisibility() {
+        if (hasDescription) {
+            descriptionPanel.setVisible(isDescriptionVisible());
+        }
+        callback.onDescriptionVisibilityChanged(isDescriptionVisible());
+    }
+
+    private boolean isDescriptionVisible() {
+        Storage stockStore = Storage.getLocalStorageIfSupported();
+        if (stockStore != null) {
+            return Boolean.parseBoolean(stockStore.getItem(IS_DESCRIPTION_VISIBLE));
+        } else if (Cookies.isCookieEnabled()) {
+            return Boolean.parseBoolean(Cookies.getCookie(IS_DESCRIPTION_VISIBLE));
+        } else {
+            return DialogHeaderWidget.isDescriptionVisible;
+        }
+    }
+
+    private void setDescriptionVisible(boolean isDescriptionVisible) {
+        Storage stockStore = Storage.getLocalStorageIfSupported();
+        if (stockStore != null) {
+            stockStore.setItem(IS_DESCRIPTION_VISIBLE, Boolean.toString(isDescriptionVisible));
+        } else if (Cookies.isCookieEnabled()) {
+            Cookies.setCookie(IS_DESCRIPTION_VISIBLE, Boolean.toString(isDescriptionVisible), new Date(Long.MAX_VALUE));
+        } else {
+            DialogHeaderWidget.isDescriptionVisible = isDescriptionVisible;
+        }
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        onDescriptionVisibility();
+    }
 
     public DialogHeaderWidget(DialogHeaderCallback callback) {
         this.callback = callback;
@@ -125,6 +163,9 @@ public class DialogHeaderWidget extends FlowPanel {
         content.setText(description);
         descriptionPanel.insert(content, 0);
         hasDescription = !description.isEmpty();
+        if (hasDescription) {
+            descriptionPanel.setVisible(isDescriptionVisible());
+        }
     }
 
     public void setCaption(String caption) {
