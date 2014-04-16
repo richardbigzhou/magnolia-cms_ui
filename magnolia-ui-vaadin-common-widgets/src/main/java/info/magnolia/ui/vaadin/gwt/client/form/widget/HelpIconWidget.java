@@ -35,8 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
@@ -45,11 +43,9 @@ import com.google.gwt.user.client.Element;
  * It shows a "?" which indicates some help.
  * <br/>
  * Note, that there is no corresponding Vaadin-server-class available.
- *
  */
-public class HelpIconWidget extends IconWidget implements ToggleIcon {
+public class HelpIconWidget extends IconWidget {
 
-    //
     private static final String CLASSNAME = "help-icon";
     private static final String highlighted = "highlighted";
     private static final String helpWithCircleClassName = "icon-help-l";
@@ -58,79 +54,42 @@ public class HelpIconWidget extends IconWidget implements ToggleIcon {
     private Element innerSpan2 = DOM.createSpan();
     private Element innerSpan3 = DOM.createSpan();
 
-
     /**
-     * Creates a HelpIconWidget.
-     * This default constructor ensures that the HelpIconWidget already has a handler which toggles its state onClick.
+     * Creates a HelpIconWidget; right after instantiation it is not highlighted.<br/>
+     * (See {@code #setHighlighted})
      */
     public HelpIconWidget() {
-        this(true);
-    }
-
-
-    /**
-     * Creates a HelpIconWidget; when autoToggle is true, it add a handler which toggles when the icon ic clicked.
-     */
-    public HelpIconWidget(boolean autoToggle) {
         super();
 
         setInnerIcon(true);
         addStyleName(CLASSNAME);
         getElement().appendChild(innerSpan1);
+
         innerSpan1.addClassName(helpWithCircleClassName);
-        innerSpan1.setAttribute("style", "line-height: 1;");
-        innerSpan2.setAttribute("style", "line-height: 1; margin-left: -1em;");
+        innerSpan2.setAttribute("style", "margin-left: -1em;");
         innerSpan2.addClassName("icon-shape-circle");
-        innerSpan3.setAttribute("style", "line-height: 1; margin-left: -1em;");
+        innerSpan3.setAttribute("style", "margin-left: -1em;");
         innerSpan3.addClassName("icon-help-mark");
-
-        if (autoToggle) {
-            addDomHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    toggle();
-                }
-            }, ClickEvent.getType());
-        }
     }
 
 
     /**
-     * Toggles the icon, which means changes the symbol of the icon from  "obtrusive" to "unobtrusive".
+     * Change the visual state to show the icon more or less obtrusive.
      */
-    @Override
-    public void toggle() {
-        String classes = DOM.getElementProperty(getElement(), "className");
-        if (classes.contains(highlighted)) {
-            showObtrusiveState();
+    public void setHighlighted(boolean highlight) {
+        if (highlight) {
+            getElement().addClassName(highlighted);
+            innerSpan1.removeClassName(helpWithCircleClassName);
+            innerSpan1.addClassName("icon-shape-circle-plus");
+            getElement().appendChild(innerSpan2);
+            getElement().appendChild(innerSpan3);
         } else {
-            showUnObtrusiveState();
+            getElement().removeClassName(highlighted);
+            innerSpan1.addClassName(helpWithCircleClassName);
+            innerSpan1.removeClassName("icon-shape-circle-plus");
+            getElement().removeChild(innerSpan2);
+            getElement().removeChild(innerSpan3);
         }
     }
-
-    /**
-     * Use to change the state to show the obtrusive "?".
-     */
-    public void showObtrusiveState(){
-        getElement().addClassName(highlighted);
-        innerSpan1.removeClassName(helpWithCircleClassName);
-        innerSpan1.addClassName("icon-shape-circle-plus");
-        getElement().appendChild(innerSpan2);
-        getElement().appendChild(innerSpan3);
-    }
-
-    /**
-     * Use to change the state to show the unobtrusive "?".
-     */
-    public void showUnObtrusiveState(){
-        getElement().removeClassName(highlighted);
-        innerSpan1.addClassName(helpWithCircleClassName);
-        innerSpan1.removeClassName("icon-shape-circle-plus");
-        getElement().removeChild(innerSpan2);
-        getElement().removeChild(innerSpan3);
-    }
-
-
-
 
 }

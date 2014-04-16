@@ -62,7 +62,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     private Element root;
 
-    private final HelpIconWidget helpButton = new HelpIconWidget(false);
+    private final HelpIconWidget helpButton = new HelpIconWidget();
 
     private Button errorAction = new Button();
 
@@ -99,7 +99,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
             remove(helpSection);
         }
         helpSection = null;
-        helpButton.showUnObtrusiveState();
+        helpButton.setHighlighted(false);
     }
 
     public void showHelp() {
@@ -109,7 +109,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         helpSection = InlineMessageWidget.createHelpMessage();
         helpSection.setMessage(helpDescription);
         add(helpSection, root);
-        helpButton.showObtrusiveState();
+        helpButton.setHighlighted(true);
     }
 
     private void construct() {
