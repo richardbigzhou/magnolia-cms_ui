@@ -2,6 +2,12 @@
 
 @mixin checkbox {
 
+   .v-ie8 .v-checkbox, .v-ie8 .gwt-CheckBox {
+     label {
+       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+     }
+   }
+
   .v-checkbox,
   .gwt-CheckBox {
 
