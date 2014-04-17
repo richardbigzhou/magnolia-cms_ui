@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.Panel;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -127,7 +127,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
         view.setActionbarView(actionbar);
 
-        detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE));
+        detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE, itemView));
         detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
 
         return view;
@@ -163,33 +163,39 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     /**
      * A shortcut listener which opens a confirmation to confirm closing the DetailEditor.
      */
-    protected final class CloseEditorAfterConfirmationShortcutListener extends ShortcutListener {
+    protected class CloseEditorAfterConfirmationShortcutListener extends ShortcutListener {
 
-        public CloseEditorAfterConfirmationShortcutListener(int keyCode, int... modifierKey) {
+        private final View itemView;
+
+        public CloseEditorAfterConfirmationShortcutListener(int keyCode, View itemView, int... modifierKey) {
             super("", keyCode, modifierKey);
+            this.itemView = itemView;
         }
 
         @Override
         public void handleAction(Object sender, Object target) {
             subAppContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, i18n.translate("ui-contentapp.detailEditorPresenter.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
-                new ConfirmationCallback() {
-                    @Override
-                    public void onSuccess() {
-                        detailPresenter.onActionFired(BaseDialog.CANCEL_ACTION_NAME, new HashMap<String, Object>());
-                    }
+                    MessageStyleTypeEnum.WARNING, i18n.translate("ui-contentapp.detailEditorPresenter.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                    new ConfirmationCallback() {
+                        @Override
+                        public void onSuccess() {
+                            detailPresenter.onActionFired(BaseDialog.CANCEL_ACTION_NAME, new HashMap<String, Object>());
+                        }
 
-                    @Override
-                    public void onCancel() {
-                    }
-                });
+                        @Override
+                        public void onCancel() {
+                            if (itemView.asVaadinComponent() instanceof Panel) {
+                                ((Panel) itemView.asVaadinComponent()).focus();
+                            }
+                        }
+                    });
         }
     }
 
     /**
      * A shortcut listener used to commit the DetailEditor if a text area does not have focus.
      */
-    protected final class CommitDialogShortcutListener extends ShortcutListener {
+    protected class CommitDialogShortcutListener extends ShortcutListener {
 
         public CommitDialogShortcutListener(int keyCode, int... modifierKey) {
             super("", keyCode, modifierKey);
@@ -197,9 +203,8 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
         @Override
         public void handleAction(Object sender, Object target) {
-            if (!(target instanceof TextArea)){
-                detailPresenter.onActionFired(BaseDialog.COMMIT_ACTION_NAME, new HashMap<String, Object>());
-            }
+            // textareas are excluded on the client-side, see 'EnterFriendlyShortcutActionHandler', used in PanelConnector
+            detailPresenter.onActionFired(BaseDialog.COMMIT_ACTION_NAME, new HashMap<String, Object>());
         }
     }
 
