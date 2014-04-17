@@ -59,7 +59,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -71,7 +70,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     public static final int TIMEOUT_SECONDS_DEFAULT = 3;
 
     /**
-     * Convenience method to open an overlay with the default strong modality level.
+     * Opens an overlay with default strong modality level.
      */
     @Override
     public OverlayCloser openOverlay(View view) {
@@ -79,100 +78,174 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     /**
-     * Open alert dialog with light modality level. Close dialog on confirm.
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
      */
     @Override
-    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        final BaseDialog dialog = createAlertDialog(viewToShow, type.getCssClass());
+    public void openAlert(MessageStyleType type, View body, String okButton, AlertCallback callback) {
+        openAlert(type, null, body, okButton, callback);
+    }
+
+    /**
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
+     *
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the alert dialog's title
+     * @param body the alert dialog's text body
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
+     */
+    @Override
+    public void openAlert(MessageStyleType type, String title, String body, String okButton, AlertCallback callback) {
+        openAlert(type, title, new ViewAdapter(new Label(body, ContentMode.HTML)), okButton, callback);
+    }
+
+    /**
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
+     *
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the alert dialog's title
+     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
+     */
+    public void openAlert(MessageStyleType type, String title, View body, String okButton, final AlertCallback callback) {
+
+        final BaseDialog dialog = new LightDialog();
+        dialog.addStyleName(type.getCssClass());
+        dialog.addStyleName("alert");
+
+        dialog.setCaption(title);
+        CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
+        icon.setStyleName("dialog-icon");
+        dialog.setHeaderToolbar(icon);
         dialog.showCloseButton();
+
+        dialog.setContent(body.asVaadinComponent());
 
         Panel shortcutPanel = new Panel();
         shortcutPanel.setStyleName("shortcut-panel");
-        shortcutPanel.setHeight("100%");
-        shortcutPanel.setWidth(null);
+        shortcutPanel.setHeight(100, Unit.PERCENTAGE);
+        shortcutPanel.setWidth(100, Unit.PERCENTAGE);
         shortcutPanel.setContent(dialog);
 
         final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.LIGHT);
         final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
             @Override
             public void handleAction(Object sender, Object target) {
-                cb.onOk();
-                overlayCloser.close();
+                callback.onOk();
+                dialog.closeSelf();
             }
         };
         shortcutPanel.addShortcutListener(escapeShortcut);
-        addOkHandler(dialog, confirmButtonText, overlayCloser, cb);
+        addOkHandler(dialog, okButton, overlayCloser, callback);
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
     }
 
-    /**
-     * Convenience method with string content. for opening an alert.
-     */
-    @Override
-    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
-    }
-
-    private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
-        return new ConfirmationDialog.ConfirmationEvent.Handler() {
-            @Override
-            public void onConfirmation(ConfirmationEvent event) {
-                if (event.isConfirmed()) {
-                    callback.onSuccess();
-                } else {
-                    callback.onCancel();
-                }
-                overlayCloser.close();
-            }
-        };
-    }
-
-    private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String styleName, boolean cancelIsDefault) {
-        ConfirmationDialog dialog = new ConfirmationDialog(contentView.asVaadinComponent(), confirmButtonText, cancelButtonText, cancelIsDefault);
-        dialog.addStyleName(styleName);
-        dialog.addStyleName("confirmation");
-        return dialog;
-    }
-
-    private BaseDialog createAlertDialog(View contentView, String styleName) {
-        BaseDialog dialog = new LightDialog();
-        dialog.addStyleName(styleName);
-        dialog.addStyleName("alert");
-        dialog.setContent(contentView.asVaadinComponent());
-        return dialog;
-    }
-
-    private void addOkHandler(BaseDialog dialog, String confirmButtonText, final OverlayCloser overlayCloser, final AlertCallback cb) {
+    private void addOkHandler(BaseDialog dialog, String okButtonText, final OverlayCloser overlayCloser, final AlertCallback cb) {
         CssLayout footer = new CssLayout();
         footer.setWidth(100, Unit.PERCENTAGE);
         footer.addStyleName("v-align-right");
-        Button confirmButton = new Button(confirmButtonText, new ClickListener() {
+        Button okButton = new Button(okButtonText, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 cb.onOk();
                 overlayCloser.close();
             }
         });
-        confirmButton.focus();
-        footer.addComponent(confirmButton);
+        okButton.focus();
+        footer.addComponent(okButton);
         dialog.setFooterToolbar(footer);
     }
 
-    private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
-        Layout layout = new CssLayout();
+    /**
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
+     */
+    @Override
+    public void openConfirmation(MessageStyleType type, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
+        openConfirmation(type, null, body, confirmButton, cancelButton, cancelIsDefault, callback);
+    }
 
-        Label titleLabel = new Label(title, ContentMode.HTML);
-        titleLabel.addStyleName("title");
-        layout.addComponent(titleLabel);
+    /**
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the confirmation dialog's title
+     * @param body the confirmation dialog's body text
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
+     */
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
+        openConfirmation(type, title, new ViewAdapter(new Label(body, ContentMode.HTML)), confirmButton, cancelButton, cancelIsDefault, callback);
+    }
 
-        Label bodyLabel = new Label(body, ContentMode.HTML);
-        bodyLabel.addStyleName("body");
-        layout.addComponent(bodyLabel);
+    /**
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the confirmation dialog's title
+     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
+     */
+    public void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, final ConfirmationCallback callback) {
+        final ConfirmationDialog dialog = new ConfirmationDialog(body.asVaadinComponent(), confirmButton, cancelButton, cancelIsDefault);
+        dialog.addStyleName(type.getCssClass());
+        dialog.addStyleName("confirmation");
 
+        dialog.setCaption(title);
         CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
         icon.setStyleName("dialog-icon");
-        layout.addComponent(icon);
-        return new ViewAdapter(layout);
+        dialog.setHeaderToolbar(icon);
+        dialog.showCloseButton();
+
+        dialog.setContent(body.asVaadinComponent());
+
+        Panel shortcutPanel = new Panel();
+        shortcutPanel.setStyleName("shortcut-panel");
+        shortcutPanel.setHeight(100, Unit.PERCENTAGE);
+        shortcutPanel.setWidth(100, Unit.PERCENTAGE);
+        shortcutPanel.setContent(dialog);
+
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.LIGHT);
+
+        final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                callback.onCancel();
+                dialog.closeSelf();
+            }
+        };
+        shortcutPanel.addShortcutListener(escapeShortcut);
+        dialog.addConfirmationHandler(
+                new ConfirmationDialog.ConfirmationEvent.Handler() {
+                    @Override
+                    public void onConfirmation(ConfirmationEvent event) {
+                        if (event.isConfirmed()) {
+                            callback.onSuccess();
+                        } else {
+                            callback.onCancel();
+                        }
+                        overlayCloser.close();
+                    }
+                });
+        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
     }
 
     private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
@@ -185,49 +258,10 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     /**
-     * Present modal confirmation dialog with light modality level. Allow any Vaadin content to be presented.
+     * Opens a notification of given {@link MessageStyleType type}, with given body; it can close automatically after a timeout.
      */
     @Override
-    public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
-                                 boolean cancelIsDefault, ConfirmationCallback callback) {
-        final ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
-        dialog.showCloseButton();
-
-        Panel shortcutPanel = new Panel();
-        shortcutPanel.setStyleName("shortcut-panel");
-        shortcutPanel.setHeight("100%");
-        shortcutPanel.setWidth(null);
-        shortcutPanel.setContent(dialog);
-
-        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.LIGHT);
-
-        final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-
-                dialog.closeSelf();
-            }
-        };
-        shortcutPanel.addShortcutListener(escapeShortcut);
-
-        dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
-        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
-    }
-
-
-    /**
-     * Present modal confirmation dialog with light modality level. Allow only string content.
-     */
-    @Override
-    public void openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
-    }
-
-    /**
-     * Present notification indicator with no modality. Close after timeout expires.
-     */
-    @Override
-    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final View viewToShow) {
+    public void openNotification(final MessageStyleType type, boolean doesTimeout, View viewToShow) {
         final Notification notification = new Notification(type);
         notification.setContent(viewToShow.asVaadinComponent());
 
@@ -266,10 +300,10 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     /**
-     * Convenience method for presenting notification indicator with string content.
+     * Opens a notification of given {@link MessageStyleType type}, with given body text; it can close automatically after a timeout.
      */
     @Override
-    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title) {
+    public void openNotification(MessageStyleType type, boolean doesTimeout, final String title) {
         openNotification(type, doesTimeout, new ViewAdapter(new Label(title, ContentMode.HTML)));
 
     }
@@ -278,7 +312,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
      * Convenience method for presenting notification indicator with string content.
      */
     @Override
-    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title, final String linkText, final NotificationCallback cb) {
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, final NotificationCallback callback) {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
         layout.addComponent(new Label(title, ContentMode.HTML));
@@ -286,14 +320,13 @@ public abstract class OverlayPresenter implements OverlayLayer {
         Button button = new Button(linkText, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                cb.onLinkClicked();
+                callback.onLinkClicked();
             }
         });
         button.setStyleName(BaseTheme.BUTTON_LINK);
 
         layout.addComponent(button);
         openNotification(type, doesTimeout, new ViewAdapter(layout));
-
     }
 
 }

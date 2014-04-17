@@ -120,6 +120,7 @@ public class DialogHeaderWidget extends FlowPanel {
         toolbarEl.addClassName(CLASSNAME_HEADER_TOOLBAR);
 
         getElement().appendChild(headerPanel);
+        caption.addClassName("title");
         headerPanel.appendChild(caption);
         add(helpButton, headerPanel);
         headerPanel.appendChild(toolbarEl);
