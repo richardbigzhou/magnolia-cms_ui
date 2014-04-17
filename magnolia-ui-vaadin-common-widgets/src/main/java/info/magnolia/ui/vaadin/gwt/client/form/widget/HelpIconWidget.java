@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
@@ -61,14 +62,13 @@ public class HelpIconWidget extends IconWidget {
     public HelpIconWidget() {
         super();
 
-        setInnerIcon(true);
         addStyleName(CLASSNAME);
         getElement().appendChild(innerSpan1);
 
         innerSpan1.addClassName(helpWithCircleClassName);
-        innerSpan2.setAttribute("style", "margin-left: -1em;");
+        innerSpan2.getStyle().setMarginLeft(-1, Style.Unit.EM);
         innerSpan2.addClassName("icon-shape-circle");
-        innerSpan3.setAttribute("style", "margin-left: -1em;");
+        innerSpan3.getStyle().setMarginLeft(-1, Style.Unit.EM);
         innerSpan3.addClassName("icon-help-mark");
     }
 
