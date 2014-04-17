@@ -64,6 +64,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 
 /**
@@ -238,17 +239,20 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         @Override
         public void handleAction(Object sender, Object target) {
             uiContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, i18n.translate("ui-dialog.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
-                new ConfirmationCallback() {
-                    @Override
-                    public void onSuccess() {
-                        closeDialog();
-                    }
+                    MessageStyleTypeEnum.WARNING, i18n.translate("ui-dialog.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                    new ConfirmationCallback() {
+                        @Override
+                        public void onSuccess() {
+                            closeDialog();
+                        }
 
-                    @Override
-                    public void onCancel() {
-                    }
-                });
+                        @Override
+                        public void onCancel() {
+                            if (getView() instanceof Panel) {
+                                ((Panel) getView()).focus();
+                            }
+                        }
+                    });
         }
     }
 
