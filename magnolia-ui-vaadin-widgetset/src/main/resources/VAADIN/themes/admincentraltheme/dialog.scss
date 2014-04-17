@@ -8,6 +8,10 @@
     padding: 0;
   }
 
+  .overlay-child .dialog-panel {
+    margin-top: 2px;
+  }
+
   .v-dialog-layout {
     display: inline-block;
     width: 510px;
@@ -136,52 +140,61 @@
     padding: 0;
     color: black;
     border: solid 1px $c14;
-    box-shadow: 6px 6px 6px rgba(0,0,0,.25);
-    margin: 0px 13px 13px 0px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
-  }
-
-  .light-dialog-panel {
-    .dialog-header { background-color: transparent; }
-    button.btn-form-help { display: none; }
-    .m-closebutton {
-      position: relative;
-      color: $c10;
-      margin: -5px -9px 0px 7px
-    }
-  }
-
-  .light-dialog-panel .dialog-content {
-    font-size: 12px;
-    padding: 0 44px;
-    overflow: auto;
-    max-height: 200px;
-    position: relative;
-    top: -26px;
-  }
-
-  .light-dialog-panel .dialog-footer {
-    background-color: transparent;
-    margin-top: 0;
-    padding-bottom: 9px;
-  }
-
-  .light-dialog-panel .title {
-    font-size: 12px;
-    font-weight: bold;
-    padding-bottom: 5px;
-  }
-
-  .dialog-icon {
-    font-size: 30px !important;
+    box-shadow: 6px 6px 6px rgba(0,0,0,.4);
+    margin-right: 13px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
+    margin-bottom: 13px;
     position: absolute;
-    top: -7px;
-    left: 9px;
-  }
+    top: 33%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -206px;
 
-  .light-dialog-panel button,
-  .light-dialog-panel .btn-default,
-  .light-dialog-panel .btn-other {
-    color: white;
+    .dialog-header {
+      background-color: transparent;
+      height: auto;
+      padding-top: 11px;
+      padding-bottom: 3px;
+      padding-left: 44px;
+
+      .dialog-icon {
+        font-size: 30px !important;
+        position: absolute;
+        top: 4px;
+        left: 9px;
+      }
+
+      .title {
+        color: $c90;
+        font-family: Verdana, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 1.4;
+      }
+
+      button.btn-form-help { display: none; }
+
+      .m-closebutton {
+        position: relative;
+        color: $c10;
+        margin: -6px -9px 0px 7px
+      }
+    }
+
+    .dialog-content {
+      font-size: 12px;
+      padding: 0 44px 21px;
+      overflow: auto;
+      max-height: 200px;
+
+      .v-label { font-size: inherit; }
+    }
+
+    .dialog-footer {
+      background-color: transparent;
+      margin-top: 0;
+      padding-top: 9px;
+      padding-bottom: 9px;
+    }
   }
 
   .light-dialog-panel .v-button-link .v-button-caption {
@@ -195,27 +208,58 @@
     content: "]";
   }
 
-  .light-dialog-panel.msginfo { backround: $c24; }
-  .light-dialog-panel.msgwarn {
-    background: $c64;
-    border-color: $c15;
-  }
-
+  .light-dialog-panel.msginfo { background: $c24; }
+  .light-dialog-panel.msgwarn { background: $c64; border-color: $c15; }
   .light-dialog-panel.msgerror { background: $c75; }
 
 /* Notifications */
 
-  .notification-dialog {
-    vertical-align: top !important;
+  .light-dialog-panel.notification-dialog {
+    width: 386px;
     padding: 12px 0;
-    text-align: left;
-    width: 400px;
+    border: none;
+    box-shadow: none;
     position:relative;
+    margin: 0;
+    top: 0;
+    left: 0;
+
+    .dialog-icon {
+      font-size: 30px !important;
+      position: absolute;
+      top: 7px;
+      left: 10px;
+    }
+
+    .title {
+      color: $c90;
+      font-family: Verdana, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.4;
+    }
+
+    .dialog-content {
+      padding-bottom: 2px;
+    }
+
+    .v-nativebutton-close {
+      background-color: transparent !important;
+      border: none;
+      position: absolute;
+      color: $c10;
+      top: 7px;
+      right: 9px;
+      z-index: 5;
+      margin: 0;
+      width: 28px;
+      height: 28px;
+
+      .m-closebutton { margin: 0; padding: 0; color: inherit; }
+    }
   }
 
-  .light-dialog-panel.notification-dialog .dialog-content {
-    top: -3px;
-  }
+  .light-dialog-panel.notification-dialog.msginfo { background: $c23; }
 
   .notification-dialog >.icon {
     position: absolute;
@@ -223,19 +267,6 @@
     left: 9px;
   }
 
-  .light-dialog-panel.notification-dialog .v-nativebutton-close {
-    background-color: transparent !important;
-    border: none;
-    position: absolute;
-    top: 5px;
-    right: 7px;
-    z-index: 5;
-    margin: 0;
-    width: 28px;
-    height: 28px;
-
-    .m-closebutton { margin: 0; padding: 0; }
-  }
 
 /* Lightbox */
 
@@ -315,5 +346,5 @@
 
   .light .dialog-content .v-shell-tabsheet-scroller {
      max-height: 115px !important;
-}
+  }
 }

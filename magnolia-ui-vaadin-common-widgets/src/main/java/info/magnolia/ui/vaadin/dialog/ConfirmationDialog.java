@@ -54,11 +54,13 @@ public class ConfirmationDialog extends LightDialog {
     private Button cancelButton;
 
     public ConfirmationDialog(final String message, String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
+        super();
         setMessage(message);
         init(confirmLabel, cancelLabel, cancelIsDefault);
     }
 
     public ConfirmationDialog(final Component contents, String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
+        super();
         message = "";
         setContent(contents);
         init(confirmLabel, cancelLabel, cancelIsDefault);

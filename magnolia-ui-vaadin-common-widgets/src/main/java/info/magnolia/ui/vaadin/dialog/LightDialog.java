@@ -41,6 +41,7 @@ package info.magnolia.ui.vaadin.dialog;
 public class LightDialog extends BaseDialog {
 
     public LightDialog() {
+        super();
         setStyleName("light-dialog-panel");
     }
 }

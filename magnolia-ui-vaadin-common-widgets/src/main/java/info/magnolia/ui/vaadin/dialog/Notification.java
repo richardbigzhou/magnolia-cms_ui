@@ -81,6 +81,7 @@ public class Notification implements View {
     public void setContent(Component content) {
         layout.addComponent(content);
         content.addStyleName("dialog-content");
+        content.addStyleName("title");
     }
 
     public void addCloseButtonListener(Button.ClickListener listener) {
