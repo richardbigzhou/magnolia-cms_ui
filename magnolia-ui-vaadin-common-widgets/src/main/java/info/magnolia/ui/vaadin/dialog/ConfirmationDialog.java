@@ -71,14 +71,14 @@ public class ConfirmationDialog extends LightDialog {
         confirmButton = new Button(confirmLabel, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
+                confirm();
             }
         });
 
         cancelButton = new Button(cancelLabel, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
+                cancel();
             }
         });
 
@@ -99,6 +99,14 @@ public class ConfirmationDialog extends LightDialog {
         } else {
             confirmButton.focus();
         }
+    }
+
+    public void confirm(){
+        fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
+    }
+
+    public void cancel(){
+        fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
     }
 
     public void setMessage(String message) {

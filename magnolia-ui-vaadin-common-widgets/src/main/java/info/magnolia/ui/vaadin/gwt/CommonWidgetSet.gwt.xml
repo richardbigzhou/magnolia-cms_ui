@@ -38,8 +38,10 @@
     </all>
   </replace-with>
 
+  <replace-with class="com.vaadin.client.ui.panel.EnterFriendlyPanelConnector">
+    <when-type-is class="com.vaadin.client.ui.panel.PanelConnector" />
+  </replace-with>
+
   <set-configuration-property name="mgwt.css" value="pretty" />
-
-
 
 </module>

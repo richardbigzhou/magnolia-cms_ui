@@ -44,12 +44,14 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 
@@ -113,6 +115,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     @Override
     public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+
         view.addShortcut(new ShortcutListener(actionName, keyCode, modifiers) {
             @Override
             public void handleAction(Object sender, Object target) {
@@ -151,9 +154,14 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
                 addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
             }
+
         } else {
             log.warn("The current Vaadin UI was null when starting {}, as a result dialog keyboard shortcuts will not work.", this);
         }
+
+        view.addShortcut(new CloseDialogAfterConfirmationShortcutListener(KeyCode.ESCAPE));
+        view.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
+
         this.view.setActionAreaView(editorActionAreaView);
         return this.view;
     }
@@ -201,5 +209,62 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     protected I18nizer getI18nizer() {
         return i18nizer;
+    }
+
+    /**
+     * A shortcut listener used to close the dialog.
+     */
+    protected class CloseDialogShortcutListener extends ShortcutListener {
+
+        public CloseDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            closeDialog();
+        }
+    }
+
+    /**
+     * A shortcut listener which opens a confirmation to confirm closing the dialog.
+     */
+    protected class CloseDialogAfterConfirmationShortcutListener extends ShortcutListener {
+
+        public CloseDialogAfterConfirmationShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            uiContext.openConfirmation(
+                MessageStyleTypeEnum.WARNING, i18n.translate("ui-dialog.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        closeDialog();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+        }
+    }
+
+    /**
+     * A shortcut listener used to commit the dialog.
+     */
+    protected class CommitDialogShortcutListener extends ShortcutListener {
+
+        public CommitDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            // textareas are excluded on the client-side, see 'EnterFriendlyShortcutActionHandler', used in PanelConnector
+            executeAction(BaseDialog.COMMIT_ACTION_NAME, new Object[0]);
+        }
     }
 }

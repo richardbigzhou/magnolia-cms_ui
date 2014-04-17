@@ -46,11 +46,16 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -62,6 +67,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.TextArea;
+
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link DetailPresenter} for displaying the actual item.
@@ -72,6 +81,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
     private final ActionExecutor actionExecutor;
     private final AppContext appContext;
+    private final SubAppContext subAppContext;
     private final DetailEditorView view;
     private final DetailPresenter detailPresenter;
     private final ActionbarPresenter actionbarPresenter;
@@ -88,6 +98,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.detailPresenter = detailPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
+        this.subAppContext = subAppContext;
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
         this.versionManager = versionManager;
@@ -104,6 +115,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.detailPresenter = detailPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
+        this.subAppContext = subAppContext;
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
         this.versionManager = Components.getComponent(VersionManager.class);
@@ -148,6 +160,9 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
 
         view.setActionbarView(actionbar);
+
+        detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE));
+        detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
 
         return view;
     }
@@ -199,6 +214,49 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+    /**
+     * A shortcut listener which opens a confirmation to confirm closing the DetailEditor.
+     */
+    protected final class CloseEditorAfterConfirmationShortcutListener extends ShortcutListener {
+
+        public CloseEditorAfterConfirmationShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            subAppContext.openConfirmation(
+                MessageStyleTypeEnum.WARNING, i18n.translate("ui-contentapp.detailEditorPresenter.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        detailPresenter.onActionFired(BaseDialog.CANCEL_ACTION_NAME, new HashMap<String, Object>());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+        }
+    }
+
+    /**
+     * A shortcut listener used to commit the DetailEditor if a text area does not have focus.
+     */
+    protected final class CommitDialogShortcutListener extends ShortcutListener {
+
+        public CommitDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            if (!(target instanceof TextArea)){
+                detailPresenter.onActionFired(BaseDialog.COMMIT_ACTION_NAME, new HashMap<String, Object>());
+            }
+        }
     }
 
 }

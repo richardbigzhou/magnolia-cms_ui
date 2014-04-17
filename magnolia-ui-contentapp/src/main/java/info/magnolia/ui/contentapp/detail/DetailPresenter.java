@@ -63,6 +63,7 @@ import info.magnolia.ui.framework.app.SubAppActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rits.cloning.Cloner;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Button;
 
 /**
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
@@ -225,4 +228,29 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             subAppContext.getAppContext().sendLocalMessage(error);
         }
     }
+
+    /**
+     * Add a shortcut key for the button for a specific action.
+     */
+    public void addClickShortcut(String actionName, int KeyCode){
+        Button button = (Button)(dialogView.getActionAreaView().getViewForAction(actionName).asVaadinComponent());
+        button.setClickShortcut(KeyCode);
+    }
+
+    /**
+     * Add a shortcut key for a specific action.
+     */
+    public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+        dialogView.addShortcut(new ShortcutListener(actionName, keyCode, modifiers) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                onActionFired(actionName, new HashMap<String, Object>());
+            }
+        });
+    }
+
+    public void addShortcut(ShortcutListener shortcut) {
+        dialogView.addShortcut(shortcut);
+    }
+
 }
