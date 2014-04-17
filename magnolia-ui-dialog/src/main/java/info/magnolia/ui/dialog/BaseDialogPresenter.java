@@ -44,6 +44,7 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -51,8 +52,11 @@ import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
+
+import net.sf.cglib.proxy.Enhancer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +66,6 @@ import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
-
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -114,6 +116,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     @Override
     public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+
         view.addShortcut(new ShortcutListener(actionName, keyCode, modifiers) {
             @Override
             public void handleAction(Object sender, Object target) {
@@ -156,9 +159,14 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             if (definition.getModalityLevel() == ModalityLevel.LIGHT) {
                 view.addShortcut(new CloseDialogShortcutListener(KeyCode.ESCAPE));
             }
+
         } else {
             log.warn("The current Vaadin UI was null when starting {}, as a result dialog keyboard shortcuts will not work.", this);
         }
+
+        view.addShortcut(new CloseDialogAfterConfirmationShortcutListener(KeyCode.ESCAPE));
+        view.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
+
         this.view.setActionAreaView(editorActionAreaView);
         this.view.setModalityLevel(definition.getModalityLevel());
         return this.view;
@@ -210,9 +218,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     /**
-     * A shortcut listener used to close this dialog.
+     * A shortcut listener used to close the dialog.
      */
-    protected final class CloseDialogShortcutListener extends ShortcutListener {
+    protected class CloseDialogShortcutListener extends ShortcutListener {
 
         public CloseDialogShortcutListener(int keyCode, int... modifierKey) {
             super("", keyCode, modifierKey);
@@ -221,6 +229,48 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         @Override
         public void handleAction(Object sender, Object target) {
             closeDialog();
+        }
+    }
+
+    /**
+     * A shortcut listener which opens a confirmation to confirm closing the dialog.
+     */
+    protected class CloseDialogAfterConfirmationShortcutListener extends ShortcutListener {
+
+        public CloseDialogAfterConfirmationShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            uiContext.openConfirmation(
+                MessageStyleTypeEnum.WARNING, i18n.translate("ui-dialog.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        closeDialog();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+        }
+    }
+
+    /**
+     * A shortcut listener used to commit the dialog.
+     */
+    protected class CommitDialogShortcutListener extends ShortcutListener {
+
+        public CommitDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            // textareas are excluded on the client-side, see 'EnterFriendlyShortcutActionHandler', used in PanelConnector
+            executeAction(BaseDialog.COMMIT_ACTION_NAME, new Object[0]);
         }
     }
 }

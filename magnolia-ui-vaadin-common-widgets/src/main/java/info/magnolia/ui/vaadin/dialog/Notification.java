@@ -74,6 +74,7 @@ public class Notification implements View {
         closeButton.addStyleName("close");
         closeButton.setHtmlContentAllowed(true);
         closeButton.setCaption("<span class=\"m-closebutton icon-close m-closebutton-dialog\"></span>");
+        closeButton.focus();
         layout.addComponent(closeButton);
     }
 

@@ -172,7 +172,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-vaadin-scrolltable-src</id>
+            <id>unpack-vaadin-sources</id>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -200,6 +200,7 @@
               <includes>
                 com/vaadin/client/ui/VScrollTable.java,
                 com/vaadin/client/ui/VTreeTable.java,
+                com/vaadin/client/ui/panel/PanelConnector.java,
                 com/vaadin/client/ui/table/TableConnector.java,
                 com/vaadin/client/ui/treetable/TreeTableConnector.java,
                 com/vaadin/client/ui/upload/UploadConnector.java,
@@ -216,6 +217,7 @@
           <patches>
             <patch>vscrolltable.txt</patch>
             <patch>vtreetable.txt</patch>
+            <patch>panelconnector.txt</patch>
             <patch>scrolltableconnector.txt</patch>
             <patch>treetableconnector.txt</patch>
             <patch>uploadconnector.txt</patch>
@@ -246,13 +248,15 @@
             <configuration>
               <source>
                 import java.io.File
-                import com.vaadin.sass.SassCompiler
                 import java.util.regex.Matcher
                 def path = "${project.build.sourceDirectory}/com/vaadin/client/ui/"
-                def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
+                def renameMap = [
+                    (new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
                     (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java")),
+                    (new File(path + "panel/PanelConnector.java")):(new File(path + "panel/EnterFriendlyPanelConnector.java")),
                     (new File(path + "treetable/TreeTableConnector.java")):(new File(path + "treetable/TreeTableConnectorPatched.java")),
-                    (new File(path + "table/TableConnector.java")):(new File(path + "table/TableConnectorPatched.java"))];
+                    (new File(path + "table/TableConnector.java")):(new File(path + "table/TableConnectorPatched.java"))
+                ];
 
                 for (v in renameMap) {
                     println "Renaming ${v.key.name} to ${v.value.name}..."
@@ -274,35 +278,6 @@
             org/vaadin/peter/contextmenu/**
           </excludes>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>
-                import com.vaadin.sass.SassCompiler
-                import java.util.regex.Matcher
-
-                new File("${project.basedir}").eachFileRecurse {
-                if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
-                def sassFile = it.path
-                def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
-                def cssFile = cssPath + Matcher.lastMatcher[0][2]+".css"
-                println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
-                new File(cssPath).mkdirs();
-                SassCompiler.main([sassFile, cssFile] as String[])
-                }
-                }
-              </source>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
 
