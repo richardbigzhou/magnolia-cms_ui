@@ -96,7 +96,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         getWidget().setCaption(getState().caption);
-        getWidget().setDescriptionVisible(getState().isDescriptionVisible);
         for (final ComponentConnector cc : getChildComponents()) {
             updateChildError(cc);
         }
