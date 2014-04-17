@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to
- * {@link FormSectionWidget} and the FieldWrappers are exposed.
+ * {@link FormSectionWidget} and the FielWrappers are exposed.
  */
 public class FormTabWidget extends MagnoliaTabWidget {
 
