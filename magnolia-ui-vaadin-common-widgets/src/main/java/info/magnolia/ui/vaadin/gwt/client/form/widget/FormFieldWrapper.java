@@ -179,7 +179,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
             hideHelp();
             return;
         }
-        if (helpButton.isVisible() && helpSection == null) {
+        if (isHelpEnabled && helpButton.isVisible() && helpSection == null) {
             showHelp();
         }
     }
