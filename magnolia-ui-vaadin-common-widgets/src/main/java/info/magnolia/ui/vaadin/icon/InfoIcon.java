@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ public class InfoIcon extends CompositeIcon {
 
     public InfoIcon(int size) {
         super(
+                new Icon("shape-circle-plus", size, "#fff"),
                 new Icon("shape-circle", size, Icon.COLOR_INFO),
                 new Icon("info_mark", size, "#fff"));
     }

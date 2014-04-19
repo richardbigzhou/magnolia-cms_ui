@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,10 +43,12 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.link.LinkUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -57,6 +59,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -69,7 +73,7 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -78,9 +82,17 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.StatusBarView;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -108,6 +120,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final PageBarView pageBarView;
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
+    private AvailabilityChecker availabilityChecker;
+    private final StatusBarView statusBarView;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -119,10 +133,22 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private Locale currentLocale;
     private String caption;
 
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
+     */
+    @Deprecated
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector) {
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
+    }
+
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+            ContentConnector contentConnector, StatusBarView statusBarView) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -133,8 +159,10 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.pageBarView = pageBarView;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
+        this.availabilityChecker = availabilityChecker;
+        this.statusBarView = statusBarView;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
-        this.workspace = editorDefinition.getWorkspace();
+        this.workspace = ((JcrContentConnector)contentConnector).getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
         this.currentLocale = i18nContentSupport.getLocale();
         this.versionManager = versionManager;
@@ -158,15 +186,27 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
 
-        actionbarPresenter.setListener(this);
-        pageBarView.setListener(this);
         ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
-        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
+        Map<String, ActionDefinition> actionDefinitions = getSubAppContext().getSubAppDescriptor().getActions();
+        actionbarPresenter.setListener(this);
+        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
+
+        pageBarView.setListener(this);
+
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
+        view.setStatusBarView(statusBarView);
+
+        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
         goToLocation(detailLocation);
-        pageBarView.setCurrentLanguage(i18nContentSupport.getLocale());
         return view;
     }
 
@@ -185,8 +225,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         detailLocation.updateNodePath(path);
         setPageEditorParameters(detailLocation);
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
+        view.setStatusBarView(statusBarView); // update page status bar
         pageEditorPresenter.updateParameters(parameters);
-
     }
 
     /**
@@ -257,6 +297,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         setPageEditorParameters(location);
         hideAllSections();
         pageEditorPresenter.loadPageEditor(parameters);
+        updatePageBarAvailableLanguages(location);
+    }
+
+    private void updatePageBarAvailableLanguages(DetailLocation location) {
+        Node node = SessionUtil.getNode(workspace, location.getNodePath());
+        List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
+        pageBarView.setAvailableLanguages(locales);
+        Locale locale = currentLocale != null ? currentLocale : i18nContentSupport.getLocale();
+        pageBarView.setCurrentLanguage(locale);
     }
 
     private void setPageEditorParameters(DetailLocation location) {
@@ -332,7 +381,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                JcrItemId itemId = (JcrItemId) event.getItemId();
+                if (itemId.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
                     try {
                         String currentNodePath = getCurrentLocation().getNodePath();
@@ -393,27 +443,22 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getIcon() : null;
-    }
-
-    @Override
     public void languageSelected(Locale locale) {
-        this.currentLocale = locale;
-        doGoToLocation(getCurrentLocation());
+        if (locale != null && !locale.equals(currentLocale)) {
+            this.currentLocale = locale;
+            if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
+                ((DefaultI18NAuthoringSupport) i18NAuthoringSupport).setAuthorLocale(locale);
+            }
+            doGoToLocation(getCurrentLocation());
+        }
     }
 
     @Override
     public void platformSelected(PlatformType platformType) {
-        this.targetPreviewPlatform = platformType;
-        doGoToLocation(getCurrentLocation());
+        if (platformType != null && !platformType.equals(targetPreviewPlatform)) {
+            this.targetPreviewPlatform = platformType;
+            doGoToLocation(getCurrentLocation());
+        }
     }
 
     /**
@@ -498,10 +543,16 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, node)) {
-                    actionbarPresenter.enable(actionName);
-                } else {
-                    actionbarPresenter.disable(actionName);
+                AvailabilityDefinition availabilityDefinition = actionExecutor.getActionDefinition(actionName).getAvailability();
+                try {
+                    Object itemId = JcrItemUtil.getItemId(node);
+                    if (availabilityChecker.isAvailable(availabilityDefinition, Arrays.asList(itemId))) {
+                        actionbarPresenter.enable(actionName);
+                    } else {
+                        actionbarPresenter.disable(actionName);
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Failed to update action availability: " + e.getMessage(), e);
                 }
             }
         }

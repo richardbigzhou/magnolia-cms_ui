@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,7 +36,6 @@ package info.magnolia.ui.workbench.definition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,24 +46,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String name;
 
-    private String workspace;
-
-    private String path = "/";
-
-    private String defaultOrder;
-
-    private List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
-
     private boolean dialogWorkbench = false;
-
-    private boolean includeProperties = false;
 
     private boolean editable;
 
     private Class<? extends DropConstraint> dropConstraintClass;
-
     private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
-    private boolean includeSystemNodes;
 
     @Override
     public String getName() {
@@ -76,70 +63,12 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public List<NodeTypeDefinition> getNodeTypes() {
-        return nodeTypes;
-    }
-
-    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
-        this.nodeTypes = nodeTypes;
-    }
-
-    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
-        nodeTypes.add(nodeTypeDefinition);
-    }
-
-    @Override
-    public boolean isIncludeProperties() {
-        return includeProperties;
-    }
-
-    public void setIncludeProperties(boolean includeProperties) {
-        this.includeProperties = includeProperties;
-    }
-
-    @Override
-    public boolean isIncludeSystemNodes() {
-        return includeSystemNodes;
-    }
-
-    public void setIncludeSystemNodes(boolean includeSystemNodes) {
-        this.includeSystemNodes = includeSystemNodes;
-    }
-
-    @Override
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    @Override
     public boolean isDialogWorkbench() {
         return dialogWorkbench;
     }
 
     public void setDialogWorkbench(boolean dialogWorkbench) {
         this.dialogWorkbench = dialogWorkbench;
-    }
-
-    @Override
-    public String getDefaultOrder() {
-        return defaultOrder;
-    }
-
-    public void setDefaultOrder(String defaultOrder) {
-        this.defaultOrder = defaultOrder;
     }
 
     @Override

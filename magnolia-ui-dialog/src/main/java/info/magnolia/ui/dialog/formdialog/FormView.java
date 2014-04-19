@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,10 +38,10 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
 
+import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
 
 /**
  * Interface for a locale-enabled form view.
@@ -50,5 +50,5 @@ public interface FormView extends DialogView, View, Item.Editor, FormViewReduced
 
     void setCurrentLocale(Locale locale);
 
-    void setLocaleSelector(AbstractSelect languageChooser);
+    void setAvailableLocales(List<Locale> locales);
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 /**

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,11 +36,12 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,12 +82,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
     }
 
-    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public HierarchicalJcrContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
     }
 
     @Override
-    public Collection<String> getChildren(Object itemId) {
+    public Collection<JcrItemId> getChildren(Object itemId) {
         long start = System.currentTimeMillis();
         Collection<Item> children = getChildren(getJcrItem(itemId));
         log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
@@ -94,13 +95,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
-    public String getParent(Object itemId) {
+    public JcrItemId getParent(Object itemId) {
         try {
             Item item = getJcrItem(itemId);
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
-            return item.getParent().getIdentifier();
+            return JcrItemUtil.getItemId(item.getParent());
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Cannot determine parent for itemId: " + itemId, e);
             return null;
@@ -108,7 +109,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
-    public Collection<String> rootItemIds() {
+    public Collection<JcrItemId> rootItemIds() {
         try {
             return createContainerIds(getRootItemIds());
         } catch (RepositoryException e) {
@@ -121,6 +122,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public void refresh() {
         resetOffset();
         clearItemIndexes();
+        fireItemSetChange();
     }
 
     @Override
@@ -159,11 +161,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return item.isNode() && !getChildren(item).isEmpty();
     }
 
-    protected Collection<String> createContainerIds(Collection<Item> children) {
-        ArrayList<String> ids = new ArrayList<String>();
+    protected Collection<JcrItemId> createContainerIds(Collection<Item> children) {
+        ArrayList<JcrItemId> ids = new ArrayList<JcrItemId>();
         for (Item child : children) {
             try {
-                ids.add(JcrItemUtil.getItemId(child));
+                JcrItemId itemId = JcrItemUtil.getItemId(child);
+                ids.add(itemId);
             } catch (RepositoryException e) {
                 handleRepositoryException(log, "Cannot retrieve currentId", e);
             }
@@ -195,7 +198,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 }
             }
 
-            if (getWorkbenchDefinition().isIncludeProperties()) {
+            if (getConfiguration().isIncludeProperties()) {
                 ArrayList<Property> properties = new ArrayList<Property>();
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
@@ -218,12 +221,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     protected boolean isNodeVisible(Node node) throws RepositoryException {
 
-        if (!getWorkbenchDefinition().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
+        if (!getConfiguration().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
             return false;
         }
 
         String primaryNodeTypeName = node.getPrimaryNodeType().getName();
-        for (NodeTypeDefinition nodeTypeDefinition : getWorkbenchDefinition().getNodeTypes()) {
+        for (NodeTypeDefinition nodeTypeDefinition : getConfiguration().getNodeTypes()) {
             if (nodeTypeDefinition.isStrict()) {
                 if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
                     return true;
@@ -326,7 +329,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * Only used in tests.
      */
     String getPathInTree(Item item) throws RepositoryException {
-        String base = getWorkbenchDefinition().getPath();
+        String base =  ((JcrContentConnectorDefinition) getConfiguration()).getRootPath();
         return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
     }
 
@@ -335,6 +338,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private Node getRootNode() throws RepositoryException {
-        return getSession().getNode(getWorkbenchDefinition().getPath());
+        return getSession().getNode(((JcrContentConnectorDefinition) getConfiguration()).getRootPath());
     }
 }

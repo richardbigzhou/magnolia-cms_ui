@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -113,6 +113,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         if (setCaptionToNull) {
             field.setCaption(null);
         }
+        field.setWidth(100, Unit.PERCENTAGE);
         return field;
     }
 

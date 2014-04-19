@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -42,17 +42,11 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
 
-    private String nodeType = StringUtils.EMPTY;
     private String appName;
+
     private String subAppId;
 
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
+    private String nodeType = StringUtils.EMPTY;
 
     public String getAppName() {
         return appName;
@@ -68,5 +62,31 @@ public abstract class AbstractItemActionDefinition extends ConfiguredActionDefin
 
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
+    }
+
+    /**
+     * Get the node type associated with action.
+     *
+     * @deprecated since 5.3 because the property has been used for availability purposes only and so should be defined
+     * in {@link info.magnolia.ui.api.availability.AvailabilityDefinition}.
+     * The existing configuration entries are handled by migration tasks.
+     * @see info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask
+     * @see info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask
+     */
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    /**
+     * Set the node type associated with action.
+     *
+     * @deprecated since 5.3 because the property has been used for availability purposes only and so should be defined
+     * in {@link info.magnolia.ui.api.availability.AvailabilityDefinition}.
+     * The existing configuration entries are handled by migration tasks.
+     * @see info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask
+     * @see info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -65,25 +65,13 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     private EventBus eventBus = new SimpleEventBus();
 
     public AppLauncherConnector() {
-        addStateChangeHandler("appGroups", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            }
-        });
 
         addStateChangeHandler("appGroups", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 // set groups in specified order
                 List<AppGroup> groups = new ArrayList<AppGroup>(getState().appGroups.values());
-                Collections.sort(groups, new Comparator<AppGroup>() {
-                    @Override
-                    public int compare(AppGroup o1, AppGroup o2) {
-                        Integer idx1 = getState().groupsOrder.indexOf(o1.getName());
-                        Integer idx2 = getState().groupsOrder.indexOf(o2.getName());
-                        return idx1.compareTo(idx2);
-                    }
-                });
+                Collections.sort(groups, new GroupComparator(getState().groupsOrder));
 
                 // add groups to the view
                 view.clear();
@@ -144,6 +132,31 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected AppLauncherState createState() {
         return new AppLauncherState();
+    }
+
+    /**
+     * This comparator helps ordering the list of groups according to the specified groupsOrder, yet accounting as well for ordering all permanent groups
+     * before all temporary groups. This ensures accurate relative depth of groups in the applauncher.
+     */
+    static class GroupComparator implements Comparator<AppGroup> {
+
+        private List<String> groupOrder;
+
+        public GroupComparator(List<String> groupOrder) {
+            this.groupOrder = groupOrder;
+        }
+
+        @Override
+        public int compare(AppGroup o1, AppGroup o2) {
+            boolean perm1 = o1.isPermanent();
+            boolean perm2 = o2.isPermanent();
+            if (perm1 == perm2) {
+                Integer idx1 = groupOrder.indexOf(o1.getName());
+                Integer idx2 = groupOrder.indexOf(o2.getName());
+                return idx1.compareTo(idx2);
+            }
+            return perm1 == true ? -1 : 1;
+        }
     }
 
 }

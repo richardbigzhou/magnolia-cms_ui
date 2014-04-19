@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -67,7 +67,7 @@ public class MessageStoreTest extends MgnlTestCase {
 
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
         MockContext ctx = MockUtil.getMockContext();
         final User user = mock(User.class);
@@ -115,6 +115,23 @@ public class MessageStoreTest extends MgnlTestCase {
         assertEquals("system", messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
         assertEquals(messageText, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE).getString());
         assertEquals(type.name(), messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString());
+    }
+
+    @Test
+    public void testMarshallMessageWithNullProperties() throws Exception {
+        // GIVEN
+        final MockNode messageNode = new MockNode();
+
+        final Message message = new Message();
+
+        // WHEN
+        store.marshallMessage(message, messageNode);
+
+        // THEN
+        assertEquals("", messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT).getString());
+        assertEquals("system", messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
+        assertEquals("", messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE).getString());
+        assertEquals(MessageType.UNKNOWN.name(), messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString());
     }
 
     @Test

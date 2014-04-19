@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
@@ -60,7 +61,8 @@ public class AddPropertyAction extends AbstractRepositoryAction<AddPropertyActio
             Node node = (Node) item.getJcrItem();
             String name = getUniqueNewItemName(node);
             Property property = node.setProperty(name, "");
-            setItemIdOfChangedItem(JcrItemUtil.getItemId(property.getParent()));
+            JcrItemId itemId = JcrItemUtil.getItemId(property);
+            setItemIdOfChangedItem(itemId);
             setItemContentChanged(true);
         }
     }

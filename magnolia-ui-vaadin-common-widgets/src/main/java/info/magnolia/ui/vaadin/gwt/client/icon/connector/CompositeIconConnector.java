@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
@@ -74,13 +75,15 @@ public class CompositeIconConnector extends AbstractLayoutConnector {
         boolean processedRoot = false;
         for (final ComponentConnector cc : getChildComponents()) {
             if (cc instanceof IconConnector) {
+                IconConnector c = (IconConnector) cc;
+                IconWidget w = c.getWidget();
+                getWidget().getElement().appendChild(w.getElement());
+                c.getState().size = -1;
                 if (!processedRoot) {
                     processedRoot = true;
                 } else {
-                    ((IconConnector) cc).setInnerIcon(true);
+                    w.getElement().getStyle().setMarginLeft(-1, Unit.EM);
                 }
-                ((IconConnector) cc).getWidget().updateInnerStyles();
-                getWidget().getElement().appendChild(cc.getWidget().getElement());
             }
         }
     }

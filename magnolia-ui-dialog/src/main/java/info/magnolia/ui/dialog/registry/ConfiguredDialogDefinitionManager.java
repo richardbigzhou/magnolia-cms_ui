@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,6 +38,7 @@ import info.magnolia.jcr.predicate.NodeTypePredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import org.apache.commons.lang.StringUtils;
@@ -104,9 +105,12 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
      * Check if this node can be handle as a ConfiguredDialogDefinition.
      */
     private boolean isDialog(Node dialogNode) throws RepositoryException {
-        return dialogNode.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME)
-                || dialogNode.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME)
-                || dialogNode.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME);
+        Node node = dialogNode;
+        if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+            node = new ExtendingNodeWrapper(dialogNode);
+        }
+        return node.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME)
+                || node.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME);
     }
 
     protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {

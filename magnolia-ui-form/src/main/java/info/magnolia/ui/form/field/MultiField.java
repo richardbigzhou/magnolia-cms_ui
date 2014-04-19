@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ import java.util.Iterator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -79,7 +80,9 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         // Init root layout
         addStyleName("linkfield");
         root = new VerticalLayout();
-        root.setSizeUndefined();
+        root.setSpacing(true);
+        root.setWidth(100, Unit.PERCENTAGE);
+        root.setHeight(-1, Unit.PIXELS);
 
         // Init addButton
         addButton.setCaption(buttonCaptionAdd);
@@ -117,6 +120,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      */
     private Component createEntryComponent(Property<?> property) {
         HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidth(100, Unit.PERCENTAGE);
+        layout.setHeight(-1, Unit.PIXELS);
         Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, true);
         layout.addComponent(field);
         if (property != null) {
@@ -131,10 +136,20 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        deleteButton.addStyleName("remove");
+        deleteButton.addStyleName("inline");
         deleteButton.setDescription(buttonCaptionRemove);
         deleteButton.addClickListener(removeButtonClickListener(layout));
         layout.addComponent(deleteButton);
+
+        // set layout to full width
+        layout.setWidth(100, Unit.PERCENTAGE);
+
+        // distribute space in favour of field over delete button
+        layout.setExpandRatio(field, 1);
+        layout.setExpandRatio(deleteButton, 0);
+
+        // make sure button stays aligned with the field and not with the optional field label when used
+        layout.setComponentAlignment(deleteButton, Alignment.BOTTOM_RIGHT);
 
         return layout;
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.I18nizer;
@@ -45,10 +44,10 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.app.SubAppContext;
 
 import org.junit.Before;
 import org.junit.Test;

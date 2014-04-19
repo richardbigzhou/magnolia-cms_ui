@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -86,7 +86,7 @@ public class SortComponentAction extends AbstractAction<SortComponentActionDefin
             }
 
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(areaElement.getWorkspace(), areaElement.getPath()));
+            eventBus.fireEvent(new ContentChangedEvent(areaElement.getPath()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }

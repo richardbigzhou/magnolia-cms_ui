@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -125,6 +125,23 @@ public class SaveFormActionTest extends RepositoryTestCase {
         assertTrue(session.getRootNode().hasNode("Culture"));
         assertTrue(session.getRootNode().getNode("Culture").hasProperty("name"));
         assertEquals("Culture", session.getRootNode().getNode("Culture").getProperty("name").getString());
+    }
+
+    @Test
+    public void executeKeepsNamePropertyWithSpaces() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode("No Culture");
+        node.setProperty("name", "No Culture");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, adapter, callback, validator);
+
+        // WHEN
+        formAction.execute();
+
+        // THEN
+        assertTrue(session.getRootNode().hasNode("No-Culture"));
+        assertTrue(session.getRootNode().getNode("No-Culture").hasProperty("name"));
+        assertEquals("No Culture", session.getRootNode().getNode("No-Culture").getProperty("name").getString());
     }
 
     @Test

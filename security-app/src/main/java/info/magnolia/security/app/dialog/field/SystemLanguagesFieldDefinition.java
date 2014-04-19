@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.cms.security.SilentSessionOp;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
@@ -46,6 +47,7 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +64,15 @@ public class SystemLanguagesFieldDefinition extends SelectFieldDefinition {
     public List<SelectFieldOptionDefinition> getOptions() {
         List<SelectFieldOptionDefinition> options = new LinkedList<SelectFieldOptionDefinition>();
 
-        Node systemLanguages = SessionUtil.getNode(RepositoryConstants.CONFIG, SYSTEM_LANGUAGES_PATH);
+        Node systemLanguages = MgnlContext.doInSystemContext(new SilentSessionOp<Node>(RepositoryConstants.CONFIG) {
+
+            @Override
+            public Node doExec(Session session) throws RepositoryException {
+                return SessionUtil.getNode(session, SYSTEM_LANGUAGES_PATH);
+            }
+        });
+
+
         if (systemLanguages == null) {
             log.error("Cannot load system languages definition from [{}], check the system configuration.", SYSTEM_LANGUAGES_PATH);
         } else {

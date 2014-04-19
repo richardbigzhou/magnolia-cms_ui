@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -68,12 +68,14 @@ public class PasswordFields extends CustomField<String> {
         layout = new VerticalLayout();
         passwordField = new PasswordField();
         passwordField.setNullRepresentation("");
+        passwordField.setWidth("100%");
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         this.verificationMessage = verificationMessage;
         if (this.verification) {
             verificationField = new PasswordField();
             verificationField.setNullRepresentation("");
+            verificationField.setWidth("100%");
         }
         initContent();
     }

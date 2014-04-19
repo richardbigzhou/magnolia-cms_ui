@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,9 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
 
     private String command;
     private String catalog = CommandsManager.DEFAULT_CATALOG;
+    private boolean asynchronous = false;
+    private int delay = 1;
+    private boolean isParallel = true;
 
     private Map<String, Object> params = new HashMap<String, Object>();
 
@@ -82,4 +85,27 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    public boolean isAsynchronous() {
+        return asynchronous;
+    }
+
+    public void setAsynchronous(boolean asynchronous) {
+        this.asynchronous = asynchronous;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    public boolean isParallel() {
+        return isParallel;
+    }
+
+    public void setParallel(boolean isParallel) {
+        this.isParallel = isParallel;
+    }
 }

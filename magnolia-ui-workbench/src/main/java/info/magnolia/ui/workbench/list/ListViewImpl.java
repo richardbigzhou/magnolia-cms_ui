@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -53,6 +53,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Table.TableDragMode;
@@ -65,16 +66,13 @@ public class ListViewImpl implements ListView {
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     private static final int MINIMUM_COLUMN_WIDTH = 46;
+    private static final String DELETED_ROW_STYLENAME = "deleted";
 
-    private final Table table;
+    private Table table;
 
     private ListView.Listener listener;
 
-    public ListViewImpl() {
-        this(new MagnoliaTable());
-    }
-
-    public ListViewImpl(Table table) {
+    protected void initializeTable(Table table) {
         table.setSizeFull();
 
         table.setImmediate(true);
@@ -90,11 +88,19 @@ public class ListViewImpl implements ListView {
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
 
+
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
-
-                final Item item = source.getContainerDataSource().getItem(itemId);
-                return listener.getIcon(item);
+                // icon style is expected on the whole table row, not on a column matching a specific propertyId
+                if (propertyId == null) {
+                    final Item item = source.getContainerDataSource().getItem(itemId);
+                    if (item == null) {
+                        return DELETED_ROW_STYLENAME;
+                    } else {
+                        return listener.getIcon(item);
+                    }
+                }
+                return null;
             }
         });
 
@@ -114,12 +120,12 @@ public class ListViewImpl implements ListView {
                 log.debug("Handle value change Event: {}:{} for listener {}", value.getClass(), value, listener);
 
                 if (listener != null) {
-                    Set<String> items;
+                    Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
                     } else {
-                        items = new LinkedHashSet<String>();
-                        items.add((String) value);
+                        items = new LinkedHashSet<Object>();
+                        items.add(value);
                     }
                     listener.onItemSelection(items);
                 }
@@ -133,21 +139,21 @@ public class ListViewImpl implements ListView {
 
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
-                        listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
+                        listener.onRightClick(event.getItemId(), event.getClientX(), event.getClientY());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {
-                        listener.onDoubleClick(event.getItem());
+                        listener.onDoubleClick(event.getItemId());
                     }
                 } else {
                     Object value = table.getValue();
                     if (value != null) {
-                        Set<String> items;
+                        Set<Object> items;
                         if (value instanceof Set) {
-                            items = (Set<String>) value;
+                            items = (Set<Object>) value;
                         } else {
-                            items = new LinkedHashSet<String>();
-                            items.add((String) value);
+                            items = new LinkedHashSet<Object>();
+                            items.add(value);
                         }
                         if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
                             table.setValue(null);
@@ -179,14 +185,21 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void setContainer(Container container) {
-        table.setContainerDataSource(container);
+        table = createTable(container);
+        initializeTable(table);
+    }
+
+    protected Table createTable(Container container) {
+        return new MagnoliaTable(container);
     }
 
     @Override
     public void addColumn(String propertyId, String title) {
         table.setColumnHeader(propertyId, title);
         List<Object> visibleColumns = new ArrayList<Object>(Arrays.asList(table.getVisibleColumns()));
-        visibleColumns.add(propertyId);
+        if (!visibleColumns.contains(propertyId)) {
+            visibleColumns.add(propertyId);
+        }
         table.setVisibleColumns(visibleColumns.toArray());
     }
 
@@ -208,10 +221,15 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void select(List<String> itemIds) {
+    public void clearColumns() {
+        table.setVisibleColumns(new Object[]{});
+    }
+
+    @Override
+    public void select(List<Object> itemIds) {
         table.setValue(null);
         if (itemIds != null && !itemIds.isEmpty()) {
-            for (String id : itemIds) {
+            for (Object id : itemIds) {
                 table.select(id);
             }
         }
@@ -219,11 +237,11 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
     }
 
     @Override
-    public Table asVaadinComponent() {
+    public Component asVaadinComponent() {
         return table;
     }
 

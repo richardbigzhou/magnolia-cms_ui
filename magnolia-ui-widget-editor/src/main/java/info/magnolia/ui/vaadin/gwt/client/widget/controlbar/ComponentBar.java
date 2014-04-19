@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,36 +34,16 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DragDropEventBase;
-import com.google.gwt.event.dom.client.DragEndEvent;
-import com.google.gwt.event.dom.client.DragEndHandler;
-import com.google.gwt.event.dom.client.DragLeaveEvent;
-import com.google.gwt.event.dom.client.DragLeaveHandler;
-import com.google.gwt.event.dom.client.DragOverEvent;
-import com.google.gwt.event.dom.client.DragOverHandler;
-import com.google.gwt.event.dom.client.DragStartEvent;
-import com.google.gwt.event.dom.client.DragStartHandler;
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.event.dom.client.DropHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Control bar for components. Injected at the beginning of a component.
@@ -76,8 +56,8 @@ public class ComponentBar extends AbstractBar {
     private static final String MOVE_OVER_CLASS_NAME = "moveOver";
 
     private final ComponentListener listener;
-    List<HandlerRegistration> dndHandlers = new LinkedList<HandlerRegistration>();
-    List<HandlerRegistration> moveHandlers = new LinkedList<HandlerRegistration>();
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public ComponentBar(MgnlComponent mgnlElement) {
         super(mgnlElement);
@@ -116,123 +96,103 @@ public class ComponentBar extends AbstractBar {
             final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-
-            TouchDelegate td = new TouchDelegate(edit);
-            td.addTouchEndHandler(new TouchEndHandler() {
+            eventManager.addClickOrTouchHandler(edit, new ControlBarEventHandler() {
                 @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                public void handle(NativeEvent event) {
                     listener.editComponent();
                 }
             });
-
             addButton(edit);
         }
         if (listener.isMovable()) {
             final Label move = new Label();
             move.setStyleName(ICON_CLASS_NAME);
             move.addStyleName(MOVE_ICON_CLASS_NAME);
-
-            TouchDelegate td = new TouchDelegate(move);
-            td.addTouchEndHandler(new TouchEndHandler() {
+            eventManager.addClickOrTouchHandler(move, new ControlBarEventHandler() {
                 @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                public void handle(NativeEvent event) {
                     listener.onMoveStart(false);
                 }
             });
-
             addButton(move);
         }
 
     }
+
     private void registerDragStartHandler() {
-
-        addDomHandler(new DragStartHandler() {
+        eventManager.addDragStartHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onDragStart(DragStartEvent event) {
-                event.setData("text", "dummyPayload");
+            public void handle(NativeEvent event) {
+                event.getDataTransfer().setData("text", "dummyPayload");
                 event.getDataTransfer().setDragImage(getElement(), 10, 10);
-
                 listener.onMoveStart(true);
             }
-        }, DragStartEvent.getType());
+        });
 
-        addDomHandler(new DragEndHandler() {
+        eventManager.addDragEndHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onDragEnd(DragEndEvent event) {
+            public void handle(NativeEvent event) {
                 listener.onMoveCancel();
             }
-        }, DragEndEvent.getType());
-
+        });
     }
-    public void registerDragAndDropHandlers() {
 
-        dndHandlers.add(addDomHandler(new DragOverHandler() {
+    public void registerDragAndDropHandlers() {
+        eventManager.addDragOverHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onDragOver(DragOverEvent event) {
+            public void handle(NativeEvent event) {
                 setMoveOver(true);
                 event.stopPropagation();
             }
-        }, DragOverEvent.getType()));
+        });
 
-        dndHandlers.add(addDomHandler(new DragLeaveHandler() {
 
+        eventManager.addDragLeaveHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onDragLeave(DragLeaveEvent event) {
+            public void handle(NativeEvent event) {
                 setMoveOver(false);
                 event.stopPropagation();
             }
-        }, DragLeaveEvent.getType()));
+        });
 
-        dndHandlers.add(addDomHandler(new DropHandler() {
+        eventManager.addDropHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onDrop(DropEvent event) {
+            public void handle(NativeEvent event) {
                 listener.onMoveStop();
                 event.preventDefault();
             }
-        }, DropEvent.getType()));
+        });
     }
 
     public void unregisterDragAndDropHandlers() {
-        Iterator<HandlerRegistration> it = dndHandlers.iterator();
-        while (it.hasNext()) {
-            it.next().removeHandler();
-            it.remove();
-        }
+        eventManager.unregisterDnDHandlers(this);
     }
 
     public void registerMoveHandlers() {
-
-        moveHandlers.add(addDomHandler(new MouseDownHandler() {
-
+        eventManager.addMouseDownHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onMouseDown(MouseDownEvent event) {
+            public void handle(NativeEvent event) {
                 listener.onMoveStop();
             }
-        }, MouseDownEvent.getType()));
+        });
 
-        moveHandlers.add(addDomHandler(new MouseOverHandler() {
-
+        eventManager.addMouseOverHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onMouseOver(MouseOverEvent event) {
+            public void handle(NativeEvent event) {
                 setMoveOver(true);
             }
-        }, MouseOverEvent.getType()));
+        });
 
-        moveHandlers.add(addDomHandler(new MouseOutHandler() {
-
+        eventManager.addMouseOutHandler(this, new ControlBarEventHandler() {
             @Override
-            public void onMouseOut(MouseOutEvent event) {
+            public void handle(NativeEvent event) {
                 setMoveOver(false);
             }
-        }, MouseOutEvent.getType()));
+        });
     }
 
     public void unregisterMoveHandlers() {
-        Iterator<HandlerRegistration> it = moveHandlers.iterator();
-        while (it.hasNext()) {
-            it.next().removeHandler();
-            it.remove();
-        }
+        eventManager.unregisterMoveHandlers(this);
     }
 
     public void setMoveTarget(boolean target) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,34 +33,35 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsVersions;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.version.Version;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.TextArea;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -72,88 +73,68 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
     private final ActionExecutor actionExecutor;
     private final AppContext appContext;
+    private final SubAppContext subAppContext;
     private final DetailEditorView view;
     private final DetailPresenter detailPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final DetailSubAppDescriptor subAppDescriptor;
     private final EditorDefinition editorDefinition;
-    private final VersionManager versionManager;
     private final SimpleTranslator i18n;
     private String nodePath;
+    private ContentConnector contentConnector;
 
     @Inject
-    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final VersionManager versionManager, final SimpleTranslator i18n) {
-        this.actionExecutor = actionExecutor;
-        this.view = view;
-        this.detailPresenter = detailPresenter;
-        this.actionbarPresenter = actionbarPresenter;
-        this.appContext = subAppContext.getAppContext();
-        this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.editorDefinition = subAppDescriptor.getEditor();
-        this.versionManager = versionManager;
-        this.i18n = i18n;
-    }
-
-    /**
-     * @deprecated since 5.1 - use {@link DetailEditorPresenter(ActionExecutor, SubAppContext, DetailEditorView, DetailPresenter, ActionbarPresenter, VersionManager, SimpleTranslator)} instead.
-     */
-    @Deprecated
     public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final SimpleTranslator i18n) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.detailPresenter = detailPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
+        this.subAppContext = subAppContext;
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
-        this.versionManager = Components.getComponent(VersionManager.class);
         this.i18n = i18n;
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType) {
-        return start(nodePath, viewType, null);
+    public View start(String nodePath, DetailView.ViewType viewType, ContentConnector contentConnector) {
+
+        return start(nodePath, viewType, contentConnector, null);
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType, String versionName) {
-        view.setListener(this);
+    public View start(String nodePath, DetailView.ViewType viewType, ContentConnector contentConnector, String versionName) {
+        this.contentConnector = contentConnector;
         this.nodePath = nodePath;
-        JcrNodeAdapter item;
-        try {
-            Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
-            if (session.nodeExists(nodePath) && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())) {
-                Node node = SessionUtil.getNode(editorDefinition.getWorkspace(), nodePath);
-                // Get versioned item if version name was provided
-                // Only show version if in VIEW mode
-                if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType)) {
-                    Version version = versionManager.getVersion(node, versionName);
-                    item = new JcrNodeAdapter(version.getFrozenNode());
-                } else {
-                    item = new JcrNodeAdapter(node);
-                }
-            } else {
-                String parentPath = StringUtils.substringBeforeLast(nodePath, "/");
-                parentPath = parentPath.isEmpty() ? "/" : parentPath;
-                Node parent = session.getNode(parentPath);
-                item = new JcrNewNodeAdapter(parent, editorDefinition.getNodeType().getName());
+
+        view.setListener(this);
+        Object itemId = contentConnector.getItemIdByUrlFragment(nodePath);
+
+        if (contentConnector.canHandleItem(itemId)) {
+            if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && contentConnector instanceof SupportsVersions) {
+                itemId = ((SupportsVersions) contentConnector).getItemVersion(itemId, versionName);
             }
-        } catch (RepositoryException e) {
-            log.warn("Not able to create an Item based on the following path {} ", nodePath, e);
-            throw new RuntimeException(e);
+        } else {
+            if (contentConnector instanceof SupportsCreation) {
+                Object parentId = contentConnector.getItemIdByUrlFragment(StringUtils.substringBeforeLast(nodePath, "/"));
+                itemId = ((SupportsCreation) contentConnector).getNewItemId(parentId, editorDefinition.getNodeType().getName());
+            }
         }
 
-        DetailView itemView = detailPresenter.start(editorDefinition, item, viewType);
+        DetailView itemView = detailPresenter.start(editorDefinition, viewType, itemId);
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setActionbarView(actionbar);
+
+        detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE));
+        detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
 
         return view;
     }
 
     public View update(DetailLocation location) {
-        return this.start(location.getNodePath(), location.getViewType(), location.getVersion());
+        return this.start(location.getNodePath(), location.getViewType(), contentConnector, location.getVersion());
     }
 
     public String getNodePath() {
@@ -166,39 +147,60 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
     @Override
     public void onViewTypeChanged(final DetailView.ViewType viewType) {
-        // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
     @Override
     public void onActionbarItemClicked(String actionName) {
         try {
-            Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
-            final javax.jcr.Item item = session.getItem(nodePath);
-            if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
-            } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
-            }
-
-        } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.detailEditorPresenter.error.repository", nodePath), e.getMessage());
-            appContext.broadcastMessage(error);
-        } catch (ActionExecutionException e) {
+           actionExecutor.execute(actionName, detailPresenter.getItem());
+        }
+        catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
-            appContext.broadcastMessage(error);
+            appContext.sendLocalMessage(error);
         }
     }
 
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    /**
+     * A shortcut listener which opens a confirmation to confirm closing the DetailEditor.
+     */
+    protected final class CloseEditorAfterConfirmationShortcutListener extends ShortcutListener {
+
+        public CloseEditorAfterConfirmationShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            subAppContext.openConfirmation(
+                MessageStyleTypeEnum.WARNING, i18n.translate("ui-contentapp.detailEditorPresenter.closeConfirmation.title"), i18n.translate("ui-dialog.closeConfirmation.body"), i18n.translate("ui-dialog.closeConfirmation.confirmButton"), i18n.translate("ui-dialog.cancelButton"), false,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        detailPresenter.onActionFired(BaseDialog.CANCEL_ACTION_NAME, new HashMap<String, Object>());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+        }
     }
 
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
+    /**
+     * A shortcut listener used to commit the DetailEditor if a text area does not have focus.
+     */
+    protected final class CommitDialogShortcutListener extends ShortcutListener {
+
+        public CommitDialogShortcutListener(int keyCode, int... modifierKey) {
+            super("", keyCode, modifierKey);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            if (!(target instanceof TextArea)){
+                detailPresenter.onActionFired(BaseDialog.COMMIT_ACTION_NAME, new HashMap<String, Object>());
+            }
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -42,6 +42,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,7 +69,7 @@ public class CreateAreaAction extends AbstractAction<CreateAreaActionDefinition>
 
     @Override
     public void execute() throws ActionExecutionException {
-        String workspace =area.getWorkspace();
+        String workspace = area.getWorkspace();
         String path = area.getPath();
         int index = path.lastIndexOf("/");
         String parent = path.substring(0, index);
@@ -82,7 +83,7 @@ public class CreateAreaAction extends AbstractAction<CreateAreaActionDefinition>
             Node newNode = NodeUtil.createPath(parentNode, relPath, NodeTypes.Area.NAME);
             session.save();
 
-            eventBus.fireEvent(new ContentChangedEvent(workspace, path));
+            eventBus.fireEvent(new ContentChangedEvent(JcrItemUtil.getItemId(newNode)));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }

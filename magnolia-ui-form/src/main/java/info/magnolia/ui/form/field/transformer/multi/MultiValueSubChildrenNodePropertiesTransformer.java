@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
@@ -87,7 +86,7 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
     protected JcrNodeAdapter getRootItem() {
         JcrNodeAdapter res = null;
         try {
-            res = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
+            res = getOrCreateChildNode(definition.getName(), childNodeType);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) relatedFormItem).getItemId());
         }
@@ -131,11 +130,12 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
             String propertyName = (String) propertyNames.next();
             com.vaadin.data.Property<Object> storedProperty = childItem.getItemProperty(propertyName);
 
-            if (storedProperty != null) {
-                storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
-            } else {
-                storedProperty = ((PropertysetItem) newValues).getItemProperty(propertyName);
-                childItem.addItemProperty(propertyName, storedProperty);
+            if (((PropertysetItem) newValues).getItemProperty(propertyName) != null) {
+                if (storedProperty != null) {
+                    storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
+                } else {
+                    childItem.addItemProperty(propertyName, ((PropertysetItem) newValues).getItemProperty(propertyName));
+                }
             }
         }
     }

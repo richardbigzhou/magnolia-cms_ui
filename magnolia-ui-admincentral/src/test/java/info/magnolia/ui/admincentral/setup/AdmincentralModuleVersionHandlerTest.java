@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -119,6 +121,13 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
+
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items", NodeTypes.ContentNode.NAME);
+
+        // for 5.2.2 update:
+        this.setupConfigNode("/modules/ui-admincentral/templates/deleted");
+        Node command = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/commands/default/delete/deactivate", NodeTypes.ContentNode.NAME);
+        command.setProperty("enabled", true);
     }
 
     @Test
@@ -393,31 +402,60 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(session.itemExists("/modules/ui-admincentral/virtualURIMapping/default"));
     }
 
-    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsInstalled() throws Exception {
+    @Test
+    public void testUpdateTo52RegisterActivationApp() throws Exception {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
-        NodeUtil.createPath(session.getRootNode(), "/modules/activation", "mgnl:content");
-
+        NodeUtil.createPath(session.getRootNode(), "/modules/activation", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", NodeTypes.ContentNode.NAME);
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 
         // THEN
-        assertTrue(devAppGroup.hasNode("activation"));
-
+        assertTrue(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation"));
+        assertTrue(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor"));
     }
 
     @Test
-    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsNotInstalled() throws Exception {
+    public void testUpdateTo52DoNotRegisterActivationApp() throws Exception {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 
         // THEN
-        assertFalse(devAppGroup.hasNode("activation"));
+        assertFalse(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation"));
+    }
+
+    @Test
+    public void testUpdateFrom50() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/stkSiteApp/subApps");
+        this.setupConfigProperty("/modules/ui-admincentral/apps/stkSiteApp", "icon", "someIcon");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+        assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/app"));
+        assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/icon"));
+
+        assertTrue(session.itemExists("/modules/ui-admincentral/templates/deleted/i18nBasename"));
+        assertEquals("info.magnolia.module.admininterface.messages", session.getProperty("/modules/ui-admincentral/templates/deleted/i18nBasename").getString());
+        assertEquals(PropertyType.STRING, session.getProperty("/modules/ui-admincentral/commands/default/delete/deactivate/enabled").getType());
+    }
+
+    @Test
+    public void testUpdateFrom521AddEmptyItemTypesInToParamsOfActivateAction() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes"));
+        assertEquals("", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes").getString());
     }
     
     @Test
@@ -535,4 +573,49 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertFalse(session.getRootNode().hasNode("modules/ui-admincentral/apps/configuration-with-content-assist"));
     }
 
+    @Test
+    public void testICEPushMimeMappingRemovedIn522() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/server/MIMEMapping/icepush");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        // THEN
+        assertFalse("ICEPush MIMEMapping is gone", session.itemExists("/server/MIMEMapping/icepush"));
+    }
+
+    @Test
+    public void testUpdateTo524AddsEditUserProfileCapabilityAndIcons() throws Exception {
+        // GIVEN
+        Node dialogs = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.Content.NAME);
+        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config", NodeTypes.Content.NAME);
+        Node actions = NodeUtil.createPath(config, "userMenu/actions", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(actions, "logout", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
+
+        // THEN
+        assertTrue(dialogs.hasNode("editUserProfile"));
+        assertTrue(actions.hasNode("logout"));
+        assertTrue(actions.getNode("logout").hasProperty("icon"));
+        assertTrue(actions.hasNode("editUserProfile"));
+        assertTrue(actions.getNode("editUserProfile").hasProperty("icon"));
+        NodeIterator it = actions.getNodes();
+        assertEquals("editUserProfile", it.nextNode().getName());
+        assertEquals("logout", it.nextNode().getName());
+    }
+
+    @Test
+    public void testUpdateTo524ChangesConfigurationAppClass() throws Exception {
+        // GIVEN
+        setupConfigProperty("modules/ui-admincentral/apps/configuration", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
+
+        // THEN
+        assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+    }
 }

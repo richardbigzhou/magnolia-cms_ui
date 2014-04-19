@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,7 +50,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,12 +78,6 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
-                log.warn("RestorePreviousVersionAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
-                        getPrimaryNodeType().getName());
-                return;
-            }
             // Get last version.
             Version version = getPreviousVersion();
             // Check the version.
@@ -94,7 +87,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
-            eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getWorkspace(), nodeItemToEdit.getItemId()));
+            eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getItemId()));
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-contentapp.actions.restorePreviousVersion.notification.success"));
         } catch (RepositoryException e) {
             subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("ui-contentapp.actions.restorePreviousVersion.notification.error"));

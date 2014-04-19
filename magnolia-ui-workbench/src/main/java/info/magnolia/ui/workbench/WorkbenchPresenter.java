@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,10 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
@@ -52,17 +49,13 @@ import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -89,40 +82,38 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private EventBus eventBus;
 
+    protected ContentConnector contentConnector;
+
     @Inject
-    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter) {
+    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, ContentConnector contentConnector) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.statusBarPresenter = statusBarPresenter;
+        this.contentConnector = contentConnector;
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
 
+
         sanityCheck(workbenchDefinition);
 
         // add content views
         for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
-            ContentPresenter presenter = null;
+            ContentPresenter presenter;
             Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             if (presenterClass != null) {
                 presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass);
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), contentConnector);
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
-                    List<String> ids = new ArrayList<String>(1);
-                    if (workbenchDefinition.getWorkspace() != null) {
-                        try {
-                            String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                            ids.add(workbenchRootItemId);
-                            activePresenter.setSelectedItemIds(ids);
-                        } catch (RepositoryException e) {
-                            log.error("Could not find workbench root node", e);
-                        }
-                    }
+                    List<Object> ids = new ArrayList<Object>(1);
+                    Object workbenchRootItemId = resolveWorkbenchRoot();
+                    ids.add(workbenchRootItemId);
+                    activePresenter.setSelectedItemIds(ids);
                 }
                 view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
 
@@ -136,30 +127,32 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // add status bar
-        view.setStatusBarView(statusBarPresenter.start(eventBus, workbenchDefinition));
+        view.setStatusBarView(statusBarPresenter.start(eventBus));
 
         view.setListener(this);
         return view;
+    }
+
+    public Object resolveWorkbenchRoot() {
+        return contentConnector.getDefaultItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
-
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
-        }
     }
 
     protected ContentPresenter newPresenterInstance(ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition, Class<? extends ContentPresenter> presenterClass) {
         ContentPresenter presenter;
+        List<Object> args = new ArrayList<Object>();
+        args.add(componentProvider);
         if (imageProviderDefinition != null) {
             ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-            presenter = componentProvider.newInstance(presenterClass, imageProvider);
-        } else {
-            presenter = componentProvider.newInstance(presenterClass);
+            args.add(imageProvider);
         }
+
+        presenter = componentProvider.newInstance(presenterClass, args.toArray(new Object[args.size()]));
         return presenter;
     }
 
@@ -185,7 +178,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private void setViewType(String viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        List<String> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
+        List<Object> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
 
         activePresenter = contentPresenters.get(viewType);
         activePresenter.refresh();
@@ -197,64 +190,45 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
     }
 
-    public String getWorkspace() {
-        return workbenchDefinition.getWorkspace();
-    }
 
-    public List<String> getSelectedIds() {
+    public List<Object> getSelectedIds() {
         return activePresenter.getSelectedItemIds();
     }
 
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
         activePresenter.expand(itemId);
     }
 
-    public void select(String itemId) {
-        List<String> ids = new ArrayList<String>(1);
+    public void select(Object itemId) {
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(itemId);
         select(ids);
     }
 
-    public void select(List<String> itemIds) {
-        try {
-            // restore selection
-            Set<JcrItemAdapter> items = new LinkedHashSet<JcrItemAdapter>();
-            List<String> selectedIds = new ArrayList<String>();
-            boolean rootHasBeenSelected = false;
-            for (String itemId : itemIds) {
-                if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                    selectedIds.add(itemId);
-
-                    Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-                    JcrItemAdapter itemAdapter;
-                    if (jcrItem.isNode()) {
-                        itemAdapter = new JcrNodeAdapter((Node) jcrItem);
-                    } else {
-                        itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
-                    }
-                    items.add(itemAdapter);
-
-                } else {
-                    log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                            new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-                    String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                    if (!rootHasBeenSelected && !selectedIds.contains(workbenchRootItemId)) {
-                        // adding workbenchRootItemID for non-existent items, but just once
-                        selectedIds.add(workbenchRootItemId);
-                        rootHasBeenSelected = true;
-                    }
-                }
-            }
-            activePresenter.setSelectedItemIds(selectedIds);
-            activePresenter.select(selectedIds);
-            // Only send event if items are not empty (do exist)
-            if (!items.isEmpty()) {
-                eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));
-            }
-
-        } catch (RepositoryException e) {
-            log.warn("Unable to get node or property [{}] for selection", itemIds, e);
+    public void select(List<Object> itemIds) {
+        final List<Object> selectedIds = filterExistingItems(itemIds);
+        // restore selection
+        if (selectedIds.isEmpty()) {
+            Object workbenchRootItemId = contentConnector.getDefaultItemId();
+            selectedIds.add(workbenchRootItemId);
         }
+
+        activePresenter.setSelectedItemIds(selectedIds);
+        activePresenter.select(selectedIds);
+        // Only send event if items are not empty (do exist)
+        eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(selectedIds)));
+    }
+
+    protected List<Object> filterExistingItems(List<Object> itemIds) {
+        List<Object> filteredIds = new ArrayList<Object>();
+        Iterator<Object> it = itemIds.iterator();
+        while (it.hasNext()) {
+            Object itemId = it.next();
+            if (contentConnector.canHandleItem(itemId)) {
+                filteredIds.add(itemId);
+            }
+        }
+        return filteredIds;
     }
 
     public void refresh() {
@@ -274,7 +248,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return contentPresenters.containsKey(viewType);
     }
 
-    public void resynch(final List<String> itemIds, final String viewType, final String query) {
+    public void resynch(final List<Object> itemIds, final String viewType, final String query) {
         setViewType(viewType);
         select(itemIds);
 
@@ -307,7 +281,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.eventBus;
     }
 
-    protected final WorkbenchDefinition getWorkspaceDefinition() {
+    protected final WorkbenchDefinition getWorkbenchDefinition() {
         return this.workbenchDefinition;
     }
 }

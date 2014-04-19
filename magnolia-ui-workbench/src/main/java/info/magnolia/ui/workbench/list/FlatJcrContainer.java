@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.workbench.list;
 
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
  * A flat implementation of {@link info.magnolia.ui.workbench.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
 
-    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public FlatJcrContainer(JcrContentConnectorDefinition connectorDefinition) {
+        super(connectorDefinition);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Factory capable of producing {@link WorkbenchField}.
@@ -57,11 +60,13 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     public WorkbenchFieldFactory(
             WorkbenchFieldDefinition definition,
             Item relatedFieldItem,
-            WorkbenchPresenter workbenchPresenter) {
+            WorkbenchPresenter workbenchPresenter,
+            @Named(ChooseDialogEventBus.NAME)EventBus eventBus,
+            ContentConnector contentConnector) {
         super(definition, relatedFieldItem);
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
-        this.eventBus = new SimpleEventBus();
+        this.eventBus = eventBus;
     }
 
     @Override

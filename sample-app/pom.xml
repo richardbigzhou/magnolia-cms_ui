@@ -4,25 +4,13 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2.1-SNAPSHOT</version>
+    <version>5.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>info.magnolia.sample</groupId>
   <artifactId>magnolia-sample-app</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-sample-app</name>
-    <build>
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

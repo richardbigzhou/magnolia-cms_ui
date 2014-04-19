@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,5 +39,19 @@ import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
  * Save user dialog action definition.
  */
 public class SaveUserDialogActionDefinition extends SaveDialogActionDefinition {
+
+    private String userManagerRealm;
+
+    public SaveUserDialogActionDefinition() {
+        setImplementationClass(SaveUserDialogAction.class);
+    }
+
+    public String getUserManagerRealm() {
+        return userManagerRealm;
+    }
+
+    public void setUserManagerRealm(String userManagerRealm) {
+        this.userManagerRealm = userManagerRealm;
+    }
 
 }

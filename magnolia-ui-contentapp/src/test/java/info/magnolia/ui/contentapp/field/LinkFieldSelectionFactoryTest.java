@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,11 +41,11 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
-import info.magnolia.ui.form.field.factory.LinkFieldFactory;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
+import info.magnolia.ui.form.field.factory.LinkFieldFactory;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
@@ -73,14 +73,14 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
 
     private EventBus eventBus;
 
-    private Set<JcrItemAdapter> items;
+    private Set<Object> itemIds;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
-        items = new HashSet<JcrItemAdapter>();
+        itemIds = new HashSet<Object>();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         WorkbenchView workbenchView = mock(WorkbenchView.class);
         doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
@@ -111,10 +111,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        items.add((JcrItemAdapter) baseItem);
+        itemIds.add(JcrItemUtil.getItemId(baseNode));
 
         // WHEN
-        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(itemIds));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -131,10 +131,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        items.add((JcrItemAdapter) baseItem);
+        itemIds.add(JcrItemUtil.getItemId(baseNode));
 
         // WHEN
-        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(itemIds));
 
         // THEN
         assertEquals("initial", field.getValue());

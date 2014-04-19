@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,7 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.ui.workbench.list.ListView;
 
-import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.event.Action.Container;
 import com.vaadin.event.dd.DropHandler;
 
@@ -57,7 +57,7 @@ public interface TreeView extends ListView {
      */
     public interface Listener extends ListView.Listener {
 
-        void onItemEdited(Item item);
+        void onItemEdited(Object itemId, Object propertyId, Property<?> propertyDataSource);
     }
 
 }

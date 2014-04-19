@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -59,12 +59,12 @@ import org.slf4j.LoggerFactory;
  */
 public class JcrItemUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(JcrItemUtil.class);
+
     /**
      * String separating property name and node identifier.
      */
     public static final String PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR = "@";
-
-    private static final Logger log = LoggerFactory.getLogger(JcrItemUtil.class);
 
     /**
      * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
@@ -84,46 +84,50 @@ public class JcrItemUtil {
     /**
      * Returns the JCR Item represented by the given itemId or returns null if it doesn't exist.
      */
-    public static Item getJcrItem(final String workspaceName, final String itemId) throws RepositoryException {
+    public static Item getJcrItem(final JcrItemId itemId) throws RepositoryException {
         if (itemId == null) {
             return null;
         }
-        final String nodeId = parseNodeIdentifier(itemId);
-
         Node node;
+        String workspaceName = itemId.getWorkspace();
         try {
-            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(nodeId);
+            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(itemId.getUuid());
         } catch (ItemNotFoundException e) {
             log.debug("Couldn't find item with id {} in workspace {}.", itemId, workspaceName);
             return null;
         }
 
-        if (!isPropertyItemId(itemId)) {
+        if (!(itemId instanceof JcrPropertyItemId)) {
             return node;
         }
 
-        final String propertyName = parsePropertyName(itemId);
+        final String propertyName = ((JcrPropertyItemId)itemId).getPropertyName();
         if (node.hasProperty(propertyName)) {
             return node.getProperty(propertyName);
         }
         return null;
     }
 
-    public static boolean itemExists(String workspaceName, String itemId) throws RepositoryException {
-        return getJcrItem(workspaceName, itemId) != null;
+    public static boolean itemExists(JcrItemId itemId) throws RepositoryException {
+        return getJcrItem(itemId) != null;
     }
 
-    public static String getItemId(final Item jcrItem) throws RepositoryException {
+    public static JcrItemId getItemId(final Item jcrItem) throws RepositoryException {
         if (jcrItem == null) {
             return null;
         }
-        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + jcrItem.getName();
+
+        if (jcrItem.isNode()) {
+            return new JcrNodeItemId(((Node) jcrItem).getIdentifier(), jcrItem.getSession().getWorkspace().getName());
+        } else {
+            return new JcrPropertyItemId((jcrItem.getParent()).getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName());
+        }
     }
 
     /**
      * Returns the itemId for a node at the given path if it exists, otherwise returns null.
      */
-    public static String getItemId(final String workspaceName, final String absPath) throws RepositoryException {
+    public static JcrItemId getItemId(final String workspaceName, final String absPath) throws RepositoryException {
 
         if (StringUtils.isEmpty(workspaceName) || StringUtils.isEmpty(absPath)) {
             return null;
@@ -137,22 +141,20 @@ public class JcrItemUtil {
         return getItemId(session.getNode(absPath));
     }
 
-    public static List<Item> getJcrItems(final String workspaceName, List<String> ids) {
+    public static List<Item> getJcrItems(List<JcrItemId> ids) {
         // sanity check
         List<Item> items = new ArrayList<Item>();
-        if (StringUtils.isBlank(workspaceName) || ids == null) {
-            // there is lot of code calling this method that would fail w/ NPE if conditions above are met so we need to be either nice and return empty list or throw exception
-            return items;
-        }
-        for (String id : ids) {
+        for (JcrItemId id : ids) {
             Item item;
             try {
-                item = getJcrItem(workspaceName, id);
+                item = getJcrItem(id);
                 if (item != null) {
                     items.add(item);
                 }
             } catch (RepositoryException e) {
-                log.debug("Cannot find item with id [{}] in workspace [{}].", id, workspaceName);
+                log.debug("Cannot find item with id [{}] in workspace [{}].", id.getUuid(), id.getWorkspace());
+            } catch (IllegalArgumentException e1) {
+                log.debug("Workspace [{}] is not initialized.", id.getWorkspace());
             }
         }
         return items;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,6 @@ import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
 
 /**
  * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
@@ -53,7 +52,7 @@ public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
+    protected boolean isAvailableForItem(Object itemId) {
         DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
         return !location.hasVersion();
     }

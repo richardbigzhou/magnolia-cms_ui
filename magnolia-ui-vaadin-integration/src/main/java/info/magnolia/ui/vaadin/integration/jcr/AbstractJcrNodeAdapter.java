@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,7 +37,6 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.api.ModelConstants;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -128,7 +127,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      */
     @Override
     public boolean addItemProperty(Object id, Property property) {
-
+        // REMOVE ME: Never called as overrides by sub class.
         log.debug("Add new Property Item name " + id + " with value " + property.getValue());
         try {
             Node node = getJcrItem();

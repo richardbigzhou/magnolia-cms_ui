@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,7 +46,8 @@ import javax.jcr.RepositoryException;
 import com.vaadin.data.Item;
 
 /**
- * Action for renaming a folder in the users workspace, updates ACLs of all users within the folder or a sub folder.
+ * Action for renaming a folder in the users or userroles workspace, updates ACLs of all users or roles within the
+ * folder or a sub folder.
  *
  * @see RenameUsersFolderActionDefinition
  */

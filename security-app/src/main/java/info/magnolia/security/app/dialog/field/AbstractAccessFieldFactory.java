@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -60,13 +60,13 @@ public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> exte
         AbstractJcrNodeAdapter aclItem = roleItem.getChild(aclName);
         if (aclItem == null) {
             Node roleNode = roleItem.getJcrItem();
-            if (roleNode.hasNode(aclName)) {
-                Node aclNode = roleNode.getNode(aclName);
-                aclItem = new JcrNodeAdapter(aclNode);
-                roleItem.addChild(aclItem);
-            } else {
+            if (roleItem instanceof JcrNewNodeAdapter || !roleNode.hasNode(aclName)) {
                 aclItem = new JcrNewNodeAdapter(roleNode, NodeTypes.ContentNode.NAME);
                 aclItem.setNodeName(aclName);
+                roleItem.addChild(aclItem);
+            } else {
+                Node aclNode = roleNode.getNode(aclName);
+                aclItem = new JcrNodeAdapter(aclNode);
                 roleItem.addChild(aclItem);
             }
         }

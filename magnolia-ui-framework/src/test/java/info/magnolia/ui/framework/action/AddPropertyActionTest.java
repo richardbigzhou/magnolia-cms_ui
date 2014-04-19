@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -54,7 +54,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
@@ -184,6 +184,7 @@ public class AddPropertyActionTest extends MgnlTestCase {
         // assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
         // assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
         assertFalse(eventBus.isEmpty());
-        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
+        JcrItemId itemId = (JcrItemId)((ContentChangedEvent) eventBus.getEvent()).getItemId();
+        assertTrue(itemId.getUuid().equals(root.getIdentifier()));
     }
 }

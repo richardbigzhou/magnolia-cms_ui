@@ -6,9 +6,6 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>13685f04-9d32-47c1-97af-003255707d78</sv:value>
   </sv:property>
-  <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-06-04T10:42:41.700+02:00</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -31,9 +28,6 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>155db2b5-a9dd-49b7-b2fe-20194329cbcc</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-06-04T10:44:53.785+02:00</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -49,6 +43,38 @@
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
     </sv:property>
+    <sv:node sv:name="editUserProfile">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>efe2c4a1-85cf-4269-9e42-e619920f487b</sv:value>
+      </sv:property>
+      <sv:property sv:name="class" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.usermenu.action.EditUserProfileDialogActionDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="dialogName" sv:type="String">
+        <sv:value>ui-admincentral:editUserProfile</sv:value>
+      </sv:property>
+      <sv:property sv:name="icon" sv:type="String">
+        <sv:value>icon-user-public</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2014-03-17T16:29:56.060-04:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2014-03-20T09:13:15.931+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+    </sv:node>
     <sv:node sv:name="logout">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
@@ -59,8 +85,8 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.usermenu.action.LogoutActionDefinition</sv:value>
       </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-06-04T10:43:10.292+02:00</sv:value>
+      <sv:property sv:name="icon" sv:type="String">
+        <sv:value>icon-redo</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -72,7 +98,7 @@
         <sv:value>superuser</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-06-04T10:54:50.523+02:00</sv:value>
+        <sv:value>2014-03-20T09:12:19.430+01:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.transformer.multi;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -81,7 +80,7 @@ public class MultiValueSubChildrenNodeTransformer extends MultiValueChildrenNode
     protected JcrNodeAdapter getRootItem() {
         JcrNodeAdapter res = null;
         try {
-            res = getOrCreateChildNode(subNodeName, NodeTypes.Content.NAME);
+            res = getOrCreateChildNode(subNodeName, childNodeType);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) relatedFormItem).getItemId());
         }

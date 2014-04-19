@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -67,9 +66,7 @@ public class FormSectionWidget extends FlowPanel {
     public FormSectionWidget() {
         super();
         getElement().appendChild(fieldSet);
-        // both only display when show all tab is active
-        horizontalRule.getStyle().setDisplay(Display.NONE);
-        legend.getStyle().setDisplay(Display.NONE);
+        fieldSet.appendChild(legend);
         fieldSet.appendChild(horizontalRule);
     }
 
@@ -101,7 +98,14 @@ public class FormSectionWidget extends FlowPanel {
         } else {
             fieldSection = (FormFieldWrapper) w;
         }
-        super.insert(fieldSection, fieldSet, beforeIndex, true);
+
+        // Patch ComplexPanel's insert logic to keep 0 index for the legend element (element is appended in the constructor).
+        // Although fieldset's legend is usually displayed on top of it regardless of its position in the DOM, this was not the case in older versions of Internet Explorer.
+        beforeIndex = adjustIndex(fieldSection, beforeIndex);
+        fieldSection.removeFromParent();
+        getChildren().insert(fieldSection, beforeIndex); // This widget's child collection remains 0-indexed...
+        DOM.insertChild(fieldSet, fieldSection.getElement(), beforeIndex + 1); // ... but DOM insertion starts with 1.
+        adopt(fieldSection);
     }
 
     @Override
@@ -137,7 +141,6 @@ public class FormSectionWidget extends FlowPanel {
 
     public void setCaption(String caption) {
         legend.setInnerText(caption);
-        fieldSet.appendChild(legend);
     }
 
     public void clearError(Widget widget) {

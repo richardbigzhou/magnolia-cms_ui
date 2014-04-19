@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -42,6 +41,7 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter;
+import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -49,10 +49,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vaadin.data.Item;
+
 /**
  * Opens a move dialog for a collections of node adapters that need to be transferred.
  */
-public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDefinition>  {
+public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDefinition> {
 
     private AppContext appContext;
 
@@ -60,7 +62,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
 
     private JcrNodeAdapter sourceNodeAdapter;
 
-    private List<JcrNodeAdapter> sourceNodeAdapters;
+    private List<Item> sourceNodeAdapters;
 
     private MoveDialogPresenter moveDialogPresenter;
 
@@ -70,7 +72,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             OpenMoveDialogActionDefinition definition,
             AppContext appContext,
             ComponentProvider componentProvider,
-            JcrNodeAdapter sourceNodeAdapter,
+            Item sourceNodeAdapter,
             MoveDialogPresenter moveDialogPresenter) {
         this(definition, appContext, componentProvider, moveDialogPresenter, Arrays.asList(sourceNodeAdapter));
     }
@@ -80,7 +82,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             AppContext appContext,
             ComponentProvider componentProvider,
             MoveDialogPresenter moveDialogPresenter,
-            List<JcrNodeAdapter> sourceNodeAdapters) {
+            List<Item> sourceNodeAdapters) {
         super(definition);
         this.appContext = appContext;
         this.componentProvider = componentProvider;
@@ -104,7 +106,13 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
                 }
             });
 
-            this.closeHandle = appContext.openOverlay(moveDialog);
+            this.closeHandle = appContext.openOverlay(moveDialog, moveDialog.getModalityLevel());
+            moveDialog.addDialogCloseHandler(new DialogCloseHandler() {
+                @Override
+                public void onDialogClose(DialogView dialogView) {
+                    closeHandle.close();
+                }
+            });
         }
     }
 }

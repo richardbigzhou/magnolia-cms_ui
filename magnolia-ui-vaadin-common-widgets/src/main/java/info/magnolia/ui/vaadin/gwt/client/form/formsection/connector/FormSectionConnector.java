@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -65,6 +65,14 @@ public class FormSectionConnector extends AbstractLayoutConnector {
                 getWidget().focus(((ComponentConnector) component).getWidget());
             }
         });
+
+
+        final Iterator<Map.Entry<Connector, String>> entryIt = getState().helpDescriptions.entrySet().iterator();
+        while (entryIt.hasNext()) {
+            Map.Entry<Connector, String> entry = entryIt.next();
+            getWidget().setFieldDescription(((ComponentConnector)entry.getKey()).getWidget(), entry.getValue());
+        }
+
     }
 
     private final StateChangeHandler childErrorMessageHandler = new StateChangeHandler() {
@@ -88,7 +96,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         getWidget().setCaption(getState().caption);
-        getWidget().setDescriptionVisible(getState().isDescriptionVisible);
         for (final ComponentConnector cc : getChildComponents()) {
             updateChildError(cc);
         }

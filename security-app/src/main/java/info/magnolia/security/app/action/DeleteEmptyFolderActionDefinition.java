@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,14 +34,14 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 
 /**
  * Used to configure a {@link DeleteEmptyFolderAction}.
  *
  * @see DeleteEmptyFolderAction
  */
-public class DeleteEmptyFolderActionDefinition extends DeleteItemActionDefinition {
+public class DeleteEmptyFolderActionDefinition extends DeleteActionDefinition {
 
     private String folderNotEmptyErrorMessage = "security.delete.folder.folderNotEmpty";
 

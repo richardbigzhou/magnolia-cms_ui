@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -101,7 +101,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     @Override
     protected void extend(ServerConnector target) {
         this.textWidget = ((ComponentConnector)target).getWidget();
-        this.isRichTextEditor = !"textarea".equalsIgnoreCase(textWidget.getElement().getTagName());
+        this.isRichTextEditor = target instanceof RichTextConnector;
         this.stretchControl.setClassName("textarea-stretcher");
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override

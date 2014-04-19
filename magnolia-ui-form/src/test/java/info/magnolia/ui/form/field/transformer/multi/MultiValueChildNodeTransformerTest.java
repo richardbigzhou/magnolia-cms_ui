@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.transformer.multi;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.wrapper.JCRPropertiesFilteringNodeWrapper;
 import info.magnolia.repository.RepositoryConstants;
@@ -102,6 +103,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(parent.getChild(propertyName));
         JcrNodeAdapter child = (JcrNodeAdapter) parent.getChild(propertyName);
+        assertEquals(NodeTypes.ContentNode.NAME, child.getPrimaryNodeTypeName());
         assertEquals(2, child.getItemPropertyIds().size());
         assertNotNull(child.getItemProperty("0"));
         assertEquals("/xx/xxx", child.getItemProperty("0").getValue().toString());
@@ -126,7 +128,6 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         parent.applyChanges();
         assertNotNull(rootNode.hasNode(propertyName));
         Node child = new JCRPropertiesFilteringNodeWrapper(rootNode.getNode(propertyName));
-        assertEquals(1, child.getProperties().getSize());
         assertTrue(child.hasProperty("0"));
         assertEquals("/xx/xxx", child.getProperty("0").getString());
     }
@@ -188,7 +189,8 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         parent.applyChanges();
         assertNotNull(rootNode.hasNode(propertyName));
         Node child = new JCRPropertiesFilteringNodeWrapper(rootNode.getNode(propertyName));
-        assertEquals(2, child.getProperties().getSize());
+        // in the meantime mgnl:created, mgnl:createdBy, mgnl:lastUpdate & mgnl:lastUpdateBy have been set
+        assertEquals(6, child.getProperties().getSize());
         assertFalse(child.hasProperty("0"));
         assertTrue(child.hasProperty("3"));
         assertEquals("/yy", child.getProperty("3").getString());

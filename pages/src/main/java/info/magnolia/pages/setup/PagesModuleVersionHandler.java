@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,25 +35,34 @@ package info.magnolia.pages.setup;
 
 import static info.magnolia.nodebuilder.Ops.*;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.OrderNodeAfterTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
+import info.magnolia.pages.app.action.PreviewPreviousVersionActionDefinition;
+import info.magnolia.pages.app.action.RestorePreviousVersionActionDefinition;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
+import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
+import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
+import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 /**
  * Version handler for the pages app module.
@@ -67,7 +76,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
                         new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml")))
                 .addTask(new ConvertAclToAppPermissionTask("Convert permissions for Pages app", "Convert ACL permissions for old 'Website' menu to new 'pages-app' permission", "/modules/adminInterface/config/menu/website", "/modules/pages/apps/pages", true)));
-
 
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
@@ -103,13 +111,13 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 addProperty("icon", "icon-show-versions"),
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
                                         addProperty("ruleClass", "info.magnolia.ui.api.availability.HasVersionsRule")
+                                        )
                                 )
-                        )
-                ))
+                        ))
                 // bootstrap versionActions to action bar if it doesn't exists already
                 .addTask(new NodeExistsDelegateTask("Bootstrap actionbar section group for versionActions", "", RepositoryConstants.CONFIG, "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions", null,
                         new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions")
-                ))
+                        ))
 
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
                 .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("pages"))
@@ -127,28 +135,55 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeBuilderTask("Add availability rule to edit action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/edit",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                        )
-                ))
+                                )
+                        ))
                 .addTask(new NodeBuilderTask("Add availability rule to activate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/activate",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                        )
-                ))
+                                )
+                        ))
                 .addTask(new NodeBuilderTask("Add availability rule to deactivate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/deactivate",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                        )
-                ))
+                                )
+                        ))
 
                 .addTask(new PartialBootstrapTask("Bootstrap move action in Pages app", "",
                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/move"))
                 .addTask(new PartialBootstrapTask("Bootstrap move action to Pages app actionbar", "Adds action move to folder/editingActions section in actionbar.",
-                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move"))
-        );
+                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move")));
 
         register(DeltaBuilder.update("5.1.1", "")
                 .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability",
-                        new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true)))
+                        new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true))));
+
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages", "class", ConfiguredContentAppDescriptor.class.getName()))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true"))
+                .addTask(new PartialBootstrapTask("Bootstrap restore version action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/restoreVersion"))
+                .addTask(new NodeExistsDelegateTask("Bootstrap restore version action to actionbar", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items",
+                        new ArrayDelegateTask("",
+                                new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion"),
+                                new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/showVersions",
+                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions")))))
+        );
+
+        register(DeltaBuilder.update("5.2.3", "")
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/browser/actions",
+                        new String[] { "add", "confirmDeletion", "edit", "editPageName", "editTemplate", "restorePreviousVersion", "import", "move", "restoreVersion" }))
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
+        );
+
+        register(DeltaBuilder.update("5.3", "")
+                .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit page and edit template dialogs into light dialogs.",
+                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editPage",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editPage", "modalityLevel", "light")),
+                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage", "modalityLevel", "strong")),
+                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
+                )).addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class))
         );
 
     }

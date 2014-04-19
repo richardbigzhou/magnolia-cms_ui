@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
@@ -42,13 +43,14 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +75,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private String initialSelectedKey;
     private String optionValueName;
     private String optionLabelName;
-    private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
+    private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
     private boolean hasOptionIcon = false;
     private boolean sortOptions = true;
 
@@ -219,6 +221,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
+     * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
+     */
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
+        }
+        super.setPropertyDataSourceAndDefaultValue(property);
+    }
+
+    /**
      * Set the value selected.
      * Set selectedItem to the last stored value.
      * If not yet stored, set initialSelectedKey as selectedItem
@@ -232,10 +245,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
         } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
-            selectedValue = definition.getOptions().get(0).getValue();
+            selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
         // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), (String) selectedValue);
+
+        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
             ((Collection) datasourceValue).add(selectedValue);
@@ -262,19 +276,21 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private void buildRemoteOptions(List<SelectFieldOptionDefinition> res) {
         Node parent = SessionUtil.getNode(definition.getRepository(), definition.getPath());
         if (parent != null) {
-            // Iterate parent children
             try {
-                NodeIterator iterator = parent.getNodes();
+                // Get only relevant child nodes
+                Iterable<Node> iterable = NodeUtil.getNodes(parent, createRemoteOptionFilterPredicate());
+                Iterator<Node> iterator = iterable.iterator();
+                // Iterate parent children
                 while (iterator.hasNext()) {
                     SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-                    Node child = iterator.nextNode();
+                    Node child = iterator.next();
                     // Get Label and Value
                     String label = getRemoteOptionsName(child, optionLabelName);
-                    String value = getRemoteOptionsName(child, optionValueName);
+                    String value = getRemoteOptionsValue(child, optionValueName);
                     option.setLabel(getMessage(label));
                     option.setValue(value);
 
-                    if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
+                    if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
                         option.setSelected(true);
                         initialSelectedKey = option.getValue();
                     }
@@ -295,10 +311,18 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
+     * @return {@link Predicate} used to filter the remote children option nodes.
+     */
+    protected Predicate createRemoteOptionFilterPredicate() {
+        return NodeUtil.MAGNOLIA_FILTER;
+    }
+
+    /**
      * Get the specific node property. <br>
      * If this property is not defined, return the node name.
+     * Expose this method in order to let subclass define their own implementation.
      */
-    private String getRemoteOptionsName(Node option, String propertyName) throws RepositoryException {
+    protected String getRemoteOptionsName(Node option, String propertyName) throws RepositoryException {
         if (option.hasProperty(propertyName)) {
             return option.getProperty(propertyName).getString();
         } else {
@@ -306,4 +330,12 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         }
     }
 
+    /**
+     * Get the specific node property. <br>
+     * If this property is not defined, return the node name.
+     * Expose this method in order to let subclass define their own implementation.
+     */
+    protected String getRemoteOptionsValue(Node option, String propertyName) throws RepositoryException {
+        return getRemoteOptionsName(option, propertyName);
+    }
 }

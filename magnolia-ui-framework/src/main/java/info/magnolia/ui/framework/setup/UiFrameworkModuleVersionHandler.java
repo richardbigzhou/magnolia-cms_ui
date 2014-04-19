@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,17 +39,36 @@ import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTa
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.MoveNodeTask;
+import info.magnolia.module.delta.NewPropertyTask;
+import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
+import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -62,6 +81,8 @@ import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Version handler for the Ui framework module.
  */
@@ -73,13 +94,31 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         }
     }
 
-    public UiFrameworkModuleVersionHandler() {
+    @Inject
+    public UiFrameworkModuleVersionHandler(ControlMigratorsRegistry controlMigratorsRegistry) {
+        // Register control migration task.
+        controlMigratorsRegistry.register("edit", new EditControlMigrator());
+        controlMigratorsRegistry.register("fckEdit", new FckEditControlMigrator());
+        controlMigratorsRegistry.register("date", new DateControlMigrator());
+        controlMigratorsRegistry.register("select", new SelectControlMigrator());
+        controlMigratorsRegistry.register("checkbox", new CheckBoxRadioControlMigrator(true));
+        controlMigratorsRegistry.register("checkboxSwitch", new CheckBoxSwitchControlMigrator());
+        controlMigratorsRegistry.register("radio", new CheckBoxRadioControlMigrator(false));
+        controlMigratorsRegistry.register("uuidLink", new LinkControlMigrator());
+        controlMigratorsRegistry.register("link", new LinkControlMigrator());
+        controlMigratorsRegistry.register("multiselect", new MultiSelectControlMigrator(false));
+        controlMigratorsRegistry.register("file", new FileControlMigrator());
+        controlMigratorsRegistry.register("static", new StaticControlMigrator());
+        controlMigratorsRegistry.register("hidden", new HiddenControlMigrator());
+        controlMigratorsRegistry.register("editCode", new EditCodeControlMigrator());
+
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new RenameLegacyI18nNodeIfExistingTask())
                 .addTask(new RenameNodesTask("Rename 5.0 i18n node", "Renames /server/i18n/authoring50 as authoring.", RepositoryConstants.CONFIG, "/server/i18n", "authoring50", "authoring", NodeTypes.ContentNode.NAME))
                 .addTask(new BootstrapSingleModuleResource("Add dialogs to ui-framework", "", "config.modules.ui-framework.dialogs.xml")));
 
         register(DeltaBuilder.update("5.1", "")
+                .addTask(new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml"))
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
                 .addTask(createNewFieldDefinition("basicTextCodeField", BasicTextCodeFieldDefinition.class.getName(), BasicTextCodeFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("switchableField", SwitchableFieldDefinition.class.getName(), SwitchableFieldFactory.class.getName()))
@@ -89,6 +128,30 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
                 .addTask(new ChangeAllPropertiesWithCertainValueTask("Change package name of CallbackDialogActionDefinition class", "", RepositoryConstants.CONFIG, "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition", CallbackDialogActionDefinition.class.getName()))
                 .addTask((new RemoveHardcodedI18nPropertiesFromDialogsTask("ui-framework"))));
+
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new NodeExistsDelegateTask("Register WorkbenchFieldDefinition if not yet done", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/workbenchField", null, new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml")))
+                .addTask(new NodeExistsDelegateTask("Rename fieldType if it's misspelled", "/modules/ui-framework/fieldTypes/compositField",
+                        new MoveNodeTask("Rename misspelled fieldType", "/modules/ui-framework/fieldTypes/compositField", "/modules/ui-framework/fieldTypes/compositeField", false)
+                        ))
+                .addTask(new NodeExistsDelegateTask("Rename command catalog if it's incorrect", "Rename command catalog to 'default' if it's incorrect", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
+                        new MoveNodeTask("Rename command catalog", "Rename command catalog to 'default'", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
+                                "/modules/ui-framework/commands/default", false)
+                        ))
+                .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' command it doesn't exists yet", "Bootstrap 'importZip' command it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/default/importZip", null, new BootstrapSingleModuleResource("Bootstrap 'importZip' command", "Bootstrap 'importZip' command", "config.modules.ui-framework.commands.xml"
+                        )))
+                .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' dialog it doesn't exists yet", "Bootstrap 'importZip' dialog it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/dialog/importZip", null,
+                        new PartialBootstrapTask("Bootstrap 'importZip' dialog", "Bootstraps 'importZip' dialog.", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.dialogs.xml", "dialogs/importZip")))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8", "label", "UTF-8"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows", "label", "CP437")));
+
+        register(DeltaBuilder.update("5.3", "")
+                .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit node name and edit folder name dialogs into light dialogs.",
+                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/rename",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/rename", "modalityLevel", "light")),
+                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/folder",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/folder", "modalityLevel", "light"))
+                        )));
 
     }
 

@@ -4,13 +4,13 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2.1-SNAPSHOT</version>
+    <version>5.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-vaadin-integration</artifactId>
   <name>magnolia-ui-vaadin-integration</name>
   <properties>
-    <cloverCoverageThreshold>80</cloverCoverageThreshold>
+    <cloverCoverageThreshold>57</cloverCoverageThreshold>
   </properties>
 
   <build>
@@ -37,14 +37,6 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icefaces</groupId>
-      <artifactId>icepush</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>

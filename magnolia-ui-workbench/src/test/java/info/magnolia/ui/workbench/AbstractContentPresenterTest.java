@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Container;
+
 /**
  * Tests.
  */
@@ -57,6 +59,11 @@ public class AbstractContentPresenterTest {
     private class DummyContentPresenter extends AbstractContentPresenter {
         private DummyContentPresenter(final ComponentProvider componentProvider) {
             super(componentProvider);
+        }
+
+        @Override
+        protected Container initializeContainer() {
+            return null;
         }
 
         @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,12 +36,13 @@ package info.magnolia.ui.contentapp.setup;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Changes descriptor type for a single content app.
@@ -49,10 +50,10 @@ import javax.jcr.RepositoryException;
 public class AppNodeVisitor implements NodeVisitor {
 
     public static final String CLASS_PROPERTY_NAME  = "class";
-
     private final static String APP_CLASS_PROPERTY_NAME = "appClass";
+    private final static String OBSOLETE_APP_PROPERTY_NAME = "app"; // was in Magnolia 5.0
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void visit(Node node) throws RepositoryException {
@@ -66,7 +67,6 @@ public class AppNodeVisitor implements NodeVisitor {
             } catch (ClassNotFoundException e) {
                 log.error("Failed to resolve app class: " +  p.getValue().getString(), e);
             }
-
         }
     }
 }

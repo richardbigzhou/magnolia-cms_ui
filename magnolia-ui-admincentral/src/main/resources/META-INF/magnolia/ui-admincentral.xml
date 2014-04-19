@@ -72,6 +72,14 @@
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.actionbar.ActionbarPresenter</type>
+      <implementation>info.magnolia.ui.actionbar.ActionbarPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.actionbar.ActionbarView</type>
+      <implementation>info.magnolia.ui.actionbar.ActionbarViewImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
     </component>
@@ -99,6 +107,42 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
+
+
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormView</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.ItemFormView</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector</type>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.DefaultAvailabilityChecker</implementation>
+    </component>
+
+    <!-- Dialog -->
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl</implementation>
+    </type-mapping>
   </components>
 
   <components>
@@ -112,7 +156,7 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.2/*</version>
+      <version>5.3/*</version>
     </dependency>
     <dependency>
       <name>imaging</name>

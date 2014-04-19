@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,14 @@
  */
 package info.magnolia.ui.vaadin.usermenu;
 
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.gwt.client.usermenu.UserMenuClientRpc;
 
-import org.vaadin.peter.contextmenu.ContextMenu;
-
 /**
- * Extends the {@link ContextMenu} add-on to allow placing the widget based on the
+ * Extends the {@link ActionPopup} (ContextMenu) add-on to allow placing the widget based on the
  * the component passed by {@link #setAsContextMenuOf} instead of using the mouse cursors position.
  */
-public class UserMenu extends ContextMenu {
+public class UserMenu extends ActionPopup {
 
     public void open() {
         getRpcProxy(UserMenuClientRpc.class).showContextMenu();

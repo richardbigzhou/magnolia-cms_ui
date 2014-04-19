@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,7 @@ public class ViewTypeChangedEvent implements Event<ViewTypeChangedEvent.Handler>
     public interface Handler extends EventHandler {
 
         void onViewChanged(ViewTypeChangedEvent event);
+
     }
 
     private String viewType;

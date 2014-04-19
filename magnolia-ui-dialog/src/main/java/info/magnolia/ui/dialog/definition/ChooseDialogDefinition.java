@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Definition of a choose dialog.
@@ -45,4 +46,6 @@ public interface ChooseDialogDefinition extends DialogDefinition {
 
     @Override
     Class<? extends ChooseDialogPresenter> getPresenterClass();
+
+    ContentConnectorDefinition getContentConnector();
 }

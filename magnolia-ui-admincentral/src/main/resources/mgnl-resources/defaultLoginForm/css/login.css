@@ -124,6 +124,7 @@ button.btn-submit:active {
   height:25px;
   background-color:#e6e6e6;
   -webkit-appearance: none;
+  line-height: 25px\9; /*IE8 hack*/
 }
 
 .mgnl-form input[type="text"].error, .mgnl-form input[type="password"].error {

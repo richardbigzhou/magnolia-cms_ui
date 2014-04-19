@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,7 +49,7 @@ public interface JcrItemAdapter extends ItemAdapter {
 
     String getWorkspace();
 
-    String getItemId();
+    JcrItemId getItemId();
 
     /**
      * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.

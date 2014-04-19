@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -86,7 +86,7 @@ public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

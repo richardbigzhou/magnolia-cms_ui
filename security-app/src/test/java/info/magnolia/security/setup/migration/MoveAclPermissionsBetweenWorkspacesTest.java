@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -166,5 +166,20 @@ public class MoveAclPermissionsBetweenWorkspacesTest extends RepositoryTestCase 
         assertEquals("/sunpath1/demo-project/img/logos$", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
         assertEquals("/sunpath2/demo-docs/*", userRoleSession.getNode("/roleV/acl_website/01").getProperty("path").getString());
         assertEquals("/demo-docs/img", userRoleSession.getNode("/roleV/acl_website/02").getProperty("path").getString());
+    }
+
+    @Test
+    public void testInvalidPath() throws RepositoryException, TaskExecutionException {
+        // GIVEN
+        NodeUtil.createPath(webSiteSession.getRootNode(), "/demo-project", NodeTypes.ContentNode.NAME);
+        MoveAclPermissionsBetweenWorkspaces task = new MoveAclPermissionsBetweenWorkspaces("name", "description", "dam", targetWorkspaceName, null, false);
+
+        // WHEN
+        task.doExecute(installContext);
+
+        // THEN
+        assertTrue(userRoleSession.nodeExists("/roleV/acl_website/0"));
+        assertEquals("/*/*", userRoleSession.getNode("/roleV/acl_website/0").getProperty("path").getString());
+        assertEquals(63l, userRoleSession.getNode("/roleV/acl_website/0").getProperty("permissions").getLong());
     }
 }

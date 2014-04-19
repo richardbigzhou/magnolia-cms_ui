@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
@@ -52,13 +53,15 @@ public interface ContentPresenter {
 
     /**
      * Initializes the presenter with the workbench definition, eventBus and viewType name.
-     * 
+     *
+     *
      * @param workbenchDefinition the workbench definition that defines which data to present
      * @param eventBus the event bus to fire e.g. selection events on
      * @param viewTypeName the view type as defined in the presenter definition
+     * @param contentConnector
      * @return the content view
      */
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector);
 
     /**
      * Refreshes the data container and view.
@@ -68,20 +71,21 @@ public interface ContentPresenter {
     /**
      * @return the selected item ids in the content view.
      */
-    List<String> getSelectedItemIds();
+    List<Object> getSelectedItemIds();
 
     /**
      * Sets the selected item ids for this presenter to react on, e.g. with keyboard shortcuts.
      */
-    void setSelectedItemIds(List<String> itemId);
+    void setSelectedItemIds(List<Object> itemId);
 
     /**
      * Selects the given items in the content view.
      */
-    void select(List<String> itemIds);
+    void select(List<Object> itemIds);
 
     /**
      * Make sure the given items are visible in the content view.
+     * @param itemId
      */
-    void expand(String itemId);
+    void expand(Object itemId);
 }

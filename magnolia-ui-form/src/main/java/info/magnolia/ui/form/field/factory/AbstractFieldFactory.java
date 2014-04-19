@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -131,9 +131,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     /**
      * Set the DataSource of the current field.<br>
      * Set the default value if : <br>
-     * - the item is an instance of {@link ItemAdapter} and this is a new Item (Not yet stored in the related datasource)
+     * - the item is an instance of {@link ItemAdapter} and this is a new Item (Not yet stored in the related datasource).<br>
      * - the item is not an instance of {@link ItemAdapter}.<br>
-     * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.
+     * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.<br>
      */
     public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
         this.field.setPropertyDataSource(property);
@@ -280,13 +280,14 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
             FieldValidatorFactory validatorFactory = this.fieldValidatorFactoryFactory.createFieldValidatorFactory(validatorDefinition, item);
             if (validatorFactory != null) {
-                this.field.addValidator(validatorFactory.createValidator());
+                field.addValidator(validatorFactory.createValidator());
             } else {
                 log.warn("Not able to create Validation for the following definition {}", definition.toString());
             }
         }
         // Set Required
         if (definition.isRequired()) {
+            field.setInvalidCommitted(true);
             field.setRequired(true);
             field.setRequiredError(definition.getRequiredErrorMessage());
         }

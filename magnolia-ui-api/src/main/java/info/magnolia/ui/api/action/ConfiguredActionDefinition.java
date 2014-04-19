@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
@@ -47,10 +48,10 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
-    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
     private String errorMessage;
+    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 
     @Override
     public String getName() {
@@ -108,14 +109,11 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     @Override
     public AvailabilityDefinition getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(AvailabilityDefinition availability) {
-        this.availability = availability;
+        return this.availability;
     }
 
     @Override
+    @I18nText
     public String getSuccessMessage() {
         return successMessage;
     }
@@ -125,6 +123,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
+    @I18nText
     public String getFailureMessage() {
         return failureMessage;
     }
@@ -134,12 +133,17 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
+    @I18nText
     public String getErrorMessage() {
         return errorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public void setAvailability(AvailabilityDefinition availability) {
+        this.availability = availability;
     }
 }
 

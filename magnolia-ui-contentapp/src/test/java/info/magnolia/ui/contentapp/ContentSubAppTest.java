@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,7 +46,6 @@ import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 
-import javax.jcr.Item;
 
 import org.junit.Before;
 
@@ -78,8 +77,8 @@ public class ContentSubAppTest {
         view = mock(ContentSubAppView.class);
         workbench = mock(BrowserPresenter.class);
 
-        ActionbarPresenter actionbar = new ActionbarPresenter();
-        when(workbench.getActionbarPresenter()).thenReturn(actionbar);
+        ActionbarPresenter actionbarPresenter = mock(ActionbarPresenter.class);
+        when(workbench.getActionbarPresenter()).thenReturn(actionbarPresenter);
 
         subAppEventBus = mock(EventBus.class);
         this.subApp = new DummyContentSubApp(null, subAppContext, view, workbench, subAppEventBus);
@@ -89,7 +88,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, null, null);
         }
 
         @Override
@@ -110,7 +109,7 @@ public class ContentSubAppTest {
 
     private class DummyRule extends AbstractAvailabilityRule {
         @Override
-        public boolean isAvailableForItem(Item item) {
+        protected boolean isAvailableForItem(Object itemId) {
             return true;
         }
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.module.InstallContext;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
 import javax.jcr.Node;
@@ -43,9 +44,8 @@ import javax.jcr.RepositoryException;
  */
 public class CheckBoxSwitchControlMigrator implements ControlMigrator {
 
-
     @Override
-    public void migrate(Node controlNode) throws RepositoryException {
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", CheckboxFieldDefinition.class.getName());
 
@@ -53,6 +53,10 @@ public class CheckBoxSwitchControlMigrator implements ControlMigrator {
         if (controlNode.hasProperty("selected")) {
             String defaultValue = controlNode.getProperty("selected").getString();
             controlNode.setProperty("defaultValue", defaultValue);
+        }
+        // As the 4.5 control saved a String value per default and the 5.x a boolean per default, we have to specified the type
+        if(!controlNode.hasProperty("type")) {
+            controlNode.setProperty("type", "String");
         }
     }
 

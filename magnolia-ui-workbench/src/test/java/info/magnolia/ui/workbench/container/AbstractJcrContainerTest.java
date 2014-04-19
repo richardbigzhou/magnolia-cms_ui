@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,14 +38,17 @@ import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Arrays;
@@ -74,7 +77,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     private JcrContainerTestImpl jcrContainer;
 
-    private ConfiguredWorkbenchDefinition workbenchDefinition;
+    private ConfiguredJcrContentConnectorDefinition connectorDefinition;
 
     private final String workspace = "config";
 
@@ -94,13 +97,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         super.setUp();
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(workspace);
-        configuredWorkbench.setPath("/");
 
-        ConfiguredNodeTypeDefinition mainNodeTypeDefinition = new ConfiguredNodeTypeDefinition();
-        mainNodeTypeDefinition.setName(NodeTypes.Content.NAME);
-        mainNodeTypeDefinition.setStrict(true);
-        configuredWorkbench.addNodeType(mainNodeTypeDefinition);
 
         // Add view
         ConfiguredContentPresenterDefinition contentPresenterDef = new TreePresenterDefinition();
@@ -119,12 +116,18 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         contentPresenterDef.addColumn(colDef1);
         contentPresenterDef.addColumn(colDef2);
 
-        configuredWorkbench.setDefaultOrder(colName2);
+        ConfiguredJcrContentConnectorDefinition configuredConnector = new ConfiguredJcrContentConnectorDefinition();
+        ConfiguredNodeTypeDefinition mainNodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        mainNodeTypeDefinition.setName(NodeTypes.Content.NAME);
+        mainNodeTypeDefinition.setStrict(true);
+        configuredConnector.addNodeType(mainNodeTypeDefinition);
+        configuredConnector.setDefaultOrder(colName2);
+        configuredConnector.setWorkspace(workspace);
 
-        jcrContainer = new JcrContainerTestImpl(configuredWorkbench);
+        connectorDefinition = configuredConnector;
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
         jcrContainer.addSortableProperty(colDef1.getName());
-        workbenchDefinition = configuredWorkbench;
-        workbenchDefinition.setWorkspace(workspace);
+
 
         // Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
@@ -136,13 +139,12 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final String containerItemId = node1.getIdentifier();
-
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         // WHEN
         final com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
 
         // THEN
-        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId().getUuid());
     }
 
     @Test
@@ -150,7 +152,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final String containerItemId = node1.getIdentifier();
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
         assertNotNull(item);
 
@@ -171,16 +173,18 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        String containerItemId1 = node1.getIdentifier();
-        String containerItemId2 = node2.getIdentifier();
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
 
         // WHEN
-        String containerItemId2Res = (String) jcrContainer.nextItemId(containerItemId1);
+        JcrItemId containerItemId2Res = jcrContainer.nextItemId(containerItemId1);
 
         // THEN
         assertEquals(containerItemId2, containerItemId2Res);
-        assertEquals(node2.getIdentifier(), ((JcrNodeAdapter) jcrContainer.getItem(containerItemId2Res)).getItemId());
+        assertEquals(node2.getIdentifier(), ((JcrNodeAdapter) jcrContainer.getItem(containerItemId2Res)).getItemId().getUuid());
     }
 
     @Test
@@ -189,11 +193,13 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        String containerItemId1 = node1.getIdentifier();
-        String containerItemId2 = node2.getIdentifier();
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
         // WHEN
-        String containerItemId1Res = (String) jcrContainer.prevItemId(containerItemId2);
+        JcrItemId containerItemId1Res = jcrContainer.prevItemId(containerItemId2);
 
         // THEN
         assertEquals(containerItemId1, containerItemId1Res);
@@ -209,10 +215,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         setSorter("name", true);
 
         // WHEN
-        String containerItemRes = (String) jcrContainer.firstItemId();
+        JcrItemId containerItemRes = jcrContainer.firstItemId();
 
         // THEN
-        assertEquals(containerItemId1, containerItemRes);
+        assertEquals(containerItemId1, containerItemRes.getUuid());
     }
 
     @Test
@@ -227,10 +233,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer.updateSize();
 
         // WHEN
-        final String containerItemRes = (String) jcrContainer.lastItemId();
+        final JcrItemId containerItemRes = jcrContainer.lastItemId();
 
         // THEN
-        assertEquals(containerItemId2, containerItemRes);
+        assertEquals(containerItemId2, containerItemRes.getUuid());
     }
 
     @Test
@@ -239,8 +245,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        String containerItemId1 = node1.getIdentifier();
-        String containerItemId2 = node2.getIdentifier();
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
         setSorter("name", true);
 
         // WHEN
@@ -258,8 +264,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        String containerItemId1 = node1.getIdentifier();
-        String containerItemId2 = node2.getIdentifier();
+
+        Object containerItemId1 = JcrItemUtil.getItemId(node1);
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         setSorter("name", true);
         jcrContainer.updateSize();
 
@@ -276,21 +284,21 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testAddItem() throws Exception {
         // GIVEN
         Node node1 = rootNode.addNode("node1", NodeTypes.Content.NAME);
-        String containerItemId = node1.getIdentifier();
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         node1.getSession().save();
         // WHEN
         com.vaadin.data.Item item = jcrContainer.addItem(containerItemId);
 
         // THEN
 
-        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId().getUuid());
     }
 
     @Test
     public void testGetContainerProperty() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
-        String containerItemId = node1.getIdentifier();
+        Object containerItemId = JcrItemUtil.getItemId(node1);
         node1.getSession().save();
         // WHEN
         Property property = jcrContainer.getContainerProperty(containerItemId, "name");
@@ -312,7 +320,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
         // THEN
-        assertEquals(containerItemId1, jcrContainer.firstItemId());
+        assertEquals(containerItemId1, jcrContainer.firstItemId().getUuid());
     }
 
     @Test
@@ -321,7 +329,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        String containerItemId2 = node2.getIdentifier();
+
+        Object containerItemId2 = JcrItemUtil.getItemId(node2);
+
         boolean[] ascending = { false };
 
         // WHEN
@@ -377,7 +387,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         final Node node1 = createNode(rootNode, "nodeName", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        final String existingKey = node1.getIdentifier();
+        Object existingKey = JcrItemUtil.getItemId(node1);
 
         // WHEN
         final boolean result = jcrContainer.containsId(existingKey);
@@ -398,7 +408,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryWithoutSortWithPathClause() throws Exception {
         // GIVEN
-        workbenchDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(false);
@@ -448,9 +458,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetMainNodeTypeWhenNoNodeTypeIsDefined() throws Exception {
         // GIVEN
         // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(workspace);
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.setWorkspace(workspace);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         // WHEN
         final String result = jcrContainer.getMainNodeType();
@@ -467,11 +477,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
         def.setName(testNodeType);
 
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.addNodeType(def);
-        workbenchDefinition.setWorkspace(workspace);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.addNodeType(def);
+        connectorDefinition.setWorkspace(workspace);
 
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         // WHEN
         // Before 5.1 the main node type was the first one declared in the configuration.
@@ -486,7 +496,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClauseWorkspacePathWithPath() throws Exception {
         // GIVEN
-        workbenchDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -499,7 +509,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWorkspacePathWithRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
-        workbenchDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -511,7 +521,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClauseWorkspacePathWithNull() throws Exception {
         // GIVEN
-        workbenchDefinition.setPath(null);
+        connectorDefinition.setRootPath(null);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -524,7 +534,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseWorkspacePathWithEmptyString() throws Exception {
         // GIVEN
         final String testPath = "";
-        workbenchDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -536,7 +546,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetQueryWhereClausePrependWhereKeywordWhenWorkspacePathIsNotRoot() {
         // GIVEN
-        workbenchDefinition.setPath(TEST_PATH);
+        connectorDefinition.setRootPath(TEST_PATH);
         final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // WHEN
@@ -550,7 +560,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testGetQueryWhereClauseReturnsEmptyStringWhenWorkspacePathIsRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
-        workbenchDefinition.setPath(testPath);
+        connectorDefinition.setRootPath(testPath);
 
         // WHEN
         final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
@@ -578,7 +588,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node fooNode = createNode(rootNode, "foo", NodeTypes.Content.NAME, "name", "foo");
         createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
         fooNode.getSession().save();
-        String fooItemId = fooNode.getIdentifier();
+        JcrItemId fooItemId = JcrItemUtil.getItemId(fooNode);
         boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
@@ -597,8 +607,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition barDef = new ConfiguredNodeTypeDefinition();
         barDef.setName("mgnl:bar");
 
-        workbenchDefinition.addNodeType(fooDef);
-        workbenchDefinition.addNodeType(barDef);
+        connectorDefinition.addNodeType(fooDef);
+        connectorDefinition.addNodeType(barDef);
 
         // WHEN
         String query = jcrContainer.constructJCRQuery(false);
@@ -617,8 +627,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition folderDef = new ConfiguredNodeTypeDefinition();
         folderDef.setName("mgnl:folder");
 
-        workbenchDefinition.addNodeType(fooDef);
-        workbenchDefinition.addNodeType(folderDef);
+        connectorDefinition.addNodeType(fooDef);
+        connectorDefinition.addNodeType(folderDef);
 
         // WHEN
         String query = jcrContainer.constructJCRQuery(false);
@@ -636,11 +646,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition primaryNtDef = new ConfiguredNodeTypeDefinition();
         primaryNtDef.setName("mgnl:primaryNt");
 
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.addNodeType(mixinDef);
-        workbenchDefinition.addNodeType(primaryNtDef);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.addNodeType(mixinDef);
+        connectorDefinition.addNodeType(primaryNtDef);
 
-        workbenchDefinition.setWorkspace(workspace);
+        connectorDefinition.setWorkspace(workspace);
 
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
@@ -652,7 +662,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         primaryTemplate.setName(primaryNtDef.getName());
         NodeType primaryNodeType = nodeTypeManager.registerNodeType(primaryTemplate, true);
 
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         // WHEN
         final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
@@ -673,11 +683,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         primaryNtDef.setName("mgnl:primaryNt");
         primaryNtDef.setHideInList(true);
 
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.addNodeType(mixinDef);
-        workbenchDefinition.addNodeType(primaryNtDef);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.addNodeType(mixinDef);
+        connectorDefinition.addNodeType(primaryNtDef);
 
-        workbenchDefinition.setWorkspace(workspace);
+        connectorDefinition.setWorkspace(workspace);
 
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
@@ -689,7 +699,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         primaryTemplate.setName(primaryNtDef.getName());
         NodeType primaryNodeType = nodeTypeManager.registerNodeType(primaryTemplate, true);
 
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         // WHEN
         final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
@@ -725,11 +735,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
         def.setName(NodeTypes.Content.NAME);
 
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.addNodeType(def);
-        workbenchDefinition.setWorkspace(workspace);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.addNodeType(def);
+        connectorDefinition.setWorkspace(workspace);
 
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         final NodeType nodeType = nodeTypeManager.getNodeType(NodeTypes.Content.NAME);
@@ -748,7 +758,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testOrderByJcrName() throws Exception {
         // GIVEN
-        workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+        connectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
 
         // WHEN
         String query = jcrContainer.constructJCRQuery(true);
@@ -767,11 +777,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition primaryNtDef = new ConfiguredNodeTypeDefinition();
         primaryNtDef.setName("mgnl:primaryNt");
 
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.addNodeType(mixinDef);
-        workbenchDefinition.addNodeType(primaryNtDef);
+        connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.addNodeType(mixinDef);
+        connectorDefinition.addNodeType(primaryNtDef);
 
-        workbenchDefinition.setWorkspace(workspace);
+        connectorDefinition.setWorkspace(workspace);
 
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
@@ -783,7 +793,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         primaryTemplate.setName(primaryNtDef.getName());
         nodeTypeManager.registerNodeType(primaryTemplate, true);
 
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+        jcrContainer = new JcrContainerTestImpl(connectorDefinition);
 
         Node mixin1 = createNode(rootNode, "mixin1", NodeTypes.Content.NAME, null, null);
         mixin1.addMixin(mixinNodeTypeName);
@@ -838,8 +848,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
-        public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {
-            super(workbenchDefinition);
+        public JcrContainerTestImpl(JcrContentConnectorDefinition contentConnectorDefinition) {
+            super(contentConnectorDefinition);
         }
 
         @Override
@@ -850,5 +860,4 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
         }
     }
-
 }

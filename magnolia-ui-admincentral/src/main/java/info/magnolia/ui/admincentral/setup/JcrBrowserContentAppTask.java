@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -113,21 +113,21 @@ public class JcrBrowserContentAppTask extends AbstractTask {
         try {
             Node subappsNode = NodeUtil.createPath(appNode, "subApps", NodeTypes.ContentNode.NAME);
             subappsNode.setProperty("extends", "/modules/ui-admincentral/apps/configuration/subApps");
-            Node workbenchNode = NodeUtil.createPath(subappsNode, "browser/workbench", NodeTypes.ContentNode.NAME);
+            Node contentConnectorNode = NodeUtil.createPath(subappsNode, "browser/contentConnector", NodeTypes.ContentNode.NAME);
 
             if (StringUtils.isBlank(workspace)) {
                 throw new TaskExecutionException("workspace cannot be null or empty");
             }
-            workbenchNode.setProperty("workspace", workspace);
+            contentConnectorNode.setProperty("workspace", workspace);
 
             if (StringUtils.isNotBlank(rootPath)) {
                 if (!rootPath.startsWith("/")) {
                     throw new TaskExecutionException(String.format("Expected an absolute path for workspace [%s] but got [%s] instead.", workspace, rootPath));
                 }
-                workbenchNode.setProperty("path", rootPath);
+                contentConnectorNode.setProperty("rootPath", rootPath);
             }
             if (mainNodeType != null) {
-                Node nodeType = NodeUtil.createPath(workbenchNode, "nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
+                Node nodeType = NodeUtil.createPath(contentConnectorNode, "nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
                 String icon = mainNodeType.getIcon();
                 String name = mainNodeType.getName();
                 nodeType.setProperty("icon", StringUtils.defaultIfEmpty(icon, "icon-node-content"));

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,7 +43,18 @@ public interface UserMenuView extends View {
 
     void setListener(Listener listener);
 
+    /**
+     * Adds an action to the user menu with given action name as configured and label.
+     * 
+     * @deprecated since 5.2.4 icons are supported in user menu so one should use {@link #addAction(String, String, String)}.
+     */
+    @Deprecated
     void addAction(String name, String label);
+
+    /**
+     * Adds an action to the user menu with given action name as configured, label and icon.
+     */
+    void addAction(String name, String label, String icon);
 
     void setCaption(String caption);
 

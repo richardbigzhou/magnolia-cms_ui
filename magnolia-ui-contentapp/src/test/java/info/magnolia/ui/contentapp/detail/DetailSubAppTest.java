@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,9 @@
 package info.magnolia.ui.contentapp.detail;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -50,6 +52,8 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -102,6 +106,8 @@ public class DetailSubAppTest {
 
         // mock presenter so that we can assess on currently edited itemId
         DetailEditorPresenter presenter = mock(DetailEditorPresenter.class);
+        ContentConnector contentConnector = mock(ContentConnector.class);
+        doReturn(new JcrNodeItemId("", "")).when(contentConnector).getItemIdByUrlFragment(anyString());
         doAnswer(new Answer<View>() {
 
             @Override
@@ -111,10 +117,10 @@ public class DetailSubAppTest {
                 return null;
             }
 
-        }).when(presenter).start(anyString(), any(DetailView.ViewType.class));
+        }).when(presenter).start(anyString(), any(DetailView.ViewType.class), eq(contentConnector));
 
         editedNodePath = null;
-        detailSubApp = new DetailSubApp(subAppContext, view, adminCentralEventBus, presenter, i18n);
+        detailSubApp = new DetailSubApp(subAppContext, view, adminCentralEventBus, presenter, i18n, contentConnector);
     }
 
     @Test

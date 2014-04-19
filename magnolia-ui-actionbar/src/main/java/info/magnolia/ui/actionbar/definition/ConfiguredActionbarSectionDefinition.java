@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -102,10 +102,11 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     @Override
     public AvailabilityDefinition getAvailability() {
-        return availability;
+        return this.availability;
     }
 
-    public void setAvailability(AvailabilityDefinition availability) {
-        this.availability = availability;
+    public void setAvailability(AvailabilityDefinition voterBasedAvailability) {
+        this.availability = voterBasedAvailability;
+        ((ConfiguredAvailabilityDefinition)availability).setMultiple(true);
     }
 }

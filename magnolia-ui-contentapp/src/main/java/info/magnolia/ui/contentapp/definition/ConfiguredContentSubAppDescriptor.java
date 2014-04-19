@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,9 @@ package info.magnolia.ui.contentapp.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 
 /**
  * Simple implementation for {@link ContentSubAppDescriptor}.
@@ -47,6 +49,12 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
     private ActionbarDefinition actionbar;
 
     private ImageProviderDefinition imageProvider;
+
+    private ContentConnectorDefinition contentConnectorDefinition;
+
+    public ConfiguredContentSubAppDescriptor() {
+        setContentConnector(new ConfiguredJcrContentConnectorDefinition());
+    }
 
     @Override
     public ActionbarDefinition getActionbar() {
@@ -62,7 +70,16 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
         return imageProvider;
     }
 
+    @Override
+    public ContentConnectorDefinition getContentConnector() {
+        return contentConnectorDefinition;
+    }
+
     public void setImageProvider(ImageProviderDefinition imageProvider) {
         this.imageProvider = imageProvider;
+    }
+
+    public void setContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
+        this.contentConnectorDefinition = contentConnectorDefinition;
     }
 }

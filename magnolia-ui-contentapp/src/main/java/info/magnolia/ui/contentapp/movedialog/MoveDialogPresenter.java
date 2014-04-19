@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,14 +35,15 @@ package info.magnolia.ui.contentapp.movedialog;
 
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
  * Presenter interface for node move dialogs.
  */
 public interface MoveDialogPresenter {
 
-    DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback);
+    DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<Item> nodesToMove, MoveActionCallback callback);
 }

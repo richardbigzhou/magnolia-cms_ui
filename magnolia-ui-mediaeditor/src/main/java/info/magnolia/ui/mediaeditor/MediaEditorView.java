@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import com.vaadin.ui.Component;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.mediaeditor.field.MediaField;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+
+import com.vaadin.ui.Component;
 
 /**
  * Interface of media editor view. 

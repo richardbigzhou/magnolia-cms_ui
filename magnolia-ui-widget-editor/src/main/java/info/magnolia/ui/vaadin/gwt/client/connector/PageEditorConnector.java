@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -75,6 +75,7 @@ import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
 import info.magnolia.ui.vaadin.gwt.client.widget.dnd.MoveWidget;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -98,6 +99,8 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(PageEditor.class)
 public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
+
+    private Logger log = Logger.getLogger(getClass().getName());
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/ui-app-pages/page-editor.css";
 
@@ -301,7 +304,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
-
         if (mgnlElement == null && model.getRootPage() != null) {
             mgnlElement = model.getRootPage();
         }
@@ -346,8 +348,8 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         }
     }
 
-    native void consoleLog(String message) /*-{
-                                           console.log( "PageEditor: " + message );
-                                           }-*/;
+    void consoleLog(String message) {
+        log.info("PageEditor: " + message);
+    };
 
 }

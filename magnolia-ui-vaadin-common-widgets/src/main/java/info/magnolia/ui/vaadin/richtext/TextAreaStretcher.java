@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,13 +36,10 @@ package info.magnolia.ui.vaadin.richtext;
 import info.magnolia.ui.vaadin.gwt.client.richtext.TextAreaStretcherServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.richtext.TextAreaStretcherState;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
-
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.TextArea;
 
 /**
  * Extension that applies to text areas and rich-text editors in forms. It expands them to the full-size
@@ -72,9 +69,7 @@ public class TextAreaStretcher extends AbstractExtension {
     }
 
     public static void extend(Field field) {
-        if (field instanceof TextArea || field instanceof CKEditorTextField) {
-            new TextAreaStretcher().extend((AbstractClientConnector) field);
-        }
+        new TextAreaStretcher().extend((AbstractClientConnector) field);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -57,6 +57,8 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -105,6 +107,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
 
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        ComponentsTestUtil.setImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
 
         session = SessionTestUtil.createSession("website", website);
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);

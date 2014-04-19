@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.component;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
@@ -63,7 +64,6 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
 
     public AbstractBaseItemContentPreviewComponent(String workspace) {
         super(workspace);
-        setImageProvider();
         // Always set the root layout as CompositionRoot.
         this.rootLayout = new HorizontalLayout();
         setCompositionRoot(rootLayout);
@@ -97,14 +97,10 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
     @Override
     public Component refreshContentPreview(Item item) {
         Image thumbnail = new Image();
-        try {
-            String path = imageProvider.getPortraitPath(workspace, ((JcrNodeAdapter) item).getJcrItem().getPath());
-            if (StringUtils.isNotBlank(path)) {
-                thumbnail = new Image("", new ExternalResource(path));
-                thumbnail.addStyleName("file-preview-area");
-            }
-        } catch (RepositoryException e) {
-            log.warn("Could not get the related File node", e);
+        String path = imageProvider.getPortraitPath(((JcrItemAdapter)item).getItemId());
+        if (StringUtils.isNotBlank(path)) {
+            thumbnail = new Image("", new ExternalResource(path));
+            thumbnail.addStyleName("file-preview-area");
         }
         return thumbnail;
     }

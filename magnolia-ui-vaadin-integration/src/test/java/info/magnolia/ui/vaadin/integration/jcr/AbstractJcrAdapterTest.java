@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -84,7 +84,7 @@ public class AbstractJcrAdapterTest {
         // THEN
         assertTrue(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
-        assertEquals(testNode.getIdentifier(), adapter.getItemId());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId().getUuid());
         assertEquals(testNode.getPath(), adapter.getJcrItem().getPath());
     }
 
@@ -177,7 +177,7 @@ public class AbstractJcrAdapterTest {
 
         @Override
         public boolean isNode() {
-            return !JcrItemUtil.isPropertyItemId(getItemId());
+            return !(getItemId() instanceof JcrPropertyItemId);
         }
 
         @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to
- * {@link FormSectionWidget} and the FielWrappers are exposed.
+ * {@link FormSectionWidget} and the FieldWrappers are exposed.
  */
 public class FormTabWidget extends MagnoliaTabWidget {
 

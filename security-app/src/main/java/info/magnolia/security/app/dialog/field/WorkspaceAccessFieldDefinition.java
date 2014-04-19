@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,7 @@
 package info.magnolia.security.app.dialog.field;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;

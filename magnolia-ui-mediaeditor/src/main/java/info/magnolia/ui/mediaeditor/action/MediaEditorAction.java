@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.google.inject.name.Named;
@@ -71,15 +72,18 @@ public abstract class MediaEditorAction extends AbstractAction<MediaEditorAction
     }
 
     protected InputStream createStreamSource(final BufferedImage img, final String formatName) {
+        ByteArrayOutputStream out2 = null;
         try {
             if (img == null) {
                 return null;
             }
-            ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+            out2 = new ByteArrayOutputStream();
             ImageIO.write(img, formatName, out2);
             return new ByteArrayInputStream(out2.toByteArray());
         } catch (IOException e) {
             log.error("Error occurred while creating image stream: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(out2);
         }
         return null;
     }

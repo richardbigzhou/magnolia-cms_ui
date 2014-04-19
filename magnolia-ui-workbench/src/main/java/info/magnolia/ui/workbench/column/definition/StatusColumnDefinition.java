@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,7 +49,7 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
     private boolean activation = true;
 
     // Show Permission Status
-    private boolean permissions = false;
+    private boolean permissions = true;
 
     public boolean isActivation() {
         return activation;

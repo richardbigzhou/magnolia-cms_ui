@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -62,6 +63,9 @@ import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -100,7 +104,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private AppContext appContext;
 
-    private List<JcrNodeAdapter> nodesToMove;
+    private List<Item> nodesToMove;
 
     private Map<MoveLocation, ActionDefinition> actionMap = new HashMap<MoveLocation, ActionDefinition>();
 
@@ -110,29 +114,31 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private MoveActionCallback callback;
 
-    private JcrNodeAdapter currentHostCandidate;
+    private Item currentHostCandidate;
 
     private ConfiguredWorkbenchDefinition workbenchDefinition;
 
     private I18nizer i18nizer;
 
+    private ContentConnector contentConnector;
+
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
         super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
         this.i18nizer = i18nizer;
-        dialogView.asVaadinComponent().setStyleName("choose-dialog");
+        this.contentConnector = contentConnector;
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[]{nodesToMove, callback, appContext, getHostCandidate()};
+        return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
     }
 
     @Override
-    public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback) {
+    public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<Item> nodesToMove, MoveActionCallback callback) {
 
         final ConfiguredImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
         this.workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
@@ -149,12 +155,13 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 imageProviderDefinition,
                 workbenchPresenter,
                 eventBus);
-
-        dialogView.setContent(new ViewAdapter(field));
+        ViewAdapter viewAdapter = new ViewAdapter(field);
+        viewAdapter.asVaadinComponent().addStyleName("choose-dialog");
+        dialogView.setContent(viewAdapter);
         field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                currentHostCandidate = (event.getProperty().getValue() == null) ? null: (JcrNodeAdapter) event.getProperty().getValue();
+                currentHostCandidate = contentConnector.getItem(event.getProperty().getValue());
                 updatePossibleMoveLocations(currentHostCandidate);
 
             }
@@ -166,13 +173,14 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
-                ((ResettableEventBus)eventBus).reset();
+                ((ResettableEventBus) eventBus).reset();
             }
         });
         super.start(dialogDefinition, appContext);
         updatePossibleMoveLocations(getHostCandidate());
 
         getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().addStyleName("commit");
+        getView().setClosable(true);
         return dialogView;
     }
 
@@ -185,8 +193,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
 
-
-        workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
         workbenchDefinition.setEditable(false);
 
@@ -227,15 +233,18 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     protected void updatePossibleMoveLocations(Item possibleHost) {
         Set<MoveLocation> possibleLocations = new HashSet<MoveLocation>();
-        if (possibleHost != null) {
-            Iterator<Entry<MoveLocation, MovePossibilityPredicate>> it = possibilityPredicates.entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<MoveLocation, MovePossibilityPredicate> entry = it.next();
-                if (entry.getValue().isMovePossible(possibleHost)) {
-                    possibleLocations.add(entry.getKey());
-                }
+        if (possibleHost == null) {
+            possibleHost = new NullItem();
+        }
+
+        Iterator<Entry<MoveLocation, MovePossibilityPredicate>> it = possibilityPredicates.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<MoveLocation, MovePossibilityPredicate> entry = it.next();
+            if (entry.getValue().isMovePossible(possibleHost)) {
+                possibleLocations.add(entry.getKey());
             }
         }
+
         getActionArea().setPossibleMoveLocations(possibleLocations);
     }
 
@@ -270,6 +279,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         actionAreaDefinition.setSecondaryActions(secondaryActions);
 
         def.setActionArea(actionAreaDefinition);
+        def.setModalityLevel(ModalityLevel.LIGHT);
         return def;
     }
 
@@ -283,12 +293,13 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return (DialogActionExecutor) super.getExecutor();
     }
 
-    private JcrNodeAdapter getHostCandidate() {
+    private Item getHostCandidate() {
         if (currentHostCandidate != null) {
             return currentHostCandidate;
         } else {
             try {
-                return new JcrNodeAdapter(MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getRootNode());
+                String workspace = ((JcrContentConnector)contentConnector).getContentConnectorDefinition().getWorkspace();
+                return new JcrNodeAdapter(MgnlContext.getJCRSession(workspace).getRootNode());
             } catch (RepositoryException e) {
                 return null;
             }

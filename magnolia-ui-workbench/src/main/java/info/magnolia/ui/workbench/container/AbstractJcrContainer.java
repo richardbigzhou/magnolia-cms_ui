@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,12 +35,13 @@ package info.magnolia.ui.workbench.container;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,7 +79,7 @@ import com.vaadin.data.Property;
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
  * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Refreshable {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -117,13 +118,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Item and index caches.
      */
-    private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
+    private final Map<Long, JcrItemId> itemIndexes = new HashMap<Long, JcrItemId>();
 
     private final List<String> sortableProperties = new ArrayList<String>();
 
     private final List<OrderBy> sorters = new ArrayList<OrderBy>();
-
-    private final WorkbenchDefinition workbenchDefinition;
 
     private int size = Integer.MIN_VALUE;
 
@@ -146,8 +145,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private Set<NodeType> searchableNodeTypes;
 
-    public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        this.workbenchDefinition = workbenchDefinition;
+    private JcrContentConnectorDefinition contentConnectorDefinition;
+
+    public AbstractJcrContainer(JcrContentConnectorDefinition jcrContentConnectorDefinition) {
+        this.contentConnectorDefinition = jcrContentConnectorDefinition;
         this.searchableNodeTypes = findSearchableNodeTypes();
     }
 
@@ -155,8 +156,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         sortableProperties.add(sortableProperty);
     }
 
-    public WorkbenchDefinition getWorkbenchDefinition() {
-        return workbenchDefinition;
+    public JcrContentConnectorDefinition getConfiguration() {
+        return contentConnectorDefinition;
     }
 
     @Override
@@ -199,7 +200,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
     }
 
-    protected Map<Long, String> getItemIndexes() {
+    protected Map<Long, JcrItemId> getItemIndexes() {
         return itemIndexes;
     }
 
@@ -220,11 +221,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public javax.jcr.Item getJcrItem(Object itemId) {
-        if (itemId == null) {
+        if (itemId == null || !(itemId instanceof JcrItemId)) {
             return null;
         }
         try {
-            return JcrItemUtil.getJcrItem(getWorkspace(), (String) itemId);
+            return JcrItemUtil.getJcrItem((JcrItemId) itemId);
         } catch (PathNotFoundException p) {
             log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[] { itemId, getWorkspace(), p.toString() });
         } catch (RepositoryException e) {
@@ -323,7 +324,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public Object getIdByIndex(int index) {
+    public JcrItemId getIdByIndex(int index) {
         if (index < 0 || index > size - 1) {
             return null;
         }
@@ -343,17 +344,17 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
 
     @Override
-    public Object nextItemId(Object itemId) {
+    public JcrItemId nextItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) + 1);
     }
 
     @Override
-    public Object prevItemId(Object itemId) {
+    public JcrItemId prevItemId(Object itemId) {
         return getIdByIndex(indexOfId(itemId) - 1);
     }
 
     @Override
-    public Object firstItemId() {
+    public JcrItemId firstItemId() {
         if (size == 0) {
             return null;
         }
@@ -364,7 +365,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public Object lastItemId() {
+    public JcrItemId lastItemId() {
         final Long lastIx = Long.valueOf(size() - 1);
         if (!itemIndexes.containsKey(lastIx)) {
             updateOffsetAndCache(size - 1);
@@ -493,16 +494,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
-            final String id = node.getIdentifier();
-            log.debug("Adding node {} to cached items.", id);
-            itemIndexes.put(rowCount++, id);
+            final JcrItemId itemId = JcrItemUtil.getItemId(node);
+            log.debug("Adding node {} to cached items.", itemId.getUuid());
+            itemIndexes.put(rowCount++, itemId);
         }
 
         log.debug("Done in {} ms", System.currentTimeMillis() - start);
     }
 
     /**
-     * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>.
      * @return a string representing a JCR statement to retrieve this container's items.
      * It creates a JCR query in the form {@code select * from [nt:base] as selectorName [WHERE] [ORDER BY]"}.
      * <p>
@@ -519,7 +520,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (considerSorting) {
             if (sorters.isEmpty()) {
                 // no sorters set - use defaultOrder (always ascending)
-                String defaultOrder = workbenchDefinition.getDefaultOrder();
+                String defaultOrder = contentConnectorDefinition.getDefaultOrder();
                 String[] defaultOrders = defaultOrder.split(",");
                 for (String current : defaultOrders) {
                     sorters.add(getDefaultOrderBy(current));
@@ -622,13 +623,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
+     * @return if ((JcrContentConnectorDefinition)workbenchDefinition.getContentConnector()).getPath() is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
      */
     protected final String getQueryWhereClauseWorkspacePath() {
         // By default, search the root and therefore do not need a query clause.
         String whereClauseWorkspacePath = "";
-        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
-            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        String path = contentConnectorDefinition.getRootPath();
+        if (StringUtils.isNotBlank(path) && !"/".equals(path)) {
+            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, path);
         }
         log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
         return whereClauseWorkspacePath;
@@ -647,7 +649,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     @Deprecated
     protected String getMainNodeType() {
-        final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+        final List<NodeTypeDefinition> nodeTypes = contentConnectorDefinition.getNodeTypes();
         return nodeTypes.isEmpty() ? DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
     }
 
@@ -675,7 +677,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public String getWorkspace() {
-        return workbenchDefinition.getWorkspace();
+        return contentConnectorDefinition.getWorkspace();
     }
 
     public Set<NodeType> getSearchableNodeTypes() {
@@ -686,10 +688,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Refreshes the container - clears all caches and resets size and offset. Does NOT remove sorting or filtering
      * rules!
      */
+    @Override
     public void refresh() {
         resetOffset();
         clearItemIndexes();
         updateSize();
+        fireItemSetChange();
     }
 
     protected void resetOffset() {
@@ -748,7 +752,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     protected Set<NodeType> findSearchableNodeTypes() {
         final List<String> hiddenInList = new ArrayList<String>();
-        final List<NodeTypeDefinition> nodeTypeDefinition = workbenchDefinition.getNodeTypes();
+        final List<NodeTypeDefinition> nodeTypeDefinition = contentConnectorDefinition.getNodeTypes();
         log.debug("Defined node types are {}", nodeTypeDefinition);
 
         for (NodeTypeDefinition def : nodeTypeDefinition) {
@@ -759,12 +763,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
 
         final Set<NodeType> searchableNodeTypes = new HashSet<NodeType>();
-        if (workbenchDefinition.getWorkspace() == null) {
+        if (getWorkspace() == null) {
             // no workspace, no searchable types
             return searchableNodeTypes;
         }
         try {
-            final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getNodeTypeManager();
+            final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(getWorkspace()).getWorkspace().getNodeTypeManager();
 
             for (NodeTypeDefinition def : nodeTypeDefinition) {
                 final String nodeTypeName = def.getName();

@@ -3,7 +3,7 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2.1-SNAPSHOT</version>
+    <version>5.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-widget-editor</artifactId>
@@ -19,9 +19,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <index>true</index>
             <manifest>
-              <addClasspath>true</addClasspath>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>

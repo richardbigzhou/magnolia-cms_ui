@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.api.i18n;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
 
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -45,10 +45,15 @@ import com.vaadin.ui.HasComponents;
  */
 public interface I18NAuthoringSupport {
 
-    AbstractSelect getLanguageChooser();
+    /**
+     * Returns the available locales for the given page, area or component node.
+     */
+    List<Locale> getAvailableLocales(Node node);
 
     void i18nize(HasComponents fieldContainer, Locale locale);
 
     String createI18NURI(Node node, Locale locale);
+
+    Locale getAuthorLocale();
 
 }

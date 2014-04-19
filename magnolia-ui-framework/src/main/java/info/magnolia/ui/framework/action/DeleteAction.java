@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -43,12 +42,14 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.List;
 
 import javax.inject.Named;
 import javax.jcr.Item;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected final UiContext uiContext;
     protected final Item jcrItem;
     protected final EventBus eventBus;
-    private String itemIdOfChangedItem;
+    private JcrItemId changedItemId;
     private final SimpleTranslator i18n;
 
     public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
@@ -77,7 +78,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         this.i18n = i18n;
 
         try {
-            itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+            changedItemId = JcrItemUtil.getItemId(jcrItem.getParent());
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
             onError(e);
@@ -91,7 +92,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         this.eventBus = eventBus;
         this.i18n = i18n;
         try {
-            itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+            changedItemId = JcrItemUtil.getItemId(jcrItem.getParent());
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
             onError(e);
@@ -115,7 +116,25 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     @Override
     protected void onPostExecute() throws Exception {
         // Propagate event
-        eventBus.fireEvent(new ContentChangedEvent((String) getParams().get(Context.ATTRIBUTE_REPOSITORY), itemIdOfChangedItem));
+        eventBus.fireEvent(new ContentChangedEvent(changedItemId));
+    }
+
+    @Override
+    protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
+        if (item.isNode()) {
+            super.executeOnItem(item);
+        } else {
+            try {
+                onPreExecute();
+                Property property = (Property) item.getJcrItem();
+                property.remove();
+                property.getSession().save();
+                onPostExecute();
+            } catch (Exception e) {
+                onError(e);
+                throw new ActionExecutionException(e);
+            }
+        }
     }
 
     @Override
@@ -126,6 +145,10 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     @Override
     protected String getFailureMessage() {
         return getDefinition().getFailureMessage();
+    }
+
+    protected SimpleTranslator getI18n() {
+        return i18n;
     }
 
 }

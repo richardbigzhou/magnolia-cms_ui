@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,6 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 /**
  * This event is fired when a registered key shortcut is pressed while an item is selected (i.e. a row in the data grid within the workbench representing
@@ -51,31 +50,20 @@ public class ItemShortcutKeyEvent implements Event<ItemShortcutKeyEvent.Handler>
         void onItemShortcutKeyEvent(ItemShortcutKeyEvent event);
     }
 
-    private String workspace;
-
-    private final JcrItemAdapter item;
+    private final Object itemId;
 
     private final int keyCode;
 
     private final int[] modifierKeys;
 
-    public ItemShortcutKeyEvent(String workspace, JcrItemAdapter item, int keyCode, int... modifierKeys) {
-        this.workspace = workspace;
-        this.item = item;
+    public ItemShortcutKeyEvent(Object itemId, int keyCode, int... modifierKeys) {
+        this.itemId = itemId;
         this.keyCode = keyCode;
         this.modifierKeys = modifierKeys;
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public JcrItemAdapter getItem() {
-        return item;
-    }
-
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
+    public Object getItemId() {
+        return itemId;
     }
 
     public int getKeyCode() {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,45 +33,61 @@
  */
 package info.magnolia.ui.admincentral.usermenu;
 
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.usermenu.UserMenu;
 
 import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuClosedEvent;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuClosedListener;
 
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.NativeButton;
 
 /**
  * Implementation of {@link UserMenuView}. Basically a button, which opens the {@link info.magnolia.ui.vaadin.usermenu.UserMenu} when clicked.
  */
-public class UserMenuViewImpl extends NativeButton implements UserMenuView {
+public class UserMenuViewImpl implements UserMenuView {
 
+    private final NativeButton button = new NativeButton();
     private final UserMenu menu = new UserMenu();
     private UserMenuView.Listener listener;
     private String caption;
 
     public UserMenuViewImpl() {
-        setStyleName("user-menu");
-        setHtmlContentAllowed(true);
+        button.setStyleName("user-menu");
+        button.setHtmlContentAllowed(true);
 
-        menu.setAsContextMenuOf(this);
-        addClickListener(new ClickListener() {
+        menu.setAsContextMenuOf(button);
+
+        button.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 menu.open();
+                updateButton(caption, true);
             }
         });
 
+        menu.addContextMenuCloseListener(new ContextMenuClosedListener() {
+
+            @Override
+            public void onContextMenuClosed(ContextMenuClosedEvent event) {
+                updateButton(caption, false);
+            }
+        });
     }
 
     @Override
     public void setCaption(String caption) {
+        updateButton(caption, false);
         this.caption = caption;
-        updateArrow(false);
     }
 
-    public void updateArrow(boolean open) {
+    private void updateButton(String caption, boolean open) {
         String text = caption + ((open) ? "<span class=\"icon-arrow2_n\"></span>" : "<span class=\"icon-arrow2_s\"></span>");
-        super.setCaption(text);
+        button.setCaption(text);
     }
 
     @Override
@@ -80,8 +96,17 @@ public class UserMenuViewImpl extends NativeButton implements UserMenuView {
     }
 
     @Override
-    public void addAction(final String actionName, String label) {
-        menu.addItem(label).addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
+    @Deprecated
+    public void addAction(String actionName, String label) {
+        addAction(actionName, label, "");
+    }
+
+    @Override
+    public void addAction(final String actionName, String label, String icon) {
+        String iconFontCode = ActionPopup.ICON_FONT_CODE + icon;
+        ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+
+        menu.addItem(label, iconFontResource).addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
             @Override
             public void contextMenuItemClicked(ContextMenu.ContextMenuItemClickEvent event) {
                 listener.onAction(actionName);
@@ -91,6 +116,6 @@ public class UserMenuViewImpl extends NativeButton implements UserMenuView {
 
     @Override
     public Component asVaadinComponent() {
-        return this;
+        return button;
     }
 }

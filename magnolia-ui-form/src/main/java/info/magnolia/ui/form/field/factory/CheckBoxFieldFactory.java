@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,6 +37,7 @@ import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
@@ -60,4 +61,12 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
         return Boolean.class;
     }
 
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        this.field.setPropertyDataSource(property);
+
+        if (property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
+        }
+    }
 }

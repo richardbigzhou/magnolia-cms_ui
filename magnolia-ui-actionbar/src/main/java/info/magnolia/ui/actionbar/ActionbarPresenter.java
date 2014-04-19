@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,20 @@
  */
 package info.magnolia.ui.actionbar;
 
-import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,24 +63,22 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public interface Listener {
 
         void onActionbarItemClicked(String itemName);
-
-        String getLabel(String itemName);
-
-        String getIcon(String itemName);
-
     }
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
-    private static final String PREVIEW_SECTION_NAME = "preview";
-
     private ActionbarDefinition definition;
 
-    private ActionbarView actionbar;
+    private Map<String, ActionDefinition> actions;
+
+    private ActionbarView view;
 
     private Listener listener;
 
-    public ActionbarPresenter() {
+    @Inject
+    public ActionbarPresenter(ActionbarView view) {
+        this.view = view;
+        view.setListener(this);
     }
 
     public void setListener(Listener listener) {
@@ -79,83 +86,113 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     /**
-     * Initializes an actionbar with given definition and returns the view for
-     * parent to add it.
+     * Initializes an action bar with the given definition and returns the view for the parent to add it.
      */
-    public ActionbarView start(final ActionbarDefinition definition) {
+    public ActionbarView start(ActionbarDefinition definition, Map<String, ActionDefinition> actions) {
         this.definition = definition;
-        actionbar = ActionbarFactory.build(definition, listener);
-        actionbar.setListener(this);
-        return actionbar;
+        this.actions = actions;
+
+        if (definition != null) {
+
+            // build action bar structure from definition
+            for (ActionbarSectionDefinition section : definition.getSections()) {
+                view.addSection(section.getName(), section.getLabel());
+                List<String> actionNames = new ArrayList<String>();
+
+                for (ActionbarGroupDefinition group : section.getGroups()) {
+                    // standalone groups make no sense
+                    log.debug("Group actions: " + group.getItems());
+
+                    for (ActionbarItemDefinition action : group.getItems()) {
+                        if (actionNames.contains(action.getName())) {
+                            log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
+                            continue;
+                        }
+                        actionNames.add(action.getName());
+                        addActionItem(action.getName(), group.getName(), section.getName());
+                    }
+                }
+            }
+        } else {
+            log.debug("No actionbar definition found. This will result in an empty action bar. Is that intended?");
+        }
+        return view;
+    }
+
+    private void addActionItem(String actionName, String groupName, String sectionName) {
+
+        ActionDefinition actionDefinition = actions.get(actionName);
+        if (actionDefinition != null) {
+            String label = actionDefinition.getLabel();
+            if (StringUtils.isBlank(label)) {
+                label = actionName;
+            }
+            String icon = actionDefinition.getIcon();
+
+            // only icons from icon-fonts currently work
+            ActionbarItem item = new ActionbarItem(actionName, label, icon, groupName);
+            view.addAction(item, sectionName);
+        }
     }
 
     public void setPreview(final Resource previewResource) {
-        if (previewResource != null) {
-            if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
-            }
-            actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
-        } else {
-            if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionbar.removeSection(PREVIEW_SECTION_NAME);
-            }
-        }
+        view.setPreview(previewResource);
     }
 
     // METHODS DELEGATING TO THE VIEW
 
     public void enable(String... actionNames) {
-        if (actionbar != null) {
+        if (view != null) {
             for (String action : actionNames) {
-                actionbar.setActionEnabled(action, true);
+                view.setActionEnabled(action, true);
             }
         }
     }
 
     public void disable(String... actionNames) {
-        if (actionbar != null) {
+        if (view != null) {
             for (String action : actionNames) {
-                actionbar.setActionEnabled(action, false);
+                view.setActionEnabled(action, false);
             }
         }
     }
 
     public void enableGroup(String groupName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, true);
+        if (view != null) {
+            view.setGroupEnabled(groupName, true);
         }
     }
 
     public void disableGroup(String groupName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, false);
+        if (view != null) {
+            view.setGroupEnabled(groupName, false);
         }
     }
 
     public void enableGroup(String groupName, String sectionName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, sectionName, true);
+        if (view != null) {
+            view.setGroupEnabled(groupName, sectionName, true);
         }
     }
 
     public void disableGroup(String groupName, String sectionName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, sectionName, false);
+        if (view != null) {
+            view.setGroupEnabled(groupName, sectionName, false);
         }
     }
 
     public void showSection(String... sectionNames) {
-        if (actionbar != null) {
+        if (view != null) {
             for (String section : sectionNames) {
-                actionbar.setSectionVisible(section, true);
+                view.setSectionVisible(section, true);
             }
         }
     }
 
     public void hideSection(String... sectionNames) {
-        if (actionbar != null) {
+        if (view != null) {
             for (String section : sectionNames) {
-                actionbar.setSectionVisible(section, false);
+                view.setSectionVisible(section, false);
             }
         }
     }

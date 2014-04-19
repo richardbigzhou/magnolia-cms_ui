@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,12 +33,13 @@
  */
 package info.magnolia.security.app.action;
 
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 
 /**
  * Used to configure {@link DeleteRoleAction}.
  */
-public class DeleteRoleActionDefinition extends DeleteItemActionDefinition {
+public class DeleteRoleActionDefinition extends DeleteActionDefinition {
 
     public DeleteRoleActionDefinition() {
         setImplementationClass(DeleteRoleAction.class);

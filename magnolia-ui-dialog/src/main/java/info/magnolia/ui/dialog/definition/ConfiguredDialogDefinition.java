@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
@@ -61,7 +62,10 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
-    public ConfiguredDialogDefinition() {}
+    private ModalityLevel modalityLevel = ModalityLevel.STRONG;
+
+    public ConfiguredDialogDefinition() {
+    }
 
     @Override
     public String getId() {
@@ -119,5 +123,17 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     public void setActionArea(EditorActionAreaDefinition actionArea) {
         this.actionArea = actionArea;
+    }
+
+    /**
+     * @return the currently set {@link ModalityLevel}. If not set, it is {@link ModalityLevel#STRONG} by default.
+     */
+    @Override
+    public ModalityLevel getModalityLevel() {
+        return this.modalityLevel;
+    }
+
+    public void setModalityLevel(ModalityLevel modalityLevel) {
+        this.modalityLevel = modalityLevel;
     }
 }

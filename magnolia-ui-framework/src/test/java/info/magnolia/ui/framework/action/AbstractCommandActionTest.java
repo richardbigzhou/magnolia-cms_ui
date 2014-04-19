@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,7 +45,6 @@ import info.magnolia.commands.MgnlCommand;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.context.WebContext;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -57,9 +56,14 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.ModuleRegistryImpl;
+import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
@@ -73,10 +77,12 @@ import java.util.Map;
 
 import javax.jcr.Item;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.Scheduler;
 
 /**
  * Tests.
@@ -102,10 +108,19 @@ public class AbstractCommandActionTest {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        // Init scheduler
+        ModuleRegistry moduleRegistry = mock(ModuleRegistryImpl.class);
+        SchedulerModule schedulerModule = mock(SchedulerModule.class);
+        when(moduleRegistry.isModuleRegistered("scheduler")).thenReturn(true);
+        when(moduleRegistry.getModuleInstance("scheduler")).thenReturn(schedulerModule);
+        Scheduler scheduler = mock(Scheduler.class);
+        when(schedulerModule.getScheduler()).thenReturn(scheduler);
 
-        WebContext webContext = mock(WebContext.class);
-        when(webContext.getContextPath()).thenReturn("/foo");
-        when(webContext.getJCRSession("website")).thenReturn(session);
+        ComponentsTestUtil.setInstance(ModuleRegistry.class, moduleRegistry);
+
+        MockWebContext webContext = new MockWebContext();
+        webContext.setContextPath("/foo");
+        webContext.addSession("website", session);
         MgnlContext.setInstance(webContext);
 
         SystemContext systemContext = mock(SystemContext.class);
@@ -288,6 +303,33 @@ public class AbstractCommandActionTest {
         assertEquals(action2.getParams().get("param2"), params2.get("param2"));
     }
 
+    @Test
+    public void testInvokeAsynchronously() throws RepositoryException, ActionExecutionException {
+        // GIVEN
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.setCommand("asynchronous");
+        QuxCommand quxCommand = new QuxCommand();
+        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "asynchronous")).thenReturn(quxCommand);
+
+        definition.setAsynchronous(true);
+
+        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
+
+        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
+                definition,
+                item,
+                commandsManager,
+                null, null, new HashMap<String, Object>());
+
+        action.setCurrentItem(item);
+
+        // WHEN
+        action.executeOnItem(item);
+
+        // THEN
+        assertFalse("Stop Processing = false as it's invoke asynchronously", (Boolean) MgnlContext.getAttribute(AbstractCommandAction.COMMAND_RESULT, Context.LOCAL_SCOPE));
+    }
+
     private static final class QuxCommand extends MgnlCommand {
 
         @Override
@@ -310,6 +352,13 @@ public class AbstractCommandActionTest {
             Map<String, Object> params = super.buildParams(jcrItem);
             params.putAll(parameter);
             return params;
+        }
+    }
+
+    private class SchedulerModule extends ModuleDefinition {
+
+        public Scheduler getScheduler() {
+            return null;
         }
     }
 

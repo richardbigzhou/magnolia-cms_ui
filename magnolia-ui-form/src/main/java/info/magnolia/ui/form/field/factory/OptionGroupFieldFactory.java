@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.HashSet;
@@ -47,8 +48,10 @@ import com.vaadin.ui.OptionGroup;
 
 /**
  * Creates and initializes a select field based on a field definition.
+ * 
+ * @param <D> type of definition
  */
-public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupFieldDefinition> {
+public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends SelectFieldFactory<OptionGroupFieldDefinition> {
 
     private ComponentProvider componentProvider;
 
@@ -62,8 +65,8 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
     protected AbstractSelect createFieldComponent() {
         super.createFieldComponent();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
+        select.setNullSelectionAllowed(true);
         if (select.isMultiSelect()) {
-            select.setNullSelectionAllowed(true);
             // In case of MultiSelect, type will be set by the getDefaultFieldType().
             // In any case it should be set to a simple type (String, Long...)
             definition.setType(null);
@@ -75,7 +78,6 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
     protected AbstractSelect createSelectionField() {
         return new OptionGroup();
     }
-
 
     /**
      * Override in order to define the field property type.<br>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,21 +50,14 @@ public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Hand
         void onItemDoubleClicked(ItemDoubleClickedEvent event);
     }
 
-    private String workspace;
+    private Object itemId;
 
-    private String path;
-
-    public ItemDoubleClickedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
+    public ItemDoubleClickedEvent(Object itemId) {
+        this.itemId = itemId;
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
+    public Object getItemId() {
+        return itemId;
     }
 
     @Override

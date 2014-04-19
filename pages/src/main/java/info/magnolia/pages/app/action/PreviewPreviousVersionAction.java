@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -70,12 +70,6 @@ public class PreviewPreviousVersionAction extends AbstractAction<PreviewPrevious
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
-                log.warn("PreviewPreviousVersionAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
-                        getPrimaryNodeType().getName());
-                return;
-            }
             final String path = nodeItemToEdit.getJcrItem().getPath();
             final String previousVersion = getPreviousVersion();
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, path, previousVersion);

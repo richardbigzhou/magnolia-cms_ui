@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,13 +34,14 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
@@ -48,6 +49,7 @@ import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.Locale;
 
@@ -79,7 +81,7 @@ public class FormDialogPresenterImplTest {
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class));
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class), mock(AvailabilityChecker.class), mock(ContentConnector.class));
     }
 
     @Test

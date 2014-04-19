@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,9 +44,9 @@ public class WarningIcon extends CompositeIcon {
 
     public WarningIcon(int size) {
         super(
-                new Icon("shape-circle-plus", size, "#000"),
+                new Icon("shape-circle-plus", size, "#666"),
                 new Icon("shape-circle", size, Icon.COLOR_WARNING),
-                new Icon("warning-mark", size, "#000"));
+                new Icon("warning-mark", size, "#666"));
     }
 
 }

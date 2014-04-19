@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -51,7 +51,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,8 +117,10 @@ public class SaveConfigDialogActionTest extends MgnlTestCase {
     public void testExecuteDefaultExecute() throws RepositoryException, ActionExecutionException {
         // GIVEN
         node = session.getRootNode().addNode("underlying");
+        node.setProperty("test", "test");
         node.getSession().save();
-        item = new JcrNodeAdapter(node);
+        item = new JcrPropertyAdapter(node.getProperty("test"));
+        item.getItemProperty("jcrName").setValue("1");
         dialogAction = new SaveConfigDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback(), subAppEventBus);
 
         // WHEN

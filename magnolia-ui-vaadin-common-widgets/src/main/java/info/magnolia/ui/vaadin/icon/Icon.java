@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,7 +48,7 @@ public class Icon extends AbstractComponent {
 
     public transient static final String COLOR_WARNING = "#ffbf28";
 
-    public transient static final String COLOR_INFO = "#999";
+    public transient static final String COLOR_INFO = "#4b8e9e";
 
     public transient static final String COLOR_GREEN_BADGE = "#689600";
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,26 +33,35 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.cms.core.ItemType;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.ConditionalDelegateTask;
+import info.magnolia.module.delta.CreateNodePathTask;
+import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.MoveNodeTask;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeAfterTask;
+import info.magnolia.module.delta.OrderNodeBeforeTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 
@@ -72,6 +81,35 @@ import org.apache.jackrabbit.JcrConstants;
  * VersionHandler for the Admincentral module.
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    /**
+     * Check if the activation module is install and correctly configured.
+     */
+    private class RunConfigureActivationDelegateTask extends ConditionalDelegateTask {
+
+        public RunConfigureActivationDelegateTask(String taskName, String taskDescription, Task ifTrue) {
+            super(taskName, taskDescription, ifTrue);
+        }
+
+        @Override
+        public boolean condition(InstallContext ctx) {
+            try {
+                return ctx.isModuleRegistered("activation") && ctx.getConfigJCRSession().nodeExists("/modules/activation")
+                        && (!ctx.getConfigJCRSession().nodeExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation")
+                        || !ctx.getConfigJCRSession().nodeExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor"));
+            } catch (RepositoryException e) {
+                return false;
+            }
+        }
+    }
+
+    private ArrayDelegateTask createActivationConfig = new ArrayDelegateTask("",
+            new NodeExistsDelegateTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", null,
+                    new CreateNodePathTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", ItemType.CONTENTNODE)),
+            new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation", null,
+                    new CreateNodeTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activation", NodeTypes.ContentNode.NAME)),
+            new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor", null,
+                    new CreateNodeTask("Create node", "Create entry in appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activationMonitor", NodeTypes.ContentNode.NAME)));
 
     public AdmincentralModuleVersionHandler() {
 
@@ -97,7 +135,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 // JCR App should extend Configuration App.
                 .addTask(new NodeExistsDelegateTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps",
                         new RemoveNodeTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps")))
-                .addTask(new PartialBootstrapTask("Add updated websiteJcrBrowser App subApps.", "It now extends Configuration app.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps"))
+                .addTask(new PartialBootstrapTask("Add updated websiteJcrBrowser App subApps.", "It now extends Configuration app.", "/mgnl-bootstrap-prior-5_3/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps"))
 
         );
 
@@ -118,7 +156,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new PartialBootstrapTask("Bootstrap new actionbar section in Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/multiple"))
-                .addTask(new PartialBootstrapTask("JCR browser app node types", "Bootstraps the new node types configuration for the JCR browser app", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps/browser/workbench/nodeTypes"))
+                .addTask(new PartialBootstrapTask("JCR browser app node types", "Bootstraps the new node types configuration for the JCR browser app", "/mgnl-bootstrap-prior-5_3/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps/browser/workbench/nodeTypes"))
                 .addTask(new NewPropertyTask("Set multiple=true in confirmDeletion action's availability.", "Sets multiple=true in confirmDeletion action's availability., i.e. the Delete action now supports multiple items.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", "multiple", true))
                 .addTask(new NewPropertyTask("Set main node type in configuration app as strict", "Sets main node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", "strict", true))
                 .addTask(new NewPropertyTask("Set folder node type in configuration app as strict", "Sets folder node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", "strict", true))
@@ -126,7 +164,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Conditional removal of the node /modules/ui-framework/config", "Removes the node /modules/ui-framework/config if it exists (it should empty)", RepositoryConstants.CONFIG, "/modules/ui-framework/config", new RemoveNodeTask("Removing the empty node /modules/ui-framework/config", "Removes the empty node /modules/ui-framework/config", RepositoryConstants.CONFIG, "/modules/ui-framework/config")))
                 .addTask(new RemoveHardcodedI18nPropertiesFromAdmincentralTask())
 
-                // update vaadin servlet params (we inject a custom UIProvider instead)
+                        // update vaadin servlet params (we inject a custom UIProvider instead)
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
 
@@ -162,12 +200,37 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.1.2", "")
                 .addTask(new PartialBootstrapTask("Configuration app", "Change availability of add folder action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/addFolder/availability/nodeTypes"))
                 .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of Configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "icon"))
-                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of JCR app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "icon"))
-        );
+                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of JCR app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "icon")));
 
         register(DeltaBuilder.update("5.2", "")
-                .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
-                .addTask(new AddActivationToDevAppGroupTask()));
+                .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml")));
+
+        register(DeltaBuilder.update("5.2.1", "")
+                .addTask(new IsModuleInstalledOrRegistered("Create node", "Create entry in tools group of appLauncher for Activation tools.", "activation",
+                        createActivationConfig))
+                .addTask(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
+                        new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation"))));
+
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig))
+                .addTask(new PropertyExistsDelegateTask("Remove obsolete property if exists", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon",
+                        new RemovePropertyTask("Remove obsolete property", "Remove obsolete '/modules/ui-admincentral/apps/stkSiteApp/icon'",
+                                RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon")))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/commands/default/delete/deactivate", "enabled", "true"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/templates/deleted", "i18nBasename", "info.magnolia.module.admininterface.messages"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName()))
+                .addTask(new RemoveNodeTask("Delete ICEPush MIME mapping", "ICEPush is no longer used an thus its MIME-mapping should be removed", RepositoryConstants.CONFIG, "/server/MIMEMapping/icepush"))
+                .addTask(new NodeExistsDelegateTask("Reconfigure activate action of configuration app", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate",
+                        new PartialBootstrapTask("Reconfigure activate action of configuration app", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/activate/params"))));
+
+        register(DeltaBuilder.update("5.2.4", "")
+                .addTask(new ArrayDelegateTask("Update user menu", "This task updates the user menu with icons and a new action to edit user profile.",
+                        new NodeExistsDelegateTask("Logout icon", "This task adds an icon to logout user menu entry.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/userMenu/actions/logout",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/userMenu/actions/logout", "icon", "icon-redo")),
+                        new PartialBootstrapTask("Edit user profile dialog", "This task adds dialog to edit user profile.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/editUserProfile"),
+                        new PartialBootstrapTask("Edit user profile action", "This taks adds the edit user profile action to user menu.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.userMenu.xml", "/userMenu/actions/editUserProfile"),
+                        new OrderNodeToFirstPositionTask("Order edit user profile action to first position in user menu", "modules/ui-admincentral/config/userMenu/actions/editUserProfile")))
+                .addTask(new CheckAndModifyPropertyValueTask("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", "info.magnolia.ui.contentapp.ContentAppDescriptor")));
 
         register(DeltaBuilder.update("5.4", "")
                 // add configuration-with-content-assist app
@@ -183,7 +246,6 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Change display location of configuration-with-content-assist", "Move configuration-with-content-assist app after configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist",
                         new OrderNodeAfterTask("Change display location of configuration-with-content-assist", "Move configuration-with-content-assist app after configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist", "configuration")))
         );
-
     }
 
     @Override
@@ -204,7 +266,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         "/.resources/defaultLoginForm")));
         list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
-        list.add(new AddActivationToDevAppGroupTask());
+        list.add(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
+                new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")));
         return list;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -53,4 +53,5 @@ public interface ListView extends ContentView {
 
     void setColumnFormatter(String propertyId, ColumnFormatter formatter);
 
+    void clearColumns();
 }

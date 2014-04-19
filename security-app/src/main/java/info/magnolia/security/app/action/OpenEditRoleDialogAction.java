@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -78,7 +78,7 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

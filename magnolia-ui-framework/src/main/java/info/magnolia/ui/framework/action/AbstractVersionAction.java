@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,6 +45,7 @@ import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -75,7 +76,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     private final D definition;
     protected final LocationController locationController;
     protected final UiContext uiContext;
-    private final SimpleTranslator i18n;
+    protected final SimpleTranslator i18n;
     protected final FormDialogPresenter formDialogPresenter;
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
@@ -94,12 +95,10 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     public void execute() throws ActionExecutionException {
         try {
             final FormDialogDefinition dialogDefinition = buildNewComponentDialog();
-
             // Using a beanItem instead of an jcrItem
             item = new BeanItem(getBeanItemClass());
-
             // Perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, uiContext, getEditorCallback());
+            formDialogPresenter.start(item, dialogDefinition, uiContext, getEditorCallback(), new DefaultContentConnector());
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not execute action", e);
         }

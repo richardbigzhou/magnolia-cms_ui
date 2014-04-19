@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,12 +40,15 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -65,9 +68,9 @@ import com.vaadin.ui.Table;
 public class StatusColumnFormatterTest extends RepositoryTestCase {
     private Table table;
     private Node node;
-    private String itemId;
+    private JcrItemId itemId;
     private Session session;
-    private StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
+    private final StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
 
     @Override
     @Before
@@ -87,11 +90,9 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         node = session.getRootNode().getNode("parent");
         node.addMixin(NodeTypes.LastModified.NAME);
         node.addMixin(NodeTypes.Activatable.NAME);
-        itemId = node.getIdentifier();
+        itemId = JcrItemUtil.getItemId(node);
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
-        configuredWorkbench.setWorkspace(RepositoryConstants.WEBSITE);
-        configuredWorkbench.setPath("/parent");
 
         // Add view
         ConfiguredContentPresenterDefinition contentView = new TreePresenterDefinition();
@@ -106,15 +107,20 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
 
         NodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
-        configuredWorkbench.addNodeType(nodeTypeDefinition);
+
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.setRootPath("/parent");
+        connectorDefinition.setWorkspace(RepositoryConstants.WEBSITE);
+        connectorDefinition.addNodeType(nodeTypeDefinition);
 
         ConfiguredWorkbenchDefinition workbenchDefinition = configuredWorkbench;
 
-        HierarchicalJcrContainer hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition);
+        HierarchicalJcrContainer hierarchicalJcrContainer = new HierarchicalJcrContainer(connectorDefinition);
 
         table = new Table();
         table.setContainerDataSource(hierarchicalJcrContainer);
 
+        statusColumnDefinition.setPermissions(false);
     }
 
     @Test
@@ -163,4 +169,17 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\"></span>", res.toString());
     }
 
+    @Test
+    public void testReadPermissionsAreNotShown() throws RepositoryException {
+        // GIVEN
+        statusColumnDefinition.setActivation(false);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+
+        // WHEN
+        Object res = statusColumnFormatter.generateCell(table, itemId, null);
+
+        // THEN
+        assertNotNull(res);
+        assertEquals("", res.toString());
+    }
 }

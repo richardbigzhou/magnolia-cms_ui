@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -62,7 +62,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     private Element root;
 
-    private Button helpButton = new Button();
+    private final HelpIconWidget helpButton = new HelpIconWidget();
 
     private Button errorAction = new Button();
 
@@ -81,7 +81,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         construct();
         setHelpEnabled(false);
 
-        helpButton.addClickHandler(new ClickHandler() {
+        helpButton.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (helpSection == null) {
@@ -90,24 +90,31 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
                     hideHelp();
                 }
             }
-        });
+        }, ClickEvent.getType());
+
     }
 
-    protected void hideHelp() {
-        remove(helpSection);
+    public void hideHelp() {
+        if (helpSection != null) {
+            remove(helpSection);
+        }
         helpSection = null;
+        helpButton.setHighlighted(false);
     }
 
-    protected void showHelp() {
+    public void showHelp() {
+        if (helpDescription == null || "".equals(helpDescription)) {
+            return;
+        }
         helpSection = InlineMessageWidget.createHelpMessage();
         helpSection.setMessage(helpDescription);
         add(helpSection, root);
+        helpButton.setHighlighted(true);
     }
 
     private void construct() {
         label.addClassName("v-form-field-label");
         fieldWrapper.addClassName("v-form-field-container");
-        helpButton.addStyleName("action-form-help");
         errorAction.addStyleName("action-validation");
 
         root.appendChild(label);
@@ -117,6 +124,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void showError(final String errorDescription) {
+        helpButton.setVisible(false);
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-highlight");
         if (errorSection == null) {
@@ -128,6 +136,11 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     public void setCaption(String caption) {
         label.setInnerHTML(caption);
+        if (caption != null) {
+            // let's show the caption as tooltip, too. This helps if the label is too long. it may contain <span class="requiredfield">*</span>
+            String toolTip = caption.replaceAll("\\<.*?\\>", "");
+            label.setTitle(toolTip);
+        }
     }
 
     @Override
@@ -155,23 +168,32 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
         fieldWrapper.removeClassName("validation-hilight");
         errorAction.setVisible(false);
+        if (helpDescription != null && !"".equals(helpDescription)) {
+            helpButton.setVisible(true);
+        }
     }
 
     public void setHelpEnabled(boolean isHelpEnabled) {
-        helpButton.setVisible(
-                isHelpEnabled &&
-                helpDescription != null &&
-                !"".equals(helpDescription) &&
-                !errorAction.isVisible());
-        if (!isHelpEnabled && helpSection != null ) {
+        helpButton.setVisible(helpDescription != null && !"".equals(helpDescription) && !errorAction.isVisible());
+        if (!isHelpEnabled && helpSection != null) {
             hideHelp();
+            return;
+        }
+        if (helpButton.isVisible() && helpSection == null) {
+            showHelp();
         }
     }
+
 
     public void setHelpDescription(String description) {
         this.helpDescription = description;
         if (helpSection != null && getWidgetIndex(helpSection) >= 0) {
             helpSection.setMessage(helpDescription);
+        }
+        if (description != null && !"".equals(description)) {
+            helpButton.setVisible(true);
+        } else {
+            helpButton.setVisible(false);
         }
     }
 

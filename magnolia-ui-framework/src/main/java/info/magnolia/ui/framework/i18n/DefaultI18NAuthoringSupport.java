@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,24 +33,23 @@
  */
 package info.magnolia.ui.framework.i18n;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 
-import javax.jcr.Node;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+
+import javax.jcr.Node;
+
+import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.HasComponents;
 
 /**
  * Default implementation of {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}.
@@ -61,30 +60,25 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     private boolean enabled = true;
 
+    private Locale authorLocale;
+
     public DefaultI18NAuthoringSupport() {
         this.i18nContentSupport = Components.getComponent(I18nContentSupport.class);
     }
 
+    /**
+     * Returns the available locales for the given page, area or component node.<br>
+     * Please note though that this default implementation exclusively resolves locales through {@link i18nContentSupport},
+     * i.e. as configured in /server/i18n/content/locales, regardless of the passed node.
+     *
+     * @return the list of locales if both i18nAuthoringSupport and i18nContentSupport are enabled, <code>null</code> otherwise.
+     */
     @Override
-    public AbstractSelect getLanguageChooser() {
+    public List<Locale> getAvailableLocales(Node node) {
         if (enabled && i18nContentSupport.isEnabled()) {
-            Collection<Locale> locales = i18nContentSupport.getLocales();
-            IndexedContainer c = new IndexedContainer();
-            c.addContainerProperty("displayLanguage", String.class, "");
-            for (Locale locale : locales) {
-                Item it = c.addItem(locale);
-                it.getItemProperty("displayLanguage").setValue(locale.getDisplayName());
-            }
-            ComboBox languageSelector = new ComboBox();
-            languageSelector.setImmediate(true);
-            languageSelector.setItemCaptionPropertyId("displayLanguage");
-            languageSelector.setContainerDataSource(c);
-            languageSelector.setNullSelectionAllowed(false);
-            languageSelector.setTextInputAllowed(false);
-            return languageSelector;
-        } else {
-            return null;
+            return new ArrayList<Locale>(i18nContentSupport.getLocales());
         }
+        return null;
     }
 
     @Override
@@ -150,4 +144,14 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public Locale getAuthorLocale() {
+        return authorLocale;
+    }
+
+    public void setAuthorLocale(Locale locale) {
+        this.authorLocale = locale;
+    }
+
 }

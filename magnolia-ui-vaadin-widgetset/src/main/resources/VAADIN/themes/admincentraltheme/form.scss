@@ -11,13 +11,13 @@
 
 .form-content {
   overflow:hidden;
-	transition-property:height;
-	transition-duration:1s;
+  transition-property:height;
+  transition-duration:1s;
 }
 
 .form-content .v-shell-tabsheet-scroller {
-	position:static !important;
-	max-height:450px;
+  position:static !important;
+  max-height:450px;
 }
 .tablet .form-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
@@ -54,7 +54,7 @@
     vertical-align: middle;
 }
 .v-form-layout .v-form-field.textcodefield {
-	height : 200px;
+  height : 200px;
 }
 
 .form-error {
@@ -83,6 +83,29 @@ button.btn-form-help {
     top: -1px;
 }
 
+  .help-icon {
+    position: absolute;
+    line-height: 1;
+    margin-top: -1px;
+  }
+
+  .help-icon .icon-help-l {
+    color: $c12;
+    font-size: 28px;
+  }
+
+
+  .help-icon.highlighted .icon-shape-circle-plus, .help-icon.highlighted .icon-help-mark {
+    color: $c80;
+    font-size: 28px;
+  }
+
+  .icon.help-icon.highlighted .icon-shape-circle {
+    color: $c20;
+    font-size: 28px;
+  }
+
+
 .form-panel .field-container {
     color: $c12;
 }
@@ -102,6 +125,7 @@ button.btn-form-help {
     color: $c10;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
     vertical-align: top; /*needed by FF*/
     line-height:25px;
     position: absolute;
@@ -133,7 +157,7 @@ button.btn-form-help {
 
 /*vaadin delivers error message in html form - here we make sure it is at least inlined*/
 .validation-message-inline span > div {
-	display: inline-block;
+  display: inline-block;
 }
 
 .validation-message,.help-message {
@@ -222,25 +246,38 @@ fieldset {
     padding: 0;
 }
 
-.form-content.show-all fieldset legend {
+.form-content .v-form-layout > fieldset {
+	& > legend {
     font-family: Verdana, Arial, sans-serif;
     font-size: 12px;
     font-weight: bold;
     color: black;
-    display: block !important;
     padding-left: 27px;
     padding-bottom: 18px;
-}
+    display: none;
+  }
 
-.form-content.show-all fieldset hr {
+  & > hr {
     margin: 22px 24px 0px;
     border-top: 1px solid black;
     border-bottom: 0px;
     border-right: 0px;
     border-left: 0px;
-    display:block !important;
     height: 0; /*needed by FF*/
+    display: none;
+  }
 }
+
+.form-content .show-all .v-form-layout > fieldset {
+	& > legend, & > hr {
+    display: block;
+  }
+}
+
+.form-content .v-shell-tab:last-child .v-form-layout > fieldset > hr {
+  display: none;
+}
+
 
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {
@@ -251,12 +288,12 @@ fieldset {
     margin: 2px 0 0 3px;
 }
 
-.v-form-field-label  span.requiredfield {
-    color: black;
-    font-family: inherit;
-    font-size: 18px;
-    vertical-align: -20%;
-    margin-left: 3px;
+.v-form-field-label span.requiredfield,
+.v-required-field-indicator {
+  color: $c90;
+  font-size: 18px;
+  vertical-align: -20%;
+  margin-left: 3px;
 }
 
 /*
@@ -335,6 +372,13 @@ fieldset {
 
 .v-magnolia-form.textarea-stretched .v-form-field-label {
   display: none;
+}
+
+.switchablefield {
+  & > .v-verticallayout > .v-spacing {
+    height: 2px;
+  }
+  padding-bottom: 4px;
 }
 
 }

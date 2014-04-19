@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,6 +43,7 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.NativeButton;
 
 /**
  * Component for showing notification messages.
@@ -51,7 +52,7 @@ public class Notification implements View {
 
     private CssLayout layout;
 
-    private Button closeButton = new Button();
+    private Button closeButton = new NativeButton();
 
     public Notification(final MessageStyleType type) {
         layout = new CssLayout();
@@ -70,9 +71,10 @@ public class Notification implements View {
             }
         });
 
-        closeButton.addStyleName("icon-close");
-        closeButton.addStyleName("m-closebutton");
-
+        closeButton.addStyleName("close");
+        closeButton.setHtmlContentAllowed(true);
+        closeButton.setCaption("<span class=\"m-closebutton icon-close m-closebutton-dialog\"></span>");
+        closeButton.focus();
         layout.addComponent(closeButton);
     }
 

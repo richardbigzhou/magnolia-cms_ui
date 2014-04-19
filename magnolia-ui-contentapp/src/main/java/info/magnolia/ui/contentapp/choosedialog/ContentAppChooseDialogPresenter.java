@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,6 +50,7 @@ import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.inject.Inject;
@@ -72,8 +73,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private Cloner cloner;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer, simpleTranslator);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer, simpleTranslator, contentConnector);
         this.appContext = appContext;
         this.cloner = new Cloner();
     }
@@ -104,7 +105,6 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
         workbench.setDialogWorkbench(true);
-        workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
 
         ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());

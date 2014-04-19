@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,13 +34,17 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -52,12 +56,22 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
 
     private LinkFieldFactory linkFieldFactory;
 
+    private MockComponentProvider componentProvider;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        componentProvider = new MockComponentProvider();
+        componentProvider.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
+        super.setUp();
+    }
+
     @Test
     public void simpleLinkFieldTest() throws Exception {
         // GIVEN
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(new MockComponentProvider());
+        linkFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         Field field = linkFieldFactory.createField();
 
@@ -75,7 +89,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(new MockComponentProvider());
+        linkFieldFactory.setComponentProvider(componentProvider);
 
         // WHEN
         Field field = linkFieldFactory.createField();
@@ -95,7 +109,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(new MockComponentProvider());
+        linkFieldFactory.setComponentProvider(componentProvider);
         Field field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN

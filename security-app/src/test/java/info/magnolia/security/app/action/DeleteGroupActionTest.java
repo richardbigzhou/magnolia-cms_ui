@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,10 +44,14 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.cms.util.ContentUtil;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.impl.DeleteCommand;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
@@ -58,6 +62,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -89,7 +94,18 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 
-        action = new DeleteGroupAction(definition, item, eventBus, uiContext, mock(SimpleTranslator.class));
+        ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
+        ComponentsTestUtil.setInstance(Map.class, new HashMap<String, Object>());
+
+        CommandsManager commandsManager = Components.getComponent(CommandsManager.class);
+        Session configSession = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node exportModuleDef = configSession.getRootNode().addNode("modules", NodeTypes.ContentNode.NAME).addNode("commands", NodeTypes.ContentNode.NAME)
+                .addNode("default", NodeTypes.ContentNode.NAME).addNode("delete", NodeTypes.ContentNode.NAME);
+        exportModuleDef.setProperty("class", DeleteCommand.class.getName());
+        exportModuleDef.getSession().save();
+        commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
+
+        action = new DeleteGroupAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class));
     }
 
     @Test
@@ -101,7 +117,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
 
         // WHEN
-        action.executeAfterConfirmation();
+        action.execute();
 
         // THEN
         assertFalse(session.getRootNode().hasNode(GROUPNAME));
@@ -122,7 +138,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(Collections.singletonMap("test", um));
 
         // WHEN
-        action.executeAfterConfirmation();
+        action.execute();
 
         // THEN
         assertTrue(session.getRootNode().hasNode(GROUPNAME));
@@ -141,7 +157,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
 
         // WHEN
-        action.executeAfterConfirmation();
+        action.execute();
 
         // THEN
         assertTrue(session.getRootNode().hasNode(GROUPNAME));

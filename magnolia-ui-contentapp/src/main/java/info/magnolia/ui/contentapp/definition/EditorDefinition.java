@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,7 @@ import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 
 import java.util.List;
 
@@ -54,8 +54,6 @@ public interface EditorDefinition {
 
     @I18nText
     String getDescription();
-
-    String getWorkspace();
 
     NodeTypeDefinition getNodeType();
 

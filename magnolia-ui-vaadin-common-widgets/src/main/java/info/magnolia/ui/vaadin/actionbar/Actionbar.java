@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.rpc.ActionbarServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,29 +46,30 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.ConnectorEventListener;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
+import com.vaadin.util.ReflectTools;
 
 /**
  * The Actionbar widget, consisting of sections and groups of actions.
  */
-public class Actionbar extends AbstractComponent implements ActionbarView {
+public class Actionbar extends AbstractComponent {
 
     private static final Logger log = LoggerFactory.getLogger(Actionbar.class);
-
-    private ActionbarView.Listener listener;
 
     public Actionbar() {
         setSizeFull();
         setWidth(null);
         setImmediate(true);
-        setOpened(true);
+        setOpen(true);
         registerRpc(new ActionbarServerRpc() {
 
             @Override
             public void onActionTriggered(String actionToken) {
-                listener.onActionbarItemClicked(actionToken);
+                fireEvent(new ActionTriggerEvent(Actionbar.this, actionToken));
             }
 
             @Override
@@ -77,7 +79,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         });
     }
 
-    @Override
     public void setOpen(boolean isOpen) {
         getState().isOpen = isOpen;
         if (isOpen && !getStyleName().contains("open")) {
@@ -86,25 +87,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
             removeStyleName("open");
         }
 
-    }
-
-    @Override
-    public Actionbar asVaadinComponent() {
-        return this;
-    }
-
-    @Override
-    public void setListener(ActionbarView.Listener listener) {
-        this.listener = listener;
-    }
-
-    public void setOpened(boolean isOpen) {
-        getState().isOpen = isOpen;
-        if (isOpen) {
-            addStyleName("open");
-        } else {
-            removeStyleName("open");
-        }
     }
 
     @Override
@@ -119,7 +101,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
 
     // ACTION BAR API ///////////////////////////
 
-    @Override
     public void addAction(ActionbarItem action, String sectionName) {
         ActionbarSection section = getState().sections.get(sectionName);
         if (section != null) {
@@ -129,27 +110,23 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
     }
 
-    @Override
     public void removeAction(String actionName) {
         for (ActionbarSection section : getState().sections.values()) {
             section.removeAction(actionName);
         }
     }
 
-    @Override
     public void addSection(String sectionName, String caption) {
         getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
         getState().sectionOrder.add(sectionName);
         setSectionVisible(sectionName, true);
     }
 
-    @Override
     public void removeSection(String sectionName) {
         getState().sectionOrder.remove(sectionName);
         getState().sections.remove(sectionName);
     }
 
-    @Override
     public void setSectionPreview(Resource previewResource, String sectionName) {
         setResource(sectionName, previewResource);
         setSectionVisible(sectionName, true);
@@ -159,7 +136,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         return getState(false).sections;
     }
 
-    @Override
     public void setSectionVisible(String sectionName, boolean isVisible) {
         ActionbarSection section = getState().sections.get(sectionName);
         if (isVisible && section != null) {
@@ -171,7 +147,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
     }
 
-    @Override
     public boolean isSectionVisible(String sectionName) {
         final Iterator<ActionbarSection> it = getState(false).visibleSections.iterator();
         boolean result = false;
@@ -181,14 +156,12 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         return result;
     }
 
-    @Override
     public void setGroupEnabled(String groupName, boolean isEnabled) {
         for (ActionbarSection section : getState().sections.values()) {
             doSetGroupEnabled(section, groupName, isEnabled);
         }
     }
 
-    @Override
     public void setGroupEnabled(String groupName, String sectionName, boolean isEnabled) {
         doSetGroupEnabled(getState().sections.get(sectionName), groupName, isEnabled);
     }
@@ -201,7 +174,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
     }
 
-    @Override
     public void setActionEnabled(String actionName, boolean isEnabled) {
         final Collection<ActionbarSection> sections = getState().sections.values();
         for (ActionbarSection section : sections) {
@@ -209,7 +181,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
     }
 
-    @Override
     public void setActionEnabled(String sectionName, String actionName, boolean isEnabled) {
         ActionbarItem action = getState().sections.get(sectionName).getActions().get(actionName);
         if (action != null) {
@@ -226,5 +197,43 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
 
     public void registerActionIconResource(String actionName, ThemeResource iconResource) {
         setResource(actionName, iconResource);
+    }
+
+    // EVENTS AND LISTENERS
+
+    public void addActionTriggerListener(ActionTriggerListener listener) {
+        addListener(ActionTriggerListener.EVENT_ID, ActionTriggerEvent.class, listener, ActionTriggerListener.EVENT_METHOD);
+    }
+
+    public void removeActionTriggerListener(ActionTriggerListener listener) {
+        removeListener(ActionTriggerListener.EVENT_ID, ActionTriggerEvent.class, listener);
+    }
+
+    /**
+     * The listener interface for triggering actions from the action bar.
+     */
+    public interface ActionTriggerListener extends ConnectorEventListener {
+
+        public static final String EVENT_ID = "at";
+        public static final Method EVENT_METHOD = ReflectTools.findMethod(ActionTriggerListener.class, "actionTrigger", ActionTriggerEvent.class);
+
+        public void actionTrigger(ActionTriggerEvent event);
+    }
+
+    /**
+     * The event fired when triggering actions from the action bar.
+     */
+    public static class ActionTriggerEvent extends Component.Event {
+
+        private final String actionName;
+
+        public ActionTriggerEvent(Component source, String actionName) {
+            super(source);
+            this.actionName = actionName;
+        }
+
+        public String getActionName() {
+            return actionName;
+        }
     }
 }

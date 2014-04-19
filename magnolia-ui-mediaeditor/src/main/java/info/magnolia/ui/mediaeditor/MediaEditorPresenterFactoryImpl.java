@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -112,7 +112,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         }
 
         if (mediaEditorDefinition == null) {
-            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");  //TODO-TRANSLATE-EXCEPTION
+            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]"); // TODO-TRANSLATE-EXCEPTION
         }
         return i18nizer.decorate(mediaEditorDefinition);
     }
@@ -139,22 +139,16 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     @Override
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
-        MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
-        ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
-        ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
-        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
-        AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
-        MediaEditorPresenter mediaEditorPresenter =
-                new MediaEditorPresenterImpl(
-                        definition,
-                        eventBus,
-                        view,
-                        actionbarPresenter,
-                        dialogPresenter,
-                        appContext,
-                        i18n);
 
-        ((MediaEditorActionExecutor)mediaActionExecutor).setDef(definition);
+        AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
+        MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
+        ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
+        ((MediaEditorActionExecutor) mediaActionExecutor).setDef(definition);
+
+        ActionbarPresenter actionBarPresenter = mediaEditorComponentProvider.getComponent(ActionbarPresenter.class);
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
+        MediaEditorPresenter mediaEditorPresenter = new MediaEditorPresenterImpl(definition, eventBus, view, actionBarPresenter, dialogPresenter, appContext, i18n);
+
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);
         return mediaEditorPresenter;
     }

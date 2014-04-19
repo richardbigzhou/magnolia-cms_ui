@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,6 +49,9 @@ import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -67,8 +70,6 @@ public abstract class OverlayPresenter implements OverlayLayer {
 
     public static final int TIMEOUT_SECONDS_DEFAULT = 3;
 
-    private static final String ACTION_CONFIRM = "confirm";
-
     /**
      * Convenience method to open an overlay with the default strong modality level.
      */
@@ -82,10 +83,25 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass(), cb);
+        final BaseDialog dialog = createAlertDialog(viewToShow, type.getCssClass());
         dialog.showCloseButton();
 
-        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(dialog), ModalityLevel.LIGHT);
+        Panel shortcutPanel = new Panel();
+        shortcutPanel.setStyleName("shortcut-panel");
+        shortcutPanel.setHeight("100%");
+        shortcutPanel.setWidth(null);
+        shortcutPanel.setContent(dialog);
+
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.LIGHT);
+        final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                cb.onOk();
+                overlayCloser.close();
+            }
+        };
+        shortcutPanel.addShortcutListener(escapeShortcut);
+        addOkHandler(dialog, confirmButtonText, overlayCloser, cb);
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
     }
 
@@ -118,21 +134,28 @@ public abstract class OverlayPresenter implements OverlayLayer {
         return dialog;
     }
 
-    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String styleName, final AlertCallback cb) {
+    private BaseDialog createAlertDialog(View contentView, String styleName) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(styleName);
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
-        HorizontalLayout footer = new HorizontalLayout();
+        return dialog;
+    }
+
+    private void addOkHandler(BaseDialog dialog, String confirmButtonText, final OverlayCloser overlayCloser, final AlertCallback cb) {
+        CssLayout footer = new CssLayout();
+        footer.setWidth(100, Unit.PERCENTAGE);
+        footer.addStyleName("v-align-right");
         Button confirmButton = new Button(confirmButtonText, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 cb.onOk();
+                overlayCloser.close();
             }
         });
-        confirmButton.addStyleName("default");
+        confirmButton.focus();
         footer.addComponent(confirmButton);
-        return dialog;
+        dialog.setFooterToolbar(footer);
     }
 
     private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
@@ -167,18 +190,30 @@ public abstract class OverlayPresenter implements OverlayLayer {
     @Override
     public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
                                  boolean cancelIsDefault, ConfirmationCallback callback) {
-        ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
+        final ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
         dialog.showCloseButton();
 
-        Panel panel = new Panel();
-        panel.setHeight("100%");
-        panel.setWidth(null);
-        panel.setContent(dialog);
-        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(panel), ModalityLevel.LIGHT);
+        Panel shortcutPanel = new Panel();
+        shortcutPanel.setStyleName("shortcut-panel");
+        shortcutPanel.setHeight("100%");
+        shortcutPanel.setWidth(null);
+        shortcutPanel.setContent(dialog);
+
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.LIGHT);
+
+        final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+
+                dialog.closeSelf();
+            }
+        };
+        shortcutPanel.addShortcutListener(escapeShortcut);
+
         dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
-
     }
+
 
     /**
      * Present modal confirmation dialog with light modality level. Allow only string content.
@@ -194,8 +229,22 @@ public abstract class OverlayPresenter implements OverlayLayer {
     @Override
     public void openNotification(final MessageStyleType type, final boolean doesTimeout, final View viewToShow) {
         final Notification notification = new Notification(type);
-        final OverlayCloser closer = openOverlay(notification, ModalityLevel.NON_MODAL);
         notification.setContent(viewToShow.asVaadinComponent());
+
+        Panel shortcutPanel = new Panel();
+        shortcutPanel.setStyleName("shortcut-panel");
+        shortcutPanel.setWidth(null);
+        shortcutPanel.setContent(notification.asVaadinComponent());
+        final OverlayCloser closer = openOverlay(new ViewAdapter(shortcutPanel), ModalityLevel.NON_MODAL);
+
+        final ShortcutListener escapeShortcut = new ShortcutListener("Escape shortcut", ShortcutAction.KeyCode.ESCAPE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                closer.close();
+            }
+        };
+        shortcutPanel.addShortcutListener(escapeShortcut);
+
         notification.addCloseButtonListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent clickEvent) {
@@ -213,6 +262,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
         if (doesTimeout) {
             closer.setCloseTimeout(TIMEOUT_SECONDS_DEFAULT);
         }
+
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
+import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -57,31 +55,27 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     private Label pageNameLabel = new Label();
 
-    private AbstractSelect languageSelector;
-
+    private ComboBox languageSelector = new ComboBox();
     private ComboBox platformSelector = new ComboBox();
 
     private PageBarView.Listener listener;
 
-    private I18NAuthoringSupport i18NAuthoringSupport;
-
-    @Inject
-    public PageBarViewImpl(I18NAuthoringSupport i18NAuthoringSupport) {
+    public PageBarViewImpl() {
         super();
-        this.i18NAuthoringSupport = i18NAuthoringSupport;
         setCompositionRoot(root);
         construct();
     }
 
     private void construct() {
         root.addStyleName("pagebar");
+
         for (PlatformType type : PlatformType.values()) {
             platformSelector.addItem(type);
         }
+        platformSelector.setSizeUndefined();
+        platformSelector.setImmediate(true);
         platformSelector.setNullSelectionAllowed(false);
         platformSelector.setTextInputAllowed(false);
-        platformSelector.setImmediate(true);
-        platformSelector.setSizeUndefined();
         platformSelector.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
@@ -91,28 +85,25 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
             }
         });
 
-
-        this.languageSelector = i18NAuthoringSupport.getLanguageChooser();
-        if (languageSelector != null) {
-            languageSelector.setSizeUndefined();
-            languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
-                @Override
-                public void valueChange(Property.ValueChangeEvent event) {
-                    if (listener != null) {
-                        listener.languageSelected((Locale) event.getProperty().getValue());
-                    }
+        languageSelector.setSizeUndefined();
+        languageSelector.setImmediate(true);
+        languageSelector.setNullSelectionAllowed(false);
+        languageSelector.setTextInputAllowed(false);
+        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (listener != null) {
+                    listener.languageSelected((Locale) event.getProperty().getValue());
                 }
-            });
-        }
+            }
+        });
 
         this.platformSelector.setValue(PlatformType.DESKTOP);
         this.pageNameLabel.setSizeUndefined();
         this.pageNameLabel.addStyleName("title");
 
         root.addComponent(pageNameLabel);
-        if (languageSelector != null) {
-            root.addComponent(languageSelector);
-        }
+        root.addComponent(languageSelector);
         root.addComponent(platformSelector);
     }
 
@@ -131,6 +122,20 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     public void setCurrentLanguage(Locale locale) {
         if (languageSelector != null) {
             languageSelector.setValue(locale);
+        }
+    }
+
+    @Override
+    public void setAvailableLanguages(List<Locale> locales) {
+        if (locales != null && !locales.isEmpty()) {
+            languageSelector.removeAllItems();
+            for (Locale locale : locales) {
+                languageSelector.addItem(locale);
+                languageSelector.setItemCaption(locale, locale.getDisplayLanguage(MgnlContext.getLocale()));
+            }
+            languageSelector.setVisible(true);
+        } else {
+            languageSelector.setVisible(false);
         }
     }
 

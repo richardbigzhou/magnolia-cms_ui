@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,9 +38,9 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import javax.inject.Inject;
@@ -84,7 +84,7 @@ public class UserMenuPresenter implements UserMenuView.Listener {
         view.setCaption(caption);
 
         for (ActionDefinition action : actionExecutor.getActions()) {
-             view.addAction(action.getName(), action.getLabel());
+            view.addAction(action.getName(), action.getLabel(), action.getIcon());
         }
         return view;
     }

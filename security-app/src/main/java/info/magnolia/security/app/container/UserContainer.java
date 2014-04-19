@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,7 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import javax.jcr.Item;
@@ -52,8 +52,8 @@ public class UserContainer extends HierarchicalJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(UserContainer.class);
 
-    public UserContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public UserContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class UserContainer extends HierarchicalJcrContainer {
     public boolean moveItemBefore(Item source, Item target) {
         try {
             String pathBefore = source.getPath();
-            if (super.moveItem(source, target)) {
+            if (super.moveItemBefore(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
                     source.getSession().save();
@@ -94,7 +94,7 @@ public class UserContainer extends HierarchicalJcrContainer {
     public boolean moveItemAfter(Item source, Item target) {
         try {
             String pathBefore = source.getPath();
-            if (super.moveItem(source, target)) {
+            if (super.moveItemAfter(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
                     source.getSession().save();

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2003-2013 Magnolia International
+ * This file Copyright (c) 2003-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -119,7 +120,7 @@ public class ThumbnailField extends CustomField<String> {
                 // Set Text info
                 label.setValue(createFieldDetail(parentNode));
                 // Set Thumbnail
-                String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
+                String path = imageThumbnailProvider.getPortraitPath(new JcrNodeAdapter(parentNode));
                 if (layout.getComponentIndex(embedded) != -1) {
                     layout.removeComponent(embedded);
                 }

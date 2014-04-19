@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import com.vaadin.ui.Component;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
@@ -42,7 +41,6 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventHandler;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
@@ -62,13 +60,16 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.ui.Component;
 
 /**
  * Admin shell.
@@ -203,9 +204,6 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     @Override
     public void setFragment(String fragment) {
         Fragment f = Fragment.fromString(fragment);
-        f.setAppName(DefaultLocation.extractAppName(fragment));
-        f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
-        f.setParameter(DefaultLocation.extractParameter(fragment));
         getMagnoliaShell().setUriFragment(f);
     }
 
@@ -217,7 +215,6 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     private void removeMessage(String messageId) {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
-
 
     @Override
     public OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel) {

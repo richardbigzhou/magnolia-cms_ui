@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Panel;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -44,6 +42,10 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Panel;
 
 /**
  * Base implementation of {@link DialogView}.
@@ -58,6 +60,8 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private EditorActionAreaView actionAreaView;
 
+    private ModalityLevel modalityLevel = ModalityLevel.STRONG;
+
     public BaseDialogViewImpl() {
         this(new BaseDialog());
     }
@@ -70,7 +74,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
         // Without it, if you have more than one dialog open,
         // i.e. in different apps running at the same time, then all open
         // dialogs would react to the keyboard event sent on the dialog currently having the focus.
-        //setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        // setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
         setWidth("720px");
         setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
         this.dialog.addDialogCloseHandler(new Handler() {
@@ -171,5 +175,23 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     protected BaseDialog getDialog() {
         return this.dialog;
+    }
+
+    /**
+     * @return the current modality or {@link ModalityLevel#STRONG} if not set.
+     */
+    @Override
+    public ModalityLevel getModalityLevel() {
+        return this.modalityLevel;
+    }
+
+    @Override
+    public void setModalityLevel(ModalityLevel modalityLevel) {
+        this.modalityLevel = modalityLevel;
+        if (modalityLevel == ModalityLevel.LIGHT) {
+            dialog.removeStyleName("dialog-panel");
+            dialog.addStyleName("light");
+            setWidth("620px");
+        }
     }
 }

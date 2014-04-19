@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -86,25 +86,28 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
         try {
 
             final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
-            Node roleNode = roleItem.getJcrItem();
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
             final Label emptyLabel = new Label(i18n.translate("security.web.field.noAccess"));
 
-            if (roleNode.hasNode(ACL_NODE_NAME)) {
+            // Since JcrNewNodeAdapter.getJcrItem() returns the parent node we need to skip this step because we don't want to inspect the parent node
+            if (!(roleItem instanceof JcrNewNodeAdapter)) {
+                Node roleNode = roleItem.getJcrItem();
+                if (roleNode.hasNode(ACL_NODE_NAME)) {
 
-                final Node aclNode = roleNode.getNode(ACL_NODE_NAME);
-                AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                roleItem.addChild(aclItem);
+                    final Node aclNode = roleNode.getNode(ACL_NODE_NAME);
+                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
+                    roleItem.addChild(aclItem);
 
-                for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+                    for (Node entryNode : NodeUtil.getNodes(aclNode)) {
 
-                    AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
-                    aclItem.addChild(entryItem);
+                        AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
+                        aclItem.addChild(entryItem);
 
-                    Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                    aclLayout.addComponent(ruleRow);
+                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
+                        aclLayout.addComponent(ruleRow);
+                    }
                 }
             }
 

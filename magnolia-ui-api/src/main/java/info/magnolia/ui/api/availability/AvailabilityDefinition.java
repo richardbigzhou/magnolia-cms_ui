@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -73,7 +73,12 @@ public interface AvailabilityDefinition {
     AccessDefinition getAccess();
 
     /**
-     * Returns the AvailabilityRule object for this subject.
+     * If true the subject is <i>only</i> available if write permission is granted for the item on which availability is evaluated.
      */
-    Class<? extends AvailabilityRule> getRuleClass();
+    boolean isWritePermissionRequired();
+
+    /**
+     * Returns the collection of availability rule definitions for this subject.
+     */
+    Collection<? extends AvailabilityRuleDefinition> getRules();
 }

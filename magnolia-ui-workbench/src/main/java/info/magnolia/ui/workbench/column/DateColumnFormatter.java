@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench.column;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
 
 import java.util.Date;
 import java.util.Locale;
@@ -50,13 +50,13 @@ import com.vaadin.ui.Table;
 /**
  * Formats a column's value as a date in a compact form.
  */
-public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
+public class DateColumnFormatter extends AbstractColumnFormatter<AbstractColumnDefinition> {
 
     private final FastDateFormat dateFormatter;
     private final FastDateFormat timeFormatter;
 
     @Inject
-    public DateColumnFormatter(MetaDataColumnDefinition definition) {
+    public DateColumnFormatter(AbstractColumnDefinition definition) {
         super(definition);
 
         final Locale locale = MgnlContext.getLocale();

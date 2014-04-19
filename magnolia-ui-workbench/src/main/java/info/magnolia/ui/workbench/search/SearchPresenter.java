@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,8 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.list.ListPresenter;
 
 import javax.inject.Inject;
@@ -49,24 +50,18 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
         super(view, componentProvider);
     }
 
-    @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
-    }
-
-    @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
-
     public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
+        ((SearchJcrContainer)container).setFullTextExpression(fulltextExpr);
         refresh();
     }
 
     public void clear() {
-        getContainer().setFullTextExpression(null);
+        ((SearchJcrContainer)container).setFullTextExpression(null);
         refresh();
     }
 
+    @Override
+    protected AbstractJcrContainer createContainer() {
+        return new SearchJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
+    }
 }

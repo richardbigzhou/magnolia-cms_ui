@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
 public class UsersWorkspaceUtil {
 
     /**
-     * Update ACLs on a user node or recursively for all contained users when given a folder.
+     * Update ACLs on a user or role node or recursively for all contained users or roles when given a folder.
      */
     public static void updateAcls(Node node, String previousPath) throws RepositoryException {
         if (NodeUtil.isNodeType(node, NodeTypes.Folder.NAME)) {
@@ -57,17 +57,24 @@ public class UsersWorkspaceUtil {
                 updateAcls(child, previousPath + "/" + child.getName());
             }
         }
-        if (NodeUtil.isNodeType(node, NodeTypes.User.NAME)) {
-            final Node acls = node.getNode("acl_users");
-            for (Node acl : NodeUtil.getNodes(acls)) {
-                Property path = acl.getProperty("path");
-                String aclPath = path.getString();
-                if (aclPath.startsWith(previousPath + "/")) {
-                    path.setValue(node.getPath() + "/" + StringUtils.substringAfter(aclPath, previousPath + "/"));
-                }
-                if (aclPath.equals(previousPath)) {
-                    path.setValue(node.getPath());
-                }
+
+        if (NodeUtil.isNodeType(node, NodeTypes.User.NAME) && node.hasNode("acl_users")) {
+            updateAclEntries(node, previousPath, node.getNode("acl_users"));
+        }
+        if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME) && node.hasNode("acl_userroles")) {
+            updateAclEntries(node, previousPath, node.getNode("acl_userroles"));
+        }
+    }
+
+    private static void updateAclEntries(Node parentNode, String previousPath, Node aclNode) throws RepositoryException {
+        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+            Property path = entryNode.getProperty("path");
+            String aclPath = path.getString();
+            if (aclPath.startsWith(previousPath + "/")) {
+                path.setValue(parentNode.getPath() + "/" + StringUtils.substringAfter(aclPath, previousPath + "/"));
+            }
+            if (aclPath.equals(previousPath)) {
+                path.setValue(parentNode.getPath());
             }
         }
     }

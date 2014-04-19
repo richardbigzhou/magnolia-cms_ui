@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -152,9 +152,7 @@ public class DefaultPropertyUtil {
             } else if (type.isAssignableFrom(List.class)) {
                 return Arrays.asList(defaultValue.split(","));
             } else {
-                String msg = "Unsupported property type " + type.getName();
-                log.error(msg);
-                throw new IllegalArgumentException(msg);
+                throw new IllegalArgumentException("Unsupported property type " + type.getName());
             }
         }
         return null;

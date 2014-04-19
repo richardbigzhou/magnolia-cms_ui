@@ -5,9 +5,7 @@
 @import "../magnolia/magnolia.scss";
 @import "../workbench/workbench.scss";
 
-@import "field/linkfield.scss";
 @import "overlay/overlay-admincentral.scss";
-
 
 @import "../dam-app-assets/dam-app-assets.scss";
 @import "../ui-contentapp/ui-contentapp.scss";
@@ -21,7 +19,6 @@
 @include user-menu;
 
 @mixin admincentral {
-  @include linkfield;
 }
 
 .v-app:first-child {

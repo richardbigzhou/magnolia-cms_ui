@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,8 +35,11 @@ package info.magnolia.pages.app.availability;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import javax.jcr.Item;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -51,24 +54,27 @@ public class PageHasSubpagesRule extends AbstractAvailabilityRule {
     private static final Logger log = LoggerFactory.getLogger(PageHasSubpagesRule.class);
 
     @Override
-    public boolean isAvailableForItem(Item item) {
+    public boolean isAvailableForItem(Object itemId) {
         // item must be a Node
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                // node must be of the Page type
-                if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {
-                    // has sub-pages?
-                    return NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
-                }
-            } catch (RepositoryException e) {
-                String path = "unknown";
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            if (node != null) {
                 try {
-                    path = node.getPath();
-                } catch (RepositoryException e1) {
-                    // nothing to do
+                    // node must be of the Page type
+                    if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {
+                        // has sub-pages?
+                        return NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
+                    }
+                } catch (RepositoryException e) {
+                    String path = "unknown";
+                    try {
+                        path = node.getPath();
+                    } catch (RepositoryException e1) {
+                        // nothing to do
+                    }
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
                 }
-                log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
             }
         }
         return false;

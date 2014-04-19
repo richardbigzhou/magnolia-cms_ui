@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.availability;
 
-import javax.jcr.Item;
+import java.util.Collection;
 
 /**
  * Defines the rule for additional availability restrictions.
@@ -42,6 +42,7 @@ public interface AvailabilityRule {
 
     /**
      * Returns true if the availability subject (e.g. action) is available for the specified <code>items</code> (root node is represented by a <code>null</code> value <b>in</b> the array).
+     * @param itemIds
      */
-    public abstract boolean isAvailable(Item... items);
+    public abstract boolean isAvailable(Collection<?> itemIds);
 }

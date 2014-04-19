@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -64,6 +64,7 @@ import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -73,7 +74,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
@@ -92,6 +92,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
     private SimpleActionExecutor actionExecutor;
     private SimpleTranslator i18n;
     private Session session;
+    private ContentConnector contentConnector;
 
     @Override
     @Before
@@ -103,7 +104,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
-
+        contentConnector = mock(ContentConnector.class);
         session = new MockSession("workspace");
         MockContext ctx = new MockContext();
         ctx.addSession("workspace", session);
@@ -135,7 +136,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node1");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -151,7 +152,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node2");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -169,7 +170,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -187,7 +188,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -211,7 +212,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -237,7 +238,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -321,11 +322,6 @@ public class ConfirmationActionTest extends MgnlTestCase {
         @Override
         public ActionDefinition getActionDefinition(String actionName) {
             return null;
-        }
-
-        @Override
-        public boolean isAvailable(String actionName, Item... items) {
-            return false;
         }
 
         public String getExecutedActionName() {

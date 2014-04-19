@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ public class ErrorIcon extends CompositeIcon {
 
     public ErrorIcon(int size) {
         super(
+                new Icon("shape-triangle-plus", size, "#fff"),
                 new Icon("shape-triangle", size, Icon.COLOR_ERROR),
                 new Icon("error-mark", size, "#fff"));
     }

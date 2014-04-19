@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2003-2013 Magnolia International
+ * This file Copyright (c) 2003-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,8 @@
 package info.magnolia.ui.imageprovider;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
@@ -43,6 +45,9 @@ import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.ByteArrayInputStream;
 
@@ -63,6 +68,7 @@ public class DefaultImageProviderTest {
     private DefaultImageProvider imageProvider;
 
     private final String IMAGE_NODE_NAME = "originalImage";
+    private ContentConnector contentConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -76,8 +82,13 @@ public class DefaultImageProviderTest {
 
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
         cipd.setOriginalImageNodeName(IMAGE_NODE_NAME);
-        imageProvider = new DefaultImageProvider(cipd);
+
+        contentConnector = mock(ContentConnector.class);
+        imageProvider = new DefaultImageProvider(cipd, contentConnector);
+
     }
+
+
 
     @After
     public void tearDown() throws Exception {
@@ -92,7 +103,7 @@ public class DefaultImageProviderTest {
         // GIVEN - see setUp
 
         // WHEN
-        final String result = imageProvider.getThumbnailPath(workspaceName, null);
+        final String result = imageProvider.getThumbnailPath(null);
 
         // THEN
         assertNull(result);
@@ -103,25 +114,15 @@ public class DefaultImageProviderTest {
         // GIVEN
         final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
+        final JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(contactNode);
+        Object itemId = JcrItemUtil.getItemId(contactNode);
+        doReturn(nodeAdapter).when(contentConnector).getItem(itemId);
 
         // WHEN
-        final String result = imageProvider.getThumbnailPath(workspaceName, contactNode.getPath());
+        final String result = imageProvider.getThumbnailPath(itemId);
 
         // THEN
         assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.png", result);
-    }
-
-    @Test
-    public void testGetPortraitPathByUuid() throws Exception {
-        // GIVEN
-        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
-        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
-
-        // WHEN
-        final String result = imageProvider.getPortraitPathByIdentifier(workspaceName, contactNode.getIdentifier());
-
-        // THEN
-        assertEquals("/foo/.imaging/portrait/test/" + imageNodeUuid + "/MaxMustermann.png", result);
     }
 
     @Test
@@ -130,9 +131,12 @@ public class DefaultImageProviderTest {
         final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
         contactNode.getNode(IMAGE_NODE_NAME).getProperty("fileName").remove();
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
+        final JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(contactNode);
+        Object itemId = JcrItemUtil.getItemId(contactNode);
+        doReturn(nodeAdapter).when(contentConnector).getItem(itemId);
 
         // WHEN
-        final String result = imageProvider.getThumbnailPath(workspaceName, contactNode.getPath());
+        final String result = imageProvider.getThumbnailPath(itemId);
 
         // THEN
         assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/myNode.png", result);
@@ -143,27 +147,15 @@ public class DefaultImageProviderTest {
         // GIVEN
         final Node contactNode = createMainImageNode("contact1", IMAGE_NODE_NAME);
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
+        final JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(contactNode);
+        Object itemId = JcrItemUtil.getItemId(contactNode);
+        doReturn(nodeAdapter).when(contentConnector).getItem(itemId);
 
         // WHEN
-        final String result = imageProvider.getPortraitPath(workspaceName, contactNode.getPath());
+        final String result = imageProvider.getPortraitPath(itemId);
 
         // THEN
         assertEquals("/foo/.imaging/portrait/test/" + imageNodeUuid + "/MaxMustermann.png", result);
-    }
-
-    @Test
-    public void testGetThumbnailResourceById() throws Exception {
-        // GIVEN
-        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
-        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
-
-        // WHEN
-        Object resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
-
-        // THEN
-        assertNotNull(resource);
-        assertEquals(true, resource instanceof ExternalResource);
-        assertEquals("/foo/.imaging/portrait/test/" + imageNodeUuid + "/MaxMustermann.png", ((ExternalResource) resource).getURL());
     }
 
     @Test
@@ -171,9 +163,12 @@ public class DefaultImageProviderTest {
         // GIVEN
         final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
+        final JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(contactNode);
+        Object itemId = JcrItemUtil.getItemId(contactNode);
+        doReturn(nodeAdapter).when(contentConnector).getItem(itemId);
 
         // WHEN
-        Object resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
+        Object resource = imageProvider.getThumbnailResource(itemId, ImageProvider.THUMBNAIL_GENERATOR);
 
         // THEN
         assertNotNull(resource);

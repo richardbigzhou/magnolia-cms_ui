@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,9 +34,11 @@
 package info.magnolia.security.app.action.availability;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -51,16 +53,18 @@ public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
     private static final Logger log = LoggerFactory.getLogger(IsNotCurrentUserRule.class);
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item == null || !item.isNode()) {
-            return true;
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            try {
+                String nodeName = node.getName();
+                return !nodeName.equals(MgnlContext.getUser().getName());
+            } catch (RepositoryException ex) {
+                log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), itemId);
+                return false;
+            }
         }
-        try {
-            String nodeName = ((Node) item).getName();
-            return !nodeName.equals(MgnlContext.getUser().getName());
-        } catch (RepositoryException ex) {
-            log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
-        }
-        return false;
+        return true;
     }
 }

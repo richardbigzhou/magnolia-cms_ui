@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.util.EnumMap;
 import java.util.Map;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Implementation of {@link DetailEditorView}.

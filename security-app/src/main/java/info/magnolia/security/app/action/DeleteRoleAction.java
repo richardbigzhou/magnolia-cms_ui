@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,8 +35,10 @@ package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.User;
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -52,8 +54,15 @@ import javax.inject.Named;
 public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRoleActionDefinition> {
 
     @Inject
+    public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n);
+    }
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #DeleteRoleAction(DeleteRoleActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator)}
+     */
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, eventBus, uiContext, i18n);
+        this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
     }
 
     @Override

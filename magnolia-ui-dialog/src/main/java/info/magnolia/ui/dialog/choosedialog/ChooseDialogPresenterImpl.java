@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,6 +50,10 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -75,7 +79,9 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private I18nContentSupport i18nContentSupport;
 
-    private Item item;
+    private ContentConnector contentConnector;
+
+    private Object itemId;
 
     private ChooseDialogCallback callback;
 
@@ -89,9 +95,11 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             DialogActionExecutor executor,
             ChooseDialogView view,
             I18nizer i18nizer,
-            SimpleTranslator i18n) {
+            SimpleTranslator i18n,
+            ContentConnector contentConnector) {
         super(componentProvider, executor, view, i18nizer, i18n);
         this.fieldFactoryFactory = fieldFactoryFactory;
+        this.contentConnector = contentConnector;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
     }
@@ -99,7 +107,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     @Override
     public ChooseDialogView start(DialogDefinition definition, UiContext uiContext) {
         getExecutor().setDialogDefinition(definition);
-        return (ChooseDialogView)super.start(definition, uiContext);
+        return (ChooseDialogView) super.start(definition, uiContext);
     }
 
     @Override
@@ -117,7 +125,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             field.addValueChangeListener(new ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    item = (Item) event.getProperty().getValue();
+                    itemId = event.getProperty().getValue();
                 }
             });
             getView().setCaption(definition.getLabel());
@@ -132,7 +140,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 field.setValue(selectedItemId);
             }
 
-            final OverlayCloser closer = appContext.openOverlay(getView());
+            final OverlayCloser closer = appContext.openOverlay(getView(), getView().getModalityLevel());
             getView().setCaption(definition.getLabel());
             getView().addDialogCloseHandler(new DialogCloseHandler() {
                 @Override
@@ -155,11 +163,14 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem()};
+        Set<Object> selected = new HashSet<Object>();
+        selected.add(itemId != null ? itemId : new Object());
+        Item item = contentConnector.getItem(itemId);
+        return new Object[] { actionName, item == null ? new NullItem() : item, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
     }
 
     @Override
     protected DialogActionExecutor getExecutor() {
-        return (DialogActionExecutor)super.getExecutor();
+        return (DialogActionExecutor) super.getExecutor();
     }
 }

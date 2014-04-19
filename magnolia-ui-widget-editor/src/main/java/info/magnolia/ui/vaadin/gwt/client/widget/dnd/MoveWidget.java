@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,9 +34,13 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorFrame;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseMoveHandlers;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -54,9 +58,10 @@ public class MoveWidget extends Widget {
     public static final int OFFSET_FROM_MOUSE = 15;
 
     private FrameBodyWrapper wrapper;
-    private PageEditorFrame frame;
-    private HandlerRegistration moveHandler;
 
+    private PageEditorFrame frame;
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public MoveWidget(Element element) {
         setElement(element);
@@ -77,11 +82,11 @@ public class MoveWidget extends Widget {
         this.wrapper = new FrameBodyWrapper(frameBody);
         wrapper.onAttach();
 
-        this.moveHandler = wrapper.addMouseMoveHandler(new MouseMoveHandler() {
+        eventManager.addMouseMoveHandler(wrapper, new ControlBarEventHandler() {
             @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                int x = event.getNativeEvent().getClientX() + frame.getContentDocument().getScrollLeft();
-                int y = event.getNativeEvent().getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
+            public void handle(NativeEvent event) {
+                int x = event.getClientX() + frame.getContentDocument().getScrollLeft();
+                int y = event.getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
                 int maxX = frame.getBody().getOffsetWidth() - width;
                 int maxY = frame.getBody().getOffsetHeight() - height - OFFSET_FROM_MOUSE;
 
@@ -92,14 +97,13 @@ public class MoveWidget extends Widget {
                 getElement().getStyle().setLeft(x, Unit.PX);
             }
         });
-
         super.onAttach();
 
     }
 
     public void detach() {
         frame.getBody().removeChild(this.getElement());
-        moveHandler.removeHandler();
+        eventManager.removeMouseMoveHandler(wrapper);
         wrapper.onDetach();
         super.onDetach();
     }

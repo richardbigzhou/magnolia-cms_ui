@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -76,7 +76,7 @@ public class MessageStore {
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
      * message is respected if present otherwise a new unique one is used. When the method returns the message has been
      * updated with a new id.
-     *
+     * 
      * @param userName user to save the message for
      * @param message message to save
      * @return true if saving was successful or false if it failed
@@ -244,10 +244,10 @@ public class MessageStore {
     void marshallMessage(final Message message, final Node node) throws RepositoryException {
         node.setProperty(AdmincentralNodeTypes.SystemMessage.ID, message.getId());
         node.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, message.getTimestamp());
-        node.setProperty(AdmincentralNodeTypes.SystemMessage.SENDER, message.getSender());
-        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, message.getMessage());
-        node.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, message.getSubject());
-        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, message.getType().name());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.SENDER, message.getSender() != null ? message.getSender() : "");
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, message.getMessage() != null ? message.getMessage() : "");
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, message.getSubject() != null ? message.getSubject() : "");
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, message.getType() != null ? message.getType().name() : MessageType.UNKNOWN.name());
         node.setProperty(AdmincentralNodeTypes.SystemMessage.VIEW, message.getView());
         node.setProperty(AdmincentralNodeTypes.SystemMessage.CLEARED, message.isCleared());
 

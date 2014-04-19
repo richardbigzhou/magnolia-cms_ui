@@ -3,11 +3,15 @@
 @import "dialog/basedialog.scss";
 @import "viewport/appsviewport.scss";
 @import "closebutton.scss";
+@import "switcher.scss";
+
 
 @mixin commonbase {
 
   @include basedialog;
   @include appsviewport;
   @include closebutton;
+  @include switcher;
+
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,6 +43,7 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -264,4 +265,102 @@ public class BasicTransformerTest extends RepositoryTestCase {
 
         // THEN
     }
+
+    @Test
+    public void testReadFromDataSourceWrongType() throws RepositoryException {
+        // GIVEN
+        definition.setType("Boolean");
+        rootNode.setProperty(propertyName, "false");
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+
+        // WHEN
+        Object value = handler.readFromItem();
+
+        // THEN
+        assertNotNull(value);
+        assertTrue("The value is of the definition type", value instanceof Boolean);
+        assertEquals("Keep the original JCR value", Boolean.FALSE, value);
+        assertEquals(Boolean.class, rootItem.getItemProperty(propertyName).getType());
+        assertEquals(Boolean.FALSE, rootItem.getItemProperty(propertyName).getValue());
+
+    }
+
+    @Test
+    public void testReadFromDataSourceWrongTypeEmptyValue() throws RepositoryException {
+        // GIVEN
+        definition.setType("Boolean");
+        rootNode.setProperty(propertyName, "");
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+
+        // WHEN
+        Object value = handler.readFromItem();
+
+        // THEN
+        assertNull(value);
+        assertEquals(Boolean.class, rootItem.getItemProperty(propertyName).getType());
+        assertEquals(null, rootItem.getItemProperty(propertyName).getValue());
+    }
+
+    @Test
+    public void testReadFromDataSourceWrongTypeIncompatibleValue() throws RepositoryException {
+        // GIVEN
+        definition.setType("Long");
+        rootNode.setProperty(propertyName, "titi");
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+
+        // WHEN
+        Object value = handler.readFromItem();
+
+        // THEN
+        assertNull(value);
+        assertEquals(Long.class, rootItem.getItemProperty(propertyName).getType());
+        assertEquals(null, rootItem.getItemProperty(propertyName).getValue());
+    }
+
+    @Test
+    public void testWriteToDataSourceWrongType() throws RepositoryException {
+        // GIVEN
+        definition.setType("Boolean");
+        rootNode.setProperty(propertyName, "false");
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+        handler.readFromItem();
+
+        // WHEN
+        handler.writeToItem(true);
+
+        // THEN
+        Node res = rootItem.applyChanges();
+        assertTrue(res.hasProperty(propertyName));
+        assertEquals("Property was String and is now Boolean", PropertyType.BOOLEAN, res.getProperty(propertyName).getType());
+        assertEquals(true, res.getProperty(propertyName).getBoolean());
+    }
+
+    @Test
+    public void testWriteToDataSourceWrongTypeIncompatibleValue() throws RepositoryException {
+        // GIVEN
+        definition.setType("Long");
+        rootNode.setProperty(propertyName, "titi");
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        handler.readFromItem();
+
+        // WHEN
+        handler.writeToItem(10l);
+
+        // THEN
+        Node res = rootItem.applyChanges();
+        assertTrue(res.hasProperty(propertyName));
+        assertEquals("Property was String and is now Long", PropertyType.LONG, res.getProperty(propertyName).getType());
+        assertEquals(10l, res.getProperty(propertyName).getLong());
+    }
+
 }

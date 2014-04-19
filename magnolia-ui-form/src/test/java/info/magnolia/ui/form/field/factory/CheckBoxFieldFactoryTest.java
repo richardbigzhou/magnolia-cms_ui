@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -85,6 +85,22 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         // THEN
         assertEquals(true, field instanceof CheckBoxField);
         assertEquals(false, field.getValue());
+    }
+
+    @Test
+    public void testDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setI18nContentSupport(i18nContentSupport);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
+        definition.setDefaultValue("true");
+
+        // WHEN
+        Field<Boolean> field = checkBoxField.createField();
+
+        // THEN
+        assertEquals(true, field.getPropertyDataSource().getValue());
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -105,11 +105,11 @@ public class OpenEditRoleDialogActionTest extends RepositoryTestCase {
         private FormDialogDefinition dialogDefinition;
 
         public MockFormDialogPresenter() {
-            super(null, null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null, null, null);
         }
 
         @Override
-        public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
             this.setDialogDefinition(dialogDefinition);
             return null;
         }

@@ -4,13 +4,13 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2.1-SNAPSHOT</version>
+    <version>5.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>56</cloverCoverageThreshold>
+    <cloverCoverageThreshold>54</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -77,10 +77,27 @@
       <artifactId>commons-compress</artifactId>
       <version>1.0</version>
     </dependency>
+     <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <!-- keep version number in sync w/ m-m-scheduler -->
+      <version>1.8.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-module-scheduler</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

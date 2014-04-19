@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,13 +34,16 @@
 package info.magnolia.ui.workbench;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
@@ -71,7 +74,14 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         componentProvider = mock(ComponentProvider.class);
         doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
-        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
+        JcrContentConnector contentConnector = mock(JcrContentConnector.class);
+        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        connectorDefinition.setWorkspace(WORKSPACE);
+        connectorDefinition.setRootPath(ROOT_PATH);
+        doReturn(connectorDefinition).when(contentConnector).getContentConnectorDefinition();
+        doReturn(new Object()).when(contentConnector).getDefaultItemId();
+
+        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter, contentConnector);
         MockUtil.initMockContext();
         MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
     }
@@ -81,8 +91,6 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
         presenter.start(workbenchDefinition, null, null);
@@ -99,8 +107,6 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(WORKSPACE);
-        workbenchDefinition.setPath(ROOT_PATH);
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
         presenter.start(workbenchDefinition, null, null);

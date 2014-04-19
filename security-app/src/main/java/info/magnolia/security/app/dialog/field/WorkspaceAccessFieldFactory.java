@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,24 +36,26 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -121,38 +123,41 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         try {
 
             final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
-            Node roleNode = roleItem.getJcrItem();
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
             final Label emptyLabel = new Label(i18n.translate("security.workspace.field.noAccess"));
 
-            if (roleNode.hasNode(aclName)) {
+            // Since JcrNewNodeAdapter.getJcrItem() returns the parent node we need to skip this step because we don't want to inspect the parent node
+            if (!(roleItem instanceof JcrNewNodeAdapter)) {
+                Node roleNode = roleItem.getJcrItem();
+                if (roleNode.hasNode(aclName)) {
 
-                final Node aclNode = roleNode.getNode(aclName);
+                    final Node aclNode = roleNode.getNode(aclName);
 
-                AccessControlList acl = new AccessControlList();
-                acl.readEntries(aclNode);
+                    AccessControlList acl = new AccessControlList();
+                    acl.readEntries(aclNode);
 
-                AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                roleItem.addChild(aclItem);
+                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
+                    roleItem.addChild(aclItem);
 
-                aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                    aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
 
-                for (AccessControlList.Entry entry : acl.getEntries()) {
+                    for (AccessControlList.Entry entry : acl.getEntries()) {
 
-                    long permissions = entry.getPermissions();
-                    long accessType = entry.getAccessType();
-                    String path = entry.getPath();
+                        long permissions = entry.getPermissions();
+                        long accessType = entry.getAccessType();
+                        String path = entry.getPath();
 
-                    JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
-                    entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                    entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
-                    entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
-                    entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
+                        JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                        entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
+                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
+                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
 
-                    Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                    aclLayout.addComponent(ruleRow);
+                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
+                        aclLayout.addComponent(ruleRow);
+                    }
                 }
             }
 
@@ -283,16 +288,25 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
     protected void openChooseDialog(final TextField textField) {
         final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
+        final ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setWorkspace(getFieldDefinition().getWorkspace());
+        contentConnectorDefinition.setRootPath("/");
+        contentConnectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+        // node types
+        contentConnectorDefinition.setNodeTypes(resolveNodeTypes());
+        def.setContentConnector(contentConnectorDefinition);
+
         final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
         final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
         fieldDef.setWorkbench(wbDef);
         def.setField(fieldDef);
         ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
             @Override
-            public void onItemChosen(String actionName, Item item) {
+            public void onItemChosen(String actionName, Object value) {
                 try {
-                    if (item instanceof JcrItemAdapter) {
-                        textField.setValue(((JcrItemAdapter) item).getJcrItem().getPath());
+                    if (value instanceof JcrItemId) {
+                        JcrItemId jcrItemId = (JcrItemId) value;
+                        textField.setValue(JcrItemUtil.getJcrItem(jcrItemId).getPath());
                     } else {
                         textField.setValue("/");
                     }
@@ -315,14 +329,9 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         }
 
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setWorkspace(getFieldDefinition().getWorkspace());
-        workbenchDefinition.setPath("/");
         workbenchDefinition.setDialogWorkbench(true);
         workbenchDefinition.setEditable(false);
-        workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
 
-        // node types
-        workbenchDefinition.setNodeTypes(resolveNodeTypes());
 
         // content views
         ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();

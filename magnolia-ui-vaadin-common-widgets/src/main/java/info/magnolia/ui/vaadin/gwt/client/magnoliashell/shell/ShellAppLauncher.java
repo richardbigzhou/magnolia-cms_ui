@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -57,6 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * Navigation bar.
@@ -164,7 +165,9 @@ public class ShellAppLauncher extends FlowPanel {
         divetWrapper.setId("divet");
         logoImg.setId("logo");
         String baseUrl = GWT.getModuleBaseURL().replace("widgetsets/" + GWT.getModuleName() + "/", "");
-        logoImg.setAttribute("src", baseUrl + "themes/admincentraltheme/img/logo-magnolia.svg");
+        String logoPath = baseUrl + "themes/admincentraltheme/img/";
+        boolean isIE8 = BrowserInfo.get().isIE8();
+        logoImg.setAttribute("src", logoPath + (isIE8 ? "logo-magnolia.png" : "logo-magnolia.svg"));
 
         logo.getElement().appendChild(logoImg);
         add(logo);

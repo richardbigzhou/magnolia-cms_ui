@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 
 /**
@@ -46,8 +48,13 @@ import com.vaadin.ui.Table;
  */
 public class MagnoliaTable extends Table {
 
-    public MagnoliaTable() {
+    public MagnoliaTable(Container dataSource) {
+        super("", dataSource);
         addStyleName("v-magnolia-table");
+    }
+
+    public MagnoliaTable() {
+        this(new IndexedContainer());
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,6 +41,7 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -127,12 +128,12 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
                 // cannot delete root node
                 throw new IllegalArgumentException(i18n.translate("ui-framework.actions.deleteItem.cannotDeleteRootItem"));
             }
-            String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+            JcrItemId itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
 
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+            eventBus.fireEvent(new ContentChangedEvent(itemIdOfChangedItem));
         } catch (PathNotFoundException e) {
             // ignore - the item has been probably already deleted (with a parent node)
         }

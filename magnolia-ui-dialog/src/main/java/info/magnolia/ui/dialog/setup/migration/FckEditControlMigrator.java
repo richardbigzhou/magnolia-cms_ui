@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.module.InstallContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 
 import javax.jcr.Node;
@@ -43,11 +44,9 @@ import javax.jcr.RepositoryException;
  */
 public class FckEditControlMigrator implements ControlMigrator {
 
-
     @Override
-    public void migrate(Node controlNode) throws RepositoryException {
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", RichTextFieldDefinition.class.getName());
     }
-
 }

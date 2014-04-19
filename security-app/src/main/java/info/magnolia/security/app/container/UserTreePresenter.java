@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,8 +34,8 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreeView;
 
@@ -49,7 +49,7 @@ public class UserTreePresenter extends TreePresenter {
     }
 
     @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new UserContainer(workbench);
+    protected AbstractJcrContainer createContainer() {
+        return new UserContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 }

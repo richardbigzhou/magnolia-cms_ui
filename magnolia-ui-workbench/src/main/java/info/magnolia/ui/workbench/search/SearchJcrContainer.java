@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,8 +34,8 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.container.OrderBy;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
 import java.util.ArrayList;
@@ -87,8 +87,8 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final String illegalFullTextChars = "-+)\"\\";
 
-    public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public SearchJcrContainer(JcrContentConnectorDefinition definition) {
+        super(definition);
         whereCauseNodeTypes = super.getQueryWhereClauseNodeTypes();
 
         for (NodeType nt : getSearchableNodeTypes()) {
@@ -145,10 +145,11 @@ public class SearchJcrContainer extends FlatJcrContainer {
         if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
-        final String unescapedFullTextExpression = getFullTextExpression().toLowerCase();
-
+        final String unescapedFullTextExpression = getFullTextExpression();
         final String escapedSearch = Text.escapeIllegalJcrChars(unescapedFullTextExpression);
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedSearch, escapedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapeFullTextExpression(unescapedFullTextExpression)));
+        final String escapedSearchLowercase = Text.escapeIllegalJcrChars(unescapedFullTextExpression.toLowerCase());
+
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedSearchLowercase, escapedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapeFullTextExpression(unescapedFullTextExpression)));
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
