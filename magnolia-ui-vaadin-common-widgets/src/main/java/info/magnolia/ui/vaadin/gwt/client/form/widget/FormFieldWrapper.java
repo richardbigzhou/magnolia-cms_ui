@@ -161,6 +161,10 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
     }
 
+    public boolean isDisplayingHelpSection() {
+        return helpSection != null;
+    }
+
     public void clearError() {
         if (errorSection != null) {
             remove(errorSection);
@@ -183,7 +187,6 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
             showHelp();
         }
     }
-
 
     public void setHelpDescription(String description) {
         this.helpDescription = description;
