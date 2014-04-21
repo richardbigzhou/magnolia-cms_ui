@@ -91,6 +91,11 @@ public class DialogHeaderWidget extends FlowPanel {
     protected void onLoad() {
         super.onLoad();
         onDescriptionVisibility();
+        if (hasDescription) {
+            if (this.getElement().getParentElement() != null) {
+                this.getElement().getParentElement().setAttribute("role", "dialogDescriptionHeader");
+            }
+        }
     }
 
     public DialogHeaderWidget(DialogHeaderCallback callback) {
@@ -137,6 +142,9 @@ public class DialogHeaderWidget extends FlowPanel {
         hasDescription = !description.isEmpty();
         if (hasDescription) {
             descriptionPanel.setVisible(isDescriptionVisible);
+            if (this.getElement().getParentElement() != null) {
+                this.getElement().getParentElement().setAttribute("role", "dialogDescriptionHeader");
+            }
         }
     }
 
