@@ -118,9 +118,34 @@ public class FormSectionWidget extends FlowPanel {
     }
 
     public void setDescriptionVisible(boolean isAccessible) {
+        if (!hasDialogDescriptionHeader()) {
+            boolean hasDisplayedFormFieldHelpSection = false;
+            for (final FormFieldWrapper fs : sections.values()) {
+                if (fs.isDisplayingHelpSection()) {
+                    fs.setHelpEnabled(false);
+                    hasDisplayedFormFieldHelpSection = true;
+                }
+            }
+            if (hasDisplayedFormFieldHelpSection) {
+                return;
+            } else if (!isAccessible) {
+                isAccessible = true;
+            }
+        }
         for (final FormFieldWrapper fs : sections.values()) {
             fs.setHelpEnabled(isAccessible);
         }
+    }
+
+    private boolean hasDialogDescriptionHeader() {
+        Element element = this.getElement();
+        while (element != null) {
+            if ("dialogDescriptionHeader".equals(element.getAttribute("role"))) {
+                return true;
+            }
+            element = (Element) element.getParentElement();
+        }
+        return false;
     }
 
     public List<FormFieldWrapper> getFields() {
