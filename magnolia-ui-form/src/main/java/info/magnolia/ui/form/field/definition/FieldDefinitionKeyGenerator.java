@@ -106,7 +106,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
     }
 
     /**
-     * Dirty hack, as the ChooseDialogDefinition is defined in dependent module
+     * Dirty hack, as the ChooseDialogDefinition is defined in dependent module.
      */
     private boolean isChooseDialog(Class<?> clazz) {
         /**
@@ -120,7 +120,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
 
     /**
      * TODO - this method has to be considered to be added to the parent class API.
-     * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2824</a>
+     * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2824/>
      */
     private String getParentName(Object parent) {
         try {

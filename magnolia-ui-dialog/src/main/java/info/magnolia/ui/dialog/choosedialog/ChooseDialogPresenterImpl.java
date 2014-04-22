@@ -81,7 +81,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private ContentConnector contentConnector;
 
-    private Object itemId;
+    private Object chosenItemId;
 
     private ChooseDialogCallback callback;
 
@@ -118,42 +118,37 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         formField.setComponentProvider(componentProvider);
         formField.setI18nContentSupport(i18nContentSupport);
         this.field = (Field<Object>) formField.createField();
-        if (field.getType().isAssignableFrom(Item.class)) {
-            if (field instanceof AbstractComponent) {
-                ((AbstractComponent) field).setImmediate(true);
-            }
-            field.addValueChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    itemId = event.getProperty().getValue();
-                }
-            });
-            getView().setCaption(definition.getLabel());
-            getView().setContent(new View() {
-                @Override
-                public Component asVaadinComponent() {
-                    return field;
-                }
-            });
-
-            if (StringUtils.isNotBlank(selectedItemId)) {
-                field.setValue(selectedItemId);
-            }
-
-            final OverlayCloser closer = appContext.openOverlay(getView(), getView().getModalityLevel());
-            getView().setCaption(definition.getLabel());
-            getView().addDialogCloseHandler(new DialogCloseHandler() {
-                @Override
-                public void onDialogClose(DialogView dialogView) {
-                    closer.close();
-                }
-            });
-            getView().setClosable(true);
-            return getView();
-        } else {
-            log.error("Configured field type is compatible with choose dialogs (com.vaadin.data.Item is required). Choose dialog will not be created.");
-            return null;
+        if (field instanceof AbstractComponent) {
+            ((AbstractComponent) field).setImmediate(true);
         }
+        field.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                chosenItemId = event.getProperty().getValue();
+            }
+        });
+        getView().setCaption(definition.getLabel());
+        getView().setContent(new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return field;
+            }
+        });
+
+        if (StringUtils.isNotBlank(selectedItemId)) {
+            field.setValue(selectedItemId);
+        }
+
+        final OverlayCloser closer = appContext.openOverlay(getView(), getView().getModalityLevel());
+        getView().setCaption(definition.getLabel());
+        getView().addDialogCloseHandler(new DialogCloseHandler() {
+            @Override
+            public void onDialogClose(DialogView dialogView) {
+                closer.close();
+            }
+        });
+        getView().setClosable(true);
+        return getView();
     }
 
     @Override
@@ -164,8 +159,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     @Override
     public Object[] getActionParameters(String actionName) {
         Set<Object> selected = new HashSet<Object>();
-        selected.add(itemId != null ? itemId : new Object());
-        Item item = contentConnector.getItem(itemId);
+        selected.add(chosenItemId != null ? chosenItemId : new Object());
+        Item item = contentConnector.getItem(chosenItemId);
         return new Object[] { actionName, item == null ? new NullItem() : item, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
     }
 
