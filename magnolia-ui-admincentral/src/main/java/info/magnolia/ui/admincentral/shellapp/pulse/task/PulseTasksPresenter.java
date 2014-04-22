@@ -248,12 +248,12 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     private void assignPropertiesFromTask(Task task, final Item item) {
         if (item != null && task != null) {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Status.Created);
-            item.getItemProperty(TASK_PROPERTY_ID).setValue(task.getName());
-            item.getItemProperty(SENDER_PROPERTY_ID).setValue("system");
+            item.getItemProperty(TASK_PROPERTY_ID).setValue(task.getName() + "|" + StringUtils.defaultString(task.getComment()));
+            item.getItemProperty(SENDER_PROPERTY_ID).setValue(task.getRequestor());
             item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getLastChange());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
-            item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId(), ""));
-            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + " - " + StringUtils.defaultString(task.getActorIds()));
+            item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId()));
+            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + "|" + StringUtils.defaultString(task.getActorIds()));
         }
     }
 

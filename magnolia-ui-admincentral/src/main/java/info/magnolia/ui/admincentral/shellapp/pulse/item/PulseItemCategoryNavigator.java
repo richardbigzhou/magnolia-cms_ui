@@ -75,7 +75,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         setSizeUndefined();
         for (final ItemCategory category : categories) {
             ItemCategoryTab tab = new ItemCategoryTab(category);
-            if (category == ItemCategory.ALL) {
+            if (category == ItemCategory.ALL || category == ItemCategory.MESSAGES) {
                 tab.setActive(true);
             }
             itemCategoryTabs.put(category, tab);

@@ -376,9 +376,25 @@
   right: 20px;
 }
 
-.v-pulse .task .task-title {
+.v-pulse .task .title {
   display: inline;
   margin-left: 10px;
+}
+.v-pulse .task .comment {
+  position: absolute;
+  top: 16px;
+  left: 30px;
+  color: #c1c1c1;
+}
+.v-pulse .task .sentTo {
+  margin-right: 5px;
+}
+.v-pulse .task .sentToIcon {
+  font-size: 18px;
+}
+
+.v-pulse .task .sentTo.groups {
+  display: inline;
 }
 
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksStore;
@@ -43,8 +44,18 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.util.BeanItem;
 
@@ -78,6 +89,29 @@ public final class TaskPresenter extends ItemPresenter<Task> {
 
     @Override
     protected BeanItem<Task> asBeanItem(Task item) {
-        return new BeanItem<Task>(item);
+        return new TaskItem(item);
+    }
+
+    private static final class TaskItem extends BeanItem<Task> {
+
+        private static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        public TaskItem(Task bean) {
+            super(bean);
+            for (Entry<String, Object> entry : getBean().getContent().entrySet()) {
+                addItemProperty(entry.getKey(), DefaultPropertyUtil.newDefaultProperty(String.class, parseValue(entry.getValue())));
+            }
+        }
+
+        private String parseValue(Object value) {
+            String string = String.valueOf(value);
+            try {
+                Date date = DATE_PARSER.parse(string);
+                return FastDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, new Locale(MgnlContext.getUser().getLanguage())).format(date);
+            } catch (ParseException e) {
+                // not a date
+                return string;
+            }
+        }
     }
 }

@@ -41,10 +41,15 @@ import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Pulse shell app.
  */
 public final class PulseShellApp implements ShellApp {
+
+    private static final Logger log = LoggerFactory.getLogger(PulseShellApp.class);
 
     private PulsePresenter presenter;
 
@@ -60,7 +65,25 @@ public final class PulseShellApp implements ShellApp {
 
     @Override
     public void locationChanged(Location location) {
-        presenter.showList();
+        displayView(location);
+    }
+
+    private void displayView(Location location) {
+        // this bit is used to open a message detail directly when clicking on the error band link
+        if ("pulse".equals(location.getAppName()) && location.getParameter().contains("messages")) {
+            String[] params = location.getParameter().split("/");
+            if (params.length == 2) {
+                String messageId = params[1];
+                presenter.openMessage(messageId);
+            } else {
+                log.warn("Got a request to open a message detail but found no message id in the location parameters. Location was [{}]", location);
+            }
+        } else {
+            // bit of a hack, since opening a message above will cause another location change we need to avoid displaying the list view again
+            if (!presenter.isDisplayingDetailView()) {
+                presenter.showList();
+            }
+        }
     }
 
 }
