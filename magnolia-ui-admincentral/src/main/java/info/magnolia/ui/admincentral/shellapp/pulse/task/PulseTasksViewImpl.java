@@ -45,6 +45,7 @@ import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -62,12 +63,12 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class PulseTasksViewImpl extends AbstractPulseItemView implements PulseTasksView {
 
-    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, SENT_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID };
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID };
 
     @Inject
     public PulseTasksViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
-                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.lastChange") },
+                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
                 ItemCategory.ALL, ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE, ItemCategory.FAILED);
 
@@ -81,6 +82,8 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         getItemTable().setColumnWidth(TASK_PROPERTY_ID, 200);
         getItemTable().addGeneratedColumn(STATUS_PROPERTY_ID, taskStatusColumnGenerator);
         getItemTable().setColumnWidth(STATUS_PROPERTY_ID, 80);
+        getItemTable().addGeneratedColumn(SENT_TO_PROPERTY_ID, sentToColumnGenerator);
+        getItemTable().setColumnWidth(SENT_TO_PROPERTY_ID, 100);
         getItemTable().addGeneratedColumn(LAST_CHANGE_PROPERTY_ID, new DateColumnFormatter(null));
         getItemTable().setColumnWidth(LAST_CHANGE_PROPERTY_ID, 160);
 
@@ -179,17 +182,21 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         }
     };
 
+    private Table.ColumnGenerator sentToColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (SENT_TO_PROPERTY_ID.equals(columnId)) {
+                final Property<String> sendTo = source.getContainerProperty(itemId, columnId);
+                return new SentToCellComponent(itemId, sendTo.getValue());
+            }
+            return null;
+        }
+    };
+
     /**
-     * TODO
-     * a description of the work item and the content item it affects. It consists of:
-     * an icon representing the work flow (not the work item itself).
-     * This is typically the same icon as used by the action, which triggered the work flow, but this must be configurable.
-     * a title naming the type of the work item
-     * It should summarize the step in the larger work flow, which the work item represents.
-     * a summary of the affected content item or items
-     * typically shows the visible name of the content item (e.g. "Magnolia 6 features" for a page, "Andreas Weder" for a contact)
-     * if several items are affected, the number and type of affected items (e.g. "5 contacts", "3 articles").
-     * for content items hosted on sites, this would also show the name of the sites affected by the work flow.
+     * TaskCellComponent.
      */
     private final class TaskCellComponent extends CustomComponent {
         private CssLayout root = new CssLayout();
@@ -201,16 +208,75 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             icon.addStyleName("message-type");
             icon.addStyleName("icon-work-item");
 
+            String[] parts = text.split("\\|");
+            String title = StringEscapeUtils.escapeXml(parts[0]);
+            String comment = getI18n().translate("pulse.tasks.nocomment");
+            if (parts.length == 2) {
+                comment = StringEscapeUtils.escapeXml(parts[1]);
+                comment = StringUtils.abbreviate(comment, 25);
+            }
+
             final Label label = new Label();
             label.setContentMode(ContentMode.HTML);
-            label.addStyleName("task-title");
-            label.setValue("<strong>" + StringEscapeUtils.escapeXml(text) + "</strong>");
+            label.addStyleName("title");
+            label.setValue("<strong>" + title + "</strong><div class=\"comment\">" + comment + "</div>");
+
             root.addComponent(icon);
             root.addComponent(label);
 
             addStyleName("task");
 
             setCompositionRoot(root);
+
+            root.addLayoutClickListener(new LayoutClickListener() {
+
+                @Override
+                public void layoutClick(LayoutClickEvent event) {
+                    onItemClicked(event, itemId);
+                }
+            });
+        }
+    }
+
+    /**
+     * SentToCellComponent.
+     */
+    private final class SentToCellComponent extends CustomComponent {
+        private CssLayout root = new CssLayout();
+
+        public SentToCellComponent(final Object itemId, final String text) {
+            final Label icon = new Label();
+            icon.setSizeUndefined();
+            icon.addStyleName("icon");
+            icon.addStyleName("icon-user-group");
+            icon.addStyleName("sentToIcon");
+
+            String[] parts = text.split("\\|");
+            String groups = StringEscapeUtils.escapeXml(parts[0]);
+            String users = "";
+            if (parts.length == 2) {
+                users = StringEscapeUtils.escapeXml(parts[1]);
+            }
+
+            final Label groupLabel = new Label();
+            groupLabel.addStyleName("sentTo");
+            groupLabel.addStyleName("groups");
+            groupLabel.setValue(StringUtils.abbreviate(groups, 12));
+
+            final Label userLabel = new Label();
+            userLabel.addStyleName("sentTo");
+            userLabel.setValue(StringUtils.abbreviate(users, 12));
+
+            root.addComponent(groupLabel);
+            root.addComponent(icon);
+            root.addComponent(userLabel);
+
+            addStyleName("task");
+
+            setCompositionRoot(root);
+
+            // tooltip
+            setDescription(groups + " " + users);
 
             root.addLayoutClickListener(new LayoutClickListener() {
 

@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.task.TaskEvent;
+import info.magnolia.task.TaskEventHandler;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
@@ -44,8 +46,6 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.task.TaskEvent;
-import info.magnolia.task.TaskEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import javax.inject.Inject;
@@ -63,6 +63,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     private TaskPresenter detailTaskPresenter;
     private ShellImpl shell;
     private ItemCategory selectedCategory;
+    private boolean isDisplayingDetailView;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
@@ -101,6 +102,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void openMessage(String messageId) {
         view.setPulseSubView(detailMessagePresenter.start(messageId));
+        isDisplayingDetailView = true;
     }
 
     @Override
@@ -110,6 +112,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         } else {
             view.setPulseSubView(messagesPresenter.start());
         }
+        isDisplayingDetailView = false;
     }
 
     @Override
@@ -130,6 +133,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void openTask(String taskId) {
         view.setPulseSubView(detailTaskPresenter.start(taskId));
+        isDisplayingDetailView = true;
     }
 
     @Override
@@ -144,17 +148,21 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void taskRemoved(TaskEvent taskEvent) {
-        // nothing to here
+        // nothing to do here
     }
 
     @Override
     public void taskCompleted(TaskEvent taskEvent) {
-        // nothing to here
+        // nothing to do here
     }
 
     @Override
     public void taskFailed(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
+    }
+
+    public boolean isDisplayingDetailView() {
+        return isDisplayingDetailView;
     }
 
     private void updatePendingMessagesAndTasksCount() {
