@@ -107,38 +107,83 @@ public interface OverlayLayer {
     OverlayCloser openOverlay(View view, ModalityLevel modalityLevel);
 
     /**
-     * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
-     * AlertCallback is invoked on confirm.
-     * This method takes content of this dialog as a caller defined View.
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given body but with empty title.
+     * 
+     * @deprecated since 5.3, you should probably pass the dialog title via {@link #openAlert(MessageStyleType, String, View, String, AlertCallback)}.
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
      */
-    void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
+    @Deprecated
+    void openAlert(MessageStyleType type, View body, String okButton, AlertCallback callback);
 
     /**
-     * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
-     * AlertCallback is invoked on confirm.
-     * This method takes the content as a string.
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the alert dialog's title
+     * @param body the alert dialog's text body
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
      */
-    void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
+    void openAlert(MessageStyleType type, String title, String body, String okButton, AlertCallback callback);
 
     /**
-     * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
-     * ConfirmationCallback is invoked on user action.
-     * This method takes content of this dialog as a caller defined View.
+     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the alert dialog's title
+     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param okButton the OK button text
+     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
      */
-    void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    void openAlert(MessageStyleType type, String title, View body, String okButton, AlertCallback callback);
 
     /**
-     * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
-     * ConfirmationCallback is invoked on user action.
-     * This method takes the content as a string.
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given body but with empty title.
+     * 
+     * @deprecated since 5.3, you should probably pass the dialog title via {@link #openConfirmation(MessageStyleType, String, View, String, String, boolean, ConfirmationCallback)}.
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
      */
-    void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    @Deprecated
+    void openConfirmation(MessageStyleType type, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback);
 
+    /**
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the confirmation dialog's title
+     * @param body the confirmation dialog's body text
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
+     */
+    void openConfirmation(MessageStyleType type, String title, String body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback);
 
-        /**
+    /**
+     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
+     * 
+     * @param type the message level, i.e. INFO, WARNING or ERROR
+     * @param title the confirmation dialog's title
+     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
+     * @param confirmButton the confirm button text
+     * @param cancelButton the cancel button text
+     * @param cancelIsDefault whether the cancel button should be focused by default
+     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
+     */
+    void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback);
+
+    /**
      * Notification indicator is a message banner that only shows a message to user.
      * Message is shown until user clicks close button or timeout expires.
-     *
+     * 
      * @param viewToShow Content to show as View.
      */
     void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow);

@@ -254,6 +254,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
      * Basic Empty implementation of {@link info.magnolia.ui.api.context.UiContext} for test purpose.
      */
     public static class TestUiContext implements UiContext {
+
         private boolean validateChanges;
 
         public TestUiContext(boolean validateChanges) {
@@ -301,6 +302,14 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         @Override
         public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, String title, View body, String okButton, AlertCallback callback) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
         }
 
     }

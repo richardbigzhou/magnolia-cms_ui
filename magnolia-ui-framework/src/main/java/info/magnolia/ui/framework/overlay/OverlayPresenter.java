@@ -77,42 +77,17 @@ public abstract class OverlayPresenter implements OverlayLayer {
         return openOverlay(view, ModalityLevel.STRONG);
     }
 
-    /**
-     * Opens an alert dialog of given {@link MessageStyleType type}, with given body.
-     * 
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
-     * @param okButton the OK button text
-     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
-     */
     @Override
     public void openAlert(MessageStyleType type, View body, String okButton, AlertCallback callback) {
         openAlert(type, null, body, okButton, callback);
     }
 
-    /**
-     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
-     *
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param title the alert dialog's title
-     * @param body the alert dialog's text body
-     * @param okButton the OK button text
-     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
-     */
     @Override
     public void openAlert(MessageStyleType type, String title, String body, String okButton, AlertCallback callback) {
         openAlert(type, title, new ViewAdapter(new Label(body, ContentMode.HTML)), okButton, callback);
     }
 
-    /**
-     * Opens an alert dialog of given {@link MessageStyleType type}, with given title and body.
-     *
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param title the alert dialog's title
-     * @param body the alert dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
-     * @param okButton the OK button text
-     * @param callback the callback to execute when the OK button is pressed, or when the dialog is closed
-     */
+    @Override
     public void openAlert(MessageStyleType type, String title, View body, String okButton, final AlertCallback callback) {
 
         final BaseDialog dialog = new LightDialog();
@@ -162,48 +137,17 @@ public abstract class OverlayPresenter implements OverlayLayer {
         dialog.setFooterToolbar(footer);
     }
 
-    /**
-     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given body.
-     * 
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
-     * @param confirmButton the confirm button text
-     * @param cancelButton the cancel button text
-     * @param cancelIsDefault whether the cancel button should be focused by default
-     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
-     */
     @Override
     public void openConfirmation(MessageStyleType type, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
         openConfirmation(type, null, body, confirmButton, cancelButton, cancelIsDefault, callback);
     }
 
-    /**
-     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
-     * 
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param title the confirmation dialog's title
-     * @param body the confirmation dialog's body text
-     * @param confirmButton the confirm button text
-     * @param cancelButton the cancel button text
-     * @param cancelIsDefault whether the cancel button should be focused by default
-     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
-     */
     @Override
     public void openConfirmation(MessageStyleType type, String title, String body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
         openConfirmation(type, title, new ViewAdapter(new Label(body, ContentMode.HTML)), confirmButton, cancelButton, cancelIsDefault, callback);
     }
 
-    /**
-     * Opens a confirmation dialog of given {@link MessageStyleType type}, with given title and body.
-     * 
-     * @param type the message level, i.e. INFO, WARNING or ERROR
-     * @param title the confirmation dialog's title
-     * @param body the confirmation dialog's body as a magnolia {@link View}; alternatively one may wrap any Vaadin component as a View using {@link ViewAdapter}
-     * @param confirmButton the confirm button text
-     * @param cancelButton the cancel button text
-     * @param cancelIsDefault whether the cancel button should be focused by default
-     * @param callback the callback to execute when any button is pressed, or when the dialog is closed
-     */
+    @Override
     public void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, final ConfirmationCallback callback) {
         final ConfirmationDialog dialog = new ConfirmationDialog(body.asVaadinComponent(), confirmButton, cancelButton, cancelIsDefault);
         dialog.addStyleName(type.getCssClass());

@@ -67,23 +67,33 @@ public abstract class AbstractUIContext implements UiContext {
     }
 
     @Override
-    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
+    public void openAlert(MessageStyleType type, View body, String okButton, AlertCallback callback) {
+        overlayPresenter.openAlert(type, body, okButton, callback);
     }
 
     @Override
-    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
+    public void openAlert(MessageStyleType type, String title, String body, String okButton, AlertCallback callback) {
+        overlayPresenter.openAlert(type, title, body, okButton, callback);
     }
 
     @Override
-    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    public void openAlert(MessageStyleType type, String title, View body, String okButton, AlertCallback callback) {
+        overlayPresenter.openAlert(type, title, body, okButton, callback);
     }
 
     @Override
-    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    public void openConfirmation(MessageStyleType type, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
+        overlayPresenter.openConfirmation(type, body, confirmButton, cancelButton, cancelIsDefault, callback);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButton, cancelButton, cancelIsDefault, callback);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButton, cancelButton, cancelIsDefault, callback);
     }
 
     @Override

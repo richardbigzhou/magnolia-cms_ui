@@ -47,21 +47,11 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -73,7 +63,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test.
+ * Tests for {@link RestorePreviousVersionAction}.
  */
 public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
@@ -83,7 +73,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
     private SimpleEventBus locationEventBus;
     private LocationController locationController;
-    private RestorePreviousVersionActionTest.TestSubAppContext subAppContext;
+    private SubAppContext subAppContext;
     private EventBus eventBus;
     private SimpleTranslator i18n;
 
@@ -106,7 +96,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         locationEventBus = new SimpleEventBus();
         locationController = new LocationController(locationEventBus, mock(Shell.class));
 
-        subAppContext = new RestorePreviousVersionActionTest.TestSubAppContext();
+        subAppContext = mock(SubAppContext.class);
         eventBus = mock(EventBus.class);
         i18n = mock(SimpleTranslator.class);
     }
@@ -161,106 +151,6 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(versionMan.getBaseVersion(node).getName(), "1.2");
-    }
-
-    /**
-     * Basic Empty implementation of {@link SubAppContext} for test purpose.
-     */
-    public static class TestSubAppContext implements SubAppContext {
-
-        public String title;
-        public MessageStyleType type;
-
-        @Override
-        public OverlayCloser openOverlay(View view) {
-            return null;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-            return null;
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-            this.title = title;
-            this.type = type;
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        }
-
-        @Override
-        public String getSubAppId() {
-            return null;
-        }
-
-        @Override
-        public SubApp getSubApp() {
-            return null;
-        }
-
-        @Override
-        public Location getLocation() {
-            return null;
-        }
-
-        @Override
-        public AppContext getAppContext() {
-            return null;
-        }
-
-        @Override
-        public SubAppDescriptor getSubAppDescriptor() {
-            return null;
-        }
-
-        @Override
-        public void setAppContext(AppContext appContext) {
-        }
-
-        @Override
-        public void setLocation(Location location) {
-        }
-
-        @Override
-        public void setSubApp(SubApp subApp) {
-        }
-
-        @Override
-        public void setInstanceId(String instanceId) {
-        }
-
-        @Override
-        public String getInstanceId() {
-            return null;
-        }
-
-        @Override
-        public void close() {
-        }
-
     }
 
 }

@@ -34,28 +34,23 @@
 package info.magnolia.ui.contentapp.availability;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests for {@link IsNotVersionedDetailLocationRule}.
@@ -66,13 +61,30 @@ public class IsNotVersionedDetailLocationRuleTest {
     private AppContext appContext;
     private SubAppContext subAppContext;
 
+    private Location location;
+
     @Before
     public void setUp() {
         MockContext ctx = new MockWebContext();
         MgnlContext.setInstance(ctx);
 
         appContext = mock(AppContext.class);
-        subAppContext = new TestSubAppContext();
+        subAppContext = mock(SubAppContext.class);
+        doAnswer(new Answer<Location>() {
+
+            @Override
+            public Location answer(InvocationOnMock invocation) throws Throwable {
+                return location;
+            }
+        }).when(subAppContext).getLocation();
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                location = (Location) invocation.getArguments()[0];
+                return null;
+            }
+        }).when(subAppContext).setLocation(any(Location.class));
 
         when(appContext.getActiveSubAppContext()).thenReturn(subAppContext);
     }
@@ -109,103 +121,6 @@ public class IsNotVersionedDetailLocationRuleTest {
         // THEN
         assertTrue(detailLocation.hasVersion());
         assertFalse("We expect the rule to be unavailable for non-versioned locations", isAvailable);
-    }
-
-    /**
-     * Test implementation of the {@link SubAppContext}.
-     */
-    private class TestSubAppContext implements SubAppContext {
-
-        private Location location;
-
-        @Override
-        public String getSubAppId() {
-            return null;
-        }
-
-        @Override
-        public SubApp getSubApp() {
-            return null;
-        }
-
-        @Override
-        public Location getLocation() {
-            return location;
-        }
-
-        @Override
-        public AppContext getAppContext() {
-            return null;
-        }
-
-        @Override
-        public SubAppDescriptor getSubAppDescriptor() {
-            return null;
-        }
-
-        @Override
-        public void setAppContext(AppContext appContext) {
-        }
-
-        @Override
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        @Override
-        public void setSubApp(SubApp subApp) {
-        }
-
-        @Override
-        public void setInstanceId(String instanceId) {
-        }
-
-        @Override
-        public String getInstanceId() {
-            return null;
-        }
-
-        @Override
-        public void close() {
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view) {
-            return null;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-            return null;
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        }
     }
 
 }
