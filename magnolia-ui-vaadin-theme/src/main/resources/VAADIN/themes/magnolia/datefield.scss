@@ -4,6 +4,10 @@
 
 @mixin datefield {
 
+  .v-datefield-popupcalendar {
+    padding-right: 30px;
+  }
+
   .v-datefield-button {
     @include basebutton;
     @include box-sizing(content-box);
