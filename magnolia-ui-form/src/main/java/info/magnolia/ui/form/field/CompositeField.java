@@ -42,7 +42,6 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
@@ -55,8 +54,6 @@ import com.vaadin.ui.VerticalLayout;
  * The Field values are handle by a configured {@link info.magnolia.ui.form.field.transformer.Transformer} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
 public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefinition, PropertysetItem> {
-
-    private AbstractOrderedLayout root;
 
     public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -75,8 +72,6 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
 
         // Initialize Existing field
         initFields();
-        // Register value change listener for i18n handling.
-        addValueChangeListener(datasourceListener);
         return root;
     }
 

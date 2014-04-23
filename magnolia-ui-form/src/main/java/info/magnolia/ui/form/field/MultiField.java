@@ -63,7 +63,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefinition, PropertysetItem> {
 
-    private VerticalLayout root;
     private final Button addButton = new NativeButton();
 
     private final ConfiguredFieldDefinition fieldDefinition;
@@ -91,8 +90,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
 
         // Initialize Existing field
         initFields();
-        // Register value change listener for i18n handling.
-        addValueChangeListener(datasourceListener);
 
         return root;
     }

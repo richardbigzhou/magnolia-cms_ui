@@ -69,12 +69,6 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     // - key : Field name. Should be the same as the related select value.<br>
     // - value : Related Field. Created based on the definition coming from the Fields Definition list.
     private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
-    private AbstractSelect selectField;
-
-    private HashMap<String, ConfiguredFieldDefinition> fieldDefinitions = new HashMap<String, ConfiguredFieldDefinition>();
-
-    // Define layout and component
-    private final VerticalLayout root = new VerticalLayout();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -83,6 +77,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected Component initContent() {
         // Initialize root
+        root = new VerticalLayout();
         setWidth(100, Unit.PERCENTAGE);
         setHeight(-1, Unit.PIXELS);
         addStyleName("switchablefield");
@@ -90,30 +85,33 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         root.setHeight(-1, Unit.PIXELS);
         root.setSpacing(true);
 
-        // Create and Add Select section
-        selectField = createSelectionField();
-        selectField.addValueChangeListener(createSelectValueChangeListener());
-        selectField.addValueChangeListener(selectionListener);
-
         // Initialize Existing field
         initFields();
-        // Register value change listener for i18n handling.
-        addValueChangeListener(datasourceListener);
         return root;
     }
 
     @Override
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
+        fieldMap.clear();
         // add the select Field Component.
+        AbstractSelect selectField = createSelectionField();
+        selectField.addValueChangeListener(createSelectValueChangeListener());
+        selectField.addValueChangeListener(selectionListener);
         root.addComponent(selectField);
-        // add Field section
+
 
         // Create Switchable Fields
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
-            // we only store definitions at init, we create the fields lazily when required
-            fieldDefinitions.put(name, fieldDefinition);
+            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
+            if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
+                field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
+            } else {
+                fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
+            }
+            field.addValueChangeListener(selectionListener);
+            fieldMap.put(name, field);
         }
 
         if (fieldValues.getItemProperty(definition.getName()) != null) {
@@ -130,7 +128,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     }
 
     /**
-     * Creates an option group or a select field based on the definition.
+     * Create a RadioSelect or a NormalSelect Field based on the definition.<br>
      */
     private AbstractSelect createSelectionField() {
         AbstractSelect field = null;
@@ -146,7 +144,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             } else {
                 selectDefinition = new SelectFieldDefinition();
             }
-            // Copy options to the newly created select definition.
+            // Copy options to the newly created select definition. definition
             BeanUtils.copyProperties(selectDefinition, definition);
             selectDefinition.setTransformerClass(null);
             selectDefinition.setLabel("");
@@ -189,31 +187,13 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // detach previous field
             root.removeComponent(root.getComponent(1));
         }
-        if (fieldDefinitions.containsKey(fieldName)) {
-            Field<?> field = getField(fieldName);
+        if (fieldMap.containsKey(fieldName)) {
             // add after combobox
-            root.addComponent(field, 1);
+            root.addComponent(fieldMap.get(fieldName), 1);
         } else {
             log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
             root.addComponent(new Label("No field defined for the following selection: " + fieldName), 1);
         }
-    }
-
-    private Field<?> getField(String fieldName) {
-        if (!fieldMap.containsKey(fieldName)) {
-            ConfiguredFieldDefinition fieldDefinition = fieldDefinitions.get(fieldName);
-            String name = fieldDefinition.getName();
-            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
-            PropertysetItem propertySetItem = (PropertysetItem) getPropertyDataSource().getValue();
-            if (propertySetItem.getItemProperty(fieldDefinition.getName()) != null) {
-                field.setPropertyDataSource(propertySetItem.getItemProperty(fieldDefinition.getName()));
-            } else {
-                propertySetItem.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
-            }
-            field.addValueChangeListener(selectionListener);
-            fieldMap.put(name, field);
-        }
-        return fieldMap.get(fieldName);
     }
 
     @Override
