@@ -146,7 +146,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertEquals("text", baseItem.getItemProperty(propertyName).getValue());
         assertEquals("text", baseNode.getProperty(propertyName).getString());
         assertFalse(baseNode.hasProperty(propertyName + "text"));
-        assertFalse(baseNode.hasProperty(propertyName + "code"));
+        assertTrue(baseNode.hasProperty(propertyName + "code"));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertEquals("text", baseNode.getProperty(propertyName).getString());
         assertTrue(baseNode.hasProperty(propertyName + "text"));
         assertEquals("hop!", baseNode.getProperty(propertyName + "text").getString());
-        assertFalse(baseNode.hasProperty(propertyName + "code"));
+        assertTrue(baseNode.hasProperty(propertyName + "code"));
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
