@@ -34,13 +34,11 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
 import info.magnolia.ui.admincentral.usermenu.UserMenuPresenter;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -48,13 +46,14 @@ import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.location.LocationHistoryHandler;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.DefaultLocationHistoryMapper;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 /**
@@ -82,7 +81,6 @@ public class AdmincentralPresenter {
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
 
         UI.getCurrent().setErrorHandler(new AdmincentralErrorHandler(messagesManager));
-        VaadinSession.getCurrent().setErrorHandler(null);
     }
 
     public View start() {
