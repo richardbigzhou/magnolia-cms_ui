@@ -220,7 +220,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
      * Informs the app framework when navigating pages inside the page editor.
      * Updates the shell fragment, caption and current location.
      */
-    private void updateNodePath(String path) {
+    protected void updateNodePath(String path) {
         DetailLocation detailLocation = getCurrentLocation();
         detailLocation.updateNodePath(path);
         setPageEditorParameters(detailLocation);
@@ -293,7 +293,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         }
     }
 
-    private void doGoToLocation(DetailLocation location) {
+    protected void doGoToLocation(DetailLocation location) {
         setPageEditorParameters(location);
         hideAllSections();
         pageEditorPresenter.loadPageEditor(parameters);
@@ -587,4 +587,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             }
         }
     }
+
+    protected String getWorkspace() {
+        return workspace;
+    }
+
 }

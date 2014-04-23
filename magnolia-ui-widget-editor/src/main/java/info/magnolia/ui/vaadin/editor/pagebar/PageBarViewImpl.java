@@ -51,7 +51,7 @@ import com.vaadin.ui.Label;
  */
 public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
-    private CssLayout root = new CssLayout();
+    private CssLayout layout = new CssLayout();
 
     private Label pageNameLabel = new Label();
 
@@ -62,12 +62,12 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     public PageBarViewImpl() {
         super();
-        setCompositionRoot(root);
+        setCompositionRoot(layout);
         construct();
     }
 
     private void construct() {
-        root.addStyleName("pagebar");
+        layout.addStyleName("pagebar");
 
         for (PlatformType type : PlatformType.values()) {
             platformSelector.addItem(type);
@@ -102,9 +102,9 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
         this.pageNameLabel.setSizeUndefined();
         this.pageNameLabel.addStyleName("title");
 
-        root.addComponent(pageNameLabel);
-        root.addComponent(languageSelector);
-        root.addComponent(platformSelector);
+        layout.addComponent(pageNameLabel);
+        layout.addComponent(languageSelector);
+        layout.addComponent(platformSelector);
     }
 
     @Override
@@ -143,9 +143,9 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     public void togglePreviewMode(boolean isPreview) {
         platformSelector.setVisible(isPreview);
         if (isPreview) {
-            root.addStyleName("preview");
+            layout.addStyleName("preview");
         } else {
-            root.removeStyleName("preview");
+            layout.removeStyleName("preview");
         }
     }
 
@@ -157,6 +157,10 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     @Override
     public Component asVaadinComponent() {
         return this;
+    }
+
+    protected CssLayout getLayout() {
+        return layout;
     }
 
 }
