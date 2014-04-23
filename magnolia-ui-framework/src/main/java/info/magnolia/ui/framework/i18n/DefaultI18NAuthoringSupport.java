@@ -47,6 +47,7 @@ import java.util.Locale;
 import javax.jcr.Node;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
@@ -109,6 +110,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                             currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
                         }
                         f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
+                        setFieldLocal(f, locale);
                     }
                 } else if (c instanceof  HasComponents) {
                     i18nize((HasComponents) c, locale);
@@ -152,6 +154,12 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     public void setAuthorLocale(Locale locale) {
         this.authorLocale = locale;
+    }
+
+    void setFieldLocal(Field f, Locale locale) {
+        if (f instanceof AbstractField) {
+            ((AbstractField) f).setLocale(locale);
+        }
     }
 
 }

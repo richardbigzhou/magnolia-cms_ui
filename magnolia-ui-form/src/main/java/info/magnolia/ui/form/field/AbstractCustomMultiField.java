@@ -44,12 +44,14 @@ import info.magnolia.ui.vaadin.integration.NullItem;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
@@ -72,6 +74,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     protected final ComponentProvider componentProvider;
     protected final D definition;
     protected final Item relatedFieldItem;
+    protected AbstractOrderedLayout root;
 
     protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         this.definition = definition;
@@ -89,6 +92,17 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
      * - add all others needed component (like add button...)
      */
     protected abstract void initFields(T fieldValues);
+
+    /**
+     * Handle {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport#i18nize(HasComponents, Locale)} events in order to refresh the field <br>
+     * and display the new property.
+     */
+    @Override
+    public void setLocale(Locale locale) {
+        if (root != null) {
+            initFields();
+        }
+    }
 
     @SuppressWarnings("unchecked")
     protected void initFields() {
