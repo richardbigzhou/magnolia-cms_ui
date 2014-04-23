@@ -64,6 +64,15 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
         if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
 
+            String nodeNem = null;
+            try {
+                nodeNem = node.getName();
+            } catch (RepositoryException e1) {
+            }
+            if (nodeNem != null && nodeNem.equals("testCacheEx")) {
+                throw new NullPointerException("testCacheEx");
+            }
+
             String activationStatus = "";
             String permissionStatus = "";
 

@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.list;
 
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
@@ -97,6 +98,11 @@ public class ListViewImpl implements ListView {
                     if (item == null) {
                         return DELETED_ROW_STYLENAME;
                     } else {
+                        Object nodeNem = item.getItemProperty(ModelConstants.JCR_NAME).getValue();
+                        if (nodeNem != null && nodeNem.equals("npe4internal3rror")) {
+                            throw new NullPointerException("npe4internal3rror");
+                        }
+
                         return listener.getIcon(item);
                     }
                 }
