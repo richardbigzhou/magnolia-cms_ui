@@ -62,8 +62,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
         Object parent = getParentViaCast(field);
         String fieldName = field.getName().replace(':', '-');
-        // dirty hack, as the ChooseDialogDefinition is defined in dependent module
-        if (parent != null && StringUtils.contains(parent.getClass().getName(), CHOOSE_DIALOG_DEFINITION)) {
+        if (parent != null && isChooseDialog(parent.getClass())) {
             // handle choose dialog
             final AppDescriptor app = (AppDescriptor) getRoot(field);
             addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));
@@ -73,8 +72,8 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
                 String parentName = getParentName(parent);
                 if (parentName != null) {
                     parentNames.addFirst(parentName);
-                    parent = getParentViaCast(parent);
                 }
+                parent = getParentViaCast(parent);
             }
 
             final String property = fieldOrGetterName(el);
@@ -106,6 +105,23 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
         }
     }
 
+    /**
+     * Dirty hack, as the ChooseDialogDefinition is defined in dependent module
+     */
+    private boolean isChooseDialog(Class<?> clazz) {
+        /**
+         * We can't really use something smarter than the current implementation due to following reasons:
+         * -  Fetching the ChooseDialogDefinition class with reflection and using Class#isAssignableFrom is practically impossible to test
+         * (test classes can't access ChooseDialogDefinition).
+         * - Using String#endsWith() is not feasible because enhancer appends its suffix to the class name.
+         */
+        return clazz.getSimpleName().contains(CHOOSE_DIALOG_DEFINITION);
+    }
+
+    /**
+     * TODO - this method has to be considered to be added to the parent class API.
+     * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2824</a>
+     */
     private String getParentName(Object parent) {
         try {
             Method getNameMethod = parent.getClass().getMethod("getName");

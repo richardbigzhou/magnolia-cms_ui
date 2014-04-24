@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
@@ -44,7 +43,7 @@ import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.TestDialogDef;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -73,8 +72,8 @@ public class FieldDefinitionKeyGeneratorTest {
         app = i18nizer.decorate(app);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(2);
-        generator.keysFor(keys, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel"));
+        List<String> keys = Arrays.asList(generator.keysFor((String)null, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel")));
+
 
         // THEN
         assertEquals(2, keys.size());
@@ -103,8 +102,7 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
+        List<String> keys = Arrays.asList(generator.keysFor((String)null, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel")));
 
         // THEN
         assertEquals(6, keys.size());
@@ -143,11 +141,10 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(
-                keys,
+        List<String> keys = Arrays.asList(generator.keysFor(
+                (String)null,
                 ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
-                field.getClass().getMethod("getLabel"));
+                field.getClass().getMethod("getLabel")));
 
         // THEN
         assertEquals(8, keys.size());
@@ -171,12 +168,11 @@ public class FieldDefinitionKeyGeneratorTest {
         DummyDefinition dummyDefinition = i18nizer.decorate(new DummyDefinition(fieldDefinition));
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
         FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
-        generator.keysFor(
-                keys,
+        List<String> keys = Arrays.asList(generator.keysFor(
+                (String)null,
                 i18nFieldDef,
-                i18nFieldDef.getClass().getMethod("getLabel"));
+                i18nFieldDef.getClass().getMethod("getLabel")));
 
         // THEN
         assertTrue(keys.contains("dummy.dummyField.label"));
