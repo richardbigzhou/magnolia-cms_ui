@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.definition;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
@@ -160,6 +161,27 @@ public class FieldDefinitionKeyGeneratorTest {
         assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(7));
     }
 
+    @Test
+    public void fieldDefinitionsNotInFormContextAreSupported() throws SecurityException, NoSuchMethodException {
+        // GIVEN
+        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+        fieldDefinition.setName("dummyField");
+        FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        DummyDefinition dummyDefinition = i18nizer.decorate(new DummyDefinition(fieldDefinition));
+
+        // WHEN
+        List<String> keys = new ArrayList<String>(4);
+        FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
+        generator.keysFor(
+                keys,
+                i18nFieldDef,
+                i18nFieldDef.getClass().getMethod("getLabel"));
+
+        // THEN
+        assertTrue(keys.contains("dummy.dummyField.label"));
+    }
+
     /**
      * Fake ContentAppDescriptor - cannot use the right one here, as it is defined in a dependent artifact.
      */
@@ -172,6 +194,27 @@ public class FieldDefinitionKeyGeneratorTest {
 
         public void setChooseDialog(TestChooseDialogDefinition chooseDialog) {
             this.chooseDialog = chooseDialog;
+        }
+    }
+
+    /**
+     * Dummy definition for testing key generation field definitions outside of form context.
+     */
+    @I18nable
+    public static class DummyDefinition {
+
+        private FieldDefinition dummyField;
+
+        public DummyDefinition(FieldDefinition dummyField) {
+            this.dummyField = dummyField;
+        }
+
+        public String getName() {
+            return "dummy";
+        }
+
+        public FieldDefinition getDummyField() {
+            return dummyField;
         }
     }
 
