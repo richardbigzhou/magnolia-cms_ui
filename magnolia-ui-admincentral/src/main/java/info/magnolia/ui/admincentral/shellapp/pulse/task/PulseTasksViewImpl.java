@@ -169,7 +169,10 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         }
     };
 
-    private Table.ColumnGenerator taskColumnGenerator = new Table.ColumnGenerator() {
+    /**
+     * default visibility for test purposes only.
+     */
+    Table.ColumnGenerator taskColumnGenerator = new Table.ColumnGenerator() {
 
         @Override
         public Object generateCell(Table source, Object itemId, Object columnId) {
@@ -196,10 +199,11 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
     };
 
     /**
-     * TaskCellComponent.
+     * TaskCellComponent. Default visibility is for testing purposes only.
      */
-    private final class TaskCellComponent extends CustomComponent {
+    final class TaskCellComponent extends CustomComponent {
         private CssLayout root = new CssLayout();
+        private final Label label = new Label();
 
         public TaskCellComponent(final Object itemId, final String text) {
             final Label icon = new Label();
@@ -216,7 +220,6 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                 comment = StringUtils.abbreviate(comment, 25);
             }
 
-            final Label label = new Label();
             label.setContentMode(ContentMode.HTML);
             label.addStyleName("title");
             label.setValue("<strong>" + title + "</strong><div class=\"comment\">" + comment + "</div>");
@@ -236,6 +239,10 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                 }
             });
         }
+
+        public String getValue() {
+            return label.getValue();
+        }
     }
 
     /**
@@ -252,10 +259,10 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             icon.addStyleName("sentToIcon");
 
             String[] parts = text.split("\\|");
-            String groups = StringEscapeUtils.escapeXml(parts[0]);
+            String groups = parts[0];
             String users = "";
             if (parts.length == 2) {
-                users = StringEscapeUtils.escapeXml(parts[1]);
+                users = parts[1];
             }
 
             final Label groupLabel = new Label();

@@ -33,36 +33,34 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
+import static org.mockito.Mockito.*;
+
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import org.junit.After;
+import org.junit.Before;
 
 /**
- * Action for deleting a human task.
+ * BaseHumanTaskActionTest.
  */
-public class DeleteHumanTaskAction extends AbstractHumanTaskAction<DeleteHumanTaskActionDefinition> {
+public class BaseHumanTaskActionTest {
 
-    public DeleteHumanTaskAction(DeleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, TaskPresenter taskPresenter, Shell shell) {
-        super(definition, task, taskManager, taskPresenter, shell);
+    protected static final String CURRENT_USER = "currentUser";
+
+    @Before
+    public void setUp() {
+        Context ctx = mock(Context.class);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(CURRENT_USER);
+        when(ctx.getUser()).thenReturn(user);
+        MgnlContext.setInstance(ctx);
     }
 
-    @Override
-    protected void executeTask(TasksManager taskManager, Task task) {
-        log.debug("About to delete human task named [{}]", task.getName());
-        taskManager.removeTask(task.getId());
-        getTaskPresenter().onNavigateToList();
-        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
     }
 
-    @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        final String currentUser = MgnlContext.getUser().getName();
-
-        if (task.getStatus() != Task.Status.Completed || !currentUser.equals(task.getActorId())) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only completed tasks assigned to yourself can be deleted.");
-        }
-    }
 }

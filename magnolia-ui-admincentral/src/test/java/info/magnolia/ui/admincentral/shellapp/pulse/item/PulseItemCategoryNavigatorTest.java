@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -49,8 +49,6 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.ItemCategoryTab;
 
 import org.junit.After;
@@ -58,9 +56,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * PulseMessageCategoryNavigatorTest.
+ * PulseItemCategoryNavigatorTest.
  */
-public class PulseMessageCategoryNavigatorTest {
+public class PulseItemCategoryNavigatorTest {
     private PulseItemCategoryNavigator categoryNavigator;
     private SystemContext sysCtx;
     private Context ctx;

@@ -48,7 +48,7 @@ import java.util.Map;
  */
 public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHumanTaskActionDefinition> {
 
-    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TaskPresenter taskPresenter, TasksManager taskManager, Shell shell) {
+    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, TaskPresenter taskPresenter, Shell shell) {
         super(definition, task, taskManager, taskPresenter, shell);
     }
 
