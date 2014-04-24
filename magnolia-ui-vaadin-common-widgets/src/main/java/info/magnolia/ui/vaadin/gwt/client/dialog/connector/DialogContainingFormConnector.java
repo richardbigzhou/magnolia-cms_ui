@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
+
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -44,12 +51,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
-import info.magnolia.ui.vaadin.dialog.FormDialog;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
-import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * DialogContainingForm assumes that content of dialog is
@@ -96,12 +97,14 @@ public class DialogContainingFormConnector extends BaseDialogConnector implement
         doResize();
     }
 
+    private static int LIGHT_DIALOG_BOTTOM_MARGIN = (40-2);
+
     private void doResize() {
         Widget content = getContent().getWidget();
         if (content instanceof FormViewImpl) {
             FormViewImpl formView = (FormViewImpl) content;
             Element element = view.asWidget().getElement();
-            NodeList<Node> childNodes = element.getChildNodes();
+            NodeList<Node> childNodes = element.getChild(0).getChildNodes();
             int footerHeight = 0, headerHeight = 0, marginHeight = 0;
             List<String> marginElements = Arrays.asList("dialog-description", "dialog-error", "dialog-content", "dialog-footer");
             for (int i = 0; i < childNodes.getLength(); i++) {
@@ -118,7 +121,12 @@ public class DialogContainingFormConnector extends BaseDialogConnector implement
                     }
                 }
             }
-            formView.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight - marginHeight);
+            int topMargin = element.getOffsetTop();
+            int bottomMargin = 0;
+            if ("light".equals(getState().modalityLevel)){
+                bottomMargin = LIGHT_DIALOG_BOTTOM_MARGIN;
+            }
+            formView.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight - marginHeight - topMargin - bottomMargin);
         }
     }
 }

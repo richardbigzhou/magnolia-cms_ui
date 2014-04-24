@@ -292,15 +292,18 @@
     margin-right: 10px;
   }
 
-  /*light dialog*/
+
+/* light dialog */
+
   .light {
     position: absolute;
     top: 74px;
-    box-shadow: 7px 7px 10px $c10;
-    border: 1px solid #c1c1c1;
     width: 600px !important;
-    height: auto !important; /*needed to display the shadow at the bottom*/
-    min-height: 115px;
+   }
+
+   .light .dialog-wrapper{
+        box-shadow: 7px 7px 10px $c10;
+        border: 1px solid #c1c1c1;
    }
 
    .light.choose-dialog {
@@ -336,7 +339,6 @@
   }
 
   .light .dialog-footer {
-    padding-top: 0;
     padding-bottom: 11px;
   }
 
@@ -345,6 +347,6 @@
   }
 
   .light .dialog-content .v-shell-tabsheet-scroller {
-     max-height: 115px !important;
+     /*max-height: 115px !important;*/
   }
 }

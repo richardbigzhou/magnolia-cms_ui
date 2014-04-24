@@ -33,12 +33,6 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractSingleComponentContainer;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 
@@ -46,6 +40,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Basic implementation of dialogs.
@@ -189,6 +190,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public void showCloseButton() {
         getState().hasCloseButton = true;
+    }
+
+    public void setModalityLevel(String modalityLevel){
+        getState().modalityLevel = modalityLevel;
     }
 
     public void addDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
