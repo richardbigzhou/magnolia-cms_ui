@@ -103,6 +103,19 @@
   @include prefix(animation-fill-mode, forwards);
 }
 
+/* light dialog */
+
+.overlay.open .light .dialog-wrapper{
+  @include prefix(animation-duration, 0.4s);
+  @include prefix(animation-name, overlay-zoomin-fadein );
+}
+.overlay.close .light .dialog-wrapper{
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-zoomout-fadeout);
+  @include prefix(animation-fill-mode, forwards);
+}
+
+
 
 @include keyframesTransformOpacity(overlay-fadein-curtain, scale(1.0), scale(1.0), 0, 0.8);
 
@@ -114,7 +127,7 @@
 
 @include keyframesTransformOpacity(overlay-fadeout, scale(1.0), scale(1.0), 1.0, 0);
 
-@include keyframesTransformOpacity(overlay-zoomin-fadein, scale(0.8), scale(1.0), 0, 1.0);
+@include keyframesTransformOpacity(overlay-zoomin-fadein, scale(0.7), scale(1.0), 0, 1.0);
 
 @include keyframesTransformOpacity(overlay-zoomout-fadeout,scale(1.0),scale(0.8),1.0,0);
 
