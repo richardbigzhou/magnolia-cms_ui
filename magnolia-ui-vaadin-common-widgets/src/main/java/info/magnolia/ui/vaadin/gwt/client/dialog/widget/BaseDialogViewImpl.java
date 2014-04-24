@@ -44,6 +44,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
 
+    protected static final String CLASSNAME_ROOT = "dialog-root";
+
+    protected static final String CLASSNAME_WRAPPER = "dialog-wrapper";
+
     protected static final String CLASSNAME_CONTENT = "dialog-content";
 
     protected static final String CLASSNAME_FOOTER = "dialog-footer";
@@ -64,16 +68,20 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private Widget footerToolbar;
 
     public BaseDialogViewImpl() {
-        final Element root = DOM.createDiv();
-        root.addClassName("dialog-root");
-        setElement(root);
-        add(header, root);
-        root.appendChild(contentEl);
-        contentEl.addClassName(CLASSNAME_CONTENT);
+        final Element rootEl = DOM.createDiv();
+        final Element wrapperEl = DOM.createDiv();
 
-        root.appendChild(footerEl);
-        footerEl.addClassName(CLASSNAME_FOOTER);
+        setElement(rootEl);
+        rootEl.appendChild(wrapperEl);
+        add(header, wrapperEl);
+        wrapperEl.appendChild(contentEl);
+        wrapperEl.appendChild(footerEl);
         footerEl.appendChild(footerToolbarEl);
+
+        rootEl.addClassName(CLASSNAME_ROOT);
+        wrapperEl.addClassName(CLASSNAME_WRAPPER);
+        contentEl.addClassName(CLASSNAME_CONTENT);
+        footerEl.addClassName(CLASSNAME_FOOTER);
         footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
     }
 

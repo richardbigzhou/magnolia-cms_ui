@@ -193,5 +193,6 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
             dialog.addStyleName("light");
             setWidth("620px");
         }
+        dialog.setModalityLevel(modalityLevel.getName());
     }
 }

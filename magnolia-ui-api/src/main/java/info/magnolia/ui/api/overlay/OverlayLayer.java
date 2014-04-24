@@ -70,13 +70,15 @@ public interface OverlayLayer {
      * -NON_MODAL does not prevent clicks.
      */
     public static enum ModalityLevel {
-        STRONG("modality-strong"),
-        LIGHT("modality-light center-vertical"),
-        NON_MODAL("modality-non-modal");
+        STRONG("strong", "modality-strong"),
+        LIGHT("light", "modality-light center-vertical"),
+        NON_MODAL("non-modal", "modality-non-modal");
 
         private String cssClass;
+        private String name;
 
-        private ModalityLevel(String cssClass) {
+        private ModalityLevel(String name, String cssClass) {
+            this.name = name;
             this.cssClass = cssClass;
         }
 
@@ -84,18 +86,22 @@ public interface OverlayLayer {
             return cssClass;
         }
 
+        public String getName(){
+            return name;
+        }
+
     }
 
     /**
      * Open an Overlay on top of the OverlayLayer implementer.
-     * 
+     *
      * @param view View of the component to be displayed modally.
      */
     OverlayCloser openOverlay(View view);
 
     /**
      * Open an Overlay on top of the OverlayLayer implementer.
-     * 
+     *
      * @param modalityLevel Modality level
      */
     OverlayCloser openOverlay(View view, ModalityLevel modalityLevel);
