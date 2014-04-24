@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
 import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
@@ -102,8 +103,9 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
 
     @Override
     protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Task.Status.InProgress) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "]. Only in progress tasks can be rejected.");
+        final String currentUser = MgnlContext.getUser().getName();
+        if (task.getStatus() != Task.Status.InProgress || !currentUser.equals(task.getActorId())) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only in progress tasks assigned to yourself can be rejected.");
         }
     }
 }
