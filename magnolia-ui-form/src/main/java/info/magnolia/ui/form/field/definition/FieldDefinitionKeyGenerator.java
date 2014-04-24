@@ -41,7 +41,7 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,58 +56,88 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
 
     private static final Logger log = LoggerFactory.getLogger(FieldDefinitionKeyGenerator.class);
 
+    private static final String CHOOSE_DIALOG_DEFINITION = "ChooseDialogDefinition";
+
     @Override
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
-        TabDefinition tab = null;
         Object parent = getParentViaCast(field);
         String fieldName = field.getName().replace(':', '-');
-        // dirty hack, as the ChooseDialogDefinition is defined in dependent module
-        if (parent != null && parent.getClass().getName().indexOf("ChooseDialogDefinition") > -1) {
+        if (parent != null && isChooseDialog(parent.getClass())) {
             // handle choose dialog
-            AppDescriptor app = (AppDescriptor) getRoot(field);
+            final AppDescriptor app = (AppDescriptor) getRoot(field);
             addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));
         } else {
-            List<String> parentNames = new LinkedList<String>();
-            while (!(parent instanceof TabDefinition)) {
-                try {
-                    Method getName = parent.getClass().getMethod("getName");
-                    String parentName = (String) getName.invoke(parent);
-                    parentNames.add(parentName);
-                    parent = getParentViaCast(parent);
-                } catch (IllegalAccessException e) {
-                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
-                } catch (SecurityException e) {
-                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
-                } catch (NoSuchMethodException e) {
-                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
-                } catch (IllegalArgumentException e) {
-                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
-                } catch (InvocationTargetException e) {
-                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+            final Deque<String> parentNames = new LinkedList<String>();
+            while (parent != null  && !(parent instanceof TabDefinition)) {
+                String parentName = getParentName(parent);
+                if (parentName != null) {
+                    parentNames.addFirst(parentName);
                 }
+                parent = getParentViaCast(parent);
             }
-            tab = (TabDefinition) parent;
-            final String tabName = tab.getName();
-            final FormDefinition formDef = getParentViaCast(tab);
-            final String dialogID = getParentId(formDef);
 
             final String property = fieldOrGetterName(el);
-            // in case of a field in field
-            if (parentNames.size() > 0) {
-                Collections.reverse(parentNames);
-                String parentKeyPart = StringUtils.join(parentNames, '.').replace(':', '-');
-                // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName>.<property>
-                // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName> (in case of property==label)
-                addKey(list, dialogID, tabName, parentKeyPart, fieldName, property);
+            final String parentKeyPart = StringUtils.join(parentNames, '.').replace(':', '-');
+            if (parent instanceof TabDefinition) {
+                TabDefinition tab = (TabDefinition) parent;
+                final String tabName = tab.getName();
+                final FormDefinition formDef = getParentViaCast(tab);
+                final String dialogID = getParentId(formDef);
+
+                // in case of a field in field
+                if (parentNames.size() > 0) {
+                    // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName>.<property>
+                    // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName> (in case of property==label)
+                    addKey(list, dialogID, tabName, parentKeyPart, fieldName, property);
+                }
+                // <dialogId>.<tabName>.<fieldName>.<property>
+                // <dialogId>.<tabName>.<fieldName> (in case of property==label)
+                addKey(list, dialogID, tabName, fieldName, property);
+                // <tabName>.<fieldName> (in case of property==label)
+                addKey(list, tabName, fieldName, property);
+                // <dialogId>.<fieldName>.<property>
+                // <dialogId>.<fieldName> (in case property==label)
+                addKey(list, dialogID, fieldName, property);
+            } else {
+                // In case we didn't encounter parent tab definition - we simply generated a key based on dot-separated parent names
+                addKey(list, parentKeyPart, fieldName, property);
             }
-            // <dialogId>.<tabName>.<fieldName>.<property>
-            // <dialogId>.<tabName>.<fieldName> (in case of property==label)
-            addKey(list, dialogID, tabName, fieldName, property);
-            // <tabName>.<fieldName> (in case of property==label)
-            addKey(list, tabName, fieldName, property);
-            // <dialogId>.<fieldName>.<property>
-            // <dialogId>.<fieldName> (in case property==label)
-            addKey(list, dialogID, fieldName, property);
         }
+    }
+
+    /**
+     * Dirty hack, as the ChooseDialogDefinition is defined in dependent module
+     */
+    private boolean isChooseDialog(Class<?> clazz) {
+        /**
+         * We can't really use something smarter than the current implementation due to following reasons:
+         * -  Fetching the ChooseDialogDefinition class with reflection and using Class#isAssignableFrom is practically impossible to test
+         * (test classes can't access ChooseDialogDefinition).
+         * - Using String#endsWith() is not feasible because enhancer appends its suffix to the class name.
+         */
+        return clazz.getSimpleName().contains(CHOOSE_DIALOG_DEFINITION);
+    }
+
+    /**
+     * TODO - this method has to be considered to be added to the parent class API.
+     * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2824</a>
+     */
+    private String getParentName(Object parent) {
+        try {
+            Method getNameMethod = parent.getClass().getMethod("getName");
+            return (String) getNameMethod.invoke(parent);
+        } catch (IllegalAccessException e) {
+            log.warn("Cannot obtain name of parent object: " + e.getMessage());
+        } catch (SecurityException e) {
+            log.warn("Cannot obtain name of parent object: " + e.getMessage());
+        } catch (NoSuchMethodException e) {
+            log.warn("Cannot obtain name of parent object: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.warn("Cannot obtain name of parent object: " + e.getMessage());
+        } catch (InvocationTargetException e) {
+            log.warn("Cannot obtain name of parent object: " + e.getMessage());
+        }
+
+        return null;
     }
 }

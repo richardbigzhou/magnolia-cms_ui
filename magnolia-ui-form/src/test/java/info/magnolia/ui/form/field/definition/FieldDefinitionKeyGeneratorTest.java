@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
@@ -43,7 +43,7 @@ import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.TestDialogDef;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -72,8 +72,8 @@ public class FieldDefinitionKeyGeneratorTest {
         app = i18nizer.decorate(app);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(2);
-        generator.keysFor(keys, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel"));
+        List<String> keys = Arrays.asList(generator.keysFor((String)null, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel")));
+
 
         // THEN
         assertEquals(2, keys.size());
@@ -102,8 +102,7 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
+        List<String> keys = Arrays.asList(generator.keysFor((String)null, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel")));
 
         // THEN
         assertEquals(6, keys.size());
@@ -142,11 +141,10 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(
-                keys,
+        List<String> keys = Arrays.asList(generator.keysFor(
+                (String)null,
                 ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
-                field.getClass().getMethod("getLabel"));
+                field.getClass().getMethod("getLabel")));
 
         // THEN
         assertEquals(8, keys.size());
@@ -158,6 +156,26 @@ public class FieldDefinitionKeyGeneratorTest {
         assertEquals("testTab.mgnl-testField", keys.get(5));
         assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(6));
         assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(7));
+    }
+
+    @Test
+    public void fieldDefinitionsNotInFormContextAreSupported() throws SecurityException, NoSuchMethodException {
+        // GIVEN
+        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+        fieldDefinition.setName("dummyField");
+        FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        DummyDefinition dummyDefinition = i18nizer.decorate(new DummyDefinition(fieldDefinition));
+
+        // WHEN
+        FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
+        List<String> keys = Arrays.asList(generator.keysFor(
+                (String)null,
+                i18nFieldDef,
+                i18nFieldDef.getClass().getMethod("getLabel")));
+
+        // THEN
+        assertTrue(keys.contains("dummy.dummyField.label"));
     }
 
     /**
@@ -172,6 +190,27 @@ public class FieldDefinitionKeyGeneratorTest {
 
         public void setChooseDialog(TestChooseDialogDefinition chooseDialog) {
             this.chooseDialog = chooseDialog;
+        }
+    }
+
+    /**
+     * Dummy definition for testing key generation field definitions outside of form context.
+     */
+    @I18nable
+    public static class DummyDefinition {
+
+        private FieldDefinition dummyField;
+
+        public DummyDefinition(FieldDefinition dummyField) {
+            this.dummyField = dummyField;
+        }
+
+        public String getName() {
+            return "dummy";
+        }
+
+        public FieldDefinition getDummyField() {
+            return dummyField;
         }
     }
 
