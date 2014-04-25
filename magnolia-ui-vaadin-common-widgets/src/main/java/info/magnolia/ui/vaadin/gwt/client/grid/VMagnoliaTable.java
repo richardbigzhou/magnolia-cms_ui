@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.grid;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -182,26 +181,32 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             private CheckBox selectionCheckBox;
 
-            private boolean firstColumnInitialized;
+            private String nodeIcon;
 
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
-                // Minor hack. Use row style for icon definition.
-                if (uidl.hasAttribute("rowstyle")) {
-                    String iconFontStyle = uidl.getStringAttribute("rowstyle");
-                    if (iconFontStyle.startsWith("icon-")) {
-                        SpanElement iconElement = Document.get().createSpanElement();
-                        iconElement.setClassName(iconFontStyle);
-                        iconElement.addClassName("v-table-icon-element");
-                        Node parentNode = selectionCheckBox.getElement().getParentNode();
-                        // insert before cell text and this will also work with tree table.
-                        parentNode.insertBefore(iconElement, parentNode.getLastChild());
-                    }
-                }
             }
 
             public MagnoliaTableRow() {
                 super();
+            }
+
+            @Override
+            protected void updateStyleNames(String primaryStyleName) {
+                // Minor hack. Use row style for icon definition.
+                if (rowStyle != null) {
+                    String[] rowStyles = rowStyle.split(" ");
+                    for (String style : rowStyles) {
+                        if (style.startsWith("icon")) {
+                            if (nodeIcon == null) {
+                                nodeIcon = style;
+                            } else {
+                                nodeIcon += " " + style;
+                            }
+                        }
+                    }
+                }
+                super.updateStyleNames(primaryStyleName);
             }
 
             /**
@@ -217,28 +222,39 @@ public class VMagnoliaTable extends VScrollTablePatched {
             @Override
             protected void initCellWithText(String text, char align, String style, boolean textIsHTML, boolean sorted, String description, final TableCellElement td) {
                 super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
-                insertSelectionCheckbox(td);
+                if (td.equals(this.getElement().getFirstChildElement())) {
+                    insertNodeIcon(td);
+                    insertSelectionCheckbox(td);
+                }
             }
 
             @Override
             protected void initCellWithWidget(Widget w, char align, String style, boolean sorted, TableCellElement td) {
                 super.initCellWithWidget(w, align, style, sorted, td);
-                insertSelectionCheckbox(td);
+                if (td.equals(this.getElement().getFirstChildElement())) {
+                    insertNodeIcon(td);
+                    insertSelectionCheckbox(td);
+                }
             }
 
             /**
              * Inserts the selection checkbox in first column.
              */
             private void insertSelectionCheckbox(final TableCellElement td) {
-                if (!firstColumnInitialized) {
-                    com.google.gwt.dom.client.Element container = td.getFirstChildElement();
-                    container.insertFirst(selectionCheckBox.getElement());
-                    firstColumnInitialized = true;
+                com.google.gwt.dom.client.Element container = td.getFirstChildElement();
+                container.insertFirst(selectionCheckBox.getElement());
+            }
+
+            protected void insertNodeIcon(TableCellElement td) {
+                if (nodeIcon != null) {
+                    SpanElement iconElement = Document.get().createSpanElement();
+                    iconElement.setClassName(nodeIcon);
+                    iconElement.addClassName("v-table-icon-element");
+                    td.getFirstChild().insertFirst(iconElement);
                 }
             }
 
             private void privateConstruction() {
-                firstColumnInitialized = false;
                 selectionCheckBox = new CheckBox();
                 selectionCheckBox.setValue(isSelected(), false);
                 ValueChangeHandler<Boolean> selectionChangeHandler = new ValueChangeHandler<Boolean>() {
