@@ -233,7 +233,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", "info.magnolia.ui.contentapp.ContentAppDescriptor")));
 
         register(DeltaBuilder.update("5.3", "")
-                .addTask(new BootstrapSingleModuleResource("config.modules.ui-admincentral.apps.websiteJcrBrowser.subApps.browser.workbench.xml")));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint")));
 
     }
 

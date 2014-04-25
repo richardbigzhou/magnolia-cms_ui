@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
-import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -47,9 +47,10 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
-import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.tree.MoveLocation;
+import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.Arrays;
 
@@ -151,7 +152,7 @@ public class MoveNodeActionTest extends RepositoryTestCase {
     }
 
     private MoveNodeAction createAction() {
-        return new MoveNodeAction(definition, Arrays.asList((JcrItemAdapter)node1, node2), node3, adminCentralEventBusMock, uiContext, callback);
+        return new MoveNodeAction(definition, Arrays.asList((JcrItemAdapter) node1, node2), node3, adminCentralEventBusMock, uiContext, callback, new TreeViewDropHandler(null, null));
     }
 
     private void initNodes() {

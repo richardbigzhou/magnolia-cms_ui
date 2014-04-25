@@ -47,7 +47,7 @@ import com.vaadin.data.Item;
 /**
  * Allows only nodes to be moved and prevents nodes from becoming children of properties.
  */
-public class NodesAndPropsDropConstraint implements DropConstraint {
+public class NodesAndPropsDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
 
     private static final Logger log = LoggerFactory.getLogger(NodesAndPropsDropConstraint.class);
 

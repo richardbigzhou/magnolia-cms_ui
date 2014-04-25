@@ -60,7 +60,6 @@ import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaD
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
-import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
@@ -71,6 +70,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -90,6 +90,7 @@ import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.dd.DropHandler;
 
 /**
  * Implementation of {@link MoveDialogPresenter}.
@@ -134,7 +135,12 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
+        DropHandler dropHandler = componentProvider.newInstance(DropHandler.class);
+        if (dropHandler == null) {
+            return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
+        } else {
+            return new Object[] { nodesToMove, callback, appContext, getHostCandidate(), dropHandler };
+        }
     }
 
     @Override

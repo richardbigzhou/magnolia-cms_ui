@@ -134,6 +134,11 @@
       <implementation>info.magnolia.ui.admincentral.dialog.DefaultAvailabilityChecker</implementation>
     </component>
 
+    <type-mapping>
+      <type>com.vaadin.event.dd.DropHandler</type>
+      <implementation>info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler</implementation>
+    </type-mapping>
+
     <!-- Dialog -->
     <type-mapping>
       <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>

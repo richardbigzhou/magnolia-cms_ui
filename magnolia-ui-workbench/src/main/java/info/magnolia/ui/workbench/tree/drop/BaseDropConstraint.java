@@ -49,7 +49,7 @@ import com.vaadin.data.Item;
  *
  * Compares node types of source and target nodes.
  */
-public class BaseDropConstraint implements DropConstraint {
+public class BaseDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
 
     private static final Logger log = LoggerFactory.getLogger(BaseDropConstraint.class);
     private final String nodeType;
