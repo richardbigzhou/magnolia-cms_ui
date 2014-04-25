@@ -57,7 +57,7 @@ public class MagnoliaTreeTable extends TreeTable {
     private static Logger log = LoggerFactory.getLogger(MagnoliaTreeTable.class);
 
     public MagnoliaTreeTable(Container dataSource) {
-        super("", dataSource);
+        super(null, dataSource);
         addStyleName("v-magnolia-table");
         setCacheRate(4);
     }

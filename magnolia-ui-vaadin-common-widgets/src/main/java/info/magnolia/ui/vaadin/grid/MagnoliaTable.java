@@ -49,7 +49,7 @@ import com.vaadin.ui.Table;
 public class MagnoliaTable extends Table {
 
     public MagnoliaTable(Container dataSource) {
-        super("", dataSource);
+        super(null, dataSource);
         addStyleName("v-magnolia-table");
     }
 
