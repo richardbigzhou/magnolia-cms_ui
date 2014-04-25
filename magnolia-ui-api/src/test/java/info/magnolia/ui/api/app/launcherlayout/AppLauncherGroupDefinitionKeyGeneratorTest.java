@@ -42,6 +42,9 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 
+/**
+ * Tests for the {@link AppLauncherGroupDefinitionKeyGenerator}.
+ */
 public class AppLauncherGroupDefinitionKeyGeneratorTest {
 
     @Test
