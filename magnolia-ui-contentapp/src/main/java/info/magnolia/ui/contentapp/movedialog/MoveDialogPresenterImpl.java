@@ -123,6 +123,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ContentConnector contentConnector;
 
+    private DropHandler dropHandler;
+
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
         super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
@@ -131,11 +133,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.appContext = appContext;
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
+        this.dropHandler = componentProvider.newInstance(DropHandler.class);
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        DropHandler dropHandler = componentProvider.newInstance(DropHandler.class);
         if (dropHandler == null) {
             return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
         } else {
