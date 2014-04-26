@@ -47,10 +47,17 @@ import org.junit.Test;
  */
 public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
 
+    private ClaimHumanTaskAction action;
+
+    @Override
+    public void setUp() {
+        super.setUp();
+        action = new ClaimHumanTaskAction(mock(ClaimHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+    }
+
     @Test
     public void claimActionExecutesIfTaskStatusIsCreated() throws Exception {
         // GIVEN
-        ClaimHumanTaskAction action = new ClaimHumanTaskAction(mock(ClaimHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
         Task task = new Task();
         task.setStatus(Status.Created);
 
@@ -63,7 +70,6 @@ public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
     @Test(expected = IllegalStateException.class)
     public void claimActionFailsIfTaskStatusIsNotCreated() throws Exception {
         // GIVEN
-        ClaimHumanTaskAction action = new ClaimHumanTaskAction(mock(ClaimHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
         Task task = new Task();
         task.setStatus(Status.Completed);
 

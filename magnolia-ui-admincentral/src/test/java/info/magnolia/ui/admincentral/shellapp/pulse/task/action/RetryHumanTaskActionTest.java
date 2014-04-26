@@ -78,7 +78,7 @@ public class RetryHumanTaskActionTest extends BaseHumanTaskActionTest {
         // WHEN
         action.canExecuteTask(task);
 
-        // THEN no exception
+        // THEN throw exception
     }
 
     @Test(expected = IllegalStateException.class)

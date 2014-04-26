@@ -77,7 +77,7 @@ public class DeleteHumanTaskActionTest extends BaseHumanTaskActionTest {
         // WHEN
         action.canExecuteTask(task);
 
-        // THEN no exception
+        // THEN throw exception
     }
 
     @Test(expected = IllegalStateException.class)
