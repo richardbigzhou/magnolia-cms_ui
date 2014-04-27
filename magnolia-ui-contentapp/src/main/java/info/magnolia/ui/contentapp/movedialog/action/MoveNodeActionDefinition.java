@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.movedialog.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.action.MoveLocation;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 /**
  * Used to configure a {@link MoveNodeAction}.

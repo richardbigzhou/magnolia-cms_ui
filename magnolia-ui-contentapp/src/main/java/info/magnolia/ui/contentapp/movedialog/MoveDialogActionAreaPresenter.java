@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.movedialog;
 
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
-import info.magnolia.ui.framework.action.MoveLocation;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 import java.util.Set;
 

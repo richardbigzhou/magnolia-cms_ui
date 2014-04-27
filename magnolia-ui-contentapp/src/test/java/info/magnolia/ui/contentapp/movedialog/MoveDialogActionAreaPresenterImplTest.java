@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.contentapp.movedialog;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -46,7 +45,7 @@ import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
-import info.magnolia.ui.framework.action.MoveLocation;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
