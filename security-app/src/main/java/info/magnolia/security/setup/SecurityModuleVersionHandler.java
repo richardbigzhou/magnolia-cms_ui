@@ -56,7 +56,6 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
-import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
@@ -161,7 +160,6 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("security-app"))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass", RoleTreePresenter.class.getName()))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "multiple", "true"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability", "multiple", "true"))
                 .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "Change class to info.magnolia.ui.framework.action.DeleteActionDefinition", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
@@ -217,7 +215,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         );
 
         register(DeltaBuilder.update("5.3", "")
-                .addTask(new ContentAppMigrationTask("/modules/security-app")));
+                .addTask(new ContentAppMigrationTask("/modules/security-app"))
+                .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass")));
     }
 
     @Override
