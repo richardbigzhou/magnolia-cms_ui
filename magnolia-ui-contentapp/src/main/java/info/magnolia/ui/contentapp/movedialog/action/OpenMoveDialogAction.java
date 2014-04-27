@@ -43,8 +43,8 @@ import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 import java.util.Arrays;
 import java.util.List;

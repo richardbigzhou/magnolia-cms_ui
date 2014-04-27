@@ -38,6 +38,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ import com.vaadin.data.Item;
  * TemplateTypeRestrictionDropConstraint allows drag-n-drop if and only if the
  * parent node's template type is compatible with child node's template.
  */
-public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
+public class TemplateTypeRestrictionDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
 
     private Logger log  = Logger.getLogger(getClass());
 
