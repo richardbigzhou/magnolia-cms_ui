@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.workbench.tree.drop;
 
+import info.magnolia.ui.workbench.tree.MoveLocation;
+
 import com.vaadin.data.Item;
 
 /**
@@ -60,4 +62,16 @@ public class AlwaysTrueDropConstraint implements DropConstraint {
         return true;
     }
 
+    @Override
+    public boolean isAllowedAt(Item sourceItem, Item targetItem, MoveLocation location) {
+        switch (location) {
+        case INSIDE:
+            return allowedAsChild(sourceItem, targetItem);
+        case AFTER:
+            return allowedAfter(sourceItem, targetItem);
+        case BEFORE:
+            return allowedBefore(sourceItem, targetItem);
+        }
+        return false;
+    }
 }

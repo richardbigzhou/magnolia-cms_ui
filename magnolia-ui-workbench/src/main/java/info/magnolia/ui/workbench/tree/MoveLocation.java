@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.workbench.tree;
 
-/**
- * Type of move operation performed on the nodes.
- */
-public enum MoveLocation {
-    AFTER,
-    BEFORE,
-    INSIDE
-}
+    /**
+     * Type of move operation performed on the nodes.
+     */
+    public enum MoveLocation {
+        AFTER,
+        BEFORE,
+        INSIDE
+    }
