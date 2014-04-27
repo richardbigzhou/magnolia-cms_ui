@@ -40,7 +40,7 @@ import com.vaadin.data.Item;
 /**
  * Allows only nodes to be moved and prevents nodes from becoming children of properties.
  */
-public class OnlyNodesDropConstraint implements DropConstraint {
+public class OnlyNodesDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
 
     @Override
     public boolean allowedAsChild(Item sourceItem, Item targetItem) {

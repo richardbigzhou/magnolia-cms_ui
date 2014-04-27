@@ -34,6 +34,8 @@
 package info.magnolia.ui.workbench.tree.drop;
 
 
+import info.magnolia.ui.workbench.tree.MoveLocation;
+
 import com.vaadin.data.Item;
 
 /**
@@ -46,6 +48,12 @@ import com.vaadin.data.Item;
  * {@link info.magnolia.ui.workbench.tree.TreeView}.
  */
 public interface DropConstraint {
+
+    /**
+     * Checks whether source item is allowed to be moved relative (based on the move location) to target item.
+     */
+    public boolean isAllowedAt(Item sourceItem, Item targetItem, MoveLocation location);
+
     /**
      * @param sourceItem
      *            Moved Item.
