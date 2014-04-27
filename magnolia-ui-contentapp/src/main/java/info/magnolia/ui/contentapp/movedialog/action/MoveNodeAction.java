@@ -44,8 +44,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
-import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     private MoveLocation moveLocation = MoveLocation.BEFORE;
 
-    private TreeViewDropHandler dropHandler;
+    private MoveHandler moveHandler;
 
     public MoveNodeAction(
             MoveNodeActionDefinition definition,
@@ -80,12 +80,12 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
             JcrNodeAdapter targetItem,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             UiContext uiContext,
-            MoveActionCallback callback, TreeViewDropHandler dropHandler) {
+            MoveActionCallback callback, MoveHandler moveHandler) {
         super(definition, items, uiContext);
         this.targetItem = targetItem;
         this.admincentralEventBus = admincentralEventBus;
         this.callback = callback;
-        this.dropHandler = dropHandler;
+        this.moveHandler = moveHandler;
     }
 
     @Override
@@ -107,11 +107,8 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     @Override
     protected void executeOnItem(JcrItemAdapter item) throws Exception {
-        if (dropHandler.basicMoveCheck(item.getJcrItem(), targetItem.getJcrItem())) {
-            moveLocation = getDefinition().getMoveLocation();
-            dropHandler.moveItem(item.getJcrItem(), targetItem.getJcrItem(), moveLocation);
-
-        } else {
+        moveLocation = getDefinition().getMoveLocation();
+        if (!moveHandler.moveItem(item, targetItem, moveLocation)) {
             callback.onMoveCancelled();
             throw new IllegalArgumentException("Move operation was not completed due to failed move validation.");
         }
