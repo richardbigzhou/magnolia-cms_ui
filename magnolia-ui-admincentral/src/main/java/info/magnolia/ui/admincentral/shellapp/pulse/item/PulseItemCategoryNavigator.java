@@ -59,16 +59,25 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
     private final SimpleTranslator i18n;
 
-    public PulseItemCategoryNavigator(SimpleTranslator i18n, ItemCategory... categories) {
+    private boolean isTopRow;
+
+    private boolean showGroupBy;
+
+    public static PulseItemCategoryNavigator createTopRowNavigator(SimpleTranslator i18n, ItemCategory... categories) {
+        return new PulseItemCategoryNavigator(i18n, false, true, categories);
+    }
+
+    public static PulseItemCategoryNavigator createSubRowNavigator(SimpleTranslator i18n, ItemCategory... categories) {
+        return new PulseItemCategoryNavigator(i18n, true, false, categories);
+    }
+
+    private PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupBy, boolean isTopRow, ItemCategory... categories) {
         super();
         this.i18n = i18n;
         setStyleName("navigator");
+        this.isTopRow = isTopRow;
+        this.showGroupBy = showGroupBy;
         construct(categories);
-    }
-
-    public PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupByType, ItemCategory... categories) {
-        this(i18n, categories);
-        showGroupByType(showGroupByType);
     }
 
     private void construct(ItemCategory... categories) {
@@ -81,11 +90,18 @@ public final class PulseItemCategoryNavigator extends CssLayout {
             itemCategoryTabs.put(category, tab);
             addComponent(tab);
         }
-
+        if (isTopRow) {
+            addStyleName("top-row");
+            CssLayout hiddenTab = new CssLayout();
+            hiddenTab.addStyleName("hidden");
+            addComponent(hiddenTab);
+        }
         groupByTypeCheckBox = new CheckBox(i18n.translate("pulse.items.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
-        addComponent(groupByTypeCheckBox);
+        if (showGroupBy) {
+            addComponent(groupByTypeCheckBox);
+        }
 
     }
 
@@ -93,8 +109,8 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         groupByTypeCheckBox.addValueChangeListener(listener);
     }
 
-    public void showGroupByType(boolean show) {
-        groupByTypeCheckBox.setVisible(show);
+    public void enableGroupBy(boolean enable) {
+        groupByTypeCheckBox.setVisible(enable);
     }
 
     /**

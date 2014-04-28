@@ -126,19 +126,38 @@
   padding:13px 0 20px;
   height:25px;
 }
+.v-pulse .navigator.top-row {
+  padding-top:0px;
+  height:35px;
+  background-color: #e0e0e0;
+}
+
 .v-pulse .navigator > * {
   vertical-align:top;
 }
 
 .v-pulse .navigator-tab {
   height:25px;
-  border-right:1px solid $c13;
+  border-right:1px solid #a3a3a3;
   padding-left:20px;
   color:$c13;
   font-family:DINWebPro, sans-serif;
   line-height:1;
   width: 150px !important;
   cursor: pointer;
+}
+
+.v-pulse .top-row .navigator-tab {
+  height: 35px;
+  padding-top: 10px;
+  border-bottom: 1px solid #a3a3a3;
+}
+.v-pulse .top-row .hidden {
+  position: absolute;
+  width: 100%;
+  border-bottom: 1px solid #a3a3a3;
+  height: 35px;
+  display:inline;
 }
 
 .v-pulse .navigator-tab * {
@@ -153,6 +172,8 @@
 
 .v-pulse .navigator-tab.active {
   color: $c90;
+  background-color: #fff;
+  border-bottom: none;
 }
 
 .v-pulse .navigator-tab .badge {

@@ -223,7 +223,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         this.order = order;
         this.headers = headers;
         footer = new PulseItemsFooter(itemTable, i18n);
-        navigator = new PulseItemCategoryNavigator(i18n, categories);
+        navigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n, categories);
         root.setSizeFull();
         construct(emptyMessage);
     }
@@ -279,9 +279,9 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
                     itemTable.unselect(id);
                 }
                 if (category == ItemCategory.ALL) {
-                    navigator.showGroupByType(true);
+                    navigator.enableGroupBy(true);
                 } else {
-                    navigator.showGroupByType(false);
+                    navigator.enableGroupBy(false);
                 }
                 refresh();
             }
