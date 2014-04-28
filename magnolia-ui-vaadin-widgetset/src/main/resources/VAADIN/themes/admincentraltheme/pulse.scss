@@ -126,6 +126,12 @@
   padding:13px 0 20px;
   height:25px;
 }
+.v-pulse .navigator.top {
+  padding-top:0px;
+  height:35px;
+  background-color: #e0e0e0;
+}
+
 .v-pulse .navigator > * {
   vertical-align:top;
 }
@@ -141,6 +147,11 @@
   cursor: pointer;
 }
 
+.v-pulse .top .navigator-tab {
+  height: 35px;
+  padding-top: 10px;
+}
+
 .v-pulse .navigator-tab * {
   cursor: pointer;
 }
@@ -153,6 +164,7 @@
 
 .v-pulse .navigator-tab.active {
   color: $c90;
+  background-color: #fff;
 }
 
 .v-pulse .navigator-tab .badge {

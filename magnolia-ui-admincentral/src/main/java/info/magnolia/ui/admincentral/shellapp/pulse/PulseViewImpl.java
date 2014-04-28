@@ -63,6 +63,7 @@ public final class PulseViewImpl implements PulseView {
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
         navigator = new PulseItemCategoryNavigator(i18n, false, ItemCategory.MESSAGES, ItemCategory.TASKS);
+        navigator.addStyleName("top");
         navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
             @Override
