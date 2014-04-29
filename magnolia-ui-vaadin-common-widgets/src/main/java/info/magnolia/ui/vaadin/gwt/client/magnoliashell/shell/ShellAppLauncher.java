@@ -70,8 +70,10 @@ public class ShellAppLauncher extends FlowPanel {
     public interface Listener {
 
         void onHideShellAppsRequested();
+
         void showShellApp(ShellAppType type);
     }
+
     private final static int DIVET_ANIMATION_SPEED = 400;
 
     public static final String USER_MENU_CLASS_NAME = "v-shell-user-menu-wrapper";
@@ -107,9 +109,11 @@ public class ShellAppLauncher extends FlowPanel {
             @Override
             public void execute() {
                 getElement().getStyle().setTop(-60, Unit.PX);
-                JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
-                    setProperty("top", 0);
-                }});
+                JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
+                    {
+                        setProperty("top", 0);
+                    }
+                });
             }
         });
     }
@@ -206,7 +210,6 @@ public class ShellAppLauncher extends FlowPanel {
         }
     }
 
-
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
     }
@@ -214,7 +217,21 @@ public class ShellAppLauncher extends FlowPanel {
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
         Widget w = controlsMap.get(type);
         divetWrapper.getStyle().setDisplay(Display.BLOCK);
-        divetWrapper.setClassName(type == ShellAppType.APPLAUNCHER ? "divet-green" : "divet-white");
+
+        switch (type) {
+        case APPLAUNCHER:
+            divetWrapper.setClassName("divet-green");
+            break;
+        case PULSE:
+            divetWrapper.setClassName("divet-gray");
+            break;
+        case FAVORITE:
+            divetWrapper.setClassName("divet-white");
+            break;
+        default:
+            divetWrapper.setClassName("divet-white");
+        }
+
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         if (animated && divetWrapper.getAbsoluteLeft() != divetPos) {
             Logger.getLogger(getClass().getName()).log(Level.INFO, "DIVET POS: " + divetPos);
