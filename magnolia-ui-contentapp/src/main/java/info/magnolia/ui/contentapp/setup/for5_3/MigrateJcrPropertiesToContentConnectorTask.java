@@ -47,12 +47,12 @@ import javax.jcr.Session;
 
 /**
  * A migration task to move properties <i>workspace</i>, <i>path</i>, <i>includeProperties</i>, <i>includeSystemNodes</i>, <i>defaultOrder</i> and <i>nodeTypes</i>
- * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>)  and adding them to a new node
+ * from <i>subapp/workbench</i> or <i>subApp/editor</i> (only the property <i>workspace</i>) and adding them to a new node
  * <i>contentConnector</i> which is added to <i>workbench</i> or <i>editor</i>.<br/>
  * The property path is renamed to rootPath.
- *
  * This task normally is not meant to be used standalone.
- * @see ContentAppMigrationTask
+ * 
+ * @see {@link ContentAppMigrationTask}
  */
 public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
 
@@ -64,8 +64,6 @@ public class MigrateJcrPropertiesToContentConnectorTask extends QueryTask {
     private static final String ROOTPATH_PROPERTY = "rootPath";
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = '" + WORKBENCH_NODENAME + "' or  name(t) = '" + EDITOR_NODENAME + "' and isdescendantnode('%s')";
-    protected static final String SUB_APP_CLASS_PROPERTY = "subAppClass";
-
 
     public MigrateJcrPropertiesToContentConnectorTask(String path) {
         super("Migrate properties workspace, path from workbench and migrate workspace from editor and add them to a node called contentConnector and add this new node to workbench respectively editor.",
