@@ -58,7 +58,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Moves <code>nodeType</code> property from action definition to its availability definition.
- * @see info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition and its sub-classes.
+ * This task normally is not meant to be used standalone.
+ * 
+ * @see {@link info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition AbstractItemActionDefinition} and its sub-classes
+ * @see {@link ContentAppMigrationTask}
  */
 public class MoveActionNodeTypeRestrictionToAvailabilityTask extends QueryTask {
 

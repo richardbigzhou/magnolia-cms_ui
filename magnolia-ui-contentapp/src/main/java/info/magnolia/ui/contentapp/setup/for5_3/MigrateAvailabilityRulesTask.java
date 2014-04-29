@@ -48,9 +48,9 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
- *
  * This task normally is not meant to be used standalone.
- * @see ContentAppMigrationTask
+ * 
+ * @see {@link ContentAppMigrationTask}
  */
 public class MigrateAvailabilityRulesTask extends QueryTask {
 

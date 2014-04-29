@@ -33,29 +33,25 @@
  */
 package info.magnolia.ui.contentapp.setup.for5_3;
 
+import static info.magnolia.jcr.nodebuilder.Ops.*;
+import static info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
-import info.magnolia.cms.core.Path;
-import info.magnolia.cms.util.UnicodeNormalizer;
-import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.nodebuilder.NodeBuilder;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.ModuleVersionHandlerTestCase;
-import info.magnolia.module.model.Version;
-import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.module.InstallContextImpl;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.contentapp.detail.DetailSubApp;
 import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,264 +64,162 @@ import org.junit.Test;
  * <li>{@link MoveActionNodeTypeRestrictionToAvailabilityTask}</li>
  * </ul>
  */
-public abstract class AbstractContentAppMigrationTaskTest extends ModuleVersionHandlerTestCase {
+public class AbstractContentAppMigrationTaskTest extends RepositoryTestCase {
+
+    private static final String TEST_RULE_CLASS = "info.magnolia.test.availability.AnyRule";
 
     private Session session;
-
+    private InstallContext installContext;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
+        installContext = new InstallContextImpl(mock(ModuleRegistry.class));
+        session = installContext.getConfigJCRSession();
     }
 
     /**
-     * Returns the path to the module, e.g. "/modules/forum"
-     */
-    public abstract String getModulePath();
-
-    /**
-     * Returns the node-name of app, e.g. "forum", "assets", ... .
-     */
-    public abstract String getAppName();
-
-
-    /**
-     * Returns the node-name of main content-subApp, e.g. "browser".
-     */
-    public abstract String getMainSubAppName();
-
-    /**
-     * Returns the node-name of the detail-app, usually "detail".
-     * Can be null, since not every app has such a content-app.
-     */
-    public abstract String getDetailSubAppName();
-
-    /**
-     * Returns the name of the workspace on which the content-app stores its content.
-     */
-    public abstract String getWorkspaceName();
-
-    /**
-     * Returns the path under which the content-app stores its content (e.g. "/").
-     */
-    public abstract String getPath();
-
-    /**
-     * Returns the version which is installed before the update-process takes place.
-     */
-    public abstract Version getCurrentlyInstalledVersion();
-
-
-
-    /**
-     * Testing MoveActionNodeTypeRestrictionToAvailabilityTask.
+     * Test for the {@link MoveActionNodeTypeRestrictionToAvailabilityTask}.
      */
     @Test
     public void testMoveActionNodeTypeRestrictionToAvailabilityTask() throws Exception {
         // GIVEN
-        String actionPath = getModulePath() + "/apps/" + getAppName() + "/subApps/" + getMainSubAppName() + "/actions/editItem";
-        String nodeTypeDummyValue = "mgnl:dummyNode";
-        Node actionNode = NodeUtil.createPath(session.getRootNode(), actionPath, NodeTypes.ContentNode.NAME);
+        Node actionNode = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/browser/actions/editItem", NodeTypes.ContentNode.NAME);
         actionNode.setProperty("class", EditItemActionDefinition.class.getName());
-        actionNode.setProperty(MoveActionNodeTypeRestrictionToAvailabilityTask.NODE_TYPE, nodeTypeDummyValue);
+        actionNode.setProperty(NODE_TYPE, "mgnl:dummyNode");
         session.save();
 
+        ContentAppMigrationTask task = new ContentAppMigrationTask("/modules/test");
+
         // WHEN
-        InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(getCurrentlyInstalledVersion());
-        Session installCtxSession = installContext.getJCRSession(RepositoryConstants.CONFIG);
+        task.execute(installContext);
 
         // THEN
-        //
-        // nodeType-property has been removed from the actionNode
-        assertTrue(!(installCtxSession.getNode(actionPath).hasProperty(MoveActionNodeTypeRestrictionToAvailabilityTask.NODE_TYPE)));
-        // availability- and nodeTypes- node(s) exists
-        String expectedNodeTypesNodePath = actionPath + "/availability/" + MoveActionNodeTypeRestrictionToAvailabilityTask.NODE_TYPES;
-        assertTrue(installCtxSession.nodeExists(expectedNodeTypesNodePath));
-        // new nodeTypesNodePath hast the nodeType as a property
-        String nodeTypePropertyName = Path.getValidatedLabel(nodeTypeDummyValue);    // e.g. "dummyNode"
-        String nodeTypePropertyValue = nodeTypeDummyValue;   // e.g. "mgnl:dummyNode"
-        assertEquals(nodeTypePropertyValue, installCtxSession.getNode(expectedNodeTypesNodePath).getProperty(nodeTypePropertyName).getString());
+        assertFalse(actionNode.hasProperty(NODE_TYPE)); // nodeType property has been removed from the action node
+        assertTrue(actionNode.hasNode("availability")); // availability and nodeTypes nodes exist
+        assertTrue(actionNode.getNode("availability").hasNode(NODE_TYPES));
+        assertEquals("mgnl:dummyNode", actionNode.getNode("availability/nodeTypes").getProperties().nextProperty().getString()); // new property under nodeTypes has the same value as original nodeType
     }
 
-
     /**
-     * Testing MigrateAvailabilityRulesTask.
+     * Test for the {@link MigrateAvailabilityRulesTask}.
      */
     @Test
     public void testMigrateAvailabilityRulesTask() throws Exception {
         // GIVEN
-        //
-        String className = "info.magnolia.ui.api.availability.HasVersionsRule";
-        // a content-node
-        String availabilityContentNodePath = getModulePath() + "/apps/" + getAppName() + "/subApps/" + getMainSubAppName() + "/actions/showVersions/availability";
-        Node availabilityContentNode = NodeUtil.createPath(session.getRootNode(), availabilityContentNodePath, NodeTypes.ContentNode.NAME);
-        availabilityContentNode.setProperty("ruleClass", className);
-        // a folder-node
-        String availabilityFolderNodePath = getModulePath() + "/apps/" + getAppName() + "2/subApps/" + getMainSubAppName() + "/actions/showVersions/availability";
-        Node folderNode = NodeUtil.createPath(session.getRootNode(), availabilityContentNodePath, NodeTypes.Folder.NAME);
-        folderNode.setProperty("ruleClass", className);
-        //
+        Node availability = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/browser/actions/testEdit/availability", NodeTypes.ContentNode.NAME);
+        availability.setProperty("ruleClass", TEST_RULE_CLASS);
         session.save();
 
+        ContentAppMigrationTask task = new ContentAppMigrationTask("/modules/test");
+
         // WHEN
-        InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(getCurrentlyInstalledVersion());
+        task.execute(installContext);
 
         // THEN
-        Session installCtxSession = installContext.getJCRSession("config");
-        String ruleContentNodePath = availabilityContentNodePath + "/rules/" + StringUtils.substringAfterLast(className, ".");
-        String ruleFolderNodePath = availabilityFolderNodePath + "/rules/" + StringUtils.substringAfterLast(className, ".");
-
-        assertTrue(installCtxSession.nodeExists(ruleContentNodePath));
-        assertNotNull(PropertyUtil.getString(installCtxSession.getNode(ruleContentNodePath), "implementationClass"));
-        assertTrue(!installCtxSession.nodeExists(ruleFolderNodePath));
-
+        assertFalse(availability.hasProperty("ruleClass"));
+        assertTrue(availability.hasNode("rules"));
+        assertTrue(availability.getNode("rules").hasNodes());
+        assertTrue(availability.getNode("rules").getNodes().nextNode().hasProperty("implementationClass"));
+        assertEquals(TEST_RULE_CLASS, availability.getNode("rules").getNodes().nextNode().getProperty("implementationClass").getString());
     }
 
-
     /**
-     * Testing ChangeAvailabilityRuleClassesTask.
+     * Test for the {@link ChangeAvailabilityRuleClassesTask}.
      */
     @Test
     public void testChangeAvailabilityRuleClassesTask() throws Exception {
-
         // GIVEN
-        Map<String, String> classMappings = ChangeAvailabilityRuleClassesTask.getClassMapping();
-        Map<String, String> newNodePathNewClassMap = new HashMap<String, String>();
-        int i = 0;
-        Iterator<String> classMappingsIterator = classMappings.keySet().iterator();
-        while (classMappingsIterator.hasNext()) {
-            String oldClass = classMappingsIterator.next();
-            String newExceptedClass = classMappings.get(oldClass);
-            StringBuilder ruleNodeOldPath = new StringBuilder(getModulePath()).append("/apps/myApp").append(i).append("/browser/actions/someAction/availability");
-            StringBuilder ruleNodeNewPath = new StringBuilder(ruleNodeOldPath).append("/rules/").append(StringUtils.substringAfterLast(oldClass, "."));
-            createNodeWithOldRuleClassProperty(ruleNodeOldPath.toString(), oldClass);
-            newNodePathNewClassMap.put(ruleNodeNewPath.toString(), newExceptedClass);
-            i++;
-        }
+        Node availability = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/browser/actions/someAction/availability", NodeTypes.ContentNode.NAME);
+        availability.setProperty("ruleClass", "info.magnolia.ui.api.availability.IsNotDeletedRule");
         session.save();
 
+        ContentAppMigrationTask task = new ContentAppMigrationTask("/modules/test");
+
         // WHEN
-        InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(getCurrentlyInstalledVersion());
+        task.execute(installContext);
 
         // THEN
-        //
-        Iterator<String> newNodePathsIterator = newNodePathNewClassMap.keySet().iterator();
-        while (newNodePathsIterator.hasNext()) {
-            String ruleNodeNewPath = newNodePathsIterator.next();
-            String ruleNodeExpectedClassName = newNodePathNewClassMap.get(ruleNodeNewPath);
-            Node newNode = installContext.getJCRSession("config").getNode(ruleNodeNewPath);
-            assertEquals(ruleNodeExpectedClassName, newNode.getProperty("implementationClass").getString());
-        }
-
+        assertFalse(availability.hasProperty("ruleClass"));
+        assertTrue(availability.hasNode("rules"));
+        assertTrue(availability.getNode("rules").hasNodes());
+        assertTrue(availability.getNode("rules").getNodes().nextNode().hasProperty("implementationClass"));
+        assertEquals(IsNotDeletedRule.class.getName(), availability.getNode("rules").getNodes().nextNode().getProperty("implementationClass").getString());
     }
 
-
     /**
-     * Testing MigrateJcrPropertiesToContentConnectorTask -task-class.
-     * Tests the 'default-content-app' (e.g. "browser")
-     * and the 'detail-subApp' (if existing).
+     * Test for the {@link MigrateJcrPropertiesToContentConnectorTask}.
+     * Tests the default subApp (browser) and the detail subApp if existing.
      */
     @Test
     public void testMigrateJcrPropertiesToContentConnectorTask() throws Exception {
-        if (StringUtils.isBlank(getMainSubAppName())) {
-            throw new Exception("You must specify mainSubAppName ; #getMainSubAppName must return a value which is neither null nor blank.");
-        }
-
         // GIVEN
-        //
-        String workspaceName = getWorkspaceName();
-        String path = getPath();
-        String contentSubAppPath = null;
-        String detailSubAppPath = null;
-        boolean withDetailSubApp = false;
-        if (StringUtils.isNotBlank(getMainSubAppName())) {
-            contentSubAppPath = getModulePath() + "/apps/" + getAppName() + "/subApps/" + getMainSubAppName();
-        }
-        if (StringUtils.isNotBlank(getDetailSubAppName())) {
-            detailSubAppPath = getModulePath() + "/apps/" + getAppName() + "/subApps/" + getDetailSubAppName();
-            withDetailSubApp = true;
-        }
-        String noSubAppPath = getModulePath() + "/apps/" + getAppName() + "1/" + getMainSubAppName();
+        String workspace = "workspace";
+        String rootPath = "/rootPath";
 
-        setUpDummyContentAppWithBrowserAndDetail(contentSubAppPath, detailSubAppPath, getWorkspaceName(), getPath(), true);
-        setUpDummyContentAppWithBrowserAndDetail(noSubAppPath, null, "someWorkspaceName", "/xyz", false);
+        Node browser = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/browser", NodeTypes.ContentNode.NAME);
+        new NodeBuilder(browser, addNode("workbench", NodeTypes.ContentNode.NAME).then(
+                addProperty("workspace", workspace),
+                addProperty("path", rootPath),
+                addProperty("foo", "bar"),
+                addNode("nodeTypes", NodeTypes.ContentNode.NAME).then(
+                        addNode("mainNodeType", NodeTypes.ContentNode.NAME).then(
+                                addProperty("name", "mgnl:someNodeType"),
+                                addProperty("icon", "icon-dummy"))))).exec();
 
+        Node detail = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/detail", NodeTypes.ContentNode.NAME);
+        new NodeBuilder(detail, addNode("editor", NodeTypes.ContentNode.NAME).then(
+                addProperty("workspace", workspace),
+                addNode("form", NodeTypes.ContentNode.NAME))).exec();
+
+        Node nested = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/subApps/generic/nested", NodeTypes.ContentNode.NAME);
+        new NodeBuilder(nested,
+                addProperty("subAppClass", DetailSubApp.class.getName()), // since nested subApp is not a direct child of the 'subApps' node, the task expects to find a subAppClass to know it can operate on it anyhow.
+                addNode("editor", NodeTypes.ContentNode.NAME).then(
+                        addProperty("workspace", workspace),
+                        addNode("form", NodeTypes.ContentNode.NAME))).exec();
+
+        Node dialogWorkbench = NodeUtil.createPath(session.getRootNode(), "/modules/test/apps/myApp/chooseDialog/field/workbench", NodeTypes.ContentNode.NAME);
+        dialogWorkbench.setProperty("extends", "../../../subApps/browser/workbench");
+
+        session.save();
+
+        ContentAppMigrationTask task = new ContentAppMigrationTask("/modules/test");
 
         // WHEN
-        //
-        InstallContext installContext = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(getCurrentlyInstalledVersion());
-
+        task.execute(installContext);
 
         // THEN
-        //
-        Session installCtxSession = installContext.getJCRSession("config");
+        // // BROWSER SUBAPP
+        assertTrue(browser.hasNode("contentConnector")); // contentConnector node created
+        assertTrue(browser.getNode("contentConnector").hasProperty("workspace")); // workspace property properly moved
+        assertTrue(browser.getNode("contentConnector").hasProperty("rootPath")); // path property properly moved and renamed to rootPath
+        assertEquals(workspace, browser.getNode("contentConnector").getProperty("workspace").getString());
+        assertEquals(rootPath, browser.getNode("contentConnector").getProperty("rootPath").getString());
+        assertTrue(browser.getNode("contentConnector").hasNode("nodeTypes")); // nodeTypes have been moved
+        assertTrue(browser.getNode("contentConnector").getNode("nodeTypes").hasNode("mainNodeType"));
+        assertEquals("mgnl:someNodeType", browser.getNode("contentConnector").getNode("nodeTypes").getNode("mainNodeType").getProperty("name").getString());
 
-        // contentConnector-nodes created
-        String contentSubAppContentConnectorPath = contentSubAppPath + "/contentConnector";
-        String detailSubAppContentConnectorPath = null;
-        assertTrue(installCtxSession.nodeExists(contentSubAppContentConnectorPath));
-        if (withDetailSubApp) {
-            detailSubAppContentConnectorPath = detailSubAppPath + "/contentConnector";
-            assertTrue(installCtxSession.nodeExists(detailSubAppContentConnectorPath));
-        }
-        // but not if the parent is not a subApp
-        String noSubAppAppContentConnectorPath = noSubAppPath + "/contentConnector";
-        assertTrue(!(installCtxSession.nodeExists(noSubAppAppContentConnectorPath)));
+        assertFalse(browser.getNode("workbench").hasProperty("workspace"));
+        assertFalse(browser.getNode("workbench").hasProperty("path"));
+        assertFalse(browser.getNode("workbench").hasNode("nodeTypes"));
+        assertTrue(browser.getNode("workbench").hasProperty("foo")); // didn't move other properties
 
+        // // DETAIL SUBAPP
+        assertTrue(detail.hasNode("contentConnector"));
+        assertTrue(detail.getNode("contentConnector").hasProperty("workspace"));
+        assertEquals(workspace, detail.getNode("contentConnector").getProperty("workspace").getString());
+        assertFalse(detail.getNode("editor").hasProperty("workspace"));
 
-        // path and workspace are moved properly; path was renamed to rootPath
-        Node contentSubAppContentConnectorNode = installCtxSession.getNode(contentSubAppContentConnectorPath);
-        assertTrue(contentSubAppContentConnectorNode.hasProperty("rootPath"));
-        assertEquals(path, PropertyUtil.getString(contentSubAppContentConnectorNode, "rootPath"));
-        // workspace-property-value properly moved
-        assertEquals(workspaceName, PropertyUtil.getString(contentSubAppContentConnectorNode, "workspace"));
-        if (withDetailSubApp) {
-            Node detailSubAppContentConnectorNode = installCtxSession.getNode(detailSubAppContentConnectorPath);
-            assertTrue(detailSubAppContentConnectorNode.hasProperty("workspace"));
-        }
-        // nodeTypes-node has been moved
-        assertTrue(installCtxSession.nodeExists(contentSubAppContentConnectorPath + "/nodeTypes"));
+        // // NESTED SUBAPP
+        assertTrue(nested.hasNode("contentConnector"));
+        assertTrue(nested.getNode("contentConnector").hasProperty("workspace"));
+        assertEquals(workspace, nested.getNode("contentConnector").getProperty("workspace").getString());
+        assertFalse(nested.getNode("editor").hasProperty("workspace"));
 
-        // didn't move "any" prop
-        assertEquals(null, PropertyUtil.getString(contentSubAppContentConnectorNode, "foo"));
+        // // NOT A SUBAPP
+        assertFalse(dialogWorkbench.hasNode("contentConnector"));
     }
-
-
-    private void setUpDummyContentAppWithBrowserAndDetail(String browserSubAppPath, String detailSubAppPath, String workspaceName, String path, boolean subAppClass) throws Exception {
-        if (StringUtils.isNotBlank(browserSubAppPath)) {
-            String workbenchPath = browserSubAppPath + "/workbench";
-            NodeUtil.createPath(session.getRootNode(), workbenchPath, NodeTypes.ContentNode.NAME);
-            Node workbench = session.getNode(workbenchPath);
-            if (subAppClass) {
-                workbench.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY, "some.class");
-            }
-            workbench.setProperty("workspace", workspaceName);
-            workbench.setProperty("path", path);
-            workbench.setProperty("foo", "bar");
-            Node nodeTypesNode = workbench.addNode("nodeTypes", NodeTypes.ContentNode.NAME);
-            Node nodeType = nodeTypesNode.addNode("mainNodeType", NodeTypes.ContentNode.NAME);
-            nodeType.setProperty("icon", "anIcon");
-            nodeType.setProperty("name", "mgnl:someNodeName");
-
-        }
-        if (StringUtils.isNotBlank(detailSubAppPath)) {
-            String editorPath = detailSubAppPath + "/editor";
-            Node editor = NodeUtil.createPath(session.getRootNode(), editorPath, NodeTypes.ContentNode.NAME, true);
-            if (subAppClass) {
-                editor.getParent().setProperty(MigrateJcrPropertiesToContentConnectorTask.SUB_APP_CLASS_PROPERTY, "some.class");
-            }
-            editor.setProperty("workspace", workspaceName);
-        }
-        session.save();
-    }
-
-    private void createNodeWithOldRuleClassProperty(String nodePath, String ruleClassName) throws Exception {
-        Node availabilityContentNode1 = NodeUtil.createPath(session.getRootNode(), nodePath, NodeTypes.ContentNode.NAME);
-        availabilityContentNode1.setProperty("ruleClass", ruleClassName);
-    }
-
 
 }

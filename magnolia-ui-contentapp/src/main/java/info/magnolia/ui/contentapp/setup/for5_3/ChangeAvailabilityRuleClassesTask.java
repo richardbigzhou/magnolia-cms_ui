@@ -48,19 +48,19 @@ import javax.jcr.RepositoryException;
 /**
  * A task which is changing values for availability@ruleClass-properties in the config app- for a few classes which have been moved from
  * package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.
- *
  * This task normally is not meant to be used standalone.
- * @see ContentAppMigrationTask
+ * 
+ * @see {@link ContentAppMigrationTask}
  */
 public class ChangeAvailabilityRuleClassesTask extends QueryTask {
 
     private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' and isdescendantnode('%s')";
-    private static  Map<String, String> classMapping;
-    protected static final String RULE_CLASS = "ruleClass";
+    private static final String RULE_CLASS = "ruleClass";
+
+    private Map<String, String> classMappings;
 
     public ChangeAvailabilityRuleClassesTask(String path) {
-        super("Change availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.",
-                "Changing availability@ruleClass-properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, String.format(QUERY, path));
+        super("Update rule classes to ui-framework", "This task changes availability@ruleClass properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, String.format(QUERY, path));
     }
 
     public ChangeAvailabilityRuleClassesTask() {
@@ -81,16 +81,16 @@ public class ChangeAvailabilityRuleClassesTask extends QueryTask {
         }
     }
 
-    public final static Map<String, String> getClassMapping() {
-        if (classMapping == null) {
-            classMapping = new HashMap<String, String>();
-            classMapping.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
-            classMapping.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
-            classMapping.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
-            classMapping.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
-            classMapping = Collections.unmodifiableMap(classMapping);
+    private Map<String, String> getClassMapping() {
+        if (classMappings == null) {
+            classMappings = new HashMap<String, String>();
+            classMappings.put("info.magnolia.ui.api.availability.HasVersionsRule", "info.magnolia.ui.framework.availability.HasVersionsRule");
+            classMappings.put("info.magnolia.ui.api.availability.IsDeletedRule", "info.magnolia.ui.framework.availability.IsDeletedRule");
+            classMappings.put("info.magnolia.ui.api.availability.IsNotDeletedRule", "info.magnolia.ui.framework.availability.IsNotDeletedRule");
+            classMappings.put("info.magnolia.ui.api.availability.IsNotVersionedRule", "info.magnolia.ui.framework.availability.IsNotVersionedRule");
+            classMappings = Collections.unmodifiableMap(classMappings);
         }
-        return classMapping;
+        return classMappings;
     }
 
 }

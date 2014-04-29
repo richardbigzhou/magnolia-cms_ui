@@ -140,6 +140,20 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
     }
 
     @Test
+    public void testUpdateTo53MigratesAdmincentralContentApps() throws Exception {
+        // GIVEN
+        Node browser = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser", NodeTypes.ContentNode.NAME);
+        browser.addNode("workbench", NodeTypes.ContentNode.NAME);
+        session.save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertTrue(browser.hasNode("contentConnector"));
+    }
+
+    @Test
     public void testUpdateTo53AddsSaveItemPropertyAction() throws Exception {
         // GIVEN
         setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions");
