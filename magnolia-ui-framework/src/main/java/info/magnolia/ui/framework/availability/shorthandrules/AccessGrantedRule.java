@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,8 +43,7 @@ import java.util.Collection;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
- * {@link AvailabilityRule} implementation which returns positive result if current user obtains any of the
- * specified roles.
+ * {@link AvailabilityRule} implementation which returns true if current user has any of the specified roles.
  */
 public class AccessGrantedRule implements AvailabilityRule {
 
@@ -52,10 +51,8 @@ public class AccessGrantedRule implements AvailabilityRule {
 
     private AccessDefinition accessDefinition;
 
-    public AccessGrantedRule() {}
-
-    public AccessGrantedRule(AccessDefinition accessDefinition) {
-        this.accessDefinition = accessDefinition;
+    public AccessDefinition getAccessDefinition() {
+        return accessDefinition;
     }
 
     public void setAccessDefinition(AccessDefinition accessDefinition) {

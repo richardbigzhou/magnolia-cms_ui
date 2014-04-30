@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,30 +38,22 @@ import info.magnolia.ui.api.availability.AvailabilityRule;
 import java.util.Collection;
 
 /**
- * Action availability rule which returns positive result in case action is claimed to
- * work with multiple items.
+ * {@link AvailabilityRule} implementation which returns true if subject should support working with multiple items.
  */
 public class MultipleItemsAllowedRule implements AvailabilityRule {
 
-    private boolean multipleAllowed;
+    private boolean multipleItemsAllowed;
 
-    public MultipleItemsAllowedRule(Boolean isMultipleAllowed) {
-        multipleAllowed = isMultipleAllowed;
+    public boolean isMultipleItemsAllowed() {
+        return multipleItemsAllowed;
     }
 
-    public MultipleItemsAllowedRule() {
-    }
-
-    public MultipleItemsAllowedRule(String isMultipleAllowed) {
-        this(Boolean.parseBoolean(isMultipleAllowed));
-    }
-
-    public void setMultipleAllowed(boolean multipleAllowed) {
-        this.multipleAllowed = multipleAllowed;
+    public void setMultipleItemsAllowed(boolean multipleItemsAllowed) {
+        this.multipleItemsAllowed = multipleItemsAllowed;
     }
 
     @Override
     public boolean isAvailable(Collection<?> itemIds) {
-        return multipleAllowed || itemIds.size() < 2;
+        return multipleItemsAllowed || itemIds.size() < 2;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,55 +33,50 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.PermissionUtil;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
+import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Action availability rule which returns positive result in case action is capable
- * of operating over root JCR items.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if current user has write permissions for the evaluated items.
  */
-public class IsRootItemAllowedRule extends AbstractAvailabilityRule {
+public class WritePermissionRequiredRule extends AbstractAvailabilityRule {
 
-    private boolean root;
+    private static Logger log = LoggerFactory.getLogger(WritePermissionRequiredRule.class);
 
-    public IsRootItemAllowedRule() {}
+    private boolean writePermissionRequired;
 
-    public IsRootItemAllowedRule(Boolean isRoot) {
-        root = isRoot;
+    public boolean isWritePermissionRequired() {
+        return writePermissionRequired;
     }
 
-    private boolean isRoot(Object itemId) {
-        if (itemId instanceof JcrItemId) {
-
-            JcrItemId jcrItemId = (JcrItemId) itemId;
-            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            try {
-                node.getParent();
-                return false;
-            } catch (RepositoryException e) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setRoot(boolean root) {
-        this.root = root;
+    public void setWritePermissionRequired(boolean writePermissionRequired) {
+        this.writePermissionRequired = writePermissionRequired;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (itemId instanceof JcrNewNodeItemId) {
-            return true;
-        }
-
-        if (itemId == null || isRoot(itemId)) {
-            return root;
+        if (writePermissionRequired && !MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE) && (itemId instanceof JcrItemId)) {
+            Item jcrItem = null;
+            try {
+                jcrItem = JcrItemUtil.getJcrItem((JcrItemId)itemId);
+                Node node = jcrItem instanceof Property ? jcrItem.getParent() : (Node) jcrItem;
+                return PermissionUtil.isGranted(node, Permission.WRITE);
+            } catch (RepositoryException e) {
+                log.warn("Could not evaluate write permission for {}.", jcrItem);
+            }
         }
         return true;
     }

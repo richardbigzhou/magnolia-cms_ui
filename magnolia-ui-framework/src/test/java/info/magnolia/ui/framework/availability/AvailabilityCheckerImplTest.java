@@ -54,6 +54,8 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.AvailabilityRuleDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
@@ -62,6 +64,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,23 +76,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class tests AvailabilityChecker / AvailabilityCheckerImpl.
- * Some tests have been moved from AbstractActionExecutorTest here.
+ * Tests for the {@link AvailabilityCheckerImpl}.
  */
-public class AvailabilityCheckerTest extends MgnlTestCase {
+public class AvailabilityCheckerImplTest extends MgnlTestCase {
+
+    private static final String TEST_ROLE = "testUserRole";
+    private static final String WORKSPACE = "mockWorkspaceName";
 
     private AvailabilityChecker availabilityChecker;
     private ComponentProvider componentProvider;
     private JcrContentConnector jcrContentConnector;
-    private static final String TESTUSERNAME = "testUser";
-    private String workspaceName = "mockWorkspaceName";
     private MockSession mockSession;
     private UserManager userManager;
     private RoleManager roleManager;
     private MgnlUser user;
     private Node rootNode;
     private Node testNode;
-
 
     @Override
     @Before
@@ -98,7 +100,7 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         final ArrayList<String> roles = new ArrayList<String>();
-        roles.add(TESTUSERNAME);
+        roles.add(TEST_ROLE);
         user = mock(MgnlUser.class);
         when(user.getRoles()).thenReturn(roles);
         when(user.getAllRoles()).thenReturn(roles);
@@ -117,7 +119,7 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         when(securitySupport.getRoleManager()).thenReturn(roleManager);
         ComponentsTestUtil.setInstance(SecuritySupport.class, securitySupport);
 
-        mockSession = new MockSession(workspaceName);
+        mockSession = new MockSession(WORKSPACE);
         MockUtil.setSessionAndHierarchyManager(mockSession);
 
         componentProvider = new MockComponentProvider();
@@ -131,23 +133,19 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
 
     }
 
-
-    /**
-     * This methods tests AccessGrantedRule -class.
-     */
     @Test
-    public void test_AccessGrantedRule() throws Exception {
+    public void testAccessGrantedRule() throws Exception {
         // GIVEN
         //
         // no rules defined
-        ConfiguredAvailabilityDefinition availabilityDefinitionNoRolesDefined = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionNoRolesDefined = new ConfiguredAvailabilityDefinition();
         // testUser in accessDefinition
-        ConfiguredAvailabilityDefinition availabilityDefinitionTestUserRoleRequired = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionTestUserRoleRequired = new ConfiguredAvailabilityDefinition();
         ConfiguredAccessDefinition accessDefinition = new ConfiguredAccessDefinition();
-        accessDefinition.addRole(TESTUSERNAME);
+        accessDefinition.addRole(TEST_ROLE);
         availabilityDefinitionTestUserRoleRequired.setAccess(accessDefinition);
         // superuser in accessDefinition
-        ConfiguredAvailabilityDefinition availabilityDefinitionSuperUserRoleRequired = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionSuperUserRoleRequired = new ConfiguredAvailabilityDefinition();
         accessDefinition = new ConfiguredAccessDefinition();
         accessDefinition.addRole("superuser");
         availabilityDefinitionSuperUserRoleRequired.setAccess(accessDefinition);
@@ -158,16 +156,12 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionSuperUserRoleRequired, getJcrItemIdsList(testNode)));
     }
 
-
-    /**
-     * This methods tests IsRootItemAllowedRule -class.
-     */
     @Test
-    public void test_IsRootItemAllowedRule() throws Exception {
+    public void testJcrRootAllowedRule() throws Exception {
         // GIVEN
-        ConfiguredAvailabilityDefinition availabilityDefinitionForRoot = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionForRoot = new ConfiguredAvailabilityDefinition();
         availabilityDefinitionForRoot.setRoot(true);
-        ConfiguredAvailabilityDefinition availabilityDefinitionNotForRoot = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionNotForRoot = new ConfiguredAvailabilityDefinition();
         availabilityDefinitionNotForRoot.setRoot(false);
 
         // THEN
@@ -177,19 +171,16 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionNotForRoot, getJcrItemIdsList(testNode)));
     }
 
-    /**
-     * This methods tests JcrItemNodeTypeAllowedRule -class.
-     */
     @Test
-    public void test_JcrItemNodeTypeAllowedRule() throws Exception {
+    public void testJcrNodeTypesAllowedRule() throws Exception {
         // GIVEN
         //
         Node contentNode = rootNode.addNode("testContentNode", NodeTypes.ContentNode.NAME);
         Node folderNode = rootNode.addNode("testFolderNode", NodeTypes.Folder.NAME);
         Node pageNode = rootNode.addNode("testPageNode", NodeTypes.Page.NAME);
 
-        ConfiguredAvailabilityDefinition availabilityDefinitionNoNodesDefined = createBaseAvailabilityDefinition(true);
-        ConfiguredAvailabilityDefinition availabilityDefinitionWithNodeTypes = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionNoNodesDefined = new ConfiguredAvailabilityDefinition();
+        ConfiguredAvailabilityDefinition availabilityDefinitionWithNodeTypes = new ConfiguredAvailabilityDefinition();
         availabilityDefinitionWithNodeTypes.setNodeTypes(Arrays.asList(NodeTypes.ContentNode.NAME, NodeTypes.Folder.NAME));
 
         // THEN
@@ -202,55 +193,46 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionWithNodeTypes, getJcrItemIdsList(pageNode)));
     }
 
-    /**
-     * This methods tests JcrNodesAllowedRule -class.
-     */
     @Test
-    public void test_JcrNodesAllowedRule() throws Exception {
+    public void testJcrNodesAllowedRule() throws Exception {
         // GIVEN
-        ConfiguredAvailabilityDefinition availabilityDefinitionNodesAllowed = createBaseAvailabilityDefinition(true);
-        Property testProperty = testNode.setProperty("testProperty", "abcdefg");
+        ConfiguredAvailabilityDefinition availabilityDefinitionNodesAllowed = new ConfiguredAvailabilityDefinition();
+        ConfiguredAvailabilityDefinition availabilityDefinitionNodesNotAllowed = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionNodesNotAllowed.setNodes(false);
 
         // THEN
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionNodesAllowed, getJcrItemIdsList(testNode)));
-        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionNodesAllowed, getJcrPropertyItemIdsList(testProperty)));
+        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionNodesNotAllowed, getJcrItemIdsList(testNode)));
     }
 
-    /**
-     * This methods tests JcrPropertiesAllowedRule -class.
-     */
     @Test
-    public void test_JcrPropertiesAllowedRule() throws Exception {
+    public void testJcrPropertiesAllowedRule() throws Exception {
         // GIVEN
-        ConfiguredAvailabilityDefinition availabilityDefinitionPropertiesAllowed = createBaseAvailabilityDefinition(false);
+        ConfiguredAvailabilityDefinition availabilityDefinitionPropertiesNotAllowed = new ConfiguredAvailabilityDefinition();
+        ConfiguredAvailabilityDefinition availabilityDefinitionPropertiesAllowed = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionPropertiesAllowed.setProperties(true);
         Property testProperty = testNode.setProperty("testProperty", "abcdefg");
 
         // THEN
-        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionPropertiesAllowed, getJcrItemIdsList(testNode)));
+        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionPropertiesNotAllowed, getJcrPropertyItemIdsList(testProperty)));
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionPropertiesAllowed, getJcrPropertyItemIdsList(testProperty)));
     }
 
-
-    /**
-     * This methods tests MultipleItemsAllowedRule -class.
-     */
     @Test
-    public void test_MultipleItemsAllowedRule() throws Exception {
+    public void testMultipleItemsAllowedRule() throws Exception {
         // GIVEN
-        //
-        ConfiguredAvailabilityDefinition availabilityDefinitionForMultiItems = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionForMultiItems = new ConfiguredAvailabilityDefinition();
         availabilityDefinitionForMultiItems.setMultiple(true);
-        ConfiguredAvailabilityDefinition availabilityDefinitionForOneItemOnly = createBaseAvailabilityDefinition(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionForOneItemOnly = new ConfiguredAvailabilityDefinition();
         availabilityDefinitionForOneItemOnly.setMultiple(false);
 
         List<Object> oneItem = getJcrItemIdsList(testNode);
         List<Object> manyItems = new ArrayList<Object>();
         Node anotherNode = rootNode.addNode("testNode2");
-        manyItems.add(new JcrItemId(testNode.getIdentifier(), workspaceName));
-        manyItems.add(new JcrItemId(anotherNode.getIdentifier(), workspaceName));
+        manyItems.add(new JcrItemId(testNode.getIdentifier(), WORKSPACE));
+        manyItems.add(new JcrItemId(anotherNode.getIdentifier(), WORKSPACE));
 
         // THEN
-        //
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionForMultiItems, manyItems));
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionForMultiItems, oneItem));
 
@@ -258,74 +240,88 @@ public class AvailabilityCheckerTest extends MgnlTestCase {
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionForOneItemOnly, manyItems));
     }
 
-    /**
-     * This methods tests WritePermissionsAvailableRule -class.
-     */
     @Test
-    public void test_WritePermissionsAvailableRule() throws Exception {
+    public void testWritePermissionRequiredRule() throws Exception {
         // GIVEN
         when(userManager.hasAny("superuser", "superuser", SecurityConstants.NODE_ROLES)).thenReturn(false);
-        ConfiguredAvailabilityDefinition availabilityDefinitionWritePermissionsNotRequired = createBaseAvailabilityDefinition(true);
-        ConfiguredAvailabilityDefinition availabilityDefinitionWritePermissionsRequired = createBaseAvailabilityDefinition(true);
-        availabilityDefinitionWritePermissionsRequired.setWritePermissionRequired(true);
+        ConfiguredAvailabilityDefinition availabilityDefinitionWritePermissionNotRequired = new ConfiguredAvailabilityDefinition();
+        ConfiguredAvailabilityDefinition availabilityDefinitionWritePermissionRequired = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionWritePermissionRequired.setWritePermissionRequired(true);
 
         // THEN
-        assertTrue(availabilityChecker.isAvailable(availabilityDefinitionWritePermissionsNotRequired, getJcrItemIdsList(testNode)));
-        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionWritePermissionsRequired, getJcrItemIdsList(testNode)));
+        assertTrue(availabilityChecker.isAvailable(availabilityDefinitionWritePermissionNotRequired, getJcrItemIdsList(testNode)));
+        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionWritePermissionRequired, getJcrItemIdsList(testNode)));
     }
 
-
-    /**
-     * Test how the AvailabilityChecker works when adding more availability-rule-classes.
-     */
     @Test
-    public void test_addingRuleClasses() throws Exception {
+    public void testAddingRuleClasses() throws Exception {
         // GIVEN
-        ConfiguredAvailabilityDefinition availabilityDefinitionWithMultiAllowRules = createBaseAvailabilityDefinition(true);
-        availabilityDefinitionWithMultiAllowRules.setRules(getConfiguredAvailabilityRuleDefinition(new Class[]{DummyRuleAllow.class, DummyRuleAllow2.class}));
+        ConfiguredAvailabilityDefinition availabilityDefinitionWithMultiAllowRules = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionWithMultiAllowRules.setRules(getAvailabilityRules(DummyRuleAllow.class, DummyRuleAllow2.class));
 
-        ConfiguredAvailabilityDefinition availabilityDefinitionWithOneDenyRule = createBaseAvailabilityDefinition(true);
-        availabilityDefinitionWithOneDenyRule.setRules(getConfiguredAvailabilityRuleDefinition(new Class[]{DummyRuleDeny.class}));
+        ConfiguredAvailabilityDefinition availabilityDefinitionWithOneDenyRule = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionWithOneDenyRule.setRules(getAvailabilityRules(DummyRuleDeny.class));
 
-        ConfiguredAvailabilityDefinition availabilityDefinitionWithMixedRules = createBaseAvailabilityDefinition(true);
-        availabilityDefinitionWithMixedRules.setRules(getConfiguredAvailabilityRuleDefinition(new Class[]{DummyRuleDeny.class, DummyRuleAllow.class}));
+        ConfiguredAvailabilityDefinition availabilityDefinitionWithMixedRules = new ConfiguredAvailabilityDefinition();
+        availabilityDefinitionWithMixedRules.setRules(getAvailabilityRules(DummyRuleDeny.class, DummyRuleAllow.class));
 
         // THEN
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionWithMultiAllowRules, getJcrItemIdsList(testNode)));
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionWithOneDenyRule, getJcrItemIdsList(testNode)));
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionWithMixedRules, getJcrItemIdsList(testNode)));
-
     }
 
-    private List<ConfiguredAvailabilityRuleDefinition> getConfiguredAvailabilityRuleDefinition(Class[] classes) {
-        ArrayList<ConfiguredAvailabilityRuleDefinition> list = new ArrayList<ConfiguredAvailabilityRuleDefinition>();
-        for (int i = 0; i < classes.length; i++) {
+    private List<AvailabilityRuleDefinition> getAvailabilityRules(Class<? extends AvailabilityRule>... ruleClasses) {
+        ArrayList<AvailabilityRuleDefinition> list = new ArrayList<AvailabilityRuleDefinition>();
+        for (int i = 0; i < ruleClasses.length; i++) {
             ConfiguredAvailabilityRuleDefinition configuredAvailabilityRuleDefinition = new ConfiguredAvailabilityRuleDefinition();
-            configuredAvailabilityRuleDefinition.setImplementationClass(classes[i]);
+            configuredAvailabilityRuleDefinition.setImplementationClass(ruleClasses[i]);
             list.add(configuredAvailabilityRuleDefinition);
         }
         return list;
     }
 
-
     private List<Object> getJcrItemIdsList(Node node) throws Exception {
-        return Arrays.asList((Object) new JcrItemId(node.getIdentifier(), workspaceName));
+        return Arrays.asList((Object) new JcrItemId(node.getIdentifier(), WORKSPACE));
     }
 
     private List<Object> getJcrPropertyItemIdsList(Property property) throws Exception {
         Item propertyItem = (Item) property;
         Node parentNode = propertyItem.getParent();
-        return Arrays.asList((Object) new JcrPropertyItemId(parentNode.getIdentifier(), workspaceName, property.getName()));
+        return Arrays.asList((Object) new JcrPropertyItemId(parentNode.getIdentifier(), WORKSPACE, property.getName()));
     }
 
+    /**
+     * An {@link AvailabilityRule} dummy implementation that returns true.
+     */
+    public static class DummyRuleAllow implements AvailabilityRule {
 
-    private ConfiguredAvailabilityDefinition createBaseAvailabilityDefinition(boolean nodesAllowed) {
-        ConfiguredAvailabilityDefinition configuredAvailabilityDefinition = new ConfiguredAvailabilityDefinition();
-        configuredAvailabilityDefinition.setProperties(!nodesAllowed);
-        configuredAvailabilityDefinition.setNodes(nodesAllowed);
-        configuredAvailabilityDefinition.setWritePermissionRequired(false);
-        return configuredAvailabilityDefinition;
+        @Override
+        public boolean isAvailable(Collection<?> itemIds) {
+            return true;
+        }
     }
 
+    /**
+     * Another {@link AvailabilityRule} dummy implementation that returns true.
+     */
+    public static class DummyRuleAllow2 implements AvailabilityRule {
+
+        @Override
+        public boolean isAvailable(Collection<?> itemIds) {
+            return true;
+        }
+    }
+
+    /**
+     * An {@link AvailabilityRule} dummy implementation that returns false.
+     */
+    public static class DummyRuleDeny implements AvailabilityRule {
+
+        @Override
+        public boolean isAvailable(Collection<?> itemIds) {
+            return false;
+        }
+    }
 
 }

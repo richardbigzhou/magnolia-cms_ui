@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,48 +33,56 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.cms.security.Permission;
-import info.magnolia.cms.security.PermissionUtil;
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
-import javax.jcr.Item;
+import java.util.Collection;
+
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * {@link info.magnolia.ui.api.availability.AvailabilityRule} implementation which returns positive result
- * if current user is granted with write permissions for the items.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated items are of the specified JCR node types.
  */
-public class WritePermissionsAvailableRule extends AbstractAvailabilityRule {
+public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
 
-    private static Logger log = LoggerFactory.getLogger(WritePermissionsAvailableRule.class);
+    private Collection<String> nodeTypes;
 
-    private boolean isWritePermissionRequired = false;
+    public Collection<String> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (isWritePermissionRequired && !MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE) && (itemId instanceof JcrItemId)) {
-            Item jcrItem = null;
-            try {
-                jcrItem = JcrItemUtil.getJcrItem((JcrItemId)itemId);
-                Node node = jcrItem instanceof Property ? jcrItem.getParent() : (Node) jcrItem;
-                return PermissionUtil.isGranted(node, Permission.WRITE);
-            } catch (RepositoryException e) {
-                log.warn("Could not evaluate write permission for {}.", jcrItem);
-            }
+        // if no node type defined, then valid for all node types
+        if (nodeTypes.isEmpty()) {
+            return true;
         }
-        return true;
-    }
 
-    public void setWritePermissionRequired(boolean writePermissionRequired) {
-        isWritePermissionRequired = writePermissionRequired;
+        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            // else the node must match at least one of the configured node types
+            for (String nodeType : nodeTypes) {
+                try {
+                    if (NodeUtil.isNodeType(node, nodeType)) {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    continue;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

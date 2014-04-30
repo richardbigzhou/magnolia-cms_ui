@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,28 +38,24 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Action availability rule which returns positive result in case action is
- * capable of operating over JCR nodes.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated items are JCR nodes.
  */
 public class JcrNodesAllowedRule extends AbstractAvailabilityRule {
 
-    private boolean nodeAllowed;
+    private boolean nodesAllowed;
 
-    public JcrNodesAllowedRule() {
+    public boolean isNodesAllowed() {
+        return nodesAllowed;
     }
 
-    public JcrNodesAllowedRule(Boolean isNodeAllowed) {
-        nodeAllowed = isNodeAllowed;
-    }
-
-    public void setNodeAllowed(boolean nodeAllowed) {
-        this.nodeAllowed = nodeAllowed;
+    public void setNodesAllowed(boolean nodeAllowed) {
+        this.nodesAllowed = nodeAllowed;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
         if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
-            return nodeAllowed;
+            return nodesAllowed;
         }
         return true;
     }

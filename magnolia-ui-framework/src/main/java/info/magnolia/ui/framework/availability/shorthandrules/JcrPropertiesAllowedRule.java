@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,22 +38,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Action availability rule which returns positive result in case action is capable of
- * operating over JCR properties.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated items are JCR properties.
  */
 public class JcrPropertiesAllowedRule extends AbstractAvailabilityRule {
 
     private boolean propertiesAllowed;
 
-    public JcrPropertiesAllowedRule(Boolean isPropertiesAllowed) {
-        propertiesAllowed = isPropertiesAllowed;
-    }
-
-    public JcrPropertiesAllowedRule() {
-    }
-
-    public JcrPropertiesAllowedRule(String isPropertiesAllowed) {
-        this(Boolean.parseBoolean(isPropertiesAllowed));
+    public boolean isPropertiesAllowed() {
+        return propertiesAllowed;
     }
 
     public void setPropertiesAllowed(boolean propertiesAllowed) {

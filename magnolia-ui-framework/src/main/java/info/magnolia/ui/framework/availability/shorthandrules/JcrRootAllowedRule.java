@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,60 +33,53 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
-
-import java.util.Collection;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Action availability rule which returns positive result in case action is capable
- * of operating over any of the specified JCR node types.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated item is the JCR rootAllowed.
  */
-public class JcrItemNodeTypeAllowedRule extends AbstractAvailabilityRule {
+public class JcrRootAllowedRule extends AbstractAvailabilityRule {
 
-    private Collection<String> nodeTypes;
+    private boolean rootAllowed;
 
-    public JcrItemNodeTypeAllowedRule() {
+    public boolean isRootAllowed() {
+        return rootAllowed;
     }
 
-    public JcrItemNodeTypeAllowedRule(Collection<String> nodeTypes) {
-        this.nodeTypes = nodeTypes;
+    public void setRootAllowed(boolean rootAllowed) {
+        this.rootAllowed = rootAllowed;
     }
 
-    public void setNodeTypes(Collection<String> nodeTypes) {
-        this.nodeTypes = nodeTypes;
+    private boolean isRoot(Object itemId) {
+        if (itemId instanceof JcrItemId) {
+
+            JcrItemId jcrItemId = (JcrItemId) itemId;
+            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
+            try {
+                node.getParent();
+                return false;
+            } catch (RepositoryException e) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        // if no node type defined, then valid for all node types
-        if (nodeTypes.isEmpty()) {
+        if (itemId instanceof JcrNewNodeItemId) {
             return true;
         }
 
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
-            JcrItemId jcrItemId = (JcrItemId) itemId;
-            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            // else the node must match at least one of the configured node types
-            for (String nodeType : nodeTypes) {
-                try {
-                    if (NodeUtil.isNodeType(node, nodeType)) {
-                        return true;
-                    }
-                } catch (RepositoryException e) {
-                    continue;
-                }
-            }
-
-            return false;
+        if (itemId == null || isRoot(itemId)) {
+            return rootAllowed;
         }
-
         return true;
     }
 }

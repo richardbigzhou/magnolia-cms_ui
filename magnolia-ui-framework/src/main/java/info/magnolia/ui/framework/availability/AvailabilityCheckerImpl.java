@@ -39,12 +39,12 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.availability.AvailabilityRuleDefinition;
 import info.magnolia.ui.framework.availability.shorthandrules.AccessGrantedRule;
-import info.magnolia.ui.framework.availability.shorthandrules.IsRootItemAllowedRule;
-import info.magnolia.ui.framework.availability.shorthandrules.JcrItemNodeTypeAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrNodeTypesAllowedRule;
 import info.magnolia.ui.framework.availability.shorthandrules.JcrNodesAllowedRule;
 import info.magnolia.ui.framework.availability.shorthandrules.JcrPropertiesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrRootAllowedRule;
 import info.magnolia.ui.framework.availability.shorthandrules.MultipleItemsAllowedRule;
-import info.magnolia.ui.framework.availability.shorthandrules.WritePermissionsAvailableRule;
+import info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.ArrayList;
@@ -63,13 +63,13 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     private ContentConnector contentConnector;
 
-    private JcrNodesAllowedRule nodesAllowedShorthandRule = new JcrNodesAllowedRule();
-    private JcrPropertiesAllowedRule propertiesAllowedShorthandRule = new JcrPropertiesAllowedRule();
-    private MultipleItemsAllowedRule multipleItemsAllowedShorthandRule = new MultipleItemsAllowedRule();
-    private IsRootItemAllowedRule isRootItemAllowedShorthandRule = new IsRootItemAllowedRule();
-    private JcrItemNodeTypeAllowedRule jcrItemNodeTypeAllowedShorthandRule = new JcrItemNodeTypeAllowedRule();
-    private AccessGrantedRule accessGrantedShorthandRule = new AccessGrantedRule();
-    private WritePermissionsAvailableRule writePermissionsAvailableRule = new WritePermissionsAvailableRule();
+    private JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
+    private JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
+    private MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
+    private JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
+    private JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
+    private AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
+    private WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
 
     @Inject
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
@@ -107,22 +107,22 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     }
 
     private Collection<? extends AvailabilityRule> prepareShorthandRules(AvailabilityDefinition definition) {
-        nodesAllowedShorthandRule.setNodeAllowed(definition.isNodes());
-        propertiesAllowedShorthandRule.setPropertiesAllowed(definition.isProperties());
-        isRootItemAllowedShorthandRule.setRoot(definition.isRoot());
-        jcrItemNodeTypeAllowedShorthandRule.setNodeTypes(definition.getNodeTypes());
-        multipleItemsAllowedShorthandRule.setMultipleAllowed(definition.isMultiple());
-        accessGrantedShorthandRule.setAccessDefinition(definition.getAccess());
-        writePermissionsAvailableRule.setWritePermissionRequired(definition.isWritePermissionRequired());
+        jcrNodesAllowedRule.setNodesAllowed(definition.isNodes());
+        jcrPropertiesAllowedRule.setPropertiesAllowed(definition.isProperties());
+        jcrRootAllowedRule.setRootAllowed(definition.isRoot());
+        jcrNodeTypesAllowedRule.setNodeTypes(definition.getNodeTypes());
+        multipleItemsAllowedRule.setMultipleItemsAllowed(definition.isMultiple());
+        accessGrantedRule.setAccessDefinition(definition.getAccess());
+        writePermissionRequiredRule.setWritePermissionRequired(definition.isWritePermissionRequired());
 
         List<AvailabilityRule> shorthands = new ArrayList<AvailabilityRule>(6);
-        shorthands.add(nodesAllowedShorthandRule);
-        shorthands.add(propertiesAllowedShorthandRule);
-        shorthands.add(isRootItemAllowedShorthandRule);
-        shorthands.add(jcrItemNodeTypeAllowedShorthandRule);
-        shorthands.add(multipleItemsAllowedShorthandRule);
-        shorthands.add(accessGrantedShorthandRule);
-        shorthands.add(writePermissionsAvailableRule);
+        shorthands.add(jcrNodesAllowedRule);
+        shorthands.add(jcrPropertiesAllowedRule);
+        shorthands.add(jcrRootAllowedRule);
+        shorthands.add(jcrNodeTypesAllowedRule);
+        shorthands.add(multipleItemsAllowedRule);
+        shorthands.add(accessGrantedRule);
+        shorthands.add(writePermissionRequiredRule);
 
         return shorthands;
     }
