@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -54,13 +54,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * A class to test JcrContentConnector.
- *
- * @see JcrContentConnector
+ * Tests for the {@link JcrContentConnector}.
  */
 public class JcrContentConnectorTest extends MgnlTestCase {
 
-    private static final String workspaceName = "testWorkspace";
+    private static final String WORKSPACE = "testWorkspace";
+
     private ConfiguredJcrContentConnectorDefinition configuredJcrContentConnectorDefinition;
     private MockSession session;
     private JcrContentConnector jcrContentConnector;
@@ -71,7 +70,7 @@ public class JcrContentConnectorTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        session = new MockSession(workspaceName);
+        session = new MockSession(WORKSPACE);
         MockUtil.setSessionAndHierarchyManager(session);
         rootNode = session.getRootNode();
         jcrContentConnector = createContentConnector(null);
@@ -85,7 +84,7 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         // GIVEN
         String nodePath = "/a/b/c";
         Node testNode = NodeUtil.createPath(rootNode, nodePath, NodeTypes.Content.NAME);
-        JcrItemId itemId = new JcrItemId(testNode.getIdentifier(), workspaceName);
+        JcrItemId itemId = new JcrItemId(testNode.getIdentifier(), WORKSPACE);
 
         // THEN
         String urlFragment = jcrContentConnector.getItemUrlFragment(itemId);
@@ -105,7 +104,7 @@ public class JcrContentConnectorTest extends MgnlTestCase {
 
         String nodePath = "/a/b/c";
         Node testNode = NodeUtil.createPath(baseNode, nodePath, NodeTypes.Content.NAME);
-        JcrItemId itemId = new JcrItemId(testNode.getIdentifier(), workspaceName);
+        JcrItemId itemId = new JcrItemId(testNode.getIdentifier(), WORKSPACE);
 
         // THEN
         String urlFragment = jcrContentConnector.getItemUrlFragment(itemId);
@@ -171,13 +170,13 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         // GIVEN
         String nodePath = "/this/is-the/nodename";
         NodeUtil.createPath(session.getRootNode(), nodePath, NodeTypes.Content.NAME);
-        JcrItemId itemId = JcrItemUtil.getItemId(workspaceName, nodePath);
+        JcrItemId itemId = JcrItemUtil.getItemId(WORKSPACE, nodePath);
 
         // THEN
         JcrItemAdapter itemAdapter = jcrContentConnector.getItem(itemId);
         assertNotNull(itemAdapter);
         assertEquals("nodename", itemAdapter.getJcrItem().getName());
-        assertEquals(workspaceName, itemAdapter.getWorkspace());
+        assertEquals(WORKSPACE, itemAdapter.getWorkspace());
     }
 
     /**
@@ -194,7 +193,7 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         assertNotNull(itemId);
         assertTrue(itemId instanceof JcrItemId);
         assertEquals(node.getIdentifier(), ((JcrItemId) itemId).getUuid());
-        assertEquals(workspaceName, ((JcrItemId) itemId).getWorkspace());
+        assertEquals(WORKSPACE, ((JcrItemId) itemId).getWorkspace());
     }
 
     /**
@@ -274,7 +273,7 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         if (StringUtils.isNotBlank(path)) {
             configuredJcrContentConnectorDefinition.setRootPath(path);
         }
-        configuredJcrContentConnectorDefinition.setWorkspace(workspaceName);
+        configuredJcrContentConnectorDefinition.setWorkspace(WORKSPACE);
 
         ComponentProvider componentProvider = new MockComponentProvider();
         return new JcrContentConnector(null, configuredJcrContentConnectorDefinition, componentProvider);
