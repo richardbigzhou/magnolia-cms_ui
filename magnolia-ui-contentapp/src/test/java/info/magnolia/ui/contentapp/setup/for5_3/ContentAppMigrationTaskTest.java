@@ -64,7 +64,7 @@ import org.junit.Test;
  * <li>{@link MoveActionNodeTypeRestrictionToAvailabilityTask}</li>
  * </ul>
  */
-public class AbstractContentAppMigrationTaskTest extends RepositoryTestCase {
+public class ContentAppMigrationTaskTest extends RepositoryTestCase {
 
     private static final String TEST_RULE_CLASS = "info.magnolia.test.availability.AnyRule";
 
