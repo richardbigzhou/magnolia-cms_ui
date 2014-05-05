@@ -55,6 +55,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.TextField;
+
 /**
  * Tests for the {@link DefaultI18NAuthoringSupport}.
  */
@@ -128,6 +131,19 @@ public class Default18nAuthoringSupportTest {
 
         // THEN
         assertNull(locales);
+    }
+
+    @Test
+    public void testSetLocal() {
+        // GIVEN
+        AbstractField<String> field = new TextField();
+        assertNull(field.getLocale());
+
+        // WHEN
+        i18nAuthoringSupport.setLocal(field, Locale.JAPANESE);
+
+        // THEN
+        assertEquals(Locale.JAPANESE, field.getLocale());
     }
 
     private LocaleDefinition createLocaleDefinition(Locale locale) {
