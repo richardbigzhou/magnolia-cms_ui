@@ -139,7 +139,7 @@ public final class PulseMessagesViewImpl extends AbstractPulseItemView implement
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date") },
                 i18n.translate("pulse.messages.empty"),
-                ItemCategory.ALL, ItemCategory.INFO, ItemCategory.PROBLEM);
+                ItemCategory.ALL_MESSAGES, ItemCategory.INFO, ItemCategory.PROBLEM);
         buildTable(getItemTable());
     }
 
