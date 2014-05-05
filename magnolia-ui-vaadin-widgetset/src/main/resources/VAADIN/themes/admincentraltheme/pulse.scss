@@ -180,11 +180,15 @@
 .v-pulse .navigator-tab .badge {
     background-color: $c40;
     border-radius: 2em;
-    color: white;
+    color: #fff;
     height: 17px;
     width: 17px !important;
     padding-top: 2px;
     text-align: center;
+}
+
+.v-pulse .navigator-tab .badge.gray {
+  background-color: #e0e0e0;
 }
 
 .v-pulse .v-nativebutton-active {color:$c10;}
