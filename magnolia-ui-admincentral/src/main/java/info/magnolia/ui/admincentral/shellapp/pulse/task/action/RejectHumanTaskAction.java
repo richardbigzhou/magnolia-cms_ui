@@ -79,7 +79,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
             public void onSuccess(String actionName) {
                 Object comment = propertysetItem.getItemProperty(Context.ATTRIBUTE_COMMENT).getValue();
 
-                task.setComment(String.valueOf(comment));
+                task.setComment(comment != null ? String.valueOf(comment) : "");
                 Map<String, Object> result = new HashMap<String, Object>();
                 result.put(DECISION, getDefinition().getDecision());
                 log.debug("About to reject human task named [{}]", task.getName());
