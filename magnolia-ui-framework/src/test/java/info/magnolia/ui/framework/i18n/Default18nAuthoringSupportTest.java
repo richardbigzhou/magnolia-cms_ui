@@ -44,6 +44,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.List;
 import java.util.Locale;
@@ -56,6 +58,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TextField;
 
 /**
@@ -134,20 +137,105 @@ public class Default18nAuthoringSupportTest {
     }
 
     @Test
-    public void testSetLocal() {
+    public void testI18nize() {
         // GIVEN
+        // Create field
         AbstractField<String> field = new TextField();
+        TestLocaleTransformer transformer = new TestLocaleTransformer(true, "propertyName");
+        TransformedProperty<String> property = new TransformedProperty<String>(transformer);
+        field.setPropertyDataSource(property);
+        // Create Form
+        CssLayout form = new CssLayout();
+        form.addComponent(field);
+        i18n.setEnabled(true);
         assertNull(field.getLocale());
 
         // WHEN
-        i18nAuthoringSupport.setLocal(field, Locale.JAPANESE);
+        i18nAuthoringSupport.i18nize(form, Locale.JAPANESE);
 
         // THEN
         assertEquals(Locale.JAPANESE, field.getLocale());
+        assertEquals("propertyName_ja", transformer.getI18NPropertyName());
+    }
+
+    @Test
+    public void testI18nizeWithoutI18nSupport() {
+        // GIVEN
+        // Create field
+        AbstractField<String> field = new TextField();
+        TestLocaleTransformer transformer = new TestLocaleTransformer(true, "propertyName");
+        TransformedProperty<String> property = new TransformedProperty<String>(transformer);
+        field.setPropertyDataSource(property);
+        // Create Form
+        CssLayout form = new CssLayout();
+        form.addComponent(field);
+        assertNull(field.getLocale());
+
+        // WHEN
+        i18nAuthoringSupport.i18nize(form, Locale.JAPANESE);
+
+        // THEN
+        assertNull(field.getLocale());
+        assertNull(transformer.getI18NPropertyName());
     }
 
     private LocaleDefinition createLocaleDefinition(Locale locale) {
         return LocaleDefinition.make(locale.getLanguage(), locale.getCountry(), true);
     }
 
+    private class TestLocaleTransformer implements Transformer<String> {
+        private Locale locale;
+        private boolean hasI18nSupport = false;
+        private String i18nPropertyName;
+        private String propertyName;
+
+        public TestLocaleTransformer(boolean hasI18nSupport, String propertyName) {
+            this.hasI18nSupport = hasI18nSupport;
+            this.propertyName = propertyName;
+        }
+
+        @Override
+        public void setLocale(Locale locale) {
+            this.locale = locale;
+        }
+
+        @Override
+        public void setI18NPropertyName(String i18nPropertyName) {
+            this.i18nPropertyName = i18nPropertyName;
+        }
+
+        public String getI18NPropertyName() {
+            return this.i18nPropertyName;
+        }
+
+        @Override
+        public Locale getLocale() {
+            return this.locale;
+        }
+
+        @Override
+        public String getBasePropertyName() {
+            return this.propertyName;
+        }
+
+        @Override
+        public void writeToItem(String newValue) {
+        }
+
+        @Override
+        public String readFromItem() {
+            return null;
+        }
+
+        @Override
+        public boolean hasI18NSupport() {
+            return this.hasI18nSupport;
+        }
+
+        @Override
+        public Class<String> getType() {
+            return String.class;
+        }
+
+    }
 }
