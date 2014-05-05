@@ -248,7 +248,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     private void assignPropertiesFromTask(Task task, final Item item) {
         if (item != null && task != null) {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Status.Created);
-            item.getItemProperty(TASK_PROPERTY_ID).setValue(task.getName() + "|" + StringUtils.defaultString(task.getComment()));
+            item.getItemProperty(TASK_PROPERTY_ID).setValue(getTaskTitle(task));
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(task.getRequestor());
             item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getModificationDate());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
@@ -351,6 +351,19 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         }
     }
 
+    /*
+     * Default visibility for testing purposes only.
+     */
+    String getTaskTitle(final Task task) {
+        String subject = (String) task.getContent().get("subject");
+        String repo = (String) task.getContent().get("repository");
+        String path = (String) task.getContent().get("path");
+
+        // fallback to task name in case subject is not available
+        String title = subject != null ? i18n.translate(subject, repo, path) : task.getName();
+        return title + "|" + StringUtils.defaultString(task.getComment());
+    }
+
     /**
      * Listener interface used to call back to parent presenter.
      */
@@ -361,4 +374,5 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     public int getNumberOfPendingTasksForCurrentUser() {
         return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
     }
+
 }

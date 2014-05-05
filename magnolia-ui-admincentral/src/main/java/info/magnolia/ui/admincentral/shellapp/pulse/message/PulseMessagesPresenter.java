@@ -55,8 +55,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
@@ -268,8 +266,8 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
             item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
             item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
-            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getSubject(), 55));
-            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 75));
+            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(message.getSubject());
+            item.getItemProperty(TEXT_PROPERTY_ID).setValue((message.getMessage()));
             item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
         }
     }

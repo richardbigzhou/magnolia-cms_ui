@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -65,11 +66,13 @@ import com.vaadin.data.util.BeanItem;
 public final class TaskPresenter extends ItemPresenter<Task> {
 
     private TasksManager tasksManager;
+    private SimpleTranslator i18n;
 
     @Inject
-    public TaskPresenter(ItemView view, TasksManager tasksManager, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public TaskPresenter(ItemView view, TasksManager tasksManager, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer, SimpleTranslator i18n) {
         super(view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
         this.tasksManager = tasksManager;
+        this.i18n = i18n;
     }
 
     @Override
@@ -78,8 +81,13 @@ public final class TaskPresenter extends ItemPresenter<Task> {
     }
 
     @Override
-    protected void setItemViewTitle(Task item, ItemView view) {
-        view.setTitle(item.getName());
+    protected void setItemViewTitle(Task task, ItemView view) {
+        String subject = (String) task.getContent().get("subject");
+        String repo = (String) task.getContent().get("repository");
+        String path = (String) task.getContent().get("path");
+
+        // fallback to task name in case subject is not available
+        view.setTitle(subject != null ? i18n.translate(subject, repo, path) : task.getName());
     }
 
     @Override

@@ -217,12 +217,11 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             String comment = getI18n().translate("pulse.tasks.nocomment");
             if (parts.length == 2) {
                 comment = StringEscapeUtils.escapeXml(parts[1]);
-                comment = StringUtils.abbreviate(comment, 25);
             }
 
             label.setContentMode(ContentMode.HTML);
             label.addStyleName("title");
-            label.setValue("<strong>" + title + "</strong><div class=\"comment\">" + comment + "</div>");
+            label.setValue("<strong>" + StringUtils.abbreviate(title, 25) + "</strong><div class=\"comment\">" + StringUtils.abbreviate(comment, 25) + "</div>");
 
             root.addComponent(icon);
             root.addComponent(label);
@@ -230,6 +229,9 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
             addStyleName("task");
 
             setCompositionRoot(root);
+
+            // tooltip
+            setDescription(title);
 
             root.addLayoutClickListener(new LayoutClickListener() {
 

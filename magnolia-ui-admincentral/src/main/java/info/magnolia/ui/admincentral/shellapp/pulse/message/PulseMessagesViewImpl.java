@@ -48,6 +48,7 @@ import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -93,15 +94,20 @@ public final class PulseMessagesViewImpl extends AbstractPulseItemView implement
         public Object generateCell(Table source, Object itemId, Object columnId) {
 
             if (TEXT_PROPERTY_ID.equals(columnId)) {
-                final Property<String> text = source.getContainerProperty(itemId, columnId);
-                final Property<String> subject = source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID);
+                final Property<String> textProperty = source.getContainerProperty(itemId, columnId);
+                final Property<String> subjectProperty = source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID);
 
                 final Label textLabel = new Label();
                 textLabel.setSizeUndefined();
                 textLabel.addStyleName("message-subject-text");
                 textLabel.setContentMode(ContentMode.HTML);
-                textLabel.setValue("<strong>" + StringEscapeUtils.escapeXml(subject.getValue()) + "</strong><div>" + StringEscapeUtils.escapeXml(text.getValue()) + "</div>");
 
+                final String subject = StringEscapeUtils.escapeXml(subjectProperty.getValue());
+                final String text = StringEscapeUtils.escapeXml(textProperty.getValue());
+                textLabel.setValue("<strong>" + StringUtils.abbreviate(subject, 70) + "</strong><div>" + StringUtils.abbreviate(text, 70) + "</div>");
+
+                // tooltip
+                textLabel.setDescription(subject);
                 return textLabel;
 
             }
