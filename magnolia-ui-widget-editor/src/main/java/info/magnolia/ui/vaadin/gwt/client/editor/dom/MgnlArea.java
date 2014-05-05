@@ -42,8 +42,8 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
@@ -51,6 +51,7 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * Represents an area inside the {@link CmsNode}-tree.
  * An area can have 3 widgets associated with it:
+ * 
  * <pre>
  *   <ul>
  *     <li>{@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar}</li>
@@ -58,6 +59,7 @@ import com.google.gwt.event.shared.EventBus;
  *     <li>{@link ComponentPlaceHolder}</li>
  *   </ul>
  * </pre>
+ * 
  * Implements a listener interface for the {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar} and {@link ComponentPlaceHolder}.
  * Provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
@@ -105,11 +107,15 @@ public class MgnlArea extends MgnlElement implements AreaListener {
     public AreaElement getTypedElement() {
         AreaElement area = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
 
+        boolean areaIsTypeSingle = "single".equals(getAttribute("type"));
+        boolean areaHasChildComponents = getComponents().size() > 0;
+        boolean optional = Boolean.parseBoolean(getAttribute("optional"));
+        boolean created = Boolean.parseBoolean(getAttribute("created"));
         boolean addible = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.ADDIBLE)) {
             addible = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.ADDIBLE));
         }
-        area.setAddible(addible);
+        area.setAddible(addible && !(optional && !created) && !(areaIsTypeSingle && areaHasChildComponents));
 
         return area;
     }
