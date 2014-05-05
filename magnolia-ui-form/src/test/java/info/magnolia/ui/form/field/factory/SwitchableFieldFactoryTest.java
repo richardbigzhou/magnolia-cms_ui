@@ -136,7 +136,6 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         SwitchableField field = (SwitchableField) factory.createField();
         AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
         AbstractSelect select = (AbstractSelect) layout.iterator().next();
-        assertNull(baseItem.getItemProperty(propertyName));
 
         // WHEN
         select.setValue("text");
