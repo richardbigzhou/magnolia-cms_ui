@@ -33,11 +33,20 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import com.vaadin.data.Item;
+import com.vaadin.event.dd.DropHandler;
+
 /**
- * Type of move operation performed on the nodes.
+ * This interface marks class as providing implementation of methods necessary to move items in the container.
+ * WARNING: This interface might be refactored or moved to different package in the future without prior notice. Use at your own risk.
  */
-public enum MoveLocation {
-    AFTER,
-    BEFORE,
-    INSIDE
+public interface MoveHandler {
+
+    /**
+     * Performs move of the source node or property into target node or next to target node depending on the value of MoveLocation.
+     * This method will persist move by calling session.save() explicitly. And will return true/false depending on whether move was successful or not.
+     */
+    boolean moveItem(Item source, Item target, MoveLocation location);
+
+    DropHandler asDropHandler();
 }

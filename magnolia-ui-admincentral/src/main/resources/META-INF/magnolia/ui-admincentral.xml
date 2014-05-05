@@ -147,7 +147,7 @@
     </component>
 
     <type-mapping>
-      <type>com.vaadin.event.dd.DropHandler</type>
+      <type>info.magnolia.ui.workbench.tree.MoveHandler</type>
       <implementation>info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler</implementation>
     </type-mapping>
 

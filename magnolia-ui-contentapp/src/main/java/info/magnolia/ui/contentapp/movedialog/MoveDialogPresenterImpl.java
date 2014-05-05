@@ -70,6 +70,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
@@ -90,7 +91,6 @@ import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.dd.DropHandler;
 
 /**
  * Implementation of {@link MoveDialogPresenter}.
@@ -123,7 +123,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ContentConnector contentConnector;
 
-    private DropHandler dropHandler;
+    private MoveHandler dropHandler;
 
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
@@ -133,16 +133,12 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.appContext = appContext;
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
-        this.dropHandler = componentProvider.newInstance(DropHandler.class);
+        this.dropHandler = componentProvider.newInstance(MoveHandler.class);
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        if (dropHandler == null) {
-            return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
-        } else {
-            return new Object[] { nodesToMove, callback, appContext, getHostCandidate(), dropHandler };
-        }
+        return new Object[] { nodesToMove, callback, appContext, getHostCandidate(), dropHandler };
     }
 
     @Override

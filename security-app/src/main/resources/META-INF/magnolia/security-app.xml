@@ -13,7 +13,7 @@
    <components>
     <id>app-security</id>
     <type-mapping>
-      <type>com.vaadin.event.dd.DropHandler</type>
+      <type>info.magnolia.ui.workbench.tree.MoveHandler</type>
       <implementation>info.magnolia.security.app.container.SecurityDropHandler</implementation>
     </type-mapping>
    </components>
