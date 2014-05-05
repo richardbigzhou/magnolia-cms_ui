@@ -7,166 +7,35 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
-  <name>magnolia-ui-vaadin-widgetset</name>
-
-  <properties>
-    <inplace>false</inplace>
-    <draftCompile>false</draftCompile>
-    <enableClosure>false</enableClosure>
-    <disableCastChecking>false</disableCastChecking>
-    <!-- We want to disable Clover for this module, so we removed enable-clover from the release-profiles. Unfortunately,
-         this doesn't work, and would need to be done at parent level (reactor). So we still have to reconfigure the
-         Clover plugin for this module.
-         Additionally, gwt-compile-production had to be added to the parent pom for the same reason. Leaving it here for reference. -->
-    <additionalReleaseProfiles>gwt-compile-production</additionalReleaseProfiles>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client-compiled</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-themes</artifactId>
-    </dependency>
-
-    <!-- this replaces gwt-dev.jar -->
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client-compiler</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-theme</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-widget-editor</artifactId>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the
-        GWT compiler -->
-      <plugin>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-maven-plugin</artifactId>
-        <configuration>
-          <!-- These 2 parameters are not used during the lifecycle-bound execution of the plugin. They're needed for debug mode though. -->
-          <runTarget>.magnolia/admincentral</runTarget>
-          <!-- this is not a webapp -->
-          <noServer>true</noServer>
-        </configuration>
-        <executions>
-          <execution>
-            <configuration>
-              <!-- currently using default, change carefully as this param applies to all forked JVMs
-                   i.e. GWT compilation will take up to this max memory, times the number of local workers (defaults to platform processors number) -->
-              <extraJvmArgs>-Xmx1536M -Xss1024k</extraJvmArgs>
-              <!-- put the created resources on the classpath -->
-              <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
-              <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
-              <inplace>${inplace}</inplace>
-              <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
-              <draftCompile>${draftCompile}</draftCompile>
-              <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
-              <disableCastChecking>${disableCastChecking}</disableCastChecking>
-            </configuration>
-            <goals>
-              <goal>resources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <!-- We're doing this here because the trick implemented for BUILD-110 actually does not work with submodules of reactors. -->
-          <groupId>com.atlassian.maven.plugins</groupId>
-          <artifactId>maven-clover2-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-  <profiles>
-    <profile>
-      <id>gwt-compile-production</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <!--Enables this profile when 'BUILD_NUMBER' env.var is set (set by Hudson)-->
-        <property>
-          <name>BUILD_NUMBER</name>
-        </property>
-      </activation>
-      <properties>
-        <draftCompile>false</draftCompile>
-        <inplace>false</inplace>
-        <enableClosure>true</enableClosure>
-        <disableCastChecking>true</disableCastChecking>
-      </properties>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>groovy-maven-plugin</artifactId>
-              <executions>
-                <execution>
-                  <phase>prepare-package</phase>
-                  <goals>
-                    <goal>execute</goal>
-                  </goals>
-                  <configuration>
-                    <source>
-                      import com.vaadin.sass.SassCompiler
-                      import java.util.regex.Matcher
-
-                      new File("${project.basedir}").eachFileRecurse {
-                        if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
-                            def sassFile = it.path
-                            def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
-                            def cssFile = cssPath + Matcher.lastMatcher[0][2]+".css"
-                            println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
-                            new File(cssPath).mkdirs();
-                            SassCompiler.main([sassFile, cssFile] as String[])
-                        }
-                      }
-                    </source>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </build>
-    </profile>
-    <profile>
-      <id>gwt-compile-draft-inplace</id>
-      <properties>
-        <draftCompile>true</draftCompile>
-        <inplace>true</inplace>
-      </properties>
-    </profile>
-  </profiles>
+  <name>Magnolia Widgetset Maven Relocation</name>
+  <description>
+    Relocates info.magnolia.ui:magnolia-ui-vaadin-widgetset to its own project.
+    See http://maven.apache.org/guides/mini/guide-relocation.html
+  </description>
+  <distributionManagement>
+    <relocation>
+      <groupId>info.magnolia.widgetset</groupId>
+      <artifactId>magnolia-vaadin-widgetset</artifactId>
+      <version>${project.version}</version>
+      <!-- The 2 space indentation below is due to how Maven seems to present this message. Probably trim() it then
+           prepend the complete string with 2 spaces, so to keep it aligned we added 2 spaces on every line. -->
+      <message>
+  #################################################################################################
+  #
+  #  The Vaadin/GWT Widgetset used by Magnolia UI has been moved to its own project.
+  #  Your project has a dependency on
+  #        ${project.groupId}:${project.artifactId}:${project.version}
+  #  and this relocation is redirecting it to
+  #        info.magnolia.widgetset:magnolia-vaadin-widgetset:${project.version}
+  #
+  #  We encourage you to update your dependencies and use the newer artifacts
+  #  for your specific purposes.
+  #
+  #  Please see ${documentationURL} for further information.
+  #  Use mvn dependency:tree to find out how dependencies are resolved.
+  #
+  #################################################################################################
+      </message>
+    </relocation>
+  </distributionManagement>
 </project>
