@@ -109,7 +109,7 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
     protected void executeOnItem(JcrItemAdapter item) throws Exception {
         if (dropHandler.basicMoveCheck(item.getJcrItem(), targetItem.getJcrItem())) {
             moveLocation = getDefinition().getMoveLocation();
-            dropHandler.moveItem(item.getJcrItem(), targetItem.getJcrItem(), moveLocation);
+            dropHandler.moveItem(item, targetItem, moveLocation);
 
         } else {
             callback.onMoveCancelled();
