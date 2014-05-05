@@ -37,11 +37,12 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item;
  * Enumeration for the category types.
  */
 public enum ItemCategory {
-    ALL("pulse.items.all"),
+    ALL_MESSAGES("pulse.messages.all"),
     MESSAGES("pulse.items.messages"),
     TASKS("pulse.items.tasks"),
     PROBLEM("pulse.messages.problems"),
     INFO("pulse.messages.info"),
+    ALL_TASKS("pulse.tasks.all"),
     UNCLAIMED("pulse.tasks.unclaimed"),
     ONGOING("pulse.tasks.ongoing"),
     DONE("pulse.tasks.done"),

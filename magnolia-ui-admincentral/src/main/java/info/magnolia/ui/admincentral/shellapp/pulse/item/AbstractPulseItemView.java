@@ -86,7 +86,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
 
     private PulseItemsFooter footer;
 
-    private ItemCategory currentlySelectedCategory = ItemCategory.ALL;
+    private ItemCategory currentlySelectedCategory = ItemCategory.UNCLAIMED;
 
     private boolean categoryFilterAlreadyApplied;
 
@@ -230,8 +230,8 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
 
     @Override
     public void refresh() {
-        // skip this if we're displaying all messages or if the category category filter has just been applied (i.e. after clicking on a different tab)
-        if (currentlySelectedCategory != ItemCategory.ALL && !categoryFilterAlreadyApplied) {
+        // skip this if we're displaying all messages or if the category filter has just been applied (i.e. after clicking on a different tab)
+        if ((currentlySelectedCategory != ItemCategory.ALL_MESSAGES || currentlySelectedCategory != ItemCategory.ALL_TASKS) && !categoryFilterAlreadyApplied) {
             listener.filterByItemCategory(currentlySelectedCategory);
         }
         // now this can be reset to its initial value
@@ -278,7 +278,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
                 for (String id : (Set<String>) itemTable.getValue()) {
                     itemTable.unselect(id);
                 }
-                if (category == ItemCategory.ALL) {
+                if (category == ItemCategory.ALL_TASKS || category == ItemCategory.ALL_MESSAGES) {
                     navigator.enableGroupBy(true);
                 } else {
                     navigator.enableGroupBy(false);

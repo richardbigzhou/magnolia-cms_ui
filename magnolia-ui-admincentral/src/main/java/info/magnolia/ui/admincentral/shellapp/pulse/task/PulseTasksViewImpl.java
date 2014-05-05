@@ -70,7 +70,7 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
-                ItemCategory.ALL, ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE, ItemCategory.FAILED);
+                ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE, ItemCategory.FAILED, ItemCategory.ALL_TASKS);
 
         constructTable();
     }
