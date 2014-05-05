@@ -128,7 +128,7 @@
 }
 .v-pulse .navigator.top-row {
   padding-top:0px;
-  height:35px;
+  height:25px;
   background-color: #e0e0e0;
 }
 
@@ -148,15 +148,15 @@
 }
 
 .v-pulse .top-row .navigator-tab {
-  height: 35px;
-  padding-top: 10px;
+  height: 25px;
+  padding-top: 4px;
   border-bottom: 1px solid #a3a3a3;
 }
 .v-pulse .top-row .hidden {
   position: absolute;
   width: 100%;
   border-bottom: 1px solid #a3a3a3;
-  height: 35px;
+  height: 25px;
   display:inline;
 }
 
@@ -168,6 +168,7 @@
   text-transform: uppercase;
   font-size:13px;
   width: 100px;
+  padding-top: 2px;
 }
 
 .v-pulse .navigator-tab.active {
@@ -180,8 +181,8 @@
     background-color: $c40;
     border-radius: 2em;
     color: white;
-    height: 18px;
-    width: 18px !important;
+    height: 17px;
+    width: 17px !important;
     padding-top: 2px;
     text-align: center;
 }
