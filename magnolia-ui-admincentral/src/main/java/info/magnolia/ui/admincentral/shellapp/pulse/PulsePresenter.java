@@ -62,7 +62,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     private MessagePresenter detailMessagePresenter;
     private TaskPresenter detailTaskPresenter;
     private ShellImpl shell;
-    private ItemCategory selectedCategory;
+    private ItemCategory selectedCategory = ItemCategory.TASKS;
     private boolean isDisplayingDetailView;
 
     @Inject
@@ -88,7 +88,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         detailMessagePresenter.setListener(this);
         detailTaskPresenter.setListener(this);
 
-        view.setPulseSubView(messagesPresenter.start());
+        view.setPulseSubView(tasksPresenter.start());
 
         return view;
     }
