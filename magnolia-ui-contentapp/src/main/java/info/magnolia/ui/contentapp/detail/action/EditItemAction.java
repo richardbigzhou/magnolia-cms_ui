@@ -55,10 +55,8 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Item nodeItemToEdit;
-
     private final LocationController locationController;
-
-    private ContentConnector contentConnector;
+    private final ContentConnector contentConnector;
 
     public EditItemAction(EditItemActionDefinition definition, Item nodeItemToEdit, LocationController locationController, ContentConnector contentConnector) {
         super(definition);

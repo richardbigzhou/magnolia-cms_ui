@@ -39,9 +39,13 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
 
-import javax.jcr.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Action for creating a new item.
@@ -56,25 +60,35 @@ public class CreateItemAction extends AbstractAction<CreateItemActionDefinition>
 
     private static final String NEW_NODE_NAME = "untitled";
 
-    private LocationController locationController;
+    private static final Logger log = LoggerFactory.getLogger(CreateItemAction.class);
 
-    private final AbstractJcrNodeAdapter parentItem;
+    private final LocationController locationController;
+    private final Item parentItem;
+    private final ContentConnector contentConnector;
 
-    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController, AbstractJcrNodeAdapter parentItem) {
+    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController, Item parentItem, ContentConnector contentConnector) {
         super(definition);
         this.locationController = locationController;
         this.parentItem = parentItem;
+        this.contentConnector = contentConnector;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        try {
-            String path = Path.getAbsolutePath(parentItem.applyChanges().getPath(), NEW_NODE_NAME);
-            DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
-            locationController.goTo(location);
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
+        Object parentId = contentConnector.getItemId(parentItem);
+        if (!contentConnector.canHandleItem(parentId)) {
+            log.warn("ContentConnector {{}} cannot handle parent itemId {{}}. No action will be performed.", contentConnector, String.valueOf(parentId));
+            return;
         }
+        if (!(contentConnector instanceof SupportsCreation)) {
+            log.warn("ContentConnector {{}} doesn't support creation of new items. No action will be performed.", contentConnector);
+            return;
+        }
+        String path = contentConnector.getItemUrlFragment(parentId);
+        path = Path.getAbsolutePath(path, NEW_NODE_NAME);
+
+        DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, null);
+        locationController.goTo(location);
     }
 }
