@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
 
@@ -54,7 +53,7 @@ public final class PulseShellApp implements ShellApp {
     private PulsePresenter presenter;
 
     @Inject
-    public PulseShellApp(PulsePresenter presenter, ShellImpl shell) {
+    public PulseShellApp(PulsePresenter presenter) {
         this.presenter = presenter;
     }
 
