@@ -110,7 +110,11 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                             currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
                         }
                         f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
-                        setLocal(f, locale);
+
+                        // Use Vaadin implementation to set a local change to a field.
+                        if (f instanceof AbstractField) {
+                            ((AbstractField) f).setLocale(locale);
+                        }
                     }
                 } else if (c instanceof  HasComponents) {
                     i18nize((HasComponents) c, locale);
@@ -155,14 +159,4 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     public void setAuthorLocale(Locale locale) {
         this.authorLocale = locale;
     }
-
-    /**
-     * Use Vaadin implementation to set a local change to a field.
-     */
-    void setLocal(Field f, Locale locale) {
-        if (f instanceof AbstractField) {
-            ((AbstractField) f).setLocale(locale);
-        }
-    }
-
 }
