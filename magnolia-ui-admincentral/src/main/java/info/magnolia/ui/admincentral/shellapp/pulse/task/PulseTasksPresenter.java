@@ -338,10 +338,6 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
             view.updateCategoryBadgeCount(ItemCategory.ONGOING, count);
             break;
-        case Completed:
-            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Completed)).size();
-            view.updateCategoryBadgeCount(ItemCategory.DONE, count);
-            break;
         case Failed:
             count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Failed)).size();
             view.updateCategoryBadgeCount(ItemCategory.FAILED, count);

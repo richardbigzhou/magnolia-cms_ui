@@ -184,6 +184,9 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
             badge = new Label();
             badge.addStyleName("badge");
+            if (category == ItemCategory.ONGOING) {
+                badge.addStyleName("gray");
+            }
             badge.setVisible(false);
 
             this.addComponent(categoryLabel);
