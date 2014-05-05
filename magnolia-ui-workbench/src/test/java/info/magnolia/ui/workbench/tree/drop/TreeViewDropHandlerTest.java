@@ -40,6 +40,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
@@ -125,7 +127,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         target.getSession().save();
 
         // WHEN
-        boolean res = new TreeViewDropHandler(null, null).moveItem(source, target, MoveLocation.INSIDE);
+        boolean res = new TreeViewDropHandler(null, null).moveItem(new JcrNodeAdapter(source), new JcrNodeAdapter(target), MoveLocation.INSIDE);
 
         // THEN
         assertTrue(res);
@@ -140,7 +142,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         target.getSession().save();
 
         // WHEN
-        boolean res = new TreeViewDropHandler(null, null).moveItem(source, target, MoveLocation.INSIDE);
+        boolean res = new TreeViewDropHandler(null, null).moveItem(new JcrNodeAdapter(source), new JcrNodeAdapter(target), MoveLocation.INSIDE);
 
         // THEN
         assertFalse(res);
@@ -154,7 +156,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         source.getSession().save();
 
         // WHEN
-        boolean res = new TreeViewDropHandler(null, null).moveItem(sourceProperty, source, MoveLocation.INSIDE);
+        boolean res = new TreeViewDropHandler(null, null).moveItem(new JcrPropertyAdapter(sourceProperty), new JcrNodeAdapter(source), MoveLocation.INSIDE);
 
         // THEN
         assertFalse(res);
@@ -171,7 +173,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         assertEquals("first", nodeIterator.nextNode().getName());
 
         // WHEN
-        boolean res = new TreeViewDropHandler(null, null).moveItem(second, first, MoveLocation.BEFORE);
+        boolean res = new TreeViewDropHandler(null, null).moveItem(new JcrNodeAdapter(second), new JcrNodeAdapter(first), MoveLocation.BEFORE);
 
         // THEN
         assertTrue(res);
@@ -191,7 +193,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         assertEquals("first", nodeIterator.nextNode().getName());
 
         // WHEN
-        boolean res = new TreeViewDropHandler(null, null).moveItem(first, second, MoveLocation.AFTER);
+        boolean res = new TreeViewDropHandler(null, null).moveItem(new JcrNodeAdapter(first), new JcrNodeAdapter(second), MoveLocation.AFTER);
 
         // THEN
         assertTrue(res);

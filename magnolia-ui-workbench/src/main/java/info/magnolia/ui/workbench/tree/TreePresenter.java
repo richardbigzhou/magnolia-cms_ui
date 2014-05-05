@@ -54,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
-import com.vaadin.event.dd.DropHandler;
 
 /**
  * The TreePresenter is responsible for creating, configuring and updating a tree of items according to the workbench definition.
@@ -95,8 +94,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         Class<? extends DropConstraint> dropConstraintClass = workbenchDefinition.getDropConstraintClass();
         if (dropConstraintClass != null) {
             final DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
-            final DropHandler dropHandler = getComponentProvider().newInstance(DropHandler.class, view.asVaadinComponent(), constraint);
-            view.setDragAndDropHandler(dropHandler);
+            final MoveHandler moveHandler = getComponentProvider().newInstance(MoveHandler.class, view.asVaadinComponent(), constraint);
+            view.setDragAndDropHandler(moveHandler.asDropHandler());
             log.debug("Set following drop container {} to the treeTable", dropConstraintClass.getName());
         }
 

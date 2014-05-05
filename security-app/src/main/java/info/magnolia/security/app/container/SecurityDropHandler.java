@@ -34,6 +34,7 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.ui.TreeTable;
 
 /**
- * custom drop hander ensuring update of acls for security principals upon moving their location.
+ * Custom drop hander ensuring update of acls for security principals upon moving their location.
  */
 public class SecurityDropHandler extends TreeViewDropHandler {
 
@@ -63,13 +64,14 @@ public class SecurityDropHandler extends TreeViewDropHandler {
     }
 
     @Override
-    public boolean moveItem(Item source, Item target, MoveLocation location) {
+    public boolean moveItem(com.vaadin.data.Item source, com.vaadin.data.Item target, MoveLocation location) {
+        Item sourceItem = ((JcrItemAdapter) source).getJcrItem();
         try {
-            String pathBefore = source.getPath();
+            String pathBefore = sourceItem.getPath();
             boolean moved = super.moveItem(source, target, location);
-            if (moved && source.isNode()) {
-                UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
-                source.getSession().save();
+            if (moved && sourceItem.isNode()) {
+                UsersWorkspaceUtil.updateAcls((Node) sourceItem, pathBefore);
+                sourceItem.getSession().save();
             }
             return moved;
         } catch (RepositoryException e) {
