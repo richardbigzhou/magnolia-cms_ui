@@ -144,7 +144,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void taskAdded(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
-        showNewTasks();
+        showNewTask();
     }
 
     @Override
@@ -185,10 +185,13 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.updateCategoryBadgeCount(ItemCategory.TASKS, pendingTasks);
     }
 
-    private void showNewTasks() {
+    private void showNewTask() {
+        // update top navigation and load new task list
         selectedCategory = ItemCategory.TASKS;
-        showList();
         view.setTabActive(ItemCategory.TASKS);
+        showList();
+
+        // update sub navigation and filter out anything but new tasks
         tasksPresenter.setTabActive(ItemCategory.UNCLAIMED);
     }
 }
