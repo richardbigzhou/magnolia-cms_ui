@@ -189,12 +189,13 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
      * This method won't show the new task straight away but will do it when clicking on the pulse icon.
      */
     private void showNewTask() {
-        // update top navigation and load new task list
+        // update top navigation and load new tasks
         selectedCategory = ItemCategory.TASKS;
         view.setTabActive(ItemCategory.TASKS);
-        showList();
-
-        // update sub navigation and filter out anything but new tasks
+        if (isDisplayingDetailView) {
+            showList();
+        }
+        // update sub navigation and filter out everything but new tasks
         tasksPresenter.setTabActive(ItemCategory.UNCLAIMED);
     }
 }
