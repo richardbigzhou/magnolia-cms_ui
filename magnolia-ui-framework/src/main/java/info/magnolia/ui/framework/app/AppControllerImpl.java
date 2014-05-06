@@ -282,7 +282,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             viewport.setView(null);
         }
         sendEvent(AppLifecycleEventType.STOPPED, appInstanceController.getAppDescriptor());
-
+        if (!appHistory.isEmpty()) {
+            doFocus(appHistory.peekFirst());
+        }
         locationController.goTo(new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher"));
     }
 
