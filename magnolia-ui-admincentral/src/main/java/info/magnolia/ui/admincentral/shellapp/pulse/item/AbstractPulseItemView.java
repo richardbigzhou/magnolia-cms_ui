@@ -357,10 +357,6 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         return itemTable;
     }
 
-    protected PulseItemCategoryNavigator getNavigator() {
-        return navigator;
-    }
-
     @Override
     public void setTabActive(ItemCategory category) {
         navigator.setActive(category);
