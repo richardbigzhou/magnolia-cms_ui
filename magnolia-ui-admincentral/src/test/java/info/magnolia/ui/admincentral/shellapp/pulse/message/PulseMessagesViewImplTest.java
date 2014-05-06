@@ -88,7 +88,7 @@ public class PulseMessagesViewImplTest {
     @Test
     public void testEnsureMessageIsEscaped() throws Exception {
         // GIVEN
-        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class),mock(SimpleTranslator.class));
+        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
         when(container.getContainerProperty(itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
@@ -100,6 +100,6 @@ public class PulseMessagesViewImplTest {
         Label label = (Label) view.textColumnGenerator.generateCell(source, itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID);
 
         // THEN
-        assertEquals("<strong>subject</strong><div>&lt;span onmouseover=&quot;alert(&apos;xss&apos;)&quot;&gt;bug&lt;/span&gt;</div>", label.getValue());
+        assertEquals("<strong>subject</strong><div>&lt;span onmouseover=&quot;alert(&apos;xss&apos;)&quot;&gt;bug&lt;/...</div>", label.getValue());
     }
 }
