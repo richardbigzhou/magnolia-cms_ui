@@ -86,7 +86,8 @@ public final class TaskPresenter extends ItemPresenter<Task> {
         String repo = (String) task.getContent().get("repository");
         String path = (String) task.getContent().get("path");
 
-        view.setTitle(i18n.translate(subject, repo, path));
+        // fallback to task name in case subject is not available
+        view.setTitle(subject != null ? i18n.translate(subject, repo, path) : task.getName());
     }
 
     @Override

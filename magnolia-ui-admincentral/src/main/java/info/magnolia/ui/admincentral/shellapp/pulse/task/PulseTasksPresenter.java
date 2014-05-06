@@ -347,11 +347,17 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         }
     }
 
-    private String getTaskTitle(final Task task) {
+    /*
+     * Default visibility for testing purposes only.
+     */
+    String getTaskTitle(final Task task) {
         String subject = (String) task.getContent().get("subject");
         String repo = (String) task.getContent().get("repository");
         String path = (String) task.getContent().get("path");
-        return i18n.translate(subject, repo, path) + "|" + StringUtils.defaultString(task.getComment());
+
+        // fallback to task name in case subject is not available
+        String title = subject != null ? i18n.translate(subject, repo, path) : task.getName();
+        return title + "|" + StringUtils.defaultString(task.getComment());
     }
 
     /**
