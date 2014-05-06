@@ -81,6 +81,13 @@ button.btn-form-help {
     width: 18px;
     position: relative;
     top: -1px;
+
+    &:focus{
+      outline: $c22 solid 2px;
+    }
+    &::-moz-focus-inner {
+      border: 0;
+  }
 }
 
   .help-icon {

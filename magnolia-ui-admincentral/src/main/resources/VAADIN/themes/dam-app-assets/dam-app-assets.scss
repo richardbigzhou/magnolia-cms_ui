@@ -6,4 +6,29 @@
       height: 350px !important;
   }
 
+    /* Styles for the DamUploadField & DamFilePreviewCompontent. */
+
+  .file-preview-area .preview-image{
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 0;
+  }
+
+  .file-preview-area .edit-button{
+    position:absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+  }
+
+  .file-preview-area .lightbox-button{
+    position:absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 1;
+  }
+
+
 }
