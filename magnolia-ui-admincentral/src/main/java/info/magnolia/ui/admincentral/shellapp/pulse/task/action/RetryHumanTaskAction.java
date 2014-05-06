@@ -59,7 +59,7 @@ public class RetryHumanTaskAction extends AbstractHumanTaskAction<RetryHumanTask
         String taskId = task.getId();
 
         tasksManager.complete(taskId, task.getResult());
-        getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
+        getTaskPresenter().onNavigateToList();
 
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
     }

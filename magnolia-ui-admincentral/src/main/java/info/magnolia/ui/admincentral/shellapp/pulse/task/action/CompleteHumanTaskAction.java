@@ -60,7 +60,7 @@ public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHum
         String taskId = task.getId();
 
         taskManager.complete(taskId, result);
-        getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
+        getTaskPresenter().onNavigateToList();
 
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
     }
