@@ -109,7 +109,6 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
 
             added.removeAll(prevSelected);
             removed.removeAll(currSelected);
-            // now know what has been added or removed
 
             prevSelected = currSelected;
 
@@ -271,19 +270,7 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
             @Override
             public void itemCategoryChanged(CategoryChangedEvent event) {
                 final ItemCategory category = event.getCategory();
-                currentlySelectedCategory = category;
-                listener.filterByItemCategory(category);
-                categoryFilterAlreadyApplied = true;
-                // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
-                for (String id : (Set<String>) itemTable.getValue()) {
-                    itemTable.unselect(id);
-                }
-                if (category == ItemCategory.ALL_TASKS || category == ItemCategory.ALL_MESSAGES) {
-                    navigator.enableGroupBy(true);
-                } else {
-                    navigator.enableGroupBy(false);
-                }
-                refresh();
+                onItemCategoryChanged(category);
             }
         });
 
@@ -370,6 +357,16 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         return itemTable;
     }
 
+    protected PulseItemCategoryNavigator getNavigator() {
+        return navigator;
+    }
+
+    @Override
+    public void setTabActive(ItemCategory category) {
+        navigator.setActive(category);
+        onItemCategoryChanged(category);
+    }
+
     protected void onItemClicked(ClickEvent event, final Object itemId) {
         String itemIdAsString = String.valueOf(itemId);
         // clicking on the group type header does nothing.
@@ -383,5 +380,21 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
                 itemTable.unselect(itemIdAsString);
             }
         }
+    }
+
+    private void onItemCategoryChanged(final ItemCategory category) {
+        currentlySelectedCategory = category;
+        listener.filterByItemCategory(category);
+        categoryFilterAlreadyApplied = true;
+        // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
+        for (String id : (Set<String>) itemTable.getValue()) {
+            itemTable.unselect(id);
+        }
+        if (category == ItemCategory.ALL_TASKS || category == ItemCategory.ALL_MESSAGES) {
+            navigator.enableGroupBy(true);
+        } else {
+            navigator.enableGroupBy(false);
+        }
+        refresh();
     }
 }

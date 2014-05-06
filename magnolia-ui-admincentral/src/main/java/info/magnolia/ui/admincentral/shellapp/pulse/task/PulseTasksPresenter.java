@@ -371,4 +371,8 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         return tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
     }
 
+    public void setTabActive(ItemCategory category) {
+        view.setTabActive(category);
+    }
+
 }

@@ -144,6 +144,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void taskAdded(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
+        showNewTasks();
     }
 
     @Override
@@ -165,6 +166,15 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         return isDisplayingDetailView;
     }
 
+    @Override
+    public void updateDetailView(final String itemId) {
+        if (selectedCategory == ItemCategory.TASKS) {
+            openTask(itemId);
+        } else {
+            openMessage(itemId);
+        }
+    }
+
     private void updatePendingMessagesAndTasksCount() {
         int unclearedMessages = messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser();
         int pendingTasks = tasksPresenter.getNumberOfPendingTasksForCurrentUser();
@@ -175,12 +185,10 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.updateCategoryBadgeCount(ItemCategory.TASKS, pendingTasks);
     }
 
-    @Override
-    public void updateDetailView(final String itemId) {
-        if (selectedCategory == ItemCategory.TASKS) {
-            openTask(itemId);
-        } else {
-            openMessage(itemId);
-        }
+    private void showNewTasks() {
+        selectedCategory = ItemCategory.TASKS;
+        showList();
+        view.setTabActive(ItemCategory.TASKS);
+        tasksPresenter.setTabActive(ItemCategory.UNCLAIMED);
     }
 }
