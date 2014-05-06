@@ -78,7 +78,7 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
             shell.openNotification(MessageStyleTypeEnum.WARNING, true, ex.getMessage());
         } catch (Exception ex) {
             log.error("An error occurred while trying to execute workflow human task [{}]", task, ex);
-            shell.openNotification(MessageStyleTypeEnum.ERROR, false, getDefinition().getErrorMessage() + "<br/><br/>Error: " + ex.getMessage());
+            shell.showError("Error: " + ex.getMessage(), ex);
         }
     }
 
