@@ -89,7 +89,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
 
                 formDialogPresenter.closeDialog();
 
-                getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
+                getTaskPresenter().onNavigateToList();
 
                 getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
             }
