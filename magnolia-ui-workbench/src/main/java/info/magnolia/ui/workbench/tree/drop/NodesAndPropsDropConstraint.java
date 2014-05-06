@@ -62,7 +62,9 @@ public class NodesAndPropsDropConstraint extends AlwaysTrueDropConstraint implem
         try {
             if (sourceJcrItem.isNode()) {
                 Node sourceNode = (Node) sourceJcrItem.getJcrItem();
-                return jcrNode.getPrimaryNodeType().canAddChildNode(sourceNode.getName(), sourceNode.getPrimaryNodeType().getName());
+                boolean isAllowed = jcrNode.getPrimaryNodeType().canAddChildNode(sourceNode.getName(), sourceNode.getPrimaryNodeType().getName());
+                boolean wouldBeSameNameSibling = jcrNode.hasNode(sourceNode.getName());
+                return isAllowed && !wouldBeSameNameSibling;
             } else {
                 Property sourceProperty = (Property) sourceJcrItem.getJcrItem();
                 if (sourceProperty.isMultiple()) {
