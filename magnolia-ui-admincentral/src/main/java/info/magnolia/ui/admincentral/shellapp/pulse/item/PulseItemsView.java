@@ -53,6 +53,8 @@ public interface PulseItemsView extends View {
 
     void updateCategoryBadgeCount(ItemCategory type, int count);
 
+    void setTabActive(ItemCategory category);
+
     /**
      * Listener interface to call back to {@link PulseItemsPresenter}.
      */

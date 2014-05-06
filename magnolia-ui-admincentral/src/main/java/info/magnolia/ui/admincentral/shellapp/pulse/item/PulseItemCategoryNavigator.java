@@ -198,7 +198,6 @@ public final class PulseItemCategoryNavigator extends CssLayout {
                     fireCategoryChangedEvent(ItemCategoryTab.this.category);
                 }
             });
-
         }
 
         public void setActive(boolean active) {
@@ -229,5 +228,15 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
     public void updateCategoryBadgeCount(ItemCategory category, int count) {
         itemCategoryTabs.get(category).updateItemsCount(count);
+    }
+
+    /**
+     * Sets the passed category as selected and un-select all the others.
+     */
+    public void setActive(ItemCategory category) {
+        for (ItemCategoryTab tab : itemCategoryTabs.values()) {
+            tab.setActive(false);
+        }
+        itemCategoryTabs.get(category).setActive(true);
     }
 }

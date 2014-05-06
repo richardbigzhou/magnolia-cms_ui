@@ -98,4 +98,9 @@ public final class PulseViewImpl implements PulseView {
         navigator.updateCategoryBadgeCount(category, count);
     }
 
+    @Override
+    public void setTabActive(ItemCategory category) {
+        navigator.setActive(category);
+    }
+
 }

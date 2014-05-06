@@ -47,6 +47,8 @@ public interface PulseView extends View {
 
     void updateCategoryBadgeCount(ItemCategory category, int count);
 
+    void setTabActive(ItemCategory category);
+
     /**
      * Listener.
      */
@@ -54,4 +56,5 @@ public interface PulseView extends View {
 
         void onCategoryChange(ItemCategory category);
     }
+
 }
