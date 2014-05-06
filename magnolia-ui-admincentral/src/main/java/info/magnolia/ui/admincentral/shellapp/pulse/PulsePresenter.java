@@ -185,6 +185,9 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.updateCategoryBadgeCount(ItemCategory.TASKS, pendingTasks);
     }
 
+    /*
+     * This method won't show the new task straight away but will do it when clicking on the pulse icon.
+     */
     private void showNewTask() {
         // update top navigation and load new task list
         selectedCategory = ItemCategory.TASKS;
