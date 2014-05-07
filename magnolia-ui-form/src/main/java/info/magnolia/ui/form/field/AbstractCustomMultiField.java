@@ -49,6 +49,7 @@ import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
@@ -118,14 +119,25 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     /**
      * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
      */
-    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Item item, boolean setCaptionToNull) {
+    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> value, boolean setCaptionToNull) {
 
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, new NullItem());
+        // If the value property is an Item, use this Item as root item for the field creation.
+        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, isItem(value) ? value.getValue() : new NullItem());
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
         // FIXME change i18n setting : MGNLUI-1548
         fieldDefinition.setI18nBasename(definition.getI18nBasename());
         Field<?> field = fieldfactory.createField();
+
+        // If the value property is not an Item but a property, set this property as datasource to the field
+        // and add a value change listener in order to propagate changes
+        if (!isItem(value)) {
+            if (value != null && value.getValue() != null) {
+                field.setPropertyDataSource(value);
+            }
+            field.addValueChangeListener(selectionListener);
+        }
+
         if (field instanceof AbstractComponent) {
             ((AbstractComponent) field).setImmediate(true);
         }
@@ -134,6 +146,10 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         }
         field.setWidth(100, Unit.PERCENTAGE);
         return field;
+    }
+
+    boolean isItem(Property<?> value) {
+        return (value != null && value.getValue() instanceof Item && !(value.getValue() instanceof PropertysetItem));
     }
 
     /**
@@ -150,19 +166,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         }
     };
 
-
-    /**
-     * Listener used to update fields based on DataSources changes.<br>
-     * For example if the field support i18n, when the language is changed, the individual field of the custom field have to be updated.
-     */
-    protected Property.ValueChangeListener datasourceListener = new ValueChangeListener() {
-        @SuppressWarnings("unchecked")
-        @Override
-        public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-            T newValue = (T) event.getProperty().getValue();
-            initFields(newValue);
-        }
-    };
 
     /**
      * Utility method that return a list of Fields embedded into a root custom field.

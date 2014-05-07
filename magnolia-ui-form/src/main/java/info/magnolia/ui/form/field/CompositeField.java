@@ -65,7 +65,6 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
         addStyleName("linkfield");
         if (definition.getLayout().equals(Layout.horizontal)) {
             root = new HorizontalLayout();
-            root.setWidth("520px");
         } else {
             root = new VerticalLayout();
         }
@@ -79,13 +78,10 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
-            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
-            if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
-                field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
-            } else {
+            Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
+            if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
-            field.addValueChangeListener(selectionListener);
             field.setWidth(100, Unit.PERCENTAGE);
 
             root.addComponent(field);
