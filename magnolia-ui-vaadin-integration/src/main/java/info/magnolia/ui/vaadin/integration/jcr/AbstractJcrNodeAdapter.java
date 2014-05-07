@@ -71,6 +71,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     private String nodeName;
 
+    private boolean childItemChanged = false;
+
     public AbstractJcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
     }
@@ -289,6 +291,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      * be persisted into Jcr.</b>
      */
     public AbstractJcrNodeAdapter addChild(AbstractJcrNodeAdapter child) {
+        childItemChanged = true;
         if (removedChildren.containsKey(child.getNodeName())) {
             removedChildren.remove(child.getNodeName());
         }
@@ -305,6 +308,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      * list. All Item part from the removed list are removed from the Jcr repository.</b>
      */
     public boolean removeChild(AbstractJcrNodeAdapter toRemove) {
+        childItemChanged = true;
         removedChildren.put(toRemove.getNodeName(), toRemove);
         return children.remove(toRemove.getNodeName()) != null;
     }
@@ -330,5 +334,12 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    /**
+     * @return true if an {@link com.vaadin.data.Item} was added or removed. false otherwise.
+     */
+    public boolean hasChangedChildItems() {
+        return childItemChanged;
     }
 }

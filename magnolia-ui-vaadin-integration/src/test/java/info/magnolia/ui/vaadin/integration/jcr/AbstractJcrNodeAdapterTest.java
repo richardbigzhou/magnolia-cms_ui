@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -277,6 +278,36 @@ public class AbstractJcrNodeAdapterTest {
         assertFalse(root.hasNode(subNodeName));
         assertEquals(nodeCount, root.getNodes().getSize());
         assertEquals(propertyCount, root.getProperties().getSize());
+    }
+
+    @Test
+    public void hasChangedChildItemsForAddedOne() throws Exception {
+        // GIVEN
+        Node parentNode = session.getRootNode().addNode("nodeName");
+        DummyJcrNodeAdapter parentAdapter = new DummyJcrNodeAdapter(parentNode);
+        Node childNode = parentNode.addNode("childNode");
+        DummyJcrNodeAdapter childAdapter = new DummyJcrNodeAdapter(childNode);
+        assertFalse(parentAdapter.hasChangedChildItems());
+        // WHEN
+        parentAdapter.addChild(childAdapter);
+
+        // THEN
+        assertTrue(parentAdapter.hasChangedChildItems());
+    }
+
+    @Test
+    public void hasChangedChildItemsForRemovedOne() throws Exception {
+        // GIVEN
+        Node parentNode = session.getRootNode().addNode("nodeName");
+        DummyJcrNodeAdapter parentAdapter = new DummyJcrNodeAdapter(parentNode);
+        Node childNode = parentNode.addNode("childNode");
+        DummyJcrNodeAdapter childAdapter = new DummyJcrNodeAdapter(childNode);
+        assertFalse(parentAdapter.hasChangedChildItems());
+        // WHEN
+        parentAdapter.removeChild(childAdapter);
+
+        // THEN
+        assertTrue(parentAdapter.hasChangedChildItems());
     }
 
     /**

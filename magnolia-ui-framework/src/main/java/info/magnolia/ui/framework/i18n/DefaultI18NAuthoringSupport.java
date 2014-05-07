@@ -37,6 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
         if (isEnabled() && i18nContentSupport.isEnabled() && locale != null) {
             while (it.hasNext()) {
                 Component c = it.next();
-                if (c instanceof  Field) {
+                if (c instanceof Field) {
                     Field f = (Field) c;
                     Property p = f.getPropertyDataSource();
                     if (p instanceof TransformedProperty) {
@@ -115,8 +116,13 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                         if (f instanceof AbstractField) {
                             ((AbstractField) f).setLocale(locale);
                         }
+                        // In case the field has a transformer that delegate i18nize to inner fields, i18nize sub fields.
+                        if (i18nBaseProperty.getTransformer() instanceof I18nTransformerDelegator) {
+                            i18nize((HasComponents) f, locale);
+                        }
+
                     }
-                } else if (c instanceof  HasComponents) {
+                } else if (c instanceof HasComponents) {
                     i18nize((HasComponents) c, locale);
                 }
             }
@@ -124,7 +130,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     }
 
     @Override
-    public String createI18NURI(Node node, Locale locale){
+    public String createI18NURI(Node node, Locale locale) {
         // we are going to change the context language, this is ugly but is safe as only the current Thread is modified
         Locale currentLocale = i18nContentSupport.getLocale();
         String uri = null;
@@ -134,11 +140,12 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
             uri = LinkUtil.createAbsoluteLink(node);
         }
         // make sure that we always reset to the original locale
-        finally{
+        finally {
             i18nContentSupport.setLocale(currentLocale);
         }
         return uri;
     }
+
     private String constructI18NPropertyName(CharSequence basePropertyName, Locale locale) {
         return basePropertyName + "_" + locale.toString();
     }
