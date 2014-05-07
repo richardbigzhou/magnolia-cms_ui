@@ -1874,7 +1874,7 @@
           <sv:value>380e934a-2378-46fc-8736-92497d45557a</sv:value>
         </sv:property>
         <sv:property sv:name="dropConstraintClass" sv:type="String">
-          <sv:value>info.magnolia.ui.workbench.tree.drop.OnlyNodesDropConstraint</sv:value>
+          <sv:value>info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint</sv:value>
         </sv:property>
         <sv:property sv:name="editable" sv:type="String">
           <sv:value>true</sv:value>

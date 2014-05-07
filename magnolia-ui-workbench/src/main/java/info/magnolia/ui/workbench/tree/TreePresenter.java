@@ -43,7 +43,6 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,8 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.ui.TreeTable;
 
 /**
  * The TreePresenter is responsible for creating, configuring and updating a tree of items according to the workbench definition.
@@ -96,9 +93,9 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         // Drag and Drop
         Class<? extends DropConstraint> dropConstraintClass = workbenchDefinition.getDropConstraintClass();
         if (dropConstraintClass != null) {
-            DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
-            DropHandler dropHandler = new TreeViewDropHandler((TreeTable) view.asVaadinComponent(), constraint);
-            view.setDragAndDropHandler(dropHandler);
+            final DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
+            final MoveHandler moveHandler = getComponentProvider().newInstance(MoveHandler.class, view.asVaadinComponent(), constraint);
+            view.setDragAndDropHandler(moveHandler.asDropHandler());
             log.debug("Set following drop container {} to the treeTable", dropConstraintClass.getName());
         }
 

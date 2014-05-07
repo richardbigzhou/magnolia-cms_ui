@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.security.app.container;
+package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.tree.TreePresenter;
-import info.magnolia.ui.workbench.tree.TreeView;
+import com.vaadin.data.Item;
+import com.vaadin.event.dd.DropHandler;
 
 /**
- * Custom {@link TreePresenter} for the users workspace that uses the custom container {@link UserContainer}.
+ * This interface marks class as providing implementation of methods necessary to move items in the container.
+ * WARNING: This interface might be refactored or moved to different package in the future without prior notice. Use at your own risk.
  */
-public class UserTreePresenter extends TreePresenter {
+public interface MoveHandler {
 
-    public UserTreePresenter(TreeView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
+    /**
+     * Performs move of the source node or property into target node or next to target node depending on the value of MoveLocation.
+     * This method will persist move by calling session.save() explicitly. And will return true/false depending on whether move was successful or not.
+     */
+    boolean moveItem(Item source, Item target, MoveLocation location);
 
-    @Override
-    protected AbstractJcrContainer createContainer() {
-        return new UserContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
-    }
+    DropHandler asDropHandler();
 }

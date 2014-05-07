@@ -60,7 +60,6 @@ import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaD
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
-import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
@@ -71,6 +70,8 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.tree.MoveHandler;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -122,6 +123,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ContentConnector contentConnector;
 
+    private MoveHandler dropHandler;
+
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
         super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
@@ -130,11 +133,12 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.appContext = appContext;
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
+        this.dropHandler = componentProvider.newInstance(MoveHandler.class);
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
+        return new Object[] { nodesToMove, callback, appContext, getHostCandidate(), dropHandler };
     }
 
     @Override

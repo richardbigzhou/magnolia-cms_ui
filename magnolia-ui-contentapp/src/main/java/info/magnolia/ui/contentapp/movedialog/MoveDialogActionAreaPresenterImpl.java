@@ -41,7 +41,7 @@ import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
-import info.magnolia.ui.framework.action.MoveLocation;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 import java.util.Set;
 

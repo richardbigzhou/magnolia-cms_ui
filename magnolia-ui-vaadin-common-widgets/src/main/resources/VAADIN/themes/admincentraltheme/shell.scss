@@ -141,6 +141,9 @@
   background-color:#77A42F;
   opacity:0.9;
   filter:alpha(opacity = 90);
+  /*The border rule is set in order to overcome the problems
+  with rendering the app curtain in webkit-based browsers.*/
+  border: 1px solid #77A42F;
 }
 
 .v-curtain-black {

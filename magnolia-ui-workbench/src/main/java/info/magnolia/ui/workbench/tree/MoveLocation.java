@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.security.app.container;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.tree.TreePresenter;
-import info.magnolia.ui.workbench.tree.TreeView;
+package info.magnolia.ui.workbench.tree;
 
 /**
- * Custom {@link info.magnolia.ui.workbench.tree.TreePresenter} for the users workspace that uses the custom container {@link info.magnolia.security.app.container.UserContainer}.
+ * Type of move operation performed on the nodes.
  */
-public class RoleTreePresenter extends TreePresenter {
-
-    public RoleTreePresenter(TreeView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
-
-    @Override
-    protected AbstractJcrContainer createContainer() {
-        return new RoleContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
-    }
+public enum MoveLocation {
+    AFTER,
+    BEFORE,
+    INSIDE
 }

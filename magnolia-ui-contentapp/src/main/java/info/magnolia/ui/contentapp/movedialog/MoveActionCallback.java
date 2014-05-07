@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.contentapp.movedialog;
 
+import info.magnolia.ui.workbench.tree.MoveLocation;
+
 import com.vaadin.data.Item;
-import info.magnolia.ui.framework.action.MoveLocation;
 
 /**
  * Called once node move operation is completed (successful or not).

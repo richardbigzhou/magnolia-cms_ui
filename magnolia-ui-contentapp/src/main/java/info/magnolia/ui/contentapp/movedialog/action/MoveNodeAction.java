@@ -34,28 +34,23 @@
 package info.magnolia.ui.contentapp.movedialog.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.framework.action.AbstractMultiItemAction;
-import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.tree.MoveHandler;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
 import java.util.List;
 
 import javax.inject.Named;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -65,8 +60,6 @@ import com.vaadin.data.Item;
  * @see MoveNodeActionDefinition
  */
 public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefinition> {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * The item where the items should be moved relative to.
@@ -79,17 +72,20 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     private MoveLocation moveLocation = MoveLocation.BEFORE;
 
+    private MoveHandler moveHandler;
+
     public MoveNodeAction(
             MoveNodeActionDefinition definition,
             List<JcrItemAdapter> items,
             JcrNodeAdapter targetItem,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             UiContext uiContext,
-            MoveActionCallback callback) {
+            MoveActionCallback callback, MoveHandler moveHandler) {
         super(definition, items, uiContext);
         this.targetItem = targetItem;
         this.admincentralEventBus = admincentralEventBus;
         this.callback = callback;
+        this.moveHandler = moveHandler;
     }
 
     @Override
@@ -111,26 +107,8 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     @Override
     protected void executeOnItem(JcrItemAdapter item) throws Exception {
-        if (basicMoveCheck(item.getJcrItem(), targetItem.getJcrItem())) {
-            moveLocation = getDefinition().getMoveLocation();
-
-            Node source = (Node) item.getJcrItem();
-            Node target = targetItem.getJcrItem();
-
-            switch (moveLocation) {
-                case INSIDE:
-                    NodeUtil.moveNode(source, target);
-                    break;
-                case BEFORE:
-                    NodeUtil.moveNodeBefore(source, target);
-                    break;
-                case AFTER:
-                    NodeUtil.moveNodeAfter(source, target);
-                    break;
-            }
-            Session session = source.getSession();
-            session.save();
-        } else {
+        moveLocation = getDefinition().getMoveLocation();
+        if (!moveHandler.moveItem(item, targetItem, moveLocation)) {
             callback.onMoveCancelled();
             throw new IllegalArgumentException("Move operation was not completed due to failed move validation.");
         }
@@ -146,16 +124,4 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
         return getDefinition().getFailureMessage();
     }
 
-    /**
-     * Perform basic check.
-     */
-    private boolean basicMoveCheck(javax.jcr.Item source, javax.jcr.Item target) throws RepositoryException {
-        if (!target.isNode() || !source.isNode()) {
-            return false;
-        }
-        if (target.getPath().equals(source.getPath())) {
-            return false;
-        }
-        return !NodeUtil.isSame((Node) target, source.getParent());
-    }
 }

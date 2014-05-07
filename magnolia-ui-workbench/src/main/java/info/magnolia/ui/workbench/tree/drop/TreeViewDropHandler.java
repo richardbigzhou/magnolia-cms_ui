@@ -33,10 +33,18 @@
  */
 package info.magnolia.ui.workbench.tree.drop;
 
+import static info.magnolia.jcr.util.NodeUtil.*;
+
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.workbench.tree.MoveHandler;
+import info.magnolia.ui.workbench.tree.MoveLocation;
 
-import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +64,7 @@ import com.vaadin.ui.TreeTable;
  * This Handler implementation uses constrained defined in
  * {@link DropConstraint} implemented class.
  */
-public class TreeViewDropHandler implements DropHandler {
+public class TreeViewDropHandler implements MoveHandler, DropHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -64,7 +72,10 @@ public class TreeViewDropHandler implements DropHandler {
     private DropConstraint constraint;
     private AcceptCriterion serverSideCriterion;
 
-    @Inject
+    public TreeViewDropHandler() {
+        createAcceptCriterion();
+    }
+
     public TreeViewDropHandler(TreeTable tree, DropConstraint constraint) {
         this.tree = tree;
         this.constraint = constraint;
@@ -111,14 +122,14 @@ public class TreeViewDropHandler implements DropHandler {
     /**
      * Move a node within a tree onto, above or below another node depending on
      * the drop location.
-     * 
+     *
      * @param sourceItemId
-     *            id of the item to move
+     * id of the item to move
      * @param targetItemId
-     *            id of the item onto which the source node should be moved
+     * id of the item onto which the source node should be moved
      * @param location
-     *            VerticalDropLocation indicating where the source node was
-     *            dropped relative to the target node
+     * VerticalDropLocation indicating where the source node was
+     * dropped relative to the target node
      */
     private void moveNode(Object sourceItemId, Object targetItemId, VerticalDropLocation location) {
         log.debug("DropLocation: {}", location.name());
@@ -137,21 +148,22 @@ public class TreeViewDropHandler implements DropHandler {
         if (location == VerticalDropLocation.MIDDLE) {
             if (constraint.allowedAsChild(sourceItem, targetItem)) {
                 // move first in the container
-                container.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem());
+                moveItem(sourceItem, targetItem, MoveLocation.INSIDE);
                 container.setParent(sourceItemId, targetItemId);
             }
-        } else if (location == VerticalDropLocation.TOP) {
+        } else {
             Object parentId = container.getParent(targetItemId);
-            if (parentId != null && constraint.allowedBefore(sourceItem, targetItem)) {
+            if (location == VerticalDropLocation.TOP) {
+                if (parentId != null && constraint.allowedBefore(sourceItem, targetItem)) {
                 // move first in the container
-                container.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem());
+                    moveItem(sourceItem, targetItem, MoveLocation.BEFORE);
                 container.setParent(sourceItemId, parentId);
-            }
-        } else if (location == VerticalDropLocation.BOTTOM) {
-            Object parentId = container.getParent(targetItemId);
-            if (parentId != null && constraint.allowedAfter(sourceItem, targetItem)) {
-                container.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem());
-                container.setParent(sourceItemId, parentId);
+                }
+            } else if (location == VerticalDropLocation.BOTTOM) {
+                if (parentId != null && constraint.allowedAfter(sourceItem, targetItem)) {
+                    moveItem(sourceItem, targetItem, MoveLocation.AFTER);
+                    container.setParent(sourceItemId, parentId);
+                }
             }
         }
     }
@@ -180,4 +192,77 @@ public class TreeViewDropHandler implements DropHandler {
         return ((DataBoundTransferable) t).getItemId();
     }
 
+    /**
+     * Performs check for moving items. Evaluates true when first node is of type Node and source and target are not same.
+     */
+    public boolean basicMoveCheck(Item source, Item target) {
+        try {
+            // target must be node, to allow moving in
+            if (!target.isNode()) {
+                return false;
+            }
+            // Source and origin are the same... do nothing
+            if (target.getPath().equals(source.getPath()) && target.getSession().getWorkspace().getName().equals(source.getSession().getWorkspace().getName())) {
+                return false;
+            }
+            // Source can not be a child of target.
+            return !NodeUtil.isSame((Node) target, source.getParent());
+        } catch (RepositoryException re) {
+            log.debug("Cannot determine whether drag and drop is possible due to: {}", re.getMessage(), re);
+            return false;
+        }
+    }
+
+    /**
+     * Performs move of the source node into target node or next to target node depending on the value of MoveLocation.
+     * Move is performed in session-write mode and as such requires explicit call to session.save() after performing the operation.
+     */
+    public void moveNode(Node nodeToMove, Node newParent, MoveLocation location) throws RepositoryException {
+        if (!basicMoveCheck(nodeToMove, newParent)) {
+            return;
+        }
+        switch (location) {
+        case INSIDE:
+            String newPath = combinePathAndName(newParent.getPath(), nodeToMove.getName());
+            nodeToMove.getSession().move(nodeToMove.getPath(), newPath);
+            break;
+        case BEFORE:
+            moveNodeBefore(nodeToMove, newParent);
+            break;
+        case AFTER:
+            moveNodeAfter(nodeToMove, newParent);
+            break;
+        }
+    }
+
+    /**
+     * Performs move of the source node or property into target node or next to target node depending on the value of MoveLocation.
+     * This method will persist move by calling session.save() explicitly. And will return true/false depending on whether move was successful or not.
+     */
+    @Override
+    public boolean moveItem(com.vaadin.data.Item source, com.vaadin.data.Item target, MoveLocation location) {
+        Item sourceItem = ((JcrItemAdapter) source).getJcrItem();
+        Item targetItem = ((JcrItemAdapter) target).getJcrItem();
+        if (!basicMoveCheck(sourceItem, targetItem)) {
+            return false;
+        }
+        try {
+            final Node targetNode = (Node) targetItem;
+            if (sourceItem.isNode()) {
+                moveNode((Node) sourceItem, targetNode, location);
+            } else {
+                NodeUtil.moveProperty((Property) sourceItem, targetNode);
+            }
+            sourceItem.getSession().save();
+            return true;
+        } catch (RepositoryException re) {
+            log.debug("Cannot execute drag and drop action", re);
+            return false;
+        }
+    }
+
+    @Override
+    public DropHandler asDropHandler() {
+        return this;
+    }
 }

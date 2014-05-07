@@ -1449,9 +1449,6 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.tree.TreePresenterDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="implementationClass" sv:type="String">
-              <sv:value>info.magnolia.security.app.container.UserTreePresenter</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -6558,9 +6555,6 @@
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.tree.TreePresenterDefinition</sv:value>
-            </sv:property>
-            <sv:property sv:name="implementationClass" sv:type="String">
-              <sv:value>info.magnolia.security.app.container.RoleTreePresenter</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>

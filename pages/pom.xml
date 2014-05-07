@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <name>magnolia-pages</name>
   <properties>
-    <cloverCoverageThreshold>31</cloverCoverageThreshold>
+    <cloverCoverageThreshold>33</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -31,10 +31,6 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-widget-editor</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

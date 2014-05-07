@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-dialog</artifactId>
   <name>magnolia-ui-dialog</name>
   <properties>
-    <cloverCoverageThreshold>47</cloverCoverageThreshold>
+    <cloverCoverageThreshold>51</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>

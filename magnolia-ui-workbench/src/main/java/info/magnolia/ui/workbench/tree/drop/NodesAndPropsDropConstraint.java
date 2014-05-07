@@ -35,16 +35,48 @@ package info.magnolia.ui.workbench.tree.drop;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 
 /**
  * Allows only nodes to be moved and prevents nodes from becoming children of properties.
  */
-public class OnlyNodesDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
+public class NodesAndPropsDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
+
+    private static final Logger log = LoggerFactory.getLogger(NodesAndPropsDropConstraint.class);
 
     @Override
     public boolean allowedAsChild(Item sourceItem, Item targetItem) {
-        return ((JcrItemAdapter) targetItem).isNode();
+        JcrItemAdapter jcrItem = (JcrItemAdapter) targetItem;
+        if (!jcrItem.isNode()) {
+            return false;
+        }
+        Node jcrNode = (Node) jcrItem.getJcrItem();
+        JcrItemAdapter sourceJcrItem = (JcrItemAdapter) sourceItem;
+        try {
+            if (sourceJcrItem.isNode()) {
+                Node sourceNode = (Node) sourceJcrItem.getJcrItem();
+                boolean isAllowed = jcrNode.getPrimaryNodeType().canAddChildNode(sourceNode.getName(), sourceNode.getPrimaryNodeType().getName());
+                boolean wouldBeSameNameSibling = jcrNode.hasNode(sourceNode.getName());
+                return isAllowed && !wouldBeSameNameSibling;
+            } else {
+                Property sourceProperty = (Property) sourceJcrItem.getJcrItem();
+                if (sourceProperty.isMultiple()) {
+                    return jcrNode.getPrimaryNodeType().canSetProperty(sourceProperty.getName(), sourceProperty.getValues());
+                } else {
+                    return jcrNode.getPrimaryNodeType().canSetProperty(sourceProperty.getName(), sourceProperty.getValue());
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to read item (node/property) or it's new parent node while moving item to new location with {}", e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
@@ -60,7 +92,7 @@ public class OnlyNodesDropConstraint extends AlwaysTrueDropConstraint implements
     @Override
     public boolean allowedToMove(Item sourceItem) {
         JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
-        return jcrSourceItem != null && jcrSourceItem.isNode();
+        return jcrSourceItem != null;
     }
 
 }

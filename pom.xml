@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.3-m1</magnoliaVersion>
+    <magnoliaVersion>5.3-SNAPSHOT</magnoliaVersion>
     <imagingVersion>3.0.1</imagingVersion>
     <vaadinVersion>7.1.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
@@ -149,11 +149,6 @@
       <dependency>
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-vaadin-theme</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -338,7 +333,6 @@
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-common-widgets</module>
     <module>magnolia-ui-widget-editor</module>
-    <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
     <module>about-app</module>
