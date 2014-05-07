@@ -11,6 +11,9 @@
   <artifactId>magnolia-messages-app</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-messages-app</name>
+  <properties>
+    <cloverCoverageThreshold>4</cloverCoverageThreshold>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
