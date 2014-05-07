@@ -119,5 +119,6 @@ public class PulseTasksPresenterTest {
         List<Task> tasks = tasksStore.getAllTasks();
         assertEquals(1, tasks.size());
         assertTrue(tasks.get(0).getStatus() == Status.Created);
+        assertNull(tasks.get(0).getActorId());
     }
 }
