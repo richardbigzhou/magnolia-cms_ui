@@ -95,7 +95,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         root.removeAllComponents();
         fieldMap.clear();
         // add the select Field Component.
-        AbstractSelect selectField = createSelectionField();
+        AbstractSelect selectField = createSelectionField(fieldValues);
         selectField.addValueChangeListener(createSelectValueChangeListener());
         selectField.addValueChangeListener(selectionListener);
         root.addComponent(selectField);
@@ -104,13 +104,10 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         // Create Switchable Fields
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
-            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
-            if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
-                field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
-            } else {
+            Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
+            if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
-            field.addValueChangeListener(selectionListener);
             fieldMap.put(name, field);
         }
 
@@ -130,7 +127,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     /**
      * Create a RadioSelect or a NormalSelect Field based on the definition.<br>
      */
-    private AbstractSelect createSelectionField() {
+    private AbstractSelect createSelectionField(PropertysetItem fieldValues) {
         AbstractSelect field = null;
         try {
             // Create the correct definition class
@@ -152,7 +149,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             selectDefinition.setSortOptions(false);
 
             // Create the field
-            field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
+            field = (AbstractSelect) createLocalField(selectDefinition, fieldValues.getItemProperty(selectDefinition.getName()), false);
             field.addStyleName(layout);
             field.setImmediate(true);
         } catch (Exception e) {

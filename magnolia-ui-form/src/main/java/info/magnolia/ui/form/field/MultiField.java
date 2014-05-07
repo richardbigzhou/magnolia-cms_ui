@@ -38,6 +38,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiItemTransformer;
 
 import java.util.Iterator;
 
@@ -119,15 +122,12 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
-        Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, true);
+        Field<?> field = createLocalField(fieldDefinition, property, true);
         layout.addComponent(field);
-        if (property != null) {
-            field.setPropertyDataSource(property);
-        } else {
+        if (property == null) {
             int position = root.getComponentCount() - 1;
             ((PropertysetItem) getPropertyDataSource().getValue()).addItemProperty(position, field.getPropertyDataSource());
         }
-        field.addValueChangeListener(selectionListener);
 
         // Delete Button
         Button deleteButton = new Button();
@@ -160,8 +160,14 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             public void buttonClick(ClickEvent event) {
                 int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
-                removeValueProperty(position);
-                getPropertyDataSource().setValue(getValue());
+                Transformer transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                if (transformer instanceof MultiItemTransformer) {
+                    ((MultiItemTransformer) transformer).removeElement(position);
+                } else {
+                    removeValueProperty(position);
+                    getPropertyDataSource().setValue(getValue());
+                }
+
             };
         };
     }
@@ -173,7 +179,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                root.addComponent(createEntryComponent(null), root.getComponentCount() - 1);
+                Transformer transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                root.addComponent(createEntryComponent(transformer instanceof MultiItemTransformer ? ((MultiItemTransformer) transformer).createNewElement() : null), root.getComponentCount() - 1);
             };
         };
     }
