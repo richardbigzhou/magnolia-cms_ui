@@ -253,7 +253,19 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getLastChange());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
             item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId()));
+            autoAssignTask(task);
             item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + "|" + StringUtils.defaultString(task.getActorIds()));
+        }
+    }
+
+    /*
+     * default visibility for testing purposes only
+     */
+    void autoAssignTask(final Task task) {
+        String actorId = task.getActorId();
+        if (StringUtils.isNotBlank(actorId)) {
+            log.debug("Auto assigning task {} to {}", task, actorId);
+            tasksStore.claim(task.getId(), actorId);
         }
     }
 

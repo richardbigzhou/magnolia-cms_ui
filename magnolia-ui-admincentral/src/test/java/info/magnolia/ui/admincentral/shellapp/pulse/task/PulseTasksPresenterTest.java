@@ -33,27 +33,47 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
+import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksStore;
+import info.magnolia.task.TasksStoreImpl;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
 import java.util.HashMap;
+import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * PulseTasksPresenterTest.
  */
 public class PulseTasksPresenterTest {
+    private PulseTasksPresenter presenter;
+    private TasksStore tasksStore;
+
+    @Before
+    public void setUp() {
+        tasksStore = new TasksStoreImpl(mock(SecuritySupport.class));
+        presenter = new PulseTasksPresenter(mock(PulseTasksView.class), mock(ShellImpl.class), tasksStore, mock(SimpleTranslator.class));
+    }
+
+    @After
+    public void tearDown() {
+        for (Task task : tasksStore.getAllTasks()) {
+            tasksStore.removeTask(task.getId());
+        }
+    }
 
     @Test
     public void titleFallsbackToTaskNameIfNoTaskSubjectIsPresent() throws Exception {
         // GIVEN
-        PulseTasksPresenter presenter = new PulseTasksPresenter(mock(PulseTasksView.class), mock(ShellImpl.class), mock(TasksStore.class), mock(SimpleTranslator.class));
         Task task = new Task();
         task.setName("foo");
         task.setContent(new HashMap<String, Object>());
@@ -64,5 +84,40 @@ public class PulseTasksPresenterTest {
 
         // THEN
         assertEquals("foo|bar", title);
+    }
+
+    @Test
+    public void autoAssignTaskIfActorIdIsAlreadySet() throws Exception {
+        // GIVEN
+        String userId = "qux";
+
+        Task task = new Task();
+        task.setId("1");
+        task.setActorId(userId);
+        tasksStore.addTask(task);
+
+        // WHEN
+        presenter.autoAssignTask(task);
+
+        // THEN
+        List<Task> tasks = tasksStore.findAllTasksByUser(userId);
+        assertEquals(1, tasks.size());
+        assertTrue(tasks.get(0).getStatus() == Status.InProgress);
+    }
+
+    @Test
+    public void doNotAutoAssignTaskIfActorIdIsNotSet() throws Exception {
+        // GIVEN
+        Task task = new Task();
+        task.setId("1");
+        tasksStore.addTask(task);
+
+        // WHEN
+        presenter.autoAssignTask(task);
+
+        // THEN
+        List<Task> tasks = tasksStore.getAllTasks();
+        assertEquals(1, tasks.size());
+        assertTrue(tasks.get(0).getStatus() == Status.Created);
     }
 }
