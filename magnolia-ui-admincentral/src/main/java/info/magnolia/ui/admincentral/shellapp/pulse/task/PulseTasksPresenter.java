@@ -263,7 +263,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
      */
     void autoAssignTask(final Task task) {
         String actorId = task.getActorId();
-        if (StringUtils.isNotBlank(actorId)) {
+        if (task.getStatus() == Status.Created && StringUtils.isNotBlank(actorId)) {
             log.debug("Auto assigning task {} to {}", task, actorId);
             tasksStore.claim(task.getId(), actorId);
         }

@@ -121,4 +121,26 @@ public class PulseTasksPresenterTest {
         assertTrue(tasks.get(0).getStatus() == Status.Created);
         assertNull(tasks.get(0).getActorId());
     }
+
+    @Test
+    public void doNotAutoAssignTaskIfStatusIsNotCreated() throws Exception {
+        // GIVEN
+        String userId = "qux";
+
+        Task task = new Task();
+        task.setId("1");
+        task.setActorId(userId);
+
+        tasksStore.addTask(task); // this sets task status as Created
+        task.setStatus(Status.Completed);
+
+        // WHEN
+        presenter.autoAssignTask(task);
+
+        // THEN
+        List<Task> tasks = tasksStore.findAllTasksByUser(userId);
+        assertEquals(1, tasks.size());
+        assertTrue(tasks.get(0).getStatus() == Status.Completed);
+
+    }
 }
