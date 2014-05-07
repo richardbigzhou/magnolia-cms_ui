@@ -38,6 +38,8 @@ import info.magnolia.init.MagnoliaConfigurationProperties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.UICreateEvent;
@@ -47,11 +49,16 @@ import com.vaadin.server.UICreateEvent;
  */
 public class AdmincentralUIProvider extends DefaultUIProvider {
 
-    private static final String WIDGETSET_PROPERTY_KEY = "magnolia.ui.vaadin.widgetset";
-    private static final String THEME_PROPERTY_KEY = "magnolia.ui.vaadin.theme";
+    private static final Logger log = LoggerFactory.getLogger(AdmincentralUIProvider.class);
 
-    private static final String DEFAULT_WIDGETSET = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
-    private static final String DEFAULT_THEME = "admincentral";
+    public static final String WIDGETSET_PROPERTY_KEY = "magnolia.ui.vaadin.widgetset";
+    public static final String THEME_PROPERTY_KEY = "magnolia.ui.vaadin.theme";
+
+    public static final String OLD_52_WIDGETSET = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
+    public static final String DEFAULT_WIDGETSET = "info.magnolia.widgetset.MagnoliaWidgetSet";
+    public static final String DEFAULT_THEME = "admincentral";
+
+    public static final String WIDGETSET_DOCUMENTATION_URL = "http://documentation.magnolia-cms.com/display/DOCS/Using+custom+widgets";
 
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
@@ -65,7 +72,12 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
         if (magnoliaProperties != null) {
             String widgetset = magnoliaProperties.getProperty(WIDGETSET_PROPERTY_KEY);
             if (StringUtils.isNotBlank(widgetset)) {
-                return widgetset;
+                if (widgetset.equals(OLD_52_WIDGETSET)) {
+                    log.warn("Magnolia's default widgetset was relocated to '" + DEFAULT_WIDGETSET + "' but the '" + WIDGETSET_PROPERTY_KEY + "' property still points to its former location. "
+                            + "Please update your magnolia.properties; for more info, see " + WIDGETSET_DOCUMENTATION_URL);
+                } else {
+                    return widgetset;
+                }
             }
         }
         return DEFAULT_WIDGETSET;

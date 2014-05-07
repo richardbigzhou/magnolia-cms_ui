@@ -61,6 +61,7 @@ import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
+import info.magnolia.ui.admincentral.setup.for5_3.WidgetsetRelocationCondition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
@@ -233,8 +234,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", "info.magnolia.ui.contentapp.ContentAppDescriptor")));
 
         register(DeltaBuilder.update("5.3", "")
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint")));
-
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint"))
+                .addCondition(new WidgetsetRelocationCondition())
+        );
     }
 
     @Override
@@ -276,4 +278,5 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         return permissionsMap;
     }
+
 }
