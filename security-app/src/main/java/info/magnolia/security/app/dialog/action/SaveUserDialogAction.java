@@ -120,10 +120,6 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                     throw new ActionExecutionException("Users cannot be created directly under root");
                 }
 
-                if ("admin".equals(newUserName)) {
-                    throw new ActionExecutionException("Username 'admin' is used internally and cannot be used else.");
-                }
-
                 // Make sure this user is allowed to add a user here, the user manager would happily do it and then we'd fail to read the node
                 parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
 
