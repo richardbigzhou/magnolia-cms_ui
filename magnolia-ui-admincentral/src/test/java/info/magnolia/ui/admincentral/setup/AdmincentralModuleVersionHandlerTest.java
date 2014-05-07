@@ -33,12 +33,15 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
@@ -52,6 +55,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -502,5 +506,19 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // THEN
         assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+    }
+
+    @Test
+    public void testUpdateFrom524() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive");
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
+        assertThat(session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
     }
 }
