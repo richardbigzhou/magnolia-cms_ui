@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.task;
 
-import info.magnolia.task.TaskEvent;
+import info.magnolia.task.event.TaskEvent;
 
 /**
  * TaskEventDispatcher.

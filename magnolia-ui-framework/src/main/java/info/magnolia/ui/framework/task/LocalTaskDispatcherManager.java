@@ -38,8 +38,8 @@ import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.task.Task;
-import info.magnolia.task.TaskEvent;
-import info.magnolia.task.TaskEventHandler;
+import info.magnolia.task.event.TaskEvent;
+import info.magnolia.task.event.TaskEventHandler;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -115,27 +115,27 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
             users.add(task.getActorId());
         }
 
-        log.debug("Found actorIds {}", task.getActorIds());
-        if (StringUtils.isNotBlank(task.getActorIds())) {
-            final String[] actors = StringUtils.split(task.getActorIds(), ",");
+        if (task.getActorIds() != null) {
 
-            for (String actor : actors) {
+            log.debug("Found actorIds {}", task.getActorIds());
+            for (String actor : task.getActorIds()) {
                 users.add(actor);
             }
         }
 
-        log.debug("Found groups {}", task.getGroupIds());
-        if (StringUtils.isNotBlank(task.getGroupIds())) {
 
-            final String[] groups = StringUtils.split(task.getGroupIds(), ",");
+        log.debug("Found groups {}", task.getGroupIds());
+        if (task.getGroupIds() != null) {
+
+
             Collection<User> allUsers = Collections.emptyList();
             try {
                 allUsers = securitySupport.get().getUserManager().getAllUsers();
             } catch (UnsupportedOperationException e) {
-                log.error("Unable to send message to groups {} because UserManager does not support enumerating their users", groups, e);
+                log.error("Unable to send message to groups {} because UserManager does not support enumerating their users", task.getGroupIds(), e);
             }
 
-            for (String group : groups) {
+            for (String group : task.getGroupIds()) {
                 for (User user : allUsers) {
                     if (user.inGroup(group)) {
                         users.add(user.getName());

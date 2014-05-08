@@ -42,8 +42,8 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.task.Task;
-import info.magnolia.task.TaskEvent;
-import info.magnolia.task.TaskEventHandler;
+import info.magnolia.task.event.TaskEvent;
+import info.magnolia.task.event.TaskEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;

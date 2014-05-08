@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
-import info.magnolia.task.TasksStore;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
 import info.magnolia.ui.api.view.View;
@@ -81,7 +81,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     private HierarchicalContainer container;
 
-    private final TasksStore tasksStore;
+    private final TasksManager tasksManager;
 
     private final ShellImpl shell;
 
@@ -90,10 +90,10 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     private SimpleTranslator i18n;
 
     @Inject
-    public PulseTasksPresenter(final PulseTasksView view, final ShellImpl shellImpl, final TasksStore tasksStore, final SimpleTranslator i18n) {
+    public PulseTasksPresenter(final PulseTasksView view, final ShellImpl shellImpl, final TasksManager tasksManager, final SimpleTranslator i18n) {
         this.view = view;
         this.shell = shellImpl;
-        this.tasksStore = tasksStore;
+        this.tasksManager = tasksManager;
         this.i18n = i18n;
     }
 
@@ -128,7 +128,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
         createSuperItems();
 
-        for (Task task : tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.InProgress, Status.Completed, Status.Failed))) {
+        for (Task task : tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.InProgress, Status.Completed, Status.Failed))) {
             addTaskAsItem(task);
         }
 
@@ -250,10 +250,10 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Status.Created);
             item.getItemProperty(TASK_PROPERTY_ID).setValue(task.getName() + "|" + StringUtils.defaultString(task.getComment()));
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(task.getRequestor());
-            item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getLastChange());
+            item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getModificationDate());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
             item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId()));
-            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getGroupIds()) + "|" + StringUtils.defaultString(task.getActorIds()));
+            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.join(task.getGroupIds(), ",") + "|" + StringUtils.join(task.getActorIds(), ","));
         }
     }
 
@@ -308,13 +308,13 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         }
 
         for (String taskId : itemIds) {
-            Task task = tasksStore.getTaskById(taskId);
+            Task task = tasksManager.getTaskById(taskId);
             if (task.getStatus() != Status.Completed) {
                 // log warn/info?
                 shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantRemove", task.getName()));
                 return;
             }
-            tasksStore.removeTask(taskId);
+            tasksManager.removeTask(taskId);
         }
 
         // refresh the view
@@ -331,19 +331,19 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         switch (status) {
 
         case Created:
-            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Created)).size();
+            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Created)).size();
             view.updateCategoryBadgeCount(ItemCategory.UNCLAIMED, count);
             break;
         case InProgress:
-            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
+            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
             view.updateCategoryBadgeCount(ItemCategory.ONGOING, count);
             break;
         case Completed:
-            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Completed)).size();
+            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Completed)).size();
             view.updateCategoryBadgeCount(ItemCategory.DONE, count);
             break;
         case Failed:
-            count = tasksStore.findTasksByUserAndStatus(userName, Arrays.asList(Status.Failed)).size();
+            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Failed)).size();
             view.updateCategoryBadgeCount(ItemCategory.FAILED, count);
             break;
         default:
@@ -359,6 +359,6 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksStore.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
+        return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
     }
 }

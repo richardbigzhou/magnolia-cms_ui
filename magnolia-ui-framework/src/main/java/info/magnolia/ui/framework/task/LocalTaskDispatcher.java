@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.task;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.task.TaskEvent;
+import info.magnolia.task.event.TaskEvent;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 
 import javax.inject.Inject;

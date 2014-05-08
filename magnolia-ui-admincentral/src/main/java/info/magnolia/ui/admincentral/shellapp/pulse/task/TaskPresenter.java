@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.task.Task;
-import info.magnolia.task.TasksStore;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter;
@@ -64,12 +64,12 @@ import com.vaadin.data.util.BeanItem;
  */
 public final class TaskPresenter extends ItemPresenter<Task> {
 
-    private TasksStore taskStore;
+    private TasksManager tasksManager;
 
     @Inject
-    public TaskPresenter(ItemView view, TasksStore taskStore, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public TaskPresenter(ItemView view, TasksManager tasksManager, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
         super(view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
-        this.taskStore = taskStore;
+        this.tasksManager = tasksManager;
     }
 
     @Override
@@ -84,7 +84,7 @@ public final class TaskPresenter extends ItemPresenter<Task> {
 
     @Override
     protected Task getPulseItemById(String itemId) {
-        return taskStore.getTaskById(itemId);
+        return tasksManager.getTaskById(itemId);
     }
 
     @Override

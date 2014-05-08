@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.task.TaskEvent;
-import info.magnolia.task.TaskEventHandler;
+import info.magnolia.task.event.TaskEvent;
+import info.magnolia.task.event.TaskEventHandler;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
