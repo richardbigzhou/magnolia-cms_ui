@@ -155,7 +155,6 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public void attach() {
         super.attach();
-        focus();
     }
 
     @Override
