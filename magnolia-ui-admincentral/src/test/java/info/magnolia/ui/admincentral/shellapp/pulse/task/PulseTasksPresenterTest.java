@@ -33,19 +33,17 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
-import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksStore;
 import info.magnolia.task.TasksStoreImpl;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -84,63 +82,5 @@ public class PulseTasksPresenterTest {
 
         // THEN
         assertEquals("foo|bar", title);
-    }
-
-    @Test
-    public void autoAssignTaskIfActorIdIsAlreadySet() throws Exception {
-        // GIVEN
-        String userId = "qux";
-
-        Task task = new Task();
-        task.setId("1");
-        task.setActorId(userId);
-        tasksStore.addTask(task);
-
-        // WHEN
-        presenter.autoAssignTask(task);
-
-        // THEN
-        List<Task> tasks = tasksStore.findAllTasksByUser(userId);
-        assertEquals(1, tasks.size());
-        assertTrue(tasks.get(0).getStatus() == Status.InProgress);
-    }
-
-    @Test
-    public void doNotAutoAssignTaskIfActorIdIsNotSet() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setId("1");
-        tasksStore.addTask(task);
-
-        // WHEN
-        presenter.autoAssignTask(task);
-
-        // THEN
-        List<Task> tasks = tasksStore.getAllTasks();
-        assertEquals(1, tasks.size());
-        assertTrue(tasks.get(0).getStatus() == Status.Created);
-        assertNull(tasks.get(0).getActorId());
-    }
-
-    @Test
-    public void doNotAutoAssignTaskIfStatusIsNotCreated() throws Exception {
-        // GIVEN
-        String userId = "qux";
-
-        Task task = new Task();
-        task.setId("1");
-        task.setActorId(userId);
-
-        tasksStore.addTask(task); // this sets task status as Created
-        task.setStatus(Status.Completed);
-
-        // WHEN
-        presenter.autoAssignTask(task);
-
-        // THEN
-        List<Task> tasks = tasksStore.findAllTasksByUser(userId);
-        assertEquals(1, tasks.size());
-        assertTrue(tasks.get(0).getStatus() == Status.Completed);
-
     }
 }
