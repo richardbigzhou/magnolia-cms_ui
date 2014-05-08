@@ -55,19 +55,20 @@ import org.junit.Test;
  */
 public class NodesAndPropsDropConstraintTest extends RepositoryTestCase {
 
-    private static final String WORKSPACE_NAME = "workspace";
     private static final String TESTED_NODE_TYPE = NodeTypes.Content.NAME;
 
     private final NodesAndPropsDropConstraint dropConstraint = new NodesAndPropsDropConstraint();
 
     private Session session;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         session = MgnlContext.getJCRSession("config");
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();
