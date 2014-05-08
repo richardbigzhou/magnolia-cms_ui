@@ -151,6 +151,8 @@ public class FormBuilder {
         form.setParent(parent);
         view.setItemDataSource(item);
 
+        boolean firstFieldIsBuilt = false;
+
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
@@ -178,6 +180,11 @@ public class FormBuilder {
                 }
 
                 view.addField(field);
+
+                if (!firstFieldIsBuilt) {
+                    field.focus();
+                    firstFieldIsBuilt = true;
+                }
             }
             view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
         }
