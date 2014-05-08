@@ -74,6 +74,7 @@
 .v-pulse {
   background-color: $c80;
   font-family:Verdana,sans-serif;
+  overflow: hidden;
 }
 .v-pulse .v-widget {
   font-size: 12px;
@@ -129,7 +130,7 @@
 .v-pulse .navigator.top-row {
   padding-top:0px;
   height:25px;
-  background-color: #e0e0e0;
+  background-color: $c15;
 }
 
 .v-pulse .navigator > * {
@@ -138,7 +139,7 @@
 
 .v-pulse .navigator-tab {
   height:25px;
-  border-right:1px solid #a3a3a3;
+  border-right:1px solid $c12;
   padding-left:20px;
   color:$c13;
   font-family:DINWebPro, sans-serif;
@@ -150,12 +151,12 @@
 .v-pulse .top-row .navigator-tab {
   height: 25px;
   padding-top: 4px;
-  border-bottom: 1px solid #a3a3a3;
+  border-bottom: 1px solid $c12;
 }
 .v-pulse .top-row .hidden {
   position: absolute;
   width: 100%;
-  border-bottom: 1px solid #a3a3a3;
+  border-bottom: 1px solid $c12;
   height: 25px;
   display:inline;
 }
@@ -173,14 +174,14 @@
 
 .v-pulse .navigator-tab.active {
   color: $c90;
-  background-color: #fff;
+  background-color: $c80;
   border-bottom: none;
 }
 
 .v-pulse .navigator-tab .badge {
     background-color: $c40;
     border-radius: 2em;
-    color: #fff;
+    color: $c80;
     height: 17px;
     width: 17px !important;
     padding-top: 2px;
@@ -188,7 +189,7 @@
 }
 
 .v-pulse .navigator-tab .badge.gray {
-  background-color: #e0e0e0;
+  background-color: $c15;
 }
 
 .v-pulse .v-nativebutton-active {color:$c10;}
@@ -410,7 +411,7 @@
   position: absolute;
   top: 16px;
   left: 30px;
-  color: #c1c1c1;
+  color: $c13;
 }
 .v-pulse .task .sentTo {
   margin-right: 5px;
