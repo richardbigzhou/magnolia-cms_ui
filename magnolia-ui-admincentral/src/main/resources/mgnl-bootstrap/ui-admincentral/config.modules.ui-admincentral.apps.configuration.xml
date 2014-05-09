@@ -568,9 +568,6 @@
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>1d200b12-8413-4321-b491-45ca64d6ccd6</sv:value>
           </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
-          </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
           </sv:property>
@@ -716,9 +713,6 @@
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>161421f2-64a3-4e9a-9aed-a3dce8e9f7ce</sv:value>
-          </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.DeleteActionDefinition</sv:value>

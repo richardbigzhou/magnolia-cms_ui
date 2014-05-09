@@ -33,9 +33,7 @@
  */
 package info.magnolia.pages.app.setup;
 
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -326,22 +324,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         availability = editAction.getNode("availability");
         assertTrue(availability.hasProperty("writePermissionRequired"));
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
-    }
-
-    @Test
-    public void testUpdateFrom524() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/activate");
-        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive");
-        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/delete");
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
-
-        // THEN
-        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activate"), hasProperty("asynchronous", "true"));
-        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
-        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
     }
     
     @Test
