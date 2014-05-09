@@ -254,6 +254,9 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
     private void addMessageAsItem(Message message) {
         // filter out local messages that have id == null
         if (message.getId() != null) {
+            if (container == null) {
+                container = createMessageDataSource();
+            }
             final Item item = container.addItem(message.getId());
             container.setChildrenAllowed(message.getId(), false);
             assignPropertiesFromMessage(message, item);
