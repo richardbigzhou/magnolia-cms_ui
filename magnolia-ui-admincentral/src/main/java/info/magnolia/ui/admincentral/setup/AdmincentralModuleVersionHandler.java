@@ -235,6 +235,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
                 .addCondition(new WidgetsetRelocationCondition())
         );
     }

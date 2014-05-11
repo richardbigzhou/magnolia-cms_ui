@@ -123,6 +123,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
 
         NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", NodeTypes.ContentNode.NAME);
 
         // for 5.2.2 update:
         this.setupConfigNode("/modules/ui-admincentral/templates/deleted");
