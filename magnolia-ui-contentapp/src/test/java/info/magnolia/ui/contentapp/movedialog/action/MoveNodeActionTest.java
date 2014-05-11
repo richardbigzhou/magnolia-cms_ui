@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -46,6 +47,7 @@ import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -117,8 +119,10 @@ public class MoveNodeActionTest extends RepositoryTestCase {
         executor.execute(MOVE_ACTION_NAME);
 
         //THEN
-        assert(node3.getJcrItem().hasNode(node1.getJcrItem().getName()));
-        assert(node3.getJcrItem().hasNode(node2.getJcrItem().getName()));
+        assertTrue(node3.getJcrItem().hasNode(node1.getJcrItem().getName()));
+        assertTrue(node3.getJcrItem().hasNode(node2.getJcrItem().getName()));
+        // verify actions are fired - once for source, once for target
+        verify(adminCentralEventBusMock, times(2)).fireEvent(any(ContentChangedEvent.class));
 
     }
 

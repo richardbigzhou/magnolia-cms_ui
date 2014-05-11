@@ -40,9 +40,9 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.framework.action.AbstractMultiItemAction;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
@@ -50,7 +50,6 @@ import info.magnolia.ui.workbench.tree.MoveLocation;
 import java.util.List;
 
 import javax.inject.Named;
-import javax.jcr.RepositoryException;
 
 import com.vaadin.data.Item;
 
@@ -90,18 +89,22 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     @Override
     public void execute() throws ActionExecutionException {
-        super.execute();
         Item firstItem = getItems().get(0);
-        if (firstItem instanceof JcrNodeAdapter) {
-            JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) firstItem;
-            JcrItemId itemIdOfChangedItem;
-            try {
-                itemIdOfChangedItem = JcrItemUtil.getItemId(nodeAdapter.getJcrItem());
-                admincentralEventBus.fireEvent(new ContentChangedEvent(itemIdOfChangedItem));
-                callback.onMovePerformed(targetItem, moveLocation);
-            } catch (RepositoryException e) {
-                callback.onMoveCancelled();
-            }
+        AbstractJcrAdapter itemAdapter = null;
+        if (firstItem instanceof AbstractJcrAdapter) {
+            itemAdapter = (AbstractJcrAdapter) firstItem;
+        }
+        super.execute();
+        if (itemAdapter != null) {
+            // we need to fire 2 events to ensure that both nodes are reloaded/updated (specially when moving properties)
+            // source item
+            JcrItemId itemIdOfChangedItem = itemAdapter.getItemId();
+            admincentralEventBus.fireEvent(new ContentChangedEvent(itemIdOfChangedItem));
+            // target item
+            itemIdOfChangedItem = targetItem.getItemId();
+            admincentralEventBus.fireEvent(new ContentChangedEvent(itemIdOfChangedItem));
+
+            callback.onMovePerformed(targetItem, moveLocation);
         }
     }
 
