@@ -219,7 +219,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("confirmation.delete.title.generic"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("confirmation.delete.title.generic"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), false, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
