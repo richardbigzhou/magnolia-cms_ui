@@ -224,7 +224,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         Iterator<Object> it = itemIds.iterator();
         while (it.hasNext()) {
             Object itemId = it.next();
-            if (contentConnector.canHandleItem(itemId)) {
+            if (contentConnector.canHandleItem(itemId) && contentConnector.getItem(itemId) != null) {
                 filteredIds.add(itemId);
             }
         }
