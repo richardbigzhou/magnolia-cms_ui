@@ -741,9 +741,6 @@
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>6e017f85-645b-466c-ba9b-1b29efe1bdb1</sv:value>
           </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
-          </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
             <sv:value>website</sv:value>
           </sv:property>
@@ -859,9 +856,6 @@
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
-          </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
           </sv:property>
           <sv:property sv:name="command" sv:type="String">
             <sv:value>activate</sv:value>
@@ -1553,9 +1547,6 @@
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>5538576b-1065-4d28-8823-c048dc3e479c</sv:value>
-          </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.MarkNodeAsDeletedActionDefinition</sv:value>
