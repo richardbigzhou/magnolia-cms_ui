@@ -256,7 +256,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("favorites.group.confirmation.title"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("favorites.group.confirmation.title"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), false, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
