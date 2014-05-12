@@ -138,7 +138,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
         this.field.setPropertyDataSource(property);
 
-        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew()) || (!(item instanceof ItemAdapter) && property.getValue() == null)) {
+        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew() && property.getValue() == null) || (!(item instanceof ItemAdapter) && property.getValue() == null)) {
             setPropertyDataSourceDefaultValue(property);
         }
     }
