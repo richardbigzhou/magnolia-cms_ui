@@ -37,6 +37,8 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
@@ -57,26 +59,18 @@ public class SwitchableTransformer extends CompositeTransformer {
     @Override
     public void writeToItem(PropertysetItem newValues) {
         super.writeToItem(newValues);
-        String propertyName = definePropertyName();
-
-        // Add the select property value (select property name == field name)
-        if (newValues.getItemProperty(propertyName) != null) {
-            relatedFormItem.addItemProperty(propertyName, newValues.getItemProperty(propertyName));
-        }
-        // As parent implementation will create a property called propertyPrefix+definition.getName()
-        // representing the select property name with a propertyPrefix, we have to remove this property.
-        if (relatedFormItem.getItemProperty(definition.getName() + propertyName) != null) {
-            relatedFormItem.removeItemProperty(definition.getName() + propertyName);
-        }
     }
 
     @Override
     public PropertysetItem readFromItem() {
-        PropertysetItem newValues = super.readFromItem();
-        String propertyName = definePropertyName();
-        if (relatedFormItem.getItemProperty(propertyName) != null) {
-            newValues.addItemProperty(propertyName, relatedFormItem.getItemProperty(propertyName));
+        return super.readFromItem();
+    }
+
+    @Override
+    protected String getCompositePropertyName(String propertyName) {
+        if (StringUtils.equals(propertyName, propertyPrefix)) {
+            propertyName = StringUtils.EMPTY;
         }
-        return newValues;
+        return super.getCompositePropertyName(propertyName);
     }
 }
