@@ -185,7 +185,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
             badge = new Label();
             badge.addStyleName("badge");
             if (category == ItemCategory.ONGOING) {
-                badge.addStyleName("gray");
+                badge.addStyleName("empty-circle-gray");
             }
             badge.setVisible(false);
 
@@ -203,8 +203,12 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         public void setActive(boolean active) {
             if (active) {
                 addStyleName("active");
+                if (category == ItemCategory.ONGOING) {
+                    badge.addStyleName("black");
+                }
             } else {
                 removeStyleName("active");
+                badge.removeStyleName("black");
             }
         }
 

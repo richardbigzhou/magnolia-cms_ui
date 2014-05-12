@@ -187,9 +187,14 @@
     padding-top: 2px;
     text-align: center;
 }
+.v-pulse .navigator-tab .badge.empty-circle-gray {
+    border: 2px solid $c12;
+    background-color: $c80;
+    color: $c12;
+    height: 19px;
+    width: 19px !important;
+    padding-top: 1px;
 
-.v-pulse .navigator-tab .badge.gray {
-  background-color: $c15;
 }
 
 .v-pulse .v-nativebutton-active {color:$c10;}
