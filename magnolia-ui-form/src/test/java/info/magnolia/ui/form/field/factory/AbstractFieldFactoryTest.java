@@ -40,6 +40,8 @@ import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -125,6 +127,78 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         Property p = baseItem.getItemProperty(propertyName);
         assertEquals("new Value", p.getValue().toString());
 
+    }
+
+    @Test
+    public void testValueForEmptyNewItem() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
+        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = abstractDialogField.createField();
+
+        // WHEN
+        String value = (String) field.getValue();
+
+        // THEN
+        assertNull(value);
+    }
+
+    @Test
+    public void testValueForNotEmptyNewItem() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
+        baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
+        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = abstractDialogField.createField();
+
+        // WHEN
+        String value = (String) field.getValue();
+
+        // THEN
+        assertNotNull(value);
+        assertEquals("value", value);
+
+    }
+
+    @Test
+    public void testValueForEmptyNewItemWithDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
+        definition.setDefaultValue("defaultValue");
+        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = abstractDialogField.createField();
+
+        // WHEN
+        String value = (String) field.getValue();
+
+        // THEN
+        assertNotNull(value);
+        assertEquals("defaultValue", value);
+    }
+
+    @Test
+    public void testValueForNotEmptyNewItemWithDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
+        baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
+        definition.setDefaultValue("defaultValue");
+        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = abstractDialogField.createField();
+
+        // WHEN
+        String value = (String) field.getValue();
+
+        // THEN
+        assertNotNull(value);
+        assertEquals("value", value);
     }
 
     @Test

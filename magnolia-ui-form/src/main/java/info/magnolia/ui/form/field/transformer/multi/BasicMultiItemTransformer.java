@@ -52,7 +52,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,15 +119,17 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
             return itemSet;
         }
         JcrNodeAdapter rootItem = getRootItem();
+        // The root Item was never populated, add relevant child Item based on the stored nodes.
+        if (!rootItem.hasChangedChildItems()) {
+            populateStoredChildItems(rootItem);
+        }
         // Get a list of childNodes
-        List<Node> childNodes = getStoredChildNodes(rootItem);
         int position = 0;
-        for (Node child : childNodes) {
-            JcrNodeAdapter item = new JcrNodeAdapter(child);
-            item.setParent(rootItem);
-            item.getParent().addChild(item);
-            itemSet.addItemProperty(position, new ObjectProperty<Item>(item));
-            position += 1;
+        for (String itemName : rootItem.getChildren().keySet()) {
+            if (itemName.matches(childItemRegexRepresentation())) {
+                itemSet.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
+                position += 1;
+            }
         }
         return itemSet;
     }
@@ -179,7 +180,6 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
         return baseSubItemName;
     }
 
-
     /**
      * Define the base sub node name.
      * basic implementation uses the {@link ConfiguredFieldDefinition#getName()}.
@@ -205,60 +205,33 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
         return (JcrNodeAdapter) relatedFormItem;
     }
 
+
     /**
-     * Get all childNodes of parent passing the {@link Predicate} created by {@link BasicMultiItemTransformer#createPredicateToEvaluateChildNode()} or <br>
-     * with type {@link NodeTypes.ContentNode.NAME} if the {@link Predicate} is null.
+     * Add to rootItem all his children.
+     */
+    protected void populateStoredChildItems(JcrNodeAdapter rootItem) {
+        List<Node> childNodes = getStoredChildNodes(rootItem);
+        for (Node child : childNodes) {
+            JcrNodeAdapter item = new JcrNodeAdapter(child);
+            item.setParent(rootItem);
+            item.getParent().addChild(item);
+        }
+    }
+
+    /**
+     * Get all childNodes of parent passing the {@link NodeUtil#MAGNOLIA_FILTER}.
      */
     protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
-        List<Node> res = new ArrayList<Node>();
         try {
             if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
-                Predicate predicate = createPredicateToEvaluateChildNode();
-                if (predicate != null) {
-                    res = NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), predicate));
-                } else {
-                    res = NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
-                }
+                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), NodeUtil.MAGNOLIA_FILTER));
             }
         } catch (RepositoryException re) {
             log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
         }
-        return res;
+        return new ArrayList<Node>();
     }
 
-    /**
-     * Create a {@link Predicate} used to evaluate the child node of the root to handle.<br>
-     * Only return child node that have a number name's.
-     */
-    Predicate createPredicateToEvaluateChildNode() {
-
-        return new Predicate() {
-            @Override
-            public boolean evaluate(Object node) {
-                if (node instanceof Node) {
-                    try {
-                        if (!hasI18NSupport()) {
-                            return ((Node) node).getName().startsWith(baseSubItemName);
-                        } else {
-                            if (i18nContentSupport.isEnabled() && defaultLocal.equals(i18nSuffix)) {
-                                // i18n set, current local is the default local
-                                // match all node name that do not define locale extension
-                                String matcherLocal = baseSubItemName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";
-                                return ((Node) node).getName().matches(matcherLocal);
-                            } else {
-                                // i18n set, not default local used
-                                String matcherLocal = baseSubItemName + incrementRegexRepresentation() + "_" + i18nSuffix;
-                                return ((Node) node).getName().matches(matcherLocal);
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        return false;
-                    }
-                }
-                return false;
-            }
-        };
-    }
 
     /**
      * Create a unique child Item name.<br>
@@ -266,7 +239,7 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
      */
     String createNewItemName() {
         int nb = 0;
-        String localAsString = i18nContentSupport.isEnabled() && this.defaultLocal.equals(this.i18nSuffix) ? StringUtils.EMPTY : "_" + this.i18nSuffix;
+        String localAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocal.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
         String name = this.baseSubItemName + intialIncrementValue() + localAsString;
         List<String> childNodeName = getChildItemNames();
         while (childNodeName.contains(name)) {
@@ -294,6 +267,24 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
 
     protected String incrementRegexRepresentation() {
         return "(\\d{3})";
+    }
+
+    /**
+     * @return regex String used to filter the correct children items based on i18n support and current Local.
+     */
+    protected String childItemRegexRepresentation() {
+        if (hasI18NSupport() && i18nContentSupport.isEnabled()) {
+            if (defaultLocal.equals(i18nSuffix)) {
+                // i18n set, current local is the default local
+                // match all node name that do not define locale extension
+                return baseSubItemName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";
+            } else {
+                // i18n set, not default local used
+                return baseSubItemName + incrementRegexRepresentation() + "_" + i18nSuffix;
+            }
+        } else {
+            return baseSubItemName + incrementRegexRepresentation();
+        }
     }
 
     private List<String> getChildItemNames() {
