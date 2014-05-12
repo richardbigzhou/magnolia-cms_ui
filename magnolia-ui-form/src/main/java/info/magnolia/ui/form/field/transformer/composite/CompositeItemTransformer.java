@@ -34,13 +34,13 @@
 package info.magnolia.ui.form.field.transformer.composite;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +52,12 @@ import com.vaadin.data.util.PropertysetItem;
  * The {@link CompositeItemTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
  * - as key, the embedded field name <br>
  * - as values the 'relatedFormItem' items wrapped into an {@link ObjectProperty}. <br>
+ * SubField uses then their {@link ConfiguredFieldDefinition#getName()} to define the name of the property used store the field value.
  */
-public class CompositeItemTransformer extends BasicTransformer<PropertysetItem> {
+public class CompositeItemTransformer extends BasicTransformer<PropertysetItem> implements I18nTransformerDelegator {
     private static final Logger log = LoggerFactory.getLogger(CompositeItemTransformer.class);
     protected List<String> fieldsName;
+    private PropertysetItem items;
 
     @Inject
     public CompositeItemTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
@@ -71,17 +73,14 @@ public class CompositeItemTransformer extends BasicTransformer<PropertysetItem> 
 
     @Override
     public PropertysetItem readFromItem() {
-        PropertysetItem items = new PropertysetItem();
-        for (String propertyName : fieldsName) {
-            items.addItemProperty(getCompositePropertyName(propertyName), new ObjectProperty<Item>(relatedFormItem));
+        // Only read it once
+        if (items != null) {
+            return items;
+        }
+        items = new PropertysetItem();
+        for (String fieldName : fieldsName) {
+            items.addItemProperty(fieldName, new ObjectProperty<Item>(relatedFormItem));
         }
         return items;
-    }
-
-    protected String getCompositePropertyName(String propertyName) {
-        if (hasI18NSupport()) {
-            propertyName = propertyName + StringUtils.difference(basePropertyName, i18NPropertyName);
-        }
-        return propertyName;
     }
 }
