@@ -155,9 +155,9 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
             Object parentId = container.getParent(targetItemId);
             if (location == VerticalDropLocation.TOP) {
                 if (parentId != null && constraint.allowedBefore(sourceItem, targetItem)) {
-                // move first in the container
+                    // move first in the container
                     moveItem(sourceItem, targetItem, MoveLocation.BEFORE);
-                container.setParent(sourceItemId, parentId);
+                    container.setParent(sourceItemId, parentId);
                 }
             } else if (location == VerticalDropLocation.BOTTOM) {
                 if (parentId != null && constraint.allowedAfter(sourceItem, targetItem)) {
