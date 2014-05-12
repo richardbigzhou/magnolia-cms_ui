@@ -91,6 +91,15 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void addFavoriteAndGroup(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup) {
+        if(newGroup!=null &&  newGroup.getItemProperty("title")!=null){
+            favoritesManager.addGroup(newGroup);
+        }
+        favoritesManager.addFavorite(newFavorite);
+        initializeView();
+    }
+
+    @Override
     public void addFavorite(JcrNewNodeAdapter favorite) {
         favoritesManager.addFavorite(favorite);
         initializeView();

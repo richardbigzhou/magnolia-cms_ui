@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -43,10 +44,13 @@ import java.util.Map.Entry;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -82,7 +86,7 @@ public final class FavoritesForm extends CustomComponent {
         this.i18n = i18n;
 
         final VerticalLayout favoriteForm = new VerticalLayout();
-        favoriteEntryForm = new InternalFavoriteEntryForm(newFavorite, availableGroups);
+        favoriteEntryForm = new InternalFavoriteEntryForm(newFavorite, newGroup, availableGroups);
         favoriteGroupForm = new InternalFavoriteGroupForm(newGroup);
 
         tabsheet = new TabSheet();
@@ -180,7 +184,7 @@ public final class FavoritesForm extends CustomComponent {
 
         private ShortcutListener enterShortcutListener;
 
-        public InternalFavoriteEntryForm(final JcrNewNodeAdapter newFavorite, final Map<String, String> availableGroups) {
+        public InternalFavoriteEntryForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups) {
             addStyleName("favorites-form-content");
             FormLayout layout = new FormLayout();
 
@@ -193,11 +197,33 @@ public final class FavoritesForm extends CustomComponent {
             layout.addComponent(url);
 
             group = new ComboBox(i18n.translate("favorites.form.groups"));
+            group.setNewItemsAllowed(true);
+            group.setImmediate(false);
             for (Entry<String, String> entry : availableGroups.entrySet()) {
                 String id = entry.getKey();
                 group.addItem(id);
                 group.setItemCaption(id, entry.getValue());
             }
+            group.setNewItemHandler(new AbstractSelect.NewItemHandler() {
+                @Override
+                public void addNewItem(String newItemCaption) {
+                    String newGroupId = Path.getValidatedLabel(newItemCaption);
+                    group.addItem(newGroupId);
+                    group.setItemCaption(newGroupId, newItemCaption);
+                    group.setValue(newGroupId);
+                }
+            });
+            // the blur-listener below ensures "apropriate" behaviour wehn adding a new value and then clicking tab -> to blur -> to go to add-button
+            // without the listener the new value is NOT selected and sometimes not added (with tab, enter)
+            // String value = event.getSource().toString() leads to a warning in the log-file and is discourage from VAADIN
+            group.addBlurListener(new FieldEvents.BlurListener() {
+                @Override
+                public void blur(FieldEvents.BlurEvent event) {
+                    String value = (String) group.getValue();
+                    group.setValue(value);
+                }
+            });
+
             group.setDescription(i18n.translate("favorites.form.groups"));
             layout.addComponent(group);
 
@@ -212,7 +238,7 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    addFavorite(newFavorite, binder);
+                    addFavorite(newFavorite, newGroup, binder, availableGroups);
                 }
             });
             addButton.addStyleName("commit");
@@ -223,7 +249,7 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void handleAction(Object sender, Object target) {
-                    addFavorite(newFavorite, binder);
+                    addFavorite(newFavorite, newGroup, binder, availableGroups);
                 }
             };
 
@@ -239,14 +265,38 @@ public final class FavoritesForm extends CustomComponent {
             removeShortcutListener(enterShortcutListener);
         }
 
-        private void addFavorite(final JcrNewNodeAdapter newFavorite, final FieldGroup binder) {
+        private void addFavorite(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final FieldGroup binder, Map availableGroups) {
             try {
                 binder.commit();
-                listener.addFavorite(newFavorite);
+                // since MGNLUI-2599 it is possible to add a group and a favorite (which then goes into the group) at the same time
+                if (group == null || group.getValue() == null || !selectedItemsIsNew(availableGroups)) {
+                    listener.addFavorite(newFavorite);
+                } else {
+                    String newGroupId = (String) group.getValue();
+                    String newGroupLabel = group.getItemCaption(newGroupId);
+                    // must set the properties for the group here manually; properties of newFavorite are set in binder
+                    newGroup.addItemProperty("group", new ObjectProperty(newGroupId));
+                    newGroup.addItemProperty("title", new ObjectProperty(newGroupLabel));
+                    listener.addFavoriteAndGroup(newFavorite, newGroup);
+                }
             } catch (CommitException e) {
                 shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.fields.required"));
             }
         }
+
+        private boolean selectedItemsIsNew(Map availableGroups) {
+            if (availableGroups == null || availableGroups.size() == 0) {
+                return true;
+            } else {
+                Object value = group.getValue();
+                if (value != null && availableGroups != null && availableGroups.size() > 0) {
+                    return !availableGroups.containsKey(value);
+                }
+            }
+            return false;
+        }
+
+
     }
 
     /**
