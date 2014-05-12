@@ -36,22 +36,18 @@ package info.magnolia.ui.form.field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.Layout;
-import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
-import java.util.HashMap;
+import java.util.Iterator;
 
-import org.apache.commons.beanutils.BeanUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
@@ -66,9 +62,6 @@ import com.vaadin.ui.VerticalLayout;
 public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDefinition, PropertysetItem> {
     private static final Logger log = LoggerFactory.getLogger(SwitchableField.class);
 
-    // - key : Field name. Should be the same as the related select value.<br>
-    // - value : Related Field. Created based on the definition coming from the Fields Definition list.
-    private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -93,70 +86,33 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
-        fieldMap.clear();
-        // add the select Field Component.
-        AbstractSelect selectField = createSelectionField(fieldValues);
-        selectField.addValueChangeListener(createSelectValueChangeListener());
-        selectField.addValueChangeListener(selectionListener);
-        root.addComponent(selectField);
 
-
-        // Create Switchable Fields
+        // Create all Fields including the select Field.
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
             Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
             if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
-            fieldMap.put(name, field);
-        }
-
-        if (fieldValues.getItemProperty(definition.getName()) != null) {
-            selectField.setPropertyDataSource(fieldValues.getItemProperty(definition.getName()));
-        } else {
-            fieldValues.addItemProperty(definition.getName(), selectField.getPropertyDataSource());
-        }
-
-        // Set Selected
-        Property<?> switchFieldProperty = fieldValues.getItemProperty(definition.getName());
-        if (switchFieldProperty != null && switchFieldProperty.getValue() != null) {
-            switchField((String) switchFieldProperty.getValue());
-        }
-    }
-
-    /**
-     * Create a RadioSelect or a NormalSelect Field based on the definition.<br>
-     */
-    private AbstractSelect createSelectionField(PropertysetItem fieldValues) {
-        AbstractSelect field = null;
-        try {
-            // Create the correct definition class
-            SelectFieldDefinition selectDefinition = null;
-            String layout = "horizontal";
-            if (definition.getSelectionType().equals("radio")) {
-                selectDefinition = new OptionGroupFieldDefinition();
-                if (definition.getLayout().equals(Layout.vertical)) {
-                    layout = "vertical";
-                }
-            } else {
-                selectDefinition = new SelectFieldDefinition();
+            field.setWidth(100, Unit.PERCENTAGE);
+            field.setId(name);
+            // set select field at the first position
+            if (StringUtils.equals(fieldDefinition.getName(), definition.getName())) {
+                root.addComponentAsFirst(field);
+            }else {
+                root.addComponent(field);
             }
-            // Copy options to the newly created select definition. definition
-            BeanUtils.copyProperties(selectDefinition, definition);
-            selectDefinition.setTransformerClass(null);
-            selectDefinition.setLabel("");
-            selectDefinition.setRequired(false);
-            selectDefinition.setSortOptions(false);
 
-            // Create the field
-            field = (AbstractSelect) createLocalField(selectDefinition, fieldValues.getItemProperty(selectDefinition.getName()), false);
-            field.addStyleName(layout);
-            field.setImmediate(true);
-        } catch (Exception e) {
-            log.warn("Coudn't create the select field. Return null", e.getMessage());
         }
-        return field;
+
+        // add listener to the select field
+        Field<?> selectField = (Field<?>) root.getComponent(0);
+        selectField.addValueChangeListener(createSelectValueChangeListener());
+        selectField.addValueChangeListener(selectionListener);
+        selectField.setCaption("");
+        switchField((String) selectField.getValue());
     }
+
 
     /**
      * Change Listener bound to the select field. Once a selection is done, <br>
@@ -180,16 +136,22 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
      * Switch to the desired field. It the field is not part of the List, display a warn label.
      */
     private void switchField(String fieldName) {
-        if (root.getComponentCount() >= 2) {
-            // detach previous field
-            root.removeComponent(root.getComponent(1));
-        }
-        if (fieldMap.containsKey(fieldName)) {
-            // add after combobox
-            root.addComponent(fieldMap.get(fieldName), 1);
-        } else {
+        // Check
+        if (root.getComponentCount() < 2 && StringUtils.equals(((Field<?>) root.getComponent(0)).getId(), definition.getName())) {
             log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
-            root.addComponent(new Label("No field defined for the following selection: " + fieldName), 1);
+            root.addComponent(new Label("No field configured for this switchable field "), 1);
+            return;
+        }
+
+        Iterator<Component> iterator = root.iterator();
+        while (iterator.hasNext()) {
+            Field<?> field = (Field<?>) iterator.next();
+            // Set the select component visible and the selected field
+            if (StringUtils.equals(field.getId(), fieldName) || StringUtils.equals(field.getId(), definition.getName())) {
+                field.setVisible(true);
+            } else {
+                field.setVisible(false);
+            }
         }
     }
 

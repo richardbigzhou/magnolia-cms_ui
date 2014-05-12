@@ -58,7 +58,7 @@ import com.vaadin.data.util.PropertysetItem;
 public class CompositeTransformer extends BasicTransformer<PropertysetItem> {
 
     protected List<String> fieldsName;
-    private String propertyPrefix;
+    protected String propertyPrefix;
 
     public CompositeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
         super(relatedFormItem, definition, type);

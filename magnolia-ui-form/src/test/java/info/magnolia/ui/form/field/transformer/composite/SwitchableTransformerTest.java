@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
@@ -48,7 +49,9 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -87,7 +90,10 @@ public class SwitchableTransformerTest {
         hidden.setName("hidden");
         hidden.setType("Boolean");
         hidden.setDefaultValue("true");
-        definition.setFields(Arrays.asList(text, hidden));
+        List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
+        fields.add(text);
+        fields.add(hidden);
+        definition.setFields(fields);
 
         SelectFieldOptionDefinition textOption = new SelectFieldOptionDefinition();
         textOption.setValue("text");
@@ -106,7 +112,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, Arrays.asList("text", "hidden"));
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -129,7 +135,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, Arrays.asList("text", "hidden"));
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -154,7 +160,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, Arrays.asList("text", "hidden"));
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
