@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.i18n;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.I18nContentSupport;
@@ -44,9 +45,12 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.StaticField;
+import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,9 +60,12 @@ import javax.jcr.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.TextField;
 
 /**
@@ -137,7 +144,7 @@ public class Default18nAuthoringSupportTest {
     }
 
     @Test
-    public void testI18nize() {
+    public void i18nizeToJapanese() {
         // GIVEN
         // Create field
         AbstractField<String> field = new TextField();
@@ -159,7 +166,7 @@ public class Default18nAuthoringSupportTest {
     }
 
     @Test
-    public void testI18nizeWithoutI18nSupport() {
+    public void i18nizeWithoutI18nSupport() {
         // GIVEN
         // Create field
         AbstractField<String> field = new TextField();
@@ -179,8 +186,48 @@ public class Default18nAuthoringSupportTest {
         assertNull(transformer.getI18NPropertyName());
     }
 
+    @Test
+    public void i18nizeFieldWithI18nTransformerDelegator() {
+        // GIVEN
+        // Create fields
+        // Inner field
+        AbstractField<String> innerField = new TextField();
+        TestLocaleTransformer innerTransfermer = new TestLocaleTransformer(true, "subProperty");
+        TransformedProperty<String> property = new TransformedProperty<String>(innerTransfermer);
+        innerField.setPropertyDataSource(property);
+        // Outer Field
+        TestI18nTransformerDelegator mainTransfermer = new TestI18nTransformerDelegator(true, "mainProperty");
+        TransformedProperty<String> mainProperty = new TransformedProperty<String>(mainTransfermer);
+        StaticField mainField = mock(StaticField.class, Answers.CALLS_REAL_METHODS.get());
+        when(mainField.getPropertyDataSource()).thenReturn(mainProperty);
+        List<Component> fields = new ArrayList<Component>();
+        fields.add(innerField);
+        when(((HasComponents) mainField).iterator()).thenReturn(fields.iterator());
+
+        // Create Form
+        CssLayout form = new CssLayout();
+        form.addComponent(mainField);
+        i18n.setEnabled(true);
+        assertNull(mainField.getLocale());
+
+        // WHEN
+        i18nAuthoringSupport.i18nize(form, Locale.JAPANESE);
+
+        // THEN
+        assertEquals(Locale.JAPANESE, mainField.getLocale());
+        assertEquals("mainProperty_ja", mainTransfermer.getI18NPropertyName());
+        assertEquals(Locale.JAPANESE, innerField.getLocale());
+        assertEquals("subProperty_ja", innerTransfermer.getI18NPropertyName());
+    }
+
     private LocaleDefinition createLocaleDefinition(Locale locale) {
         return LocaleDefinition.make(locale.getLanguage(), locale.getCountry(), true);
+    }
+
+    private class TestI18nTransformerDelegator extends TestLocaleTransformer implements I18nTransformerDelegator {
+        public TestI18nTransformerDelegator(boolean hasI18nSupport, String propertyName) {
+            super(hasI18nSupport, propertyName);
+        }
     }
 
     private class TestLocaleTransformer implements Transformer<String> {
