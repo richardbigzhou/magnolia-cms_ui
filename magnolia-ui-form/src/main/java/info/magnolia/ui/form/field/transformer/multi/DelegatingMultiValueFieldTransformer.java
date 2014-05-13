@@ -91,6 +91,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     private final String defaultLocale;
     // Map used to store PropertysetItem based on language (i18n support)
     private Map<String, PropertysetItem> items;
+    private List<String> freezedName = new ArrayList<String>();
 
     @Inject
     public DelegatingMultiValueFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18nContentSupport i18nContentSupport) {
@@ -128,6 +129,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
             if (itemName.matches(childItemRegexRepresentation())) {
                 itemSet.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
                 position += 1;
+                freezedName.add(itemName);
             }
         }
         return itemSet;
@@ -272,6 +274,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
 
     private List<String> getChildItemNames() {
         List<String> res = new ArrayList<String>();
+        res.addAll(freezedName);
         PropertysetItem itemSet = items.get(this.i18nSuffix);
         for (Object id : itemSet.getItemPropertyIds()) {
             res.add(((JcrNodeAdapter) itemSet.getItemProperty(id).getValue()).getNodeName());
