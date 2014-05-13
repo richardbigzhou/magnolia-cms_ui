@@ -122,7 +122,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> value, boolean setCaptionToNull) {
 
         // If the value property is an Item, use this Item as root item for the field creation.
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, isPropertysetItem(value) ? new NullItem() : value.getValue());
+        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, isItem(value) ? value.getValue() : new NullItem());
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
         // FIXME change i18n setting : MGNLUI-1548
@@ -131,7 +131,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
 
         // If the value property is not an Item but a property, set this property as datasource to the field
         // and add a value change listener in order to propagate changes
-        if (isPropertysetItem(value)) {
+        if (!isItem(value)) {
             if (value != null && value.getValue() != null) {
                 field.setPropertyDataSource(value);
             }
@@ -152,11 +152,8 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         return field;
     }
 
-    /**
-     * This is used to check if the current property holds a {@link PropertysetItem} as this used to be the case with non delegating transformers.
-     */
-    boolean isPropertysetItem(Property<?> value) {
-        return value == null || value.getValue() instanceof PropertysetItem;
+    boolean isItem(Property<?> value) {
+        return (value != null && value.getValue() instanceof Item && !(value.getValue() instanceof PropertysetItem));
     }
 
     /**
