@@ -87,8 +87,8 @@ public class DelegatingMultiValueFieldTransformerTest {
         rootNode = new MockNode(session);
         rootNode.setName("root");
         rootNode.setPrimaryType(NodeTypes.ContentNode.NAME);
-        rootNode.addNode(new MockNode("multi000", NodeTypes.ContentNode.NAME));
-        rootNode.addNode(new MockNode("multi000_de", NodeTypes.ContentNode.NAME));
+        rootNode.addNode(new MockNode("multi0", NodeTypes.ContentNode.NAME));
+        rootNode.addNode(new MockNode("multi0_de", NodeTypes.ContentNode.NAME));
         rootNode.addNode(new MockNode("titi", NodeTypes.ContentNode.NAME));
         rootItem = new JcrNodeAdapter(rootNode);
 
@@ -118,7 +118,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi000"));
+        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0"));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi000"));
+        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0"));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi000_de"));
+        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0_de"));
     }
 
     @Test
@@ -187,9 +187,9 @@ public class DelegatingMultiValueFieldTransformerTest {
         // THEN
         assertNotNull(res);
         assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
-        assertEquals("multi001", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
+        assertEquals("multi1", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
         assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
-        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi001"));
+        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1"));
     }
 
     @Test
@@ -207,9 +207,9 @@ public class DelegatingMultiValueFieldTransformerTest {
         // THEN
         assertNotNull(res);
         assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
-        assertEquals("multi001_de", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
+        assertEquals("multi1_de", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
         assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
-        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi001_de"));
+        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1_de"));
     }
 
     @Test
@@ -228,5 +228,22 @@ public class DelegatingMultiValueFieldTransformerTest {
     }
 
 
+    @Test
+    public void removeElementAndCreate() {
+        // GIVEN
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        PropertysetItem initialElements = transformer.readFromItem();
+        transformer.removeProperty(initialElements.getItemPropertyIds().iterator().next());
+
+        // WHEN
+        Property<?> res = transformer.createProperty();
+
+        // THEN
+        assertNotNull(res);
+        assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
+        assertEquals("multi1", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
+        assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
+        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1"));
+    }
 
 }
