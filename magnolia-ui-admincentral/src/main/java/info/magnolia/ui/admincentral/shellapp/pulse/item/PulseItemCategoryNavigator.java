@@ -203,12 +203,8 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         public void setActive(boolean active) {
             if (active) {
                 addStyleName("active");
-                if (category == ItemCategory.ONGOING) {
-                    badge.addStyleName("black");
-                }
             } else {
                 removeStyleName("active");
-                badge.removeStyleName("black");
             }
         }
 
