@@ -61,9 +61,9 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Main test class for {@link BasicMultiItemTransformer}.
+ * Main test class for {@link DelegatingMultiValueFieldTransformer}.
  */
-public class BasicMultiItemTransformerTest {
+public class DelegatingMultiValueFieldTransformerTest {
 
     private MultiValueFieldDefinition definition = new MultiValueFieldDefinition();
     private Item rootItem;
@@ -106,7 +106,7 @@ public class BasicMultiItemTransformerTest {
     @Test
     public void readFromItem() {
         // GIVEN
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -124,7 +124,7 @@ public class BasicMultiItemTransformerTest {
     @Test
     public void readFromItemTwice() {
         // GIVEN
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();
@@ -139,7 +139,7 @@ public class BasicMultiItemTransformerTest {
         // GIVEN
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -160,7 +160,7 @@ public class BasicMultiItemTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
         transformer.setI18NPropertyName("multi_de");
 
         // WHEN
@@ -179,10 +179,10 @@ public class BasicMultiItemTransformerTest {
     @Test
     public void createNewElement() {
         // GIVEN
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
         transformer.readFromItem();
         // WHEN
-        Property<?> res = transformer.createNewElement();
+        Property<?> res = transformer.createProperty();
 
         // THEN
         assertNotNull(res);
@@ -198,11 +198,11 @@ public class BasicMultiItemTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
         transformer.setI18NPropertyName("multi_de");
         transformer.readFromItem();
         // WHEN
-        Property<?> res = transformer.createNewElement();
+        Property<?> res = transformer.createProperty();
 
         // THEN
         assertNotNull(res);
@@ -215,11 +215,11 @@ public class BasicMultiItemTransformerTest {
     @Test
     public void removeElement() {
         // GIVEN
-        BasicMultiItemTransformer transformer = new BasicMultiItemTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
         PropertysetItem initialElements = transformer.readFromItem();
 
         // WHEN
-        transformer.removeElement(initialElements.getItemPropertyIds().iterator().next());
+        transformer.removeProperty(initialElements.getItemPropertyIds().iterator().next());
 
         // THEN
         PropertysetItem finalElements = transformer.readFromItem();

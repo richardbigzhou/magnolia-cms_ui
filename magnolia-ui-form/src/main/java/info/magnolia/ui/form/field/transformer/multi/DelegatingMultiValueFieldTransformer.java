@@ -41,7 +41,6 @@ import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,38 +66,38 @@ import com.vaadin.data.util.PropertysetItem;
  * -- child item 1 (used to store the first value of the MultiField)<br>
  * -- child item 2 (used to store the second value of the MultiField)<br>
  * ...<br>
- * The {@link BasicMultiItemTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
+ * The {@link DelegatingMultiValueFieldTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
  * - as key, a position used by {@link info.magnolia.ui.form.field.MultiField} <br>
  * - as values the child items wrapped into an {@link ObjectProperty} <br>
- * The {@link BasicMultiItemTransformer#createNewElement()} creates a new child items wrapped into an {@link ObjectProperty} based on the defined <br>
+ * The {@link DelegatingMultiValueFieldTransformer#createProperty()} creates a new child items wrapped into an {@link ObjectProperty} based on the defined <br>
  * - child item naming strategy.<br>
  * Implemented child item naming strategy: <br>
  * - 'baseSubItemName'+'increment'+'i18nSuffix'<br>
- * -- 'baseSubItemName' is set using {@link BasicMultiItemTransformer#setBaseSubItemName()}. By default we use the {@link ConfiguredFieldDefinition#getName()}<br>
+ * -- 'baseSubItemName' is set using {@link DelegatingMultiValueFieldTransformer#setBaseSubItemName()}. By default we use the {@link ConfiguredFieldDefinition#getName()}<br>
  * -- 'increment' is set using: <br>
- * --- {@link BasicMultiItemTransformer#intialIncrementValue()} that return the root increment value. '000' is set for the default implementation <br>
- * --- {@link BasicMultiItemTransformer#nextIncrementValue(int)} that return the next increment value. '001', '002', ... for the default implementation <br>
- * --- {@link BasicMultiItemTransformer#incrementRegexRepresentation()} return a regex string representation of the increment format. '(\\d{3})' for the default implementation <br>
+ * --- {@link DelegatingMultiValueFieldTransformer#intialIncrementValue()} that return the root increment value. '000' is set for the default implementation <br>
+ * --- {@link DelegatingMultiValueFieldTransformer#nextIncrementValue(int)} that return the next increment value. '001', '002', ... for the default implementation <br>
+ * --- {@link DelegatingMultiValueFieldTransformer#incrementRegexRepresentation()} return a regex string representation of the increment format. '(\\d{3})' for the default implementation <br>
  * -- 'i18nSuffix' default i18n suffix used by Magnolia '_de' <br>
  */
-public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem> implements MultiItemTransformer {
+public class DelegatingMultiValueFieldTransformer extends BasicTransformer<PropertysetItem> implements MultiItemTransformer {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicMultiItemTransformer.class);
+    private static final Logger log = LoggerFactory.getLogger(DelegatingMultiValueFieldTransformer.class);
 
     private final I18nContentSupport i18nContentSupport;
     protected String childNodeType = NodeTypes.ContentNode.NAME;
     protected String baseSubItemName;
     protected String i18nSuffix = StringUtils.EMPTY;
-    private final String defaultLocal;
+    private final String defaultLocale;
     // Map used to store PropertysetItem based on language (i18n support)
     private Map<String, PropertysetItem> items;
 
     @Inject
-    public BasicMultiItemTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18nContentSupport i18nContentSupport) {
+    public DelegatingMultiValueFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18nContentSupport i18nContentSupport) {
         super(relatedFormItem, definition, type);
         this.i18nContentSupport = i18nContentSupport;
         this.i18nSuffix += this.i18nContentSupport.getDefaultLocale();
-        this.defaultLocal = i18nSuffix;
+        this.defaultLocale = i18nSuffix;
         this.baseSubItemName = setBaseSubItemName();
         items = new HashMap<String, PropertysetItem>();
         items.put(this.i18nSuffix, new PropertysetItem());
@@ -106,10 +105,10 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
 
     /**
      * Read the already stored child items.<br>
-     * Filter all root Item child nodes (based on the baseSubNodeName and current local set).<br>
+     * Filter all root Item child nodes (based on the baseSubNodeName and current locale set).<br>
      * For each child Item, wrap them into an {@link ObjectProperty} and add it into the returned {@link PropertysetItem}.
      * 
-     * @return {@link PropertysetItem} related to the current selected local, containing as keys the position (0,1,..) and as values child Items wrapped into an {@link ObjectProperty}.
+     * @return {@link PropertysetItem} related to the current selected locale, containing as keys the position (0,1,..) and as values child Items wrapped into an {@link ObjectProperty}.
      */
     @Override
     public PropertysetItem readFromItem() {
@@ -120,7 +119,7 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
         }
         JcrNodeAdapter rootItem = getRootItem();
         // The root Item was never populated, add relevant child Item based on the stored nodes.
-        if (!rootItem.hasChangedChildItems()) {
+        if (!rootItem.hasChildItemChanges()) {
             populateStoredChildItems(rootItem);
         }
         // Get a list of childNodes
@@ -144,7 +143,7 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
      * Create a new child Item, and bound it with the root Item.
      */
     @Override
-    public Property<?> createNewElement() {
+    public Property<?> createProperty() {
         String newItemName = createNewItemName();
 
         JcrNodeAdapter child = new JcrNewNodeAdapter(getRootItem().getJcrItem(), childNodeType, newItemName);
@@ -161,7 +160,7 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
      * Remove a child Item from the root Item.
      */
     @Override
-    public void removeElement(Object id) {
+    public void removeProperty(Object id) {
         PropertysetItem itemSet = items.get(this.i18nSuffix);
         Property<?> propertyToRemove = itemSet.getItemProperty(id);
         if (propertyToRemove != null && propertyToRemove.getValue() != null) {
@@ -191,7 +190,7 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
     @Override
     public void setI18NPropertyName(String i18NSubNodeName) {
         String newLocal = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
-        this.i18nSuffix = StringUtils.isBlank(newLocal) ? this.defaultLocal : newLocal;
+        this.i18nSuffix = StringUtils.isBlank(newLocal) ? this.defaultLocale : newLocal;
         log.debug("Change language to '{}'", this.i18nSuffix);
         if (!items.containsKey(this.i18nSuffix)) {
             items.put(this.i18nSuffix, new PropertysetItem());
@@ -235,38 +234,22 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
 
     /**
      * Create a unique child Item name.<br>
-     * baseSubNodeName + number (0...999) + current local (if this is not the default local).
+     * baseSubNodeName + number (0...999) + current locale (if this is not the default locale).
      */
-    String createNewItemName() {
+    protected String createNewItemName() {
         int nb = 0;
-        String localAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocal.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
-        String name = this.baseSubItemName + intialIncrementValue() + localAsString;
+        String localeAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocale.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
+        String name = this.baseSubItemName + String.valueOf(nb) + localeAsString;
         List<String> childNodeName = getChildItemNames();
         while (childNodeName.contains(name)) {
             nb += 1;
-            name = this.baseSubItemName + nextIncrementValue(nb) + localAsString;
+            name = this.baseSubItemName + String.valueOf(nb) + localeAsString;
         }
         return name;
     }
 
-    /**
-     * @return initial/root value of the increment.
-     */
-    protected String intialIncrementValue() {
-        return "000";
-    }
-
-    /**
-     * @param iterationNumber
-     * @return next increment value.
-     */
-    protected String nextIncrementValue(int iterationNumber) {
-        DecimalFormat df = new DecimalFormat("000");
-        return df.format(iterationNumber);
-    }
-
     protected String incrementRegexRepresentation() {
-        return "(\\d{3})";
+        return "(\\d{1,3})";
     }
 
     /**
@@ -274,12 +257,12 @@ public class BasicMultiItemTransformer extends BasicTransformer<PropertysetItem>
      */
     protected String childItemRegexRepresentation() {
         if (hasI18NSupport() && i18nContentSupport.isEnabled()) {
-            if (defaultLocal.equals(i18nSuffix)) {
-                // i18n set, current local is the default local
+            if (defaultLocale.equals(i18nSuffix)) {
+                // i18n set, current locale is the default locale
                 // match all node name that do not define locale extension
                 return baseSubItemName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";
             } else {
-                // i18n set, not default local used
+                // i18n set, not default locale used
                 return baseSubItemName + incrementRegexRepresentation() + "_" + i18nSuffix;
             }
         } else {

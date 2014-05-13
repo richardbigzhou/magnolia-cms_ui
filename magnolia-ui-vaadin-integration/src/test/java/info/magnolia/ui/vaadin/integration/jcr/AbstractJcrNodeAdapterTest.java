@@ -287,12 +287,12 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter parentAdapter = new DummyJcrNodeAdapter(parentNode);
         Node childNode = parentNode.addNode("childNode");
         DummyJcrNodeAdapter childAdapter = new DummyJcrNodeAdapter(childNode);
-        assertFalse(parentAdapter.hasChangedChildItems());
+        assertFalse(parentAdapter.hasChildItemChanges());
         // WHEN
         parentAdapter.addChild(childAdapter);
 
         // THEN
-        assertTrue(parentAdapter.hasChangedChildItems());
+        assertTrue(parentAdapter.hasChildItemChanges());
     }
 
     @Test
@@ -302,12 +302,12 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter parentAdapter = new DummyJcrNodeAdapter(parentNode);
         Node childNode = parentNode.addNode("childNode");
         DummyJcrNodeAdapter childAdapter = new DummyJcrNodeAdapter(childNode);
-        assertFalse(parentAdapter.hasChangedChildItems());
+        assertFalse(parentAdapter.hasChildItemChanges());
         // WHEN
         parentAdapter.removeChild(childAdapter);
 
         // THEN
-        assertTrue(parentAdapter.hasChangedChildItems());
+        assertTrue(parentAdapter.hasChildItemChanges());
     }
 
     /**
