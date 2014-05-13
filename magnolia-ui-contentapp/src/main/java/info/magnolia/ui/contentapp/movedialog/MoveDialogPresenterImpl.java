@@ -62,6 +62,7 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
@@ -297,12 +298,28 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return (DialogActionExecutor) super.getExecutor();
     }
 
+    @Override
+    protected void executeAction(String actionName, Object[] actionContextParams) {
+        actionName = getCorrectActionName(actionName);
+        if (actionName != null) {
+            super.executeAction(actionName, actionContextParams);
+        }
+    }
+
+    public String getCorrectActionName(String actionName) {
+        if (actionName.equals(BaseDialog.COMMIT_ACTION_NAME)) {
+            boolean moveInsideActionEnabled = getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().isEnabled();
+            actionName = moveInsideActionEnabled ? MoveLocation.INSIDE.name() : null;
+        }
+        return actionName;
+    }
+
     private Item getHostCandidate() {
         if (currentHostCandidate != null) {
             return currentHostCandidate;
         } else {
             try {
-                String workspace = ((JcrContentConnector)contentConnector).getContentConnectorDefinition().getWorkspace();
+                String workspace = ((JcrContentConnector) contentConnector).getContentConnectorDefinition().getWorkspace();
                 return new JcrNodeAdapter(MgnlContext.getJCRSession(workspace).getRootNode());
             } catch (RepositoryException e) {
                 return null;
