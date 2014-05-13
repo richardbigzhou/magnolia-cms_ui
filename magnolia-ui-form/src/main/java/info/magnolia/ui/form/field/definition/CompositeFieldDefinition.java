@@ -48,7 +48,7 @@ import java.util.List;
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-    protected List<String> fieldsName;
+    private List<String> fieldsName;
     private Layout layout = Layout.horizontal;
 
     /**
@@ -68,9 +68,13 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public List<String> getFieldsName() {
         if (this.fieldsName == null) {
-            this.fieldsName = initFieldsName();
+            initFieldsName();
         }
         return fieldsName;
+    }
+
+    public void addFieldName(String fieldName) {
+        getFieldsName().add(fieldName);
     }
 
     /**
@@ -88,11 +92,11 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         this.fields = fields;
     }
 
-    protected List<String> initFieldsName() {
-        List<String> fieldsName = new LinkedList<String>();
+
+    private void initFieldsName() {
+        fieldsName = new LinkedList<String>();
         for (ConfiguredFieldDefinition definition : fields) {
             fieldsName.add(definition.getName());
         }
-        return fieldsName;
     }
 }
