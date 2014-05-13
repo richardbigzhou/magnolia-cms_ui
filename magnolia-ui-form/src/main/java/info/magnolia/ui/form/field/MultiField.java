@@ -160,9 +160,9 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             public void buttonClick(ClickEvent event) {
                 int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
-                Transformer transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
                 if (transformer instanceof MultiItemTransformer) {
-                    ((MultiItemTransformer) transformer).removeElement(position);
+                    ((MultiItemTransformer) transformer).removeProperty(position);
                 } else {
                     removeValueProperty(position);
                     getPropertyDataSource().setValue(getValue());
@@ -179,8 +179,12 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                Transformer transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
-                root.addComponent(createEntryComponent(transformer instanceof MultiItemTransformer ? ((MultiItemTransformer) transformer).createNewElement() : null), root.getComponentCount() - 1);
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                Property<?> property = null;
+                if (transformer instanceof MultiItemTransformer) {
+                    property = ((MultiItemTransformer) transformer).createProperty();
+                }
+                root.addComponent(createEntryComponent(property), root.getComponentCount() - 1);
             };
         };
     }

@@ -33,20 +33,25 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
+import info.magnolia.ui.form.field.transformer.Transformer;
+
 import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link info.magnolia.ui.form.field.transformer.Transformer} used by {@link info.magnolia.ui.form.field.MultiField} in order to add or remove an element.<br>
+ * {@link info.magnolia.ui.form.field.transformer.Transformer} that is able to add or remove {@link Property Properties}.
+ * 
+ * @see {@link info.magnolia.ui.form.field.MultiField}
  */
-public interface MultiItemTransformer {
+public interface MultiItemTransformer extends Transformer<PropertysetItem> {
 
     /**
-     * @return new element associated to the root Item.
+     * @return new property associated to the root Item.
      */
-    public Property<?> createNewElement();
+    public Property<?> createProperty();
 
     /**
-     * @param id remove the element from the root Item corresponding to this id.
+     * @param property id to be removed from the root Item.
      */
-    public void removeElement(Object id);
+    public void removeProperty(Object id);
 }

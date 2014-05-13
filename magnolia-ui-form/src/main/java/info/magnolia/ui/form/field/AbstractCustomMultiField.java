@@ -141,9 +141,13 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         if (field instanceof AbstractComponent) {
             ((AbstractComponent) field).setImmediate(true);
         }
+        // Set Caption if desired
         if (setCaptionToNull) {
             field.setCaption(null);
+        } else {
+            field.setCaption(fieldDefinition.getLabel());
         }
+
         field.setWidth(100, Unit.PERCENTAGE);
         return field;
     }
@@ -165,7 +169,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
             getPropertyDataSource().setValue(getValue());
         }
     };
-
 
     /**
      * Utility method that return a list of Fields embedded into a root custom field.
