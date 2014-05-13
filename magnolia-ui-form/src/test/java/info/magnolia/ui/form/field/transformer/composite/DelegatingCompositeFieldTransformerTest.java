@@ -56,9 +56,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Main test class for {@link CompositeItemTransformer}.
+ * Main test class for {@link DelegatingCompositeFieldTransformer}.
  */
-public class CompositeItemTransformerTest {
+public class DelegatingCompositeFieldTransformerTest {
 
     private CompositeFieldDefinition definition = new CompositeFieldDefinition();
     private Item rootItem;
@@ -86,7 +86,7 @@ public class CompositeItemTransformerTest {
     @Test
     public void readFromItemOnce() {
         // GIVEN
-        CompositeItemTransformer transformer = new CompositeItemTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -102,7 +102,7 @@ public class CompositeItemTransformerTest {
 
     public void readFromItemTwice() {
         // GIVEN
-        CompositeItemTransformer transformer = new CompositeItemTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();

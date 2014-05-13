@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.form.field.transformer;
 
+import com.vaadin.data.util.PropertysetItem;
+
 /**
- * Indicate that the transformer delegate I18nisation to sub field transformer's. <br>
- * Used in general when a transformer linked to a field containing sub fields delegate the I18nisation to the sub field transformer's.
+ * Indicate that the transformer delegates I18nization to sub-field transformers.
+ * (Marker Interface.)
  */
-public interface I18nTransformerDelegator {
+public interface I18nTransformerDelegator extends Transformer<PropertysetItem> {
 
 }

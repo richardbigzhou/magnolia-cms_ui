@@ -49,18 +49,19 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * The {@link CompositeItemTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
+ * The {@link DelegatingCompositeFieldTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
  * - as key, the embedded field name <br>
  * - as values the 'relatedFormItem' items wrapped into an {@link ObjectProperty}. <br>
  * SubField uses then their {@link ConfiguredFieldDefinition#getName()} to define the name of the property used store the field value.
+ * //TODO add comments about the empty write.
  */
-public class CompositeItemTransformer extends BasicTransformer<PropertysetItem> implements I18nTransformerDelegator {
-    private static final Logger log = LoggerFactory.getLogger(CompositeItemTransformer.class);
+public class DelegatingCompositeFieldTransformer extends BasicTransformer<PropertysetItem> implements I18nTransformerDelegator {
+    private static final Logger log = LoggerFactory.getLogger(DelegatingCompositeFieldTransformer.class);
     protected List<String> fieldsName;
     private PropertysetItem items;
 
     @Inject
-    public CompositeItemTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
+    public DelegatingCompositeFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
         super(relatedFormItem, definition, type);
         this.fieldsName = fieldsName;
     }
