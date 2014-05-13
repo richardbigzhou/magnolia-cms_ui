@@ -36,13 +36,21 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.Layout;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
@@ -61,7 +69,7 @@ import com.vaadin.ui.Field;
  * @param <D> definition type
  */
 public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<SwitchableFieldDefinition, PropertysetItem> {
-
+    private static final Logger log = LoggerFactory.getLogger(SwitchableFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
@@ -79,6 +87,12 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
+        // create the select field definition
+        if (!definition.getFieldsName().contains(definition.getName())) {
+            definition.addField(createSelectFieldDefinition());
+            definition.addFieldName(definition.getName());
+        }
+
         SwitchableField field = new SwitchableField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         return field;
     }
@@ -91,6 +105,45 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         List<String> propertyNames = definition.getFieldsName();
         return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
+    }
+
+    /**
+     * @return {@link SelectFieldDefinition} initialized based on the {@link SwitchableFieldDefinition#getOptions()} and relevant options. <br>
+     * In case of exception, return a {@link StaticFieldDefinition} containing a warn message.
+     */
+    protected ConfiguredFieldDefinition createSelectFieldDefinition() {
+        try {
+            SelectFieldDefinition selectDefinition = null;
+            // Create the correct definition class
+            String layout = "horizontal";
+            if (definition.getSelectionType().equals("radio")) {
+                selectDefinition = new OptionGroupFieldDefinition();
+                if (definition.getLayout().equals(Layout.vertical)) {
+                    layout = "vertical";
+                }
+            } else {
+                selectDefinition = new SelectFieldDefinition();
+            }
+            // Copy options to the newly created select definition. definition
+            selectDefinition.setOptions(definition.getOptions());
+            selectDefinition.setTransformerClass(null);
+            selectDefinition.setLabel("");
+            selectDefinition.setRequired(false);
+            selectDefinition.setSortOptions(false);
+            selectDefinition.setStyleName(layout);
+            selectDefinition.setName(definition.getName());
+
+            if (definition.isI18n()) {
+                selectDefinition.setI18n(definition.isI18n());
+            }
+            return selectDefinition;
+        } catch (Exception e) {
+            log.warn("Coudn't create the select field.", e.getMessage());
+            StaticFieldDefinition definition = new StaticFieldDefinition();
+            definition.setName(definition.getName());
+            definition.setValue("Select definition not correctly initialised. Please check your field configuration");
+            return definition;
+        }
     }
 
 }
