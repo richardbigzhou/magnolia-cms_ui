@@ -38,19 +38,13 @@ import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Field definition for a switchable field.
  */
 public class SwitchableFieldDefinition extends CompositeFieldDefinition {
-    private static final Logger log = LoggerFactory.getLogger(SwitchableFieldDefinition.class);
-
     private String selectionType = "radio";
-    private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
-    private SelectFieldDefinition selectDefinition = null;
+    private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
@@ -84,48 +78,4 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
         this.options = options;
     }
 
-    /**
-     * Add the field selection field definition created by {@link SwitchableFieldDefinition#createSelectFieldDefinition()} to the {@link CompositeFieldDefinition#getFields()} and {@link CompositeFieldDefinition#getFieldsName()}.
-     */
-    @Override
-    protected List<String> initFieldsName() {
-        List<String> fieldsName = super.initFieldsName();
-        if (selectDefinition == null) {
-            selectDefinition = (SelectFieldDefinition) createSelectFieldDefinition();
-            addField(selectDefinition);
-            fieldsName.add(selectDefinition.getName());
-        }
-        return fieldsName;
-    }
-
-    private ConfiguredFieldDefinition createSelectFieldDefinition() {
-        try {
-            // Create the correct definition class
-            String layout = "horizontal";
-            if (getSelectionType().equals("radio")) {
-                selectDefinition = new OptionGroupFieldDefinition();
-                if (getLayout().equals(Layout.vertical)) {
-                    layout = "vertical";
-                }
-            } else {
-                selectDefinition = new SelectFieldDefinition();
-            }
-            // Copy options to the newly created select definition. definition
-            selectDefinition.setOptions(getOptions());
-            selectDefinition.setTransformerClass(null);
-            selectDefinition.setLabel("");
-            selectDefinition.setRequired(false);
-            selectDefinition.setSortOptions(false);
-            selectDefinition.setStyleName(layout);
-            selectDefinition.setName(getName());
-
-            if (isI18n()) {
-                selectDefinition.setI18n(isI18n());
-            }
-
-        } catch (Exception e) {
-            log.warn("Coudn't create the select field.", e.getMessage());
-        }
-        return selectDefinition;
-    }
 }
