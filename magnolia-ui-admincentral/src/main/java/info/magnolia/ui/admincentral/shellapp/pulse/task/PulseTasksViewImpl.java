@@ -79,13 +79,13 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
         getItemTable().addGeneratedColumn(NEW_PROPERTY_ID, newTaskColumnGenerator);
         getItemTable().setColumnWidth(NEW_PROPERTY_ID, 100);
         getItemTable().addGeneratedColumn(TASK_PROPERTY_ID, taskColumnGenerator);
-        getItemTable().setColumnWidth(TASK_PROPERTY_ID, 200);
+        getItemTable().setColumnWidth(TASK_PROPERTY_ID, 220);
         getItemTable().addGeneratedColumn(STATUS_PROPERTY_ID, taskStatusColumnGenerator);
         getItemTable().setColumnWidth(STATUS_PROPERTY_ID, 80);
         getItemTable().addGeneratedColumn(SENT_TO_PROPERTY_ID, sentToColumnGenerator);
         getItemTable().setColumnWidth(SENT_TO_PROPERTY_ID, 100);
         getItemTable().addGeneratedColumn(LAST_CHANGE_PROPERTY_ID, new DateColumnFormatter(null));
-        getItemTable().setColumnWidth(LAST_CHANGE_PROPERTY_ID, 160);
+        getItemTable().setColumnWidth(LAST_CHANGE_PROPERTY_ID, 140);
 
         getItemTable().setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
         getItemTable().setSortAscending(false);
@@ -221,7 +221,7 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
 
             label.setContentMode(ContentMode.HTML);
             label.addStyleName("title");
-            label.setValue("<strong>" + StringUtils.abbreviate(title, 25) + "</strong><div class=\"comment\">" + StringUtils.abbreviate(comment, 25) + "</div>");
+            label.setValue("<strong>" + StringUtils.abbreviate(title, 28) + "</strong><div class=\"comment\">" + StringUtils.abbreviate(comment, 28) + "</div>");
 
             root.addComponent(icon);
             root.addComponent(label);
