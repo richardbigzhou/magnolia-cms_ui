@@ -344,7 +344,12 @@
 
 .v-pulse .navigator-grouping {
   display: inline-block;
-  margin-left: 50px;
+  margin-left: 15px;
+}
+
+.v-pulse .navigator-grouping.v-checkbox label {
+   width: 110px;
+   overflow: hidden;
 }
 
 .emptyplaceholder {

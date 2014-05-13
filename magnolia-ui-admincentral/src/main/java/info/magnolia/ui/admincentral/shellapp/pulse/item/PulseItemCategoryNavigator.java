@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -102,10 +104,14 @@ public final class PulseItemCategoryNavigator extends CssLayout {
     }
 
     private void initCheckbox(ItemCategory... categories) {
-        groupByCheckBox = new CheckBox(i18n.translate("pulse.items.groupby"));
+        final String caption = i18n.translate("pulse.items.groupby");
+        groupByCheckBox = new CheckBox(StringUtils.abbreviate(caption, 15));
         groupByCheckBox.addStyleName("navigator-grouping");
         groupByCheckBox.setImmediate(true);
         groupByCheckBox.setVisible(false);
+        // tooltip
+        groupByCheckBox.setDescription(caption);
+
         if (showGroupBy) {
             addComponent(groupByCheckBox);
             for (final ItemCategory category : categories) {
