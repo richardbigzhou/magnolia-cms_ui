@@ -53,7 +53,7 @@ import com.vaadin.ui.Label;
  */
 public final class PulseItemCategoryNavigator extends CssLayout {
 
-    private CheckBox groupByTypeCheckBox;
+    private CheckBox groupByCheckBox;
 
     private Map<ItemCategory, ItemCategoryTab> itemCategoryTabs = new HashMap<ItemCategory, ItemCategoryTab>();
 
@@ -82,6 +82,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
     private void construct(ItemCategory... categories) {
         setSizeUndefined();
+
         for (final ItemCategory category : categories) {
             ItemCategoryTab tab = new ItemCategoryTab(category);
             if (category == ItemCategory.ALL_MESSAGES || category == ItemCategory.UNCLAIMED || category == ItemCategory.TASKS) {
@@ -96,21 +97,31 @@ public final class PulseItemCategoryNavigator extends CssLayout {
             hiddenTab.addStyleName("hidden");
             addComponent(hiddenTab);
         }
-        groupByTypeCheckBox = new CheckBox(i18n.translate("pulse.items.groupby"));
-        groupByTypeCheckBox.addStyleName("navigator-grouping");
-        groupByTypeCheckBox.setImmediate(true);
-        if (showGroupBy) {
-            addComponent(groupByTypeCheckBox);
-        }
 
+        initCheckbox(categories);
+    }
+
+    private void initCheckbox(ItemCategory... categories) {
+        groupByCheckBox = new CheckBox(i18n.translate("pulse.items.groupby"));
+        groupByCheckBox.addStyleName("navigator-grouping");
+        groupByCheckBox.setImmediate(true);
+        groupByCheckBox.setVisible(false);
+        if (showGroupBy) {
+            addComponent(groupByCheckBox);
+            for (final ItemCategory category : categories) {
+                if (category == ItemCategory.ALL_MESSAGES) {
+                    enableGroupBy(true);
+                }
+            }
+        }
     }
 
     public void addGroupingListener(ValueChangeListener listener) {
-        groupByTypeCheckBox.addValueChangeListener(listener);
+        groupByCheckBox.addValueChangeListener(listener);
     }
 
     public void enableGroupBy(boolean enable) {
-        groupByTypeCheckBox.setVisible(enable);
+        groupByCheckBox.setVisible(enable);
     }
 
     /**
