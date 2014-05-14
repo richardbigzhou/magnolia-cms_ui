@@ -56,6 +56,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.util.BeanItem;
@@ -77,7 +78,8 @@ public final class TaskPresenter extends ItemPresenter<Task> {
 
     @Override
     protected String getItemViewName(Task item) {
-        return "pages:" + item.getName();
+        final String view = (String) item.getContent().get("messageView");
+        return StringUtils.defaultString(view, DEFAULT_VIEW);
     }
 
     @Override

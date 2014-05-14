@@ -41,7 +41,6 @@ import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -77,7 +76,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PulseTasksPresenter.class);
 
-    private final PulseItemsView view;
+    private final PulseTasksView view;
 
     private HierarchicalContainer container;
 
@@ -99,6 +98,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     public View start() {
         view.setListener(this);
+        view.setTaskListener(this);
         initView();
         return view;
     }
@@ -373,6 +373,27 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     public void setTabActive(ItemCategory category) {
         view.setTabActive(category);
+    }
+
+    @Override
+    public void claimTask(final Set<String> itemIds) {
+        if (itemIds == null || itemIds.isEmpty()) {
+            return;
+        }
+        final String userId = MgnlContext.getUser().getName();
+
+        for (String taskId : itemIds) {
+            Task task = tasksManager.getTaskById(taskId);
+            if (task.getStatus() != Status.Created) {
+                // log warn/info?
+                shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantAssign", task.getName(), task.getStatus()));
+                return;
+            }
+            tasksManager.claim(taskId, userId);
+        }
+
+        // refresh the view
+        initView();
     }
 
 }

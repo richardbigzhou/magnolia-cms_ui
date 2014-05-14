@@ -40,6 +40,7 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.EmptyMessages;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
@@ -52,6 +53,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksViewImpl.Task
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import org.junit.After;
@@ -67,7 +69,11 @@ import com.vaadin.ui.Table;
 public class PulseTasksViewImplTest {
     @Before
     public void setUp() {
-        WebContext ctx = new MockWebContext();
+        MockWebContext ctx = new MockWebContext();
+        User user = mock(User.class);
+        when(user.getAllRoles()).thenReturn(Collections.EMPTY_LIST);
+        ctx.setUser(user);
+
         MgnlContext.setInstance(ctx);
         ComponentsTestUtil.setInstance(WebContext.class, ctx);
         ComponentsTestUtil.setImplementation(SystemContext.class, MockContext.class);

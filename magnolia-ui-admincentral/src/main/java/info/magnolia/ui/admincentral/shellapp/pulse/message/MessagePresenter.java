@@ -48,6 +48,8 @@ import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.util.BeanItem;
 
 /**
@@ -65,7 +67,7 @@ public final class MessagePresenter extends ItemPresenter<Message> {
 
     @Override
     protected String getItemViewName(Message item) {
-        return item.getView();
+        return StringUtils.defaultString(item.getView(), DEFAULT_VIEW);
     }
 
     @Override

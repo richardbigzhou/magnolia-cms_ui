@@ -50,8 +50,6 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.util.BeanItem;
 
 /**
@@ -70,6 +68,8 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
     private Listener listener;
     private T item;
     private I18nizer i18nizer;
+
+    public static final String DEFAULT_VIEW = "ui-admincentral:default";
 
     @Inject
     public ItemPresenter(ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
@@ -90,14 +90,13 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
         if (this.item == null) {
             throw new RuntimeException("Could not retrieve pulse item with id [" + itemId + "]");
         }
-        String itemView = "ui-admincentral:default";
 
         setItemViewTitle(item, view);
+
+        final String itemView = getItemViewName(item);
+
         try {
-            final String specificItemView = getItemViewName(item);
-            if (StringUtils.isNotEmpty(specificItemView)) {
-                itemView = specificItemView;
-            }
+
             ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(itemView);
             itemViewDefinition = i18nizer.decorate(itemViewDefinition);
 

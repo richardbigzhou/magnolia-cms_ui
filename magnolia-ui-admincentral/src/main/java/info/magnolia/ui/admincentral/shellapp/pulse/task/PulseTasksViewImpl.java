@@ -39,6 +39,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task.Status;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsFooter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
@@ -71,8 +72,8 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
                 ItemCategory.UNCLAIMED, ItemCategory.ONGOING, ItemCategory.DONE, ItemCategory.FAILED, ItemCategory.ALL_TASKS);
-
         constructTable();
+        setFooter(PulseItemsFooter.createTasksFooter(getItemTable(), i18n));
     }
 
     private void constructTable() {
@@ -89,7 +90,6 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
 
         getItemTable().setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
         getItemTable().setSortAscending(false);
-
     }
 
     @Override
@@ -295,5 +295,10 @@ public final class PulseTasksViewImpl extends AbstractPulseItemView implements P
                 }
             });
         }
+    }
+
+    @Override
+    public void setTaskListener(PulseTasksView.Listener listener) {
+        getFooter().setTasksListener(listener);
     }
 }

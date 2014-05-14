@@ -221,7 +221,6 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
-        footer = new PulseItemsFooter(itemTable, i18n);
         navigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n, categories);
         root.setSizeFull();
         construct(emptyMessage);
@@ -250,7 +249,9 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
     @Override
     public void setListener(PulseItemsView.Listener listener) {
         this.listener = listener;
-        this.footer.setListener(listener);
+        // message listener can use the generic listener
+        // as the only thing it does now is deleting items
+        this.footer.setMessagesListener(listener);
     }
 
     @Override
@@ -261,6 +262,11 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
     @Override
     public Component asVaadinComponent() {
         return root;
+    }
+
+    public void setFooter(PulseItemsFooter footer) {
+        this.footer = footer;
+        root.addComponent(footer);
     }
 
     private void construct(String emptyMessage) {
@@ -275,7 +281,6 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         });
 
         constructTable();
-        root.addComponent(footer);
 
         emptyPlaceHolder = new Label();
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
@@ -283,6 +288,11 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         emptyPlaceHolder.addStyleName("emptyplaceholder");
 
         root.addComponent(emptyPlaceHolder);
+
+        // create an initial default footer to avoid NPE exception. This will be replaced later on by specific implementations
+        footer = PulseItemsFooter.createMessagesFooter(itemTable, i18n);
+        root.addComponent(footer);
+
         setComponentVisibility(itemTable.getContainerDataSource());
     }
 
@@ -363,6 +373,10 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         onItemCategoryChanged(category);
     }
 
+    protected PulseItemsFooter getFooter() {
+        return footer;
+    }
+
     protected void onItemClicked(ClickEvent event, final Object itemId) {
         String itemIdAsString = String.valueOf(itemId);
         // clicking on the group type header does nothing.
@@ -386,11 +400,16 @@ public abstract class AbstractPulseItemView implements PulseItemsView {
         for (String id : (Set<String>) itemTable.getValue()) {
             itemTable.unselect(id);
         }
-        if (category == ItemCategory.ALL_TASKS || category == ItemCategory.ALL_MESSAGES) {
+
+        switch (category) {
+        case ALL_TASKS:
+        case ALL_MESSAGES:
             navigator.enableGroupBy(true);
-        } else {
+            break;
+        default:
             navigator.enableGroupBy(false);
         }
+
         refresh();
     }
 }

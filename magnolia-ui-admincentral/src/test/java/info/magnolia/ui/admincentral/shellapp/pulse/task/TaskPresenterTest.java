@@ -33,22 +33,57 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsView;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import java.util.Set;
+import info.magnolia.task.Task;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
+
+import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Tasks Pulse tab UI.
+ * TaskPresenterTest.
  */
-public interface PulseTasksView extends PulseItemsView {
+public class TaskPresenterTest {
+    private TaskPresenter presenter;
 
-    void setTaskListener(Listener listener);
+    @Before
+    public void setUp() {
+        presenter = new TaskPresenter(mock(ItemView.class), null, null, null, null, null, mock(ActionbarPresenter.class), null, null);
+    }
 
-    /**
-     * Listener.
-     */
-    interface Listener extends PulseItemsView.Listener {
+    @Test
+    public void viewIsTakenFromTaskContent() throws Exception {
+        // GIVEN
+        Task task = new Task();
+        task.setName("foo");
 
-        void claimTask(Set<String> itemIds);
+        HashMap<String, Object> content = new HashMap<String, Object>();
+        content.put("messageView", "foo");
+        task.setContent(content);
+
+        // WHEN
+        String viewName = presenter.getItemViewName(task);
+
+        // THEN
+        assertEquals("foo", viewName);
+    }
+
+    @Test
+    public void viewFallsbackToDefaultIfNoneSet() throws Exception {
+        // GIVEN
+        Task task = new Task();
+        task.setName("foo");
+        task.setContent(new HashMap<String, Object>());
+
+        // WHEN
+        String viewName = presenter.getItemViewName(task);
+
+        // THEN
+        assertEquals(TaskPresenter.DEFAULT_VIEW, viewName);
     }
 }

@@ -38,6 +38,7 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessages
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemsFooter;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
@@ -147,6 +148,7 @@ public final class PulseMessagesViewImpl extends AbstractPulseItemView implement
                 i18n.translate("pulse.messages.empty"),
                 ItemCategory.ALL_MESSAGES, ItemCategory.INFO, ItemCategory.PROBLEM);
         buildTable(getItemTable());
+        setFooter(PulseItemsFooter.createMessagesFooter(getItemTable(), i18n));
     }
 
     private void buildTable(TreeTable itemTable) {

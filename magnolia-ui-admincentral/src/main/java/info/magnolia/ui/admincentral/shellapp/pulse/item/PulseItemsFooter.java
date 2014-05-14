@@ -35,11 +35,18 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesView;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksView;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
@@ -61,16 +68,31 @@ public final class PulseItemsFooter extends CustomComponent {
     private HorizontalLayout footer;
     private NativeButton actionPopupTrigger;
     private TreeTable itemsTable;
+    private static SimpleTranslator i18n;
     private Label status;
-    private PulseItemsView.Listener listener;
-    private final SimpleTranslator i18n;
+    private static PulseItemsView.Listener messagesListener;
+    private static PulseTasksView.Listener tasksListener;
+    private final ContextMenu contextMenu;
+    // can't get the menu items from ContextMenu
+    private static List<ContextMenuItem> menuItems = new ArrayList<ContextMenuItem>();
 
-    public PulseItemsFooter(final TreeTable itemsTable, SimpleTranslator i18n) {
+    private PulseItemsFooter(final TreeTable itemsTable, final SimpleTranslator i18n, final ContextMenu contextMenu) {
         super();
         this.itemsTable = itemsTable;
-        this.i18n = i18n;
+        PulseItemsFooter.i18n = i18n;
+        this.contextMenu = contextMenu;
         construct();
         setCompositionRoot(footer);
+    }
+
+    public static PulseItemsFooter createTasksFooter(final TreeTable itemsTable, final SimpleTranslator i18n) {
+        ContextMenu cm = buildTaskContextMenu(i18n, itemsTable);
+        return new PulseItemsFooter(itemsTable, i18n, cm);
+    }
+
+    public static PulseItemsFooter createMessagesFooter(final TreeTable itemsTable, final SimpleTranslator i18n) {
+        ContextMenu cm = buildMessageContextMenu(i18n, itemsTable);
+        return new PulseItemsFooter(itemsTable, i18n, cm);
     }
 
     private void construct() {
@@ -85,28 +107,6 @@ public final class PulseItemsFooter extends CustomComponent {
         actionPopupTrigger.setCaption("<span class=\"icon-arrow2_e\"></span>");
         actionPopupTrigger.addStyleName("action-popup-trigger");
 
-        final ActionPopup contextMenu = new ActionPopup();
-        contextMenu.setOpenAutomatically(false);
-
-        final String iconFontCode = ActionPopup.ICON_FONT_CODE + "icon-delete";
-        final ExternalResource iconFontResource = new ExternalResource(iconFontCode);
-
-        final ContextMenuItem menuItem = contextMenu.addItem(i18n.translate("pulse.actionpop.delete.selected"), iconFontResource);
-        menuItem.addItemClickListener(new ContextMenuItemClickListener() {
-
-            @Override
-            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-                final Set<String> selectedItems = (Set<String>) itemsTable.getValue();
-                if (selectedItems == null || selectedItems.isEmpty()) {
-                    // nothing to do here
-                    return;
-                }
-                listener.deleteItems(selectedItems);
-            }
-        });
-
-        contextMenu.setAsContextMenuOf(actionPopupTrigger);
-
         actionPopupTrigger.addClickListener(new ClickListener() {
 
             @Override
@@ -120,6 +120,73 @@ public final class PulseItemsFooter extends CustomComponent {
         status = new Label();
         status.addStyleName("status");
         footer.addComponent(status);
+
+        contextMenu.setAsContextMenuOf(actionPopupTrigger);
+    }
+
+    private static ContextMenu buildTaskContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
+        final ActionPopup contextMenu = new ActionPopup();
+        contextMenu.setOpenAutomatically(false);
+
+        final ExternalResource iconAssignResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-user-public");
+
+        final ContextMenuItem claim = contextMenu.addItem(i18n.translate("publish.actions.claim"), iconAssignResource);
+
+        claim.addItemClickListener(new ContextMenuItemClickListener() {
+
+            @Override
+            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+                final Set<String> selectedItems = (Set<String>) itemsTable.getValue();
+                if (selectedItems == null || selectedItems.isEmpty()) {
+                    // nothing to do here
+                    return;
+                }
+
+                tasksListener.claimTask(selectedItems);
+            }
+        });
+        claim.setEnabled(false);
+        menuItems.add(claim);
+
+        User user = MgnlContext.getUser();
+        // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
+        // but as this is not straightforward, for the time being we hack it like this
+        if (user.getAllRoles().contains("superuser")) {
+            addDeleteMenuItem(i18n, itemsTable, contextMenu);
+        }
+
+        return contextMenu;
+    }
+
+    private static ContextMenu buildMessageContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
+        final ActionPopup contextMenu = new ActionPopup();
+        contextMenu.setOpenAutomatically(false);
+
+        addDeleteMenuItem(i18n, itemsTable, contextMenu);
+
+        return contextMenu;
+    }
+
+    private static void addDeleteMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu) {
+        final ExternalResource iconDeleteResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-delete");
+
+        final ContextMenuItem delete = contextMenu.addItem(i18n.translate("publish.actions.delete"), iconDeleteResource);
+
+        delete.addItemClickListener(new ContextMenuItemClickListener() {
+
+            @Override
+            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+                final Set<String> selectedItems = (Set<String>) itemsTable.getValue();
+                if (selectedItems == null || selectedItems.isEmpty()) {
+                    // nothing to do here
+                    return;
+                }
+                messagesListener.deleteItems(selectedItems);
+            }
+        });
+        delete.setEnabled(false);
+
+        menuItems.add(delete);
     }
 
     public void updateStatus() {
@@ -140,13 +207,31 @@ public final class PulseItemsFooter extends CustomComponent {
             }
             totalSelected++;
         }
+        // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
+        // but as this is not straightforward, for the time being we hack it like this
+        if (totalSelected > 0) {
+            enableActions(true);
+        } else {
+            enableActions(false);
+        }
+
         final String totalMessagesAsString = totalMessages > 0 ? Integer.toString(totalMessages) : i18n.translate("pulse.footer.status.no");
         final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : i18n.translate("pulse.footer.status.none");
         status.setValue(i18n.translate("pulse.footer.status", totalMessagesAsString, selectedMessagesAsString));
     }
 
-    public void setListener(final PulseItemsView.Listener listener) {
-        this.listener = listener;
+    public void setMessagesListener(final PulseMessagesView.Listener listener) {
+        PulseItemsFooter.messagesListener = listener;
+    }
+
+    public void setTasksListener(final PulseTasksView.Listener listener) {
+        PulseItemsFooter.tasksListener = listener;
+    }
+
+    private void enableActions(boolean enable) {
+        for (ContextMenuItem item : menuItems) {
+            item.setEnabled(enable);
+        }
     }
 
 }
