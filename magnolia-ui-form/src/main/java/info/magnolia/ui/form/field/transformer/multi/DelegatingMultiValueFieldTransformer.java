@@ -153,7 +153,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         child.getParent().addChild(child);
         Property<?> res = new ObjectProperty<Item>(child);
         PropertysetItem itemSet = items.get(this.i18nSuffix);
-        itemSet.addItemProperty(itemSet.getItemPropertyIds().size() + 1, res);
+        itemSet.addItemProperty(itemSet.getItemPropertyIds().size(), res);
 
         return res;
     }
@@ -170,7 +170,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
             toRemove.getParent().removeChild(toRemove);
         }
         itemSet.removeItemProperty(id);
-
+        reorginizeIndex((Integer) id, itemSet);
     }
 
     /**
@@ -280,6 +280,26 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
             res.add(((JcrNodeAdapter) itemSet.getItemProperty(id).getValue()).getNodeName());
         }
         return res;
+    }
+
+    /**
+     * Ensure that id of the {@link PropertysetItem} stay coherent.<br>
+     * Assume that we have 3 values 0:a, 1:b, 2:c, and 1 is removed <br>
+     * If we just remove 1, the {@link PropertysetItem} will contain 0:a, 2:c, .<br>
+     * But we should have : 0:a, 1:c, .
+     */
+    private void reorginizeIndex(int fromIndex, PropertysetItem itemSet) {
+        int toIndex = fromIndex;
+        int valuesSize = itemSet.getItemPropertyIds().size();
+        if (fromIndex == valuesSize) {
+            return;
+        }
+        while (fromIndex < valuesSize) {
+            toIndex = fromIndex;
+            fromIndex += 1;
+            itemSet.addItemProperty(toIndex, itemSet.getItemProperty(fromIndex));
+            itemSet.removeItemProperty(fromIndex);
+        }
     }
 
 }
