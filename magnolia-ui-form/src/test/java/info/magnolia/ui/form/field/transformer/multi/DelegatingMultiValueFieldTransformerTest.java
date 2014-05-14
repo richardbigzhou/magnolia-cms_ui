@@ -246,4 +246,27 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1"));
     }
 
+    @Test
+    public void coherenceOfMultisetItemIds() {
+        // GIVEN
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        PropertysetItem res = transformer.readFromItem();
+        // create two elements
+        transformer.createProperty();
+        transformer.createProperty();
+        res = transformer.readFromItem();
+        assertEquals(3, res.getItemPropertyIds().size());
+        assertNotNull(res.getItemProperty(0));
+        assertNotNull(res.getItemProperty(1));
+        assertNotNull(res.getItemProperty(2));
+        // WHEN
+        transformer.removeProperty(1);
+
+        // THEN
+        res = transformer.readFromItem();
+        assertNotNull(res.getItemProperty(0));
+        assertNotNull(res.getItemProperty(1));
+        assertEquals(2, res.getItemPropertyIds().size());
+    }
+
 }
