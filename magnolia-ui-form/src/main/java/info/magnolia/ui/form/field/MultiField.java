@@ -89,7 +89,17 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         // Init addButton
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
-        addButton.addClickListener(addButtonClickListener());
+        addButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                Property<?> property = null;
+                if (transformer instanceof MultiItemTransformer) {
+                    property = ((MultiItemTransformer) transformer).createProperty();
+                }
+                root.addComponent(createEntryComponent(property), root.getComponentCount() - 1);
+            };
+        });
 
         // Initialize Existing field
         initFields();
@@ -119,7 +129,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      * - a remove Button<br>
      */
     private Component createEntryComponent(Property<?> property) {
-        HorizontalLayout layout = new HorizontalLayout();
+        final HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
         Field<?> field = createLocalField(fieldDefinition, property, true);
@@ -135,7 +145,21 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
         deleteButton.setDescription(buttonCaptionRemove);
-        deleteButton.addClickListener(removeButtonClickListener(layout));
+        deleteButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                int position = root.getComponentIndex(layout);
+                root.removeComponent(layout);
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
+                if (transformer instanceof MultiItemTransformer) {
+                    ((MultiItemTransformer) transformer).removeProperty(position);
+                } else {
+                    removeValueProperty(position);
+                    getPropertyDataSource().setValue(getValue());
+                }
+
+            };
+        });
         layout.addComponent(deleteButton);
 
         // set layout to full width
@@ -151,49 +175,11 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         return layout;
     }
 
-    /**
-     * Create a button listener bound to the delete Button.
-     */
-    private Button.ClickListener removeButtonClickListener(final HorizontalLayout layout) {
-        return new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                int position = root.getComponentIndex(layout);
-                root.removeComponent(layout);
-                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
-                if (transformer instanceof MultiItemTransformer) {
-                    ((MultiItemTransformer) transformer).removeProperty(position);
-                } else {
-                    removeValueProperty(position);
-                    getPropertyDataSource().setValue(getValue());
-                }
-
-            };
-        };
-    }
-
-    /**
-     * Create a button listener bound to the add Button.
-     */
-    private Button.ClickListener addButtonClickListener() {
-        return new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
-                Property<?> property = null;
-                if (transformer instanceof MultiItemTransformer) {
-                    property = ((MultiItemTransformer) transformer).createProperty();
-                }
-                root.addComponent(createEntryComponent(property), root.getComponentCount() - 1);
-            };
-        };
-    }
 
     @Override
     public Class<? extends PropertysetItem> getType() {
         return PropertysetItem.class;
     }
-
 
     /**
      * Caption section.

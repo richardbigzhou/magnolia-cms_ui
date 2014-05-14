@@ -113,10 +113,10 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     @Override
     public PropertysetItem readFromItem() {
-        PropertysetItem itemSet = items.get(this.i18nSuffix);
+        PropertysetItem item = items.get(this.i18nSuffix);
         // Only read it once
-        if (!itemSet.getItemPropertyIds().isEmpty()) {
-            return itemSet;
+        if (!item.getItemPropertyIds().isEmpty()) {
+            return item;
         }
         JcrNodeAdapter rootItem = getRootItem();
         // The root Item was never populated, add relevant child Item based on the stored nodes.
@@ -127,12 +127,12 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         int position = 0;
         for (String itemName : rootItem.getChildren().keySet()) {
             if (itemName.matches(childItemRegexRepresentation())) {
-                itemSet.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
+                item.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
                 position += 1;
                 freezedName.add(itemName);
             }
         }
-        return itemSet;
+        return item;
     }
 
     @Override
@@ -152,8 +152,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         child.setParent(getRootItem());
         child.getParent().addChild(child);
         Property<?> res = new ObjectProperty<Item>(child);
-        PropertysetItem itemSet = items.get(this.i18nSuffix);
-        itemSet.addItemProperty(itemSet.getItemPropertyIds().size(), res);
+        PropertysetItem item = items.get(this.i18nSuffix);
+        item.addItemProperty(item.getItemPropertyIds().size(), res);
 
         return res;
     }
@@ -163,14 +163,14 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     @Override
     public void removeProperty(Object id) {
-        PropertysetItem itemSet = items.get(this.i18nSuffix);
-        Property<?> propertyToRemove = itemSet.getItemProperty(id);
+        PropertysetItem item = items.get(this.i18nSuffix);
+        Property<?> propertyToRemove = item.getItemProperty(id);
         if (propertyToRemove != null && propertyToRemove.getValue() != null) {
             JcrNodeAdapter toRemove = (JcrNodeAdapter) propertyToRemove.getValue();
             toRemove.getParent().removeChild(toRemove);
         }
-        itemSet.removeItemProperty(id);
-        reorginizeIndex((Integer) id, itemSet);
+        item.removeItemProperty(id);
+        reorganizeIndex((Integer) id, item);
     }
 
     /**
@@ -275,9 +275,9 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     private List<String> getChildItemNames() {
         List<String> res = new ArrayList<String>();
         res.addAll(freezedName);
-        PropertysetItem itemSet = items.get(this.i18nSuffix);
-        for (Object id : itemSet.getItemPropertyIds()) {
-            res.add(((JcrNodeAdapter) itemSet.getItemProperty(id).getValue()).getNodeName());
+        PropertysetItem item = items.get(this.i18nSuffix);
+        for (Object id : item.getItemPropertyIds()) {
+            res.add(((JcrNodeAdapter) item.getItemProperty(id).getValue()).getNodeName());
         }
         return res;
     }
@@ -288,17 +288,17 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      * If we just remove 1, the {@link PropertysetItem} will contain 0:a, 2:c, .<br>
      * But we should have : 0:a, 1:c, .
      */
-    private void reorginizeIndex(int fromIndex, PropertysetItem itemSet) {
+    private void reorganizeIndex(int fromIndex, PropertysetItem item) {
         int toIndex = fromIndex;
-        int valuesSize = itemSet.getItemPropertyIds().size();
+        int valuesSize = item.getItemPropertyIds().size();
         if (fromIndex == valuesSize) {
             return;
         }
         while (fromIndex < valuesSize) {
             toIndex = fromIndex;
             fromIndex += 1;
-            itemSet.addItemProperty(toIndex, itemSet.getItemProperty(fromIndex));
-            itemSet.removeItemProperty(fromIndex);
+            item.addItemProperty(toIndex, item.getItemProperty(fromIndex));
+            item.removeItemProperty(fromIndex);
         }
     }
 

@@ -46,7 +46,6 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.StaticField;
-import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
@@ -71,7 +70,7 @@ import com.vaadin.ui.TextField;
 /**
  * Tests for the {@link DefaultI18NAuthoringSupport}.
  */
-public class Default18nAuthoringSupportTest {
+public class DefaultI18nAuthoringSupportTest {
 
     private static final String WORKSPACE = "website";
 
@@ -187,7 +186,7 @@ public class Default18nAuthoringSupportTest {
     }
 
     @Test
-    public void i18nizeFieldWithI18nTransformerDelegator() {
+    public void i18nizeFieldsRecursively() {
         // GIVEN
         // Create fields
         // Inner field
@@ -224,7 +223,7 @@ public class Default18nAuthoringSupportTest {
         return LocaleDefinition.make(locale.getLanguage(), locale.getCountry(), true);
     }
 
-    private class TestI18nTransformerDelegator extends TestLocaleTransformer implements I18nTransformerDelegator {
+    private class TestI18nTransformerDelegator extends TestLocaleTransformer {
         public TestI18nTransformerDelegator(boolean hasI18nSupport, String propertyName) {
             super(hasI18nSupport, propertyName);
         }
