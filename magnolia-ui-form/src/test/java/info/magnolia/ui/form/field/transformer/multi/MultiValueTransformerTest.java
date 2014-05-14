@@ -42,6 +42,7 @@ import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * .
+ * Tests for {@link MultiValueTransformer}.
  */
 public class MultiValueTransformerTest extends RepositoryTestCase {
     private Node rootNode;
@@ -92,8 +93,12 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
         MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
 
+        PropertysetItem propertysetItem = new PropertysetItem();
+        propertysetItem.addItemProperty("1", new DefaultProperty("one"));
+        propertysetItem.addItemProperty("2", new DefaultProperty("two"));
+
         // WHEN
-        delegate.writeToItem(new PropertysetItem());
+        delegate.writeToItem(propertysetItem);
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
@@ -101,6 +106,9 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         Node parentNode = parent.applyChanges();
         assertTrue(parentNode.hasProperty(propertyName));
         assertTrue(parentNode.getProperty(propertyName).isMultiple());
+        assertThat(parentNode.getProperty(propertyName).getValues().length, is(2));
+        assertThat(parentNode.getProperty(propertyName).getValues()[0].getString(), is("one"));
+        assertThat(parentNode.getProperty(propertyName).getValues()[1].getString(), is("two"));
     }
 
     @Test
@@ -180,6 +188,25 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
 
         // WHEN
         delegate.writeToItem(null);
+
+        // THEN
+        assertThat(parent.getItemProperty(propertyName), is(not(nullValue())));
+        assertThat(parent.getItemProperty(propertyName).getValue(), is(nullValue()));
+        Node parentNode = parent.applyChanges();
+        assertThat(parentNode.hasProperty(propertyName), is(false));
+    }
+
+    /**
+     * We want to make sure that the property is not persisted on jcr-level when an empty property is supplied as value.
+     */
+    @Test
+    public void testWriteEmptyPropertysetItem() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+
+        // WHEN
+        delegate.writeToItem(new PropertysetItem());
 
         // THEN
         assertThat(parent.getItemProperty(propertyName), is(not(nullValue())));
