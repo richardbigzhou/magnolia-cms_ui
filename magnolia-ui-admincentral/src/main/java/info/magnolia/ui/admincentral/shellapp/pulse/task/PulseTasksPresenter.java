@@ -368,7 +368,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created)).size();
+        return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.Failed)).size();
     }
 
     public void setTabActive(ItemCategory category) {

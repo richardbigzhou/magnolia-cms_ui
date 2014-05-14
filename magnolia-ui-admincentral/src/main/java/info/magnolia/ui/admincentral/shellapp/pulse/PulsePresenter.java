@@ -144,7 +144,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void taskAdded(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
-        showNewTask();
+        updateView(ItemCategory.UNCLAIMED);
     }
 
     @Override
@@ -160,6 +160,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     @Override
     public void taskFailed(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
+        updateView(ItemCategory.FAILED);
     }
 
     public boolean isDisplayingDetailView() {
@@ -186,16 +187,16 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
     }
 
     /*
-     * This method won't show the new task straight away but will do it when clicking on the pulse icon.
+     * This method won't show the tasks in the active tab straight away but will do it when clicking on the pulse icon.
      */
-    private void showNewTask() {
+    private void updateView(final ItemCategory activeTab) {
         // update top navigation and load new tasks
         selectedCategory = ItemCategory.TASKS;
         view.setTabActive(ItemCategory.TASKS);
         if (isDisplayingDetailView) {
             showList();
         }
-        // update sub navigation and filter out everything but new tasks
-        tasksPresenter.setTabActive(ItemCategory.UNCLAIMED);
+        // update sub navigation and filter out everything but what is in the active tab
+        tasksPresenter.setTabActive(activeTab);
     }
 }
