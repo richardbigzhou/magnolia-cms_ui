@@ -402,9 +402,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback) {
+        openChooseDialog(appName, uiContext, null, selectedId, callback);
+    }
+
+    public void openChooseDialog(String appName, UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(uiContext, selectedId, callback);
+            if (StringUtils.isNotBlank(targetTreeRootPath)) {
+                targetApp.openChooseDialog(uiContext, targetTreeRootPath, selectedId, callback);
+            } else {
+                targetApp.openChooseDialog(uiContext, selectedId, callback);
+            }
         }
     }
 

@@ -39,10 +39,17 @@ import static org.mockito.Mockito.*;
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import java.util.ArrayList;
 
@@ -62,16 +69,19 @@ import com.google.inject.Injector;
 public class ContentAppTest {
 
     private ContentApp app;
+    private AppContext ctx;
+    private GuiceComponentProvider provider;
 
     @Before
     public void setUp() {
-        AppContext ctx = mock(AppContext.class);
+        ctx = mock(AppContext.class);
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        GuiceComponentProvider provider = mock(GuiceComponentProvider.class);
+        provider = mock(GuiceComponentProvider.class);
 
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
-            protected void configure() {}
+            protected void configure() {
+            }
         });
 
         doReturn(injector).when(provider).getInjector();
@@ -96,6 +106,39 @@ public class ContentAppTest {
 
         //THEN
         assertNotNull(client);
+    }
+
+    @Test
+    public void testOpenChooseDialog() throws Exception {
+        // GIVEN
+        final ComponentProvider componentProvider = mock(ComponentProvider.class);
+        app = new ContentApp(ctx, mock(AppView.class), provider) {
+            @Override
+            ComponentProvider createChooseDialogComponentProvider() {
+                return componentProvider;
+            }
+        };
+        UiContext uiContext = mock(UiContext.class);
+        ChooseDialogCallback callback = mock(ChooseDialogCallback.class);
+        ContentAppDescriptor appDescriptor = mock(ContentAppDescriptor.class);
+        ChooseDialogDefinition dialogDefinition = mock(ChooseDialogDefinition.class);
+        WorkbenchFieldDefinition fieldDefinition = mock(WorkbenchFieldDefinition.class);
+        ConfiguredWorkbenchDefinition workbenchDefinition = mock(ConfiguredWorkbenchDefinition.class);
+        ChooseDialogPresenter presenter = mock(ChooseDialogPresenter.class);
+        Class<ChooseDialogPresenter> presenterClass = ChooseDialogPresenter.class;
+
+        when(ctx.getAppDescriptor()).thenReturn(appDescriptor);
+        when(appDescriptor.getChooseDialog()).thenReturn(dialogDefinition);
+        when(dialogDefinition.getField()).thenReturn(fieldDefinition);
+        doReturn(presenterClass).when(dialogDefinition).getPresenterClass();
+        when(fieldDefinition.getWorkbench()).thenReturn(workbenchDefinition);
+        when(componentProvider.getComponent(ChooseDialogPresenter.class)).thenReturn(presenter);
+
+        // WHEN
+        app.openChooseDialog(uiContext, "/path", "", callback);
+
+        // GIVEN
+        verify(workbenchDefinition).setPath("/path");
     }
 
     /**
