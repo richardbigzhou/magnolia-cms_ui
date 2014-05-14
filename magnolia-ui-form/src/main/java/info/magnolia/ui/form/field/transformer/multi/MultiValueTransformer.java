@@ -62,8 +62,9 @@ public class MultiValueTransformer extends BasicTransformer<PropertysetItem> {
     public void writeToItem(PropertysetItem newValue) {
         Property<List> property = getOrCreateProperty(List.class);
 
-        List<Object> propertyValue = new LinkedList<Object>();
+        List<Object> propertyValue = null;
         if (newValue != null) {
+            propertyValue = new LinkedList<Object>();
             Iterator<?> it = newValue.getItemPropertyIds().iterator();
             while (it.hasNext()) {
                 propertyValue.add(newValue.getItemProperty(it.next()).getValue());

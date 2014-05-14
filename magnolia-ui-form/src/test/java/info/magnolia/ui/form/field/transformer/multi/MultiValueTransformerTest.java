@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -166,6 +167,25 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         assertEquals(1l, res.getItemProperty(0).getValue());
         assertEquals(3l, res.getItemProperty(1).getValue());
         assertEquals(2l, res.getItemProperty(2).getValue());
+    }
+
+    /**
+     * We want to make sure that the property is not persisted on jcr-level when null is supplied as value.
+     */
+    @Test
+    public void testWriteNullProperty() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+
+        // WHEN
+        delegate.writeToItem(null);
+
+        // THEN
+        assertThat(parent.getItemProperty(propertyName), is(not(nullValue())));
+        assertThat(parent.getItemProperty(propertyName).getValue(), is(nullValue()));
+        Node parentNode = parent.applyChanges();
+        assertThat(parentNode.hasProperty(propertyName), is(false));
     }
 
 }
