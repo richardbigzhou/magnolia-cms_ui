@@ -54,6 +54,7 @@ public abstract class AbstractHumanTaskAction<D extends ActionDefinition> extend
     protected static final Logger log = LoggerFactory.getLogger(AbstractHumanTaskAction.class);
 
     protected static final String DECISION = "decision";
+    protected static final String ACTOR_ID = "actorId";
 
     private Task task;
     private TasksManager tasksManager;

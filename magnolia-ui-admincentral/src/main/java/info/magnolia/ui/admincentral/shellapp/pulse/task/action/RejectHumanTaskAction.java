@@ -54,7 +54,6 @@ import com.vaadin.data.util.PropertysetItem;
 
 /**
  * Action used to intercept the reject human task workflow by a dialog asking for a comment.
- * The action to be executed on confirmation is defined using {@link info.magnolia.ui.dialog.action.CallbackDialogActionDefinition}.
  */
 public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTaskActionDefinition> {
 
@@ -79,13 +78,16 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
             public void onSuccess(String actionName) {
                 Object comment = propertysetItem.getItemProperty(Context.ATTRIBUTE_COMMENT).getValue();
 
-                task.setComment(comment != null ? String.valueOf(comment) : "");
                 Map<String, Object> result = new HashMap<String, Object>();
+                result.put(ACTOR_ID, task.getActorId());
                 result.put(DECISION, getDefinition().getDecision());
-                log.debug("About to reject human task named [{}]", task.getName());
 
-                String taskId = task.getId();
-                taskManager.complete(taskId, result);
+                if (comment != null) {
+                    result.put(Context.ATTRIBUTE_COMMENT, comment);
+                }
+
+                taskManager.complete(task.getId(), result);
+                log.debug("About to reject human task named [{}]", task.getName());
 
                 formDialogPresenter.closeDialog();
 
