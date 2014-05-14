@@ -59,4 +59,6 @@ public interface AppController {
     void setViewport(Viewport viewport);
 
     void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback);
+
+    void openChooseDialog(String appName, UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback);
 }

@@ -37,27 +37,13 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.ChooseDialogCallback;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
-import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.rits.cloning.Cloner;
+import com.google.inject.Inject;
 
 /**
  * Extension of {@link ChooseDialogPresenterImpl} capable of restoring choose dialog out of {@link BrowserSubAppDescriptor}
@@ -65,56 +51,9 @@ import com.rits.cloning.Cloner;
  */
 public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-
-    private AppContext appContext;
-
-    private Cloner cloner;
-
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer, simpleTranslator);
-        this.appContext = appContext;
-        this.cloner = new Cloner();
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, ChooseDialogView view, I18nizer i18nizer, SimpleTranslator i18n) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer, i18n);
     }
 
-    @Override
-    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext uiContext, String selectedItemId) {
-        ChooseDialogDefinition dialogDefinition = ensureChooseDialogField(definition);
-        ChooseDialogView chooseDialogView = super.start(callback, dialogDefinition, uiContext, selectedItemId);
-        return chooseDialogView;
-    }
-
-    private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition) {
-        if (definition.getField() != null) {
-            return definition;
-        }
-
-        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
-        SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
-        if (!(subAppContext instanceof BrowserSubAppDescriptor)) {
-            log.error("Cannot start workbench choose dialog since targeted app is not a content app");
-            return definition;
-        }
-
-        result = cloner.deepClone(result);
-
-        BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
-
-        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
-        // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
-        workbench.setDialogWorkbench(true);
-        workbench.setIncludeProperties(false);
-        // Create the Choose Dialog Title
-
-        ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
-
-        WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
-        wbFieldDefinition.setName("workbenchField");
-        wbFieldDefinition.setWorkbench(workbench);
-        wbFieldDefinition.setImageProvider(imageProvider);
-        result.setField(wbFieldDefinition);
-        result.setPresenterClass(getClass());
-        return result;
-    }
 }

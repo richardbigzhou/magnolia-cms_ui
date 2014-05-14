@@ -48,29 +48,44 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter;
+import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
+import com.rits.cloning.Cloner;
 
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
  */
 public class ContentApp extends BaseApp {
 
+    private static final Logger log = LoggerFactory.getLogger(ContentApp.class);
+
     private static final String CHOOSE_DIALOG_COMPONENT_ID = "choosedialog";
 
     private ComponentProvider componentProvider;
+    private Cloner cloner = new Cloner();
+    private ChooseDialogPresenter presenter;
 
     @Inject
     public ContentApp(AppContext appContext, AppView view, ComponentProvider componentProvider) {
@@ -80,18 +95,29 @@ public class ContentApp extends BaseApp {
 
     @Override
     public void openChooseDialog(UiContext overlayLayer, String selectedId, final ChooseDialogCallback callback) {
-        ChooseDialogPresenter presenter;
+        openChooseDialog(overlayLayer, null, selectedId, callback);
+    }
+
+    @Override
+    public void openChooseDialog(UiContext overlayLayer, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback) {
         ChooseDialogDefinition chooseDialogDefinition;
         ComponentProvider chooseDialogComponentProvider = createChooseDialogComponentProvider();
         if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
-            ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
+            ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor) appContext.getAppDescriptor();
             presenter = chooseDialogComponentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
             chooseDialogDefinition = contentAppDescriptor.getChooseDialog();
         } else {
             chooseDialogDefinition = new ConfiguredChooseDialogDefinition();
             presenter = componentProvider.newInstance(ContentAppChooseDialogPresenter.class, chooseDialogComponentProvider);
         }
-        presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId) ;
+        if (chooseDialogDefinition.getField() != null && chooseDialogDefinition.getField() instanceof WorkbenchFieldDefinition && StringUtils.isNotBlank(targetTreeRootPath)) {
+            WorkbenchDefinition workbenchDefinition = ((WorkbenchFieldDefinition) chooseDialogDefinition.getField()).getWorkbench();
+            if (workbenchDefinition != null && workbenchDefinition instanceof ConfiguredWorkbenchDefinition) {
+                ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath(targetTreeRootPath);
+            }
+        }
+        chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
+        presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
     }
 
     ComponentProvider createChooseDialogComponentProvider() {
@@ -100,7 +126,7 @@ public class ContentApp extends BaseApp {
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
         ComponentProviderConfiguration configuration =
-            configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
+                configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
@@ -111,5 +137,41 @@ public class ContentApp extends BaseApp {
             }
         };
         return builder.build(c);
+    }
+
+    private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition, String targetTreeRootPath) {
+        if (definition.getField() != null) {
+            return definition;
+        }
+
+        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
+        SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
+        if (!(subAppContext instanceof BrowserSubAppDescriptor)) {
+            log.error("Cannot start workbench choose dialog since targeted app is not a content app");
+            return definition;
+        }
+
+        result = cloner.deepClone(result);
+
+        BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
+
+        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
+        // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
+        workbench.setDialogWorkbench(true);
+        workbench.setIncludeProperties(false);
+        if (StringUtils.isNotBlank(targetTreeRootPath)) {
+            workbench.setPath(targetTreeRootPath);
+        }
+        // Create the Choose Dialog Title
+
+        ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
+
+        WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
+        wbFieldDefinition.setName("workbenchField");
+        wbFieldDefinition.setWorkbench(workbench);
+        wbFieldDefinition.setImageProvider(imageProvider);
+        result.setField(wbFieldDefinition);
+        result.setPresenterClass(presenter.getClass());
+        return result;
     }
 }
