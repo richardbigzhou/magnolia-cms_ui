@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
@@ -55,7 +55,7 @@ import com.vaadin.data.util.BeanItem;
 /**
  * The message detail presenter.
  */
-public final class MessagePresenter extends ItemPresenter<Message> {
+public final class MessagePresenter extends AbstractItemPresenter<Message> {
 
     private MessagesManager messagesManager;
 

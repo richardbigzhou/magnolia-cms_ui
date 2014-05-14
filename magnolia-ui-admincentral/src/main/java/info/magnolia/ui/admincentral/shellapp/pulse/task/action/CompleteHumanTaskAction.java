@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -48,7 +48,7 @@ import java.util.Map;
  */
 public class CompleteHumanTaskAction extends AbstractHumanTaskAction<CompleteHumanTaskActionDefinition> {
 
-    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, TaskPresenter taskPresenter, Shell shell) {
+    public CompleteHumanTaskAction(CompleteHumanTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskPresenter taskPresenter, Shell shell) {
         super(definition, task, taskManager, taskPresenter, shell);
     }
 

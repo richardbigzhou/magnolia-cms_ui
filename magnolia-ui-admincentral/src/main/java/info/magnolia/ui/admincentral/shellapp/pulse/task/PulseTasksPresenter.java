@@ -37,10 +37,16 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseIte
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.task.definition.TaskDefinition;
+import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.api.pulse.task.TaskPresenter;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -64,7 +70,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link PulseTasksView}.
  */
-public final class PulseTasksPresenter implements PulseTasksView.Listener {
+public final class PulseTasksPresenter implements PulseTasksView.Listener, AbstractItemPresenter.Listener {
 
     public static final String NEW_PROPERTY_ID = "new";
     public static final String TASK_PROPERTY_ID = "task";
@@ -86,13 +92,18 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
 
     private boolean grouping = false;
     private Listener listener;
+    private TaskDefinitionRegistry taskDefinitionRegistry;
+    private ComponentProvider componentProvider;
     private SimpleTranslator i18n;
 
     @Inject
-    public PulseTasksPresenter(final PulseTasksView view, final ShellImpl shellImpl, final TasksManager tasksManager, final SimpleTranslator i18n) {
+    public PulseTasksPresenter(final PulseTasksView view, final ShellImpl shellImpl, final TasksManager tasksManager,
+                               final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n) {
         this.view = view;
         this.shell = shellImpl;
         this.tasksManager = tasksManager;
+        this.taskDefinitionRegistry = taskDefinitionRegistry;
+        this.componentProvider = componentProvider;
         this.i18n = i18n;
     }
 
@@ -101,6 +112,16 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         view.setTaskListener(this);
         initView();
         return view;
+    }
+
+    public View openTask(String taskId) throws RegistrationException {
+        Task task = tasksManager.getTaskById(taskId);
+        TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
+
+        TaskPresenter taskPresenter = componentProvider.newInstance(definition.getPresenterClass(), task, definition);
+        taskPresenter.setListener(this);
+        return taskPresenter.start();
+
     }
 
     private void initView() {
@@ -253,7 +274,15 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getModificationDate());
             item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
             item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId()));
-            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(StringUtils.join(task.getGroupIds(), ",") + "|" + StringUtils.join(task.getActorIds(), ","));
+
+            String sentTo = "";
+            if (task.getGroupIds() != null && task.getGroupIds().size() > 0) {
+                sentTo += StringUtils.join(task.getGroupIds(), ",");
+            }
+            if (task.getActorIds() != null && task.getActorIds().size() > 0) {
+                sentTo += StringUtils.join(task.getActorIds(), ",");
+            }
+            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(sentTo);
         }
     }
 
@@ -360,11 +389,25 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
         return title + "|" + StringUtils.defaultString(task.getComment());
     }
 
+    @Override
+    public void showList() {
+        listener.showList();
+    }
+
+    @Override
+    public void updateDetailView(String itemId) {
+        listener.updateDetailView(itemId);
+    }
+
     /**
      * Listener interface used to call back to parent presenter.
      */
     public interface Listener {
         public void openTask(String taskId);
+
+        void updateDetailView(String itemId);
+
+        void showList();
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {

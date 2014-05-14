@@ -42,6 +42,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.pulse.task.ItemPresenter;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 
@@ -57,7 +58,7 @@ import com.vaadin.data.util.BeanItem;
  * 
  * @param <T> the type of pulse item, e.g. Message, Task, etc.
  */
-public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPresenter.Listener {
+public abstract class AbstractItemPresenter<T> implements ItemPresenter, ItemView.Listener, ActionbarPresenter.Listener {
 
     private final ItemView view;
     private ItemActionExecutor itemActionExecutor;
@@ -66,13 +67,13 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
     private ActionbarPresenter actionbarPresenter;
     private AvailabilityChecker availabilityChecker;
     private Listener listener;
-    private T item;
+    protected T item;
     private I18nizer i18nizer;
 
     public static final String DEFAULT_VIEW = "ui-admincentral:default";
 
     @Inject
-    public ItemPresenter(ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public AbstractItemPresenter(ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
         this.view = view;
         this.itemActionExecutor = itemActionExecutor;
         this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
@@ -104,6 +105,7 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
 
             View mView = formbuilder.buildView(itemViewDefinition.getForm(), asBeanItem(item));
             view.setItemView(mView);
+            view.setActionbarView(actionbarPresenter.start(itemViewDefinition.getActionbar(), itemViewDefinition.getActions()));
 
             for (Entry<String, ActionDefinition> entry : itemViewDefinition.getActions().entrySet()) {
                 final String actionName = entry.getValue().getName();
@@ -115,7 +117,6 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
                 }
             }
 
-            view.setActionbarView(actionbarPresenter.start(itemViewDefinition.getActionbar(), itemViewDefinition.getActions()));
         } catch (RegistrationException e) {
             throw new RuntimeException("Could not retrieve itemView for " + itemView, e);
         }
@@ -154,12 +155,4 @@ public abstract class ItemPresenter<T> implements ItemView.Listener, ActionbarPr
         }
     }
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener {
-        void showList();
-
-        void updateDetailView(String itemId);
-    }
 }

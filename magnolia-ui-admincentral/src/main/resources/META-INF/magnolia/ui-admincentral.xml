@@ -104,10 +104,6 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.ItemViewImpl</implementation>
     </component>
@@ -149,6 +145,11 @@
     <type-mapping>
       <type>info.magnolia.ui.workbench.tree.MoveHandler</type>
       <implementation>info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler</implementation>
+    </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.api.pulse.task.TaskPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskPresenter</implementation>
     </type-mapping>
 
     <!-- Dialog -->

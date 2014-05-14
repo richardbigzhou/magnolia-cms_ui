@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -45,7 +45,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
  */
 public class ClaimHumanTaskAction extends AbstractHumanTaskAction<ClaimHumanTaskActionDefinition> {
 
-    public ClaimHumanTaskAction(ClaimHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, TaskPresenter taskPresenter, Shell shell) {
+    public ClaimHumanTaskAction(ClaimHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, DefaultTaskPresenter taskPresenter, Shell shell) {
         super(definition, task, tasksManager, taskPresenter, shell);
     }
 

@@ -37,13 +37,15 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
+import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.pulse.task.TaskPresenter;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
@@ -56,7 +58,6 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.util.BeanItem;
@@ -64,26 +65,31 @@ import com.vaadin.data.util.BeanItem;
 /**
  * The task detail presenter.
  */
-public final class TaskPresenter extends ItemPresenter<Task> {
+public final class DefaultTaskPresenter extends AbstractItemPresenter<Task> implements TaskPresenter {
 
-    private TasksManager tasksManager;
     private SimpleTranslator i18n;
+    private TaskDefinition definition;
 
     @Inject
-    public TaskPresenter(ItemView view, TasksManager tasksManager, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer, SimpleTranslator i18n) {
+    public DefaultTaskPresenter(ItemView view, TaskDefinition definition, Task task, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor,
+                                ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter,
+                                I18nizer i18nizer, SimpleTranslator i18n) {
         super(view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
-        this.tasksManager = tasksManager;
+        this.definition = definition;
+        this.item = task;
         this.i18n = i18n;
     }
 
     @Override
     protected String getItemViewName(Task item) {
-        final String view = (String) item.getContent().get("messageView");
-        return StringUtils.defaultString(view, DEFAULT_VIEW);
+        return definition.getTaskView();
     }
 
     @Override
     protected void setItemViewTitle(Task task, ItemView view) {
+
+        // return task.getTitle -> i18nized
+
         String subject = (String) task.getContent().get("subject");
         String repo = (String) task.getContent().get("repository");
         String path = (String) task.getContent().get("path");
@@ -94,12 +100,17 @@ public final class TaskPresenter extends ItemPresenter<Task> {
 
     @Override
     protected Task getPulseItemById(String itemId) {
-        return tasksManager.getTaskById(itemId);
+        return item;
     }
 
     @Override
     protected BeanItem<Task> asBeanItem(Task item) {
         return new TaskItem(item);
+    }
+
+    @Override
+    public View start() {
+        return super.start(item.getId());
     }
 
     private static final class TaskItem extends BeanItem<Task> {

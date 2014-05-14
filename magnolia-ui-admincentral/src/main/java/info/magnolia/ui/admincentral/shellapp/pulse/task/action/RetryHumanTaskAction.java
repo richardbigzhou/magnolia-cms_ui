@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskPresenter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -48,7 +48,7 @@ import javax.inject.Inject;
 public class RetryHumanTaskAction extends AbstractHumanTaskAction<RetryHumanTaskActionDefinition> {
 
     @Inject
-    public RetryHumanTaskAction(RetryHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, TaskPresenter taskPresenter, Shell shell) {
+    public RetryHumanTaskAction(RetryHumanTaskActionDefinition definition, Task task, TasksManager tasksManager, DefaultTaskPresenter taskPresenter, Shell shell) {
         super(definition, task, tasksManager, taskPresenter, shell);
     }
 

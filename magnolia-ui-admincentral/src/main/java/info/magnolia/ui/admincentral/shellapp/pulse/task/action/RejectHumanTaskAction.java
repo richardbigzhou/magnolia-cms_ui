@@ -37,7 +37,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskPresenter;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
@@ -61,7 +61,7 @@ public class RejectHumanTaskAction extends AbstractHumanTaskAction<RejectHumanTa
     private final UiContext uiContext;
 
     @Inject
-    public RejectHumanTaskAction(RejectHumanTaskActionDefinition definition, Task task, TasksManager taskManager, TaskPresenter taskPresenter, FormDialogPresenter formDialogPresenter, UiContext uiContext, Shell shell) {
+    public RejectHumanTaskAction(RejectHumanTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskPresenter taskPresenter, FormDialogPresenter formDialogPresenter, UiContext uiContext, Shell shell) {
         super(definition, task, taskManager, taskPresenter, shell);
         this.formDialogPresenter = formDialogPresenter;
         this.uiContext = uiContext;
