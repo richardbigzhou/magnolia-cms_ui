@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.transformer.composite;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
 import java.util.List;
@@ -55,7 +54,7 @@ import com.vaadin.data.util.PropertysetItem;
  * SubField uses then their {@link ConfiguredFieldDefinition#getName()} to define the name of the property used store the field value.
  * //TODO add comments about the empty write.
  */
-public class DelegatingCompositeFieldTransformer extends BasicTransformer<PropertysetItem> implements I18nTransformerDelegator {
+public class DelegatingCompositeFieldTransformer extends BasicTransformer<PropertysetItem> {
     private static final Logger log = LoggerFactory.getLogger(DelegatingCompositeFieldTransformer.class);
     protected List<String> fieldsName;
     private PropertysetItem items;
