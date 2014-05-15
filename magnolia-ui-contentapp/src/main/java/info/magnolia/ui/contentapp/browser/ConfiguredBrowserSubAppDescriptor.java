@@ -37,7 +37,7 @@ import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
- * ConfiguredContentSubAppDescriptor.
+ * Configured descriptor for browser subapps.
  */
 public class ConfiguredBrowserSubAppDescriptor extends ConfiguredContentSubAppDescriptor implements BrowserSubAppDescriptor {
 
