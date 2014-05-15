@@ -37,7 +37,6 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.form.field.transformer.I18nTransformerDelegator;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 
 import java.util.ArrayList;
@@ -93,36 +92,36 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                 if (c instanceof Field) {
                     Field f = (Field) c;
                     Property p = f.getPropertyDataSource();
+
                     if (p instanceof TransformedProperty) {
                         final TransformedProperty i18nBaseProperty = (TransformedProperty) p;
-                        if (!i18nBaseProperty.hasI18NSupport()) {
-                            continue;
-                        }
-                        final Locale formerLocale = i18nBaseProperty.getTransformer().getLocale();
-                        final String basePropertyName = i18nBaseProperty.getTransformer().getBasePropertyName();
-                        final String localizedPropertyName = isFallbackLanguage ?
-                                basePropertyName :
-                                constructI18NPropertyName(basePropertyName, locale);
-                        i18nBaseProperty.getTransformer().setI18NPropertyName(localizedPropertyName);
-                        i18nBaseProperty.getTransformer().setLocale(locale);
-                        i18nBaseProperty.fireI18NValueChange();
-                        String currentCaption = c.getCaption();
-                        if (formerLocale != null) {
-                            currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
-                        }
-                        f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
 
-                        // Use Vaadin implementation to set a local change to a field.
-                        if (f instanceof AbstractField) {
-                            ((AbstractField) f).setLocale(locale);
-                        }
-                        // In case the field has a transformer that delegate i18nize to inner fields, i18nize sub fields.
-                        if (i18nBaseProperty.getTransformer() instanceof I18nTransformerDelegator) {
-                            i18nize((HasComponents) f, locale);
+                        if (i18nBaseProperty.hasI18NSupport()) {
+                            final Locale formerLocale = i18nBaseProperty.getTransformer().getLocale();
+                            final String basePropertyName = i18nBaseProperty.getTransformer().getBasePropertyName();
+                            final String localizedPropertyName = isFallbackLanguage ?
+                                    basePropertyName :
+                                    constructI18NPropertyName(basePropertyName, locale);
+                            i18nBaseProperty.getTransformer().setI18NPropertyName(localizedPropertyName);
+                            i18nBaseProperty.getTransformer().setLocale(locale);
+                            i18nBaseProperty.fireI18NValueChange();
+                            String currentCaption = c.getCaption();
+                            if (formerLocale != null) {
+                                currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
+                            }
+                            f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
+
+                            // set locale on Vaadin field
+                            if (f instanceof AbstractField) {
+                                ((AbstractField) f).setLocale(locale);
+                            }
                         }
 
                     }
-                } else if (c instanceof HasComponents) {
+                }
+
+                // try to i18nize nested fields anyway
+                if (c instanceof HasComponents) {
                     i18nize((HasComponents) c, locale);
                 }
             }
