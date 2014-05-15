@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemsPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemsPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
@@ -49,271 +50,83 @@ import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-public final class PulseMessagesPresenter implements PulseMessagesView.Listener, MessageEventHandler {
+public final class PulseMessagesPresenter extends AbstractItemsPresenter<Message, PulseMessagesPresenter.Listener> implements PulseMessagesView.Listener, MessageEventHandler {
 
-    public static final String NEW_PROPERTY_ID = "new";
-    public static final String TYPE_PROPERTY_ID = "type";
-    public static final String SUBJECT_PROPERTY_ID = "subject";
-    public static final String TEXT_PROPERTY_ID = "text";
-    public static final String SENDER_PROPERTY_ID = "sender";
-    public static final String DATE_PROPERTY_ID = "date";
-    public static final String QUICKDO_PROPERTY_ID = "quickdo";
-
+    private final EventBus admincentralEventBus;
     private final PulseMessagesView view;
-
-    private HierarchicalContainer container;
-
     private final MessagesManager messagesManager;
-
+    private final ComponentProvider componentProvider;
     private final ShellImpl shell;
 
-    private boolean grouping = false;
-    private Listener listener;
-
     @Inject
-    public PulseMessagesPresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
+    public PulseMessagesPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+                                  final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager, ComponentProvider componentProvider) {
+        super(container);
+        this.admincentralEventBus = admincentralEventBus;
         this.view = view;
         this.shell = shellImpl;
         this.messagesManager = messagesManager;
-        admincentralEventBus.addHandler(MessageEvent.class, this);
+        this.componentProvider = componentProvider;
     }
 
+    @Override
     public View start() {
         view.setListener(this);
         initView();
+        admincentralEventBus.addHandler(MessageEvent.class, this);
         return view;
     }
 
-    private void initView() {
-        container = createMessageDataSource();
-        view.setDataSource(container);
-        view.refresh();
-        for (MessageType type : MessageType.values()) {
-            doUnreadMessagesUpdate(type, 0);
-        }
+    @Override
+    public View openItem(String messageId) {
+        final String userId = MgnlContext.getUser().getName();
+        Message message = messagesManager.getMessageById(userId, messageId);
+
+        MessagePresenter messagePresenter = componentProvider.newInstance(MessagePresenter.class, message);
+        messagePresenter.setListener(this);
+
+        return messagePresenter.start();
     }
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    private void initView() {
+        Collection<Message> messages =  messagesManager.getMessagesForUser(MgnlContext.getUser().getName());
+        HierarchicalContainer dataSource = container.createDataSource(messages);
+        view.setDataSource(dataSource);
+        view.refresh();
+        for (MessageType type : MessageType.values()) {
+            doUnreadMessagesUpdate(type);
+        }
     }
 
     @Override
     public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
-        addMessageAsItem(message);
+        container.addBeanAsItem(message);
 
-        if (grouping) {
-            buildTree();
+        if (container.isGrouping()) {
+            container.buildTree();
         }
         final MessageType type = message.getType();
-        doUnreadMessagesUpdate(type, 1);
+        doUnreadMessagesUpdate(type);
     }
 
     @Override
     public void messageCleared(MessageEvent event) {
         final Message message = event.getMessage();
-        assignPropertiesFromMessage(message, container.getItem(message.getId()));
+        container.assignPropertiesFromBean(message, container.getItem(message.getId()));
 
         final MessageType type = message.getType();
-        doUnreadMessagesUpdate(type, -1);
-    }
-
-    private HierarchicalContainer createMessageDataSource() {
-        container = new HierarchicalContainer();
-        container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
-        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
-        container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(DATE_PROPERTY_ID, Date.class, null);
-        container.addContainerProperty(QUICKDO_PROPERTY_ID, String.class, null);
-
-        createSuperItems();
-
-        for (Message message : messagesManager.getMessagesForUser(MgnlContext.getUser().getName())) {
-            addMessageAsItem(message);
-        }
-
-        container.addContainerFilter(sectionFilter);
-
-        return container;
-    }
-
-    private void createSuperItems() {
-        for (MessageType type : MessageType.values()) {
-            Object itemId = getSuperItem(type);
-            Item item = container.addItem(itemId);
-            item.getItemProperty(TYPE_PROPERTY_ID).setValue(type);
-            container.setChildrenAllowed(itemId, true);
-        }
-    }
-
-    private void clearSuperItemFromMessages() {
-        for (Object itemId : container.getItemIds()) {
-            container.setParent(itemId, null);
-        }
-    }
-
-    private Object getSuperItem(MessageType type) {
-        return GROUP_PLACEHOLDER_ITEMID + type;
-    }
-
-    /*
-     * Sets the grouping of messages
-     */
-    @Override
-    public void setGrouping(boolean checked) {
-        grouping = checked;
-
-        clearSuperItemFromMessages();
-        container.removeContainerFilter(sectionFilter);
-
-        if (checked) {
-            buildTree();
-        }
-
-        container.addContainerFilter(sectionFilter);
-    }
-
-    /**
-     * Return list of child items.
-     * 
-     * @param itemId parent itemId
-     */
-    @Override
-    public Collection<?> getGroup(Object itemId) {
-        return container.getChildren(itemId);
-    }
-
-    /**
-     * Return parent itemId for an item.
-     */
-    @Override
-    public Object getParent(Object itemId) {
-        return container.getParent(itemId);
-    }
-
-    /*
-     * This filter hides grouping titles when
-     * grouping is not on or group would be empty
-     */
-    private Filter sectionFilter = new Filter() {
-
-        @Override
-        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && (!grouping || isTypeGroupEmpty(itemId))) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public boolean appliesToProperty(Object propertyId) {
-            return TYPE_PROPERTY_ID.equals(propertyId);
-        }
-
-        private boolean isTypeGroupEmpty(Object typeId) {
-            return container.getChildren(typeId) == null || container.getChildren(typeId).isEmpty();
-        }
-
-    };
-
-    /*
-     * Assign messages under correct parents so that
-     * grouping works.
-     */
-    private void buildTree() {
-        for (Object itemId : container.getItemIds()) {
-            // Skip super items
-            if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
-                Item item = container.getItem(itemId);
-                MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
-                Object parentItemId = getSuperItem(type);
-                Item parentItem = container.getItem(parentItemId);
-                if (parentItem != null) {
-                    container.setParent(itemId, parentItemId);
-                }
-            }
-        }
-    }
-
-    private void addMessageAsItem(Message message) {
-        // filter out local messages that have id == null
-        if (message.getId() != null) {
-            if (container == null) {
-                container = createMessageDataSource();
-            }
-            final Item item = container.addItem(message.getId());
-            container.setChildrenAllowed(message.getId(), false);
-            assignPropertiesFromMessage(message, item);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void assignPropertiesFromMessage(Message message, final Item item) {
-        if (item != null && message != null) {
-            item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
-            item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
-            item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
-            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(message.getSubject());
-            item.getItemProperty(TEXT_PROPERTY_ID).setValue((message.getMessage()));
-            item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
-        }
-    }
-
-    @Override
-    public void filterByItemCategory(ItemCategory category) {
-        if (container != null) {
-            container.removeAllContainerFilters();
-            container.addContainerFilter(sectionFilter);
-            applyCategoryFilter(category);
-        }
-    }
-
-    private void applyCategoryFilter(final ItemCategory category) {
-        final Filter filter = new Filter() {
-
-            @Override
-            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-                final MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
-
-                switch (category) {
-                case PROBLEM:
-                    return type == MessageType.ERROR || type == MessageType.WARNING;
-                case INFO:
-                    return type == MessageType.INFO;
-                default:
-                    return true;
-                }
-            }
-
-            @Override
-            public boolean appliesToProperty(Object propertyId) {
-                return TYPE_PROPERTY_ID.equals(propertyId);
-            }
-
-        };
-        container.addContainerFilter(filter);
-    }
-
-    @Override
-    public void onItemClicked(String messageId) {
-        listener.openMessage(messageId);
-        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+        doUnreadMessagesUpdate(type);
     }
 
     @Override
@@ -336,11 +149,28 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         shell.updateShellAppIndication(ShellAppType.PULSE, -deletedMessages);
     }
 
-    private void doUnreadMessagesUpdate(final MessageType type, int decrementOrIncrement) {
+    @Override
+    public void onItemClicked(String messageId) {
+        listener.openMessage(messageId);
+        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    }
 
-        shell.updateShellAppIndication(ShellAppType.PULSE, decrementOrIncrement);
+    @Override
+    public void updateDetailView(String itemId) {
+        listener.openMessage(itemId);
+    }
 
-        int count = 0;
+    @Override
+    public void messageRemoved(MessageEvent messageEvent) {
+        /*
+         * Refreshes the view to display the updated underlying data.
+         */
+        initView();
+    }
+
+    private void doUnreadMessagesUpdate(final MessageType type) {
+
+        int count;
         final String userName = MgnlContext.getUser().getName();
 
         switch (type) {
@@ -358,22 +188,14 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener,
         }
     }
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener {
-        public void openMessage(String messageId);
-    }
-
     public int getNumberOfUnclearedMessagesForCurrentUser() {
         return messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName());
     }
 
-    @Override
-    public void messageRemoved(MessageEvent messageEvent) {
-        /*
-         * Refreshes the view to display the updated underlying data.
-         */
-        initView();
+    /**
+     * Listener interface used to call back to parent presenter.
+     */
+    public interface Listener extends ItemsPresenter.Listener {
+        public void openMessage(String messageId);
     }
 }

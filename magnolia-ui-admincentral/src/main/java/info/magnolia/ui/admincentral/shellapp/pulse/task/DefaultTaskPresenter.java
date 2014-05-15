@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
 import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -45,7 +44,6 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.pulse.task.TaskPresenter;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
@@ -64,60 +62,47 @@ import com.vaadin.data.util.BeanItem;
 
 /**
  * The task detail presenter.
+ *
+ * @param <D> generic {@link TaskDefinition}.
+ * @param <T> generic {@link Task}.
  */
-public final class DefaultTaskPresenter extends AbstractItemPresenter<Task> implements TaskPresenter {
+public class DefaultTaskPresenter<D extends TaskDefinition, T extends Task> extends AbstractItemPresenter<T> implements TaskPresenter {
 
-    private SimpleTranslator i18n;
-    private TaskDefinition definition;
+    private D definition;
 
     @Inject
-    public DefaultTaskPresenter(ItemView view, TaskDefinition definition, Task task, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor,
+    public DefaultTaskPresenter(ItemView view, D definition, T task, AvailabilityChecker checker, ItemActionExecutor itemActionExecutor,
                                 ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter,
-                                I18nizer i18nizer, SimpleTranslator i18n) {
-        super(view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
+                                I18nizer i18nizer) {
+        super(task, view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
         this.definition = definition;
         this.item = task;
-        this.i18n = i18n;
+    }
+
+    public D getDefinition() {
+        return definition;
     }
 
     @Override
-    protected String getItemViewName(Task item) {
+    protected String getItemViewName() {
         return definition.getTaskView();
     }
 
     @Override
-    protected void setItemViewTitle(Task task, ItemView view) {
-
-        // return task.getTitle -> i18nized
-
-        String subject = (String) task.getContent().get("subject");
-        String repo = (String) task.getContent().get("repository");
-        String path = (String) task.getContent().get("path");
-
-        // fallback to task name in case subject is not available
-        view.setTitle(subject != null ? i18n.translate(subject, repo, path) : task.getName());
+    protected void setItemViewTitle(ItemView view) {
+        view.setTitle(getDefinition().getTitle()); //-> i18nize
     }
 
     @Override
-    protected Task getPulseItemById(String itemId) {
-        return item;
+    protected BeanItem<T> asBeanItem() {
+        return new TaskItem(getItem());
     }
 
-    @Override
-    protected BeanItem<Task> asBeanItem(Task item) {
-        return new TaskItem(item);
-    }
-
-    @Override
-    public View start() {
-        return super.start(item.getId());
-    }
-
-    private static final class TaskItem extends BeanItem<Task> {
+    private static final class TaskItem<T extends Task> extends BeanItem<T> {
 
         private static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-        public TaskItem(Task bean) {
+        public TaskItem(T bean) {
             super(bean);
             for (Entry<String, Object> entry : getBean().getContent().entrySet()) {
                 addItemProperty(entry.getKey(), DefaultPropertyUtil.newDefaultProperty(String.class, parseValue(entry.getValue())));

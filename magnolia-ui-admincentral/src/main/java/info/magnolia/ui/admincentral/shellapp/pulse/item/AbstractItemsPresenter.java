@@ -31,21 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
+
+import info.magnolia.ui.api.pulse.task.ItemPresenter;
+
+import java.util.Collection;
 
 /**
- * ItemPresenter.
+ * Abstract presenter for items displayed in pulse.
+ *
+ * @param <T> typed parameter for the items.
+ * @param <L> typed listener used to call back to the parent presenter.
  */
-public interface ItemPresenter {
+public abstract class AbstractItemsPresenter<T, L extends ItemsPresenter.Listener> implements ItemsPresenter<L>, ItemPresenter.Listener, PulseItemsView.Listener {
 
-    void setListener(Listener listener);
+    protected AbstractItemsContainer<T> container;
+    protected L listener;
+
+    protected AbstractItemsPresenter(AbstractItemsContainer<T> container) {
+        this.container = container;
+    }
+
+    @Override
+    public void setListener(L listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void showList() {
+        listener.showList();
+    }
 
     /**
-     * Listener interface used to call back to parent presenter.
+     * Return parent itemId for an item.
      */
-    public interface Listener {
-        void showList();
-
-        void updateDetailView(String itemId);
+    @Override
+    public Object getParent(Object itemId) {
+        return container.getParent(itemId);
     }
+
+    /**
+     * Return list of child items.
+     */
+    @Override
+    public Collection<?> getGroup(Object itemId) {
+        return container.getGroup(itemId);
+    }
+
+    @Override
+    public void setGrouping(boolean checked) {
+        container.setGrouping(checked);
+    }
+
+    @Override
+    public void filterByItemCategory(ItemCategory category) {
+        container.filterByItemCategory(category);
+    }
+
 }

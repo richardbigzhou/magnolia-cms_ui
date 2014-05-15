@@ -34,12 +34,9 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
-import info.magnolia.task.TasksManager;
 
 import org.junit.Test;
 
@@ -57,13 +54,10 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TasksManager tasksManager = mock(TasksManager.class);
-        when(tasksManager.getTaskById(anyString())).thenReturn(task);
-
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
 
         // WHEN
-        boolean available = rule.isAvailableForItem("0");
+        boolean available = rule.isAvailableForItem(task);
 
         // THEN
         assertTrue(available);
@@ -78,13 +72,10 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TasksManager tasksManager = mock(TasksManager.class);
-        when(tasksManager.getTaskById(anyString())).thenReturn(task);
-
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
 
         // WHEN
-        boolean available = rule.isAvailableForItem("0");
+        boolean available = rule.isAvailableForItem(task);
 
         // THEN
         assertFalse(available);

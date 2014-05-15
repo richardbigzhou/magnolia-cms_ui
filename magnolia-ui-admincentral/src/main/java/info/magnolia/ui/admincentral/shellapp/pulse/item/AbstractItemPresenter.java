@@ -73,7 +73,8 @@ public abstract class AbstractItemPresenter<T> implements ItemPresenter, ItemVie
     public static final String DEFAULT_VIEW = "ui-admincentral:default";
 
     @Inject
-    public AbstractItemPresenter(ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public AbstractItemPresenter(T item, ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+        this.item = item;
         this.view = view;
         this.itemActionExecutor = itemActionExecutor;
         this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
@@ -86,31 +87,25 @@ public abstract class AbstractItemPresenter<T> implements ItemPresenter, ItemVie
         actionbarPresenter.setListener(this);
     }
 
-    public final View start(String itemId) {
-        this.item = getPulseItemById(itemId);
-        if (this.item == null) {
-            throw new RuntimeException("Could not retrieve pulse item with id [" + itemId + "]");
-        }
-
-        setItemViewTitle(item, view);
-
-        final String itemView = getItemViewName(item);
+    public final View start() {
+        setItemViewTitle(view);
+        final String itemView = getItemViewName();
 
         try {
-
             ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(itemView);
             itemViewDefinition = i18nizer.decorate(itemViewDefinition);
 
             itemActionExecutor.setMessageViewDefinition(itemViewDefinition);
 
-            View mView = formbuilder.buildView(itemViewDefinition.getForm(), asBeanItem(item));
+            BeanItem<T> beanItem = asBeanItem();
+            View mView = formbuilder.buildView(itemViewDefinition.getForm(), beanItem);
             view.setItemView(mView);
             view.setActionbarView(actionbarPresenter.start(itemViewDefinition.getActionbar(), itemViewDefinition.getActions()));
 
             for (Entry<String, ActionDefinition> entry : itemViewDefinition.getActions().entrySet()) {
                 final String actionName = entry.getValue().getName();
                 AvailabilityDefinition availability = itemActionExecutor.getActionDefinition(actionName).getAvailability();
-                if (availabilityChecker.isAvailable(availability, Arrays.asList(new Object[] { itemId }))) {
+                if (availabilityChecker.isAvailable(availability, Arrays.asList(new Object[] { beanItem.getBean() }))) {
                     actionbarPresenter.enable(actionName);
                 } else {
                     actionbarPresenter.disable(actionName);
@@ -123,13 +118,15 @@ public abstract class AbstractItemPresenter<T> implements ItemPresenter, ItemVie
         return view;
     }
 
-    protected abstract String getItemViewName(T item);
+    public T getItem() {
+        return item;
+    }
 
-    protected abstract void setItemViewTitle(T item, ItemView view);
+    protected abstract String getItemViewName();
 
-    protected abstract T getPulseItemById(String itemId);
+    protected abstract void setItemViewTitle(ItemView view);
 
-    protected abstract BeanItem<T> asBeanItem(T item);
+    protected abstract BeanItem<T> asBeanItem();
 
     @Override
     public void onNavigateToList() {
@@ -141,6 +138,7 @@ public abstract class AbstractItemPresenter<T> implements ItemPresenter, ItemVie
         listener.updateDetailView(itemId);
     }
 
+    @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }

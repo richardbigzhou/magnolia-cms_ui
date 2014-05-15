@@ -37,11 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
-import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
-import info.magnolia.ui.framework.shell.ShellImpl;
 
 import java.util.HashMap;
 
@@ -55,14 +51,14 @@ public class PulseTasksPresenterTest {
     @Test
     public void titleFallsbackToTaskNameIfNoTaskSubjectIsPresent() throws Exception {
         // GIVEN
-        PulseTasksPresenter presenter = new PulseTasksPresenter(mock(PulseTasksView.class), mock(ShellImpl.class), mock(TasksManager.class), mock(TaskDefinitionRegistry.class), mock(ComponentProvider.class), mock(SimpleTranslator.class));
+        TasksContainer container = new TasksContainer(mock(SimpleTranslator.class));
         Task task = new Task();
         task.setName("foo");
         task.setContent(new HashMap<String, Object>());
         task.setComment("bar");
 
         // WHEN
-        String title = presenter.getTaskTitle(task);
+        String title = container.getItemTitle(task);
 
         // THEN
         assertEquals("foo|bar", title);

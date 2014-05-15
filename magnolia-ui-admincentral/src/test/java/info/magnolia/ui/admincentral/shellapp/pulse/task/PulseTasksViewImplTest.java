@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.EmptyMessages;
@@ -98,12 +97,12 @@ public class PulseTasksViewImplTest {
         PulseTasksViewImpl view = new PulseTasksViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
-        when(container.getContainerProperty(itemId, PulseTasksPresenter.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));
+        when(container.getContainerProperty(itemId, TasksContainer.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));
         Table source = new Table();
         source.setContainerDataSource(container);
 
         // WHEN
-        TaskCellComponent component = (TaskCellComponent) view.taskColumnGenerator.generateCell(source, itemId, PulseTasksPresenter.TASK_PROPERTY_ID);
+        TaskCellComponent component = (TaskCellComponent) view.taskColumnGenerator.generateCell(source, itemId, TasksContainer.TASK_PROPERTY_ID);
 
         // THEN comment is abbreviated
         assertThat(component.getValue(), containsString("<div class=\"comment\">&lt;span onmouseover=&"));

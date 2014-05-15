@@ -38,7 +38,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemsPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -57,25 +57,23 @@ import org.slf4j.LoggerFactory;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessagePresenter.Listener, MessageEventHandler, TaskEventHandler {
+public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessageEventHandler, TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 
     private PulseView view;
     private PulseMessagesPresenter messagesPresenter;
     private PulseTasksPresenter tasksPresenter;
-    private MessagePresenter detailMessagePresenter;
     private ShellImpl shell;
     private ItemCategory selectedCategory = ItemCategory.TASKS;
     private boolean isDisplayingDetailView;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
-            final PulseMessagesPresenter messagesPresenter, final PulseTasksPresenter tasksPresenter, final MessagePresenter detailMessagePresenter) {
+            final PulseMessagesPresenter messagesPresenter, final PulseTasksPresenter tasksPresenter) {
         this.view = view;
         this.messagesPresenter = messagesPresenter;
         this.tasksPresenter = tasksPresenter;
-        this.detailMessagePresenter = detailMessagePresenter;
         this.shell = shell;
         admincentralEventBus.addHandler(MessageEvent.class, this);
         admincentralEventBus.addHandler(TaskEvent.class, this);
@@ -87,8 +85,6 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
         view.setListener(this);
         messagesPresenter.setListener(this);
         tasksPresenter.setListener(this);
-
-        detailMessagePresenter.setListener(this);
 
         view.setPulseSubView(tasksPresenter.start());
 
@@ -103,7 +99,7 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void openMessage(String messageId) {
-        view.setPulseSubView(detailMessagePresenter.start(messageId));
+        view.setPulseSubView(messagesPresenter.openItem(messageId));
         isDisplayingDetailView = true;
     }
 
@@ -119,23 +115,23 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     @Override
     public void messageSent(MessageEvent event) {
-        view.updateCategoryBadgeCount(ItemCategory.MESSAGES, messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser());
+        updatePendingMessagesAndTasksCount();
     }
 
     @Override
     public void messageCleared(MessageEvent event) {
-        view.updateCategoryBadgeCount(ItemCategory.MESSAGES, messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser());
+        updatePendingMessagesAndTasksCount();
     }
 
     @Override
     public void messageRemoved(MessageEvent messageEvent) {
-        view.updateCategoryBadgeCount(ItemCategory.MESSAGES, messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser());
+        updatePendingMessagesAndTasksCount();
     }
 
     @Override
     public void openTask(String taskId) {
         try {
-            view.setPulseSubView(tasksPresenter.openTask(taskId));
+            view.setPulseSubView(tasksPresenter.openItem(taskId));
             isDisplayingDetailView = true;
         } catch (RegistrationException e) {
             log.error("Could not open detail view for task.", e);
@@ -171,15 +167,6 @@ public final class PulsePresenter implements PulseView.Listener, PulseMessagesPr
 
     public boolean isDisplayingDetailView() {
         return isDisplayingDetailView;
-    }
-
-    @Override
-    public void updateDetailView(final String itemId) {
-        if (selectedCategory == ItemCategory.TASKS) {
-            openTask(itemId);
-        } else {
-            openMessage(itemId);
-        }
     }
 
     private void updatePendingMessagesAndTasksCount() {

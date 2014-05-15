@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
+import static info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView;

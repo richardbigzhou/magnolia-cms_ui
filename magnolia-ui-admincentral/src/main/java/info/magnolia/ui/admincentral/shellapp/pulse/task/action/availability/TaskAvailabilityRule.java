@@ -34,34 +34,22 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
 import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TaskAvailabilityRule.
  */
 public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
-    protected static final Logger log = LoggerFactory.getLogger(TaskAvailabilityRule.class);
-
     private TaskAvailabilityRuleDefinition definition;
-    private TasksManager tasksManager;
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition, TasksManager tasksManager) {
+    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
         this.definition = definition;
-        this.tasksManager = tasksManager;
     }
 
     @Override
     public final boolean isAvailableForItem(Object itemId) {
-        Task task = tasksManager.getTaskById((String) itemId);
-        if (task == null) {
-            log.warn("Could not get a Task with id [{}]. Availability rule will return false", itemId);
-            return false;
-        }
+        Task task = (Task) itemId;
         return task.getStatus().equals(definition.getStatus());
     }
 

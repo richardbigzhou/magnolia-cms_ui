@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter.*;
+import static info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task.Status;

@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.EmptyMessages;
@@ -91,13 +90,13 @@ public class PulseMessagesViewImplTest {
         PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
-        when(container.getContainerProperty(itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
-        when(container.getContainerProperty(itemId, PulseMessagesPresenter.SUBJECT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "subject"));
+        when(container.getContainerProperty(itemId, MessagesContainer.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
+        when(container.getContainerProperty(itemId, MessagesContainer.SUBJECT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "subject"));
         Table source = new Table();
         source.setContainerDataSource(container);
 
         // WHEN
-        Label label = (Label) view.textColumnGenerator.generateCell(source, itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID);
+        Label label = (Label) view.textColumnGenerator.generateCell(source, itemId, MessagesContainer.TEXT_PROPERTY_ID);
 
         // THEN
         assertEquals("<strong>subject</strong><div>&lt;span onmouseover=&quot;alert(&apos;xss&apos;)&quot;&gt;bug&lt;/...</div>", label.getValue());

@@ -31,13 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.view.View;
 
 /**
- * TaskPresenter.
+ * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
+ *
+ * @param <L> listener for calling back to parent.
  */
-public interface TaskPresenter extends ItemPresenter  {
+public interface ItemsPresenter<L extends ItemsPresenter.Listener> {
+
     View start();
+
+    View openItem(String itemId) throws RegistrationException;
+
+    void setListener(L listener);
+
+    /**
+     * Listener interface used to call parent presenter.
+     */
+    interface Listener {
+        void showList();
+    }
 }

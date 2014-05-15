@@ -33,17 +33,15 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
-import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
@@ -57,32 +55,23 @@ import com.vaadin.data.util.BeanItem;
  */
 public final class MessagePresenter extends AbstractItemPresenter<Message> {
 
-    private MessagesManager messagesManager;
-
     @Inject
-    public MessagePresenter(ItemView view, MessagesManager messagesManager, ItemActionExecutor itemActionExecutor, AvailabilityChecker checker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
-        super(view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
-        this.messagesManager = messagesManager;
+    public MessagePresenter(Message message, ItemView view, ItemActionExecutor itemActionExecutor, AvailabilityChecker checker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+        super(message, view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
     }
 
     @Override
-    protected String getItemViewName(Message item) {
+    protected String getItemViewName() {
         return StringUtils.defaultString(item.getView(), DEFAULT_VIEW);
     }
 
     @Override
-    protected void setItemViewTitle(Message item, ItemView view) {
+    protected void setItemViewTitle(ItemView view) {
         view.setTitle(item.getSubject());
     }
 
     @Override
-    protected Message getPulseItemById(String itemId) {
-        final String userId = MgnlContext.getUser().getName();
-        return messagesManager.getMessageById(userId, itemId);
-    }
-
-    @Override
-    protected BeanItem<Message> asBeanItem(Message item) {
+    protected BeanItem<Message> asBeanItem() {
         return new MessageItem(item);
     }
 }
