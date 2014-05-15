@@ -40,10 +40,14 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.scheduler.CommandJob;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -60,9 +64,12 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.TriggerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,12 +102,13 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private String failureMessage;
 
+    private int timeToWait;
+
 
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, uiContext);
         init(commandsManager, i18n);
     }
-
 
     public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
@@ -199,9 +207,9 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
         long start = System.currentTimeMillis();
         try {
-            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] {  getDefinition().getCommand(),  getDefinition().getCatalog(), getParams() });
+            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", getDefinition().getCommand(), getDefinition().getCatalog(), getParams());
 
-            boolean stopProcessing = false;
+            boolean stopProcessing;
             if (isInvokeAsynchronously()) {
                 try {
                     // get quartz scheduler (same instance as scheduler module)
@@ -213,22 +221,43 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     cal.add(Calendar.SECOND, getDefinition().getDelay());
 
                     String userName = MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName();
-                    String jobName = "UI Action triggered execution of [" + (StringUtils.isNotEmpty(catalogName) ? (commandName + ":") : "") + commandName + "] by user [" + StringUtils.defaultIfEmpty(userName, "") + "].";
+                    String jobName = "UI Action triggered execution of [" + (StringUtils.isNotEmpty(catalogName) ? (catalogName + ":") : "") + commandName + "] by user [" + StringUtils.defaultIfEmpty(userName, "") + "].";
                     // allowParallel jobs false/true => remove index, or keep index
                     if (getDefinition().isParallel()) {
                         jobName += " (" + idx.getAndIncrement() + ")";
                     }
                     SimpleTrigger trigger = new SimpleTrigger(jobName, "magnolia", cal.getTime());
+                    trigger.addTriggerListener(jobName + "_trigger");
                     // create job definition
-                    final JobDetail jd = new JobDetail(jobName, "magnolia", this.getClass().forName("info.magnolia.module.scheduler.CommandJob"));
+                    final JobDetail jd = new JobDetail(jobName, "magnolia", Class.forName("info.magnolia.module.scheduler.CommandJob"));
                     jd.getJobDataMap().put("command", commandName);
                     jd.getJobDataMap().put("catalog", catalogName);
                     jd.getJobDataMap().put("params", getParams());
 
+                    scheduler.addTriggerListener(new CommandActionTriggerListener(jobName + "_trigger", "Execution of [" + (StringUtils.isNotEmpty(catalogName) ? (catalogName + ":") : "") + commandName + "] triggered by user [" + StringUtils.defaultIfEmpty(userName, "") + "] finished successfully."));
                     // start the job
                     scheduler.scheduleJob(jd, trigger);
                     // false == all ok, just stop processing. Seems actions are taking up the signaling used by commands (facepalm)
                     stopProcessing = false;
+
+                    // wait until job has been executed
+                    Thread.sleep(getDefinition().getDelay() * 1000 + 100);
+                    timeToWait = 5000;
+                    int timeToSleep = 500;
+                    // check every 500ms if job is running
+                    while (timeToWait != 0) {
+                        List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
+                        if (isJobRunning(jobs, jobName)) {
+                            Thread.sleep(timeToSleep);
+                        } else {
+                            break;
+                        }
+                        timeToWait -= timeToSleep;
+                    }
+                    if (timeToWait == 0) {
+                        // notify user that this action will take some time and when finished he will by notified via pulse
+                        getDefinition().setSuccessMessage("ui-framework.abstractcommand.asyncaction.long");
+                    }
                 } catch (ObjectAlreadyExistsException e) {
                     // unfortunately this old version doesn't have any better method of checking whether job already exists
                     // if the job with same name already exists, it was either started by someone else and we don't allow this type of job to be executed multiple times
@@ -247,6 +276,15 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             log.debug(e.getMessage(), e);
             throw new ActionExecutionException(e);
         }
+    }
+
+    private boolean isJobRunning(List<JobExecutionContext> jobs, String jobName) {
+        for (JobExecutionContext job : jobs) {
+            if (job.getJobDetail().getName().equals(jobName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean isInvokeAsynchronously() {
@@ -296,5 +334,48 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     protected String getFailureMessage() {
         // by default, we expect the command-based actions to be limited to single-item
         return failureMessage;
+    }
+
+    private class CommandActionTriggerListener implements TriggerListener {
+
+        private final String name;
+        private final String successMessage;
+
+        public CommandActionTriggerListener(String name, String successMessage) {
+            this.name = name;
+            this.successMessage = successMessage;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void triggerFired(Trigger trigger, JobExecutionContext jobExecutionContext) {
+        }
+
+        @Override
+        public boolean vetoJobExecution(Trigger trigger, JobExecutionContext jobExecutionContext) {
+            return false;
+        }
+
+        @Override
+        public void triggerMisfired(Trigger trigger) {
+        }
+
+        @Override
+        public void triggerComplete(final Trigger trigger, final JobExecutionContext jobExecutionContext, int i) {
+
+            MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
+                @Override
+                public void doExec() {
+                    // notify user only if action took longer than 5 seconds
+                    if (timeToWait == 0 && (Integer) jobExecutionContext.getResult() == CommandJob.SUCCESS) {
+                        Components.getComponent(MessagesManager.class).sendLocalMessage(new Message(MessageType.INFO, i18n.translate("ui-framework.abstractcommand.asyncaction.success"), successMessage));
+                    }
+                }
+            });
+        }
     }
 }
