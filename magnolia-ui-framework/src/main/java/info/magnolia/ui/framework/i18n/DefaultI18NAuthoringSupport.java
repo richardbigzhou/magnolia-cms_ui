@@ -46,6 +46,8 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
@@ -106,10 +108,10 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                             i18nBaseProperty.getTransformer().setLocale(locale);
                             i18nBaseProperty.fireI18NValueChange();
                             String currentCaption = c.getCaption();
-                            if (formerLocale != null) {
+                            if (formerLocale != null && StringUtils.isNotBlank(currentCaption)) {
                                 currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
                             }
-                            f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
+                            f.setCaption(String.format("%s (%s)", StringUtils.isBlank(currentCaption) ? StringUtils.EMPTY : currentCaption, locale.getLanguage()));
 
                             // set locale on Vaadin field
                             if (f instanceof AbstractField) {
