@@ -45,6 +45,7 @@ import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
+import info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint;
 
 import java.util.Arrays;
 import java.util.List;
@@ -503,5 +504,22 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // THEN
         assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+    }
+
+    @Test
+    public void testUpdateTo53AddsSupportForMovingProperties() throws Exception {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", NodeTypes.ContentNode.NAME);
+        Node moveAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
+
+        // THEN
+        assertTrue(workbench.hasProperty("dropConstraintClass"));
+        assertEquals(NodesAndPropsDropConstraint.class.getName(), workbench.getProperty("dropConstraintClass").getString());
+        assertTrue(moveAvailability.hasProperty("properties"));
+        assertTrue(moveAvailability.getProperty("properties").getBoolean());
+
     }
 }
