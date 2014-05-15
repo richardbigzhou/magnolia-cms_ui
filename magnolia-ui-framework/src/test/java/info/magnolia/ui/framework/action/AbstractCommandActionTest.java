@@ -72,6 +72,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,10 @@ import javax.jcr.RepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 
 /**
  * Tests.
@@ -95,6 +99,7 @@ public class AbstractCommandActionTest {
     private MockSession session;
 
     private CommandsManager commandsManager;
+    private Scheduler scheduler;
 
     @Before
     public void setUp() throws Exception {
@@ -113,7 +118,7 @@ public class AbstractCommandActionTest {
         SchedulerModule schedulerModule = mock(SchedulerModule.class);
         when(moduleRegistry.isModuleRegistered("scheduler")).thenReturn(true);
         when(moduleRegistry.getModuleInstance("scheduler")).thenReturn(schedulerModule);
-        Scheduler scheduler = mock(Scheduler.class);
+        scheduler = mock(Scheduler.class);
         when(schedulerModule.getScheduler()).thenReturn(scheduler);
 
         ComponentsTestUtil.setInstance(ModuleRegistry.class, moduleRegistry);
@@ -328,6 +333,38 @@ public class AbstractCommandActionTest {
 
         // THEN
         assertFalse("Stop Processing = false as it's invoke asynchronously", (Boolean) MgnlContext.getAttribute(AbstractCommandAction.COMMAND_RESULT, Context.LOCAL_SCOPE));
+    }
+
+    @Test
+    public void testInvokeAsynchronouslyActionThatTakesLongerThanFiveSeconds() throws RepositoryException, ActionExecutionException, SchedulerException {
+        // GIVEN
+        JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
+        JobDetail jobDetail = new JobDetail();
+        jobDetail.setName("UI Action triggered execution of [default:asynchronous] by user []. (0)");
+        when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.setCommand("asynchronous");
+        QuxCommand quxCommand = new QuxCommand();
+        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "asynchronous")).thenReturn(quxCommand);
+        when(scheduler.getCurrentlyExecutingJobs()).thenReturn(Arrays.asList(jobExecutionContext));
+
+        definition.setAsynchronous(true);
+
+        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
+
+        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
+                definition,
+                item,
+                commandsManager,
+                null, null, new HashMap<String, Object>());
+
+        action.setCurrentItem(item);
+
+        // WHEN
+        action.executeOnItem(item);
+
+        // THEN
+        assertEquals("ui-framework.abstractcommand.asyncaction.long", definition.getSuccessMessage());
     }
 
     private static final class QuxCommand extends MgnlCommand {
