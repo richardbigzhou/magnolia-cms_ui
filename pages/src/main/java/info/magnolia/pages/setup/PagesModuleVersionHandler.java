@@ -175,8 +175,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
         );
         register(DeltaBuilder.update("5.2.5", "")
-                .addTask(new NodeExistsDelegateTask("Configure activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activate",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activate", "asynchronous", "true")))
                 .addTask(new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")))
                 .addTask(new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",

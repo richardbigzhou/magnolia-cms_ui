@@ -339,7 +339,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
 
         // THEN
-        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activate"), hasProperty("asynchronous", "true"));
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
     }

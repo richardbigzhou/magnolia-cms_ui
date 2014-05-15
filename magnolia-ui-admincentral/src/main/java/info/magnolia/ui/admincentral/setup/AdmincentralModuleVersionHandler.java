@@ -237,6 +237,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")))
                 .addTask(new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")))
+                .addTask(new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml"))
         );
     }
 
