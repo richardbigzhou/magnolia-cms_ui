@@ -234,7 +234,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     jd.getJobDataMap().put("catalog", catalogName);
                     jd.getJobDataMap().put("params", getParams());
 
-                    scheduler.addTriggerListener(new CommandActionTriggerListener(jobName + "_trigger", "Execution of [" + (StringUtils.isNotEmpty(catalogName) ? (catalogName + ":") : "") + commandName + "] triggered by user [" + StringUtils.defaultIfEmpty(userName, "") + "] finished successfully."));
+                    scheduler.addTriggerListener(new CommandActionTriggerListener(jobName + "_trigger", i18n.translate("ui-framework.abstractcommand.asyncaction.message", commandName, catalogName, userName)));
                     // start the job
                     scheduler.scheduleJob(jd, trigger);
                     // false == all ok, just stop processing. Seems actions are taking up the signaling used by commands (facepalm)
@@ -242,7 +242,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
                     // wait until job has been executed
                     Thread.sleep(getDefinition().getDelay() * 1000 + 100);
-                    timeToWait = 5000;
+                    timeToWait = getDefinition().getTimeToWait();
                     int timeToSleep = 500;
                     // check every 500ms if job is running
                     while (timeToWait != 0) {
@@ -336,7 +336,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
         return failureMessage;
     }
 
-    private class CommandActionTriggerListener implements TriggerListener {
+    /**
+     * Trigger listener.
+     */
+    public class CommandActionTriggerListener implements TriggerListener {
 
         private final String name;
         private final String successMessage;
@@ -370,7 +373,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
                 @Override
                 public void doExec() {
-                    // notify user only if action took longer than 5 seconds
+                    // notify user only if action took longer than xx seconds
                     if (timeToWait == 0 && (Integer) jobExecutionContext.getResult() == CommandJob.SUCCESS) {
                         Components.getComponent(MessagesManager.class).sendLocalMessage(new Message(MessageType.INFO, i18n.translate("ui-framework.abstractcommand.asyncaction.success"), successMessage));
                     }

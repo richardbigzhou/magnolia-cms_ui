@@ -100,6 +100,7 @@ public class AbstractCommandActionTest {
 
     private CommandsManager commandsManager;
     private Scheduler scheduler;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
@@ -133,6 +134,7 @@ public class AbstractCommandActionTest {
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
 
         commandsManager = mock(CommandsManager.class);
+        i18n = mock(SimpleTranslator.class);
     }
 
     @After
@@ -212,7 +214,7 @@ public class AbstractCommandActionTest {
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
                         commandsManager,
                         null,
-                        null);
+                        i18n);
 
         // WHEN
         action.setCurrentItem(action.getItems().get(0));
@@ -245,7 +247,7 @@ public class AbstractCommandActionTest {
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
                 null,
-                null);
+                i18n);
 
         // WHEN
         action.execute();
@@ -291,7 +293,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, null, params1);
+                null, i18n, params1);
 
         action.execute();
         // WHEN
@@ -299,7 +301,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, null, params2);
+                null, i18n, params2);
 
         action2.execute();
 
@@ -324,7 +326,7 @@ public class AbstractCommandActionTest {
                 definition,
                 item,
                 commandsManager,
-                null, null, new HashMap<String, Object>());
+                null, i18n, new HashMap<String, Object>());
 
         action.setCurrentItem(item);
 
@@ -356,7 +358,7 @@ public class AbstractCommandActionTest {
                 definition,
                 item,
                 commandsManager,
-                null, null, new HashMap<String, Object>());
+                null, i18n, new HashMap<String, Object>());
 
         action.setCurrentItem(item);
 
