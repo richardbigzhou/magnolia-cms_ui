@@ -50,6 +50,7 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
     private boolean asynchronous = false;
     private int delay = 1;
     private boolean isParallel = true;
+    private int timeToWait = 5000; // milliseconds
 
     private Map<String, Object> params = new HashMap<String, Object>();
 
@@ -107,5 +108,13 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
 
     public void setParallel(boolean isParallel) {
         this.isParallel = isParallel;
+    }
+
+    public int getTimeToWait() {
+        return timeToWait;
+    }
+
+    public void setTimeToWait(int timeToWait) {
+        this.timeToWait = timeToWait;
     }
 }

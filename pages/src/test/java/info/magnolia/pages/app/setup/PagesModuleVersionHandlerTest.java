@@ -34,6 +34,8 @@
 package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -325,7 +327,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(availability.hasProperty("writePermissionRequired"));
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
     }
-    
+
     @Test
     public void testDialogsAreAddedModalityLevelProperty() throws ModuleManagementException, RepositoryException {
         // GIVEN
@@ -337,9 +339,25 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
 
         // THEN
+
         assertEquals("light", session.getProperty("/modules/pages/dialogs/editPage/modalityLevel").getString());
         assertEquals("strong", session.getProperty("/modules/pages/dialogs/createPage/modalityLevel").getString());
         assertEquals("light", session.getProperty("/modules/pages/dialogs/editTemplate/modalityLevel").getString());
+    }
+
+    @Test
+    public void testUpdateFrom524() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/activate");
+        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive");
+        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/delete");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
+
+        // THEN
+        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
+        assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
     }
 
 }

@@ -175,6 +175,14 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
         );
 
+        register(DeltaBuilder.update("5.2.5", "")
+                .addTask(new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")))
+                .addTask(new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true")))
+
+        );
+
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit page and edit template dialogs into light dialogs.",
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editPage",
@@ -183,8 +191,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage", "modalityLevel", "strong")),
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
-                )).addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class))
-        );
+                )).addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
+
+
 
     }
 
