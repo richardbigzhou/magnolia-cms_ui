@@ -44,6 +44,7 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.composite.DelegatingCompositeFieldTransformer;
 
 import java.util.List;
 
@@ -133,7 +134,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             selectDefinition.setStyleName(layout);
             selectDefinition.setName(definition.getName());
 
-            if (definition.isI18n()) {
+            if (definition.isI18n() && definition.getTransformerClass().isAssignableFrom(DelegatingCompositeFieldTransformer.class)) {
                 selectDefinition.setI18n(definition.isI18n());
             }
             return selectDefinition;

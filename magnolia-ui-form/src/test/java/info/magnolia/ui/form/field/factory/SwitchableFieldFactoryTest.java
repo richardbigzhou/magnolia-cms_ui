@@ -44,6 +44,8 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.transformer.composite.DelegatingCompositeFieldTransformer;
+import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 import info.magnolia.ui.form.fieldType.registry.FieldTypeDefinitionRegistryTest.TestFieldTypeDefinitionProvider;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
@@ -125,6 +127,36 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         AbstractSelect select = (AbstractSelect) layout.iterator().next();
         assertTrue(select.isNullSelectionAllowed());
         assertEquals("code", select.getValue());
+    }
+
+    @Test
+    public void setI18nForDelegatingCompositeFieldTransformer() throws Exception {
+        // GIVEN
+        definition.setTransformerClass(DelegatingCompositeFieldTransformer.class);
+        definition.setI18n(true);
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+
+        // WHEN
+        factory.createField();
+
+        // THEN
+        assertTrue(definition.getFields().get(2).isI18n());
+    }
+
+    @Test
+    public void setI18nForSwitchableTransformer() throws Exception {
+        // GIVEN
+        definition.setTransformerClass(SwitchableTransformer.class);
+        definition.setI18n(true);
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+
+        // WHEN
+        factory.createField();
+
+        // THEN
+        assertFalse(definition.getFields().get(2).isI18n());
     }
 
     @Test
