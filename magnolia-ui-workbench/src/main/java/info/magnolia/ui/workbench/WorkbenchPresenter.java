@@ -201,6 +201,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return workbenchDefinition.getWorkspace();
     }
 
+    public String getRootPath() {
+        return workbenchDefinition.getPath();
+    }
+
     public List<String> getSelectedIds() {
         return activePresenter.getSelectedItemIds();
     }
