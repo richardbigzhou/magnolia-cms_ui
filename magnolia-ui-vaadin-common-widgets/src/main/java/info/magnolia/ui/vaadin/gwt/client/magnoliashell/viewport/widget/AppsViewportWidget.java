@@ -173,6 +173,26 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
     }
 
+    /**
+     * Get the app that is currently open.
+     * @return The currently open app or null if none are open.
+     */
+    public Widget getCurrentApp(){
+        if (getWidgetCount() < 1) {
+            return null;
+        }else{
+            for (int w=0; w < getWidgetCount(); w++){
+                Widget app = getWidget(w);
+                String style = app.getStyleName();
+                if (!app.getStyleName().contains("app-inactive")){
+                    return app;
+                }
+            }
+        }
+        // No app is active.
+        return null;
+    }
+
     public Element getCurtain() {
         return curtain;
     }
@@ -203,10 +223,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     @Override
     public void removeChild(Widget w) {
         ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
-        if (getWidgetCount() < 2) {
-            getElement().removeChild(closeButton.getElement());
-            getElement().removeChild(fullScreenButton.getElement());
-        }
+        getElement().removeChild(closeButton.getElement());
+        getElement().removeChild(fullScreenButton.getElement());
     }
 
     @Override

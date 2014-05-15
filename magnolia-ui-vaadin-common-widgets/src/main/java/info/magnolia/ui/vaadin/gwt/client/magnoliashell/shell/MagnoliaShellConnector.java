@@ -48,6 +48,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportConnector;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -230,7 +231,12 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     public void onHideShellAppsRequested() {
         ViewportWidget viewportWidget =
                 (ViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
-        if (viewportWidget.getWidgetCount() > 0) {
+        AppsViewportWidget appViewportWidget =
+                (AppsViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
+
+        // If no app is active, then show or keep the applauncher.
+        Widget currentApp = appViewportWidget.getCurrentApp();
+        if (currentApp != null) {
             view.onAppStarting();
             eventBus.fireEvent(new HideShellAppsEvent());
         } else {

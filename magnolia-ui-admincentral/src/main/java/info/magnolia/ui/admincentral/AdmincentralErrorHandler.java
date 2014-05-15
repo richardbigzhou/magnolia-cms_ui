@@ -49,7 +49,9 @@ import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.ServerRpcManager.RpcInvocationException;
 
 /**
- * The Admincentral global error handler, logging unhandled exceptions and sending error messages to the pulse.
+ * The {@link AdmincentralErrorHandler} logs unhandled exceptions and sends error messages to the pulse.
+ * <p>
+ * It replaces Vaadin's default behavior for component errors, which would otherwise display error icons and stack traces in tooltips.
  */
 public class AdmincentralErrorHandler implements ErrorHandler {
 

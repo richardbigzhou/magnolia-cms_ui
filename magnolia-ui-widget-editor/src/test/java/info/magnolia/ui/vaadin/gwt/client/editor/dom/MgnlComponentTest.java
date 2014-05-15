@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2003-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import static org.junit.Assert.assertFalse;
+
+import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Configured descriptor for browser subapps.
+ * Tests for MgnlComponentTest.
  */
-public class ConfiguredBrowserSubAppDescriptor extends ConfiguredContentSubAppDescriptor implements BrowserSubAppDescriptor {
+public class MgnlComponentTest {
 
-    private WorkbenchDefinition workbench;
+    private MgnlArea parentArea;
+    private MgnlComponent childComponent;
 
-    @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
+    @Before
+    public void setUp() {
+        parentArea = new MgnlArea(null, null);
+        parentArea.setAttributes(new HashMap<String, String>());
+        childComponent = new MgnlComponent(null, null);
+        childComponent.setAttributes(new HashMap<String, String>());
     }
 
-    public void setWorkbench(WorkbenchDefinition workBench) {
-        this.workbench = workBench;
+    @Test
+    public void availabilityOfMoveComponentActionInAreaOfSingleType() {
+        // GIVEN
+        parentArea.getAttributes().clear();
+        parentArea.getAttributes().put("type", "single");
+        childComponent.getAttributes().clear();
+        childComponent.setParent(parentArea);
+
+        // WHEN
+        boolean movable = childComponent.isMovable();
+
+        // THEN
+        assertFalse(movable);
     }
 }

@@ -62,6 +62,7 @@ import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -128,7 +129,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[]{nodesToMove, callback, appContext, getHostCandidate()};
+        return new Object[] { nodesToMove, callback, appContext, getHostCandidate() };
     }
 
     @Override
@@ -154,7 +155,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                currentHostCandidate = (event.getProperty().getValue() == null) ? null: (JcrNodeAdapter) event.getProperty().getValue();
+                currentHostCandidate = (event.getProperty().getValue() == null) ? null : (JcrNodeAdapter) event.getProperty().getValue();
                 updatePossibleMoveLocations(currentHostCandidate);
 
             }
@@ -166,7 +167,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
-                ((ResettableEventBus)eventBus).reset();
+                ((ResettableEventBus) eventBus).reset();
             }
         });
         super.start(dialogDefinition, appContext);
@@ -184,7 +185,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         Cloner cloner = new Cloner();
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
-
 
         workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
@@ -281,6 +281,22 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     @Override
     protected DialogActionExecutor getExecutor() {
         return (DialogActionExecutor) super.getExecutor();
+    }
+
+    @Override
+    protected void executeAction(String actionName, Object[] actionContextParams) {
+        actionName = getCorrectActionName(actionName);
+        if (actionName != null) {
+            super.executeAction(actionName, actionContextParams);
+        }
+    }
+
+    public String getCorrectActionName(String actionName) {
+        if (actionName.equals(BaseDialog.COMMIT_ACTION_NAME)) {
+            boolean moveInsideActionEnabled = getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().isEnabled();
+            actionName = moveInsideActionEnabled ? MoveLocation.INSIDE.name() : null;
+        }
+        return actionName;
     }
 
     private JcrNodeAdapter getHostCandidate() {

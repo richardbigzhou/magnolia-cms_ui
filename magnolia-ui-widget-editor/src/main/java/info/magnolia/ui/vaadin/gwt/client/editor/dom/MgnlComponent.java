@@ -88,13 +88,12 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     /**
      * Fires a {@link SortComponentEvent} with the parent {@link AreaElement}.
-     * Sets the source component this component and the target to the component passed with the
-     * {@link ComponentStopMoveEvent}.
+     * Sets the source component this component and the target to the component passed with the {@link ComponentStopMoveEvent}.
      */
     private void sortComponent(MgnlComponent target) {
         MgnlArea area = getParentArea();
         if (area != null) {
-            //area.onDragStart(true);
+            // area.onDragStart(true);
 
             AreaElement areaElement = area.getTypedElement();
             areaElement.setSourceComponent(getTypedElement());
@@ -125,18 +124,19 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     @Override
     public boolean isMovable() {
         boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
+        MgnlArea parentArea = this.getParentArea();
+        boolean parentAreaIsTypeSingle = parentArea != null && "single".equals(parentArea.getAttribute("type"));
         boolean movable = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
             movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
         }
-        return movable && !inherited;
+        return movable && !inherited && !parentAreaIsTypeSingle;
     }
 
     /**
      * Callback for {@link ComponentBar} when starting a drag or move event. Depending on whether it is a drag or a move
-     * it will either notify the server by firing a {@link ComponentStartMoveEvent} or register the handlers in
-     * {@link #doStartMove(boolean)}.
-     *
+     * it will either notify the server by firing a {@link ComponentStartMoveEvent} or register the handlers in {@link #doStartMove(boolean)}.
+     * 
      * @param isDrag whether we are dragging the component or moving it
      */
     @Override
@@ -149,9 +149,8 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     /**
-     * Registers the sibling components as move targets and registers a handler for {@link ComponentStopMoveEvent}
-     * on the source component which will call {@link #sortComponent(MgnlComponent)}.
-     *
+     * Registers the sibling components as move targets and registers a handler for {@link ComponentStopMoveEvent} on the source component which will call {@link #sortComponent(MgnlComponent)}.
+     * 
      * @param isDrag whether we are dragging the component or moving it
      */
     public void doStartMove(boolean isDrag) {
@@ -194,7 +193,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
      * Callback for {@link ComponentBar} source when a drag is stopped.
      * Fires {@link ComponentStopMoveEvent} to notify the system about the cancel. Will cause target components to
      * unregister themselves as targets.
-     *
+     * 
      * @see #unregisterMoveTarget(boolean)
      */
     @Override
@@ -311,7 +310,6 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }
     }
 
-
     @Override
     public ComponentBar getControlBar() {
         return (ComponentBar) super.getControlBar();
@@ -342,7 +340,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     private List<MgnlComponent> getSiblingComponents() {
         List<MgnlComponent> siblings = new LinkedList<MgnlComponent>();
         MgnlArea area = getParentArea();
-        for(MgnlComponent component : area.getComponents()) {
+        for (MgnlComponent component : area.getComponents()) {
             if (component != this) {
                 siblings.add(component);
             }

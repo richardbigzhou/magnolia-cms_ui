@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Panel;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -44,6 +41,10 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Panel;
 
 /**
  * Base implementation of {@link DialogView}.
@@ -151,7 +152,6 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public void attach() {
         super.attach();
-        focus();
     }
 
     @Override

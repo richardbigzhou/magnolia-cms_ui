@@ -22,6 +22,14 @@
     font-size: 13px;
   }
 
+  .v-csslayout{
+    overflow:visible;
+  }
+
+  .v-csslayout-container {
+    overflow: hidden;
+  }
+
   .v-widget {
     font-size: 13px;
     line-height: 1.4;

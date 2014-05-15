@@ -15,15 +15,19 @@
   .v-nativebutton-magnoliabutton,
   button.btn-dialog {
 
+    &:focus{
+      outline: $c22 solid 3px;
+    }
+
     &.commit,
     &.v-button-commit {
       background-color: $c40;
     }
-
+    
     .v-ui:not(.tablet) &.commit:hover,
     .v-ui:not(.tablet) &.v-button-commit:hover {
-      background-color: $c44;
-      color: $c40;
+      background-color: $c30;
+      color: $c80;
     }
 
     .v-ui:not(.tablet) &.commit.v-disabled:hover,
@@ -49,6 +53,12 @@
     width: 24px;
     height: 24px;
     line-height: 1;
+
+    .v-ui:not(.tablet) &:hover{
+        background-color: transparent;
+        color: $c91;
+   }
+
   }
 
   .v-button-link {
@@ -65,12 +75,12 @@
   font-size: 12px;
   text-transform: uppercase;
   cursor: pointer;
-  outline: none !important;
+
   @include box-sizing(content-box);
 
   .v-ui:not(.tablet) &:hover {
-    background-color: $c14;
-    color: $c10;
+    background-color: $c91;
+    color: $c80;
   }
 
   .v-app .v-ui &:active {
@@ -114,8 +124,7 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 
-  &:hover,
-  &:focus {
+  .v-ui:not(.tablet) &:hover{
     color: $c20;
     background-color: transparent;
   }
