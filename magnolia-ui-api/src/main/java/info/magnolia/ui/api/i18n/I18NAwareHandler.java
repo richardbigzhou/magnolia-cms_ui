@@ -46,5 +46,8 @@ public interface I18NAwareHandler {
 
     Locale getLocale();
 
+    /**
+     * Returns the property base name that the {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} should use.
+     */
     String getBasePropertyName();
 }

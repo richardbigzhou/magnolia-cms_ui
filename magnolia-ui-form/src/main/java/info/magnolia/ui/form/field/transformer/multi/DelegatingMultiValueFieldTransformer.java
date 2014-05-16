@@ -60,37 +60,30 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link info.magnolia.ui.form.field.transformer.Transformer} used by {@link info.magnolia.ui.form.field.MultiField} that delegates to sub fields {@link info.magnolia.ui.form.field.transformer.Transformer} the handling of their own properties.
- * Storage strategy: <br>
- * - root item (relatedFormItem)<br>
- * -- child item 1 (used to store the first value of the MultiField)<br>
- * -- child item 2 (used to store the second value of the MultiField)<br>
- * ...<br>
- * The {@link DelegatingMultiValueFieldTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
- * - as key, a position used by {@link info.magnolia.ui.form.field.MultiField} <br>
- * - as values the child items wrapped into an {@link ObjectProperty} <br>
- * The {@link DelegatingMultiValueFieldTransformer#createProperty()} creates a new child items wrapped into an {@link ObjectProperty} based on the defined <br>
- * - child item naming strategy.<br>
- * Implemented child item naming strategy: <br>
- * - 'baseSubItemName'+'increment'+'i18nSuffix'<br>
- * -- 'baseSubItemName' is set using {@link DelegatingMultiValueFieldTransformer#setBaseSubItemName()}. By default we use the {@link ConfiguredFieldDefinition#getName()}<br>
- * -- 'increment' is set using: <br>
- * --- {@link DelegatingMultiValueFieldTransformer#intialIncrementValue()} that return the root increment value. '000' is set for the default implementation <br>
- * --- {@link DelegatingMultiValueFieldTransformer#nextIncrementValue(int)} that return the next increment value. '001', '002', ... for the default implementation <br>
- * --- {@link DelegatingMultiValueFieldTransformer#incrementRegexRepresentation()} return a regex string representation of the increment format. '(\\d{3})' for the default implementation <br>
- * -- 'i18nSuffix' default i18n suffix used by Magnolia '_de' <br>
+ * This delegating {@link info.magnolia.ui.form.field.transformer.Transformer Transformer} is dedicated to the {@link info.magnolia.ui.form.field.MultiField MultiField};
+ * it considers entries as child nodes and delegates property handling to their respective sub-fields.
+ * <p>
+ * The storage strategy is that of the {@link info.magnolia.ui.form.field.transformer.multi.MultiValueChildNodeTransformer MultiValueChildNodeTransformer}:
+ * <ul>
+ * <li>rootItem (relatedFormItem)
+ * <ul>
+ * <li>childItem1 (first entry of the MultiField)<br>
+ * <li>childItem2 (second entry of the MultiField)<br>
+ * <li>...
+ * </ul>
+ * </ul>
  */
-public class DelegatingMultiValueFieldTransformer extends BasicTransformer<PropertysetItem> implements MultiItemTransformer {
+public class DelegatingMultiValueFieldTransformer extends BasicTransformer<PropertysetItem> implements MultiTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(DelegatingMultiValueFieldTransformer.class);
 
     private final I18nContentSupport i18nContentSupport;
     protected String childNodeType = NodeTypes.ContentNode.NAME;
-    protected String baseSubItemName;
+    protected String subItemBaseName;
     protected String i18nSuffix = StringUtils.EMPTY;
     private final String defaultLocale;
     // Map used to store PropertysetItem based on language (i18n support)
-    private Map<String, PropertysetItem> items;
+    private Map<String, PropertysetItem> items = new HashMap<String, PropertysetItem>();;
     private List<String> freezedName = new ArrayList<String>();
 
     @Inject
@@ -99,17 +92,15 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         this.i18nContentSupport = i18nContentSupport;
         this.i18nSuffix += this.i18nContentSupport.getDefaultLocale();
         this.defaultLocale = i18nSuffix;
-        this.baseSubItemName = setBaseSubItemName();
-        items = new HashMap<String, PropertysetItem>();
+        this.subItemBaseName = getSubItemBaseName();
         items.put(this.i18nSuffix, new PropertysetItem());
     }
 
     /**
-     * Read the already stored child items.<br>
-     * Filter all root Item child nodes (based on the baseSubNodeName and current locale set).<br>
-     * For each child Item, wrap them into an {@link ObjectProperty} and add it into the returned {@link PropertysetItem}.
-     * 
-     * @return {@link PropertysetItem} related to the current selected locale, containing as keys the position (0,1,..) and as values child Items wrapped into an {@link ObjectProperty}.
+     * Returns a representation of the child items as a {@link PropertysetItem};
+     * this is merely a map whose keys are the positions in the <code>MultiField</code>, and whose values are the child items, wrapped as {@link ObjectProperty ObjectProperties}.
+     * <p>
+     * Please note that this list of child items is filtered based on the <i>subItemBaseName</i> and current locale.
      */
     @Override
     public PropertysetItem readFromItem() {
@@ -135,14 +126,20 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         return item;
     }
 
+    /**
+     * This transformer's write implementation is empty. We do not need to write to the item as this is delegated to the sub-fields.
+     */
     @Override
     public void writeToItem(PropertysetItem newValue) {
-        // No need to write to the Item as this is done on the Item passed to the subFields.
         log.debug("CALL writeToItem");
     }
 
     /**
-     * Create a new child Item, and bound it with the root Item.
+     * Creates a new child item, adds it to the root item, and returns it wrapped as an {@link ObjectProperty}.
+     * <p>
+     * The child item naming strategy is as follows: <i>subItemBaseName</i> + <i>increment</i> + <i>i18nSuffix</i>
+     * 
+     * @see {@link #createNewItemName()}
      */
     @Override
     public Property<?> createProperty() {
@@ -158,9 +155,6 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         return res;
     }
 
-    /**
-     * Remove a child Item from the root Item.
-     */
     @Override
     public void removeProperty(Object id) {
         PropertysetItem item = items.get(this.i18nSuffix);
@@ -171,115 +165,6 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         }
         item.removeItemProperty(id);
         reorganizeIndex((Integer) id, item);
-    }
-
-    /**
-     * Used by {@link I18NAuthoringSupport} to define the i18N name.
-     */
-    @Override
-    public String getBasePropertyName() {
-        return baseSubItemName;
-    }
-
-    /**
-     * Define the base sub node name.
-     * basic implementation uses the {@link ConfiguredFieldDefinition#getName()}.
-     */
-    protected String setBaseSubItemName() {
-        return definition.getName();
-    }
-
-    @Override
-    public void setI18NPropertyName(String i18NSubNodeName) {
-        String newLocal = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
-        this.i18nSuffix = StringUtils.isBlank(newLocal) ? this.defaultLocale : newLocal;
-        log.debug("Change language to '{}'", this.i18nSuffix);
-        if (!items.containsKey(this.i18nSuffix)) {
-            items.put(this.i18nSuffix, new PropertysetItem());
-        }
-    }
-
-    /**
-     * Define the root Item used to retrieve the child items, and store the newly created child items.
-     */
-    protected JcrNodeAdapter getRootItem() {
-        return (JcrNodeAdapter) relatedFormItem;
-    }
-
-
-    /**
-     * Add to rootItem all his children.
-     */
-    protected void populateStoredChildItems(JcrNodeAdapter rootItem) {
-        List<Node> childNodes = getStoredChildNodes(rootItem);
-        for (Node child : childNodes) {
-            JcrNodeAdapter item = new JcrNodeAdapter(child);
-            item.setParent(rootItem);
-            item.getParent().addChild(item);
-        }
-    }
-
-    /**
-     * Get all childNodes of parent passing the {@link NodeUtil#MAGNOLIA_FILTER}.
-     */
-    protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
-        try {
-            if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
-                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), NodeUtil.MAGNOLIA_FILTER));
-            }
-        } catch (RepositoryException re) {
-            log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
-        }
-        return new ArrayList<Node>();
-    }
-
-
-    /**
-     * Create a unique child Item name.<br>
-     * baseSubNodeName + number (0...999) + current locale (if this is not the default locale).
-     */
-    protected String createNewItemName() {
-        int nb = 0;
-        String localeAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocale.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
-        String name = this.baseSubItemName + String.valueOf(nb) + localeAsString;
-        List<String> childNodeName = getChildItemNames();
-        while (childNodeName.contains(name)) {
-            nb += 1;
-            name = this.baseSubItemName + String.valueOf(nb) + localeAsString;
-        }
-        return name;
-    }
-
-    protected String incrementRegexRepresentation() {
-        return "(\\d{1,3})";
-    }
-
-    /**
-     * @return regex String used to filter the correct children items based on i18n support and current Local.
-     */
-    protected String childItemRegexRepresentation() {
-        if (hasI18NSupport() && i18nContentSupport.isEnabled()) {
-            if (defaultLocale.equals(i18nSuffix)) {
-                // i18n set, current locale is the default locale
-                // match all node name that do not define locale extension
-                return baseSubItemName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";
-            } else {
-                // i18n set, not default locale used
-                return baseSubItemName + incrementRegexRepresentation() + "_" + i18nSuffix;
-            }
-        } else {
-            return baseSubItemName + incrementRegexRepresentation();
-        }
-    }
-
-    private List<String> getChildItemNames() {
-        List<String> res = new ArrayList<String>();
-        res.addAll(freezedName);
-        PropertysetItem item = items.get(this.i18nSuffix);
-        for (Object id : item.getItemPropertyIds()) {
-            res.add(((JcrNodeAdapter) item.getItemProperty(id).getValue()).getNodeName());
-        }
-        return res;
     }
 
     /**
@@ -302,4 +187,116 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         }
     }
 
+    /**
+     * Defines the root item used to retrieve and create child items.
+     */
+    protected JcrNodeAdapter getRootItem() {
+        return (JcrNodeAdapter) relatedFormItem;
+    }
+
+    /**
+     * Defines the base name to use for retrieving and creating child items.
+     * <p>
+     * By default, we use the {@link info.magnolia.ui.form.field.definition.FieldDefinition#getName()}.
+     */
+    protected String getSubItemBaseName() {
+        return definition.getName();
+    }
+
+    /**
+     * Populates the given root item with its child items.
+     */
+    protected void populateStoredChildItems(JcrNodeAdapter rootItem) {
+        List<Node> childNodes = getStoredChildNodes(rootItem);
+        for (Node child : childNodes) {
+            JcrNodeAdapter item = new JcrNodeAdapter(child);
+            item.setParent(rootItem);
+            item.getParent().addChild(item);
+        }
+    }
+
+    /**
+     * Fetches child nodes of the given parent from JCR, filtered using the {@link NodeUtil#MAGNOLIA_FILTER} predicate.
+     */
+    protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
+        try {
+            if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
+                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), NodeUtil.MAGNOLIA_FILTER));
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
+        }
+        return new ArrayList<Node>();
+    }
+
+    /**
+     * Creates a unique name for the child item, in the following format:
+     * <i>subItemBaseName</i> + <i>increment</i> + <i>i18nSuffix</i>
+     * <ul>
+     * <li><i>subItemBaseName</i> can be set via {@link #setSubItemBaseName()}; by default we use the {@link info.magnolia.ui.form.field.definition.FieldDefinition#getName()}
+     * <li><i>increment</i> is the next available index for the current base name
+     * <li><i>i18nSuffix</i> is the default i18n suffix (typically something formatted like '_de')
+     * </ul>
+     * .
+     */
+    protected String createNewItemName() {
+        int nb = 0;
+        String localeAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocale.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
+        String name = this.subItemBaseName + String.valueOf(nb) + localeAsString;
+        List<String> childNodeName = getChildItemNames();
+        while (childNodeName.contains(name)) {
+            nb += 1;
+            name = this.subItemBaseName + String.valueOf(nb) + localeAsString;
+        }
+        return name;
+    }
+
+    /**
+     * @return The regex used to filter child items based on i18n support and current locale
+     */
+    protected String childItemRegexRepresentation() {
+        if (hasI18NSupport() && i18nContentSupport.isEnabled()) {
+            if (defaultLocale.equals(i18nSuffix)) {
+                // i18n set, current locale is the default locale
+                // match all node name that do not define locale extension
+                return subItemBaseName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";
+            } else {
+                // i18n set, not default locale used
+                return subItemBaseName + incrementRegexRepresentation() + "_" + i18nSuffix;
+            }
+        } else {
+            return subItemBaseName + incrementRegexRepresentation();
+        }
+    }
+
+    protected String incrementRegexRepresentation() {
+        return "(\\d{1,3})";
+    }
+
+    private List<String> getChildItemNames() {
+        List<String> res = new ArrayList<String>();
+        res.addAll(freezedName);
+        PropertysetItem item = items.get(this.i18nSuffix);
+        for (Object id : item.getItemPropertyIds()) {
+            res.add(((JcrNodeAdapter) item.getItemProperty(id).getValue()).getNodeName());
+        }
+        return res;
+    }
+
+    /* I18nAwareHandler impl */
+
+    @Override
+    public String getBasePropertyName() {
+        return subItemBaseName;
+    }
+
+    @Override
+    public void setI18NPropertyName(String i18NSubNodeName) {
+        String newLocale = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
+        this.i18nSuffix = StringUtils.isBlank(newLocale) ? this.defaultLocale : newLocale;
+        log.debug("Change language to '{}'", this.i18nSuffix);
+        if (!items.containsKey(this.i18nSuffix)) {
+            items.put(this.i18nSuffix, new PropertysetItem());
+        }
+    }
 }
