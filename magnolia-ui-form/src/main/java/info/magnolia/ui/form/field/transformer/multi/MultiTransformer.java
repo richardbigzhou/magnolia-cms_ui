@@ -39,19 +39,22 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link info.magnolia.ui.form.field.transformer.Transformer} that is able to add or remove {@link Property Properties}.
+ * Defines a {@link Transformer} that supports properties with multiple values.
+ * In particular it is capable of creating new — or removing existing {@link Property Properties} on the related form item.
  * 
- * @see {@link info.magnolia.ui.form.field.MultiField}
+ * @see {@link info.magnolia.ui.form.field.MultiField MultiField};
  */
-public interface MultiItemTransformer extends Transformer<PropertysetItem> {
+public interface MultiTransformer extends Transformer<PropertysetItem> {
 
     /**
-     * @return new property associated to the root Item.
+     * Creates and returns a new property associated to the root item.
      */
     public Property<?> createProperty();
 
     /**
-     * @param property id to be removed from the root Item.
+     * Removes a property from the root item.
+     * 
+     * @param id the property identifier as specified by the concrete {@link Transformer} implementation
      */
     public void removeProperty(Object id);
 }

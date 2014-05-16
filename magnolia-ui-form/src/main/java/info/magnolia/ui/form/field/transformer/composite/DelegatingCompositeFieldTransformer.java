@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.transformer.composite;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
 import java.util.List;
@@ -48,11 +49,10 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * The {@link DelegatingCompositeFieldTransformer#readFromItem()} returns an {@link PropertysetItem} that contains in this case:<br>
- * - as key, the embedded field name <br>
- * - as values the 'relatedFormItem' items wrapped into an {@link ObjectProperty}. <br>
- * SubField uses then their {@link ConfiguredFieldDefinition#getName()} to define the name of the property used store the field value.
- * //TODO add comments about the empty write.
+ * This delegating {@link info.magnolia.ui.form.field.transformer.Transformer Transformer} is dedicated to the {@link info.magnolia.ui.form.field.CompositeField CompositeField} and {@link info.magnolia.ui.form.field.SwitchableField SwitchableField};
+ * it simply delegates property handling to the configured sub-fields.
+ * <p>
+ * Therefore, sub-fields use their own transformers to store the field value; e.g. with {@link BasicTransformer} properties are named after their respective {@link FieldDefinition#getName()}.
  */
 public class DelegatingCompositeFieldTransformer extends BasicTransformer<PropertysetItem> {
     private static final Logger log = LoggerFactory.getLogger(DelegatingCompositeFieldTransformer.class);
@@ -65,12 +65,18 @@ public class DelegatingCompositeFieldTransformer extends BasicTransformer<Proper
         this.fieldsName = fieldsName;
     }
 
+    /**
+     * This transformer's write implementation is empty. We do not need to write to the item as this is delegated to the sub-fields.
+     */
     @Override
     public void writeToItem(PropertysetItem newValue) {
-        // No need to write to the Item as this is done on the Item passed to the subFields.
         log.debug("CALL writeToItem");
     }
 
+    /**
+     * Returns a representation of the child items as a {@link PropertysetItem};
+     * this is merely a map whose keys are the configured names of the sub-fields, and whose values are the child items, wrapped as {@link ObjectProperty ObjectProperties}.
+     */
     @Override
     public PropertysetItem readFromItem() {
         // Only read it once

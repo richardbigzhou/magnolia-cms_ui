@@ -119,10 +119,10 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     /**
      * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
      */
-    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> value, boolean setCaptionToNull) {
+    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> property, boolean setCaptionToNull) {
 
-        // If the value property is an Item, use this Item as root item for the field creation.
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, isItem(value) ? value.getValue() : new NullItem());
+        // If the property holds an item, use this item directly for the field creation (doesn't apply to ProperysetItems)
+        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, holdsItem(property) ? property.getValue() : new NullItem());
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
         // FIXME change i18n setting : MGNLUI-1548
@@ -131,9 +131,9 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
 
         // If the value property is not an Item but a property, set this property as datasource to the field
         // and add a value change listener in order to propagate changes
-        if (!isItem(value)) {
-            if (value != null && value.getValue() != null) {
-                field.setPropertyDataSource(value);
+        if (!holdsItem(property)) {
+            if (property != null && property.getValue() != null) {
+                field.setPropertyDataSource(property);
             }
             field.addValueChangeListener(selectionListener);
         }
@@ -152,8 +152,8 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         return field;
     }
 
-    boolean isItem(Property<?> value) {
-        return (value != null && value.getValue() instanceof Item && !(value.getValue() instanceof PropertysetItem));
+    boolean holdsItem(Property<?> property) {
+        return property != null && property.getValue() instanceof Item && !(property.getValue() instanceof PropertysetItem);
     }
 
     /**
