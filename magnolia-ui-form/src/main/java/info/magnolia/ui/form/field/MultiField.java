@@ -40,7 +40,7 @@ import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
-import info.magnolia.ui.form.field.transformer.multi.MultiItemTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiTransformer;
 
 import java.util.Iterator;
 
@@ -94,8 +94,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             public void buttonClick(ClickEvent event) {
                 Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
                 Property<?> property = null;
-                if (transformer instanceof MultiItemTransformer) {
-                    property = ((MultiItemTransformer) transformer).createProperty();
+                if (transformer instanceof MultiTransformer) {
+                    property = ((MultiTransformer) transformer).createProperty();
                 }
                 root.addComponent(createEntryComponent(property), root.getComponentCount() - 1);
             };
@@ -151,8 +151,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
                 Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
-                if (transformer instanceof MultiItemTransformer) {
-                    ((MultiItemTransformer) transformer).removeProperty(position);
+                if (transformer instanceof MultiTransformer) {
+                    ((MultiTransformer) transformer).removeProperty(position);
                 } else {
                     removeValueProperty(position);
                     getPropertyDataSource().setValue(getValue());

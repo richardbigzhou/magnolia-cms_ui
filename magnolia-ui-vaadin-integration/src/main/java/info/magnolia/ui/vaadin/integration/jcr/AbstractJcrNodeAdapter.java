@@ -338,7 +338,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
     }
 
     /**
-     * @return true if an {@link com.vaadin.data.Item} was added or removed. false otherwise.
+     * @return true if an {@link com.vaadin.data.Item} was added or removed, false otherwise.
      */
     public boolean hasChildItemChanges() {
         return childItemChanges;
