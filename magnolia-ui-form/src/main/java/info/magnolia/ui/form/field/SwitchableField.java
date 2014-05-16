@@ -39,8 +39,7 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
-import java.util.Iterator;
-
+import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -62,6 +61,9 @@ import com.vaadin.ui.VerticalLayout;
 public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDefinition, PropertysetItem> {
     private static final Logger log = LoggerFactory.getLogger(SwitchableField.class);
 
+    // - key : Field name. Should be the same as the related select value.<br>
+    // - value : Related Field. Created based on the definition coming from the Fields Definition list.
+    private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -86,7 +88,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
-
+        fieldMap.clear();
         // Create all Fields including the select Field.
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
@@ -95,7 +97,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
             field.setWidth(100, Unit.PERCENTAGE);
-            field.setId(name);
+            fieldMap.put(name, field);
             // set select field at the first position
             if (StringUtils.equals(fieldDefinition.getName(), definition.getName())) {
                 root.addComponentAsFirst(field);
@@ -106,7 +108,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         }
 
         // add listener to the select field
-        Field<?> selectField = (Field<?>) root.getComponent(0);
+        Field<?> selectField = fieldMap.get(definition.getName());
         selectField.addValueChangeListener(createSelectValueChangeListener());
         selectField.addValueChangeListener(selectionListener);
         selectField.setCaption("");
@@ -143,11 +145,10 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             return;
         }
 
-        Iterator<Component> iterator = root.iterator();
-        while (iterator.hasNext()) {
-            Field<?> field = (Field<?>) iterator.next();
+        for(String innerFieldName:fieldMap.keySet()) {
+            Field<?> field = fieldMap.get(innerFieldName);
             // Set the select component visible and the selected field
-            if (StringUtils.equals(field.getId(), fieldName) || StringUtils.equals(field.getId(), definition.getName())) {
+            if (StringUtils.equals(innerFieldName, fieldName) || StringUtils.equals(innerFieldName, definition.getName())) {
                 field.setVisible(true);
             } else {
                 field.setVisible(false);
