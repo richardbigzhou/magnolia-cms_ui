@@ -335,11 +335,11 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
             view.updateCategoryBadgeCount(ItemCategory.UNCLAIMED, count);
             break;
         case InProgress:
-            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.InProgress)).size();
+            count = tasksManager.findTasksByAssigneeAndStatus(userName, Arrays.asList(Status.InProgress)).size();
             view.updateCategoryBadgeCount(ItemCategory.ONGOING, count);
             break;
         case Failed:
-            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Failed)).size();
+            count = tasksManager.findTasksByAssigneeAndStatus(userName, Arrays.asList(Status.Failed)).size();
             view.updateCategoryBadgeCount(ItemCategory.FAILED, count);
             break;
         default:
@@ -368,7 +368,7 @@ public final class PulseTasksPresenter implements PulseTasksView.Listener {
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.Failed)).size();
+        return tasksManager.findPendingTasksByUser(MgnlContext.getUser().getName()).size();
     }
 
     public void setTabActive(ItemCategory category) {
