@@ -101,7 +101,7 @@ public class DefaultImageProvider implements ImageProvider {
         return null;
     }
 
-    private String getGeneratorImagePath(String workspace, Node node, String generator) {
+    protected String getGeneratorImagePath(String workspace, Node node, String generator) {
         String imagePath = null;
 
         if (node != null) {
@@ -224,7 +224,7 @@ public class DefaultImageProvider implements ImageProvider {
         return StringUtils.EMPTY;
     }
 
-    private boolean isImage(String mimeType) {
+    protected boolean isImage(String mimeType) {
         return mimeType != null && mimeType.matches("image.*");
     }
 }
