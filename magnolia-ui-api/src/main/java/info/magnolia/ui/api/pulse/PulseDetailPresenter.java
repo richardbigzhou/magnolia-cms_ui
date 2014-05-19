@@ -31,26 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
-
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+package info.magnolia.ui.api.pulse;
 
 /**
- * Availability rule used for task actions.
+ * Presenter used to display the detail view of items in pulse.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public interface PulseDetailPresenter {
 
-    private TaskAvailabilityRuleDefinition definition;
+    void setListener(Listener listener);
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    /**
+     * Listener interface used to call back to parent presenter.
+     */
+    public interface Listener {
+        void showList();
+
+        void updateDetailView(String itemId);
     }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
-
 }

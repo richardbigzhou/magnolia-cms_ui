@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemsContainer;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
 
 import java.util.Collection;
 import java.util.Date;
@@ -56,7 +56,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * The tasks container instantiates and manages an {@link HierarchicalContainer} with tasks.
  */
-public class TasksContainer extends AbstractItemsContainer<Task> {
+public class TasksContainer extends AbstractPulseListContainer<Task> {
 
     private static final Logger log = LoggerFactory.getLogger(TasksContainer.class);
 
@@ -211,7 +211,7 @@ public class TasksContainer extends AbstractItemsContainer<Task> {
     }
 
     @Override
-    protected void applyCategoryFilter(final ItemCategory category) {
+    protected void applyCategoryFilter(final PulseItemCategory category) {
         final Container.Filter filter = new Container.Filter() {
 
             @Override

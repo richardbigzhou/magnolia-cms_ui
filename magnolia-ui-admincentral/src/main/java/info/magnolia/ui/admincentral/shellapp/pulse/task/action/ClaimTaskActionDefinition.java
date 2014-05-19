@@ -31,26 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Availability rule used for task actions.
+ * Action definition for {@link ClaimTaskAction}.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
-    private TaskAvailabilityRuleDefinition definition;
+public class ClaimTaskActionDefinition extends ConfiguredActionDefinition {
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    public ClaimTaskActionDefinition() {
+        setImplementationClass(ClaimTaskAction.class);
     }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
-
 }

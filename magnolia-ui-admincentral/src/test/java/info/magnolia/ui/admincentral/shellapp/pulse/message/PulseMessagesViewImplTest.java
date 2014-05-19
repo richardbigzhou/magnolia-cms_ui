@@ -45,7 +45,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
@@ -75,7 +75,7 @@ public class PulseMessagesViewImplTest {
 
         when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
 
-        ComponentsTestUtil.setImplementation(ItemCategory.class, ItemCategory.class);
+        ComponentsTestUtil.setImplementation(PulseItemCategory.class, PulseItemCategory.class);
     }
 
     @After
@@ -87,7 +87,7 @@ public class PulseMessagesViewImplTest {
     @Test
     public void testEnsureMessageIsEscaped() throws Exception {
         // GIVEN
-        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
+        MessagesListViewImpl view = new MessagesListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
         when(container.getContainerProperty(itemId, MessagesContainer.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));

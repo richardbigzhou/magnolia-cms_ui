@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.CategoryChangedEvent;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.ItemCategoryChangedListener;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator.CategoryChangedEvent;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator.ItemCategoryChangedListener;
 import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
@@ -62,12 +62,12 @@ public final class PulseViewImpl implements PulseView {
         layout.addStyleName("v-pulse");
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
-        navigator = PulseItemCategoryNavigator.createTopRowNavigator(i18n, ItemCategory.TASKS, ItemCategory.MESSAGES);
+        navigator = PulseItemCategoryNavigator.createTopRowNavigator(i18n, PulseItemCategory.TASKS, PulseItemCategory.MESSAGES);
         navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
             @Override
             public void itemCategoryChanged(CategoryChangedEvent event) {
-                final ItemCategory category = event.getCategory();
+                final PulseItemCategory category = event.getCategory();
                 listener.onCategoryChange(category);
             }
         });
@@ -94,12 +94,12 @@ public final class PulseViewImpl implements PulseView {
     }
 
     @Override
-    public void updateCategoryBadgeCount(ItemCategory category, int count) {
+    public void updateCategoryBadgeCount(PulseItemCategory category, int count) {
         navigator.updateCategoryBadgeCount(category, count);
     }
 
     @Override
-    public void setTabActive(ItemCategory category) {
+    public void setTabActive(PulseItemCategory category) {
         navigator.setActive(category);
     }
 

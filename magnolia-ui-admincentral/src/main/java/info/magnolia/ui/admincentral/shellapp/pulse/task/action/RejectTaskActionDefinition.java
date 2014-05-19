@@ -31,26 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.framework.action.OpenEditDialogActionDefinition;
 
 /**
- * Availability rule used for task actions.
+ * Action definition for {@link RejectTaskAction}.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public class RejectTaskActionDefinition extends OpenEditDialogActionDefinition {
 
-    private TaskAvailabilityRuleDefinition definition;
+    private String decision;
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    public RejectTaskActionDefinition() {
+        setImplementationClass(RejectTaskAction.class);
     }
 
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
+    public String getDecision() {
+        return decision;
+    }
+
+    public void setDecision(String decision) {
+        this.decision = decision;
     }
 
 }

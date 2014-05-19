@@ -31,26 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+
+import java.util.HashMap;
+
+import org.junit.Test;
 
 /**
- * Availability rule used for task actions.
+ * PulseTasksPresenterTest.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public class TasksPresenterTest {
 
-    private TaskAvailabilityRuleDefinition definition;
+    @Test
+    public void titleFallsbackToTaskNameIfNoTaskSubjectIsPresent() throws Exception {
+        // GIVEN
+        TasksContainer container = new TasksContainer(mock(SimpleTranslator.class));
+        Task task = new Task();
+        task.setName("foo");
+        task.setContent(new HashMap<String, Object>());
+        task.setComment("bar");
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+        // WHEN
+        String title = container.getItemTitle(task);
+
+        // THEN
+        assertEquals("foo|bar", title);
     }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
-
 }

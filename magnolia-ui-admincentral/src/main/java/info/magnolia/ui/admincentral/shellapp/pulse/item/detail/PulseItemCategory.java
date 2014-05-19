@@ -31,26 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
-
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
 
 /**
- * Availability rule used for task actions.
+ * Enumeration for the category types.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public enum PulseItemCategory {
+    ALL_MESSAGES("pulse.messages.all"),
+    MESSAGES("pulse.items.messages"),
+    TASKS("pulse.items.tasks"),
+    PROBLEM("pulse.messages.problems"),
+    INFO("pulse.messages.info"),
+    ALL_TASKS("pulse.tasks.all"),
+    UNCLAIMED("pulse.tasks.unclaimed"),
+    ONGOING("pulse.tasks.ongoing"),
+    DONE("pulse.tasks.done"),
+    FAILED("pulse.tasks.failed");
 
-    private TaskAvailabilityRuleDefinition definition;
+    private String key;
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    private PulseItemCategory(final String key) {
+        this.key = key;
     }
 
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
+    public String getKey() {
+        return key;
     }
-
 }

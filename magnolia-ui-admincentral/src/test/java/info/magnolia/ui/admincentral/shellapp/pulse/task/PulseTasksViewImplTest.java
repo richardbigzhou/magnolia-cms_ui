@@ -47,8 +47,8 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksViewImpl.TaskCellComponent;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListViewImpl.TaskCellComponent;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
@@ -82,7 +82,7 @@ public class PulseTasksViewImplTest {
 
         when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
 
-        ComponentsTestUtil.setImplementation(ItemCategory.class, ItemCategory.class);
+        ComponentsTestUtil.setImplementation(PulseItemCategory.class, PulseItemCategory.class);
     }
 
     @After
@@ -94,7 +94,7 @@ public class PulseTasksViewImplTest {
     @Test
     public void testEnsureTaskCommentIsEscaped() throws Exception {
         // GIVEN
-        PulseTasksViewImpl view = new PulseTasksViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
+        TasksListViewImpl view = new TasksListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
         when(container.getContainerProperty(itemId, TasksContainer.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));

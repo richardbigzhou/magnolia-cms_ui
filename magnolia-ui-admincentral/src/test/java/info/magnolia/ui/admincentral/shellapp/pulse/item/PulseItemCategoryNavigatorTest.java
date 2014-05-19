@@ -49,7 +49,9 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseItemCategoryNavigator.ItemCategoryTab;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator.ItemCategoryTab;
 
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +95,7 @@ public class PulseItemCategoryNavigatorTest {
     @Test
     public void categoryLabelWithCurrentLocaleAsEnglish() throws Exception {
         // WHEN
-        ItemCategoryTab tab = categoryNavigator.new ItemCategoryTab(ItemCategory.PROBLEM);
+        ItemCategoryTab tab = categoryNavigator.new ItemCategoryTab(PulseItemCategory.PROBLEM);
         // THEN
         assertEquals("Problems", tab.getLabel());
     }

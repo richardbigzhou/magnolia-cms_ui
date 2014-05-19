@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListView;
 
 /**
- * Availability rule used for task actions.
+ * Messages Pulse tab UI.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
-
-    private TaskAvailabilityRuleDefinition definition;
-
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
-    }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
+public interface MessagesListView extends PulseListView {
 
 }

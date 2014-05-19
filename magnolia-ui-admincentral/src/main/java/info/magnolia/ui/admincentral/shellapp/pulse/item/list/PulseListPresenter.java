@@ -31,26 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Availability rule used for task actions.
+ * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
+ *
+ * @param <L> listener for calling back to parent.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
 
-    private TaskAvailabilityRuleDefinition definition;
+    View start();
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    View openItem(String itemId) throws RegistrationException;
+
+    void setListener(L listener);
+
+    /**
+     * Listener interface used to call parent presenter.
+     */
+    interface Listener {
+        void showList();
     }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
-
 }

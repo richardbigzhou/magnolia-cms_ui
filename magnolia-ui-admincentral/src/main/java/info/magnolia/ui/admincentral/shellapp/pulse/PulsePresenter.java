@@ -37,10 +37,10 @@ import info.magnolia.event.EventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemsPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.PulseTasksPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
@@ -57,20 +57,20 @@ import org.slf4j.LoggerFactory;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.Listener, PulseMessagesPresenter.Listener, PulseTasksPresenter.Listener, MessageEventHandler, TaskEventHandler {
+public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, MessagesListPresenter.Listener, TasksListPresenter.Listener, MessageEventHandler, TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 
     private PulseView view;
-    private PulseMessagesPresenter messagesPresenter;
-    private PulseTasksPresenter tasksPresenter;
+    private MessagesListPresenter messagesPresenter;
+    private TasksListPresenter tasksPresenter;
     private ShellImpl shell;
-    private ItemCategory selectedCategory = ItemCategory.TASKS;
+    private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
     private boolean isDisplayingDetailView;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
-            final PulseMessagesPresenter messagesPresenter, final PulseTasksPresenter tasksPresenter) {
+            final MessagesListPresenter messagesPresenter, final TasksListPresenter tasksPresenter) {
         this.view = view;
         this.messagesPresenter = messagesPresenter;
         this.tasksPresenter = tasksPresenter;
@@ -92,7 +92,7 @@ public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.
     }
 
     @Override
-    public void onCategoryChange(ItemCategory category) {
+    public void onCategoryChange(PulseItemCategory category) {
         selectedCategory = category;
         showList();
     }
@@ -105,7 +105,7 @@ public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.
 
     @Override
     public void showList() {
-        if (selectedCategory == ItemCategory.TASKS) {
+        if (selectedCategory == PulseItemCategory.TASKS) {
             view.setPulseSubView(tasksPresenter.start());
         } else {
             view.setPulseSubView(messagesPresenter.start());
@@ -146,7 +146,7 @@ public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.
     @Override
     public void taskAdded(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
-        updateView(ItemCategory.UNCLAIMED);
+        updateView(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
@@ -162,7 +162,7 @@ public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.
     @Override
     public void taskFailed(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
-        updateView(ItemCategory.FAILED);
+        updateView(PulseItemCategory.FAILED);
     }
 
     public boolean isDisplayingDetailView() {
@@ -175,17 +175,17 @@ public final class PulsePresenter implements ItemsPresenter.Listener, PulseView.
 
         shell.setIndication(ShellAppType.PULSE, unclearedMessages + pendingTasks);
 
-        view.updateCategoryBadgeCount(ItemCategory.MESSAGES, unclearedMessages);
-        view.updateCategoryBadgeCount(ItemCategory.TASKS, pendingTasks);
+        view.updateCategoryBadgeCount(PulseItemCategory.MESSAGES, unclearedMessages);
+        view.updateCategoryBadgeCount(PulseItemCategory.TASKS, pendingTasks);
     }
 
     /*
      * This method won't show the tasks in the active tab straight away but will do it when clicking on the pulse icon.
      */
-    private void updateView(final ItemCategory activeTab) {
+    private void updateView(final PulseItemCategory activeTab) {
         // update top navigation and load new tasks
-        selectedCategory = ItemCategory.TASKS;
-        view.setTabActive(ItemCategory.TASKS);
+        selectedCategory = PulseItemCategory.TASKS;
+        view.setTabActive(PulseItemCategory.TASKS);
         if (isDisplayingDetailView) {
             showList();
         }

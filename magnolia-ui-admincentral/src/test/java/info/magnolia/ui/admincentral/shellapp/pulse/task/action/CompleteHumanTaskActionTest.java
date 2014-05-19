@@ -47,12 +47,12 @@ import org.junit.Test;
  */
 public class CompleteHumanTaskActionTest extends BaseHumanTaskActionTest {
 
-    private CompleteHumanTaskAction action;
+    private CompleteTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new CompleteHumanTaskAction(mock(CompleteHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        action = new CompleteTaskAction(mock(CompleteTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
 
     @Test

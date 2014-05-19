@@ -47,12 +47,12 @@ import org.junit.Test;
  */
 public class RejectHumanTaskActionTest extends BaseHumanTaskActionTest {
 
-    private RejectHumanTaskAction action;
+    private RejectTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new RejectHumanTaskAction(mock(RejectHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, null, null, mock(Shell.class));
+        action = new RejectTaskAction(mock(RejectTaskActionDefinition.class), null, mock(TasksManager.class), null, null, null, mock(Shell.class));
     }
 
     @Test

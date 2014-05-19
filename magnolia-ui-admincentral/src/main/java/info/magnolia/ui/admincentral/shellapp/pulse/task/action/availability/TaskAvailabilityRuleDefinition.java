@@ -37,7 +37,7 @@ import info.magnolia.task.Task.Status;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 
 /**
- * TaskAvailabilityRuleDefinition.
+ * Configured definition of {@link TaskAvailabilityRule}.
  */
 public class TaskAvailabilityRuleDefinition extends ConfiguredAvailabilityRuleDefinition {
 

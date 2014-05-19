@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.MessageDetailPresenter;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -54,10 +54,10 @@ public class DeleteMessageAction extends AbstractAction<DeleteMessageActionDefin
     private final UiContext uiContext;
     private final Message message;
     private final MessagesManager messagesManager;
-    private final MessagePresenter messagePresenter;
+    private final MessageDetailPresenter messagePresenter;
 
     @Inject
-    public DeleteMessageAction(DeleteMessageActionDefinition definition, Message message, MessagesManager messagesManager, MessagePresenter messagePresenter, UiContext uiContext) {
+    public DeleteMessageAction(DeleteMessageActionDefinition definition, Message message, MessagesManager messagesManager, MessageDetailPresenter messagePresenter, UiContext uiContext) {
         super(definition);
         this.message = message;
         this.messagesManager = messagesManager;

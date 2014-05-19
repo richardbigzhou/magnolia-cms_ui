@@ -33,60 +33,36 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
-
+import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
-import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
 import info.magnolia.ui.api.shell.Shell;
-
-import org.junit.Test;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**
- * ClaimHumanTaskActionTest.
+ * Action for deleting a task.
  */
-public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
+public class DeleteTaskAction extends AbstractTaskAction<DeleteTaskActionDefinition> {
 
-    private ClaimTaskAction action;
+    public DeleteTaskAction(DeleteTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskDetailPresenter taskPresenter, Shell shell) {
+        super(definition, task, taskManager, taskPresenter, shell);
+    }
 
     @Override
-    public void setUp() {
-        super.setUp();
-        action = new ClaimTaskAction(mock(ClaimTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+    protected void executeTask(TasksManager taskManager, Task task) {
+        log.debug("About to delete human task named [{}]", task.getName());
+        taskManager.removeTask(task.getId());
+        getTaskPresenter().onNavigateToList();
+        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
     }
 
-    @Test
-    public void claimActionExecutesIfTaskStatusIsCreated() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Created);
+    @Override
+    protected void canExecuteTask(Task task) throws IllegalStateException {
+        final String currentUser = MgnlContext.getUser().getName();
 
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN no exception
+        if (task.getStatus() != Task.Status.Completed || !currentUser.equals(task.getActorId())) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only completed tasks assigned to yourself can be deleted.");
+        }
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void claimActionFailsIfTaskStatusIsNotCreated() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Completed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.Failed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.InProgress);
-
-        // WHEN
-        action.canExecuteTask(task);
-    }
-
 }

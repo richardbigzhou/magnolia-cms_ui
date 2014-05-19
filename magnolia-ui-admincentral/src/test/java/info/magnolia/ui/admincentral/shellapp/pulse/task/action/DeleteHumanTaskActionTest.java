@@ -46,12 +46,12 @@ import org.junit.Test;
  * DeleteHumanTaskActionTest.
  */
 public class DeleteHumanTaskActionTest extends BaseHumanTaskActionTest {
-    private DeleteHumanTaskAction action;
+    private DeleteTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new DeleteHumanTaskAction(mock(DeleteHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        action = new DeleteTaskAction(mock(DeleteTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
 
     @Test

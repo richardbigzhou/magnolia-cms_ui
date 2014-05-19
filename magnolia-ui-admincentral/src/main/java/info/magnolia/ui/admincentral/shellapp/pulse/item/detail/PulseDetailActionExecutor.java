@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import javax.inject.Inject;
 
 /**
- * Availability rule used for task actions.
+ * Action executor for pulse items.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public final class PulseDetailActionExecutor extends AbstractActionExecutor {
 
-    private TaskAvailabilityRuleDefinition definition;
+    private ItemViewDefinition itemViewDefinition;
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    @Inject
+    public PulseDetailActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+
     }
 
     @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
+    public ActionDefinition getActionDefinition(String actionName) {
+        return itemViewDefinition.getActions().get(actionName);
     }
 
+    public void setMessageViewDefinition(ItemViewDefinition itemViewDefinition) {
+        this.itemViewDefinition = itemViewDefinition;
+    }
 }

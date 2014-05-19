@@ -47,12 +47,12 @@ import org.junit.Test;
  */
 public class RetryHumanTaskActionTest extends BaseHumanTaskActionTest {
 
-    private RetryHumanTaskAction action;
+    private RetryTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new RetryHumanTaskAction(mock(RetryHumanTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        action = new RetryTaskAction(mock(RetryTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
 
     @Test

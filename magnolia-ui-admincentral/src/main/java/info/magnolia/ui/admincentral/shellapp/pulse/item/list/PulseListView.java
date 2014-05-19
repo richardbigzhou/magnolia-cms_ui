@@ -31,26 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.api.view.View;
+
+import java.util.Collection;
+import java.util.Set;
+
+import com.vaadin.data.Container;
 
 /**
- * Availability rule used for task actions.
+ * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public interface PulseListView extends View {
 
-    private TaskAvailabilityRuleDefinition definition;
+    void setDataSource(Container dataSource);
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
-    }
+    void setListener(Listener listener);
 
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
+    void refresh();
+
+    void updateCategoryBadgeCount(PulseItemCategory type, int count);
+
+    void setTabActive(PulseItemCategory category);
+
+    /**
+     * Listener interface to call back to {@link PulseItemsPresenter}.
+     */
+    public interface Listener {
+
+        void filterByItemCategory(PulseItemCategory category);
+
+        void onItemClicked(String itemId);
+
+        Object getParent(Object child);
+
+        Collection<?> getGroup(Object parent);
+
+        void setGrouping(boolean checked);
+
+        void deleteItems(Set<String> itemsIds);
     }
 
 }

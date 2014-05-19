@@ -33,60 +33,38 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
-
+import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
-import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
 import info.magnolia.ui.api.shell.Shell;
-
-import org.junit.Test;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 /**
- * ClaimHumanTaskActionTest.
+ * Action for claiming a task.
  */
-public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
+public class ClaimTaskAction extends AbstractTaskAction<ClaimTaskActionDefinition> {
 
-    private ClaimTaskAction action;
+    public ClaimTaskAction(ClaimTaskActionDefinition definition, Task task, TasksManager tasksManager, DefaultTaskDetailPresenter taskPresenter, Shell shell) {
+        super(definition, task, tasksManager, taskPresenter, shell);
+    }
 
     @Override
-    public void setUp() {
-        super.setUp();
-        action = new ClaimTaskAction(mock(ClaimTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+    protected void canExecuteTask(Task task) throws IllegalStateException {
+        if (task.getStatus() != Task.Status.Created) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only unclaimed tasks can be claimed.");
+        }
     }
 
-    @Test
-    public void claimActionExecutesIfTaskStatusIsCreated() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Created);
+    @Override
+    protected void executeTask(TasksManager taskManager, Task task) {
+        final String userId = MgnlContext.getUser().getName();
+        log.debug("User [{}] is claiming workflow human task named [{}]", userId, task.getName());
 
-        // WHEN
-        action.canExecuteTask(task);
+        String taskId = task.getId();
+        taskManager.claim(taskId, userId);
+        getTaskPresenter().onUpdateDetailView(String.valueOf(taskId));
 
-        // THEN no exception
+        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void claimActionFailsIfTaskStatusIsNotCreated() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Completed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.Failed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.InProgress);
-
-        // WHEN
-        action.canExecuteTask(task);
-    }
-
 }

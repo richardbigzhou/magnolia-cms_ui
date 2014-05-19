@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
 
-import info.magnolia.task.Task;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Availability rule used for task actions.
+ * View interface for displaying a generic item, e.g. a message or task.
  */
-public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+public interface PulseDetailView extends View {
 
-    private TaskAvailabilityRuleDefinition definition;
+    void setItemView(View formView);
 
-    public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this.definition = definition;
+    void setActionbarView(View actionbarView);
+
+    void setListener(Listener listener);
+
+    void setTitle(String subject);
+
+    /**
+     * Listener interface used for communicating with the presenter.
+     */
+    public interface Listener {
+        void onNavigateToList();
+
+        void onUpdateDetailView(String itemId);
     }
-
-    @Override
-    public final boolean isAvailableForItem(Object itemId) {
-        Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
-    }
-
 }

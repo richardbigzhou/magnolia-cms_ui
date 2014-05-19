@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractPulseItemView.GROUP_PLACEHOLDER_ITEMID;
+import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.AbstractItemsContainer;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
@@ -50,7 +50,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * The messages container instantiates and manages an {@link HierarchicalContainer} with messages.
  */
-public class MessagesContainer extends AbstractItemsContainer<Message> {
+public class MessagesContainer extends AbstractPulseListContainer<Message> {
 
     public static final String NEW_PROPERTY_ID = "new";
     public static final String TYPE_PROPERTY_ID = "type";
@@ -177,7 +177,7 @@ public class MessagesContainer extends AbstractItemsContainer<Message> {
     }
 
     @Override
-    protected void applyCategoryFilter(final ItemCategory category) {
+    protected void applyCategoryFilter(final PulseItemCategory category) {
 
         final Container.Filter filter = new Container.Filter() {
 
