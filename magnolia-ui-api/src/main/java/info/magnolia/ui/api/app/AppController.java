@@ -60,5 +60,5 @@ public interface AppController {
 
     void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback);
 
-    void openChooseDialog(String appName, UiContext uiContext, String targetTreeRootPath, String value, ChooseDialogCallback callback);
+    void openChooseDialog(String appName, UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback);
 }
