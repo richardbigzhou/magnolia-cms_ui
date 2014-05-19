@@ -86,5 +86,11 @@ public class BaseApp implements App {
 
     @Override
     public void openChooseDialog(UiContext overlayLayer, String selectedId, ChooseDialogCallback callback) {
+        // Choose dialogs are a feature of content apps, invoking this on a BaseApp will not do anything.
+    }
+
+    @Override
+    public void openChooseDialog(UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback) {
+        // Choose dialogs are a feature of content apps, invoking this on a BaseApp will not do anything.
     }
 }

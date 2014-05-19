@@ -72,4 +72,6 @@ public interface App {
      * @param callback
      */
     void openChooseDialog(UiContext overlayLayer, String selectedId, ChooseDialogCallback callback);
+
+    void openChooseDialog(UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback);
 }

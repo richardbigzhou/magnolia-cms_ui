@@ -248,32 +248,12 @@ public class LinkField extends CustomField<String> {
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-
-                appController.openChooseDialog(definition.getAppName(), uiContext, textField.getValue(), new ChooseDialogCallback() {
-                    @Override
-                    public void onItemChosen(String actionName, final Object chosenValue) {
-                        Item chosenItem = contentConnector.getItem(chosenValue);
-                        String propertyName = definition.getTargetPropertyToPopulate();
-                        String newValue = null;
-                        if (chosenItem != null && !(chosenItem instanceof NullItem)) {
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenItem).getJcrItem();
-                            if (jcrItem.isNode()) {
-                                final Node selected = (Node) jcrItem;
-                                try {
-                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
-                                    newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
-                                } catch (RepositoryException e) {
-                                    log.error("Not able to access the configured property. Value will not be set.", e);
-                                }
-                            }
-                        }
-                        setValue(newValue);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                    }
-                });
+                ChooseDialogCallback callback = new LinkFieldChooseDialogCallback();
+                if (StringUtils.isNotBlank(definition.getTargetTreeRootPath())) {
+                    appController.openChooseDialog(definition.getAppName(), uiContext, definition.getTargetTreeRootPath(), textField.getValue(), callback);
+                } else {
+                    appController.openChooseDialog(definition.getAppName(), uiContext, textField.getValue(), callback);
+                }
             }
         };
     }
@@ -305,6 +285,33 @@ public class LinkField extends CustomField<String> {
             return new UserError(getRequiredError());
         } else {
             return null;
+        }
+    }
+
+    private class LinkFieldChooseDialogCallback implements ChooseDialogCallback {
+
+        @Override
+        public void onItemChosen(String actionName, final Object chosenValue) {
+            Item chosenItem = contentConnector.getItem(chosenValue);
+            String propertyName = definition.getTargetPropertyToPopulate();
+            String newValue = null;
+            if (chosenItem != null && !(chosenItem instanceof NullItem)) {
+                javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenItem).getJcrItem();
+                if (jcrItem.isNode()) {
+                    final Node selected = (Node) jcrItem;
+                    try {
+                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
+                        newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
+                    } catch (RepositoryException e) {
+                        log.error("Not able to access the configured property. Value will not be set.", e);
+                    }
+                }
+            }
+            setValue(newValue);
+        }
+
+        @Override
+        public void onCancel() {
         }
     }
 
