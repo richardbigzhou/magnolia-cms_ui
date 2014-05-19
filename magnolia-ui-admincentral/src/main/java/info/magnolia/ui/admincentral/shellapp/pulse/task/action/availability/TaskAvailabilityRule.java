@@ -33,13 +33,20 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
+import info.magnolia.task.Task.Status;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Availability rule used for task actions.
  */
 public class TaskAvailabilityRule extends AbstractAvailabilityRule {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskAvailabilityRule.class);
 
     private TaskAvailabilityRuleDefinition definition;
 
@@ -49,8 +56,17 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
     @Override
     public final boolean isAvailableForItem(Object itemId) {
+        if (itemId == null) {
+            log.warn("Got a null task. Availability rule will return false");
+            return false;
+        }
         Task task = (Task) itemId;
-        return task.getStatus().equals(definition.getStatus());
+
+        return isVisibleToUser(task) && task.getStatus().equals(definition.getStatus());
+    }
+
+    protected boolean isVisibleToUser(Task task) {
+        return task.getStatus() == Status.Created || task.getActorId().equals(MgnlContext.getUser().getName());
     }
 
 }

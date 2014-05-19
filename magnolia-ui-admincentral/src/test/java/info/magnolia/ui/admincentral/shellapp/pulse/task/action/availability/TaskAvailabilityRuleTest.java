@@ -34,16 +34,39 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * TaskAvailabilityRuleTest.
  */
 public class TaskAvailabilityRuleTest {
+
+    @Before
+    public void setUp() {
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("foo");
+
+        Context context = mock(Context.class);
+        when(context.getUser()).thenReturn(user);
+
+        MgnlContext.setInstance(context);
+
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
+    }
 
     @Test
     public void taskIsAvailableWhenRuleDefinitionStatusIsSameAsTaskStatus() throws Exception {
@@ -80,4 +103,39 @@ public class TaskAvailabilityRuleTest {
         // THEN
         assertFalse(available);
     }
+
+    @Test
+    public void taskIsNotAvailableWhenAssigneeIsNotCurrentUser() throws Exception {
+        // GIVEN
+        TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
+        definition.setStatus(Status.InProgress);
+
+        Task task = new Task();
+        task.setStatus(Status.InProgress);
+        task.setActorId("qux");
+
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+
+        // WHEN
+        boolean available = rule.isAvailableForItem(task);
+
+        // THEN
+        assertFalse(available);
+    }
+
+    @Test
+    public void taskIsNotAvailableIfNull() throws Exception {
+        // GIVEN
+        TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
+        definition.setStatus(Status.InProgress);
+
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+
+        // WHEN
+        boolean available = rule.isAvailableForItem(null);
+
+        // THEN
+        assertFalse(available);
+    }
+
 }
