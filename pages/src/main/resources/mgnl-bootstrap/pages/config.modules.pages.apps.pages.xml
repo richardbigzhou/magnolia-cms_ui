@@ -545,9 +545,6 @@
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>6e017f85-645b-466c-ba9b-1b29efe1bdb1</sv:value>
           </sv:property>
-          <sv:property sv:name="asynchronous" sv:type="String">
-            <sv:value>true</sv:value>
-          </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
             <sv:value>website</sv:value>
           </sv:property>
