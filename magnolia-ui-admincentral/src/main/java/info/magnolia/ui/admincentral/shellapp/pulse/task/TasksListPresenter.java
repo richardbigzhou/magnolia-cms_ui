@@ -42,11 +42,11 @@ import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.pulse.PulseDetailPresenter;
-import info.magnolia.ui.api.pulse.task.TaskDetailPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -57,6 +57,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.util.HierarchicalContainer;
 
 /**
@@ -64,6 +67,7 @@ import com.vaadin.data.util.HierarchicalContainer;
  */
 public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener {
 
+    private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
     private final TasksListView view;
     private final TasksManager tasksManager;
@@ -97,7 +101,14 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         Task task = tasksManager.getTaskById(itemId);
         TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
 
-        TaskDetailPresenter taskPresenter = componentProvider.newInstance(definition.getPresenterClass(), task, definition);
+        TaskDetailPresenter taskPresenter;
+        if (definition instanceof TaskUiDefinition) {
+            taskPresenter = componentProvider.newInstance(((TaskUiDefinition)definition).getPresenterClass(), task, definition);
+        }
+        else {
+            log.debug("Task definition is not an instance of TaskUiDefinition, the presenter can not be configured.");
+            taskPresenter = componentProvider.newInstance(DefaultTaskDetailPresenter.class, task, definition);
+        }
         taskPresenter.setListener(this);
         return taskPresenter.start();
 

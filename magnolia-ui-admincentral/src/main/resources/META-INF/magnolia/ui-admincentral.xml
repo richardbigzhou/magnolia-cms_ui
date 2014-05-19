@@ -148,7 +148,7 @@
     </type-mapping>
 
     <type-mapping>
-      <type>info.magnolia.ui.api.pulse.task.TaskDetailPresenter</type>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.TaskDetailPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter</implementation>
     </type-mapping>
 

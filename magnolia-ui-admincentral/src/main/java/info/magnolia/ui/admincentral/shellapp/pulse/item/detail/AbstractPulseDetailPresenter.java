@@ -42,7 +42,6 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.pulse.PulseDetailPresenter;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 

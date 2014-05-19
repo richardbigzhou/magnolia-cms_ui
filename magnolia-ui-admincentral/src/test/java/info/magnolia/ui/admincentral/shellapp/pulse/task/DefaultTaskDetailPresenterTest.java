@@ -31,14 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import info.magnolia.ui.api.pulse.PulseDetailPresenter;
-import info.magnolia.ui.api.view.View;
+import static org.mockito.Mockito.mock;
+
+import info.magnolia.task.Task;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailView;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
+
+import org.junit.Before;
 
 /**
- * Presenter for displaying task detail view. Instantiated inside the pulse, when opening a task.
+ * TaskPresenterTest.
  */
-public interface TaskDetailPresenter extends PulseDetailPresenter {
-    View start();
+public class DefaultTaskDetailPresenterTest {
+    private TaskDetailPresenter presenter;
+
+    @Before
+    public void setUp() {
+        presenter = new DefaultTaskDetailPresenter<TaskUiDefinition, Task>(mock(PulseDetailView.class), null, null, null, null, null, null, mock(ActionbarPresenter.class), null);
+    }
+
+
 }

@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.pulse.PulseDetailPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 
 import java.util.Collection;
 

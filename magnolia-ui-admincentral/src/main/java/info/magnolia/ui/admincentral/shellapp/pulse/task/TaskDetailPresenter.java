@@ -33,57 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
-import info.magnolia.task.Task;
-import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ItemView;
-
-import java.util.HashMap;
-
-import org.junit.Before;
-import org.junit.Test;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
+import info.magnolia.ui.api.view.View;
 
 /**
- * TaskPresenterTest.
+ * Presenter for displaying task detail view. Instantiated inside the pulse, when opening a task.
  */
-public class TaskPresenterTest {
-    private TaskPresenter presenter;
-
-    @Before
-    public void setUp() {
-        presenter = new TaskPresenter(mock(ItemView.class), null, null, null, null, null, mock(ActionbarPresenter.class), null, null);
-    }
-
-    @Test
-    public void viewIsTakenFromTaskContent() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setName("foo");
-
-        HashMap<String, Object> content = new HashMap<String, Object>();
-        content.put("messageView", "foo");
-        task.setContent(content);
-
-        // WHEN
-        String viewName = presenter.getItemViewName(task);
-
-        // THEN
-        assertEquals("foo", viewName);
-    }
-
-    @Test
-    public void viewFallsbackToDefaultIfNoneSet() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setName("foo");
-        task.setContent(new HashMap<String, Object>());
-
-        // WHEN
-        String viewName = presenter.getItemViewName(task);
-
-        // THEN
-        assertEquals(TaskPresenter.DEFAULT_VIEW, viewName);
-    }
+public interface TaskDetailPresenter extends PulseDetailPresenter {
+    View start();
 }

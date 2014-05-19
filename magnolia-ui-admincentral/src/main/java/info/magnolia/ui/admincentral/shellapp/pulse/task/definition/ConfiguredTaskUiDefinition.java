@@ -31,21 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.definition;
+
+import info.magnolia.task.definition.ConfiguredTaskDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TaskDetailPresenter;
 
 /**
- * Presenter used to display the detail view of items in pulse.
+ * Configurable {@link TaskUiDefinition}.
  */
-public interface PulseDetailPresenter {
+public class ConfiguredTaskUiDefinition extends ConfiguredTaskDefinition implements TaskUiDefinition {
 
-    void setListener(Listener listener);
+    private Class<? extends TaskDetailPresenter> presenterClass;
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener {
-        void showList();
-
-        void updateDetailView(String itemId);
+    public ConfiguredTaskUiDefinition() {
+        setPresenterClass(TaskDetailPresenter.class);
     }
+
+    @Override
+    public Class<? extends TaskDetailPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
+    public void setPresenterClass(Class<? extends TaskDetailPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
+
 }

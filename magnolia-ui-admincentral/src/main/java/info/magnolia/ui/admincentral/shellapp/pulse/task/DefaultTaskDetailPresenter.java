@@ -43,7 +43,6 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailActio
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
-import info.magnolia.ui.api.pulse.task.TaskDetailPresenter;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
