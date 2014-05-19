@@ -88,13 +88,12 @@ public class ContentAppTest {
 
     private ContentApp app;
     private AppContext ctx;
-    private GuiceComponentProvider provider;
 
     @Before
     public void setUp() {
         ctx = mock(AppContext.class);
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        provider = mock(GuiceComponentProvider.class);
+        GuiceComponentProvider provider = mock(GuiceComponentProvider.class);
 
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
@@ -104,7 +103,6 @@ public class ContentAppTest {
 
         doReturn(injector).when(provider).getInjector();
         doReturn(MockChooseDialogEventBusClient.class).when(provider).getImplementation(MockChooseDialogEventBusClient.class);
-        doReturn(TestChooseDialogPresenter.class).when(provider).getImplementation(ChooseDialogPresenter.class);
         doReturn(moduleRegistry).when(provider).getComponent(ModuleRegistry.class);
         doReturn(new ArrayList<ModuleDefinition>()).when(moduleRegistry).getModuleDefinitions();
 
