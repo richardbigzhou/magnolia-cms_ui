@@ -109,7 +109,7 @@ public class ContentAppTest {
     }
 
     @Test
-    public void testOpenChooseDialog() throws Exception {
+    public void testTargetTreeRootPathIsSetInWorkbenchDefinition() throws Exception {
         // GIVEN
         final ComponentProvider componentProvider = mock(ComponentProvider.class);
         app = new ContentApp(ctx, mock(AppView.class), provider) {
