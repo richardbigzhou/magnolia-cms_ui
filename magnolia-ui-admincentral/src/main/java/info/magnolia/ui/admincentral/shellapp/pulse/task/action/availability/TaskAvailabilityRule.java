@@ -62,11 +62,11 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
         }
         Task task = (Task) itemId;
 
-        return isVisibleToUser(task) && task.getStatus().equals(definition.getStatus());
+        return isVisibleToUser(task) && task.getStatus() == definition.getStatus();
     }
 
     protected boolean isVisibleToUser(Task task) {
-        return task.getStatus() == Status.Created || task.getActorId().equals(MgnlContext.getUser().getName());
+        return task.getStatus() == Status.Created || MgnlContext.getUser().getName().equals(task.getActorId());
     }
 
 }

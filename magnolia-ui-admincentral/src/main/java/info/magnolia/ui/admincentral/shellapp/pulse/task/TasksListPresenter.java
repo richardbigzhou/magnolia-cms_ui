@@ -78,7 +78,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
 
     @Inject
     public TasksListPresenter(final TasksListView view, final TasksContainer container, final ShellImpl shellImpl, final TasksManager tasksManager,
-                              final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n) {
+            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n) {
         super(container);
         this.view = view;
         this.shell = shellImpl;
@@ -103,7 +103,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
 
         TaskDetailPresenter taskPresenter;
         if (definition instanceof TaskUiDefinition) {
-            taskPresenter = componentProvider.newInstance(((TaskUiDefinition)definition).getPresenterClass(), task, definition);
+            taskPresenter = componentProvider.newInstance(((TaskUiDefinition) definition).getPresenterClass(), task, definition);
         }
         else {
             log.debug("Task definition is not an instance of TaskUiDefinition, the presenter can not be configured.");
@@ -165,7 +165,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
             Task task = tasksManager.getTaskById(taskId);
             if (task.getStatus() != Status.Created) {
                 // log warn/info?
-                shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantAssign", task.getName()));
+                shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantAssign", task.getName(), task.getStatus()));
                 return;
             }
             tasksManager.claim(taskId, userId);
@@ -200,7 +200,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Status.Created, Status.Failed)).size();
+        return tasksManager.findPendingTasksByUser(MgnlContext.getUser().getName()).size();
     }
 
     public void setTabActive(PulseItemCategory category) {

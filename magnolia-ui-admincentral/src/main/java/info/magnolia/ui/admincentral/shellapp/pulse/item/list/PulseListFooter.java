@@ -129,7 +129,7 @@ public final class PulseListFooter extends CustomComponent {
 
         final ExternalResource iconAssignResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-user-public");
 
-        final ContextMenuItem claim = contextMenu.addItem(i18n.translate("publish.actions.claim"), iconAssignResource);
+        final ContextMenuItem claim = contextMenu.addItem(i18n.translate("pages.publish.actions.claim"), iconAssignResource);
 
         claim.addItemClickListener(new ContextMenuItemClickListener() {
 
@@ -169,7 +169,7 @@ public final class PulseListFooter extends CustomComponent {
     private static void addDeleteMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu) {
         final ExternalResource iconDeleteResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-delete");
 
-        final ContextMenuItem delete = contextMenu.addItem(i18n.translate("publish.actions.delete"), iconDeleteResource);
+        final ContextMenuItem delete = contextMenu.addItem(i18n.translate("pages.publish.actions.delete"), iconDeleteResource);
 
         delete.addItemClickListener(new ContextMenuItemClickListener() {
 
