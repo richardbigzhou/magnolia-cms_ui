@@ -64,33 +64,88 @@ public interface FavoritesView extends View {
 
         /**
          * Adding instantly a new group and a new favorite (and add the latter to the former).
-         * @param newFavorite
-         * @param newGroup
+         * @param newFavorite The JcrNewNodeAdapter for the new favorite.
+         * @param newGroup The JcrNewNodeAdapter for the new group.
          */
         void addFavoriteAndGroup(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup);
 
+        /**
+         * Adds a favorite.
+         * @param newFavorite The JcrNewNodeAdapter for the new favorite.
+         */
         void addFavorite(JcrNewNodeAdapter newFavorite);
 
+        /**
+         * Edit a favorite.
+         * @param relPath  The relative path of the favorite to edit.
+         * @param newTitle The new title.
+         */
         void editFavorite(String relPath, String newTitle);
 
+        /**
+         * Removes a favorite by the given path.
+         * @param relPath of the favorite to remove.
+         */
         void removeFavorite(String relPath);
 
+        /**
+         * To go to the given location.
+         * @param location The location to go to.
+         */
         void goToLocation(String location);
 
+        /**
+         * Add a group.
+         * @param newGroup The JcrNewNodeAdapter for the new group.
+         */
         void addGroup(JcrNewNodeAdapter newGroup);
 
+        /**
+         * Edit a group.
+         * @param relPath The relative path of the group to edit.
+         * @param newTitle The new title.
+         */
         void editGroup(String relPath, String newTitle);
 
+        /**
+         * Remove a group.
+         * @param relPath The relative path of the group to remove.
+         */
         void removeGroup(String relPath);
 
+        /**
+         * Moves a favorite.
+         * @param relPath The relative path to move the node.
+         * @param group The node-name of the group.
+         */
         void moveFavorite(String relPath, String group);
 
+        /**
+         * Orders a favorite before a sibling.
+         * @param relPath The path of the node to move.
+         * @param sibling The node-name of the sibling.
+         */
         void orderFavoriteBefore(String relPath, String sibling);
 
+        /**
+         * Orders a favorite after a sibling.
+         * @param relPath The path of the node to move.
+         * @param sibling The node-name of the sibling.
+         */
         void orderFavoriteAfter(String relPath, String sibling);
 
+        /**
+         * Orders a group before a sibling.
+         * @param relPath The path of the node to move.
+         * @param sibling The node-name of the sibling.
+         */
         void orderGroupBefore(String relPath, String sibling);
 
+        /**
+         * Orders a group after a sibling.
+         * @param relPath The path of the node to move.
+         * @param groupToMove The node-name of the sibling.
+         */
         void orderGroupAfter(String groupToMove, String relPath);
     }
 
