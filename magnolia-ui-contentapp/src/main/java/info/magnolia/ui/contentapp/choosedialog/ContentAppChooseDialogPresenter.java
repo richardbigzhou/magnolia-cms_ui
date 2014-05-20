@@ -37,7 +37,6 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
@@ -46,7 +45,7 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import com.google.inject.Inject;
 
 /**
- * Extension of {@link ChooseDialogPresenterImpl} capable of restoring choose dialog out of {@link BrowserSubAppDescriptor}
+ * Extension of {@link ChooseDialogPresenterImpl} capable of restoring choose dialog out of {@link info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor}
  * of an app.
  */
 public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
