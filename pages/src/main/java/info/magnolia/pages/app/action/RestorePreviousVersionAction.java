@@ -34,17 +34,23 @@
 package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
@@ -62,16 +68,26 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     private final VersionManager versionManager;
     private final SubAppContext subAppContext;
     private final SimpleTranslator i18n;
+    private EventBus eventBus;
+
+    /**
+     * @deprecated since 5.3. Use {@link RestorePreviousVersionAction#RestorePreviousVersionAction(RestorePreviousVersionActionDefinition, AbstractJcrNodeAdapter, LocationController, VersionManager, SubAppContext, SimpleTranslator, EventBus) instead.
+     */
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
+            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n) {
+        this(definition, nodeItemToEdit, locationController, versionManager, subAppContext, i18n, null);
+    }
 
     @Inject
     public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
-            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n) {
+            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
         this.versionManager = versionManager;
         this.subAppContext = subAppContext;
         this.i18n = i18n;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -88,10 +104,14 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
                 return;
             }
             // Restore previous version
-            versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
+            Node node = nodeItemToEdit.getJcrItem();
+            versionManager.restore(node, version, true);
             if (this.getDefinition().isShowPreview()) {
                 DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
                 locationController.goTo(location);
+            } else if (eventBus != null) {
+                Object itemId = JcrItemUtil.getItemId(node);
+                eventBus.fireEvent(new ContentChangedEvent(itemId, true));
             }
         } catch (RepositoryException e) {
             subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message"));
@@ -115,5 +135,4 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
 
         return previousVersion;
     }
-
 }
