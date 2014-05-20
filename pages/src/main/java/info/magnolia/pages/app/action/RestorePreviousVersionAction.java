@@ -89,9 +89,10 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
-            locationController.goTo(location);
-
+            if (this.getDefinition().isShowPreview()) {
+                DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
+                locationController.goTo(location);
+            }
         } catch (RepositoryException e) {
             subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message"));
             throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
