@@ -38,13 +38,13 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
 
+import javax.inject.Inject;
+
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-
-import javax.inject.Inject;
 
 /**
  * View implementation of {@link MessageView}.
@@ -85,6 +85,8 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     @Override
     public void setTitle(String subject) {
         title.setValue(subject);
+        // tooltip to display long truncated titles in their entirety
+        title.setDescription(subject);
     }
 
     @Override
