@@ -33,61 +33,108 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
-import info.magnolia.cms.security.User;
-import info.magnolia.context.Context;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
+import info.magnolia.task.definition.TaskDefinition;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TaskItemTest.
+ * Tests for {@link TaskItem}.
  */
 public class TaskItemTest {
 
-    @Before
-    public void setUp() {
-        Context ctx = mock(Context.class);
-        User user = mock(User.class);
 
-        when(ctx.getUser()).thenReturn(user);
-        when(user.getName()).thenReturn("someone");
-
-        MgnlContext.setInstance(ctx);
-    }
-
-    @After
-    public void tearDown() {
-        MgnlContext.setInstance(null);
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void taskItemResolvesAdditionalContentProperties() throws Exception {
-        // GIVEN
+    public void testTaskFields() throws Exception {
+        Date today = new Date();
+
         Task task = new Task();
-        task.setContent(new HashMap<String, Object>());
-        task.getContent().put("foo", 1);
-        task.getContent().put("bar", "baz");
+        task.setComment("test comment");
+        task.setActorId("actor");
+        task.setCreationDate(today);
+        task.setStatus(Task.Status.Created);
 
         // WHEN
-        TaskItem taskItem = new TaskItem(task, null);
-        Collection<String> ids = (Collection<String>) taskItem.getItemPropertyIds();
+        TaskItem<Task, TaskDefinition> taskItem = new TaskItem<Task, TaskDefinition>(task, mock(TaskDefinition.class));
+        String comment = (String) taskItem.getItemProperty("comment").getValue();
+        String actorId = (String) taskItem.getItemProperty("actorId").getValue();
+        Date creationDate = (Date) taskItem.getItemProperty("creationDate").getValue();
+        Task.Status status = (Task.Status) taskItem.getItemProperty("status").getValue();
 
         // THEN
-        assertThat(ids, hasItems("foo", "bar", "actorId", "comment", "id"));
+        assertThat(comment, is("test comment"));
+        assertThat(actorId, is("actor"));
+        assertThat(creationDate, is(today));
+        assertThat(status, is(Task.Status.Created));
+    }
 
-        assertEquals("1", taskItem.getItemProperty("foo").getValue());
-        assertEquals("baz", taskItem.getItemProperty("bar").getValue());
+    @Test
+    public void testTaskFieldsFromProperties() throws Exception {
+        Date today = new Date();
+
+        Task task = new Task();
+        task.setComment("test comment");
+        task.setActorId("actor");
+        task.setCreationDate(today);
+        task.setStatus(Task.Status.Created);
+
+        // WHEN
+        TaskItem<Task, TaskDefinition> taskItem = new TaskItem<Task, TaskDefinition>(task, mock(TaskDefinition.class),
+                new String[] {"comment", "actorId", "status"});
+
+        // THEN
+        assertThat(taskItem.getItemProperty("creationDate"), nullValue());
+    }
+
+    @Test
+    public void testTaskFieldsFromNestedProperties() throws Exception {
+        final Date today = new Date();
+
+        Task task = new Task();
+        task.setComment("test comment");
+        task.setActorId("actor");
+        task.setCreationDate(today);
+        task.setStatus(Task.Status.Created);
+
+        task.setContent(new HashMap<String, Object>() {{
+
+            put("field1", "value1");
+            put("field2", 123);
+            put("field3", 1234l);
+            put("field4", today);
+        }});
+
+        // WHEN
+        final List<String> nestedProperties = new LinkedList<String>() {{
+            add("field1");
+            add("field2");
+            add("field3");
+            add("field4");
+        }};
+
+        TaskItem<Task, TaskDefinition> taskItem = new TaskItem<Task, TaskDefinition>(task, mock(TaskDefinition.class),
+                new String[] {"comment", "actorId", "status"},
+                new HashMap<String, List<String>>() {{
+                    put("content", nestedProperties);
+                }}
+        );
+
+        // THEN
+        assertThat((String) taskItem.getItemProperty("content.field1").getValue(), is("value1"));
+        assertThat((Integer) taskItem.getItemProperty("content.field2").getValue(), is(123));
+        assertThat((Long) taskItem.getItemProperty("content.field3").getValue(), is(1234l));
+        assertThat((Date) taskItem.getItemProperty("content.field4").getValue(), is(today));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

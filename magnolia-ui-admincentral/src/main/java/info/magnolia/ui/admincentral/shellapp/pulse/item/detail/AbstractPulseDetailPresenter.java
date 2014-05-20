@@ -44,8 +44,11 @@ import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -59,20 +62,24 @@ import com.vaadin.data.util.BeanItem;
  */
 public abstract class AbstractPulseDetailPresenter<T> implements PulseDetailPresenter, PulseDetailView.Listener, ActionbarPresenter.Listener {
 
-    private final PulseDetailView view;
-    private PulseDetailActionExecutor itemActionExecutor;
-    private ItemViewDefinitionRegistry itemViewDefinitionRegistry;
-    private FormBuilder formbuilder;
-    private ActionbarPresenter actionbarPresenter;
-    private AvailabilityChecker availabilityChecker;
-    private Listener listener;
-    protected T item;
-    private I18nizer i18nizer;
-
     public static final String DEFAULT_VIEW = "ui-admincentral:default";
 
+    private final PulseDetailView view;
+    private final PulseDetailActionExecutor itemActionExecutor;
+    private final ItemViewDefinitionRegistry itemViewDefinitionRegistry;
+    private final FormBuilder formbuilder;
+    private final ActionbarPresenter actionbarPresenter;
+    private final AvailabilityChecker availabilityChecker;
+    private final I18nizer i18nizer;
+
+    protected final T item;
+    private Listener listener;
+    private ItemViewDefinition itemViewDefinition;
+
     @Inject
-    public AbstractPulseDetailPresenter(T item, PulseDetailView view, PulseDetailActionExecutor itemActionExecutor, AvailabilityChecker availabilityChecker, ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
+    public AbstractPulseDetailPresenter(final T item, final PulseDetailView view, final PulseDetailActionExecutor itemActionExecutor,
+                                        final AvailabilityChecker availabilityChecker, final ItemViewDefinitionRegistry itemViewDefinitionRegistry,
+                                        final FormBuilder formbuilder, final ActionbarPresenter actionbarPresenter, final I18nizer i18nizer) {
         this.item = item;
         this.view = view;
         this.itemActionExecutor = itemActionExecutor;
@@ -91,7 +98,7 @@ public abstract class AbstractPulseDetailPresenter<T> implements PulseDetailPres
         final String itemView = getItemViewName();
 
         try {
-            ItemViewDefinition itemViewDefinition = itemViewDefinitionRegistry.get(itemView);
+            itemViewDefinition = itemViewDefinitionRegistry.get(itemView);
             itemViewDefinition = i18nizer.decorate(itemViewDefinition);
 
             itemActionExecutor.setMessageViewDefinition(itemViewDefinition);
@@ -152,4 +159,14 @@ public abstract class AbstractPulseDetailPresenter<T> implements PulseDetailPres
         }
     }
 
+    /**
+     * Reads the configured property names from the {@link FieldDefinition}s.
+     */
+    protected List<String> getFieldProperties() {
+        List<String> properties = new LinkedList<String>();
+        for (FieldDefinition field : itemViewDefinition.getForm().getTabs().get(0).getFields()) {
+            properties.add(field.getName());
+        }
+        return properties;
+    }
 }

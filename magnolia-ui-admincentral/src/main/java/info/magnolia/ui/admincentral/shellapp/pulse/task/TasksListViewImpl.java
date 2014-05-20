@@ -37,8 +37,8 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer.*
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task.Status;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;

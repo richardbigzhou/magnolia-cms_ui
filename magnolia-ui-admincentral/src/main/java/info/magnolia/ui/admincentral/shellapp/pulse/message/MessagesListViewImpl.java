@@ -36,8 +36,8 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import static info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.shell.Shell;

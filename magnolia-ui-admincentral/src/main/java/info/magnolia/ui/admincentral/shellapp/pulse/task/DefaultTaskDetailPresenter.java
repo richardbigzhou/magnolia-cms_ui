@@ -44,6 +44,11 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefini
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.vaadin.data.util.BeanItem;
@@ -64,7 +69,6 @@ public class DefaultTaskDetailPresenter<D extends TaskDefinition, T extends Task
             I18nizer i18nizer) {
         super(task, view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
         this.definition = definition;
-        this.item = task;
     }
 
     public D getDefinition() {
@@ -81,8 +85,40 @@ public class DefaultTaskDetailPresenter<D extends TaskDefinition, T extends Task
         view.setTitle(getDefinition().getTitle());
     }
 
+    /**
+     * Populate a {@link TaskItem} with properties defined as {@link com.vaadin.ui.Field}s in
+     * {@link info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition}.
+     *
+     * In case a property has the dot notion like field1.field2 it will be added as a nested property.
+     */
     @Override
     protected BeanItem<T> asBeanItem() {
-        return new TaskItem(getItem(), getDefinition());
+        List<String> properties = new LinkedList<String>();
+        Map<String, List<String>> nestedProperties = new HashMap<String, List<String>>();
+
+        for (String fieldName : getFieldProperties()) {
+            String[] simplePropertyNames = fieldName.split("\\.");
+
+            if (simplePropertyNames.length == 2) {
+
+                final String parentPropertyName = simplePropertyNames[0];
+                final String nestedPropertyName = simplePropertyNames[1];
+
+                if (nestedProperties.containsKey(parentPropertyName)) {
+                    nestedProperties.get(parentPropertyName).add(nestedPropertyName);
+                }
+
+                else {
+                    nestedProperties.put(parentPropertyName, new LinkedList<String>() {{
+                        add(nestedPropertyName);
+                    }});
+                }
+            }
+            else {
+                properties.add(fieldName);
+            }
+        }
+        return new TaskItem(getItem(), getDefinition(), properties.toArray(new String[properties.size()]), nestedProperties);
     }
+
 }

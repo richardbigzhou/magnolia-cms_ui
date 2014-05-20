@@ -33,47 +33,40 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.definition.TaskDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseBeanItem;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map.Entry;
-
-import org.apache.commons.lang.time.FastDateFormat;
-
-import com.vaadin.data.util.BeanItem;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a generic Task object as a Vaadin BeanItem so to be consumed by the UI.
+ * Adds the possibility to read information from the {@link TaskDefinition}, in case this would be needed.
  * 
  * @param <T> task.
  * @param <D> definition.
  */
-public class TaskItem<T extends Task, D extends TaskDefinition> extends BeanItem<T> {
+public class TaskItem<T extends Task, D extends TaskDefinition> extends PulseBeanItem {
 
-    protected final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private D definition;
 
     public TaskItem(T bean, D definition) {
         super(bean);
-        for (Entry<String, Object> entry : getBean().getContent().entrySet()) {
-            addItemProperty(entry.getKey(), DefaultPropertyUtil.newDefaultProperty(String.class, parseValue(entry.getValue())));
-        }
+        this.definition = definition;
     }
 
-    protected String parseValue(Object value) {
-        String string = String.valueOf(value);
-        try {
-            Date date = DATE_PARSER.parse(string);
-            return FastDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, new Locale(MgnlContext.getUser().getLanguage())).format(date);
-        } catch (ParseException e) {
-            // not a date
-            return string;
-        }
+    public TaskItem(T bean, D definition, String[] propertyIds) {
+        super(bean, propertyIds);
+        this.definition = definition;
+    }
+
+    public TaskItem(T bean, D definition, String[] propertyIds, Map<String, List<String>> nestedPropertyIds) {
+        super(bean, propertyIds, nestedPropertyIds);
+        this.definition = definition;
+    }
+
+    public D getDefinition() {
+        return definition;
     }
 }
