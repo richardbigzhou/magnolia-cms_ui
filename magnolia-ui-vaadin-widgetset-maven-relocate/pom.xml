@@ -22,7 +22,8 @@
       <message>
   #################################################################################################
   #
-  #  The Vaadin/GWT Widgetset used by Magnolia UI has been moved to its own project.
+  #  WARNING: Magnolia UI's Widgetset has been moved to its own project.
+  #
   #  Your project has a dependency on
   #        ${project.groupId}:${project.artifactId}:${project.version}
   #  and this relocation is redirecting it to

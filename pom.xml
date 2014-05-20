@@ -32,6 +32,29 @@
     <tag>HEAD</tag>
   </scm>
 
+  <modules>
+    <module>magnolia-ui-framework</module>
+    <module>magnolia-ui-api</module>
+    <module>magnolia-ui-workbench</module>
+    <module>magnolia-ui-form</module>
+    <module>magnolia-ui-dialog</module>
+    <module>magnolia-ui-contentapp</module>
+    <module>magnolia-ui-imageprovider</module>
+    <module>magnolia-ui-vaadin-integration</module>
+    <module>magnolia-ui-vaadin-common-widgets</module>
+    <module>magnolia-ui-widget-editor</module>
+    <module>magnolia-ui-admincentral</module>
+    <module>magnolia-ui-actionbar</module>
+    <module>about-app</module>
+    <module>sample-app</module>
+    <module>messages-app</module>
+    <module>pages</module>
+    <module>security-app</module>
+    <module>magnolia-ui-mediaeditor</module>
+    <module>magnolia-ui-vaadin-theme</module>
+    <module>magnolia-ui-vaadin-widgetset-maven-relocate</module>
+  </modules>
+
   <dependencyManagement>
     <dependencies>
 
@@ -322,27 +345,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  <modules>
-    <module>magnolia-ui-framework</module>
-    <module>magnolia-ui-api</module>
-    <module>magnolia-ui-workbench</module>
-    <module>magnolia-ui-form</module>
-    <module>magnolia-ui-dialog</module>
-    <module>magnolia-ui-contentapp</module>
-    <module>magnolia-ui-imageprovider</module>
-    <module>magnolia-ui-vaadin-integration</module>
-    <module>magnolia-ui-vaadin-common-widgets</module>
-    <module>magnolia-ui-widget-editor</module>
-    <module>magnolia-ui-admincentral</module>
-    <module>magnolia-ui-actionbar</module>
-    <module>about-app</module>
-    <module>sample-app</module>
-    <module>messages-app</module>
-    <module>pages</module>
-    <module>security-app</module>
-    <module>magnolia-ui-mediaeditor</module>
-    <module>magnolia-ui-vaadin-theme</module>
-  </modules>
+
   <distributionManagement>
     <site>
       <id>${distribSiteId}</id>
