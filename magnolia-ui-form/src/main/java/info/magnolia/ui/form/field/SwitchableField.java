@@ -113,9 +113,9 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
         // add listener to the select field
         Field<?> selectField = fieldMap.get(definition.getName());
+        selectField.setCaption(null);
         selectField.addValueChangeListener(createSelectValueChangeListener());
         selectField.addValueChangeListener(selectionListener);
-        selectField.setCaption("");
         switchField((String) selectField.getValue());
     }
 

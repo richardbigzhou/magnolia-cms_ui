@@ -47,6 +47,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
@@ -144,7 +146,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         // Set Caption if desired
         if (setCaptionToNull) {
             field.setCaption(null);
-        } else {
+        } else if (StringUtils.isNotBlank(fieldDefinition.getLabel())) {
             field.setCaption(fieldDefinition.getLabel());
         }
 
