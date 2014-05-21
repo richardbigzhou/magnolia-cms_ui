@@ -93,6 +93,10 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
             Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
+            // Do not add hidden field.
+            if (!field.isVisible()) {
+                continue;
+            }
             if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
