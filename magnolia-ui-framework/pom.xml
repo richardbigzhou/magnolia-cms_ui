@@ -100,11 +100,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-module-scheduler</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
@@ -133,6 +128,12 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-module-scheduler</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

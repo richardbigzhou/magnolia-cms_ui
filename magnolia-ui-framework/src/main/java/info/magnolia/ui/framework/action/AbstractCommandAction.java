@@ -40,7 +40,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.scheduler.CommandJob;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
@@ -238,9 +237,9 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     scheduler.addTriggerListener(new CommandActionTriggerListener(
                             jobName + "_trigger",
                             i18n.translate("ui-framework.abstractcommand.asyncaction.successTitle", getDefinition().getLabel()),
-                            i18n.translate("ui-framework.abstractcommand.asyncaction.successMessage", getDefinition().getLabel(), appName, params.get(Context.ATTRIBUTE_PATH)),
+                            i18n.translate("ui-framework.abstractcommand.asyncaction.successMessage", getDefinition().getLabel(), appName, item.getJcrItem().getPath()),
                             i18n.translate("ui-framework.abstractcommand.asyncaction.errorTitle", getDefinition().getLabel()),
-                            i18n.translate("ui-framework.abstractcommand.asyncaction.errorMessage", getDefinition().getLabel(), appName, params.get(Context.ATTRIBUTE_PATH))));
+                            i18n.translate("ui-framework.abstractcommand.asyncaction.errorMessage", getDefinition().getLabel(), appName, item.getJcrItem().getPath())));
                     // start the job
                     scheduler.scheduleJob(jd, trigger);
                     // false == all ok, just stop processing. Seems actions are taking up the signaling used by commands (facepalm)
@@ -387,9 +386,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                 public void doExec() {
                     // notify user only if action took longer than xx seconds
                     MessagesManager messagesManager = Components.getComponent(MessagesManager.class);
-                    if (timeToWait == 0 && (Integer) jobExecutionContext.getResult() == CommandJob.SUCCESS) {
+                    // result 1 stands for success, 0 for error - see info.magnolia.module.scheduler.CommandJob
+                    if (timeToWait == 0 && (Integer) jobExecutionContext.getResult() == 1) {
                         messagesManager.sendLocalMessage(new Message(MessageType.INFO, successMessageTitle, successMessage));
-                    } else if ((Integer) jobExecutionContext.getResult() == CommandJob.ERROR) {
+                    } else if ((Integer) jobExecutionContext.getResult() == 0) {
                         Message msg = new Message(MessageType.WARNING, errorMessageTitle, errorMessage);
                         msg.setView("ui-admincentral:longRunning");
                         msg.addProperty("comment", i18n.translate("ui-framework.abstractcommand.asyncaction.errorComment"));

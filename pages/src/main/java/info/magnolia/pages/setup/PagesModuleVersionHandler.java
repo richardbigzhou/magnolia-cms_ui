@@ -39,6 +39,7 @@ import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTa
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
@@ -52,6 +53,7 @@ import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
+import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.pages.app.action.PreviewPreviousVersionActionDefinition;
@@ -63,6 +65,9 @@ import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Version handler for the pages app module.
@@ -176,12 +181,12 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         );
 
         register(DeltaBuilder.update("5.2.5", "")
-                .addTask(new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")))
-                .addTask(new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true")))
-
-        );
+                .addTask(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
+                        new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
+                        new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true"))
+                ))));
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit page and edit template dialogs into light dialogs.",
@@ -192,9 +197,18 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
                 )).addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
-
-
-
     }
 
+    @Override
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        List<Task> tasks = new ArrayList<Task>();
+        tasks.addAll(super.getExtraInstallTasks(installContext));
+        tasks.add(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
+                new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
+                new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true"))
+        )));
+        return tasks;
+    }
 }
