@@ -155,7 +155,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         } catch (Exception e) {
             log.warn("Coudn't create the select field.", e.getMessage());
             StaticFieldDefinition definition = new StaticFieldDefinition();
-            definition.setName(definition.getName());
+            definition.setName(this.definition.getName());
             definition.setValue("Select definition not correctly initialised. Please check your field configuration");
             return definition;
         }

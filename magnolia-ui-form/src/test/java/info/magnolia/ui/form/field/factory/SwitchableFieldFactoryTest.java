@@ -40,6 +40,7 @@ import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
@@ -52,6 +53,7 @@ import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +61,7 @@ import org.junit.Test;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
@@ -141,7 +144,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         factory.createField();
 
         // THEN
-        assertTrue(definition.getFields().get(2).isI18n());
+        assertTrue(definition.getFields().get(3).isI18n());
     }
 
     @Test
@@ -208,16 +211,48 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
         factory.setComponentProvider(componentProvider);
         factory.createField();
-        assertEquals(3, definition.getFields().size());
-        assertEquals(3, definition.getFieldsName().size());
+        assertEquals(4, definition.getFields().size());
+        assertEquals(4, definition.getFieldsName().size());
         assertTrue(definition.getFieldsName().contains(definition.getName()));
         // WHEN
         factory.createField();
 
         // THEN
-        assertEquals(3, definition.getFields().size());
-        assertEquals(3, definition.getFieldsName().size());
+        assertEquals(4, definition.getFields().size());
+        assertEquals(4, definition.getFieldsName().size());
         assertTrue(definition.getFieldsName().contains(definition.getName()));
+    }
+
+    @Test
+    public void doNotAddNonVisibleField() {
+        // GIVEN
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+        SwitchableField field = (SwitchableField) factory.createField();
+        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
+        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+
+        // WHEN
+        select.setValue("text");
+        assertEquals("has the select field and the selected textfield", 2, getVisibleFieldNb(layout));
+
+        // WHEN
+        select.setValue("hidden");
+
+        // THEN
+        assertEquals("has only the select field as the hidden is not visible", 1, getVisibleFieldNb(layout));
+    }
+
+    private int getVisibleFieldNb(AbstractOrderedLayout layout) {
+        Iterator<Component> iterator = layout.iterator();
+        int res = 0;
+        while (iterator.hasNext()) {
+            Field<?> field = (Field<?>) iterator.next();
+            if (field.isVisible()) {
+                res += 1;
+            }
+        }
+        return res;
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
@@ -238,6 +273,11 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         selectFieldDefinition.setFactoryClass(OptionGroupFieldFactory.class);
         registery.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
 
+        ConfiguredFieldTypeDefinition hiddenFieldDefinition = new ConfiguredFieldTypeDefinition();
+        hiddenFieldDefinition.setDefinitionClass(HiddenFieldDefinition.class);
+        hiddenFieldDefinition.setFactoryClass(HiddenFieldFactory.class);
+        registery.register(new TestFieldTypeDefinitionProvider("hidden", hiddenFieldDefinition));
+
         return registery;
     }
 
@@ -254,9 +294,14 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
         option2.setLabel("Code");
         option2.setValue("code");
+        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
+        option3.setLabel("Hidden");
+        option3.setValue("hidden");
+        definition.getOptions().add(option3);
         ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         options.add(option1);
         options.add(option2);
+        options.add(option3);
         definition.setOptions(options);
 
         // Set fields
@@ -268,9 +313,13 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         codeFieldDefinition.setLanguage("java");
         codeFieldDefinition.setName(propertyName);
         codeFieldDefinition.setName("code");
+        HiddenFieldDefinition hiddenFieldDefinition = new HiddenFieldDefinition();
+        hiddenFieldDefinition = new HiddenFieldDefinition();
+        hiddenFieldDefinition.setName("hidden");
         ArrayList<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
         fields.add(textFieldDefinition);
         fields.add(codeFieldDefinition);
+        fields.add(hiddenFieldDefinition);
         definition.setFields(fields);
 
         this.definition = definition;
