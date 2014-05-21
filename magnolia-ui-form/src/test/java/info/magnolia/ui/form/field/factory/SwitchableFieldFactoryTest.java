@@ -202,6 +202,24 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertTrue(baseNode.hasProperty(propertyName + "code"));
     }
 
+    @Test
+    public void fieldsNameAndFieldsHaveToStayInSynch() {
+        // GIVEN
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+        factory.createField();
+        assertEquals(3, definition.getFields().size());
+        assertEquals(3, definition.getFieldsName().size());
+        assertTrue(definition.getFieldsName().contains(definition.getName()));
+        // WHEN
+        factory.createField();
+
+        // THEN
+        assertEquals(3, definition.getFields().size());
+        assertEquals(3, definition.getFieldsName().size());
+        assertTrue(definition.getFieldsName().contains(definition.getName()));
+    }
+
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
         FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();
 
