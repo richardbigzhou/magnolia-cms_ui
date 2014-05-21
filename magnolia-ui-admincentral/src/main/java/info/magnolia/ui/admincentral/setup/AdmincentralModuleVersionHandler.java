@@ -233,12 +233,13 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", "info.magnolia.ui.contentapp.ContentAppDescriptor")));
 
         register(DeltaBuilder.update("5.2.5", "")
-                .addTask(new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")))
-                .addTask(new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")))
-                .addTask(new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml"))
-        );
+                .addTask(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
+                        new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive",
+                            new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
+                        new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
+                        new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
+                ))));
     }
 
     @Override
@@ -261,6 +262,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
         list.add(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
                 new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")));
+        list.add(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
+                new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
+                new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
+                new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml"))));
         return list;
     }
 

@@ -109,6 +109,11 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Override
+    protected List<String> getInstalledModules() {
+        return Arrays.asList("scheduler");
+    }
+
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

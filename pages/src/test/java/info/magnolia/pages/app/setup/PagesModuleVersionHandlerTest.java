@@ -92,6 +92,11 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Override
+    protected List<String> getInstalledModules() {
+        return Arrays.asList("scheduler");
+    }
+
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

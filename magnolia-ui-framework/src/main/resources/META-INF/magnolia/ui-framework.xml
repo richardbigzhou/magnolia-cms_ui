@@ -434,12 +434,4 @@
       <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenterImpl</implementation>
     </type-mapping>
   </components>
-
-  <dependencies>
-    <dependency>
-      <name>scheduler</name>
-      <version>2.1.1/*</version>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
 </module>
