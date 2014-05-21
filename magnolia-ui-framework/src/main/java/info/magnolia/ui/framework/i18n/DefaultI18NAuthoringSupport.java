@@ -108,10 +108,13 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                             i18nBaseProperty.getTransformer().setLocale(locale);
                             i18nBaseProperty.fireI18NValueChange();
                             String currentCaption = c.getCaption();
-                            if (formerLocale != null && StringUtils.isNotBlank(currentCaption)) {
-                                currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
+
+                            if (StringUtils.isNotBlank(currentCaption)) {
+                                if (formerLocale != null) {
+                                    currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
+                                }
+                                f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
                             }
-                            f.setCaption(String.format("%s (%s)", StringUtils.isBlank(currentCaption) ? StringUtils.EMPTY : currentCaption, locale.getLanguage()));
 
                             // set locale on Vaadin field
                             if (f instanceof AbstractField) {

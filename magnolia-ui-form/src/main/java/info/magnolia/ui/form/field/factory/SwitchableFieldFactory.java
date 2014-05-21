@@ -142,7 +142,6 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             // Copy options to the newly created select definition. definition
             selectDefinition.setOptions(definition.getOptions());
             selectDefinition.setTransformerClass(null);
-            selectDefinition.setLabel("");
             selectDefinition.setRequired(false);
             selectDefinition.setSortOptions(false);
             selectDefinition.setStyleName(layout);
