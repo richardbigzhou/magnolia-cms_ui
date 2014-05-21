@@ -65,7 +65,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link TasksListView}.
  */
-public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener {
+public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
@@ -92,6 +92,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     public View start() {
         view.setListener(this);
         view.setTaskListener(this);
+        container.setListener(this);
         initView();
         return view;
     }
@@ -112,6 +113,18 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         taskPresenter.setListener(this);
         return taskPresenter.start();
 
+    }
+
+    @Override
+    public String getItemTitle(String taskName) {
+        String title = taskName;
+        try {
+            TaskDefinition definition = taskDefinitionRegistry.get(taskName);
+            title = definition.getTitle();
+        } catch (RegistrationException e) {
+            log.error("Could not get task definition for {}.", taskName, e);
+        }
+        return title;
     }
 
     private void initView() {

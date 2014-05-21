@@ -49,8 +49,8 @@ import com.vaadin.data.util.HierarchicalContainer;
 public abstract class AbstractPulseListContainer<T> {
 
     protected boolean grouping = false;
-
     protected HierarchicalContainer container;
+    protected Listener listener;
 
     public abstract HierarchicalContainer createDataSource(Collection<T> items);
 
@@ -67,6 +67,10 @@ public abstract class AbstractPulseListContainer<T> {
     protected abstract Container.Filter getSectionFilter();
 
     protected abstract void applyCategoryFilter(final PulseItemCategory category);
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public Item getItem(Object itemId) {
         return container.getItem(itemId);
@@ -112,5 +116,12 @@ public abstract class AbstractPulseListContainer<T> {
      */
     public Object getParent(Object itemId) {
         return container.getParent(itemId);
+    }
+
+    /**
+     * Listener for calling back into parent presenter.
+     */
+    public interface Listener {
+        String getItemTitle(String identifier);
     }
 }

@@ -78,7 +78,7 @@ public class DefaultTaskDetailPresenter<D extends TaskDefinition, T extends Task
 
     @Override
     protected void setItemViewTitle(PulseDetailView view) {
-        view.setTitle(getDefinition().getTitle()); // -> i18nize
+        view.setTitle(getDefinition().getTitle());
     }
 
     @Override

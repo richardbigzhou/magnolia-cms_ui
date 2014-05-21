@@ -43,14 +43,13 @@ import javax.inject.Inject;
 /**
  * Action executor for pulse items.
  */
-public final class PulseDetailActionExecutor extends AbstractActionExecutor {
+public class PulseDetailActionExecutor extends AbstractActionExecutor {
 
     private ItemViewDefinition itemViewDefinition;
 
     @Inject
     public PulseDetailActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
-
     }
 
     @Override

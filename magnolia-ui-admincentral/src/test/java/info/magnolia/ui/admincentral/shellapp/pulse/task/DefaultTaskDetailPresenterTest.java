@@ -33,25 +33,57 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.mockito.Mockito.mock;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailView;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
 
 import org.junit.Before;
+import org.junit.Test;
 
 /**
- * TaskPresenterTest.
+ * Tests for {@link DefaultTaskDetailPresenter}.
  */
 public class DefaultTaskDetailPresenterTest {
-    private TaskDetailPresenter presenter;
+    private DefaultTaskDetailPresenter presenter;
+    private PulseDetailView view;
 
     @Before
     public void setUp() {
-        presenter = new DefaultTaskDetailPresenter<TaskUiDefinition, Task>(mock(PulseDetailView.class), null, null, null, null, null, null, mock(ActionbarPresenter.class), null);
+        ConfiguredTaskUiDefinition definition = new ConfiguredTaskUiDefinition();
+        definition.setTaskView("pages:publish");
+        definition.setTitle("Test title");
+
+        Task task = new Task();
+
+        view = mock(PulseDetailView.class);
+        presenter = new DefaultTaskDetailPresenter<TaskUiDefinition, Task>(view, definition, task, null, null, null, null, mock(ActionbarPresenter.class), null);
     }
 
+    @Test
+    public void testGetItemViewFromDefinition() throws Exception {
+        // Given
 
+        // WHEN
+        String taskView = presenter.getItemViewName();
+
+        // THEN
+        assertThat(taskView, is("pages:publish"));
+    }
+
+    @Test
+    public void testViewTitleFromDefinition() throws Exception {
+        // Given
+
+        // WHEN
+        presenter.setItemViewTitle(view);
+
+        // THEN
+        verify(view, times(1)).setTitle(eq("Test title"));
+    }
 }

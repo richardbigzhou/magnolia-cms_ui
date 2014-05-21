@@ -35,15 +35,12 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
 
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
 
 import java.util.Collection;
 import java.util.Date;
-
-import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -94,12 +91,6 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
         }
 
     };
-    private SimpleTranslator i18n;
-
-    @Inject
-    public TasksContainer(final SimpleTranslator i18n) {
-        this.i18n = i18n;
-    }
 
     @Override
     public HierarchicalContainer createDataSource(Collection<Task> tasks) {
@@ -200,14 +191,8 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     /*
     * Default visibility for testing purposes only.
     */
-    protected String getItemTitle(final Task task) {
-        String subject = (String) task.getContent().get("subject");
-        String repo = (String) task.getContent().get("repository");
-        String path = (String) task.getContent().get("path");
-
-        // fallback to task name in case subject is not available
-        String title = subject != null ? i18n.translate(subject, repo, path) : task.getName();
-        return title + "|" + StringUtils.defaultString(task.getComment());
+    private String getItemTitle(final Task task) {
+        return listener.getItemTitle(task.getName());
     }
 
     @Override
