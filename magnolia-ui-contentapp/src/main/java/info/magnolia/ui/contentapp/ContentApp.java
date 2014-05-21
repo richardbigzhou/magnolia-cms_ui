@@ -115,7 +115,7 @@ public class ContentApp extends BaseApp {
         } else {
             presenter = chooseDialogComponentProvider.newInstance(ChooseDialogPresenter.class, chooseDialogComponentProvider);
         }
-        ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
+        chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
     }
 
