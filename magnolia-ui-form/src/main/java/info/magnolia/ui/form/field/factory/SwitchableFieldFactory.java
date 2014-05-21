@@ -50,6 +50,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,16 +89,17 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        // create the select field definition
         if (!definition.getFieldsName().contains(definition.getName())) {
-            definition.addField(createSelectFieldDefinition());
             definition.addFieldName(definition.getName());
+        }
+        // create the select field definition
+        if (!containsSelectFieldDefinition()) {
+            definition.addField(createSelectFieldDefinition());
         }
 
         SwitchableField field = new SwitchableField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         return field;
     }
-
 
     /**
      * Create a new Instance of {@link Transformer}.
@@ -106,6 +108,18 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         List<String> propertyNames = definition.getFieldsName();
         return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
+    }
+
+    /**
+     * @return true if the select field definition was already initialized.
+     */
+    private boolean containsSelectFieldDefinition() {
+        for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
+            if (StringUtils.equals(fieldDefinition.getName(), definition.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
