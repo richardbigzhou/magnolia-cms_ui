@@ -33,15 +33,17 @@
  */
 package info.magnolia.ui.dialog.actionarea.renderer;
 
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
+import info.magnolia.ui.form.EditorValidator;
+
+import java.util.HashMap;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionarea.ActionListener;
-
-import java.util.HashMap;
 
 /**
  * Default implementation of {@link ActionRenderer}. Simply wraps a button.
@@ -50,22 +52,29 @@ public class DefaultEditorActionRenderer implements ActionRenderer {
 
     @Override
     public View start(final ActionDefinition definition, final ActionListener listener) {
-        return new DefaultActionView(definition.getLabel(), definition.getName(), new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                listener.onActionFired(definition.getName(), new HashMap<String, Object>());
-            }
-        });
+        return new DefaultActionView(definition.getLabel(), definition.getName(), listener);
     }
 
     private static class DefaultActionView implements View {
 
-        private Button button;
+        private Button button = null;
 
-        private DefaultActionView(String label, String name, ClickListener listener) {
-            this.button = new Button(label, listener);
+        private DefaultActionView(final String label, final String name, final ActionListener listener) {
+            ClickListener clickListener = new ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    listener.onActionFired(name, new HashMap<String, Object>());
+                    if (listener instanceof EditorValidator && !((EditorValidator) listener).isValid()) {
+                        // have to re-enable button since validation failed
+                        button.setEnabled(true);
+                    }
+                }
+            };
+            this.button = new Button(label, clickListener);
             this.button.addStyleName(name);
             this.button.addStyleName("btn-dialog");
+            this.button.addStyleName("webkit-fix");
+            this.button.setDisableOnClick(true);
         }
 
         @Override
