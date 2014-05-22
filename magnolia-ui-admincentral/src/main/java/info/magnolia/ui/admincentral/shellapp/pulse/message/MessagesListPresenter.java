@@ -46,8 +46,6 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
 import java.util.Set;
@@ -66,15 +64,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
-    private final ShellImpl shell;
 
     @Inject
     public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-                                 final MessagesListView view, final ShellImpl shellImpl, final MessagesManager messagesManager, ComponentProvider componentProvider) {
+            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;
-        this.shell = shellImpl;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;
     }
@@ -99,7 +95,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     private void initView() {
-        Collection<Message> messages =  messagesManager.getMessagesForUser(MgnlContext.getUser().getName());
+        Collection<Message> messages = messagesManager.getMessagesForUser(MgnlContext.getUser().getName());
         HierarchicalContainer dataSource = container.createDataSource(messages);
         view.setDataSource(dataSource);
         view.refresh();
@@ -135,18 +131,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
             return;
         }
         final String userName = MgnlContext.getUser().getName();
-        int deletedMessages = 0;
         for (String messageId : messageIds) {
             Message message = messagesManager.getMessageById(userName, messageId);
             if (message == null) {
                 continue;
             }
             messagesManager.removeMessage(userName, messageId);
-            if (!message.isCleared()) {
-                deletedMessages++;
-            }
         }
-        shell.updateShellAppIndication(ShellAppType.PULSE, -deletedMessages);
     }
 
     @Override
