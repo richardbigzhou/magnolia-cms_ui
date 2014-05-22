@@ -110,12 +110,7 @@ public class ContentApp extends BaseApp {
             chooseDialogDefinition = new ConfiguredChooseDialogDefinition();
             presenter = componentProvider.newInstance(ContentAppChooseDialogPresenter.class, chooseDialogComponentProvider);
         }
-        if (chooseDialogDefinition.getField() != null && chooseDialogDefinition.getField() instanceof WorkbenchFieldDefinition && StringUtils.isNotBlank(targetTreeRootPath)) {
-            WorkbenchDefinition workbenchDefinition = ((WorkbenchFieldDefinition) chooseDialogDefinition.getField()).getWorkbench();
-            if (workbenchDefinition != null && workbenchDefinition instanceof ConfiguredWorkbenchDefinition) {
-                ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath(targetTreeRootPath);
-            }
-        }
+
         chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
     }
@@ -141,16 +136,23 @@ public class ContentApp extends BaseApp {
 
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition, String targetTreeRootPath) {
         if (definition.getField() != null) {
+            definition = cloner.deepClone(definition);
+            if (definition.getField() instanceof WorkbenchFieldDefinition && StringUtils.isNotBlank(targetTreeRootPath)) {
+                WorkbenchDefinition workbenchDefinition = ((WorkbenchFieldDefinition) definition.getField()).getWorkbench();
+                if (workbenchDefinition != null && workbenchDefinition instanceof ConfiguredWorkbenchDefinition) {
+                    ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath(targetTreeRootPath);
+                }
+            }
             return definition;
         }
 
-        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
         SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
         if (!(subAppContext instanceof BrowserSubAppDescriptor)) {
             log.error("Cannot start workbench choose dialog since targeted app is not a content app");
             return definition;
         }
 
+        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
         result = cloner.deepClone(result);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
