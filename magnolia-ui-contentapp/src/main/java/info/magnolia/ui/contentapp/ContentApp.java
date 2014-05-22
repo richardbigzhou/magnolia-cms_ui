@@ -106,7 +106,7 @@ public class ContentApp extends BaseApp {
     public void openChooseDialog(UiContext overlayLayer, String targetTreeRootPath, String selectedId, final ChooseDialogCallback callback) {
         this.targetTreeRootPath = targetTreeRootPath;
         ChooseDialogDefinition chooseDialogDefinition = (appContext.getAppDescriptor() instanceof ContentAppDescriptor) ?
-                ((ContentAppDescriptor) appContext.getAppDescriptor()).getChooseDialog() : new ConfiguredChooseDialogDefinition();
+                cloner.deepClone(((ContentAppDescriptor) appContext.getAppDescriptor()).getChooseDialog()) : new ConfiguredChooseDialogDefinition();
         ComponentProvider chooseDialogComponentProvider = createChooseDialogComponentProvider(chooseDialogDefinition);
 
         if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
