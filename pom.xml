@@ -18,7 +18,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.3-m9</magnoliaVersion>
     <imagingVersion>3.0.1</imagingVersion>
-    <vaadinVersion>7.1.7</vaadinVersion>
+    <vaadinVersion>7.2.0</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
 
     <!-- The gwt-compile-production profile is defined in magnolia-ui-vaadin-widgetset but this needs to be configured here:

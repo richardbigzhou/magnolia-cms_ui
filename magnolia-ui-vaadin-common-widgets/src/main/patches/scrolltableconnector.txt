@@ -31,7 +31,7 @@
 
          getWidget().showRowHeaders = uidl.getBooleanAttribute("rowheaders");
          getWidget().showColHeaders = uidl.getBooleanAttribute("colheaders");
-@@ -300,8 +301,8 @@
+@@ -322,8 +323,8 @@
      }
 
      @Override
@@ -42,7 +42,7 @@
      }
 
      @Override
-@@ -321,20 +322,20 @@
+@@ -343,8 +344,8 @@
 
      @Override
      public void postLayout() {
@@ -53,7 +53,10 @@
              table.sizeInit();
              Scheduler.get().scheduleFinally(new ScheduledCommand() {
                  @Override
-                 public void execute() {
+@@ -352,14 +353,14 @@
+                     // IE8 needs some hacks to measure sizes correctly
+                     Util.forceIE8Redraw(getWidget().getElement());
+
 -                    getLayoutManager().setNeedsMeasure(TableConnector.this);
 +                    getLayoutManager().setNeedsMeasure(TableConnectorPatched.this);
                      ServerConnector parent = getParent();
