@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
@@ -58,14 +59,20 @@ import javax.inject.Named;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.rits.cloning.Cloner;
 
 /**
  * Tests {@link ContentApp}.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ContentApp.class)
 public class ContentAppTest {
 
     private ContentApp app;
@@ -111,6 +118,9 @@ public class ContentAppTest {
     @Test
     public void testTargetTreeRootPathIsSetInWorkbenchDefinition() throws Exception {
         // GIVEN
+        Cloner mockCloner = mock(Cloner.class);
+        whenNew(Cloner.class).withNoArguments().thenReturn(mockCloner);
+
         final ComponentProvider componentProvider = mock(ComponentProvider.class);
         app = new ContentApp(ctx, mock(AppView.class), provider) {
             @Override
@@ -118,27 +128,34 @@ public class ContentAppTest {
                 return componentProvider;
             }
         };
+
         UiContext uiContext = mock(UiContext.class);
         ChooseDialogCallback callback = mock(ChooseDialogCallback.class);
         ContentAppDescriptor appDescriptor = mock(ContentAppDescriptor.class);
         ChooseDialogDefinition dialogDefinition = mock(ChooseDialogDefinition.class);
+        ChooseDialogDefinition clonedDialogDefinition = mock(ChooseDialogDefinition.class);
         WorkbenchFieldDefinition fieldDefinition = mock(WorkbenchFieldDefinition.class);
-        ConfiguredWorkbenchDefinition workbenchDefinition = mock(ConfiguredWorkbenchDefinition.class);
+        WorkbenchFieldDefinition clonedFieldDefinition = mock(WorkbenchFieldDefinition.class);
+        ConfiguredWorkbenchDefinition clonedWorkbenchDefinition = mock(ConfiguredWorkbenchDefinition.class);
         ChooseDialogPresenter presenter = mock(ChooseDialogPresenter.class);
         Class<ChooseDialogPresenter> presenterClass = ChooseDialogPresenter.class;
 
         when(ctx.getAppDescriptor()).thenReturn(appDescriptor);
+        doReturn(presenterClass).when(dialogDefinition).getPresenterClass();
+        when(componentProvider.getComponent(ChooseDialogPresenter.class)).thenReturn(presenter);
         when(appDescriptor.getChooseDialog()).thenReturn(dialogDefinition);
         when(dialogDefinition.getField()).thenReturn(fieldDefinition);
-        doReturn(presenterClass).when(dialogDefinition).getPresenterClass();
-        when(fieldDefinition.getWorkbench()).thenReturn(workbenchDefinition);
-        when(componentProvider.getComponent(ChooseDialogPresenter.class)).thenReturn(presenter);
+
+        when(mockCloner.deepClone(dialogDefinition)).thenReturn(clonedDialogDefinition);
+        when(clonedDialogDefinition.getField()).thenReturn(clonedFieldDefinition);
+        when(clonedFieldDefinition.getWorkbench()).thenReturn(clonedWorkbenchDefinition);
 
         // WHEN
         app.openChooseDialog(uiContext, "/path", "", callback);
 
         // GIVEN
-        verify(workbenchDefinition).setPath("/path");
+        verify(clonedWorkbenchDefinition).setPath("/path");
+        verify(presenter).start(callback, clonedDialogDefinition, uiContext, "");
     }
 
     /**
