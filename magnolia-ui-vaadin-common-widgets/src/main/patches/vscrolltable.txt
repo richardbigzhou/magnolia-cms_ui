@@ -16,7 +16,7 @@
 -public class VScrollTable extends FlowPanel implements HasWidgets,
 +public class VScrollTablePatched extends FlowPanel implements HasWidgets,
          ScrollHandler, VHasDropHandler, FocusHandler, BlurHandler, Focusable,
-         ActionOwner {
+         ActionOwner, SubPartAware {
  
 +
 +    protected TableHead createTableHead() {
@@ -205,14 +205,15 @@
                          // Prevent showing the browser's context menu only when
                          // there is a header click listener.
 @@ -2761,7 +2806,7 @@
-             floatingCopyOfHeaderCell = DOM
-                     .getChild(floatingCopyOfHeaderCell, 2);
-             DOM.setElementProperty(floatingCopyOfHeaderCell, "className",
--                    VScrollTable.this.getStylePrimaryName() + "-header-drag");
-+                    VScrollTablePatched.this.getStylePrimaryName() + "-header-drag");
-             // otherwise might wrap or be cut if narrow column
-             DOM.setStyleAttribute(floatingCopyOfHeaderCell, "width", "auto");
-             updateFloatingCopysPosition(DOM.getAbsoluteLeft(td),
+            // #12714 the shown "ghost element" should be inside
+            // v-overlay-container, and it should contain the same styles as the
+            // table to enable theming (except v-table & v-widget).
+-           String stylePrimaryName = VScrollTable.this.getStylePrimaryName();
++           String stylePrimaryName = VScrollTablePatched.this.getStylePrimaryName();
+            StringBuilder sb = new StringBuilder();
+-           for (String s : VScrollTable.this.getStyleName().split(" ")) {
++           for (String s : VScrollTablePatched.this.getStyleName().split(" ")) {
+                if (!s.equals(StyleConstants.UI_WIDGET)) {
 @@ -2794,7 +2839,7 @@
           *            The click event
           */
@@ -338,17 +339,6 @@
          }
  
          protected void updateStyleNames(String primaryStyleName) {
-@@ -4208,8 +4253,8 @@
-                         // Already updated by setColWidth called from
-                         // TableHeads.updateCellsFromUIDL in case of a server
-                         // side resize
--                        final String width = col.getStringAttribute("width");
--                        c.setWidth(Integer.parseInt(width), true);
-+                        int width = col.getIntAttribute("width");
-+                        c.setWidth(width, true);
-                     }
-                 } else if (recalcWidths) {
-                     c.setUndefinedWidth();
 @@ -4351,12 +4396,19 @@
       * 
       */
@@ -595,29 +585,11 @@
                  int heightBefore = getOffsetHeight();
                  scrollBodyPanel.setHeight(bodyHeight + "px");
                  if (heightBefore != getOffsetHeight()) {
--                    Util.notifyParentOfSizeChange(VScrollTable.this, false);
-+                    Util.notifyParentOfSizeChange(VScrollTablePatched.this, false);
+-                    Util.notifyParentOfSizeChange(VScrollTable.this, rendering);
++                    Util.notifyParentOfSizeChange(VScrollTablePatched.this, rendering);
                  }
              }
              Scheduler.get().scheduleDeferred(new Command() {
-@@ -7077,7 +7148,7 @@
- 
-         private void deEmphasis() {
-             UIObject.setStyleName(getElement(),
--                    VScrollTable.this.getStylePrimaryName() + "-drag", false);
-+                    VScrollTablePatched.this.getStylePrimaryName() + "-drag", false);
-             if (lastEmphasized == null) {
-                 return;
-             }
-@@ -7103,7 +7174,7 @@
-         private void emphasis(TableDDDetails details) {
-             deEmphasis();
-             UIObject.setStyleName(getElement(),
--                    VScrollTable.this.getStylePrimaryName() + "-drag", true);
-+                    VScrollTablePatched.this.getStylePrimaryName() + "-drag", true);
-             // iterate old and new emphasized row
-             for (Widget w : scrollBody.renderedRows) {
-                 VScrollTableRow row = (VScrollTableRow) w;
 @@ -7125,7 +7196,7 @@
  
          @Override
@@ -636,3 +608,4 @@
          Collection<SelectionRange> newRanges = null;
          for (Iterator<SelectionRange> iterator = selectedRowRanges.iterator(); iterator
                  .hasNext();) {
+
