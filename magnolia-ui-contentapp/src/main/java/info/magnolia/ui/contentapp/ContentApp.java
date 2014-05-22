@@ -137,7 +137,7 @@ public class ContentApp extends BaseApp {
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition, String targetTreeRootPath) {
         if (definition.getField() != null) {
             definition = cloner.deepClone(definition);
-            if (definition.getField() != null && definition.getField() instanceof WorkbenchFieldDefinition && StringUtils.isNotBlank(targetTreeRootPath)) {
+            if (definition.getField() instanceof WorkbenchFieldDefinition && StringUtils.isNotBlank(targetTreeRootPath)) {
                 WorkbenchDefinition workbenchDefinition = ((WorkbenchFieldDefinition) definition.getField()).getWorkbench();
                 if (workbenchDefinition != null && workbenchDefinition instanceof ConfiguredWorkbenchDefinition) {
                     ((ConfiguredWorkbenchDefinition) workbenchDefinition).setPath(targetTreeRootPath);
