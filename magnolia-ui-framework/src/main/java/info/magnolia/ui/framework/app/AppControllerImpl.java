@@ -405,6 +405,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         openChooseDialog(appName, uiContext, null, selectedId, callback);
     }
 
+    @Override
     public void openChooseDialog(String appName, UiContext uiContext, String targetTreeRootPath, String selectedId, ChooseDialogCallback callback) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
