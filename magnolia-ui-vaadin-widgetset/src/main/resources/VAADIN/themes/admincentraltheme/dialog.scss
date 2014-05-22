@@ -92,6 +92,11 @@
     min-width: 60px;
   }
 
+  /* to make sure button doesn't disappear in dialog after resize caused by validation error */
+  .webkit-fix {
+    -webkit-transform: translateZ(0);
+  }
+
   .dialog-footer .secondary-actions .v-button,
   .dialog-footer .secondary-actions button {
     margin-left: 0;

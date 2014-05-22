@@ -76,6 +76,7 @@ public class ConfirmationDialog extends LightDialog {
                 confirm();
             }
         });
+        confirmButton.setDisableOnClick(true);
 
         cancelButton = new Button(cancelLabel, new ClickListener() {
             @Override
@@ -83,6 +84,7 @@ public class ConfirmationDialog extends LightDialog {
                 cancel();
             }
         });
+        cancelButton.setDisableOnClick(true);
 
         footer.addComponent(cancelButton);
         footer.addComponent(confirmButton);
