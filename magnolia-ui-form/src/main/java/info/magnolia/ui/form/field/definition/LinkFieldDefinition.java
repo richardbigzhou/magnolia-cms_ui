@@ -41,7 +41,7 @@ import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String targetTreeRootPath = "/";
+    private String targetTreeRootPath;
     private String appName;
     private String targetWorkspace = "website";
     private String buttonSelectNewLabel = "field.link.select.new";
