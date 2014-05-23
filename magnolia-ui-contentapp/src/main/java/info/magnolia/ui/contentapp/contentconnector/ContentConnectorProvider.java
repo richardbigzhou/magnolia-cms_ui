@@ -41,6 +41,7 @@ import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,6 +77,9 @@ public class ContentConnectorProvider implements Provider<ContentConnector> {
                 ContentConnectorDefinition contentConnectorDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getContentConnector();
                 contentConnector = provider.newInstance(contentConnectorDefinition.getImplementationClass(), ctx, subAppEventBus, contentConnectorDefinition);
             }
+        }
+        if (contentConnector == null) {
+            contentConnector = new DefaultContentConnector(); // Null implementation
         }
         return contentConnector;
     }
