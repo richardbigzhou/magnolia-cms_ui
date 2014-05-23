@@ -51,6 +51,7 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
     private int delay = 1;
     private boolean isParallel = true;
     private int timeToWait = 5000; // milliseconds
+    private boolean notifyUser = true;
 
     private Map<String, Object> params = new HashMap<String, Object>();
 
@@ -116,5 +117,13 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
 
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
+    }
+
+    public boolean isNotifyUser() {
+        return notifyUser;
+    }
+
+    public void setNotifyUser(boolean notifyUser) {
+        this.notifyUser = notifyUser;
     }
 }
