@@ -380,7 +380,9 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
         @Override
         public void triggerComplete(final Trigger trigger, final JobExecutionContext jobExecutionContext, int i) {
-
+            if (!getDefinition().isNotifyUser()) {
+                return;
+            }
             MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
                 @Override
                 public void doExec() {
