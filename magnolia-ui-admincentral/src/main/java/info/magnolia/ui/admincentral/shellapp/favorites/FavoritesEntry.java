@@ -34,17 +34,17 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedNotifier;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -65,7 +65,10 @@ import com.vaadin.ui.TextField;
 /**
  * FavoritesEntry.
  */
-public final class FavoritesEntry extends CustomComponent implements EditingNotifier, SelectedNotifier {
+public final class FavoritesEntry extends CustomComponent implements EditableFavoriteItem, EditingEvent.EditingNotifier {
+
+    private static final Logger log = LoggerFactory.getLogger(FavoritesEntry.class);
+    private static long uniqueIdCounter = 23;
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
@@ -76,17 +79,25 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     private NativeButton editButton;
     private NativeButton removeButton;
     private boolean editable;
-    private boolean selected;
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
     private final SimpleTranslator i18n;
+    private String itemId;
+    private FavoritesView.Listener listener;
 
     public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell, SimpleTranslator i18n) {
         super();
+        this.listener = listener;
         this.shell = shell;
         this.i18n = i18n;
+        itemId = createItemdId(favorite);
         construct(favorite, listener);
+    }
+
+    @Override
+    public String getItemId() {
+        return itemId;
     }
 
     public String getRelPath() {
@@ -105,21 +116,20 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         return this.group;
     }
 
-    /**
-     * Sets this fav as unselected and non editable, that is at its initial state.
-     */
-    public void reset() {
+    @Override
+    public void setToNonEditableState() {
         setEditable(false);
-        setSelected(false);
     }
 
     private void setEditable(boolean editable) {
         this.editable = editable;
         String icon = "icon-tick";
         if (editable) {
+            listener.setCurrentEditedItemId(getItemId());
             titleField.addStyleName("editable");
             titleField.focus();
             titleField.selectAll();
+
         } else {
             icon = "icon-edit";
             titleField.removeStyleName("editable");
@@ -131,19 +141,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         fireEvent(new EditingEvent(this, editable));
     }
 
-    private void setSelected(boolean selected) {
-        this.selected = selected;
-        if (selected) {
-            addStyleName("selected");
-            fireEvent(new SelectedEvent(this));
-        } else {
-            removeStyleName("selected");
-        }
-        titleField.setReadOnly(true);
-        editButton.setVisible(selected);
-        editButton.setCaption("<span class=\"icon-edit\"></span>");
-        removeButton.setVisible(selected);
-    }
 
     private void construct(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener) {
         addStyleName("favorites-entry");
@@ -201,10 +198,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (selected && !editable) {
-                    setEditable(true);
-                    return;
-                }
                 doEditTitle(listener);
             }
         });
@@ -237,62 +230,60 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         root.addComponent(removeButton);
 
         root.addLayoutClickListener(new LayoutClickListener() {
-
             @Override
             public void layoutClick(LayoutClickEvent event) {
-
                 if (event.getClickedComponent() == titleField && !editable) {
                     if (event.isDoubleClick()) {
                         // TODO fgrilli commented out as, besides making the text editable, it also goes to the saved location
                         // See MGNLUI-1317
-                        // setEditable(true);
                     } else {
                         listener.goToLocation(location);
-                    }
-                } else if (event.getClickedComponent() == iconLabel) {
-                    setSelected(!selected);
-                    setEditable(false);
-                    if (selected) {
-                        iconLabel.addShortcutListener(enterKeyShortcutListener);
                     }
                 }
             }
         });
 
         setCompositionRoot(root);
+        setIconsVisibility(false);
     }
 
     @Override
-    public void addEditingListener(EditingListener listener) {
+    public void addEditingListener(EditingEvent.EditingListener listener) {
         addListener("onEdit", EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
     }
 
     @Override
-    public void removeEditingListener(EditingListener listener) {
+    public void removeEditingListener(EditingEvent.EditingListener listener) {
         removeListener(EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
     }
 
     @Override
-    public void addSelectedListener(SelectedListener listener) {
-        addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    public void setIconsVisibility(boolean visible) {
+        editButton.setVisible(visible);
+        removeButton.setVisible(visible);
     }
 
     @Override
-    public void removeSelectedListener(SelectedListener listener) {
-        removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    public boolean iconsAreVisible() {
+        return editButton.isVisible();
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
             shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.title.required"));
+            titleField.focus();
             return;
         }
 
-        boolean titleHasChanged = !title.equals(titleField.getValue());
-        if (editable && titleHasChanged) {
-            listener.editFavorite(getRelPath(), titleField.getValue());
+        if (editable) {
+            boolean titleHasChanged = !title.equals(titleField.getValue());
+            if (titleHasChanged) {
+                listener.editFavorite(getRelPath(), titleField.getValue());
+            }
+            setEditable(false);
+        } else {
+            setEditable(true);
         }
-        setEditable(false);
     }
 
     private class EnterKeyShortcutListener extends ShortcutListener {
@@ -308,7 +299,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
             if (editable) {
                 doEditTitle(listener);
             } else {
-                setEditable(true);
+                setIconsVisibility(true);
             }
         }
     }
@@ -321,8 +312,26 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
         @Override
         public void handleAction(Object sender, Object target) {
-            reset();
+            setToNonEditableState();
         }
+    }
+
+    /**
+     * Creates a unique ID to use for {@code EditableFavoriteItem}s.
+     */
+    public static String createItemdId(AbstractJcrNodeAdapter nodeAdapter) {
+        String id = null;
+        try {
+            id = nodeAdapter.getJcrItem().getIdentifier();
+        } catch (Exception ex) {
+            log.error("Failed to create an itemId from an AbstractJcrNodeAdapter", ex);
+        } finally {
+            if (id == null) {
+                uniqueIdCounter++;
+                id = String.valueOf((new Date()).getTime() + uniqueIdCounter);
+            }
+        }
+        return id;
     }
 
 }

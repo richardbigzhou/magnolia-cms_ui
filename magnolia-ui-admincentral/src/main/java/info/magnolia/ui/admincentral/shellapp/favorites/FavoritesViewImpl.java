@@ -34,14 +34,14 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -56,7 +56,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -72,8 +71,8 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private Shell shell;
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
-    private Component currentlySelectedFavoriteItem;
     private final SimpleTranslator i18n;
+    private List<EditableFavoriteItem> editableFavoriteItemList;
 
     @Override
     public String getId() {
@@ -81,7 +80,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Inject
-    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager, SimpleTranslator i18n) {
+    public FavoritesViewImpl(Shell shell, SimpleTranslator i18n) {
         super();
         this.shell = shell;
         this.i18n = i18n;
@@ -94,6 +93,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     private void construct() {
+        editableFavoriteItemList = new ArrayList<EditableFavoriteItem>();
         layout.addStyleName("favorites");
         layout.setHeight("100%");
         layout.setWidth("900px");
@@ -119,7 +119,6 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         // Disable the hints
         layout.addStyleName("no-vertical-drag-hints");
         layout.addStyleName("no-horizontal-drag-hints");
-        // layout.addStyleName("no-box-drag-hints");
     }
 
     @Override
@@ -135,8 +134,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Override
-    public void init(AbstractJcrNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
+    public void init(AbstractJcrNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups, boolean itemIconsVisible) {
 
+        editableFavoriteItemList = new ArrayList<EditableFavoriteItem>();
         final Map<String, AbstractJcrNodeAdapter> nodeAdapters = favorites.getChildren();
 
         if (nodeAdapters.isEmpty()) {
@@ -158,32 +158,29 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                     final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell, i18n);
                     final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
-                    favEntry.addEditingListener(new EditingListener() {
-
+                    favEntry.addEditingListener(new EditingEvent.EditingListener() {
                         @Override
                         public void onEdit(EditingEvent event) {
                             if (event.isEditing()) {
-                                wrapper.setDragStartMode(DragStartMode.NONE);
+                                wrapper.setDragStartMode(DragAndDropWrapper.DragStartMode.NONE);
                             } else {
-                                wrapper.setDragStartMode(DragStartMode.WRAPPER);
+                                wrapper.setDragStartMode(DragAndDropWrapper.DragStartMode.WRAPPER);
                             }
                         }
                     });
-                    favEntry.addSelectedListener(new SelectedListener() {
-
-                        @Override
-                        public void onSelected(SelectedEvent event) {
-                            updateSelection(event.getComponent());
-                        }
-                    });
+                    editableFavoriteItemList.add(favEntry);
                     noGroup.addComponent(wrapper);
                 } else {
-                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this, i18n);
-                    group.addSelectedListener(new SelectedListener() {
-
+                    final FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this, i18n, editableFavoriteItemList);
+                    editableFavoriteItemList.add(group);
+                    group.addEditingListener(new EditingEvent.EditingListener() {
                         @Override
-                        public void onSelected(SelectedEvent event) {
-                            updateSelection(event.getComponent());
+                        public void onEdit(EditingEvent event) {
+                            if (event.isEditing()) {
+                                group.getDragAndDropWrapper().setDragStartMode(DragAndDropWrapper.DragStartMode.NONE);
+                            } else {
+                                group.getDragAndDropWrapper().setDragStartMode(DragAndDropWrapper.DragStartMode.WRAPPER);
+                            }
                         }
                     });
                     splitPanel.getRightContainer().addComponent(group);
@@ -214,7 +211,6 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                             if (!(wrapper.getWrappedComponent() instanceof FavoritesEntry)) {
                                 return false;
                             }
-
                             // drop location: can drop anywhere in the target zone.
                             return true;
                         }
@@ -230,6 +226,16 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         }
         favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell, i18n);
         layout.addComponent(favoriteForm);
+
+        for (EditableFavoriteItem item : getEditableFavoriteItemList()) {
+            item.setIconsVisibility(itemIconsVisible);
+        }
+
+    }
+
+    @Override
+    public List<EditableFavoriteItem> getEditableFavoriteItemList() {
+        return editableFavoriteItemList;
     }
 
     /**
@@ -240,24 +246,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             return;
         }
         favoriteForm.close();
-        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
-            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
-        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
-            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
+        for (EditableFavoriteItem item : getEditableFavoriteItemList()) {
+            item.setToNonEditableState();
         }
-        currentlySelectedFavoriteItem = null;
     }
 
-    @Override
-    public void updateSelection(final Component newSelection) {
-        if (newSelection == currentlySelectedFavoriteItem) {
-            return;
-        }
-        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
-            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
-        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
-            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
-        }
-        currentlySelectedFavoriteItem = newSelection;
-    }
 }

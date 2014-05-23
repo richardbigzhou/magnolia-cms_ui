@@ -63,6 +63,10 @@ public final class FavoritesShellApp implements ShellApp {
 
     @Override
     public void locationChanged(Location location) {
+        // note: the above line (setToInitialState) is called AFTER the transition (after the fav.-app re-appeared)
+        // but we would have the setToInitialState() before the transition, but this doesn't seem to be possible at the moment
+        // this is part of MGNLUI-2598
+        favoritesPresenter.setToInitialState();
         JcrNewNodeAdapter favoriteLocation = favoritesPresenter.determinePreviousLocation();
         favoritesView.setFavoriteLocation(favoriteLocation, favoritesPresenter.createNewGroupSuggestion(), favoritesPresenter.getAvailableGroupsNames());
     }

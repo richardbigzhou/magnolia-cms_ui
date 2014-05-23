@@ -37,9 +37,8 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.List;
 import java.util.Map;
-
-import com.vaadin.ui.Component;
 
 /**
  * View for favorites.
@@ -48,14 +47,14 @@ public interface FavoritesView extends View {
 
     void setListener(Listener listener);
 
-    void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
+    void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups, boolean itemIconsVisible);
 
     void setFavoriteLocation(JcrNewNodeAdapter location, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
 
     /**
-     * Unselect the currently selected component, as only one can be selected at any point in time.
+     * Returns a the list of all EditableFavoriteItem(s).
      */
-    void updateSelection(Component newSelection);
+    List<EditableFavoriteItem> getEditableFavoriteItemList();
 
     /**
      * Listener.
@@ -147,6 +146,34 @@ public interface FavoritesView extends View {
          * @param groupToMove The node-name of the sibling.
          */
         void orderGroupAfter(String groupToMove, String relPath);
+
+        /**
+         * Switches the all the favorite- and group-items to editable or not-editable, actually showing or hiding the the delete- and edit-icons on the items.
+         *
+         * @param editable boolean indicating whether the items should be set to 'editable' or 'not-editable'.
+         */
+        void setItemsEditable(boolean editable);
+
+        /**
+         * Returns a boolean indicating whether the group- and favorite-items are currently editable which means whether they are showing or hiding the the delete- and edit-icons.
+         */
+        boolean itemsAreEditable();
+
+        /**
+         * Returns a boolean indicating whether there is at least one group or favorite-item exiting.
+         */
+        boolean hasItems();
+
+        /**
+         * Set the id of the EditableFavoriteItem which is currently edited.
+         */
+        void setCurrentEditedItemId(String ItemId);
+
+        /**
+         * Setting to the state where the EditableFavoriteItem(s) are in not-editable-state and with hidden icons.
+         */
+        void setToInitialState();
+
     }
 
 }

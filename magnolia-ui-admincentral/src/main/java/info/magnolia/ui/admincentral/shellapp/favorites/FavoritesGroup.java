@@ -34,15 +34,13 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,21 +49,18 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
+import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
 /**
  * Favorite group.
  */
-public final class FavoritesGroup extends CssLayout implements SelectedEvent.SelectedNotifier {
+public final class FavoritesGroup extends CssLayout implements EditableFavoriteItem, EditingEvent.EditingNotifier {
 
     private TextField titleField;
     private NativeButton editButton;
@@ -73,14 +68,15 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     private String title;
     private String relPath;
     private boolean editable;
-    private boolean selected;
     private CssLayout wrapper;
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
-    private FavoritesView view;
-    private Component currentlySelectedFavEntry;
     private final SimpleTranslator i18n;
+    private List<EditableFavoriteItem> editableFavoriteItems;
+    private FavoritesView.Listener listener;
+    private String itemId;
+    private GroupDragAndDropWrapper dragAndDropWrapper;
 
     /**
      * Creates an empty placeholder group.
@@ -90,10 +86,12 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view, final SimpleTranslator i18n) {
+    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view, final SimpleTranslator i18n, List<EditableFavoriteItem> editableFavoriteItems) {
         this.shell = shell;
-        this.view = view;
         this.i18n = i18n;
+        this.editableFavoriteItems = editableFavoriteItems;
+        this.listener = listener;
+        itemId = FavoritesEntry.createItemdId(favoritesGroup);
 
         addStyleName("favorites-group");
         construct(favoritesGroup, listener);
@@ -103,24 +101,16 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell, i18n);
-            favEntry.addSelectedListener(new SelectedListener() {
-
-                @Override
-                public void onSelected(SelectedEvent event) {
-                    currentlySelectedFavEntry = event.getComponent();
-                    view.updateSelection(event.getComponent());
-                }
-            });
             favEntry.setGroup(this.relPath);
+            editableFavoriteItems.add(favEntry);
             final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
-            favEntry.addEditingListener(new EditingListener() {
-
+            favEntry.addEditingListener(new EditingEvent.EditingListener() {
                 @Override
                 public void onEdit(EditingEvent event) {
                     if (event.isEditing()) {
-                        wrapper.setDragStartMode(DragStartMode.NONE);
+                        wrapper.setDragStartMode(DragAndDropWrapper.DragStartMode.NONE);
                     } else {
-                        wrapper.setDragStartMode(DragStartMode.WRAPPER);
+                        wrapper.setDragStartMode(DragAndDropWrapper.DragStartMode.WRAPPER);
                     }
                 }
             });
@@ -132,44 +122,21 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         return this.relPath;
     }
 
-    /**
-     * Sets this group and all of its fav entries (if any) as unselected and non editable, that is at their initial state.
-     */
-    public void reset() {
-        // skip it if this group is a placeholder for no group fav entries, as it has no title
-        if (titleField != null) {
-            setEditable(false);
-            setSelected(false);
-        }
-        Iterator<Component> components = iterator();
-        while (components.hasNext()) {
-            Component component = components.next();
-            if (component instanceof EntryDragAndDropWrapper) {
-                component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
-            } else if (component instanceof FavoritesEntry) {
-                if (component == currentlySelectedFavEntry) {
-                    continue;
-                }
-                FavoritesEntry fav = (FavoritesEntry) component;
-                fav.reset();
-            }
-        }
+    @Override
+    public String getItemId() {
+        return itemId;
     }
 
     @Override
-    public void addSelectedListener(SelectedListener listener) {
-        addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
-    }
-
-    @Override
-    public void removeSelectedListener(SelectedListener listener) {
-        removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    public void setToNonEditableState() {
+        setEditable(false);
     }
 
     private void setEditable(boolean editable) {
         this.editable = editable;
         String icon = "icon-tick";
         if (editable) {
+            listener.setCurrentEditedItemId(getItemId());
             titleField.addStyleName("editable");
             titleField.focus();
             titleField.selectAll();
@@ -181,20 +148,17 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         }
         titleField.setReadOnly(!editable);
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
+        fireEvent(new EditingEvent(this, editable));
     }
 
-    private void setSelected(boolean selected) {
-        this.selected = selected;
-        if (selected) {
-            wrapper.addStyleName("selected");
-            fireEvent(new SelectedEvent(this));
-        } else {
-            wrapper.removeStyleName("selected");
-        }
-        titleField.setReadOnly(true);
-        editButton.setVisible(selected);
-        editButton.setCaption("<span class=\"icon-edit\"></span>");
-        removeButton.setVisible(selected);
+    public void setIconsVisibility(boolean visible) {
+        editButton.setVisible(visible);
+        removeButton.setVisible(visible);
+    }
+
+    @Override
+    public boolean iconsAreVisible() {
+        return editButton.isVisible();
     }
 
     private void construct(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
@@ -238,10 +202,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (selected && !editable) {
-                    setEditable(true);
-                    return;
-                }
                 doEditTitle(listener);
             }
         });
@@ -253,7 +213,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         removeButton.setCaption("<span class=\"icon-trash\"></span>");
         removeButton.addStyleName("favorite-action");
         removeButton.addClickListener(new ClickListener() {
-
             @Override
             public void buttonClick(ClickEvent event) {
                 shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("favorites.group.confirmation.title"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), false, new ConfirmationCallback() {
@@ -272,33 +231,40 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         });
         removeButton.setVisible(false);
         wrapper.addComponent(removeButton);
-
-        addLayoutClickListener(new LayoutClickListener() {
-
-            @Override
-            public void layoutClick(LayoutClickEvent event) {
-
-                if (event.getClickedComponent() == titleField) {
-                    if (!editable) {
-                        setSelected(!selected);
-                    }
-                }
-            }
-        });
-
-        addComponent(new GroupDragAndDropWrapper(wrapper, listener, this));
+        dragAndDropWrapper = new GroupDragAndDropWrapper(wrapper, listener, this);
+        addComponent(dragAndDropWrapper);
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
             shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.title.required"));
+            titleField.focus();
             return;
         }
-        boolean titleHasChanged = !title.equals(titleField.getValue());
-        if (editable && titleHasChanged) {
-            listener.editGroup(relPath, titleField.getValue());
+        if (editable) {
+            boolean titleHasChanged = !title.equals(titleField.getValue());
+            if (titleHasChanged) {
+                listener.editGroup(relPath, titleField.getValue());
+            }
+            setEditable(false);
+        } else {
+            setEditable(true);
         }
-        setEditable(false);
+
+    }
+
+    @Override
+    public void addEditingListener(EditingEvent.EditingListener listener) {
+        addListener("onEdit", EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
+    }
+
+    @Override
+    public void removeEditingListener(EditingEvent.EditingListener listener) {
+        removeListener(EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
+    }
+
+    protected GroupDragAndDropWrapper getDragAndDropWrapper() {
+        return dragAndDropWrapper;
     }
 
     private class EnterKeyShortcutListener extends ShortcutListener {
@@ -314,7 +280,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
             if (editable) {
                 doEditTitle(listener);
             } else {
-                setEditable(true);
+                setIconsVisibility(true);
             }
         }
     }
@@ -327,7 +293,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
         @Override
         public void handleAction(Object sender, Object target) {
-            reset();
+            setToNonEditableState();
         }
     }
 }

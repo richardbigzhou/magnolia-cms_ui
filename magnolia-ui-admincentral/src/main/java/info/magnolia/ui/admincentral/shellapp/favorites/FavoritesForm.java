@@ -70,6 +70,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public final class FavoritesForm extends CustomComponent {
 
+    private static final String editItemsMarkerCssStyle = "favItemEdit";
     private FavoritesView.Listener listener;
     private Shell shell;
     private TabSheet tabsheet;
@@ -79,7 +80,7 @@ public final class FavoritesForm extends CustomComponent {
     private final SimpleTranslator i18n;
 
     public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups,
-            final FavoritesView.Listener listener, final Shell shell, final SimpleTranslator i18n) {
+                         final FavoritesView.Listener listener, final Shell shell, final SimpleTranslator i18n) {
         addStyleName("favorites-form");
         this.listener = listener;
         this.shell = shell;
@@ -112,41 +113,69 @@ public final class FavoritesForm extends CustomComponent {
         header.addStyleName("dialog-header");
         header.setSizeFull();
         header.addLayoutClickListener(new LayoutClickListener() {
-
             @Override
             public void layoutClick(LayoutClickEvent event) {
-                if (isOpen()) {
-                    close();
+                // change the visibility of the group- and favorite-items
+                if (event.getClickedComponent() != null && event.getClickedComponent() instanceof Label && event.getClickedComponent().getPrimaryStyleName().equals(editItemsMarkerCssStyle)) {
+                    if (!listener.hasItems() || listener.itemsAreEditable()) {
+                        listener.setToInitialState();
+                    } else {
+                        listener.setItemsEditable(true);
+                    }
                 } else {
-                    open();
+                    // just open || close the FavoritesForm
+                    if (isOpen()) {
+                        close();
+                    } else {
+                        open();
+                    }
                 }
             }
         });
 
+        // add
         final Label addNewIcon = new Label();
         addNewIcon.setSizeUndefined();
         addNewIcon.addStyleName("icon");
         addNewIcon.addStyleName("icon-add-fav");
-
         final Label addNewLabel = new Label(i18n.translate("favorites.form.add"));
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
+        // edit
+        final Label editIcon = new Label();
+        editIcon.setSizeUndefined();
+        editIcon.addStyleName("icon");
+        editIcon.addStyleName("icon-edit");
+        editIcon.setPrimaryStyleName(editItemsMarkerCssStyle);
+        if (!listener.hasItems()) {
+            editIcon.addStyleName("disabled");
+        }
+        final Label editLabel = new Label(i18n.translate("favorites.form.favorite.edit"));
+        editLabel.setSizeUndefined();
+        editLabel.addStyleName("title");
+        editLabel.setPrimaryStyleName(editItemsMarkerCssStyle);
+        if (!listener.hasItems()) {
+            editLabel.addStyleName("disabled");
+        }
 
+        // arrow
         arrowIcon = new Label();
         arrowIcon.setSizeUndefined();
         arrowIcon.addStyleName("icon");
         arrowIcon.addStyleName("arrow");
         arrowIcon.addStyleName("icon-arrow2_n");
 
+        // assemble
         header.addComponent(addNewIcon);
         header.addComponent(addNewLabel);
+        header.addComponent(editIcon);
+        header.addComponent(editLabel);
         header.addComponent(arrowIcon);
         favoriteForm.addComponent(header);
         favoriteForm.addComponent(tabsheet);
 
         // form is closed initially
         close();
-
         setCompositionRoot(favoriteForm);
     }
 

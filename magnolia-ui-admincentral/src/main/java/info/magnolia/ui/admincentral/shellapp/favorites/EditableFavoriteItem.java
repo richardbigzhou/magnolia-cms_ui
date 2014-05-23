@@ -33,54 +33,33 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Component.Event;
-
 /**
- * An event sent when selecting a favorite item (either a group or an entry).
+ * A common interface for both {@code FavoritesEntry} and {@code FavoritesGroup}.
  */
-@SuppressWarnings("serial")
-public final class SelectedEvent extends Event implements Serializable {
-
-    public SelectedEvent(Component source) {
-        super(source);
-    }
-
-    public static final Method SELECTED_METHOD;
-
-    static {
-        try {
-            SELECTED_METHOD = SelectedListener.class.getDeclaredMethod(
-                    "onSelected", new Class[] { SelectedEvent.class });
-        } catch (final java.lang.NoSuchMethodException e) {
-            // This should never happen
-            throw new java.lang.RuntimeException();
-        }
-    }
+public interface EditableFavoriteItem {
 
     /**
-     * SelectedListener.
+     * Switching the visibility of the icons of the item.
+     *
+     * @param visible boolean indicating whether the icons should be visible or not.
      */
-    public interface SelectedListener extends Serializable {
-        void onSelected(SelectedEvent event);
-    }
+    void setIconsVisibility(boolean visible);
 
     /**
-     * SelectedNotifier.
+     * Returning a boolean indicating whether the icons of the item are visible.
      */
-    public interface SelectedNotifier extends Serializable {
-        /**
-         * Register a listener to handle {@link SelectedEvent}s.
-         */
-        void addSelectedListener(SelectedListener listener);
+    boolean iconsAreVisible();
 
-        /**
-         * Removes an EditingListener.
-         */
-        void removeSelectedListener(SelectedListener listener);
-    }
+    /**
+     * Sets the item to a state where it cannot be edited; text-field goes read-only (and changed but not saved title is lost).
+     * Note: Visibility of the icons is not affected by calling this method.
+     */
+    void setToNonEditableState();
+
+    /**
+     * Returning an ID which is unique among all other EditableFavoriteItem within a "session" of a logged-in user in a running instance.
+     */
+    String getItemId();
+
 
 }
