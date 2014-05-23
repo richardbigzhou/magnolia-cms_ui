@@ -34,70 +34,76 @@
 package info.magnolia.ui.contentapp;
 
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.rits.cloning.Cloner;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests {@link ContentApp}.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ContentApp.class)
 public class ContentAppTest {
 
-    private ContentApp app;
-    private AppContext ctx;
-    private GuiceComponentProvider provider;
+    private static final String WORKSPACE = "workspace";
+
+    private AppContext appContext;
+    private ComponentProvider componentProvider;
+
+    private String rootPath;
 
     @Before
     public void setUp() {
-        ctx = mock(AppContext.class);
+        appContext = mock(AppContext.class);
+
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        provider = mock(GuiceComponentProvider.class);
 
-        Injector injector = Guice.createInjector(new AbstractModule() {
+        // mock ChooseDialogPresenter to check for path in given definition upon #start
+        rootPath = null;
+        ChooseDialogPresenter chooseDialogPresenter = mock(ChooseDialogPresenter.class);
+        doAnswer(new Answer<ChooseDialogView>() {
+
             @Override
-            protected void configure() {
+            public ChooseDialogView answer(InvocationOnMock invocation) throws Throwable {
+                ChooseDialogDefinition definition = (ChooseDialogDefinition) invocation.getArguments()[1];
+                rootPath = ((WorkbenchFieldDefinition) definition.getField()).getWorkbench().getPath();
+                return null;
             }
-        });
+        }).when(chooseDialogPresenter).start(any(ChooseDialogCallback.class), any(ChooseDialogDefinition.class), any(UiContext.class), anyString());
 
-        doReturn(injector).when(provider).getInjector();
-        doReturn(MockChooseDialogEventBusClient.class).when(provider).getImplementation(MockChooseDialogEventBusClient.class);
-        doReturn(moduleRegistry).when(provider).getComponent(ModuleRegistry.class);
-        doReturn(new ArrayList<ModuleDefinition>()).when(moduleRegistry).getModuleDefinitions();
+        // componentProvider has to be a GuiceComponentProvider (impl details)
+        ComponentProviderConfiguration configuration = new ComponentProviderConfiguration();
+        configuration.registerInstance(ModuleRegistry.class, moduleRegistry);
+        configuration.registerInstance(ChooseDialogPresenter.class, chooseDialogPresenter);
+        componentProvider = new GuiceComponentProviderBuilder().withConfiguration(configuration).build();
 
-        this.app = new ContentApp(ctx, mock(AppView.class), provider);
-
+        initConfiguration();
     }
 
     /**
@@ -107,6 +113,9 @@ public class ContentAppTest {
      */
     @Test
     public void testCreateChooseDialogComponentProvider() throws Exception {
+        // GIVEN
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+
         //WHEN
         GuiceComponentProvider chooseDialogProvider = (GuiceComponentProvider) app.createChooseDialogComponentProvider();
         MockChooseDialogEventBusClient client = chooseDialogProvider.newInstance(MockChooseDialogEventBusClient.class);
@@ -116,46 +125,44 @@ public class ContentAppTest {
     }
 
     @Test
-    public void testTargetTreeRootPathIsSetInWorkbenchDefinition() throws Exception {
+    public void testOpenChooseDialogWithDefaultRootPathFromSubApp() throws Exception {
         // GIVEN
-        Cloner mockCloner = mock(Cloner.class);
-        whenNew(Cloner.class).withNoArguments().thenReturn(mockCloner);
-
-        final ComponentProvider componentProvider = mock(ComponentProvider.class);
-        app = new ContentApp(ctx, mock(AppView.class), provider) {
-            @Override
-            ComponentProvider createChooseDialogComponentProvider() {
-                return componentProvider;
-            }
-        };
-
-        UiContext uiContext = mock(UiContext.class);
-        ChooseDialogCallback callback = mock(ChooseDialogCallback.class);
-        ContentAppDescriptor appDescriptor = mock(ContentAppDescriptor.class);
-        ChooseDialogDefinition dialogDefinition = mock(ChooseDialogDefinition.class);
-        ChooseDialogDefinition clonedDialogDefinition = mock(ChooseDialogDefinition.class);
-        WorkbenchFieldDefinition fieldDefinition = mock(WorkbenchFieldDefinition.class);
-        WorkbenchFieldDefinition clonedFieldDefinition = mock(WorkbenchFieldDefinition.class);
-        ConfiguredWorkbenchDefinition clonedWorkbenchDefinition = mock(ConfiguredWorkbenchDefinition.class);
-        ChooseDialogPresenter presenter = mock(ChooseDialogPresenter.class);
-        Class<ChooseDialogPresenter> presenterClass = ChooseDialogPresenter.class;
-
-        when(ctx.getAppDescriptor()).thenReturn(appDescriptor);
-        doReturn(presenterClass).when(dialogDefinition).getPresenterClass();
-        when(componentProvider.getComponent(ChooseDialogPresenter.class)).thenReturn(presenter);
-        when(appDescriptor.getChooseDialog()).thenReturn(dialogDefinition);
-        when(dialogDefinition.getField()).thenReturn(fieldDefinition);
-
-        when(mockCloner.deepClone(dialogDefinition)).thenReturn(clonedDialogDefinition);
-        when(clonedDialogDefinition.getField()).thenReturn(clonedFieldDefinition);
-        when(clonedFieldDefinition.getWorkbench()).thenReturn(clonedWorkbenchDefinition);
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
 
         // WHEN
-        app.openChooseDialog(uiContext, "/path", "", callback);
+        app.openChooseDialog(null, null, null);
 
+        // THEN
+        assertEquals("/root", rootPath);
+    }
+
+    @Test
+    public void testOpenChooseDialogWithGivenRootPath() throws Exception {
         // GIVEN
-        verify(clonedWorkbenchDefinition).setPath("/path");
-        verify(presenter).start(callback, clonedDialogDefinition, uiContext, "");
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+
+        // WHEN
+        app.openChooseDialog(null, "/test", null, null);
+
+        // THEN
+        assertEquals("/test", rootPath);
+    }
+
+    private AppDescriptor initConfiguration() {
+        ConfiguredContentAppDescriptor app = new ConfiguredContentAppDescriptor();
+        ConfiguredBrowserSubAppDescriptor browser = new ConfiguredBrowserSubAppDescriptor();
+        ConfiguredChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
+        ConfiguredWorkbenchDefinition workbench = new ConfiguredWorkbenchDefinition();
+        workbench.setWorkspace(WORKSPACE);
+        workbench.setPath("/root");
+        browser.setWorkbench(workbench);
+        app.addSubApp(browser);
+        app.setChooseDialog(chooseDialog);
+
+        when(appContext.getAppDescriptor()).thenReturn(app);
+        when(appContext.getDefaultSubAppDescriptor()).thenReturn(browser);
+
+        return app;
     }
 
     /**
