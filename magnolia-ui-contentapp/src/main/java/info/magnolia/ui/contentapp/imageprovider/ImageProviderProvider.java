@@ -38,7 +38,6 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,32 +53,37 @@ public class ImageProviderProvider implements Provider<ImageProvider> {
     private ComponentProvider componentProvider;
 
     private SubAppContext subAppContext;
-    private ContentConnector contentConnector;
 
     private ImageProvider imageProvider;
 
     @Inject
-    public ImageProviderProvider(ComponentProvider componentProvider, SubAppContext subAppContext, ContentConnector contentConnector) {
+    public ImageProviderProvider(ComponentProvider componentProvider, SubAppContext subAppContext) {
         this.componentProvider = componentProvider;
         this.subAppContext = subAppContext;
-        this.contentConnector = contentConnector;
     }
 
     @Override
     public ImageProvider get() {
         if (imageProvider == null) {
-            if (subAppContext.getSubAppDescriptor() instanceof ContentSubAppDescriptor) {
-                ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-                if (subAppDescriptor.getImageProvider() != null) {
-                    ImageProviderDefinition definition = subAppDescriptor.getImageProvider();
-                    imageProvider = componentProvider.newInstance(definition.getImageProviderClass(), definition, contentConnector);
-                }
+            ImageProviderDefinition definition = resolveImageProviderDefinition();
+            if (definition != null) {
+                imageProvider = componentProvider.newInstance(definition.getImageProviderClass(), definition);
             }
         }
         if (imageProvider == null) {
             imageProvider = new NullImageProvider();
         }
         return imageProvider;
+    }
+
+    protected ImageProviderDefinition resolveImageProviderDefinition() {
+        if (subAppContext.getSubAppDescriptor() instanceof ContentSubAppDescriptor) {
+            ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
+            if (subAppDescriptor.getImageProvider() != null) {
+                return subAppDescriptor.getImageProvider();
+            }
+        }
+        return null;
     }
 
     /**

@@ -52,11 +52,14 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentConnectorProvider;
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogImageProviderProvider;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
@@ -119,7 +122,7 @@ public class ContentApp extends BaseApp {
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
     }
 
-    ComponentProvider createChooseDialogComponentProvider(ChooseDialogDefinition chooseDialogDefinition) {
+    ComponentProvider createChooseDialogComponentProvider(final ChooseDialogDefinition chooseDialogDefinition) {
         ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
         final EventBus eventBus = new SimpleEventBus();
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
@@ -136,6 +139,14 @@ public class ContentApp extends BaseApp {
             protected void configure() {
                 bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(eventBus));
                 bind(ContentConnector.class).toProvider(new ChooseDialogContentConnectorProvider(contentConnectorDefinition, componentProvider));
+
+                // add binding for the ImageProvider if there is one
+                FieldDefinition field = chooseDialogDefinition.getField();
+                if (field instanceof WorkbenchFieldDefinition && ((WorkbenchFieldDefinition) field).getImageProvider() != null) {
+                    ImageProviderDefinition definition = ((WorkbenchFieldDefinition) field).getImageProvider();
+                    ChooseDialogImageProviderProvider provider = componentProvider.newInstance(ChooseDialogImageProviderProvider.class, componentProvider, definition);
+                    bind(ImageProvider.class).toProvider(provider);
+                }
             }
         };
         return builder.build(c);

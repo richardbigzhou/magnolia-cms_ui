@@ -33,15 +33,14 @@
  */
 package info.magnolia.ui.contentapp;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -50,6 +49,7 @@ import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
+import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
@@ -57,6 +57,8 @@ import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -77,7 +79,8 @@ public class ContentAppTest {
     private AppContext appContext;
     private ComponentProvider componentProvider;
 
-    private String rootPath;
+    private static String rootPath;
+    private static MockChooseDialogPresenter chooseDialogPresenter;
 
     @Before
     public void setUp() {
@@ -87,13 +90,14 @@ public class ContentAppTest {
 
         // mock ChooseDialogPresenter to check for path in given definition upon #start
         rootPath = null;
+        chooseDialogPresenter = null;
 
         // componentProvider has to be a GuiceComponentProvider (impl details)
         ComponentProviderConfiguration configuration = new ComponentProviderConfiguration();
         configuration.registerInstance(ModuleRegistry.class, moduleRegistry);
         configuration.addTypeMapping(ChooseDialogPresenter.class, MockChooseDialogPresenter.class);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        componentProvider = builder.withConfiguration(configuration).build();
+        configuration.registerInstance(ImageProvider.class, mock(ImageProvider.class)); // global image provider
+        componentProvider = new GuiceComponentProviderBuilder().withConfiguration(configuration).build();
 
         initConfiguration();
     }
@@ -108,12 +112,30 @@ public class ContentAppTest {
         // GIVEN
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
 
-        //WHEN
-        GuiceComponentProvider chooseDialogProvider = (GuiceComponentProvider) app.createChooseDialogComponentProvider(new ConfiguredChooseDialogDefinition());
-        MockChooseDialogEventBusClient client = chooseDialogProvider.newInstance(MockChooseDialogEventBusClient.class);
+        // WHEN
+        app.openChooseDialog(null, null, null);
 
-        //THEN
-        assertNotNull(client);
+        // THEN
+        assertNotNull(chooseDialogPresenter);
+        assertTrue(chooseDialogPresenter.eventBus instanceof SimpleEventBus);
+    }
+
+    @Test
+    public void testCreateChooseDialogComponentProviderWithImageProviderBinding() throws Exception {
+        // GIVEN
+        // add imageProvider config
+        ConfiguredImageProviderDefinition imageProvider = new ConfiguredImageProviderDefinition();
+        imageProvider.setImageProviderClass(MockImageProvider.class);
+        ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProvider);
+
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+
+        // WHEN
+        app.openChooseDialog(null, null, null);
+
+        // THEN
+        assertNotNull(chooseDialogPresenter);
+        assertEquals(MockImageProvider.class, chooseDialogPresenter.imageProvider.getClass());
     }
 
     @Test
@@ -122,7 +144,7 @@ public class ContentAppTest {
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
 
         // WHEN
-        app.openChooseDialog(null, null, new MockChooseDialogCallback());
+        app.openChooseDialog(null, null, null);
 
         // THEN
         assertEquals("/root", rootPath);
@@ -134,7 +156,7 @@ public class ContentAppTest {
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
 
         // WHEN
-        app.openChooseDialog(null, "/test", null, new MockChooseDialogCallback());
+        app.openChooseDialog(null, "/test", null, null);
 
         // THEN
         assertEquals("/test", rootPath);
@@ -160,23 +182,50 @@ public class ContentAppTest {
     }
 
     /**
-     * A client class that requires a ChooseDialogEventBus.
+     * A dummy {@link ImageProvider} to test injection within choose-dialogs.
      */
-    public static class MockChooseDialogEventBusClient {
-        @Inject
-        public MockChooseDialogEventBusClient(@Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
+    public static class MockImageProvider implements ImageProvider {
+
+        @Override
+        public String getPortraitPath(Object itemId) {
+            return null;
+        }
+
+        @Override
+        public String getThumbnailPath(Object itemId) {
+            return null;
+        }
+
+        @Override
+        public String resolveIconClassName(String mimeType) {
+            return null;
+        }
+
+        @Override
+        public Object getThumbnailResource(Object itemId, String generator) {
+            return null;
         }
     }
 
     /**
-     * A dummy {@link ChooseDialogPresenter} to check the incoming {@link ChooseDialogDefinition}.
+     * A dummy {@link ChooseDialogPresenter} to check the incoming {@link ChooseDialogDefinition},
+     * and to test injecting from within the choose-dialog ioc container.
      */
-    public static class MockChooseDialogPresenter implements ChooseDialogPresenter {
+    private static class MockChooseDialogPresenter implements ChooseDialogPresenter {
+
+        private final EventBus eventBus;
+        private final ImageProvider imageProvider;
+
+        @Inject
+        public MockChooseDialogPresenter(@Named(ChooseDialogEventBus.NAME) EventBus eventBus, ImageProvider imageProvider) {
+            this.eventBus = eventBus;
+            this.imageProvider = imageProvider;
+        }
 
         @Override
         public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext uiContext, String itemId) {
-            String rootPath = ((JcrContentConnectorDefinition) definition.getContentConnector()).getRootPath();
-            callback.onItemChosen(null, rootPath);
+            ContentAppTest.rootPath = ((JcrContentConnectorDefinition) definition.getContentConnector()).getRootPath();
+            ContentAppTest.chooseDialogPresenter = this;
             return null;
         }
 
@@ -204,18 +253,4 @@ public class ContentAppTest {
         }
     }
 
-    /**
-     * Hijack the MockChooseDialogCallback so that we can test the resulting rootPath value.
-     */
-    private class MockChooseDialogCallback implements ChooseDialogCallback {
-
-        @Override
-        public void onItemChosen(String actionName, Object itemId) {
-            rootPath = (String) itemId;
-        }
-
-        @Override
-        public void onCancel() {
-        }
-    }
 }
