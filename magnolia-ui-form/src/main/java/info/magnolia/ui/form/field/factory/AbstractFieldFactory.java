@@ -58,7 +58,9 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.AbstractStringToNumberConverter;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -101,6 +103,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         if (field == null) {
             // Create the Vaadin field
             this.field = createFieldComponent();
+            if (field instanceof AbstractField && definition.getConverterClass() != null) {
+                Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
+                ((AbstractField) field).setConverter(converter);
+            }
 
             Property<?> property = initializeProperty();
 
@@ -180,8 +186,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     @Override
     public View getView() {
-        Property<?> property = initializeProperty();
-
         final CssLayout fieldView = new CssLayout();
         fieldView.setStyleName("field-view");
 
@@ -195,6 +199,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 label.addStyleName("textarea");
             }
         }
+        if (definition.getConverterClass() != null) {
+            Converter converter = initializeConverter(definition.getConverterClass());
+            label.setConverter(converter);
+        }
+
+        Property<?> property = initializeProperty();
+
         label.setPropertyDataSource(property);
 
         fieldView.addComponent(label);
@@ -231,6 +242,15 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
+
+    /**
+     * Exposed method used by field's factory to initialize the property {@link Converter}.<br>
+     * This allows to add additional constructor parameter if needed.<br>
+     */
+    protected Converter<?, ?> initializeConverter(Class<? extends Converter<?, ?>> converterClass) {
+        return this.componentProvider.newInstance(converterClass, item, definition, getFieldType());
+    }
+
 
     /**
      * Define the field property value type Class.<br>

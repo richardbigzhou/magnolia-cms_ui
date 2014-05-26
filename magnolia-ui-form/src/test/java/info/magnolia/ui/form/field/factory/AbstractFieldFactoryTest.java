@@ -34,11 +34,14 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.form.field.converter.StringToCalendarConverter;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -64,19 +67,19 @@ import com.vaadin.ui.TextField;
  */
 public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
 
-    private AbstractFieldFactory<FieldDefinition, Object> abstractDialogField;
+    private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
 
     @Test
     public void simpleInitializationTest() {
         // GIVEN
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
-        Field<Object> field = abstractDialogField.createField();
+        Field<Object> field = fieldFactory.createField();
         // THEN
         assertTrue(TextField.class.isAssignableFrom(field.getClass()));
-        assertEquals(definition, abstractDialogField.getFieldDefinition());
+        assertEquals(definition, fieldFactory.getFieldDefinition());
         assertEquals(false, field.isRequired());
         assertEquals("label", field.getCaption());
         assertEquals(false, field.getPropertyDataSource().isReadOnly());
@@ -86,10 +89,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     @Test
     public void changePropertyValueTest() throws Exception {
         // GIVEN
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         field.setValue("new Value");
@@ -112,10 +115,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNodeAdapter(baseNode);
         // Set do not change
         definition.setReadOnly(false);
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         field.setValue("new Value");
@@ -133,10 +136,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void testValueForEmptyNewItem() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         String value = (String) field.getValue();
@@ -150,10 +153,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         String value = (String) field.getValue();
@@ -169,10 +172,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         definition.setDefaultValue("defaultValue");
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         String value = (String) field.getValue();
@@ -188,10 +191,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         definition.setDefaultValue("defaultValue");
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         String value = (String) field.getValue();
@@ -206,10 +209,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         // Set property Type
         definition.setType("Double");
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
-        Field<Object> field = abstractDialogField.createField();
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        Field<Object> field = fieldFactory.createField();
 
         // WHEN
         field.setValue("21.98");
@@ -230,12 +233,12 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void simpleI18NTest() {
         // GIVEN
         definition.setLabel("message.label");
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
-        Field<Object> field = abstractDialogField.createField();
+        Field<Object> field = fieldFactory.createField();
         // THEN
 
         assertEquals("label", field.getCaption());
@@ -246,12 +249,12 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void requiredFieldIsMarkedByAsteriskTest() {
         // GIVEN
         definition.setRequired(true);
-        abstractDialogField = new TestTextFieldFactory(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setI18nContentSupport(i18nContentSupport);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
-        Field<Object> field = abstractDialogField.createField();
+        Field<Object> field = fieldFactory.createField();
         field.setRequired(definition.isRequired());
 
         // THEN
@@ -264,10 +267,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new BeanItem<TestBean>(new TestBean("bar"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
-        Field<?> field = abstractDialogField.createField();
+        Field<?> field = fieldFactory.createField();
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
@@ -280,10 +283,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new PropertysetItem();
         baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
-        Field<?> field = abstractDialogField.createField();
+        Field<?> field = fieldFactory.createField();
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
@@ -296,10 +299,10 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new PropertysetItem();
         baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "bar");
-        abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
-        Field<?> field = abstractDialogField.createField();
+        Field<?> field = fieldFactory.createField();
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
@@ -312,11 +315,11 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         def.setRequired(true);
 
-        abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
-        Field<?> field = abstractDialogField.createField();
+        Field<?> field = fieldFactory.createField();
 
         // THEN
         assertTrue(field.getCaption().contains("<span class=\"requiredfield\">*</span>"));
@@ -328,11 +331,11 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         def.setLabel("");
 
-        abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
-        Field<?> field = abstractDialogField.createField();
+        Field<?> field = fieldFactory.createField();
 
         // THEN
         assertNull(field.getCaption());
@@ -341,10 +344,41 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         def.setLabel(null);
 
         // WHEN
-        field = abstractDialogField.createField();
+        field = fieldFactory.createField();
 
         // THEN
         assertNull(field.getCaption());
+    }
+    @Test
+    public void testFieldConverterInitialized() throws Exception {
+        // GIVEN
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
+        def.setConverterClass(StringToCalendarConverter.class);
+
+        fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        fieldFactory.createField();
+
+        // THEN
+        verify(fieldFactory, times(1)).initializeConverter(eq(StringToCalendarConverter.class));
+    }
+
+    @Test
+     public void testViewConverterInitialized() throws Exception {
+        // GIVEN
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new TextFieldDefinition(), "foo");
+        def.setConverterClass(StringToCalendarConverter.class);
+
+        fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        fieldFactory.getView();
+
+        // THEN
+        verify(fieldFactory, times(1)).initializeConverter(eq(StringToCalendarConverter.class));
     }
 
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {

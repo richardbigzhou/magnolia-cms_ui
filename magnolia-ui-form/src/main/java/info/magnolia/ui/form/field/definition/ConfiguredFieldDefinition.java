@@ -39,6 +39,8 @@ import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.data.util.converter.Converter;
+
 /**
  * Describes a field in a dialog.
  */
@@ -69,6 +71,8 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     private List<FieldValidatorDefinition> validators = new ArrayList<FieldValidatorDefinition>();
 
     private Class<? extends Transformer<?>> transformerClass;
+
+    private Class<? extends Converter<?,?>> converterClass;
 
     @Override
     public String getName() {
@@ -197,6 +201,15 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     public void setTransformerClass(Class<? extends Transformer<?>> transformerClass) {
         this.transformerClass = transformerClass;
+    }
+
+    @Override
+    public Class<? extends Converter<?, ?>> getConverterClass() {
+        return converterClass;
+    }
+
+    public void setConverterClass(Class<? extends Converter<?, ?>> converterClass) {
+        this.converterClass = converterClass;
     }
 
 }

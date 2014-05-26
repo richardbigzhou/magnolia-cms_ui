@@ -40,6 +40,8 @@ import info.magnolia.i18nsystem.I18nText;
 
 import java.util.List;
 
+import com.vaadin.data.util.converter.Converter;
+
 /**
  * Defines a field within a dialog.
  *
@@ -117,4 +119,5 @@ public interface FieldDefinition {
 
     Class<? extends Transformer<?>> getTransformerClass();
 
+    Class<? extends Converter<?, ?>> getConverterClass();
 }
