@@ -219,6 +219,9 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     // wait for requested period of time before invocation
                     cal.add(Calendar.SECOND, getDefinition().getDelay());
 
+                    // init waiting time before job is started to avoid issues (when job is finished before timeToWait is initialized)
+                    timeToWait = getDefinition().getTimeToWait();
+
                     String appName = getUiContext() instanceof SubAppContext ? ((SubAppContext) getUiContext()).getSubAppDescriptor().getLabel() : null;
                     String userName = MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName();
                     String jobName = "UI Action triggered execution of [" + (StringUtils.isNotEmpty(catalogName) ? (catalogName + ":") : "") + commandName + "] by user [" + StringUtils.defaultIfEmpty(userName, "") + "].";
@@ -247,7 +250,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
                     // wait until job has been executed
                     Thread.sleep(getDefinition().getDelay() * 1000 + 100);
-                    timeToWait = getDefinition().getTimeToWait();
                     int timeToSleep = 500;
                     // check every 500ms if job is running
                     while (timeToWait > 0) {
