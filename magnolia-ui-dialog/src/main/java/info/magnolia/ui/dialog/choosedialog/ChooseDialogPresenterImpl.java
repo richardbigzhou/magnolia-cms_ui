@@ -136,7 +136,10 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         });
 
         if (StringUtils.isNotBlank(selectedItemId)) {
-            field.setValue(selectedItemId);
+            Object itemId = contentConnector.getItemIdByUrlFragment(selectedItemId);
+            if (itemId != null) {
+                field.setValue(itemId);
+            }
         }
 
         final OverlayCloser closer = appContext.openOverlay(getView(), getView().getModalityLevel());

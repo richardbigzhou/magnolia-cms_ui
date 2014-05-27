@@ -35,15 +35,12 @@ package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-
-import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +81,7 @@ public class WorkbenchField extends CustomField<Object> {
         this.view = presenter.start(workbenchDefinition, imageProvider, workbenchEventbus);
         this.view.setViewType(TreePresenterDefinition.VIEW_TYPE);
         this.view.asVaadinComponent().setHeight(DEFAULT_HEIGHT);
-        if (getConvertedValue() instanceof JcrItemAdapter) {
-            presenter.select(Arrays.asList(((JcrItemAdapter) getConvertedValue()).getItemId()));
-        }
+        presenter.select(getValue());
 
         workbenchEventbus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
