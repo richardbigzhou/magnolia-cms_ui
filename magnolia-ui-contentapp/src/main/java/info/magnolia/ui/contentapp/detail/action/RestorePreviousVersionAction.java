@@ -36,6 +36,7 @@ package info.magnolia.ui.contentapp.detail.action;
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -94,6 +95,8 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
+            NodeTypes.LastModified.update(nodeItemToEdit.getJcrItem());
+            nodeItemToEdit.getJcrItem().getSession().save();
             eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getWorkspace(), nodeItemToEdit.getItemId()));
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-contentapp.actions.restorePreviousVersion.notification.success"));
         } catch (RepositoryException e) {
