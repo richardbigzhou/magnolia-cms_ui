@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -149,6 +152,7 @@ public class FavoritesPresenterTest {
 
     @After
     public void tearDown() {
+        ComponentsTestUtil.clear();
         MgnlContext.setInstance(null);
     }
 
@@ -158,13 +162,14 @@ public class FavoritesPresenterTest {
      * @throws RepositoryException
      */
     @Test
-    public void checkDeterminePreviousLocationDoesNotContainNull() throws RepositoryException {
+    public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException {
         //WHEN
         JcrNodeAdapter node = presenter.determinePreviousLocation();
         node.applyChanges();
 
         //THEN
-        assert(!node.getItemProperty("title").getValue().toString().startsWith("null"));
+        assertThat(node.getJcrItem(), hasProperty("title"));
+        assertThat(node.getJcrItem(), not(hasProperty("title", containsString("null"))));
     }
 
     @Test
