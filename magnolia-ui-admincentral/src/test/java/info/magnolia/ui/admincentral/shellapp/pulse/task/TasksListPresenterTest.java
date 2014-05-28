@@ -93,7 +93,7 @@ public class TasksListPresenterTest {
     public void testFallBackToTaskName() throws Exception {
         // GIVEN
         String taskName = "testTask";
-        when(definitionRegistry.get(taskName)).thenThrow(new RegistrationException("error"));
+        when(definitionRegistry.get(taskName)).thenThrow(new RegistrationException("Intentionally thrown exception."));
 
         // WHEN
         String taskTitle = presenter.getItemTitle(taskName);
