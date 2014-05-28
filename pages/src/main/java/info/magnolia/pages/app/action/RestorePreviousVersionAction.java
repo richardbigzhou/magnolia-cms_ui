@@ -35,6 +35,7 @@ package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -96,6 +97,8 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
+            NodeTypes.LastModified.update(nodeItemToEdit.getJcrItem());
+            nodeItemToEdit.getJcrItem().getSession().save();
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 

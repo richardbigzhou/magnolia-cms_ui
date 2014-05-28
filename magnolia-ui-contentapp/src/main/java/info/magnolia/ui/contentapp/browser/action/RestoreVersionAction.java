@@ -88,7 +88,8 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
 
                     String versionName = (String) getItem().getItemProperty("versionName").getValue();
                     versionManager.restore(node, versionManager.getVersion(node, versionName), true);
-
+                    NodeTypes.LastModified.update(node);
+                    node.getSession().save();
                     eventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getWorkspace(), nodeAdapter.getItemId()));
                     uiContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-contentapp.actions.restoreVersion.notification.success"));
                 } catch (RepositoryException e) {
