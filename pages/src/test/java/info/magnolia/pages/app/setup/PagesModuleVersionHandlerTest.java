@@ -34,7 +34,7 @@
 package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -42,6 +42,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.nodebuilder.NodeBuilderUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
@@ -62,7 +63,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class.
+ * Tests for {@link PagesModuleVersionHandler}.
  */
 public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
@@ -363,6 +364,20 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
+    }
+
+    @Test
+    public void testUpdateFrom53() throws Exception {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "activate", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertThat(activateAction, hasNode("availability"));
+        assertThat(activateAction.getNode("availability"), hasProperty("writePermissionRequired", true));
+        this.assertNoMessages(ctx);
     }
 
 }

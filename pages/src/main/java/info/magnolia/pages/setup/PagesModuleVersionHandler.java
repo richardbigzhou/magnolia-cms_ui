@@ -74,6 +74,8 @@ import java.util.List;
  */
 public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
+    public static final String PAGES_APP_ACTIONS = "/modules/pages/apps/pages/subApps/browser/actions/";
+
     public PagesModuleVersionHandler() {
         super();
 
@@ -92,25 +94,25 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 // new action for confirmation
                 .addTask(new PartialBootstrapTask("Add new confirmation action definition", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/confirmDeletion"))
 
-                .addTask(new NodeExistsDelegateTask("Remove action availability from delete action", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete/availability",
-                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete/availability")))
-                .addTask(new PropertyExistsDelegateTask("Remove label for delete action", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "label",
-                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "label")))
-                .addTask(new PropertyExistsDelegateTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon",
-                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon")))
+                .addTask(new NodeExistsDelegateTask("Remove action availability from delete action", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete/availability",
+                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete/availability")))
+                .addTask(new PropertyExistsDelegateTask("Remove label for delete action", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "label",
+                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "label")))
+                .addTask(new PropertyExistsDelegateTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "icon",
+                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "icon")))
 
                 // update actionbar for confirmation
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar",
                         new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME))));
 
         register(DeltaBuilder.update("5.1", "")
-                .addTask(new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion",
-                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", "multiple", true)))
+                .addTask(new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "confirmDeletion",
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "confirmDeletion/availability", "multiple", true)))
 
                 // add show versions action
                 // if module diff is installed, this task will create a second node showVersions
                 // we'll handle the renaming of the correct node in module diff
-                .addTask(new NodeBuilderTask("Create showVersions action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions",
+                .addTask(new NodeBuilderTask("Create showVersions action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, PAGES_APP_ACTIONS,
                         addNode("showVersions", NodeTypes.ContentNode.NAME).then(
                                 addProperty("class", ShowVersionsActionDefinition.class.getName()),
                                 addProperty("icon", "icon-show-versions"),
@@ -159,34 +161,33 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move")));
 
         register(DeltaBuilder.update("5.1.1", "")
-                .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability",
-                        new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true))));
+                .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "import/availability",
+                        new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG,
+                                PAGES_APP_ACTIONS + "import/availability", "root", true))));
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages", "class", ConfiguredContentAppDescriptor.class.getName()))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true"))
-                .addTask(new PartialBootstrapTask("Bootstrap restore version action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/restoreVersion"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "import/availability", "root", "true"))
+                .addTask(new PartialBootstrapTask("Bootstrap restore version action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "pages/subApps/browser/actions/restoreVersion"))
                 .addTask(new NodeExistsDelegateTask("Bootstrap restore version action to actionbar", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items",
                         new ArrayDelegateTask("",
                                 new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion"),
                                 new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/showVersions",
-                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions")))))
-        );
+                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions"))))));
 
         register(DeltaBuilder.update("5.2.3", "")
-                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/browser/actions",
+                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS,
                         new String[] { "add", "confirmDeletion", "edit", "editPageName", "editTemplate", "restorePreviousVersion", "import", "move", "restoreVersion" }))
-                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
-        );
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" })));
 
         register(DeltaBuilder.update("5.2.5", "")
                 .addTask(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
-                        new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
-                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
-                        new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
-                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true"))
-                ))));
+                        new NodeExistsDelegateTask("Configure recursive activation as asynchronous", PAGES_APP_ACTIONS + "activateRecursive",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "activateRecursive", "asynchronous", "true")),
+                        new NodeExistsDelegateTask("Configure deletion as asynchronous", PAGES_APP_ACTIONS + "delete",
+                                new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "asynchronous", "true"))
+                        ))));
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit page and edit template dialogs into light dialogs.",
@@ -196,7 +197,12 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage", "modalityLevel", "strong")),
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
-                )).addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
+                        ))
+                .addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
+
+        register(DeltaBuilder.update("5.3.1", "")
+                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, "activate")));
+
     }
 
     @Override
@@ -204,11 +210,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         List<Task> tasks = new ArrayList<Task>();
         tasks.addAll(super.getExtraInstallTasks(installContext));
         tasks.add(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
-                new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
-                new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/pages/apps/pages/subApps/browser/actions/delete",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "asynchronous", "true"))
-        )));
+                new NodeExistsDelegateTask("Configure recursive activation as asynchronous", PAGES_APP_ACTIONS + "activateRecursive",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "activateRecursive", "asynchronous", "true")),
+                new NodeExistsDelegateTask("Configure deletion as asynchronous", PAGES_APP_ACTIONS + "delete",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "asynchronous", "true"))
+                )));
         return tasks;
     }
 }
