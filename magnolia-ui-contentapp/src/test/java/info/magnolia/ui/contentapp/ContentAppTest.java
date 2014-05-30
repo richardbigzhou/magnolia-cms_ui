@@ -60,6 +60,8 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -96,6 +98,7 @@ public class ContentAppTest {
         ComponentProviderConfiguration configuration = new ComponentProviderConfiguration();
         configuration.registerInstance(ModuleRegistry.class, moduleRegistry);
         configuration.addTypeMapping(ChooseDialogPresenter.class, MockChooseDialogPresenter.class);
+        configuration.registerInstance(ContentConnector.class, DefaultContentConnector.class); // global content connector
         configuration.registerInstance(ImageProvider.class, mock(ImageProvider.class)); // global image provider
         componentProvider = new GuiceComponentProviderBuilder().withConfiguration(configuration).build();
 
@@ -121,12 +124,12 @@ public class ContentAppTest {
     }
 
     @Test
-    public void testCreateChooseDialogComponentProviderWithImageProviderBinding() throws Exception {
+    public void testCreateComponentProviderWithImageProviderBinding() throws Exception {
         // GIVEN
         // add imageProvider config
-        ConfiguredImageProviderDefinition imageProvider = new ConfiguredImageProviderDefinition();
-        imageProvider.setImageProviderClass(MockImageProvider.class);
-        ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProvider);
+        ConfiguredImageProviderDefinition imageProviderDefinition = new ConfiguredImageProviderDefinition();
+        imageProviderDefinition.setImageProviderClass(MockImageProvider.class);
+        ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProviderDefinition);
 
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
 
@@ -135,7 +138,29 @@ public class ContentAppTest {
 
         // THEN
         assertNotNull(chooseDialogPresenter);
-        assertEquals(MockImageProvider.class, chooseDialogPresenter.imageProvider.getClass());
+        ImageProvider imageProvider = chooseDialogPresenter.imageProvider;
+        assertEquals(MockImageProvider.class, imageProvider.getClass());
+    }
+
+    @Test
+    public void testCreateComponentProviderWithDependentChooseDialogBindings() throws Exception {
+        // GIVEN
+        // add imageProvider config
+        ConfiguredImageProviderDefinition imageProviderDefinition = new ConfiguredImageProviderDefinition();
+        imageProviderDefinition.setImageProviderClass(MockImageProvider.class);
+        ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProviderDefinition);
+
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+
+        // WHEN
+        app.openChooseDialog(null, null, null);
+
+        // THEN
+        assertNotNull(chooseDialogPresenter);
+        ImageProvider imageProvider = chooseDialogPresenter.imageProvider;
+        assertEquals(MockImageProvider.class, imageProvider.getClass());
+        assertEquals(MockContentConnector.class, ((MockImageProvider) imageProvider).contentConnector.getClass());
+
     }
 
     @Test
@@ -170,6 +195,7 @@ public class ContentAppTest {
         ConfiguredJcrContentConnectorDefinition contentConnector = new ConfiguredJcrContentConnectorDefinition();
         contentConnector.setWorkspace(WORKSPACE);
         contentConnector.setRootPath("/root");
+        contentConnector.setImplementationClass(MockContentConnector.class);
         browser.setWorkbench(workbench);
         browser.setContentConnector(contentConnector);
         app.addSubApp(browser);
@@ -185,6 +211,14 @@ public class ContentAppTest {
      * A dummy {@link ImageProvider} to test injection within choose-dialogs.
      */
     public static class MockImageProvider implements ImageProvider {
+
+        private final ContentConnector contentConnector;
+
+        @Inject
+        public MockImageProvider(ContentConnector contentConnector) {
+            // make sure guice provider for ImageProvider itself uses correct choose-dialog component provider
+            this.contentConnector = contentConnector;
+        }
 
         @Override
         public String getPortraitPath(Object itemId) {
@@ -205,6 +239,12 @@ public class ContentAppTest {
         public Object getThumbnailResource(Object itemId, String generator) {
             return null;
         }
+    }
+
+    /**
+     * A dummy {@link ContentConnector} to test injecting dependent choose-dialogs providers.
+     */
+    public static class MockContentConnector extends DefaultContentConnector {
     }
 
     /**

@@ -57,7 +57,6 @@ import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
@@ -76,7 +75,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
 import com.rits.cloning.Cloner;
 
 /**
@@ -124,7 +122,6 @@ public class ContentApp extends BaseApp {
 
     ComponentProvider createChooseDialogComponentProvider(final ChooseDialogDefinition chooseDialogDefinition) {
         ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
-        final EventBus eventBus = new SimpleEventBus();
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
         ComponentProviderConfiguration configuration =
@@ -133,20 +130,15 @@ public class ContentApp extends BaseApp {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
 
-        final ContentConnectorDefinition contentConnectorDefinition = chooseDialogDefinition.getContentConnector();
         ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
             @Override
             protected void configure() {
-                bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(eventBus));
-                bind(ContentConnector.class).toProvider(new ChooseDialogContentConnectorProvider(contentConnectorDefinition, componentProvider));
+                // add binding for ChooseDialogDefinition to feed guice providers
+                bind(ChooseDialogDefinition.class).toInstance(chooseDialogDefinition);
 
-                // add binding for the ImageProvider if there is one
-                FieldDefinition field = chooseDialogDefinition.getField();
-                if (field instanceof WorkbenchFieldDefinition && ((WorkbenchFieldDefinition) field).getImageProvider() != null) {
-                    ImageProviderDefinition definition = ((WorkbenchFieldDefinition) field).getImageProvider();
-                    ChooseDialogImageProviderProvider provider = componentProvider.newInstance(ChooseDialogImageProviderProvider.class, componentProvider, definition);
-                    bind(ImageProvider.class).toProvider(provider);
-                }
+                bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toInstance(new SimpleEventBus());
+                bind(ContentConnector.class).toProvider(ChooseDialogContentConnectorProvider.class);
+                bind(ImageProvider.class).toProvider(ChooseDialogImageProviderProvider.class);
             }
         };
         return builder.build(c);
@@ -178,19 +170,26 @@ public class ContentApp extends BaseApp {
         }
 
         // ensure workbench field
-        if (definition.getField() == null) {
+        if (chooseDialogDefinition.getField() == null) {
             WorkbenchFieldDefinition workbenchField = new WorkbenchFieldDefinition();
             workbenchField.setName("workbenchField");
-
-            ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) cloner.deepClone(subApp.getWorkbench());
-            // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
-            workbench.setDialogWorkbench(true);
-            workbenchField.setWorkbench(workbench);
-
-            ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
-            workbenchField.setImageProvider(imageProvider);
-
             chooseDialogDefinition.setField(workbenchField);
+        }
+
+        if (chooseDialogDefinition.getField() instanceof WorkbenchFieldDefinition) {
+            WorkbenchFieldDefinition workbenchField = (WorkbenchFieldDefinition) chooseDialogDefinition.getField();
+
+            if (workbenchField.getWorkbench() == null) {
+                ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) cloner.deepClone(subApp.getWorkbench());
+                // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
+                workbench.setDialogWorkbench(true);
+                workbenchField.setWorkbench(workbench);
+            }
+
+            if (workbenchField.getImageProvider() == null) {
+                ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
+                workbenchField.setImageProvider(imageProvider);
+            }
         }
 
         return chooseDialogDefinition;

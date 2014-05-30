@@ -34,8 +34,10 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,18 +51,21 @@ import com.google.inject.Provider;
 @Singleton
 public class ChooseDialogContentConnectorProvider implements Provider<ContentConnector> {
 
-    private ComponentProvider componentProvider;
-
-    private ContentConnectorDefinition contentConnectorDefinition;
+    private final ComponentProvider componentProvider;
+    private final ChooseDialogDefinition chooseDialogDefinition;
 
     @Inject
-    public ChooseDialogContentConnectorProvider(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
+    public ChooseDialogContentConnectorProvider(ComponentProvider componentProvider, ChooseDialogDefinition chooseDialogDefinition) {
         this.componentProvider = componentProvider;
+        this.chooseDialogDefinition = chooseDialogDefinition;
     }
 
     @Override
     public ContentConnector get() {
-        return componentProvider.newInstance(contentConnectorDefinition.getImplementationClass(), contentConnectorDefinition);
+        ContentConnectorDefinition contentConnector = chooseDialogDefinition.getContentConnector();
+        if (contentConnector != null) {
+            return componentProvider.newInstance(contentConnector.getImplementationClass(), contentConnector);
+        }
+        return new DefaultContentConnector();
     }
 }

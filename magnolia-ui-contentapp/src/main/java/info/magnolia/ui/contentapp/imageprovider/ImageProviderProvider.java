@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.imageprovider;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
@@ -77,11 +78,9 @@ public class ImageProviderProvider implements Provider<ImageProvider> {
     }
 
     protected ImageProviderDefinition resolveImageProviderDefinition() {
-        if (subAppContext.getSubAppDescriptor() instanceof ContentSubAppDescriptor) {
-            ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-            if (subAppDescriptor.getImageProvider() != null) {
-                return subAppDescriptor.getImageProvider();
-            }
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+        if (subAppDescriptor instanceof ContentSubAppDescriptor) {
+            return ((ContentSubAppDescriptor) subAppDescriptor).getImageProvider();
         }
         return null;
     }

@@ -34,7 +34,10 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.contentapp.imageprovider.ImageProviderProvider;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 import javax.inject.Inject;
@@ -47,17 +50,21 @@ import javax.inject.Singleton;
 @Singleton
 public class ChooseDialogImageProviderProvider extends ImageProviderProvider {
 
-    private ImageProviderDefinition definition;
+    private final ChooseDialogDefinition chooseDialogDefinition;
 
     @Inject
-    public ChooseDialogImageProviderProvider(ComponentProvider componentProvider, ImageProviderDefinition definition) {
+    public ChooseDialogImageProviderProvider(ComponentProvider componentProvider, ChooseDialogDefinition chooseDialogDefinition) {
         super(componentProvider, null); // don't need subApp context here
-        this.definition = definition;
+        this.chooseDialogDefinition = chooseDialogDefinition;
     }
 
     @Override
     protected ImageProviderDefinition resolveImageProviderDefinition() {
-        return definition;
+        FieldDefinition field = chooseDialogDefinition.getField();
+        if (field instanceof WorkbenchFieldDefinition) {
+            return ((WorkbenchFieldDefinition) field).getImageProvider();
+        }
+        return null;
     }
 
 }
