@@ -42,6 +42,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.nodebuilder.NodeBuilderUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
@@ -57,12 +58,11 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class.
+ * Tests for {@link PagesModuleVersionHandler}.
  */
 public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
@@ -347,4 +347,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
         assertThat(session.getNode("/modules/pages/apps/pages/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
     }
+
+    @Test
+    public void testUpdateFrom525() throws Exception {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "activate", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.5"));
+
+        // THEN
+        assertThat(activateAction, hasProperty("availability/writePermissionRequired", true));
+        this.assertNoMessages(ctx);
+    }
+
 }
