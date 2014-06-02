@@ -159,15 +159,20 @@ public class TabBarWidget extends ComplexPanel {
 
     private class VShellShowAllTabLabel extends SimplePanel {
 
-        private final Element text = DOM.createSpan();
+        private final Element focussableLabel = DOM.createButton();
+        private final Element labelWrapper = DOM.createSpan();
 
         public VShellShowAllTabLabel(String label) {
             super(DOM.createElement("li"));
-            addStyleName("show-all");
-            text.setInnerHTML(label);
-            text.setClassName("tab-title");
-            getElement().appendChild(text);
+            labelWrapper.setInnerHTML(label);
+            labelWrapper.setAttribute("tabindex","0");
 
+            focussableLabel.appendChild(labelWrapper);
+            focussableLabel.setClassName("tab-title");
+            focussableLabel.setAttribute("tabindex","-1");
+
+            addStyleName("show-all");
+            getElement().appendChild(focussableLabel);
         }
 
         @Override
