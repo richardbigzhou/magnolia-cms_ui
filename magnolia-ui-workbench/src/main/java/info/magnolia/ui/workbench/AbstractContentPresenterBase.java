@@ -220,7 +220,6 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     @Override
     public abstract String getIcon(Item item);
 
-
     protected List<ColumnDefinition> getAvailableColumns(final List<ColumnDefinition> allColumns) {
         final List<ColumnDefinition> availableColumns = new ArrayList<ColumnDefinition>();
         Iterator<ColumnDefinition> it = allColumns.iterator();
@@ -234,10 +233,12 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     }
 
     @Override
-    public void select(List<Object> itemIds) {}
+    public void select(List<Object> itemIds) {
+    }
 
     @Override
-    public void expand(Object itemId) {}
+    public void expand(Object itemId) {
+    }
 
     protected abstract Container initializeContainer();
 

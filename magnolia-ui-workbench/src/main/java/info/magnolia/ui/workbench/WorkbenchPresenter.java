@@ -95,7 +95,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
 
-
         sanityCheck(workbenchDefinition);
 
         // add content views
@@ -126,7 +125,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // add status bar
-        view.setStatusBarView(statusBarPresenter.start(eventBus));
+        view.setStatusBarView(statusBarPresenter.start(eventBus, activePresenter));
 
         view.setListener(this);
         return view;
@@ -170,12 +169,13 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         activePresenter.refresh();
         view.setViewType(viewType);
 
+        statusBarPresenter.setActivePresenter(activePresenter);
+
         // make sure selection is kept when switching views
         if (itemIds != null) {
             select(itemIds);
         }
     }
-
 
     public List<Object> getSelectedIds() {
         return activePresenter.getSelectedItemIds();
@@ -219,6 +219,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void refresh() {
         activePresenter.refresh();
+        statusBarPresenter.refresh();
     }
 
     public String getDefaultViewType() {

@@ -111,7 +111,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     public void refresh() {
         // This will update the row count and display the newly created items.
         if (container instanceof Refreshable) {
-            ((Refreshable)container).refresh();
+            ((Refreshable) container).refresh();
         }
     }
 
@@ -123,7 +123,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     protected AbstractJcrContainer createContainer() {
-        return new FlatJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
+        return new FlatJcrContainer(((JcrContentConnector) contentConnector).getContentConnectorDefinition());
     }
 
     protected void configureContainer(ContentPresenterDefinition presenterDefinition, AbstractJcrContainer container) {
