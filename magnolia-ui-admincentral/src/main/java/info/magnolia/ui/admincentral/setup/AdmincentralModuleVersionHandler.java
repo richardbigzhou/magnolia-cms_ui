@@ -43,6 +43,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.CheckOrCreatePropertyTask;
 import info.magnolia.module.delta.ConditionalDelegateTask;
 import info.magnolia.module.delta.CreateNodePathTask;
 import info.magnolia.module.delta.CreateNodeTask;
@@ -86,7 +87,9 @@ import org.apache.jackrabbit.JcrConstants;
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
-    protected static final String UI_ACTIONS_IMPORT= "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
+    protected static final String UI_ACTIONS_IMPORT = "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
+    protected static final String UI_IMPORT_FIELD_NAME = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
+
     /**
      * Check if the activation module is install and correctly configured.
      */
@@ -251,10 +254,13 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
                                         addProperty("root", true)
-                                        )
                                 )
                         )
-                ));
+                )
+                )
+                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME,
+                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME, "required", "true")))
+        );
     }
 
     @Override
