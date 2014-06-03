@@ -89,19 +89,25 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
     }
 
     @Override
-    public void taskRemoved(TaskEvent taskEvent) {
-        Set<String> users = getAllRecipients(taskEvent.getTask());
-        sendTaskEvent(taskEvent, users);
-    }
-
-    @Override
-    public void taskCompleted(TaskEvent taskEvent) {
+    public void taskResolved(TaskEvent taskEvent) {
         Set<String> users = getAllRecipients(taskEvent.getTask());
         sendTaskEvent(taskEvent, users);
     }
 
     @Override
     public void taskFailed(TaskEvent taskEvent) {
+        Set<String> users = getAllRecipients(taskEvent.getTask());
+        sendTaskEvent(taskEvent, users);
+    }
+
+    @Override
+    public void taskArchived(TaskEvent taskEvent) {
+        Set<String> users = getAllRecipients(taskEvent.getTask());
+        sendTaskEvent(taskEvent, users);
+    }
+
+    @Override
+    public void taskRemoved(TaskEvent taskEvent) {
         Set<String> users = getAllRecipients(taskEvent.getTask());
         sendTaskEvent(taskEvent, users);
     }

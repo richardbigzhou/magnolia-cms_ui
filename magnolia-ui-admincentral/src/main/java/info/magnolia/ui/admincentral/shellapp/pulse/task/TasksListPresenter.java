@@ -128,7 +128,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     private void initView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Task.Status.Created, Task.Status.InProgress, Task.Status.Completed, Task.Status.Failed));
+        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
         HierarchicalContainer dataSource = container.createDataSource(tasks);
         view.setDataSource(dataSource);
         view.refresh();
@@ -145,12 +145,12 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
 
         for (String taskId : itemIds) {
             Task task = tasksManager.getTaskById(taskId);
-            if (task.getStatus() != Status.Completed) {
+            if (task.getStatus() != Status.Resolved) {
                 // log warn/info?
                 shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantRemove", task.getName()));
                 return;
             }
-            tasksManager.removeTask(taskId);
+            tasksManager.archiveTask(taskId);
         }
 
         // refresh the view

@@ -47,12 +47,12 @@ import org.junit.Test;
  */
 public class CompleteHumanTaskActionTest extends BaseHumanTaskActionTest {
 
-    private CompleteTaskAction action;
+    private ResolveTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new CompleteTaskAction(mock(CompleteTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        action = new ResolveTaskAction(mock(ResolveTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class CompleteHumanTaskActionTest extends BaseHumanTaskActionTest {
         // GIVEN
         Task task = new Task();
         task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-        task.setStatus(Status.Completed);
+        task.setStatus(Status.Resolved);
 
         // WHEN
         action.canExecuteTask(task);

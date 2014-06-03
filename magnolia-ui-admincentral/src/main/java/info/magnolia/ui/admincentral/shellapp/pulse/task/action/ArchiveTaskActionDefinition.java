@@ -36,22 +36,12 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Action definition for {@link CompleteTaskAction}.
+ * Action definition for {@link ArchiveTaskAction}.
  */
 
-public class CompleteTaskActionDefinition extends ConfiguredActionDefinition {
+public class ArchiveTaskActionDefinition extends ConfiguredActionDefinition {
 
-    private String decision;
-
-    public CompleteTaskActionDefinition() {
-        setImplementationClass(CompleteTaskAction.class);
-    }
-
-    public String getDecision() {
-        return decision;
-    }
-
-    public void setDecision(String decision) {
-        this.decision = decision;
+    public ArchiveTaskActionDefinition() {
+        setImplementationClass(ArchiveTaskAction.class);
     }
 }

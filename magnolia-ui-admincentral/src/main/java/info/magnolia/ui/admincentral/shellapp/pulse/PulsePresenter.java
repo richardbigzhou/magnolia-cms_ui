@@ -150,12 +150,7 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     }
 
     @Override
-    public void taskRemoved(TaskEvent taskEvent) {
-        // nothing to do here
-    }
-
-    @Override
-    public void taskCompleted(TaskEvent taskEvent) {
+    public void taskResolved(TaskEvent taskEvent) {
         // nothing to do here
     }
 
@@ -163,6 +158,16 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     public void taskFailed(TaskEvent taskEvent) {
         updatePendingMessagesAndTasksCount();
         updateView(PulseItemCategory.FAILED);
+    }
+
+    @Override
+    public void taskArchived(TaskEvent taskEvent) {
+        // nothing to do here
+    }
+
+    @Override
+    public void taskRemoved(TaskEvent taskEvent) {
+        // nothing to do here
     }
 
     public boolean isDisplayingDetailView() {

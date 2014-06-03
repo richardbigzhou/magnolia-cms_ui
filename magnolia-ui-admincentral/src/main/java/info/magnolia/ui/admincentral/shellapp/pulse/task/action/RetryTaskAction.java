@@ -58,7 +58,7 @@ public class RetryTaskAction extends AbstractTaskAction<RetryTaskActionDefinitio
 
         String taskId = task.getId();
 
-        tasksManager.complete(taskId, task.getResults());
+        tasksManager.resolve(taskId, task.getResults());
         getTaskPresenter().onNavigateToList();
 
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());

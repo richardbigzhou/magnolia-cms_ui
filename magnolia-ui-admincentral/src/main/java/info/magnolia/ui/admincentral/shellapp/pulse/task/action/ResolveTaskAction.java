@@ -40,29 +40,36 @@ import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresen
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-/**
- * Action for deleting a task.
- */
-public class DeleteTaskAction extends AbstractTaskAction<DeleteTaskActionDefinition> {
+import java.util.HashMap;
+import java.util.Map;
 
-    public DeleteTaskAction(DeleteTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskDetailPresenter taskPresenter, Shell shell) {
+/**
+ * Action for resolving a task.
+ */
+public class ResolveTaskAction extends AbstractTaskAction<ResolveTaskActionDefinition> {
+
+    public ResolveTaskAction(ResolveTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskDetailPresenter taskPresenter, Shell shell) {
         super(definition, task, taskManager, taskPresenter, shell);
     }
 
     @Override
     protected void executeTask(TasksManager taskManager, Task task) {
-        log.debug("About to delete human task named [{}]", task.getName());
-        taskManager.removeTask(task.getId());
+        log.debug("About to complete human task named [{}]", task.getName());
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put(DECISION, getDefinition().getDecision());
+        String taskId = task.getId();
+
+        taskManager.resolve(taskId, result);
         getTaskPresenter().onNavigateToList();
+
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
     }
 
     @Override
     protected void canExecuteTask(Task task) throws IllegalStateException {
         final String currentUser = MgnlContext.getUser().getName();
-
-        if (task.getStatus() != Task.Status.Completed || !currentUser.equals(task.getActorId())) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only completed tasks assigned to yourself can be deleted.");
+        if (task.getStatus() != Task.Status.InProgress || !currentUser.equals(task.getActorId())) {
+            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only in progress tasks assigned to yourself can be completed.");
         }
     }
 }

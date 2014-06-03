@@ -86,7 +86,7 @@ public class RejectHumanTaskActionTest extends BaseHumanTaskActionTest {
         // GIVEN
         Task task = new Task();
         task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-        task.setStatus(Status.Completed);
+        task.setStatus(Status.Resolved);
 
         // WHEN
         action.canExecuteTask(task);
