@@ -56,6 +56,8 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     protected final DialogHeaderWidget header = createHeader();
 
+    protected final Element rootEl = DOM.createDiv();
+
     protected final Element contentEl = DOM.createDiv();
 
     protected final Element footerEl = DOM.createDiv();
@@ -68,7 +70,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private Widget footerToolbar;
 
     public BaseDialogViewImpl() {
-        final Element rootEl = DOM.createDiv();
+
         final Element wrapperEl = DOM.createDiv();
 
         setElement(rootEl);
@@ -112,6 +114,13 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             public void onCloseFired() {
                 presenter.closeDialog();
             }
+
+            @Override
+            public void onWidthChanged(boolean isWide) {
+                if (presenter != null) {
+                    presenter.setWide(isWide);
+                }
+            }
         };
     }
 
@@ -122,6 +131,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     @Override
     public void setDescription(String description) {
         header.setDescription(description);
+    }
+
+    @Override
+    public void setWide(boolean isWide) {
+        header.setWide(isWide);
     }
 
     @Override

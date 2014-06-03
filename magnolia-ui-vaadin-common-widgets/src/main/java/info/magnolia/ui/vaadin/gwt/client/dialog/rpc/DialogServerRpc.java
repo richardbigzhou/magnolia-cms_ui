@@ -42,5 +42,7 @@ public interface DialogServerRpc extends ServerRpc {
 
     void closeSelf();
 
+    void setWide(boolean isWide);
+
     void setDescriptionVisibility(boolean isVisible);
 }

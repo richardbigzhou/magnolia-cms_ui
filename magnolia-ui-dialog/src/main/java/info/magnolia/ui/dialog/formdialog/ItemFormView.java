@@ -39,6 +39,7 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.WideEvent;
 import info.magnolia.ui.vaadin.dialog.FormDialog;
 import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormSection;
@@ -51,6 +52,7 @@ import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 
@@ -74,13 +76,29 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         this.i18nAuthoringSupport = i18nAuthoringSupport;
 
         form.setErrorLabels(i18n.translate("validation.message.errors"), i18n.translate("validation.message.nextError"));
-        setWidth("720px");
+        //setWidth("720px");
+        // TODO problem with action buttons on left instead of right side.
+        setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
         getDialog().setContent(form);
         getDialog().addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
             @Override
             public void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event) {
                 form.setDescriptionVisibility(event.isVisible());
+            }
+        });
+
+        getDialog().addWideHandler(new BaseDialog.WideEvent.Handler() {
+
+            @Override
+            public void onWideChanged(WideEvent event) {
+                if (event.isWide()){
+                    //setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+                    setWidth(100, Unit.PERCENTAGE);
+                }else{
+                    setWidth("720px");
+                }
+
             }
         });
 

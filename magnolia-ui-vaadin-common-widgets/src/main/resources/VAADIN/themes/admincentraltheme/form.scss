@@ -5,7 +5,7 @@
 .form-panel {
     margin:0 auto;
     padding:0;
-    width:720px;
+    width:100%;
     max-width:100%;
 }
 
@@ -77,10 +77,12 @@ button.btn-form-help {
     float: right;
     height: 18px;
     margin: 0;
+    margin-right: 3px;
     padding: 0;
     width: 18px;
     position: relative;
-    top: -1px;
+    cursor: pointer;
+    top:-1px;
 
     &:focus{
       outline: $c22 solid 2px;
@@ -88,6 +90,32 @@ button.btn-form-help {
     &::-moz-focus-inner {
       border: 0;
   }
+}
+
+button.btn-form-wide {
+    background:none;
+    border: none;
+    float: right;
+    margin: -8px -8px 0 8px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    font-size:14px;
+    color: $c50;
+
+    &:hover,&:focus, &:active {
+      color: $c52;
+    }
+    &:focus{
+      outline: $c22 solid 2px;
+    }
+    &::-moz-focus-inner {
+      border: 0;
+  }
+}
+
+.wide textarea {
+    min-height:100px;
 }
 
   .help-icon {

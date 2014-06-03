@@ -47,6 +47,8 @@ public class BaseDialogState extends AbstractLayoutState {
 
     public String modalityLevel = "";
 
+    public boolean isWide = false;
+
     public Connector content;
 
     public Connector headerToolbar;

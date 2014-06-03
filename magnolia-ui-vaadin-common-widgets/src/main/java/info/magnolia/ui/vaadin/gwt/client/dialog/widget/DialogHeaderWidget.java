@@ -51,6 +51,9 @@ public class DialogHeaderWidget extends FlowPanel {
 
     private static final String CLASSNAME_HEADER = "dialog-header";
     private static final String ClASSNAME_DESCRIPTION = "dialog-description";
+    private static final String CLASSNAME_WIDTHBUTTON = "btn-form-wide";
+    private static final String CLASSNAME_WIDTHBUTTON_ICON = "icon-open-fullscreen-2";
+    private static final String CLASSNAME_WIDTHBUTTON_ICON_CLOSE = "icon-close-fullscreen-2";
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_HEADER_TOOLBAR = "dialog-header-toolbar";
 
@@ -72,6 +75,8 @@ public class DialogHeaderWidget extends FlowPanel {
 
     protected boolean hasDescription = false;
 
+    protected boolean isWide = false;
+
     protected final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -79,6 +84,27 @@ public class DialogHeaderWidget extends FlowPanel {
             onDescriptionVisibility();
         }
     });
+
+    protected final Button widthButton = new Button("", new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+            isWide = !isWide;
+
+            onWidthChanged();
+
+        }
+    });
+
+    private void onWidthChanged(){
+        callback.onWidthChanged(isWide);
+        if (isWide){
+            widthButton.removeStyleName(CLASSNAME_WIDTHBUTTON_ICON);
+            widthButton.addStyleName(CLASSNAME_WIDTHBUTTON_ICON_CLOSE);
+        }else{
+            widthButton.removeStyleName(CLASSNAME_WIDTHBUTTON_ICON_CLOSE);
+            widthButton.addStyleName(CLASSNAME_WIDTHBUTTON_ICON);
+        }
+    }
 
     private void onDescriptionVisibility() {
         if (hasDescription) {
@@ -121,12 +147,15 @@ public class DialogHeaderWidget extends FlowPanel {
 
         headerPanel.addClassName(CLASSNAME_HEADER);
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
+        widthButton.setStyleName(CLASSNAME_WIDTHBUTTON);
+        widthButton.addStyleName(CLASSNAME_WIDTHBUTTON_ICON);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
         toolbarEl.addClassName(CLASSNAME_HEADER_TOOLBAR);
 
         getElement().appendChild(headerPanel);
         caption.addClassName("title");
         headerPanel.appendChild(caption);
+        add(widthButton, headerPanel);
         add(helpButton, headerPanel);
         headerPanel.appendChild(toolbarEl);
 
@@ -146,6 +175,10 @@ public class DialogHeaderWidget extends FlowPanel {
                 this.getElement().getParentElement().setAttribute("role", "dialogDescriptionHeader");
             }
         }
+    }
+
+    public void setWide(boolean isWide) {
+        this.isWide = isWide;
     }
 
     public void setCaption(String caption) {
@@ -172,5 +205,7 @@ public class DialogHeaderWidget extends FlowPanel {
         void onDescriptionVisibilityChanged(boolean isVisible);
 
         void onCloseFired();
+
+        void onWidthChanged(boolean isWide);
     }
 }

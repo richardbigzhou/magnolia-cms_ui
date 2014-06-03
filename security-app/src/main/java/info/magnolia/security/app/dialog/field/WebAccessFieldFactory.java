@@ -161,6 +161,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
+        ruleLayout.setWidth("100%");
 
         NativeSelect accessRights = new NativeSelect();
         accessRights.addItem(Permission.ALL);
@@ -182,7 +183,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
         ruleLayout.addComponent(accessRights);
 
         TextField path = new TextField();
-        path.setWidth("375px");
+        path.setWidth("100%");
         Property pathProperty = ruleItem.getItemProperty(PATH_PROPERTY_NAME);
         if (pathProperty == null) {
             pathProperty = new DefaultProperty<String>(String.class, "/*");
@@ -190,6 +191,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
         }
         path.setPropertyDataSource(pathProperty);
         ruleLayout.addComponent(path);
+        ruleLayout.setExpandRatio(path, 1.0f);
 
         final Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);

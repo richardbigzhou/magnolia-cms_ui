@@ -39,6 +39,7 @@ import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.WideEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -62,6 +63,8 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private ModalityLevel modalityLevel = ModalityLevel.STRONG;
 
+    public static final int DIALOG_WIDTH = 720;
+
     public BaseDialogViewImpl() {
         this(new BaseDialog());
     }
@@ -74,17 +77,38 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
         // Without it, if you have more than one dialog open,
         // i.e. in different apps running at the same time, then all open
         // dialogs would react to the keyboard event sent on the dialog currently having the focus.
-        // setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
-        setWidth("720px");
+
+        setWidth(DIALOG_WIDTH, Unit.PIXELS);
         setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
+
         this.dialog.addDialogCloseHandler(new Handler() {
             @Override
             public void onClose(DialogCloseEvent event) {
                 close();
             }
         });
+
+        this.dialog.addWideHandler(new BaseDialog.WideEvent.Handler() {
+
+            @Override
+            public void onWideChanged(WideEvent event) {
+                handleSetWide(event.isWide());
+            }
+        });
+
         this.dialog.setSizeFull();
         this.dialog.setStyleName("dialog-panel");
+    }
+
+    private void handleSetWide(boolean isWide){
+        if (isWide){
+            //setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+            setWidth(100, Unit.PERCENTAGE);
+            addStyleName("wide");
+        }else{
+            setWidth(DIALOG_WIDTH, Unit.PIXELS);
+            removeStyleName("wide");
+        }
     }
 
     @Override
@@ -193,5 +217,11 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
             setWidth("620px");
         }
         dialog.setModalityLevel(modalityLevel.getName());
+    }
+
+    @Override
+    public void setWide(boolean isWide) {
+        handleSetWide(isWide);
+        dialog.setWideOnClient(isWide);
     }
 }

@@ -44,6 +44,8 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
 
     void setDescription(String description);
 
+    void setWide(boolean isWide);
+
     void setCaption(String caption);
 
     void showCloseButton();
@@ -64,6 +66,8 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
     public interface Presenter {
 
         void closeDialog();
+
+        void setWide(boolean isWide);
 
         void setDescriptionVisibility(boolean isVisible);
     }
