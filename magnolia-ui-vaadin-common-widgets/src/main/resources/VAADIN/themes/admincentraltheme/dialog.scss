@@ -8,6 +8,12 @@
     padding: 0;
   }
 
+  .overlay-child.wide {
+    padding-left:40px;
+    padding-right:40px;
+    }
+
+
   .overlay-child .dialog-panel {
     margin-top: 2px;
   }
@@ -177,6 +183,8 @@
       }
 
       button.btn-form-help { display: none; }
+
+      button.btn-form-wide { display: none; }
 
       .m-closebutton {
         position: relative;
@@ -359,6 +367,11 @@
   .light button.btn-form-help {
     display: none;
   }
+
+  .light button.btn-form-wide {
+    display: none;
+  }
+
 
   .light .dialog-content .v-shell-tabsheet-scroller {
      /*max-height: 115px !important;*/

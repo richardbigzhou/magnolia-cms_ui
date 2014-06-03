@@ -62,6 +62,8 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private List<FormActionItemDefinition> actions;
 
+    private boolean isWide = false;
+
     @Override
     public String getLabel() {
         return label;
@@ -123,5 +125,17 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     public void setActions(List<FormActionItemDefinition> actions) {
         this.actions = actions;
+    }
+
+    /**
+     * @return Whether the editor should be displayed in a wide mode by default.
+     */
+    @Override
+    public boolean isWide() {
+        return isWide;
+    }
+
+    public void setWide(boolean isWide){
+        this.isWide = isWide;
     }
 }

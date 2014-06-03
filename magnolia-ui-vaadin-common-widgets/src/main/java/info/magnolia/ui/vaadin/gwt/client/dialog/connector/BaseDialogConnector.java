@@ -80,6 +80,13 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
             }
         });
 
+        addStateChangeHandler("isWide", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                view.setWide(getState().isWide);
+            }
+        });
+
         addStateChangeHandler("componentDescription", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -157,9 +164,16 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
         return view.asWidget();
     }
 
+    // RPC methods to communicate back to the server.
+
     @Override
     public void closeDialog() {
         rpc.closeSelf();
+    }
+
+    @Override
+    public void setWide(boolean isWide) {
+        rpc.setWide(isWide);
     }
 
     @Override

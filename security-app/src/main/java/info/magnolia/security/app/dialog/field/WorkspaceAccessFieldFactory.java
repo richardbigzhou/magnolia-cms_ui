@@ -219,6 +219,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
+        ruleLayout.setWidth("100%");
 
         NativeSelect accessRights = new NativeSelect();
         accessRights.setNullSelectionAllowed(false);
@@ -251,9 +252,10 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         ruleLayout.addComponent(accessType);
 
         final TextField path = new TextField();
-        path.setWidth("125px");
+        path.setWidth("100%");
         path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(path);
+        ruleLayout.setExpandRatio(path, 1.0f);
 
         Button chooseButton = new Button(i18n.translate("security.workspace.field.choose"));
         chooseButton.addClickListener(new Button.ClickListener() {

@@ -64,4 +64,6 @@ public interface DialogDefinition {
     EditorActionAreaDefinition getActionArea();
 
     ModalityLevel getModalityLevel();
+
+    boolean isWide();
 }

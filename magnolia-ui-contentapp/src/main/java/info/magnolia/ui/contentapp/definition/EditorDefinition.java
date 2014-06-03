@@ -62,4 +62,6 @@ public interface EditorDefinition {
     List<FormActionItemDefinition> getActions();
 
     EditorActionAreaDefinition getActionArea();
+
+    boolean isWide();
 }

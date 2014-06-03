@@ -71,6 +71,11 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
             }
 
             @Override
+            public void setWide(boolean isWide) {
+                BaseDialog.this.setWide(isWide);
+            }
+
+            @Override
             public void setDescriptionVisibility(boolean isVisible) {
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
@@ -84,6 +89,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public void closeSelf() {
         fireEvent(new DialogCloseEvent(this, this));
+    }
+
+    public void setWide(boolean isWide) {
+        fireEvent(new WideEvent(this, isWide));
     }
 
     public void setDescriptionVisibility(boolean isVisible) {
@@ -196,6 +205,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
         getState().modalityLevel = modalityLevel;
     }
 
+    public void setWideOnClient(boolean isWide){
+        getState().isWide = isWide;
+    }
+
     public void addDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
         addListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler, DescriptionVisibilityEvent.ON_DESCRIPTION_VISIBILITY_CHANGED);
     }
@@ -204,6 +217,13 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
         removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
     }
 
+    public void addWideHandler(WideEvent.Handler handler) {
+        addListener("wideEvent", WideEvent.class, handler, WideEvent.ON_WIDE_CHANGED);
+    }
+
+    public void removeWideHandler(DialogCloseEvent.Handler handler) {
+        removeListener("wideEvent", WideEvent.class, handler);
+    }
 
     public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
@@ -245,6 +265,39 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
         public BaseDialog getDialog() {
             return dialog;
+        }
+    }
+
+    /**
+     * DescriptionVisibilityEvent.
+     */
+    public static class WideEvent extends com.vaadin.ui.Component.Event {
+        /**
+         * Handler.
+         */
+        public interface Handler {
+            void onWideChanged(WideEvent event);
+        }
+
+        public static final java.lang.reflect.Method ON_WIDE_CHANGED;
+
+        private boolean isWide;
+
+        static {
+            try {
+                ON_WIDE_CHANGED = WideEvent.Handler.class.getDeclaredMethod("onWideChanged", new Class[] { WideEvent.class });
+            } catch (final java.lang.NoSuchMethodException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+        }
+
+        public WideEvent(Component source, boolean isWide) {
+            super(source);
+            this.isWide = isWide;
+        }
+
+        public boolean isWide() {
+            return isWide;
         }
     }
 

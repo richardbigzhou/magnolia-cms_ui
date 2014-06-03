@@ -112,6 +112,13 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             public void onCloseFired() {
                 presenter.closeDialog();
             }
+
+            @Override
+            public void onWideChanged(boolean isWide) {
+                if (presenter != null) {
+                    presenter.setWide(isWide);
+                }
+            }
         };
     }
 
@@ -122,6 +129,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     @Override
     public void setDescription(String description) {
         header.setDescription(description);
+    }
+
+    @Override
+    public void setWide(boolean isWide) {
+        header.setWide(isWide);
     }
 
     @Override

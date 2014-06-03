@@ -170,6 +170,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
         this.view.setActionAreaView(editorActionAreaView);
         this.view.setModalityLevel(definition.getModalityLevel());
+        if (definition.isWide()){
+            this.view.setWide(true);
+        }
         return this.view;
     }
 
