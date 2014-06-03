@@ -41,7 +41,17 @@ import info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition;
  */
 public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
 
+    private boolean showPreview = true;
+
     public RestorePreviousVersionActionDefinition() {
         setImplementationClass(RestorePreviousVersionAction.class);
+    }
+
+    public boolean isShowPreview() {
+        return showPreview;
+    }
+
+    public void setShowPreview(boolean showPreview) {
+        this.showPreview = showPreview;
     }
 }
