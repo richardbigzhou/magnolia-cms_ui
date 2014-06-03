@@ -74,7 +74,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         this.i18nAuthoringSupport = i18nAuthoringSupport;
 
         form.setErrorLabels(i18n.translate("validation.message.errors"), i18n.translate("validation.message.nextError"));
-        setWidth("720px");
+
         getDialog().setContent(form);
         getDialog().addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 

@@ -73,4 +73,6 @@ public interface DialogView extends View {
     ModalityLevel getModalityLevel();
 
     void setModalityLevel(ModalityLevel modalityLevel);
+
+    void setWide(boolean isWide);
 }

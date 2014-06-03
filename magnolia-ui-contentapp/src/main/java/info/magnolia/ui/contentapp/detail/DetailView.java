@@ -91,6 +91,8 @@ public interface DetailView extends View {
 
     ViewType getViewType();
 
+    void setWide(boolean isWide);
+
     /**
      * Listener for the ContentView.
      */

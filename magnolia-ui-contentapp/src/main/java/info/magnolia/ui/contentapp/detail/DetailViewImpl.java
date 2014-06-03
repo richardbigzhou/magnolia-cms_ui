@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.dialog.DialogView;
+
 import com.vaadin.ui.Component;
 
 /**
@@ -67,5 +69,13 @@ public class DetailViewImpl implements DetailView {
     @Override
     public Component asVaadinComponent() {
         return itemView;
+    }
+
+    @Override
+    public void setWide(boolean isWide) {
+        if (itemView instanceof DialogView){
+            ((DialogView) itemView).setWide(isWide);
+        }
+
     }
 }

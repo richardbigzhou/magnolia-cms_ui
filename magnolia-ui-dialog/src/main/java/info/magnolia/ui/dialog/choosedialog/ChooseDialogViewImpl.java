@@ -43,7 +43,6 @@ public class ChooseDialogViewImpl extends BaseDialogViewImpl implements ChooseDi
     public ChooseDialogViewImpl() {
         super();
         setHeight("500px");
-        getDialog().setSizeFull();
         getDialog().addStyleName("choose-dialog");
         setDescriptionVisible(false);
     }

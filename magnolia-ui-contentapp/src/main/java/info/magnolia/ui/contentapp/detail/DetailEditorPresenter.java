@@ -130,6 +130,9 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE, itemView));
         detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
 
+        if (editorDefinition.isWide()){
+            itemView.setWide(true);
+        }
         return view;
     }
 

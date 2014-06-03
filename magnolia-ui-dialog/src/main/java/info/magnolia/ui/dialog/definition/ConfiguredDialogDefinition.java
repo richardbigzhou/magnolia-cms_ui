@@ -56,6 +56,8 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private String i18nBasename;
 
+    private boolean isWide = false;
+
     private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
 
     private Class<? extends DialogPresenter> presenterClass;
@@ -135,5 +137,17 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     public void setModalityLevel(ModalityLevel modalityLevel) {
         this.modalityLevel = modalityLevel;
+    }
+
+    /**
+     * @return Whether the dialog should be displayed in a wide mode by default.
+     */
+    @Override
+    public boolean isWide() {
+        return isWide;
+    }
+
+    public void setWide(boolean isWide){
+        this.isWide = isWide;
     }
 }
