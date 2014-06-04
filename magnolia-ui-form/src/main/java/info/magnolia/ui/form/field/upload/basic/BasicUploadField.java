@@ -312,14 +312,14 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
      */
     protected Component getFileDetailFileName() {
         if (this.editFileName && !isReadOnly()) {
-            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileNameWithoutExtension());
+            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailNameCaption));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
             label.setCaption(i18n.translate(fileDetailNameCaption));
-            label.setValue(getValue().getFileNameWithoutExtension());
+            label.setValue(getValue().getFileName());
             return label;
         }
     }

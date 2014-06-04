@@ -39,7 +39,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -74,12 +74,12 @@ import com.vaadin.data.Property;
  * 
  * @param <T> property type used by the related field.
  */
-public class FileItemTransformer<T extends UploadReceiver> implements Transformer<T> {
+public class FileTransformer<T extends UploadReceiver> implements Transformer<T> {
 
-    private static final Logger log = LoggerFactory.getLogger(FileItemTransformer.class);
+    private static final Logger log = LoggerFactory.getLogger(FileTransformer.class);
 
     protected Item relatedFormItem;
-    protected final ConfiguredFieldDefinition definition;
+    protected final BasicUploadFieldDefinition definition;
     protected final Class<T> type;
     private Locale locale;
     // item name
@@ -88,7 +88,7 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
     protected String i18NPropertyName;
 
     @Inject
-    public FileItemTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+    public FileTransformer(Item relatedFormItem, BasicUploadFieldDefinition definition, Class<T> type) {
         this.definition = definition;
         this.relatedFormItem = relatedFormItem;
         this.type = type;
@@ -100,8 +100,8 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
 
     /**
      * Base on the validity of the received property, populate or not the property to the related Item.<br>
-     * Call {@link FileItemTransformer#populateItem(Object, Item)} in case {@link FileItemTransformer#isValid(Object, Item)} return true. <br>
-     * Otherwise call {@link FileItemTransformer#handleInvalide(Object, Item)}.
+     * Call {@link FileTransformer#populateItem(Object, Item)} in case {@link FileTransformer#isValid(Object, Item)} return true. <br>
+     * Otherwise call {@link FileTransformer#handleInvalide(Object, Item)}.
      */
     @Override
     public void writeToItem(T newValue) {
@@ -114,7 +114,7 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
     }
 
     /**
-     * Get the stored Item, and based of this Item, return {@link FileItemTransformer#createPropertyFromItem(Item)} .
+     * Get the stored Item, and based of this Item, return {@link FileTransformer#createPropertyFromItem(Item)} .
      */
     @Override
     public T readFromItem() {
@@ -165,9 +165,8 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
         // Set File if the binary Item has data
         if (item.getItemProperty(JcrConstants.JCR_DATA) != null && item.getItemProperty(JcrConstants.JCR_DATA).getValue() != null) {
             String fileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME) != null ? (String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue() : "";
-            String extension = item.getItemProperty(FileProperties.PROPERTY_EXTENSION) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue()) : "";
             String MIMEType = item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()) : "";
-            OutputStream out = uploadReceiver.receiveUpload(fileName + "." + extension, MIMEType);
+            OutputStream out = uploadReceiver.receiveUpload(fileName, MIMEType);
             InputStream in;
             try {
                 in = ((BinaryImpl) item.getItemProperty(JcrConstants.JCR_DATA).getValue()).getStream();
@@ -187,18 +186,18 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
     }
 
     /**
-     * @return true it the 'newValue' property is valid for being populated to the Item {@link FileItemTransformer#populateItem(Object, Item)}.
+     * @return true it the 'newValue' property is valid for being populated to the Item {@link FileTransformer#populateItem(Object, Item)}.
      */
-    public boolean isValid(T newValue, Item item) {
+    protected boolean isValid(T newValue, Item item) {
         return newValue != null && !newValue.isEmpty();
     }
 
     /**
-     * Populate the related Item with the values of 'newItem' in case {@link FileItemTransformer#isValid(Object, Item)} return true.<br>
+     * Populate the related Item with the values of 'newItem' in case {@link FileTransformer#isValid(Object, Item)} return true.<br>
      * 
-     * @see {@link FileItemTransformer#writeToItem(Object)}.
+     * @see {@link FileTransformer#writeToItem(Object)}.
      */
-    public void populateItem(T newValue, Item item) {
+    public Item populateItem(T newValue, Item item) {
         // Populate Data
         Property<Binary> data = getOrCreateProperty(item, JcrConstants.JCR_DATA, Binary.class);
         if (newValue != null) {
@@ -207,7 +206,7 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
             } catch (Exception re) {
                 log.error("Could not get Binary. Upload will not be performed", re);
                 ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
-                return;
+                return null;
             }
         }
         getOrCreateProperty(item, FileProperties.PROPERTY_FILENAME, String.class).setValue(StringUtils.substringBeforeLast(newValue.getFileName(), "."));
@@ -215,14 +214,15 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
         getOrCreateProperty(item, FileProperties.PROPERTY_LASTMODIFIED, Date.class).setValue(new Date());
         getOrCreateProperty(item, FileProperties.PROPERTY_SIZE, Long.class).setValue(newValue.getFileSize());
         getOrCreateProperty(item, FileProperties.PROPERTY_EXTENSION, String.class).setValue(newValue.getExtension());
+        return item;
     }
 
     /**
-     * Handle the related Item in case {@link FileItemTransformer#isValid(Object, Item)} return false.<br>
+     * Handle the related Item in case {@link FileTransformer#isValid(Object, Item)} return false.<br>
      * 
-     * @see {@link FileItemTransformer#writeToItem(Object)}.
+     * @see {@link FileTransformer#writeToItem(Object)}.
      */
-    public void handleInvalide(T newValue, Item item) {
+    protected void handleInvalide(T newValue, Item item) {
         ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
     }
 
@@ -238,7 +238,7 @@ public class FileItemTransformer<T extends UploadReceiver> implements Transforme
 
     @Override
     public String getBasePropertyName() {
-        return this.definition.getName();
+        return this.definition.getBinaryNodeName();
     }
 
     @Override
