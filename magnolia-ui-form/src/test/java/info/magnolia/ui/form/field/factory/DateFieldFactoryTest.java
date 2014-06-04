@@ -124,9 +124,9 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);
-        assertEquals("yyyy-MM-dd:HH:mm", ((PopupDateField) field).getDateFormat());
+        assertEquals("yyyy-MM-dd HH:mm", ((PopupDateField) field).getDateFormat());
         SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
-        assertEquals("2012-03-02:05:55", sdf.format(field.getValue()));
+        assertEquals("2012-03-02 05:55", sdf.format(field.getValue()));
     }
 
     @Override
