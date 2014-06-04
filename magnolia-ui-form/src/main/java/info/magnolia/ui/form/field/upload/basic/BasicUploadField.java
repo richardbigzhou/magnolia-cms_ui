@@ -37,12 +37,10 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.AbstractUploadField;
-import info.magnolia.ui.form.field.upload.FileItemWrapper;
 import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
+import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-
-import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -70,10 +68,10 @@ import com.vaadin.ui.TextField;
  * <li>InProgressLayout (ProgressBar / Cancel Button...)
  * <li>CompletedLayout (File Detail / Preview ...)
  * </ul>
- *
- * @param <D> {@link FileItemWrapper} implemented class.
+ * 
+ * @param <T> {@link UploadReceiver} implemented class.
  */
-public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUploadField<D> {
+public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadField<T> {
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(BasicUploadField.class);
 
@@ -89,8 +87,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected UiContext uiContext;
     private final SimpleTranslator i18n;
 
-    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext, BasicUploadFieldDefinition definition, SimpleTranslator i18n) {
-        super(fileWrapper, tmpUploadDirectory, i18n);
+    public BasicUploadField(ImageProvider imageProvider, UiContext uiContext, BasicUploadFieldDefinition definition, SimpleTranslator i18n) {
+        super();
         // Propagate definition.
         populateFromDefinition(definition);
 
@@ -234,7 +232,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         getUpload().setButtonCaption(getCaption(selectAnotherCaption, null));
         actionLayout.addComponent(getUpload());
         // Add Remove Button if a file is present.
-        if (!getFileWrapper().isEmpty()) {
+        if (!getValue().isEmpty()) {
             Button delete = createDeleteButton();
             actionLayout.addComponent(delete);
             actionLayout.setComponentAlignment(delete, Alignment.MIDDLE_RIGHT);
@@ -274,7 +272,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
             @Override
             public void buttonClick(ClickEvent event) {
-                getFileWrapper().clearProperties();
+                resetDataSource();
                 updateDisplay();
             }
         });
@@ -314,14 +312,14 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      */
     protected Component getFileDetailFileName() {
         if (this.editFileName && !isReadOnly()) {
-            TextField textField = new TextField(getFileWrapper().getFileNameProperty());
+            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileNameWithoutExtension());
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailNameCaption));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
             label.setCaption(i18n.translate(fileDetailNameCaption));
-            label.setValue(getFileWrapper().getFileName());
+            label.setValue(getValue().getFileNameWithoutExtension());
             return label;
         }
     }
@@ -332,7 +330,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected Component getFileDetailSize() {
         Label label = new Label("", ContentMode.HTML);
         label.setCaption(i18n.translate(fileDetailSizeCaption));
-        label.setValue(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
+        label.setValue(FileUtils.byteCountToDisplaySize(getValue().getFileSize()));
         return label;
     }
 
@@ -343,13 +341,13 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      */
     protected Component getFileDetailFileFormat() {
         if (this.editFileFormat && !isReadOnly()) {
-            TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
+            TextField textField = new TextField(i18n.translate(fileDetailFormatCaption), getValue().getExtension());
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailFormatCaption));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
-            label.setValue(getFileWrapper().getExtension());
+            label.setValue(getValue().getExtension());
             label.setCaption(i18n.translate(fileDetailFormatCaption));
             return label;
         }
@@ -363,7 +361,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         thumbnail.setSizeUndefined();
         thumbnail.addStyleName("preview-image");
         thumbnail.addStyleName("file-preview");
-        thumbnail.addStyleName(createIconStyleName(getFileWrapper()));
+        thumbnail.addStyleName(createIconStyleName());
         return thumbnail;
     }
 
@@ -371,11 +369,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      * Create the Icon related to a File. <br>
      * <b>Override this method in order to change the Displayed Icon .</b>
      *
-     * @param fileWrapper
      * @return
      */
-    protected String createIconStyleName(FileItemWrapper fileWrapper) {
-        return "icon-" + imageProvider.resolveIconClassName(fileWrapper.getMimeType());
+    protected String createIconStyleName() {
+        return "icon-" + imageProvider.resolveIconClassName(getValue().getMimeType());
     }
 
     @Override
@@ -569,7 +566,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
     @Override
     protected boolean isEmpty() {
-        return getFileWrapper().isEmpty();
+        return getValue().isEmpty();
     }
 
     @Override
@@ -585,7 +582,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
                 getUpload().removeFinishedListener(this);
                 getUpload().removeProgressListener(this);
             }
-            if (getFileWrapper().isEmpty()) {
+            if (getValue().isEmpty()) {
                 buildEmptyLayout();
             }
         }

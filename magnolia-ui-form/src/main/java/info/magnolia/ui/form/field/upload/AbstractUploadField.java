@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.form.field.upload;
 
-import info.magnolia.i18nsystem.SimpleTranslator;
-
-import java.io.File;
 import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
@@ -81,10 +79,10 @@ import com.vaadin.ui.Upload.StartedListener;
  * <b>Important exposed method</b><br>
  * {@link Upload} getUpload() : Return the Vaadin Upload Component responsible for the Uploading a File based on a folder. <br>
  * createDropZone(Component c) : Give the Drop ability to the passed Component.<br>
- *
- * @param <D> {@link FileItemWrapper} implemented class.
+ * 
+ * @param <T> {@link UploadReceiver} implemented class.
  */
-public abstract class AbstractUploadField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadField {
+public abstract class AbstractUploadField<T extends UploadReceiver> extends CustomField<T> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadField.class);
 
@@ -96,22 +94,11 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     // implementation.
     private boolean interruptedDragAndDropUpload = false;
 
-    // Define global variable used by this implementation
-    private final D fileWrapper;
-
-    private UploadReceiver receiver;
-
     private Upload upload;
 
     private DragAndDropWrapper dropZone;
 
     private HasComponents root;
-
-    public AbstractUploadField(D fileWrapper, File tmpUploadDirectory, SimpleTranslator i18n) {
-        this.fileWrapper = fileWrapper;
-        this.receiver = new UploadReceiver(tmpUploadDirectory, i18n);
-        createUpload();
-    }
 
     /**
      * Build the Empty Layout.<br>
@@ -144,6 +131,12 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     protected abstract void displayUploadFailedNote(String fileName);
 
+    @Override
+    public void setPropertyDataSource(Property newDataSource) {
+        super.setPropertyDataSource(newDataSource);
+        createUpload();
+    }
+
     /**
      * Call the correct layout.
      * <ul>
@@ -152,7 +145,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * </ul>
      */
     protected void updateDisplay() {
-        if (this.fileWrapper.isEmpty()) {
+        if (this.getValue().isEmpty()) {
             buildEmptyLayout();
         } else {
             buildCompletedLayout();
@@ -210,7 +203,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * Create the Upload component.
      */
     private void createUpload() {
-        this.upload = new Upload(null, receiver);
+        this.upload = new Upload(null, getValue());
         this.upload.addStartedListener(this);
         this.upload.addFinishedListener(this);
         this.upload.addProgressListener(this);
@@ -229,13 +222,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      */
     protected DragAndDropWrapper getDropZone() {
         return this.dropZone;
-    }
-
-    /**
-     * Used to access the current File Wrapper in order to access the current File Informations.
-     */
-    protected D getFileWrapper() {
-        return this.fileWrapper;
     }
 
     /**
@@ -271,7 +257,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
                 @Override
                 public OutputStream getOutputStream() {
-                    return receiver.receiveUpload(name, mime);
+                    return getValue().receiveUpload(name, mime);
                 }
 
                 @Override
@@ -349,7 +335,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
             this.interruptUpload(InterruptionReason.FILE_SIZE);
             return;
         }
-        refreshInProgressLayout(readBytes, contentLength, receiver.getLastFileName());
+        refreshInProgressLayout(readBytes, contentLength, getValue().getLastFileName());
         try {
             Thread.sleep(5);
         } catch (InterruptedException e) {
@@ -376,12 +362,12 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         }
         // Post check Upload.
         if (!postFileValidation()) {
-            FailedEvent newEvent = new FailedEvent(upload, receiver.getFileName(), receiver.getMimeType(), receiver.getFileSize());
+            FailedEvent newEvent = new FailedEvent(upload, getValue().getFileName(), getValue().getMimeType(), getValue().getFileSize());
             uploadFailed(newEvent);
             return;
         }
         displayUploadFinishedNote(event.getFilename());
-        this.fileWrapper.populateFromReceiver(receiver);
+        this.getPropertyDataSource().setValue(event.getUpload().getReceiver());
         buildCompletedLayout();
         fireValueChange(false);
     }
@@ -394,14 +380,19 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         if (event.getReason() instanceof UploadException) {
             displayUploadFailedNote(event.getFilename());
         }
-        this.fileWrapper.reloadPrevious();
+        resetDataSource();
         updateDisplay();
         log.warn("Upload failed for file {} ", event.getFilename());
     }
 
     @Override
-    public Class<? extends Byte[]> getType() {
-        return Byte[].class;
+    public Class getType() {
+        return UploadReceiver.class;
+    }
+
+    protected void resetDataSource() {
+        getValue().setValue(null);
+        getPropertyDataSource().setValue(getValue());
     }
 
     protected HasComponents getRootLayout() {

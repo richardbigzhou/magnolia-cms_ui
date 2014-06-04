@@ -33,93 +33,51 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
-import info.magnolia.ui.form.field.upload.basic.BasicFileItemWrapper;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.io.File;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
  * Creates and configures a Basic UploadField.
  */
-public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFieldDefinition, Byte[]> {
-
-    private static final Logger log = LoggerFactory.getLogger(BasicUploadFieldFactory.class);
+public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFieldDefinition, UploadReceiver> {
 
     private final ImageProvider imageProvider;
     private UiContext uiContext;
     private final SimpleTranslator i18n;
+    private final ComponentProvider componentProvider;
 
     @Inject
-    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n) {
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.imageProvider = imageProvider;
         this.uiContext = uiContext;
         this.i18n = i18n;
+        this.componentProvider = componentProvider;
     }
 
     @Override
-    protected Field<Byte[]> createFieldComponent() {
-        // Get or create the File Node adapter.
-        AbstractJcrNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
-        // Init the tmp upload path
-        File tmpDirectory = Path.getTempDirectory();
-
-        // Create the File Wrapper.
-        BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
-
+    protected Field<UploadReceiver> createFieldComponent() {
         // Create Upload Filed.
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext, definition, i18n);
-
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(imageProvider, uiContext, definition, i18n);
         return uploadField;
     }
 
     /**
-     * Get or Create the Binary Item. If this Item doesn't exist yet,
-     * initialize all fields (as Property).
-     */
-    public AbstractJcrNodeAdapter getOrCreateSubItemWithBinaryData() {
-        // Get the related Node
-        AbstractJcrNodeAdapter child = null;
-        try {
-            Node node = ((JcrNodeAdapter) item).getJcrItem();
-            if (node.hasNode(definition.getBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
-                child = new JcrNodeAdapter(node.getNode(definition.getBinaryNodeName()));
-                child.setParent((AbstractJcrNodeAdapter) item);
-            } else {
-                child = new JcrNewNodeAdapter(node, NodeTypes.Resource.NAME, definition.getBinaryNodeName());
-                child.setParent((AbstractJcrNodeAdapter) item);
-            }
-        } catch (RepositoryException e) {
-            log.error("Could get or create item", e);
-        }
-        return child;
-    }
-
-    /**
-     * Do not link a DataSource to the Upload Field. Upload Field will handle
-     * the creation of the appropriate property.
+     * Initialize the transformer.
      */
     @Override
-    public void setPropertyDataSourceAndDefaultValue(Property property) {
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, UploadReceiver.class);
     }
 }
