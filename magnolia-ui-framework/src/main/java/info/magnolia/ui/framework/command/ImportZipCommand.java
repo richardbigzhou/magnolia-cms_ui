@@ -162,7 +162,7 @@ public class ImportZipCommand extends BaseRepositoryCommand {
         InputStream stream = zip.getInputStream(entry);
         FileOutputStream os = null;
         try {
-            UploadReceiver receiver = new UploadReceiver(Path.getTempDirectory(), translator);
+            UploadReceiver receiver = createReceiver();
 
             String folderPath = extractEntryPath(entry);
             if (folderPath.startsWith("/")) {
@@ -180,6 +180,10 @@ public class ImportZipCommand extends BaseRepositoryCommand {
             IOUtils.closeQuietly(stream);
             IOUtils.closeQuietly(os);
         }
+    }
+
+    protected UploadReceiver createReceiver() {
+        return new UploadReceiver(Path.getTempDirectory(), translator);
     }
 
     /**
