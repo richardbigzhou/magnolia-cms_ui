@@ -5,7 +5,12 @@
 @mixin datefield {
 
   .v-datefield-popupcalendar {
-    padding-right: 30px;
+    padding-right: 33px;
+    margin-right: -30px;
+  }
+
+  .v-datefield.v-has-width .v-datefield-textfield:focus {
+    margin-right: 1px;
   }
 
   .v-datefield-button {

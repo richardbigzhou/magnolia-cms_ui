@@ -42,7 +42,7 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
     private String dateFormat = "yyyy-MM-dd";
 
-    private String timeFormat = "HH:mm:ss";
+    private String timeFormat = "HH:mm";
 
     public boolean isTime() {
         return time;

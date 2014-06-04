@@ -74,7 +74,7 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
         // set Resolution
         if (definition.isTime()) {
             popupDateField.setResolution(Resolution.MINUTE);
-            dateFormat = definition.getDateFormat() + ":" + definition.getTimeFormat();
+            dateFormat = definition.getDateFormat() + " " + definition.getTimeFormat();
         } else {
             popupDateField.setResolution(Resolution.DAY);
             dateFormat = definition.getDateFormat();
