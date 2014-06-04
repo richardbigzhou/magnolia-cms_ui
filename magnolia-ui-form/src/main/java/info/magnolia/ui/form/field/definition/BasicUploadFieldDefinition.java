@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.definition;
 
 import info.magnolia.ui.form.field.transformer.Transformer;
-import info.magnolia.ui.form.field.transformer.item.FileItemTransformer;
+import info.magnolia.ui.form.field.transformer.item.FileTransformer;
 
 /**
  * Field definition for a the basic upload field.
@@ -72,7 +72,7 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
     private String userInterruption = "field.upload.interupted.user";
 
     public BasicUploadFieldDefinition() {
-        setTransformerClass((Class<? extends Transformer<?>>) (Object) FileItemTransformer.class);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) FileTransformer.class);
     }
 
     public String getBinaryNodeName() {

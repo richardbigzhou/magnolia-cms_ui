@@ -69,6 +69,10 @@ public class UploadReceiver extends FileBuffer {
         return this.getLastFileName();
     }
 
+    public String getFileNameWithoutExtension() {
+        return PathUtil.stripExtension(this.getLastFileName());
+    }
+
     public long getFileSize() {
         return this.getFile() != null ? this.getLastFileSize() : 0l;
     }

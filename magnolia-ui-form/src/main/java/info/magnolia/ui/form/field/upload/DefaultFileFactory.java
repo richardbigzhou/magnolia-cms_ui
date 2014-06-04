@@ -38,6 +38,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.vaadin.easyuploads.FileFactory;
 
 /**
@@ -58,7 +59,7 @@ public class DefaultFileFactory implements FileFactory {
     @Override
     public File createFile(String fileName, String mimeType) {
         try {
-            File tmpFile = File.createTempFile(fileName, null, directory);
+            File tmpFile = File.createTempFile(StringUtils.rightPad(fileName, 5, "x"), null, directory);
             tmpFile.deleteOnExit();
             return tmpFile;
         } catch (IOException e) {
