@@ -62,7 +62,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 
 /**
  * Abstract FieldFactory implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
@@ -106,7 +105,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             }
 
             Property<?> property = initializeProperty();
-            Notification.show("test");
             // Set the created property with the default value as field Property datasource.
             setPropertyDataSourceAndDefaultValue(property);
 
