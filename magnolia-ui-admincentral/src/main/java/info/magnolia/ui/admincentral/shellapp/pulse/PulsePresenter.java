@@ -151,7 +151,8 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
 
     @Override
     public void taskResolved(TaskEvent taskEvent) {
-        // nothing to do here
+        updatePendingMessagesAndTasksCount();
+        updateView(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
