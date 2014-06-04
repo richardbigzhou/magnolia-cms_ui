@@ -41,6 +41,7 @@ import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.upload.UploadReceiver;
 
 import java.util.Locale;
 
@@ -76,7 +77,7 @@ public class BasicUploadFieldTest {
     @Test
     public void testGetCaptionForEmptyCaption() {
         // GIVEN
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(null, null, null, null, new BasicUploadFieldDefinition(), simpleTranslator);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, new BasicUploadFieldDefinition(), simpleTranslator);
 
         // WHEN
         String caption1 = "";
@@ -90,7 +91,7 @@ public class BasicUploadFieldTest {
     @Test
     public void testGetCaptionForNormalField() {
         // GIVEN
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(null, null, null, null, new BasicUploadFieldDefinition(), simpleTranslator);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, new BasicUploadFieldDefinition(), simpleTranslator);
 
         // WHEN
         uploadField.captionExtension = "";
@@ -103,7 +104,7 @@ public class BasicUploadFieldTest {
     @Test
     public void testGetCaptionForImageField() {
         // GIVEN
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(null, null, null, null, new BasicUploadFieldDefinition(), simpleTranslator);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, new BasicUploadFieldDefinition(), simpleTranslator);
 
         // WHEN
         uploadField.captionExtension = "image";
@@ -116,7 +117,7 @@ public class BasicUploadFieldTest {
     @Test
     public void testGetCaptionForApplicationField() {
         // GIVEN
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(null, null, null, null, new BasicUploadFieldDefinition(), simpleTranslator);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, new BasicUploadFieldDefinition(), simpleTranslator);
 
         // WHEN
         uploadField.captionExtension = "application";

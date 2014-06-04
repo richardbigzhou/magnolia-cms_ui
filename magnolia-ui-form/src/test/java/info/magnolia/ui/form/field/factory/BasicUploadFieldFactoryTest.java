@@ -35,11 +35,17 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-
+import static org.mockito.Mockito.when;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -70,10 +76,13 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
         UiContext mockUiContext = mock(UiContext.class);
         ImageProvider mockImageProvider = mock(ImageProvider.class);
-
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext, mock(SimpleTranslator.class));
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        TranslationService translationService = new TranslationServiceImpl();
+        MockComponentProvider componentProvider = new MockComponentProvider();
+        componentProvider.setInstance(TranslationService.class, translationService);
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext, mock(SimpleTranslator.class), componentProvider);
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
-        basicUploadBuilder.setComponentProvider(new MockComponentProvider());
     }
 
     @Test
@@ -85,7 +94,7 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
 
         // THEN
         assertEquals(true, field instanceof BasicUploadField);
-        assertEquals(0, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
+        assertEquals(1, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
     }
 
     @Test
@@ -111,6 +120,9 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         // GIVEN
         BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
+        UploadReceiver receiver = mock(UploadReceiver.class);
+        when(receiver.getFileNameWithoutExtension()).thenReturn("filename");
+        upload.setReceiver(receiver);
         FinishedEvent event = new FinishedEvent(upload, "filename", "MIMEType", 0l);
 
         // WHEN
@@ -123,7 +135,7 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         assertTrue(((FormLayout) layout.getComponent(0)).getStyleName().contains("file-details"));
         assertTrue(layout.getComponent(1) instanceof HorizontalLayout);
         HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(1);
-        assertEquals(1, horizontalLayout.getComponentCount());
+        assertEquals(2, horizontalLayout.getComponentCount());
         assertTrue(horizontalLayout.getComponent(0) instanceof Upload);
         assertTrue(layout.getComponent(2) instanceof Label);
         assertTrue(((Label) layout.getComponent(2)).getStyleName().contains("preview-image"));
