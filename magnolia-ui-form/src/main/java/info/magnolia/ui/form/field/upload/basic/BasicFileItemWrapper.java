@@ -50,7 +50,7 @@ import java.util.Date;
 import javax.jcr.Binary;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;

@@ -46,7 +46,7 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractField;

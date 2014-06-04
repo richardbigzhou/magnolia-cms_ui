@@ -41,7 +41,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

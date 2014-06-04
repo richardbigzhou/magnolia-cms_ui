@@ -50,13 +50,15 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
-import org.apache.commons.lang.StringUtils;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract base class for actions that open dialogs for adding or editing roles.

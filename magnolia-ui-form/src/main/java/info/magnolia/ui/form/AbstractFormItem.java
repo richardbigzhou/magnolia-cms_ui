@@ -39,11 +39,11 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
- * 
+ *
  * @see Messages
  * @see FormItem
  */

@@ -48,8 +48,8 @@ import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

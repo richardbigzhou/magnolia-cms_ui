@@ -41,7 +41,7 @@ import info.magnolia.module.delta.TaskExecutionException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Adds move and duplicate actions to users, roles and groups sub-apps of Security app.

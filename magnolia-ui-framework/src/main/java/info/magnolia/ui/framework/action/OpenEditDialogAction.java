@@ -49,7 +49,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 
@@ -86,7 +86,7 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
             return;
 
         }
-        
+
         final Object itemId = contentConnector.getItemId(itemToEdit);
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
         if(formDialogPresenter == null){

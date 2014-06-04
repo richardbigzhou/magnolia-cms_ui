@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.detail.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base ContentApp ItemActionDefinition.

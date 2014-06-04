@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.location.Location;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Defines an action for opening any location in the admincentral.

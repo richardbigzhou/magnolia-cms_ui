@@ -38,7 +38,6 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.AbstractAction;
@@ -55,7 +54,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Action which open dialog for editing profile information of currently logged user.

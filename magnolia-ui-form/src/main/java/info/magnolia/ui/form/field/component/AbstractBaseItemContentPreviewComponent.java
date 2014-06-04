@@ -43,7 +43,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +73,7 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
 
     /**
      * Returned components (Label) will be displayed in the order of creation (first display is the first put into the list).
-     * 
+     *
      * @param fileItem
      * @return list of detail components (Generally a Label)
      * @throws RepositoryException

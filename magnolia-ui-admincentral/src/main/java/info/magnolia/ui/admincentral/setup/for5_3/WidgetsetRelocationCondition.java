@@ -42,13 +42,13 @@ import info.magnolia.objectfactory.Components;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The {@link WidgetsetRelocationCondition} adds a warning in case the <code>'magnolia.ui.vaadin.widgetset'</code> property was not updated according to the widgetset relocation.
  * <p>
  * For the time being we still tolerate the old widgetset name and convert it to the new one.
- * 
+ *
  * @see {@link info.magnolia.ui.admincentral.AdmincentralUIProvider}
  */
 public class WidgetsetRelocationCondition extends AbstractCondition {

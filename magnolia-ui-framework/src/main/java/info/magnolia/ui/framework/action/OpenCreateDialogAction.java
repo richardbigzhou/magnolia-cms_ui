@@ -50,7 +50,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 
@@ -93,14 +93,14 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
                 return;
 
             }
-            
+
             final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
 
             if(formDialogPresenter == null){
                 uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
                 return;
             }
-            
+
             formDialogPresenter.start(contentConnector.getItem(itemId), getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
                 @Override

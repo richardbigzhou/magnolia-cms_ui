@@ -64,7 +64,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,7 +181,7 @@ public class DialogMigrationTask extends AbstractTask {
     /**
      * Override this method in order to register custom controls to migrate.<br>
      * In case a control name is already define in the default map, the old control migrator is replaced by the newly registered control migrator.
-     * 
+     *
      * @param controlsToMigrate. <br>
      * - key : controls name <br>
      * - value : {@link ControlMigrator} used to take actions in order to migrate the control into a field.
@@ -209,7 +209,7 @@ public class DialogMigrationTask extends AbstractTask {
 
     /**
      * Override this method in order to register custom actions to create on a specific dialog.<br>
-     * 
+     *
      * @param dialogActionsToMigrate.<br>
      * - key: Dialog name <br>
      * - value: List of {@link ActionCreator} to create on the desired dialog.

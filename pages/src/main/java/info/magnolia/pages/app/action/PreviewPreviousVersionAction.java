@@ -34,11 +34,11 @@
 package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
-import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

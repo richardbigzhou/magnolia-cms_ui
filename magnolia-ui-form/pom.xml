@@ -47,6 +47,10 @@
       <artifactId>magnolia-ui-imageprovider</artifactId>
     </dependency>
     <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.vaadin.addon</groupId>
       <artifactId>easyuploads</artifactId>
     </dependency>
@@ -54,14 +58,16 @@
         <groupId>org.vaadin.addons</groupId>
         <artifactId>aceeditor</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
     <dependency>
       <groupId>uk.com.robust-it</groupId>
       <artifactId>cloning</artifactId>
     </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

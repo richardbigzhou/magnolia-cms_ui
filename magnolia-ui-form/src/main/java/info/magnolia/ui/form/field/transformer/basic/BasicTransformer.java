@@ -43,7 +43,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -54,7 +54,7 @@ import com.vaadin.data.Property;
  * His responsibility is to: <br>
  * - retrieve or create a basic property from the related item <br>
  * - update the item property value in case of changes performed on the related field.
- * 
+ *
  * @param <T>
  */
 public class BasicTransformer<T> implements Transformer<T> {
@@ -116,7 +116,7 @@ public class BasicTransformer<T> implements Transformer<T> {
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
      * else create a new {@link Property}.<br>
      * If the returned property is not of the desired type, cast this property to the proper type.
-     * 
+     *
      * @param <T>
      */
     protected <T> Property<T> getOrCreateProperty(Class<T> type) {

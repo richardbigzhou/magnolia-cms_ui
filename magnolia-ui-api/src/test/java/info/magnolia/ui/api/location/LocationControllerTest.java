@@ -41,7 +41,7 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.api.shell.ConfirmationHandler;
 import info.magnolia.ui.api.shell.Shell;
 
-import org.apache.commons.lang.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

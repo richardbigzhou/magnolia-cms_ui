@@ -66,7 +66,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -441,7 +441,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
      * fixed to match the start of a page, based on the value of pageLength.
-     * 
+     *
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
@@ -484,7 +484,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
-     * 
+     *
      * @see #getPage()
      */
     private void updateItems(final QueryResult queryResult) throws RepositoryException {
@@ -585,7 +585,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @return a String containing the node types to be displayed in a list view and searched for in a query. All node types declared in a workbench definition are returned
      * unless their <code>hideInList</code> property is true or the node is of type <code>mgnl:folder</code> (custom implementations of this method may still decide to display folders). Assuming a node types declaration like the following
-     * 
+     *
      * <pre>
      * ...
      * + workbench
@@ -599,7 +599,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      *    * name = nt:baz
      * ...
      * </pre>
-     * 
+     *
      * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be displayed in list views and searched for
      * in search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
      * @see #findSearchableNodeTypes()
@@ -732,7 +732,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Central method for uniform treatment of RepositoryExceptions in JcrContainers.
-     * 
+     *
      * @param logger logger to be used - passed in so subclasses can still user their proper logger
      * @param message message to be used in the handling
      * @param repositoryException exception to be handled

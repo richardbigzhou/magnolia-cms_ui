@@ -37,7 +37,7 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 

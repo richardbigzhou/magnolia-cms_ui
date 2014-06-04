@@ -46,7 +46,7 @@ import info.magnolia.ui.vaadin.integration.MessageItem;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.util.BeanItem;
 

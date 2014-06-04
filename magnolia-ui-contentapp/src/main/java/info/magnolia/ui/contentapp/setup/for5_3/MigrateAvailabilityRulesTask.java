@@ -44,12 +44,12 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
  * This task normally is not meant to be used standalone.
- * 
+ *
  * @see {@link ContentAppMigrationTask}
  */
 public class MigrateAvailabilityRulesTask extends QueryTask {
