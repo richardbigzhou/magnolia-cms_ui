@@ -8,7 +8,7 @@
 @import "loading-indicator.scss";
 @import "button.scss";
 @import "inputfield.scss";
-@import "checkbox.scss";
+@import "input";
 @import "datefield.scss";
 @import "util/utils.scss";
 
@@ -51,7 +51,7 @@
   @include loading-indicator;
   @include button;
   @include inputfield;
-  @include checkbox;
+  @include input;
   @include datefield;
 
 }
