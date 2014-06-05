@@ -154,18 +154,15 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
      * this in order to perform tasks or notification in case of error.
      */
     protected void onError(Exception e) {
-        // it would be possible to use here i18n-izer framework: String message =  getDefinition().getErrorMessage();
+        // it would be possible to use here i18n-izer framework: String message = getDefinition().getErrorMessage();
         // but this would require a key for every confirm-action; to keep things simple we are using SimpleTranslator now
         // enhancement of ActionDefinitionKeyGenerator may allow to use i18n-izer but just with one key ...
-        String message =  i18n.translate("ui-framework.actions.confirmAction.errorMessage");
+        String message = i18n.translate("ui-framework.actions.confirmAction.errorMessage");
         log.error(message, e);
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
     private String formatMessage(final String message) throws RepositoryException {
-        if (items.size() == 1) {
-            return MessageFormat.format(message, 1, 1);
-        }
         long howMany = items.size();
         return MessageFormat.format(message, howMany, howMany);
     }
