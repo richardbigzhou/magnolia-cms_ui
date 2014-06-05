@@ -99,7 +99,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
     /**
      * Base on the validity of the received property, populate or not the property to the related Item.<br>
      * Call {@link FileTransformer#populateItem(Object, Item)} in case {@link FileTransformer#isValid(Object, Item)} return true. <br>
-     * Otherwise call {@link FileTransformer#handleInvalide(Object, Item)}.
+     * Otherwise call {@link FileTransformer#handleInvalid(Object, Item)}.
      */
     @Override
     public void writeToItem(T newValue) {
@@ -107,7 +107,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         if (isValid(newValue, item)) {
             populateItem(newValue, item);
         } else {
-            handleInvalide(newValue, item);
+            handleInvalid(newValue, item);
         }
     }
 
@@ -220,7 +220,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
      * 
      * @see {@link FileTransformer#writeToItem(Object)}.
      */
-    protected void handleInvalide(T newValue, Item item) {
+    protected void handleInvalid(T newValue, Item item) {
         ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
     }
 
