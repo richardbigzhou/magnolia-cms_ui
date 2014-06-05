@@ -121,9 +121,9 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
         UploadReceiver receiver = mock(UploadReceiver.class);
-        when(receiver.getFileNameWithoutExtension()).thenReturn("filename");
+        when(receiver.getFileName()).thenReturn("filename.jpg");
         upload.setReceiver(receiver);
-        FinishedEvent event = new FinishedEvent(upload, "filename", "MIMEType", 0l);
+        FinishedEvent event = new FinishedEvent(upload, "filename.jpg", "MIMEType", 0l);
 
         // WHEN
         field.uploadFinished(event);
