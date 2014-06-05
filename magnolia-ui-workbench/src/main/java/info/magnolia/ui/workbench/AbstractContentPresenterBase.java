@@ -45,6 +45,8 @@ import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -123,30 +125,21 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
             ids.add(rootItemId);
             setSelectedItemIds(ids);
         } else {
-            Iterator<Object> itemIdIt = itemIds.iterator();
-            while (itemIdIt.hasNext()) {
-                Object item = (Object) itemIdIt.next();
-                // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
-                // but only if there is any other item in the set
-                // TODO MGNLUI-1521
-                try {
-                    if (rootItemId.equals(item) && itemIds.size() > 1) {
-                        itemIdIt.remove();
-                    }
-                } catch (Exception e) {
-                    log.error("An error occurred while selecting a row in the data grid", e);
-                }
-            }
-
             List<Object> selectedIds = new ArrayList<Object>(itemIds.size());
+            boolean isMultipleSelection = itemIds.size() > 1;
+
             for (Object id : itemIds) {
+                if (isMultipleSelection && rootItemId.equals(id)) {
+                    // in a multiple selection done via checkbox the root path is always added to the selection, just skip it
+                    continue;
+                }
                 selectedIds.add(id);
             }
 
-            setSelectedItemIds(new ArrayList<Object>(selectedIds));
-            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", itemIds.toArray());
+            setSelectedItemIds(selectedIds);
+            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedIds);
         }
-        eventBus.fireEvent(new SelectionChangedEvent(itemIds));
+        eventBus.fireEvent(new SelectionChangedEvent(Collections.unmodifiableSet(new HashSet<Object>(selectedItemIds))));
 
     }
 
