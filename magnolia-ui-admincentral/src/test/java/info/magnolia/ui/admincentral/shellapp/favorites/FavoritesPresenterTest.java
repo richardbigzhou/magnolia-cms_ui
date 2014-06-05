@@ -34,31 +34,26 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static info.magnolia.ui.framework.AdmincentralNodeTypes.Favorite.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlUserManager;
-import info.magnolia.cms.security.Realm;
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.SecuritySupportImpl;
-import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.net.URI;
@@ -68,21 +63,23 @@ import java.util.Locale;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 /**
- * Tests.
+ * Tests for the {@link FavoritesPresenter}.
  */
 public class FavoritesPresenterTest {
 
-    public static final String TEST_USER = "MickeyMouse";
     public static final String SERVER_NAME = "localhost";
     public static final int SERVER_PORT = 8080;
     public static final String WEBAPP_CONTEXT_PATH = "/myWebApp";
@@ -96,57 +93,59 @@ public class FavoritesPresenterTest {
     private MockWebContext ctx;
     private FavoritesPresenter presenter;
 
-    private I18nizer i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new ContextLocaleProvider() {
-        @Override
-        public Locale getLocale() {
-            return Locale.ENGLISH;
-        }
-    });
-
     @Before
     public void setUp() throws RegistrationException {
-        session = new MockSession(FavoriteStore.WORKSPACE_NAME);
+
         ctx = new MockWebContext();
-        final User user = mock(User.class);
-        when(user.getName()).thenReturn(TEST_USER);
-        ctx.setUser(user);
-        ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
+        MgnlContext.setInstance(ctx);
 
-        final SecuritySupportImpl sec = new SecuritySupportImpl();
-
-        MgnlUserManager userMgr = new MgnlUserManager() {
-            {
-                setName(Realm.REALM_SYSTEM.getName());
-            }
-            @Override
-            public User getSystemUser() {
-                return user;
-            }
-        };
-        sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
-        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
-        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
-
+        ctx.setContextPath(WEBAPP_CONTEXT_PATH);
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn(FULL_PROTOCOL);
         when(request.getServerName()).thenReturn(SERVER_NAME);
         when(request.getServerPort()).thenReturn(SERVER_PORT);
         ctx.setRequest(request);
 
-        ctx.setContextPath(WEBAPP_CONTEXT_PATH);
+        session = new MockSession(FavoriteStore.WORKSPACE_NAME);
+        ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
 
-        MgnlContext.setInstance(ctx);
+        FavoritesView view = mock(FavoritesView.class);
 
-        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        doAnswer(new Answer<JcrNewNodeAdapter>() {
+
+            @Override
+            public JcrNewNodeAdapter answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(session.getRootNode(), NAME);
+                newFavorite.addItemProperty(TITLE, new ObjectProperty<String>((String) args[1]));
+                newFavorite.addItemProperty(URL, new ObjectProperty<String>((String) args[0]));
+                newFavorite.addItemProperty(ICON, new ObjectProperty<String>(StringUtils.defaultIfEmpty((String) args[2], "icon-app")));
+                return newFavorite;
+            }
+        }).when(favoritesManager).createFavoriteSuggestion(anyString(), anyString(), anyString());
 
         /**
          * We mock a sample descriptor that would be returned when favorites presenter will ask.
          * We do not set the name/title for sake of testing the i18n functionality.
          */
+        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
+        descriptor.setName("favoritesRandomApp");
         doReturn(descriptor).when(registry).getAppDescriptor(anyString());
+        I18nizer i18nizer = mock(I18nizer.class); // simple I18nizer mock which only decorates based on appDescriptor name
+        doAnswer(new Answer<AppDescriptor>() {
 
-        presenter = new FavoritesPresenter(null, new FavoritesManagerImpl(new FavoriteStore()),registry, i18nizer);
+            @Override
+            public AppDescriptor answer(InvocationOnMock invocation) throws Throwable {
+                ConfiguredAppDescriptor appDescriptor = (ConfiguredAppDescriptor) invocation.getArguments()[0];
+                appDescriptor.setIcon("icon-" + appDescriptor.getName());
+                appDescriptor.setLabel(StringUtils.capitalize(appDescriptor.getName()));
+                return appDescriptor;
+            }
+        }).when(i18nizer).decorate(any());
+
+        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer);
         initializeVaadinUI();
     }
 
@@ -169,7 +168,7 @@ public class FavoritesPresenterTest {
 
         //THEN
         assertThat(node.getJcrItem(), hasProperty("title"));
-        assertThat(node.getJcrItem(), not(hasProperty("title", containsString("null"))));
+        assertThat(node.getJcrItem().getProperty("title").getString(), not(containsString("null")));
     }
 
     @Test
@@ -205,7 +204,6 @@ public class FavoritesPresenterTest {
         // THEN
         assertThat("Complete URIs should be returned unchanged.", result, equalTo(completeUri));
 
-
     }
 
     @Test
@@ -218,7 +216,6 @@ public class FavoritesPresenterTest {
         // THEN
         assertThat(result, equalTo(FRAGMENT));
     }
-
 
     private void initializeVaadinUI() {
         UI.setCurrent(new UI() {
@@ -241,12 +238,6 @@ public class FavoritesPresenterTest {
                 return page;
             }
         });
-
-        VaadinSession session = mock(VaadinSession.class);
-        when(session.hasLock()).thenReturn(true);
-        UI.getCurrent().setSession(session);
-        UI.getCurrent().getSession().lock();
-
     }
 
     /**

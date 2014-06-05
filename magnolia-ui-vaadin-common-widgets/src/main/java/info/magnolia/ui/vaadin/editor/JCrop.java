@@ -122,7 +122,7 @@ public class JCrop extends AbstractJavaScriptExtension {
     }
 
     public void animateTo(SelectionArea area) {
-        callFunction("animateTo", JSONObject.wrap(area));
+        callFunction("animateTo", new JSONObject(area));
     }
 
     public boolean isCropVisible() {

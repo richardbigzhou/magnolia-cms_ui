@@ -39,7 +39,7 @@ import java.io.Serializable;
  * Abstract element used to communicate between client and server.
  * It is a slimmed down version of the {@MgnlElement}.
  */
-public class AbstractElement implements Serializable {
+public abstract class AbstractElement implements Serializable {
 
     private String workspace;
     private String dialog;
