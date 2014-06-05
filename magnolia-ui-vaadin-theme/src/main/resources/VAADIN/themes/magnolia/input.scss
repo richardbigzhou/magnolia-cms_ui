@@ -1,17 +1,12 @@
 @charset "UTF-8";
 
-@mixin checkbox {
+@mixin input {
 
   .v-checkbox,
+  .v-radiobutton,
   .gwt-CheckBox {
-
     font-size: 12px;
     line-height: 15px;
-
-    input[type="checkbox"] {
-      opacity: 0;
-      margin: 0;
-    }
 
     label {
       display: inline-block;
@@ -22,14 +17,30 @@
       vertical-align: middle;
     }
 
-    input[type="checkbox"] + label {
-      background-image: url('img/icon-checkbox_off.png'); /* SVG with PNG fallback */
-      background-image: none, url('img/icon-checkbox_off.svg');
+    input[type="checkbox"],
+    input[type="radio"] {
+      opacity: 0;
+      margin: 0;
+    }
+
+    input[type="checkbox"] + label,
+    input[type="radio"] + label {
       background-position: 0 0;
       background-repeat: no-repeat;
       background-size: 15px 15px;
       -o-background-size: 15px 15px;
       -webkit-background-size: 15px 15px;
+    }
+  }
+
+
+  .v-checkbox,
+  .gwt-CheckBox {
+
+    input[type="checkbox"] + label {
+      background-image: url('img/icon-checkbox_off.png'); /* SVG with PNG fallback */
+      background-image: none, url('img/icon-checkbox_off.svg');
+
     }
 
     input[type="checkbox"]:checked + label {
@@ -50,20 +61,14 @@
 
   .v-radiobutton {
 
-    font-size: 12px;
-    line-height: 15px;
-
-    input[type="radio"] {
-      margin-top: 0;
-      margin-bottom: 0;
-      margin-left: 1px;
-      margin-right: 4px;
+    input[type="radio"] + label {
+      background-image: url('img/icon-radio_off.png'); /* SVG with PNG fallback */
+      background-image: none, url('img/icon-radio_off.svg');
     }
 
-    label {
-      display: inline-block;
-      min-height: 15px;
+    input[type="radio"]:checked + label {
+      background-image: url('img/icon-radio_on.png');
+      background-image: none, url('img/icon-radio_on.svg');
     }
   }
-
 }
