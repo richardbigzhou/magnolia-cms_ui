@@ -103,8 +103,8 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
 
     protected String getFileName(Node binaryNode) throws RepositoryException {
         String fileName = binaryNode.getProperty(definition.getFileNameProperty()).getString();
-        String extension = binaryNode.getProperty(definition.getExtensionProperty()).getString();
-        return fileName + "." + extension;
+        String extension = "." + binaryNode.getProperty(definition.getExtensionProperty()).getString();
+        return fileName.endsWith(extension) ? fileName : fileName + extension;
     }
 
     protected Node getBinaryNode(Node node) throws RepositoryException {
