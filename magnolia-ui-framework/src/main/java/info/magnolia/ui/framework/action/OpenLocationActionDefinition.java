@@ -31,46 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.location.Location;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.vaadin.data.Item;
-
 /**
- * Stub implementation of {@link ContentConnector} interface. Does no conversion between item id and item.
+ * Defines an action for opening any location in the admincentral.
+ * <p>
+ * This supports setting the location type, the app name, sub-app name as well as the parameter part of the location fragment, for the target app to use.
+ *
+ * @see {@link Location}
  */
-public class DefaultContentConnector implements ContentConnector {
+public class OpenLocationActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    public String getItemUrlFragment(Object itemId) {
-        return StringUtils.EMPTY;
+    private String appType = Location.LOCATION_TYPE_APP;
+    private String appName = StringUtils.EMPTY;
+    private String subAppId = StringUtils.EMPTY;
+    private String parameter = StringUtils.EMPTY;
+
+    public OpenLocationActionDefinition() {
+        setImplementationClass(OpenLocationAction.class);
     }
 
-    @Override
-    public Object getItemIdByUrlFragment(String urlFragment) {
-        return new NullItem();
+    public String getAppType() {
+        return appType;
     }
 
-    @Override
-    public Object getDefaultItemId() {
-        return new NullItem();
+    public void setAppType(String appType) {
+        this.appType = appType;
     }
 
-    @Override
-    public Item getItem(Object itemId) {
-        return itemId instanceof Item ? (Item)itemId : new NullItem();
+    public String getAppName() {
+        return appName;
     }
 
-    @Override
-    public Object getItemId(Item item) {
-        return item;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
-    @Override
-    public boolean canHandleItem(Object itemId) {
-        return itemId instanceof Item;
+    public String getSubAppId() {
+        return subAppId;
     }
+
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
+
 }

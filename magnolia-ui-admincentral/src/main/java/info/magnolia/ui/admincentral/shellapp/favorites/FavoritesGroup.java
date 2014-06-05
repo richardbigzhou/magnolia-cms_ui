@@ -45,7 +45,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;

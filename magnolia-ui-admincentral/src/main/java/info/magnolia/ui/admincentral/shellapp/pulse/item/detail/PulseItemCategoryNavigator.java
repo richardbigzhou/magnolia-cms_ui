@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;

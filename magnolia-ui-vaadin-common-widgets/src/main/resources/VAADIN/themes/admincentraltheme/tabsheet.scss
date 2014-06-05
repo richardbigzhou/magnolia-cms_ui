@@ -104,10 +104,7 @@
 
 /* tab text */
 .v-shell-tabsheet .tab-title {
-	display:block;
-	max-width:200px;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    display:block;
     font-family:DINWebPro;
     font-size: 14px;
     line-height: 22px;
@@ -115,6 +112,39 @@
     padding-right: 40px;
     white-space:nowrap;
 }
+
+.v-shell-tabsheet button.tab-title{
+    background: none;
+    border: none;
+    color: inherit;
+    padding-left: 2px;
+    padding-top: 2px;
+    margin: -3px;
+    outline:none;
+}
+
+.v-shell-tabsheet button.tab-title span{
+    display:block;
+    height:19px;
+    max-width:200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .v-ui:not(.tablet) &:focus:not(:active){
+      outline: $c22 solid 2px;
+    }
+    &:focus{
+      outline: none;
+    }
+    &::-moz-focus-inner {
+      border: 0;
+    }
+}
+.v-shell-tabsheet button.tab-title button{
+    &:focus{
+      outline: none;
+    }
+}
+
 
 /* close icon */
 .v-shell-tab-close {
@@ -184,3 +214,4 @@
 }
 
 }
+

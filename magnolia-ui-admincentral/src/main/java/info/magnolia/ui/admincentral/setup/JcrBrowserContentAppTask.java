@@ -44,7 +44,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A task to create a JCR browser content app. The app configuration will be created under <code>/modules/ui-admincentral/apps</code>. An entry for the app will be also created in the app launcher layout under the specified app group.

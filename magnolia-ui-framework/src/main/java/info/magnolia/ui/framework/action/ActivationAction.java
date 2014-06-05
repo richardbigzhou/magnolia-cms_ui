@@ -52,7 +52,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.

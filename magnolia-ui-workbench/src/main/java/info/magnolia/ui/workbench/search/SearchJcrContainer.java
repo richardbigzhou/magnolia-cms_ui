@@ -46,14 +46,14 @@ import java.util.regex.Pattern;
 
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The jcr container backing the search view. It provides the subset of items returned by the current search. It will include <code>mgnl:folder</code> nodes if the latter are defined as "searchable".
- * 
+ *
  * @see #findSearchableNodeTypes()
  */
 public class SearchJcrContainer extends FlatJcrContainer {

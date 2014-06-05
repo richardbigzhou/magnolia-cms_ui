@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.

@@ -34,12 +34,14 @@
 package info.magnolia.pages.app.action;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
@@ -59,7 +61,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,13 +70,14 @@ import org.junit.Test;
 public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
     private Node node;
-
     private RestorePreviousVersionActionDefinition definition;
-
     private SimpleEventBus locationEventBus;
     private LocationController locationController;
     private SubAppContext subAppContext;
     private SimpleTranslator i18n;
+    private RestorePreviousVersionAction action;
+    private VersionManager versionMan;
+    private EventBus eventBus;
 
     @Override
     @Before
@@ -98,22 +100,17 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
         subAppContext = mock(SubAppContext.class);
         i18n = mock(SimpleTranslator.class);
-    }
 
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-        ComponentsTestUtil.clear();
+        versionMan = VersionManager.getInstance();
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
+        eventBus = mock(EventBus.class);
+        action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n, eventBus);
     }
 
     @Test
     public void testExecute() throws Exception {
         // GIVEN
-        VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
-        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -122,14 +119,28 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         Location location = locationController.getWhere();
         assertEquals("app:pages:detail;/node:edit", location.toString());
         assertEquals(versionMan.getBaseVersion(node).getName(), "1.0");
+        verify(eventBus, times(0)).fireEvent(any(Event.class));
+    }
+
+    @Test
+    public void testExecuteDontShowPreview() throws Exception {
+        // GIVEN
+        versionMan.addVersion(node);
+        definition.setShowPreview(false);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        Location location = locationController.getWhere();
+        assertNotEquals("app:pages:detail;/node:edit", location.toString());
+        assertEquals(versionMan.getBaseVersion(node).getName(), "1.0");
+        verify(eventBus).fireEvent(any(Event.class));
     }
 
     @Test
     public void testExecuteNoVersion() throws Exception {
         // GIVEN
-        VersionManager versionMan = VersionManager.getInstance();
-        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -147,13 +158,9 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     @Test
     public void testExecuteThreeVersion() throws Exception {
         // GIVEN
-        VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
         versionMan.addVersion(node);
         versionMan.addVersion(node);
-
-        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
         // WHEN
         action.execute();

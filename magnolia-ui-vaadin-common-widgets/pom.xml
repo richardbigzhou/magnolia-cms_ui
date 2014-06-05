@@ -26,6 +26,16 @@
       <groupId>info.magnolia.task</groupId>
       <artifactId>task-management</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-server</artifactId>
@@ -58,10 +68,6 @@
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>gwt-graphics</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

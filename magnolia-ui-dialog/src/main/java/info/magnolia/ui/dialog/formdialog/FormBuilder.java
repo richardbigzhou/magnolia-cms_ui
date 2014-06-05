@@ -55,7 +55,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.jcr.Node;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;

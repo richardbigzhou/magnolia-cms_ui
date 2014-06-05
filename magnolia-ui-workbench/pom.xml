@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-workbench</artifactId>
   <name>magnolia-ui-workbench</name>
   <properties>
-    <cloverCoverageThreshold>41</cloverCoverageThreshold>
+    <cloverCoverageThreshold>40</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -29,6 +29,11 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>

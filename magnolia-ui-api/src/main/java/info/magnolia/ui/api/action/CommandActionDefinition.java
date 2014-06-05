@@ -38,7 +38,7 @@ import info.magnolia.commands.CommandsManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A basic action definition useful for actions that delegates to commands.

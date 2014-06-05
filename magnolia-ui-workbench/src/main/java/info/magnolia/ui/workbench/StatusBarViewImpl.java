@@ -70,7 +70,7 @@ public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView
 
         // compute index based on requested alignment, first come first aligned
         int index = 0;
-        Iterator<Component> it = getComponentIterator();
+        Iterator<Component> it = iterator();
 
         if (align.isLeft()) {
             while (it.hasNext() && getComponentAlignment(it.next()).isLeft()) {

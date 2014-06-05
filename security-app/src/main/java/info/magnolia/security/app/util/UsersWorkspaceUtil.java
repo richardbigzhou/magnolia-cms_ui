@@ -40,7 +40,7 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utility class for updating ACLs when moving or renaming users and folders in the users workspace.

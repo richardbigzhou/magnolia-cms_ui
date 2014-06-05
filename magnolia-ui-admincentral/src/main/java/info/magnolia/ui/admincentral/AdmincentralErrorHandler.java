@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -39,7 +39,6 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
 
-
 /**
  * The ContentPresenter is the presenter class for a {@link ContentView}, it represents a view type in the workbench.
  * Magnolia provides default implementations of this interface for displaying data as a tree, list or thumbnails.<br>
@@ -53,8 +52,7 @@ public interface ContentPresenter {
 
     /**
      * Initializes the presenter with the workbench definition, eventBus and viewType name.
-     *
-     *
+     * 
      * @param workbenchDefinition the workbench definition that defines which data to present
      * @param eventBus the event bus to fire e.g. selection events on
      * @param viewTypeName the view type as defined in the presenter definition
@@ -85,6 +83,7 @@ public interface ContentPresenter {
 
     /**
      * Make sure the given items are visible in the content view.
+     * 
      * @param itemId
      */
     void expand(Object itemId);

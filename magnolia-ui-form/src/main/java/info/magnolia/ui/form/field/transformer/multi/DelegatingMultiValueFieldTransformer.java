@@ -50,7 +50,7 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +138,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      * Creates a new child item, adds it to the root item, and returns it wrapped as an {@link ObjectProperty}.
      * <p>
      * The child item naming strategy is as follows: <i>subItemBaseName</i> + <i>increment</i> + <i>i18nSuffix</i>
-     * 
+     *
      * @see {@link #createNewItemName()}
      */
     @Override

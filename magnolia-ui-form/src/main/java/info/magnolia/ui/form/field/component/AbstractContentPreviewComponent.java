@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.component;
 
 import info.magnolia.ui.vaadin.integration.NullItem;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;

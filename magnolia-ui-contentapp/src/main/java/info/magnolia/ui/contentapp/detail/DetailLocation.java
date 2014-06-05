@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.detail;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * ItemLocation used in implementers of {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -109,7 +109,7 @@ public class DetailLocation extends DefaultLocation {
 
     /**
      * Extract the Node path from the parameter.
-     * 
+     *
      * @param parameter some/node/path:viewType:version
      * @return some/node/path
      */
@@ -119,7 +119,7 @@ public class DetailLocation extends DefaultLocation {
 
     /**
      * Extract the viewType from the parameter.
-     * 
+     *
      * @param parameter some/node/path:viewType:version
      * @return viewType
      */
@@ -130,7 +130,7 @@ public class DetailLocation extends DefaultLocation {
 
     /**
      * Extract the Node Version from the parameter.
-     * 
+     *
      * @param parameter some/node/path:viewType:version
      * @return version
      */

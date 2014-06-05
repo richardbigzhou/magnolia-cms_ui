@@ -45,8 +45,8 @@ import java.util.List;
 import javax.jcr.Binary;
 import javax.jcr.PropertyType;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public class DefaultPropertyUtil {
      * If fieldType is defined, create a Typed Value.
      * If fieldType is not defined, create a String Value.
      * If stringValue is defined, create a typed value based on fieldType.
-     * 
+     *
      * @deprecated since 5.1. use {@link DefaultPropertyUtil#newDefaultProperty(Class, String)} instead.
      */
     @Deprecated
@@ -93,7 +93,7 @@ public class DefaultPropertyUtil {
 
     /**
      * Create a DefaultProperty based on types defined in {@link PropertyType}.
-     * 
+     *
      * @deprecated since 5.1. use {@link DefaultPropertyUtil#newDefaultProperty(Class, String)} instead.
      */
     @Deprecated
@@ -105,7 +105,7 @@ public class DefaultPropertyUtil {
      * Create a custom Field Object based on the Type and defaultValue.
      * If the fieldType is null, the defaultValue will be returned as String or null.
      * If the defaultValue is null, null will be returned.
-     * 
+     *
      * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
      * @deprecated since 5.1. use {@link DefaultPropertyUtil#createTypedValue(Class, String)} instead.
      */
@@ -124,7 +124,7 @@ public class DefaultPropertyUtil {
      * Create a custom Field Object based on the Type and defaultValue.
      * If the fieldType is null, the defaultValue will be returned as String or null.
      * If the defaultValue is null, null will be returned.
-     * 
+     *
      * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
      */
     public static Object createTypedValue(Class<?> type, String defaultValue) throws NumberFormatException {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.transformer.basic;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.vaadin.data.Item;
-
 /**
- * Implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} that return a empty String it the requested property value do not exist.
+ * The {@link OpenLocationAction} opens a given location in the admincentral.
+ * 
+ * @see {@link OpenLocationActionDefinition}
  */
-public class NotNullInitialStringValueTransformer extends BasicTransformer<String> {
+public class OpenLocationAction extends AbstractAction<OpenLocationActionDefinition> {
+
+    protected final LocationController locationController;
 
     @Inject
-    public NotNullInitialStringValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type) {
-        super(relatedFormItem, definition, type);
+    public OpenLocationAction(OpenLocationActionDefinition definition, LocationController locationController) {
+        super(definition);
+        this.locationController = locationController;
     }
 
-    /**
-     * If the initial property do not exist, do not return a Null.
-     */
     @Override
-    public String readFromItem() {
-        String value = super.readFromItem();
-        return (StringUtils.isBlank(value)) ? StringUtils.EMPTY : value;
-    }
+    public void execute() throws ActionExecutionException {
+        final String appType = this.getDefinition().getAppType();
+        final String appName = this.getDefinition().getAppName();
+        final String subAppId = this.getDefinition().getSubAppId();
+        final String parameter = this.getDefinition().getParameter();
 
+        Location location = new DefaultLocation(appType, appName, subAppId, parameter);
+        locationController.goTo(location);
+    }
 }

@@ -49,7 +49,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -36,7 +36,10 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -59,7 +62,9 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     private final Element errorIndicator = DOM.createDiv();
 
-    private final Element textWrapper = DOM.createSpan();
+    private final Element focussableLabel = DOM.createButton();
+
+    private final Element labelWrapper = DOM.createSpan();
 
     private MagnoliaTabWidget tab;
 
@@ -67,12 +72,18 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     private EventBus eventBus;
 
+    private boolean isClickEventHandled = false;
+
     public MagnoliaTabLabel() {
         super(DOM.createElement("li"));
 
+        labelWrapper.setAttribute("tabindex","0");
+
         indicatorsWrapper.addClassName("indicators-wrapper");
-        textWrapper.setClassName("tab-title");
-        getElement().appendChild(textWrapper);
+        focussableLabel.setClassName("tab-title");
+        focussableLabel.setAttribute("tabindex","-1");
+        focussableLabel.appendChild(labelWrapper);
+        getElement().appendChild(focussableLabel);
 
         // TODO 20120816 mgeljic: implement subtitle
 
@@ -87,7 +98,7 @@ public class MagnoliaTabLabel extends SimplePanel {
         getElement().appendChild(notificationBox);
         getElement().appendChild(errorIndicator);
 
-        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS);
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS | Event.KEYEVENTS);
         hideNotification();
         setHasError(false);
         // MGNLUI-786: Fixes tab label sizing issue in Chrome.
@@ -104,14 +115,31 @@ public class MagnoliaTabLabel extends SimplePanel {
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
             public void onTouchEnd(TouchEndEvent event) {
-                final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
-                if (closeElement.isOrHasChild(target)) {
-                    eventBus.fireEvent(new TabCloseEvent(tab));
-                } else {
-                    eventBus.fireEvent(new ActiveTabChangedEvent(tab));
-                }
+                isClickEventHandled = true;
+                onClickGeneric(event.getNativeEvent());
             }
+
         });
+
+        this.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!isClickEventHandled){
+                    onClickGeneric(event.getNativeEvent());
+                }
+                isClickEventHandled = false;
+            }
+        }, ClickEvent.getType());
+    }
+
+    private void onClickGeneric(NativeEvent nativeEvent){
+        labelWrapper.blur();
+        final Element target = (Element) nativeEvent.getEventTarget().cast();
+        if (closeElement.isOrHasChild(target)) {
+            eventBus.fireEvent(new TabCloseEvent(tab));
+        } else {
+            eventBus.fireEvent(new ActiveTabChangedEvent(tab));
+        }
     }
 
     public void setTab(final MagnoliaTabWidget tab) {
@@ -119,7 +147,7 @@ public class MagnoliaTabLabel extends SimplePanel {
     }
 
     public void updateCaption(final String caption) {
-        textWrapper.setInnerText(caption);
+        labelWrapper.setInnerText(caption);
         setWidth("");
     }
 

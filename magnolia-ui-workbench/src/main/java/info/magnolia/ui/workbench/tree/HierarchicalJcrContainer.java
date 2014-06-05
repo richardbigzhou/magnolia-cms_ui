@@ -57,7 +57,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -262,7 +262,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * Only used in tests.
      */
     String getPathInTree(Item item) throws RepositoryException {
-        String base =  ((JcrContentConnectorDefinition) getConfiguration()).getRootPath();
+        String base = ((JcrContentConnectorDefinition) getConfiguration()).getRootPath();
         return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
     }
 

@@ -24,6 +24,10 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-contentapp</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
 
     <!-- For Test -->
     <dependency>

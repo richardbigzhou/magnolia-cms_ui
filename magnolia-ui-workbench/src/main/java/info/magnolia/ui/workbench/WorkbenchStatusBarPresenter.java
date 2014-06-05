@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
@@ -58,11 +59,17 @@ public class WorkbenchStatusBarPresenter {
 
     private final Label selectionLabel = new Label();
 
+    private ContentPresenter activeContentPresenter;
+
+    private boolean rootIsSelected;
+
+    private SimpleTranslator i18n;
 
     @Inject
-    public WorkbenchStatusBarPresenter(StatusBarView view, ContentConnector contentConnector) {
+    public WorkbenchStatusBarPresenter(StatusBarView view, ContentConnector contentConnector, SimpleTranslator i18n) {
         this.view = view;
         this.contentConnector = contentConnector;
+        this.i18n = i18n;
     }
 
     private void bindHandlers() {
@@ -75,30 +82,59 @@ public class WorkbenchStatusBarPresenter {
         });
     }
 
-    public StatusBarView start(EventBus eventBus) {
+    public StatusBarView start(EventBus eventBus, ContentPresenter activeContentPresenter) {
 
         this.eventBus = eventBus;
+        this.activeContentPresenter = activeContentPresenter;
 
         view.addComponent(selectionLabel, Alignment.TOP_LEFT);
         ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
 
         bindHandlers();
 
+        refresh();
+
         return view;
     }
 
     public void setSelectedItems(Set<Object> itemIds) {
         if (!itemIds.isEmpty()) {
-            setSelectedItem(itemIds.iterator().next());
+            Object id = itemIds.iterator().next();
+            rootIsSelected = id.equals(contentConnector.getDefaultItemId());
+            setSelectedItem(id, itemIds.size());
         } else {
-            setSelectedItem(contentConnector.getDefaultItemId());
+            setSelectedItem(contentConnector.getDefaultItemId(), itemIds.size());
+            rootIsSelected = true;
         }
     }
 
-    public void setSelectedItem(Object itemId) {
-        String newValue = contentConnector.getItemUrlFragment(itemId);
-        String newDescription = newValue;
-        selectionLabel.setValue(newValue);
-        selectionLabel.setDescription(newDescription);
+    public void setSelectedItem(Object itemId, int totalSelected) {
+        // selection might contain the configured root path (by default '/') but we don't want to count that
+        if (rootIsSelected && totalSelected > 0) {
+            totalSelected--;
+        }
+        if (totalSelected == 1) {
+            String newValue = contentConnector.getItemUrlFragment(itemId);
+            selectionLabel.setValue(newValue);
+            selectionLabel.setDescription(newValue);
+        } else {
+            String selected = i18n.translate("ui-contentapp.statusbar.selected", totalSelected);
+            selectionLabel.setValue(selected);
+            selectionLabel.setDescription(selected);
+        }
     }
+
+    public void refresh() {
+        int selected = activeContentPresenter.getSelectedItemIds().size();
+        if (selected == 1) {
+            setSelectedItem(activeContentPresenter.getSelectedItemIds().get(0), selected);
+        } else {
+            setSelectedItem(null, selected);
+        }
+    }
+
+    public void setActivePresenter(ContentPresenter activePresenter) {
+        this.activeContentPresenter = activePresenter;
+    }
+
 }

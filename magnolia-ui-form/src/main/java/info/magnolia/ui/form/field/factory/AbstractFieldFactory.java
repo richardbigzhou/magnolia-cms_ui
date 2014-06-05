@@ -49,19 +49,15 @@ import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
-import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.converter.AbstractStringToNumberConverter;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
@@ -70,7 +66,7 @@ import com.vaadin.ui.Label;
 /**
  * Abstract FieldFactory implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
  * by subclasses to the {@link Property} they will be reading and writing to.
- * 
+ *
  * @param <D> definition type
  * @param <T> field value type
  */
@@ -109,11 +105,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             }
 
             Property<?> property = initializeProperty();
-
-            // MGNLUI-1855 we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
-            if (Long.class.equals(property.getType()) && field instanceof AbstractTextField) {
-                ((AbstractTextField) field).setConverter(new StringToLongConverter());
-            }
             // Set the created property with the default value as field Property datasource.
             setPropertyDataSourceAndDefaultValue(property);
 
@@ -321,28 +312,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     @Override
     public void setComponentProvider(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
-    }
-
-    /**
-     * The StringToLongConverter.<br>
-     * MGNLUI-1855 This should be handled by vaadin, but StringToNumberConverter throws conversion exception when used
-     * with a Long property in Vaadin 7.1. This should be fixed, unfortunately not before 7.2, so we need that converter
-     * for the time being.<br>
-     * As a result, this class will have a short life span, this is why it is kept private and deprecated.
-     */
-    @Deprecated
-    private static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
-
-        @Override
-        public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale) throws ConversionException {
-            Number n = convertToNumber(value, targetType, locale);
-            return n == null ? null : n.longValue();
-        }
-
-        @Override
-        public Class<Long> getModelType() {
-            return Long.class;
-        }
     }
 
 }

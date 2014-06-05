@@ -43,7 +43,7 @@ import java.util.LinkedHashMap;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents an access control list as visualized in the UI with the access type separated from the path.

@@ -38,7 +38,7 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Describes the layout in the app launcher. Provides convenience methods for querying the layout.

@@ -49,7 +49,7 @@ import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ import com.google.common.collect.Ordering;
 
 /**
  * Abstract multi-item Action that defines the default behavior.
- * 
+ *
  * @param <D> the action definition type
  */
 public abstract class AbstractMultiItemAction<D extends ActionDefinition> extends AbstractAction<D> {

@@ -35,7 +35,7 @@ package info.magnolia.security.app.dialog.field;
 
 import info.magnolia.ui.form.field.factory.TextFieldFactory;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

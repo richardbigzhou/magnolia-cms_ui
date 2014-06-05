@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.switcher;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;

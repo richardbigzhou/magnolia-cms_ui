@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator.InvalidValueException;
