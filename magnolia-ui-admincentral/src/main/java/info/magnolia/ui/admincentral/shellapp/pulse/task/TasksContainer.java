@@ -192,7 +192,7 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     * Default visibility for testing purposes only.
     */
     private String getItemTitle(final Task task) {
-        return listener.getItemTitle(task.getName());
+        return listener.getItemTitle(task);
     }
 
     @Override

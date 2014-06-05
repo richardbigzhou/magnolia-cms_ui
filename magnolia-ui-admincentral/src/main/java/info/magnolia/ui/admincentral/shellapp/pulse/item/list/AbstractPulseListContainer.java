@@ -121,7 +121,7 @@ public abstract class AbstractPulseListContainer<T> {
     /**
      * Listener for calling back into parent presenter.
      */
-    public interface Listener {
-        String getItemTitle(String identifier);
+    public interface Listener<T> {
+        String getItemTitle(T item);
     }
 }
