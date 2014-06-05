@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.transformer.item;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.Path;
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
@@ -59,7 +58,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
@@ -182,7 +180,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
     }
 
     protected T initializeUploadReceiver() {
-        return (T) new UploadReceiver(Path.getTempDirectory(), Components.getComponent(SimpleTranslator.class));
+        return (T) Components.newInstance(UploadReceiver.class, Path.getTempDirectory());
     }
 
     /**
@@ -209,7 +207,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
                 return null;
             }
         }
-        getOrCreateProperty(item, FileProperties.PROPERTY_FILENAME, String.class).setValue(StringUtils.substringBeforeLast(newValue.getFileName(), "."));
+        getOrCreateProperty(item, FileProperties.PROPERTY_FILENAME, String.class).setValue(newValue.getFileName());
         getOrCreateProperty(item, FileProperties.PROPERTY_CONTENTTYPE, String.class).setValue(newValue.getMimeType());
         getOrCreateProperty(item, FileProperties.PROPERTY_LASTMODIFIED, Date.class).setValue(new Date());
         getOrCreateProperty(item, FileProperties.PROPERTY_SIZE, Long.class).setValue(newValue.getFileSize());

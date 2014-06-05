@@ -38,6 +38,8 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
 import org.vaadin.easyuploads.UploadField.FieldType;
@@ -53,6 +55,7 @@ public class UploadReceiver extends FileBuffer {
     private File directory;
     private final SimpleTranslator i18n;
 
+    @Inject
     public UploadReceiver(File directory, SimpleTranslator i18n) {
         this.directory = directory;
         this.i18n = i18n;
@@ -67,10 +70,6 @@ public class UploadReceiver extends FileBuffer {
 
     public String getFileName() {
         return this.getLastFileName();
-    }
-
-    public String getFileNameWithoutExtension() {
-        return PathUtil.stripExtension(this.getLastFileName());
     }
 
     public long getFileSize() {
