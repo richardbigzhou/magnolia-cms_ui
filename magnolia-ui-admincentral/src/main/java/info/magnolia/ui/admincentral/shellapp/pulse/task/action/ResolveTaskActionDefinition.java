@@ -36,12 +36,22 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Action definition for {@link DeleteTaskAction}.
+ * Action definition for {@link ResolveTaskAction}.
  */
 
-public class DeleteTaskActionDefinition extends ConfiguredActionDefinition {
+public class ResolveTaskActionDefinition extends ConfiguredActionDefinition {
 
-    public DeleteTaskActionDefinition() {
-        setImplementationClass(DeleteTaskAction.class);
+    private String decision;
+
+    public ResolveTaskActionDefinition() {
+        setImplementationClass(ResolveTaskAction.class);
+    }
+
+    public String getDecision() {
+        return decision;
+    }
+
+    public void setDecision(String decision) {
+        this.decision = decision;
     }
 }

@@ -71,7 +71,7 @@ public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
     public void claimActionFailsIfTaskStatusIsNotCreated() throws Exception {
         // GIVEN
         Task task = new Task();
-        task.setStatus(Status.Completed);
+        task.setStatus(Status.Resolved);
 
         // WHEN
         action.canExecuteTask(task);

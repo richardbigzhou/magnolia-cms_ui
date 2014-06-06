@@ -57,6 +57,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link TasksListView}.
  */
-public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener {
+public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener<Task> {
 
     private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
@@ -116,19 +117,20 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     @Override
-    public String getItemTitle(String taskName) {
-        String title = taskName;
+    public String getItemTitle(Task task) {
+        String title = task.getName();
         try {
-            TaskDefinition definition = taskDefinitionRegistry.get(taskName);
+            TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
             title = definition.getTitle();
         } catch (RegistrationException e) {
-            log.error("Could not get task definition for {}.", taskName, e);
+            log.error("Could not get task definition for {}.", task.getName(), e);
         }
-        return title;
+        String comment = (StringUtils.isNotEmpty(task.getComment())) ? "|" + task.getComment() : "";
+        return title + comment;
     }
 
     private void initView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Task.Status.Created, Task.Status.InProgress, Task.Status.Completed, Task.Status.Failed));
+        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
         HierarchicalContainer dataSource = container.createDataSource(tasks);
         view.setDataSource(dataSource);
         view.refresh();
@@ -145,12 +147,12 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
 
         for (String taskId : itemIds) {
             Task task = tasksManager.getTaskById(taskId);
-            if (task.getStatus() != Status.Completed) {
+            if (task.getStatus() != Status.Resolved) {
                 // log warn/info?
                 shell.openNotification(MessageStyleTypeEnum.WARNING, true, i18n.translate("pulse.tasks.cantRemove", task.getName()));
                 return;
             }
-            tasksManager.removeTask(taskId);
+            tasksManager.archiveTask(taskId);
         }
 
         // refresh the view

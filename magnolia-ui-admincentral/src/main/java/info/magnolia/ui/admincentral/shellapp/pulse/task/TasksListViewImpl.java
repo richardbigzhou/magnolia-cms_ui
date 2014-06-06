@@ -109,7 +109,7 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
         case InProgress:
             generated.setText("", "", getI18n().translate("pulse.tasks.ongoing"));
             break;
-        case Completed:
+        case Resolved:
             generated.setText("", "", getI18n().translate("pulse.tasks.done"));
             break;
         case Failed:
@@ -154,7 +154,7 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
                 case InProgress:
                     label.setValue(getI18n().translate("pulse.tasks.ongoing"));
                     break;
-                case Completed:
+                case Resolved:
                     label.setValue(getI18n().translate("pulse.tasks.done"));
                     break;
                 case Failed:

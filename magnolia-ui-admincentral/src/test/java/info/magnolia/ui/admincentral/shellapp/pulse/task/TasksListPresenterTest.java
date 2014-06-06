@@ -51,7 +51,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * PulseTasksPresenterTest.
+ * Tests for {@link TasksListPresenter}.
  */
 public class TasksListPresenterTest {
 
@@ -59,56 +59,90 @@ public class TasksListPresenterTest {
     private TaskDefinitionRegistry definitionRegistry;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
+    private Task task;
 
     @Before
     public void setUp() throws Exception {
-
-        definitionRegistry = mock(TaskDefinitionRegistry.class);
-        tasksManager = mock(TasksManager.class);
-        componentProvider = mock(ComponentProvider.class);
-
-        presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),
+        this.task = new Task();
+        this.definitionRegistry = mock(TaskDefinitionRegistry.class);
+        this.tasksManager = mock(TasksManager.class);
+        this.componentProvider = mock(ComponentProvider.class);
+        this.presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),
                 tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class));
+
+        task.setName("testTask");
     }
 
     @Test
     public void testGetTaskTitle() throws Exception {
         // GIVEN
-        String taskName = "testTask";
         String title = "testTitle";
 
         ConfiguredTaskDefinition taskDefinition = new ConfiguredTaskDefinition();
         taskDefinition.setTitle(title);
 
-        when(definitionRegistry.get(taskName)).thenReturn(taskDefinition);
+        when(definitionRegistry.get(task.getName())).thenReturn(taskDefinition);
 
         // WHEN
-        String taskTitle = presenter.getItemTitle(taskName);
+        String taskTitle = presenter.getItemTitle(task);
 
         // THEN
         assertThat(taskTitle, is(title));
     }
 
     @Test
-    public void testFallBackToTaskName() throws Exception {
+    public void testGetTaskTitleWithComment() throws Exception {
         // GIVEN
-        String taskName = "testTask";
-        when(definitionRegistry.get(taskName)).thenThrow(new RegistrationException("error"));
+
+        String comment = "comment bla";
+        String title = "testTitle";
+
+        task.setComment(comment);
+
+        ConfiguredTaskDefinition taskDefinition = new ConfiguredTaskDefinition();
+        taskDefinition.setTitle(title);
+
+        when(definitionRegistry.get(task.getName())).thenReturn(taskDefinition);
 
         // WHEN
-        String taskTitle = presenter.getItemTitle(taskName);
+        String taskTitle = presenter.getItemTitle(task);
 
         // THEN
-        assertThat(taskTitle, is(taskName));
+        String expectedTitle = title + "|" + comment;
+        assertThat(taskTitle, is(expectedTitle));
+    }
+
+    @Test
+    public void testFallBackToTaskName() throws Exception {
+        // GIVEN
+        when(definitionRegistry.get(task.getName())).thenThrow(new RegistrationException("Intentionally thrown exception."));
+
+        // WHEN
+        String taskTitle = presenter.getItemTitle(task);
+
+        // THEN
+        assertThat(taskTitle, is(task.getName()));
+    }
+
+    @Test
+    public void testFallBackToTaskNameWithComment() throws Exception {
+        // GIVEN
+        String comment = "comment bla";
+        task.setComment(comment);
+
+        when(definitionRegistry.get(task.getName())).thenThrow(new RegistrationException("Intentionally thrown exception."));
+
+        // WHEN
+        String taskTitle = presenter.getItemTitle(task);
+
+        // THEN
+        String expectedTitle = task.getName() + "|" + comment;
+        assertThat(taskTitle, is(expectedTitle));
     }
 
     @Test
     public void testOpenItem() throws Exception {
         // GIVEN
-        String taskName = "testTask";
-        Task task = new Task();
-        task.setName(taskName);
-
         TaskDetailPresenter detailPresenter = mock(TaskDetailPresenter.class);
 
         String title = "testTitle";
@@ -116,12 +150,12 @@ public class TasksListPresenterTest {
         taskDefinition.setPresenterClass(TaskDetailPresenter.class);
         taskDefinition.setTitle(title);
 
-        when(definitionRegistry.get(taskName)).thenReturn(taskDefinition);
+        when(definitionRegistry.get(task.getName())).thenReturn(taskDefinition);
         when(tasksManager.getTaskById(anyString())).thenReturn(task);
         when(componentProvider.newInstance(eq(TaskDetailPresenter.class), anyVararg())).thenReturn(detailPresenter);
 
         // WHEN
-        presenter.openItem(taskName);
+        presenter.openItem(task.getName());
 
         // THEN
         verify(detailPresenter, times(1)).setListener(eq(presenter));

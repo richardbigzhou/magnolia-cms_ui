@@ -57,10 +57,6 @@
     padding-top:3px;
 }
 
-.favorites-group-title.selected,.favorites-entry.selected {
-  color: $c80;
-  background-color: $c10;
-}
 
 .favorites-entry .v-label {
   display:inline-block;
@@ -91,16 +87,9 @@
   text-decoration: underline;
 }
 
-.favorites-entry.selected input[type="text"],.favorites-entry.selected input[type="text"].readonly {
-  color:$c80;
-}
 
-.favorites-entry.selected input[type="text"].editable {
-   color: $c10;
-   text-decoration: none;
-   padding-top: 0 !important;
-   width: 299px;
-}
+
+
 
 .favorites-entry input.v-textfield-readonly {
   background-color: transparent !important;
@@ -114,7 +103,7 @@
   font-size: 20px;
   width: 25px;
   padding: 2px 0 0 0;
-  color: $c80;
+  color: $c10;
 }
 
 .favorites-group button.favorite-action {
@@ -201,9 +190,7 @@
 .favorites-tabs .v-tabsheet-tabitem .v-caption :hover {
   color: $c40;
 }
-.favorites-tabs .v-tabsheet-tabitem-selected .v-caption {
-  color: black;
-}
+
 .favorites-form-content input[type="text"], .favorites-form-content .buttons {
   width: 650px !important;
  }
@@ -225,5 +212,29 @@
 .favorites-form-content span.v-required-field-indicator {
    color: black;
  }
+
+.favorites-form .icon.favItemEdit{
+  font-size: 21px;
+  margin: 3px 3px 3px 20px;
+}
+
+.favorites-form .icon.favItemEdit.disabled , .favorites-form .title.favItemEdit.disabled {
+  color: $c12;
+}
+
+.favorites .v-textfield.v-widget.editable.v-textfield-editable{
+  text-decoration: none;
+  cursor: text;
+}
+
+.favorites-entry input[type="text"].editable {
+  text-decoration: none;
+  padding-top: 0 !important;
+  cursor: text;
+}
+.favorites-form .icon.favItemEdit.disabled , .favorites-form .title.favItemEdit.disabled {
+  color: $c12;
+}
+
 
 }

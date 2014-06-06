@@ -44,6 +44,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -60,15 +61,13 @@ import com.vaadin.server.Page;
  */
 public final class FavoritesPresenter implements FavoritesView.Listener {
 
-    private final Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
+    private final static Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
 
     private I18nizer i18nizer;
-
     private FavoritesView view;
-
     private FavoritesManager favoritesManager;
-
     private AppDescriptorRegistry appDescriptorRegistry;
+    private String currentEditedItemId;
 
     @Inject
     public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, I18nizer i18nizer) {
@@ -85,6 +84,15 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void setToInitialState() {
+        // make sure to hide all the icons of the EditableFavoriteItem(s) and to set the to the non-editable-state.
+        for (EditableFavoriteItem item : view.getEditableFavoriteItemList()) {
+            item.setToNonEditableState();
+            item.setIconsVisibility(false);
+        }
+    }
+
+    @Override
     public void removeFavorite(String relPath) {
         favoritesManager.removeFavorite(relPath);
         initializeView();
@@ -92,7 +100,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void addFavoriteAndGroup(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup) {
-        if(newGroup!=null &&  newGroup.getItemProperty("title")!=null && !"".equals(newGroup.getItemProperty("title").getValue())){
+        if (newGroup != null && newGroup.getItemProperty("title") != null && !"".equals(newGroup.getItemProperty("title").getValue())) {
             favoritesManager.addGroup(newGroup);
         }
         favoritesManager.addFavorite(newFavorite);
@@ -134,6 +142,29 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         favoritesManager.orderGroupAfter(relPath, sibling);
         initializeView();
 
+    }
+
+    @Override
+    public void setItemsEditable(boolean isVisible) {
+        List<EditableFavoriteItem> editableFavoriteItemList = view.getEditableFavoriteItemList();
+        for (EditableFavoriteItem editableFavoriteItem : editableFavoriteItemList) {
+            editableFavoriteItem.setIconsVisibility(isVisible);
+        }
+    }
+
+    @Override
+    public boolean itemsAreEditable() {
+        List<EditableFavoriteItem> editableFavoriteItemList = view.getEditableFavoriteItemList();
+        if (editableFavoriteItemList.size() == 0) {
+            return false;
+        } else {
+            return editableFavoriteItemList.get(0).iconsAreVisible();
+        }
+    }
+
+    @Override
+    public boolean hasItems() {
+        return view.getEditableFavoriteItemList() != null && view.getEditableFavoriteItemList().size() > 0;
     }
 
     @Override
@@ -209,6 +240,17 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         initializeView();
     }
 
+    @Override
+    public void setCurrentEditedItemId(String itemId) {
+        currentEditedItemId = itemId;
+        // when somebody starts to edit a EditableFavoriteItem, make sure that all the other items are set to the not-editable-state
+        for (EditableFavoriteItem editableItem : view.getEditableFavoriteItemList()) {
+            if (!currentEditedItemId.equals(editableItem.getItemId())) {
+                editableItem.setToNonEditableState();
+            }
+        }
+    }
+
     String getWebAppRootURI() {
         final HttpServletRequest request = MgnlContext.getWebContext().getRequest();
         final String fullProtocolString = request.getProtocol();
@@ -239,7 +281,9 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     private void initializeView() {
-        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""), createNewGroupSuggestion(), getAvailableGroupsNames());
+        boolean itemIconsVisible = hasItems() && itemsAreEditable();
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""), createNewGroupSuggestion(), getAvailableGroupsNames(), itemIconsVisible);
     }
+
 
 }

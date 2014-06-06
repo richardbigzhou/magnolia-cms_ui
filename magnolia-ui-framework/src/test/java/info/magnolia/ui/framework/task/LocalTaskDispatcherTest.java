@@ -168,12 +168,17 @@ public class LocalTaskDispatcherTest {
         }
 
         @Override
-        public void taskCompleted(TaskEvent taskEvent) {
+        public void taskFailed(TaskEvent taskEvent) {
             events.add(taskEvent);
         }
 
         @Override
-        public void taskFailed(TaskEvent taskEvent) {
+        public void taskArchived(TaskEvent taskEvent) {
+            events.add(taskEvent);
+        }
+
+        @Override
+        public void taskResolved(TaskEvent taskEvent) {
             events.add(taskEvent);
         }
     }

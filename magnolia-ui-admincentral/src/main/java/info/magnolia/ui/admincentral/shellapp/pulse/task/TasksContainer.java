@@ -192,7 +192,7 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     * Default visibility for testing purposes only.
     */
     private String getItemTitle(final Task task) {
-        return listener.getItemTitle(task.getName());
+        return listener.getItemTitle(task);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
                 case ONGOING:
                     return type == Task.Status.InProgress;
                 case DONE:
-                    return type == Task.Status.Completed;
+                    return type == Task.Status.Resolved;
                 case FAILED:
                     return type == Task.Status.Failed;
                 default:

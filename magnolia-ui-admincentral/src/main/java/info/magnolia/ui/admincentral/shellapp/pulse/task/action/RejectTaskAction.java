@@ -86,7 +86,7 @@ public class RejectTaskAction extends AbstractTaskAction<RejectTaskActionDefinit
                     result.put(Context.ATTRIBUTE_COMMENT, comment);
                 }
 
-                taskManager.complete(task.getId(), result);
+                taskManager.resolve(task.getId(), result);
                 log.debug("About to reject human task named [{}]", task.getName());
 
                 formDialogPresenter.closeDialog();

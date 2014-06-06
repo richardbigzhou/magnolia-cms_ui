@@ -46,19 +46,19 @@ import org.junit.Test;
  * DeleteHumanTaskActionTest.
  */
 public class DeleteHumanTaskActionTest extends BaseHumanTaskActionTest {
-    private DeleteTaskAction action;
+    private ArchiveTaskAction action;
 
     @Override
     public void setUp() {
         super.setUp();
-        action = new DeleteTaskAction(mock(DeleteTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        action = new ArchiveTaskAction(mock(ArchiveTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
 
     @Test
     public void deleteActionExecutesIfTaskStatusIsCompletedAndAssignedToCurrentUser() throws Exception {
         // GIVEN
         Task task = new Task();
-        task.setStatus(Status.Completed);
+        task.setStatus(Status.Resolved);
         task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
 
         // WHEN
@@ -71,7 +71,7 @@ public class DeleteHumanTaskActionTest extends BaseHumanTaskActionTest {
     public void deleteActionFailsIfTaskStatusIsCompletedButIsNotAssignedToCurrentUser() throws Exception {
         // GIVEN
         Task task = new Task();
-        task.setStatus(Status.Completed);
+        task.setStatus(Status.Resolved);
         task.setActorId("anotherUser");
 
         // WHEN

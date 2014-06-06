@@ -33,16 +33,23 @@
  */
 package info.magnolia.ui.workbench;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +86,7 @@ public class AbstractContentPresenterTest {
     }
 
     @Test
-    public void testGetAvailableColumns() {
+    public void getAvailableColumns() {
         // GIVEN
         List<ColumnDefinition> allColumns = new ArrayList<ColumnDefinition>();
         StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
@@ -95,5 +102,52 @@ public class AbstractContentPresenterTest {
         // THEN
         assertEquals(1, result.size());
         assertEquals(propertyColumnDefinition, result.get(0));
+    }
+
+    @Test
+    public void rootItemIdIsExcludedFromMultipleSelection() {
+        // GIVEN
+        Object rootId = new JcrItemId("aaa", "qux");
+        Object bar = new JcrItemId("bar", "qux");
+        Object baz = new JcrItemId("baz", "qux");
+
+        Set<Object> selectedIds = new HashSet<Object>();
+
+        selectedIds.add(rootId);
+        selectedIds.add(bar);
+        selectedIds.add(baz);
+
+        ContentConnector contentConnector = mock(ContentConnector.class);
+        when(contentConnector.getDefaultItemId()).thenReturn(rootId);
+
+        presenter.start(mock(WorkbenchDefinition.class), mock(EventBus.class), "meh", contentConnector);
+
+        // WHEN
+        presenter.onItemSelection(selectedIds);
+        List<Object> result = presenter.getSelectedItemIds();
+
+        // THEN
+        assertThat(result, not(containsInAnyOrder(rootId)));
+        assertThat(result, containsInAnyOrder(bar, baz));
+    }
+
+    @Test
+    public void rootItemIdIsSelectedIfNoItemIsVisuallySelected() {
+        // GIVEN
+        Object rootId = new JcrItemId("aaa", "qux");
+
+        Set<Object> selectedIds = null; // no selection in UI
+
+        ContentConnector contentConnector = mock(ContentConnector.class);
+        when(contentConnector.getDefaultItemId()).thenReturn(rootId);
+
+        presenter.start(mock(WorkbenchDefinition.class), mock(EventBus.class), "meh", contentConnector);
+
+        // WHEN
+        presenter.onItemSelection(selectedIds);
+        List<Object> result = presenter.getSelectedItemIds();
+
+        // THEN
+        assertThat(result, hasItem(rootId));
     }
 }
