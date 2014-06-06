@@ -151,6 +151,7 @@ public final class FavoritesGroup extends CssLayout implements EditableFavoriteI
         fireEvent(new EditingEvent(this, editable));
     }
 
+    @Override
     public void setIconsVisibility(boolean visible) {
         editButton.setVisible(visible);
         removeButton.setVisible(visible);
