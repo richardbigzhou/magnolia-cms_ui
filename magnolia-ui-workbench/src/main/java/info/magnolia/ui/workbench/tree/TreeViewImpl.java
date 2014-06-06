@@ -38,12 +38,6 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
 
 import java.util.List;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +63,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     private Handler editingKeyboardHandler;
 
+    private TreeRowScroller rowScroller;
+
     private final ItemEditedEvent.Handler itemEditedListener = new ItemEditedEvent.Handler() {
 
         @Override
@@ -88,7 +84,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         tree.setSortEnabled(false);
 
         tree.setCollapsed(tree.firstItemId(), false);
-
+        rowScroller = new TreeRowScroller(tree);
         this.treeTable = tree;
     }
 
@@ -140,61 +136,20 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public void select(List<String> itemIds) {
         String firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
-        if (firstItemId == null || treeTable.isSelected(firstItemId)) {
+        if (firstItemId == null) {
             return;
         }
-        treeTable.focus();
-        expandTreeToNode(firstItemId, false);
 
         treeTable.setValue(null);
         for (String id : itemIds) {
             treeTable.select(id);
         }
-        treeTable.setCurrentPageFirstItemId(firstItemId);
+        rowScroller.bringRowIntoView(firstItemId);
     }
 
     @Override
     public void expand(String itemId) {
-        expandTreeToNode(itemId, true);
-    }
-
-    private void expandTreeToNode(String nodeId, boolean expandNode) {
-        HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
-        String workbenchPath = container.getWorkbenchDefinition().getPath();
-
-        try {
-            Item item = container.getJcrItem(nodeId);
-            if (item == null || !item.getPath().contains(workbenchPath)) {
-                return;
-            }
-
-            // Determine node to expand.
-            Node node = null;
-
-            if (item instanceof Property) {
-                node = item.getParent();
-            } else {
-
-                if (expandNode) {
-                    node = (Node) item;
-                } else {
-                    // Check if item is root.
-                    if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
-                        node = item.getParent();
-                    }
-                }
-
-            }
-
-            // as long as parent is within the scope of the workbench
-            while (node != null && !StringUtils.equals(node.getPath(), workbenchPath)) {
-                treeTable.setCollapsed(node.getIdentifier(), false);
-                node = node.getParent();
-            }
-
-        } catch (RepositoryException e) {
-            log.warn("Could not collect the parent hierarchy of node {}", nodeId, e);
-        }
+        rowScroller.expandTreeToNode(itemId, false);
     }
 
     @Override
