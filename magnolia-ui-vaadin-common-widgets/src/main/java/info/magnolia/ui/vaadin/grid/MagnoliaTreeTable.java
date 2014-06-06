@@ -66,6 +66,16 @@ public class MagnoliaTreeTable extends TreeTable {
         this(new HierarchicalContainer());
     }
 
+    /**
+     * This method is made public in order to be able to delegate the call to
+     * tree tables' {@link HierarchicalStrategy} instead of the actual container
+     * which can be very slow.
+     */
+    @Override
+    public int indexOfId(Object itemId) {
+        return super.indexOfId(itemId);
+    }
+
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
         String result = super.formatPropertyValue(rowId, colId, property);
