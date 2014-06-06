@@ -42,7 +42,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Container;
@@ -78,6 +77,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private Container shortcutActionManager;
     private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
+    private TreeRowScroller rowScroller;
 
     @Override
     protected MagnoliaTreeTable createTable(com.vaadin.data.Container container) {
@@ -88,6 +88,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     protected void initializeTable(Table table) {
         super.initializeTable(table);
+        rowScroller = new TreeRowScroller((MagnoliaTreeTable) table);
         tree.setSortEnabled(false);
         int size = tree.size();
         if (size > 0) {
@@ -98,54 +99,21 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public void select(List<Object> itemIds) {
         Object firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
-        if (firstItemId == null || tree.isSelected(firstItemId)) {
+        if (firstItemId == null) {
             return;
         }
-        tree.focus();
-        expandTreeToNode(firstItemId, false);
 
         tree.setValue(null);
         for (Object id : itemIds) {
             tree.select(id);
         }
-        tree.setCurrentPageFirstItemId(firstItemId);
+
+        rowScroller.bringRowIntoView(firstItemId);
     }
 
     @Override
     public void expand(Object itemId) {
-        expandTreeToNode(itemId, true);
-    }
-
-    private void expandTreeToNode(Object id, boolean expandNode) {
-        com.vaadin.data.Container.Hierarchical container = tree.getContainerDataSource();
-        Item item = container.getItem(id);
-
-        if (item == null) {
-            return;
-        }
-
-        // Determine node to expand.
-        Object node = null;
-        if (!container.areChildrenAllowed(id)) {
-            node = container.getParent(id);
-        } else {
-            if (expandNode) {
-                node = id;
-            } else {
-                Object parent = container.getParent(id);
-                // Check if item is root.
-                if (parent != null) {
-                    node = parent;
-                }
-            }
-        }
-
-        // as long as parent is within the scope of the workbench
-        while (node != null) {
-            tree.setCollapsed(node, false);
-            node = container.getParent(node);
-        }
-
+        rowScroller.expandTreeToNode(itemId, true);
     }
 
     @Override
