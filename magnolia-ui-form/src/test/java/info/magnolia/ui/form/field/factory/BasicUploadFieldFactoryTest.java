@@ -94,7 +94,6 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
 
         // THEN
         assertEquals(true, field instanceof BasicUploadField);
-        assertEquals(1, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
     }
 
     @Test

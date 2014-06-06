@@ -162,12 +162,10 @@ public class BasicTransformer<T> implements Transformer<T> {
      * Based on the i18n information, define the property name to use.
      */
     protected String definePropertyName() {
-        String propertyName = this.basePropertyName;
-
         if (hasI18NSupport()) {
-            propertyName = this.i18NPropertyName;
+            return this.i18NPropertyName;
         }
-        return propertyName;
+        return this.basePropertyName;
     }
 
     // //////

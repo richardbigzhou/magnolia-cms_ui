@@ -167,18 +167,21 @@ public class FileTransformerTest {
     }
 
     @Test
-    public void i18nReadFromItem() {
+    public void i18nReadFromItem() throws IOException, RepositoryException {
         // GIVEN
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
         FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
         transformer.setI18NPropertyName(definition.getBinaryNodeName() + "_de");
+        UploadReceiver property = transformer.readFromItem();
+        OutputStream out = property.receiveUpload("test.jpg", "image/jpg");
+        IOUtils.copy(new BinaryValue("test").getStream(), out);
+        IOUtils.closeQuietly(out);
 
         // WHEN
-        UploadReceiver property = transformer.readFromItem();
+        transformer.writeToItem(property);
 
         // THEN
-        assertNotNull(property);
         assertNotNull(((JcrNodeAdapter)rootItem).getChild(definition.getBinaryNodeName()+"_de"));
     }
 
@@ -281,7 +284,7 @@ public class FileTransformerTest {
         OutputStream out = property.receiveUpload("test.jpg", "image/jpg");
         IOUtils.copy(new BinaryValue("test").getStream(), out);
         IOUtils.closeQuietly(out);
-
+        transformer.writeToItem(property);
         // WHEN
         Item item = transformer.populateItem(property, ((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName()));
 

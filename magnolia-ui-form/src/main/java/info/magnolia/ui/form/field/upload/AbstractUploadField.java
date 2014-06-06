@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.upload;
 
 import java.io.OutputStream;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +131,13 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
     protected abstract void displayUploadFinishedNote(String fileName);
 
     protected abstract void displayUploadFailedNote(String fileName);
+
+    @Override
+    public void setLocale(Locale locale) {
+        if (root != null) {
+            updateDisplay();
+        }
+    }
 
     @Override
     public void setPropertyDataSource(Property newDataSource) {
