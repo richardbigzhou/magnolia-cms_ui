@@ -49,7 +49,9 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -106,6 +108,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         Item item = getOrCreateFileItem();
         if (isValid(newValue, item)) {
             populateItem(newValue, item);
+            getRootItem().addChild((AbstractJcrNodeAdapter) item);
         } else {
             handleInvalid(newValue, item);
         }
@@ -116,6 +119,13 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
      */
     @Override
     public T readFromItem() {
+        // Initialize the child node list
+        JcrNodeAdapter rootItem = getRootItem();
+        // The root Item was never populated, add relevant child Item based on the stored nodes.
+        if (!rootItem.hasChildItemChanges()) {
+            populateStoredChildItems(rootItem);
+        }
+        // Get or create the file item.
         Item item = getOrCreateFileItem();
         return createPropertyFromItem(item);
     }
@@ -125,14 +135,14 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
      */
     protected Item getOrCreateFileItem() {
         String itemName = getItemName();
-        Item child = ((AbstractJcrNodeAdapter) relatedFormItem).getChild(itemName);
+        Item child = getRootItem().getChild(itemName);
         if (child != null) {
             return child;
         }
         Node node = null;
         try {
-            node = ((JcrNodeAdapter) relatedFormItem).getJcrItem();
-            if (node.hasNode(itemName) && !(relatedFormItem instanceof JcrNewNodeAdapter)) {
+            node = getRootItem().getJcrItem();
+            if (node.hasNode(itemName) && !(getRootItem() instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(itemName));
             } else {
                 child = new JcrNewNodeAdapter(node, NodeTypes.Resource.NAME, itemName);
@@ -140,7 +150,6 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         } catch (RepositoryException e) {
             log.error("Could get or create a child Item for {} ", NodeUtil.getPathIfPossible(node), e);
         }
-        ((AbstractJcrNodeAdapter) relatedFormItem).addChild((AbstractJcrNodeAdapter) child);
         return child;
     }
 
@@ -203,7 +212,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
                 data.setValue(ValueFactoryImpl.getInstance().createBinary(new FileInputStream(newValue.getFile())));
             } catch (Exception re) {
                 log.error("Could not get Binary. Upload will not be performed", re);
-                ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
+                getRootItem().removeChild((AbstractJcrNodeAdapter) item);
                 return null;
             }
         }
@@ -221,7 +230,9 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
      * @see {@link FileTransformer#writeToItem(Object)}.
      */
     protected void handleInvalid(T newValue, Item item) {
-        ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
+        if (((AbstractJcrNodeAdapter) item).getParent() != null) {
+            ((AbstractJcrNodeAdapter) item).getParent().removeChild((AbstractJcrNodeAdapter) item);
+        }
     }
 
     /**
@@ -232,6 +243,39 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
             item.addItemProperty(propertyName, new DefaultProperty(type, null));
         }
         return item.getItemProperty(propertyName);
+    }
+
+    /**
+     * Defines the root item used to retrieve and create child items.
+     */
+    protected JcrNodeAdapter getRootItem() {
+        return (JcrNodeAdapter) relatedFormItem;
+    }
+
+    /**
+     * Populates the given root item with its child items.
+     */
+    protected void populateStoredChildItems(JcrNodeAdapter rootItem) {
+        List<Node> childNodes = getStoredChildNodes(rootItem);
+        for (Node child : childNodes) {
+            JcrNodeAdapter item = new JcrNodeAdapter(child);
+            item.setParent(rootItem);
+            item.getParent().addChild(item);
+        }
+    }
+
+    /**
+     * Fetches child nodes of the given parent from JCR, filtered using the {@link NodeUtil#MAGNOLIA_FILTER} predicate.
+     */
+    protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
+        try {
+            if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
+                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), NodeUtil.MAGNOLIA_FILTER));
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
+        }
+        return new ArrayList<Node>();
     }
 
     @Override
