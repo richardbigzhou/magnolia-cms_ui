@@ -103,8 +103,8 @@ public class WorkbenchStatusBarPresenter {
             rootIsSelected = id.equals(contentConnector.getDefaultItemId());
             setSelectedItem(id, itemIds.size());
         } else {
-            setSelectedItem(contentConnector.getDefaultItemId(), itemIds.size());
             rootIsSelected = true;
+            setSelectedItem(contentConnector.getDefaultItemId(), itemIds.size());
         }
     }
 
@@ -125,6 +125,11 @@ public class WorkbenchStatusBarPresenter {
     }
 
     public void refresh() {
+        // active presenter can be null initially when there are multiple browser subapps
+        if (activeContentPresenter == null) {
+            return;
+        }
+
         int selected = activeContentPresenter.getSelectedItemIds().size();
         if (selected == 1) {
             setSelectedItem(activeContentPresenter.getSelectedItemIds().get(0), selected);
