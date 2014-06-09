@@ -25,6 +25,7 @@
   .dialog-content .v-shell-tabsheet-scroller {
     position: static !important;
     max-height: 450px;
+    padding-bottom: 24px;
   }
   .tablet .dialog-content .v-shell-tabsheet-scroller {
     max-height: 385px;
@@ -74,8 +75,8 @@
     padding: 10px 16px 10px 16px;
   }
   .dialog-footer {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 
   .dialog-description,
@@ -309,37 +310,40 @@
     position: absolute;
     top: 74px;
     width: 600px !important;
-   }
+  }
 
-   .light .dialog-wrapper{
-        box-shadow: 7px 7px 10px $c10;
-        border: 1px solid #c1c1c1;
-   }
+  .light .dialog-wrapper{
+    box-shadow: 7px 7px 10px $c10;
+    border: 1px solid $c13;
+  }
 
-   .light.choose-dialog {
-     top: 0;
-   }
+  .light.choose-dialog {
+    top: 0;
+  }
 
   .light .dialog-header,
   .light .dialog-footer,
-  .light .v-shell-tab,
+  .light .v-shell-tabsheet,
   .light .v-form-layout,
   .light.choose-dialog .v-verticallayout-workbench, /*this is for choose dialog*/
-  .light .choose-dialog .v-verticallayout-workbench /*this is for move dialog. Yes, I know what you think about it and I concur.*/
-  {
+  .light .choose-dialog .v-verticallayout-workbench /*this is for move dialog. Yes, I know what you think about it and I concur.*/ {
     background-color: $c14 !important;
   }
 
   .light .single-tab,
   .light .single-tab * {
     display:none;
-   }
+  }
 
-  .light .dialog-header span {
-    color:#000;
+  .light .dialog-header span.title {
+    color: $c90;
     font-family: Verdana, Helvetica, Arial, sans-serif;
     font-size: 12px;
     font-weight: bold;
+  }
+
+  .light .dialog-header .m-closebutton {
+    color: $c10;
   }
 
   .light .dialog-content,
@@ -349,8 +353,8 @@
   }
 
   .light .dialog-footer {
-    padding-top: 11px;
-    padding-bottom: 11px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .light button.btn-form-help {
@@ -358,6 +362,7 @@
   }
 
   .light .dialog-content .v-shell-tabsheet-scroller {
+    padding-bottom: 19px;
      /*max-height: 115px !important;*/
   }
 }
