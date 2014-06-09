@@ -184,7 +184,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
             style.setTop(top, Style.Unit.PX);
 
             stretchTextArea(style);
-            style.setZIndex(3);
+            style.setZIndex(5);
 
             if (!isOverlay && !isRichTextEditor) {
                 stretchControl.getStyle().setTop(top + 5, Style.Unit.PX);
