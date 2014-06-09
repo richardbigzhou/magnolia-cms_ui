@@ -16,14 +16,14 @@
   button.btn-dialog {
 
     &:focus{
-      outline: $c22 solid 3px;
+      outline: $c22 solid 2px;
     }
 
     &.commit,
     &.v-button-commit {
       background-color: $c40;
     }
-    
+
     .v-ui:not(.tablet) &.commit:hover,
     .v-ui:not(.tablet) &.v-button-commit:hover {
       background-color: $c30;

@@ -259,8 +259,13 @@
       margin: 0;
       width: 28px;
       height: 28px;
+      outline: none !important;
 
       .m-closebutton { margin: 0; padding: 0; color: inherit; }
+
+      &::-moz-focus-inner {
+        border: 0;
+      }
     }
   }
 
