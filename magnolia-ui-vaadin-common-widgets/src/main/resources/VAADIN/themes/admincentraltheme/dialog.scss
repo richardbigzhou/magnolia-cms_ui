@@ -185,6 +185,8 @@
 
       button.btn-form-help { display: none; }
 
+      button.btn-form-wide { display: none; }
+
       .m-closebutton {
         position: relative;
         color: $c10;
@@ -366,6 +368,11 @@
   .light button.btn-form-help {
     display: none;
   }
+
+  .light button.btn-form-wide {
+    display: none;
+  }
+
 
   .light .dialog-content .v-shell-tabsheet-scroller {
     padding-bottom: 19px;
