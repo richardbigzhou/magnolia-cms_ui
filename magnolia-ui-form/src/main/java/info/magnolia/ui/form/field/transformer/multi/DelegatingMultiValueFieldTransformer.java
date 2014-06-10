@@ -278,7 +278,10 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         res.addAll(freezedName);
         PropertysetItem item = items.get(this.i18nSuffix);
         for (Object id : item.getItemPropertyIds()) {
-            res.add(((JcrNodeAdapter) item.getItemProperty(id).getValue()).getNodeName());
+            Object value = item.getItemProperty(id).getValue();
+            if (value instanceof JcrNodeAdapter) {
+                res.add(((JcrNodeAdapter) value).getNodeName());
+            }
         }
         return res;
     }
