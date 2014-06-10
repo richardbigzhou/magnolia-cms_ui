@@ -103,9 +103,6 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
         addStyleName("upload-image-field");
         addStyleName("no-horizontal-drag-hints");
         addStyleName("no-vertical-drag-hints");
-
-        // set read only
-        setReadOnly(definition.isReadOnly());
     }
 
     /**
