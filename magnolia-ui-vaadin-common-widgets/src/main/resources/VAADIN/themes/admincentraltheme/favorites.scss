@@ -37,6 +37,10 @@
   cursor: pointer;
 }
 
+.favorites-group .favorites-group-title input.v-textfield-readonly{
+  margin-top: 5px !important ;
+}
+
 .favorites-group input.v-textfield-readonly {
   background-color: transparent !important;
   border: none !important;
