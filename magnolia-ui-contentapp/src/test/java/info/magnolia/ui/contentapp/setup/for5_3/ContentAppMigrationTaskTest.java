@@ -52,8 +52,10 @@ import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
 import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Session;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,7 +104,8 @@ public class ContentAppMigrationTaskTest extends RepositoryTestCase {
         assertTrue(actionNode.hasNode("availability")); // availability and nodeTypes nodes exist
         assertTrue(actionNode.getNode("availability").hasNode(NODE_TYPES));
         Node nodeTypes = actionNode.getNode("availability/nodeTypes");
-        assertThat(nodeTypes, everyProperty(either(propertyName(startsWith("jcr:"))).or(propertyValue(equalTo("mgnl:dummyNode")))));
+        // It's a pity we have to help the either().or() matcher with generics here; 1.7 doesn't need this.
+        assertThat(nodeTypes, everyProperty(Matchers.<Property>either(propertyName(startsWith("jcr:"))).or(propertyValue(equalTo("mgnl:dummyNode")))));
     }
 
     /**
