@@ -25,7 +25,6 @@
   .dialog-content .v-shell-tabsheet-scroller {
     position: static !important;
     max-height: 450px;
-    padding-bottom: 24px;
   }
   .tablet .dialog-content .v-shell-tabsheet-scroller {
     max-height: 385px;
@@ -75,8 +74,8 @@
     padding: 10px 16px 10px 16px;
   }
   .dialog-footer {
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 
   .dialog-description,
@@ -353,8 +352,8 @@
   }
 
   .light .dialog-footer {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 11px;
+    padding-bottom: 11px;
   }
 
   .light button.btn-form-help {
@@ -362,7 +361,6 @@
   }
 
   .light .dialog-content .v-shell-tabsheet-scroller {
-    padding-bottom: 19px;
      /*max-height: 115px !important;*/
   }
 }
