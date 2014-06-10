@@ -471,6 +471,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     }
 
     private SubAppDetails createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
+        long time = System.nanoTime();
 
         SubAppDetails subAppDetails = new SubAppDetails();
 
@@ -509,7 +510,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         builder.withParent((GuiceComponentProvider) parent);
 
         subAppDetails.componentProvider = builder.build();
-
+        System.out.println(String.format("creating scc [%sms]", (System.nanoTime() - time) / 1000000));
         return subAppDetails;
     }
 }

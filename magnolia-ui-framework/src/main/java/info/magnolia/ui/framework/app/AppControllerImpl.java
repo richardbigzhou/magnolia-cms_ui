@@ -117,6 +117,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final LocationController locationController;
     private final EventBus eventBus;
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
+    private final Map<String, AppInstanceController> existingAppInstances = new HashMap<String, AppInstanceController>();
+
     private final LinkedList<AppInstanceController> appHistory = new LinkedList<AppInstanceController>();
     private final MessagesManager messagesManager;
     private final SimpleTranslator i18n;
@@ -248,12 +250,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * case the app is already started, it will update its location.
      */
     private AppInstanceController doStartIfNotAlreadyRunning(AppInstanceController appInstanceController, Location location) {
-        if (isAppStarted(appInstanceController.getAppDescriptor().getName())) {
+        boolean isAppStarted = isAppStarted(appInstanceController.getAppDescriptor().getName());
+        runningApps.put(appInstanceController.getAppDescriptor().getName(), appInstanceController);
+        if (isAppStarted) {
             appInstanceController.onLocationUpdate(location);
             return appInstanceController;
         }
-
-        runningApps.put(appInstanceController.getAppDescriptor().getName(), appInstanceController);
         appInstanceController.start(location);
         sendEvent(AppLifecycleEventType.STARTED, appInstanceController.getAppDescriptor());
         return appInstanceController;
@@ -285,6 +287,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         if (!appHistory.isEmpty()) {
             doFocus(appHistory.peekFirst());
         }
+
+        existingAppInstances.remove(appInstanceController.getName());
         locationController.goTo(new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher"));
     }
 
@@ -371,10 +375,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppInstanceController getAppInstance(String appName) {
-        if (isAppStarted(appName)) {
-            return runningApps.get(appName);
+        AppInstanceController instance = existingAppInstances.get(appName);
+        if (instance != null) {
+            return instance;
         }
-        return createNewAppInstance(appName);
+        instance = createNewAppInstance(appName);
+        existingAppInstances.put(appName, instance);
+        return instance;
     }
 
     private AppInstanceController createNewAppInstance(String appName) {
@@ -441,6 +448,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private ComponentProvider createAppComponentProvider(String name, AppInstanceController appInstanceController) {
 
+        long time = System.nanoTime();
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
@@ -478,6 +486,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         appInstanceController.setAppComponentProvider(appComponentProvider);
 
+        System.out.println(String.format("creating acc [%sms]", (System.nanoTime() - time) / 1000000));
         return appComponentProvider;
     }
 
