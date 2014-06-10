@@ -34,7 +34,9 @@
 package info.magnolia.ui.contentapp.setup.for5_3;
 
 import static info.magnolia.jcr.nodebuilder.Ops.*;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static info.magnolia.ui.contentapp.setup.for5_3.MoveActionNodeTypeRestrictionToAvailabilityTask.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -99,7 +101,8 @@ public class ContentAppMigrationTaskTest extends RepositoryTestCase {
         assertFalse(actionNode.hasProperty(NODE_TYPE)); // nodeType property has been removed from the action node
         assertTrue(actionNode.hasNode("availability")); // availability and nodeTypes nodes exist
         assertTrue(actionNode.getNode("availability").hasNode(NODE_TYPES));
-        assertEquals("mgnl:dummyNode", actionNode.getNode("availability/nodeTypes").getProperties().nextProperty().getString()); // new property under nodeTypes has the same value as original nodeType
+        Node nodeTypes = actionNode.getNode("availability/nodeTypes");
+        assertThat(nodeTypes, everyProperty(either(propertyName(startsWith("jcr:"))).or(propertyValue(equalTo("mgnl:dummyNode")))));
     }
 
     /**
