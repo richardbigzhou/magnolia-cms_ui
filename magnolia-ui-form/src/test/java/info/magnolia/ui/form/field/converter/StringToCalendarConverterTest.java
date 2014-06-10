@@ -38,7 +38,9 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,17 +53,27 @@ public class StringToCalendarConverterTest {
 
     private Converter<String, Calendar> converter;
     private long timeMs = 1401093721628L;
+    private Calendar model;
+    private TimeZone defaultTimeZone;
 
     @Before
     public void setUp() throws Exception {
         converter = new StringToCalendarConverter();
+        model = Calendar.getInstance();
+        defaultTimeZone = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+2"));
+    }
+
+    @After
+    public void tearDown() {
+        TimeZone.setDefault(defaultTimeZone);
     }
 
     @Test
     public void testCalendarToPresentationDe() throws Exception {
         // GIVEN
-        Calendar model = Calendar.getInstance();
         model.setTimeInMillis(timeMs);
+
         // WHEN
         Locale locale = Locale.GERMAN;
         String presentation = converter.convertToPresentation(model, String.class, locale);
@@ -74,7 +86,6 @@ public class StringToCalendarConverterTest {
     @Test
     public void testCalendarToPresentationEn() throws Exception {
         // GIVEN
-        Calendar model = Calendar.getInstance();
         model.setTimeInMillis(timeMs);
         // WHEN
         Locale locale = Locale.ENGLISH;
