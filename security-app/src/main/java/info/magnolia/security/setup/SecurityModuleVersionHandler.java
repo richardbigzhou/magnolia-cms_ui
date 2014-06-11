@@ -217,7 +217,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ContentAppMigrationTask("/modules/security-app"))
                 .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass"))
-                .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "implementationClass")));
+                .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "implementationClass"))
+                .addTask(new NewPropertyTask("Set security app role dialog to wide", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role","wide", true))
+                );
     }
 
     @Override
