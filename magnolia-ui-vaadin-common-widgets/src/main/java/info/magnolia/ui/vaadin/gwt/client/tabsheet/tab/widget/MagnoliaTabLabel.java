@@ -48,6 +48,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.vaadin.client.ui.VButton;
 
 /**
  * Tab label in the tab bar.
@@ -62,9 +63,7 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     private final Element errorIndicator = DOM.createDiv();
 
-    private final Element focussableLabel = DOM.createButton();
-
-    private final Element labelWrapper = DOM.createSpan();
+    private final VButton textWrapper = new VButton();
 
     private MagnoliaTabWidget tab;
 
@@ -72,20 +71,12 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     private EventBus eventBus;
 
-    private boolean isClickEventHandled = false;
-
     public MagnoliaTabLabel() {
         super(DOM.createElement("li"));
 
-        labelWrapper.setAttribute("tabindex","0");
-
         indicatorsWrapper.addClassName("indicators-wrapper");
-        focussableLabel.setClassName("tab-title");
-        focussableLabel.setAttribute("tabindex","-1");
-        focussableLabel.appendChild(labelWrapper);
-        getElement().appendChild(focussableLabel);
-
-        // TODO 20120816 mgeljic: implement subtitle
+        textWrapper.getElement().setClassName("tab-title");
+        this.add(textWrapper);
 
         indicatorsWrapper = getElement();
 
@@ -98,7 +89,8 @@ public class MagnoliaTabLabel extends SimplePanel {
         getElement().appendChild(notificationBox);
         getElement().appendChild(errorIndicator);
 
-        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS | Event.KEYEVENTS);
+        DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS| Event.FOCUSEVENTS
+                | Event.KEYEVENTS);
         hideNotification();
         setHasError(false);
         // MGNLUI-786: Fixes tab label sizing issue in Chrome.
@@ -112,42 +104,40 @@ public class MagnoliaTabLabel extends SimplePanel {
     }
 
     private void bindHandlers() {
+
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
             public void onTouchEnd(TouchEndEvent event) {
-                isClickEventHandled = true;
                 onClickGeneric(event.getNativeEvent());
             }
-
         });
 
-        this.addDomHandler(new ClickHandler() {
+        textWrapper.addClickHandler(new ClickHandler(){
             @Override
             public void onClick(ClickEvent event) {
-                if (!isClickEventHandled){
-                    onClickGeneric(event.getNativeEvent());
-                }
-                isClickEventHandled = false;
+                onClickGeneric(event.getNativeEvent());
             }
-        }, ClickEvent.getType());
+        });
     }
 
     private void onClickGeneric(NativeEvent nativeEvent){
-        labelWrapper.blur();
+        textWrapper.setFocus(false);
         final Element target = (Element) nativeEvent.getEventTarget().cast();
         if (closeElement.isOrHasChild(target)) {
             eventBus.fireEvent(new TabCloseEvent(tab));
         } else {
             eventBus.fireEvent(new ActiveTabChangedEvent(tab));
         }
+        nativeEvent.stopPropagation();
     }
+
 
     public void setTab(final MagnoliaTabWidget tab) {
         this.tab = tab;
     }
 
     public void updateCaption(final String caption) {
-        labelWrapper.setInnerText(caption);
+        textWrapper.getElement().setInnerText(caption);
         setWidth("");
     }
 

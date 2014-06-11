@@ -76,6 +76,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     private Presenter presenter;
 
+    private boolean hasErrors = false;
+
     private FlowPanel errorPanel = new FlowPanel();
 
     private String errorsLabel;
@@ -118,6 +120,16 @@ public class FormViewImpl extends FlowPanel implements FormView {
             tabSheet.addActiveTabChangedHandler(new ActiveTabChangedEvent.Handler() {
                 @Override
                 public void onActiveTabChanged(ActiveTabChangedEvent event) {
+                    // Focus the first field on the form of the current tab.
+                    if (!hasErrors){
+                        if (!event.isShowingAllTabs()) {
+                            focusFirstFieldInTab((FormTabWidget) event.getTab());
+                        } else {
+                            focusFirstFieldInTab(formTabs.get(0));
+                        }
+                    }
+
+                    // Keep track of last focused field by adding focus handlers to every field.
                     lastFocused = null;
                     if (!event.isShowingAllTabs()) {
                         setFieldFocusHandler((FormTabWidget) event.getTab());
@@ -126,6 +138,11 @@ public class FormViewImpl extends FlowPanel implements FormView {
                             setFieldFocusHandler(tab);
                         }
                     }
+                }
+
+                private void focusFirstFieldInTab(FormTabWidget tab){
+                    FormFieldWrapper firstField = tab.getFields().get(0);
+                    firstField.focusField();
                 }
 
                 private void setFieldFocusHandler(FormTabWidget tab) {
@@ -157,6 +174,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     @Override
     public void setErrorAmount(int totalProblematicFields) {
+        hasErrors = (totalProblematicFields > 0);
+
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
             String formattedTotal = String.valueOf(totalProblematicFields);

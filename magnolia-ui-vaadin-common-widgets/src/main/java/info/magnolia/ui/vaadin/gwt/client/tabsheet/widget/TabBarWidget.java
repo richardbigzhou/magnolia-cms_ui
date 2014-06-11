@@ -45,6 +45,7 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -52,6 +53,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.client.ui.VButton;
 
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
@@ -159,20 +161,14 @@ public class TabBarWidget extends ComplexPanel {
 
     private class VShellShowAllTabLabel extends SimplePanel {
 
-        private final Element focussableLabel = DOM.createButton();
-        private final Element labelWrapper = DOM.createSpan();
+        private final VButton textWrapper = new VButton();
 
         public VShellShowAllTabLabel(String label) {
             super(DOM.createElement("li"));
-            labelWrapper.setInnerHTML(label);
-            labelWrapper.setAttribute("tabindex","0");
-
-            focussableLabel.appendChild(labelWrapper);
-            focussableLabel.setClassName("tab-title");
-            focussableLabel.setAttribute("tabindex","-1");
-
             addStyleName("show-all");
-            getElement().appendChild(focussableLabel);
+            textWrapper.getElement().setInnerHTML(label);
+            textWrapper.getElement().setClassName("tab-title");
+            this.add(textWrapper);
         }
 
         @Override
@@ -185,9 +181,22 @@ public class TabBarWidget extends ComplexPanel {
             addDomHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    eventBus.fireEvent(new ShowAllTabsEvent());
+                    onClickGeneric(event.getNativeEvent());
                 }
             }, ClickEvent.getType());
+
+            textWrapper.addClickHandler(new ClickHandler(){
+                @Override
+                public void onClick(ClickEvent event) {
+                    textWrapper.setFocus(false);
+                    onClickGeneric(event.getNativeEvent());
+                }
+            });
+        }
+
+        private void onClickGeneric(NativeEvent nativeEvent){
+            eventBus.fireEvent(new ShowAllTabsEvent());
+            nativeEvent.stopPropagation();
         }
 
     }

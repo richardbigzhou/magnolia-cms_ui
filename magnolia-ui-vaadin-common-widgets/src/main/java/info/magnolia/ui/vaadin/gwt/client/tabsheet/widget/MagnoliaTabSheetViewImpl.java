@@ -93,8 +93,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private ScheduledCommand removePreloaderCommand;
 
+    private EventBus eventBus;
+
     public MagnoliaTabSheetViewImpl(EventBus eventBus) {
         super();
+        this.eventBus = eventBus;
         this.tabBar = new TabBarWidget(eventBus);
         this.logo = DOM.createDiv();
         addStyleName("v-shell-tabsheet");
@@ -111,6 +114,14 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
                 doRemovePreloader();
             }
         });
+
+        eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
+            @Override
+            public void onActiveTabChanged(ActiveTabChangedEvent event) {
+                fireEvent(event);
+            }
+        });
+
     }
 
     @Override
@@ -225,6 +236,9 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public HandlerRegistration addActiveTabChangedHandler(ActiveTabChangedEvent.Handler handler) {
         return addHandler(handler, ActiveTabChangedEvent.TYPE);
+
+        //eventBus.addHandler(ActiveTabChangedEvent.TYPE, handler);
+        //return null;
     }
 
     @Override
