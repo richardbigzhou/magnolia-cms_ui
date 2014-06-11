@@ -33,9 +33,17 @@
  */
 package info.magnolia.ui.framework.task;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SimpleContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,23 +55,46 @@ import com.vaadin.server.VaadinSession;
  */
 public class LocalTaskDispatcher implements TaskEventDispatcher {
 
+    private final User user;
+    private final Locale locale;
     private EventBus eventBus;
     private VaadinSession vaadinSession;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public LocalTaskDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus, VaadinSession vaadinSession) {
+    public LocalTaskDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus, VaadinSession vaadinSession, Context context, ComponentProvider componentProvider) {
         this.eventBus = eventBus;
         this.vaadinSession = vaadinSession;
+        this.componentProvider = componentProvider;
+        this.user = context.getUser();
+        this.locale = context.getLocale();
     }
 
     @Override
     public void onTaskEvent(TaskEvent taskEvent) {
         VaadinSession previous = VaadinSession.getCurrent();
+        boolean hasContext = MgnlContext.hasInstance();
+        if (!hasContext) {
+            MgnlContext.setInstance(new SimpleContext(componentProvider.getComponent(SystemContext.class)) {
+                @Override
+                public User getUser() {
+                    return LocalTaskDispatcher.this.user;
+                }
+
+                @Override
+                public Locale getLocale() {
+                    return LocalTaskDispatcher.this.locale;
+                }
+            });
+        }
         try {
             VaadinSession.setCurrent(vaadinSession);
             eventBus.fireEvent(taskEvent);
         } finally {
             VaadinSession.setCurrent(previous);
+            if (!hasContext) {
+                MgnlContext.setInstance(null);
+            }
         }
     }
 

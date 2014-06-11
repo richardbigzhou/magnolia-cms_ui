@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
@@ -64,15 +64,17 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
+    private final String userId;
 
     @Inject
     public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider) {
+            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;
+        this.userId = context.getUser().getName();
     }
 
     @Override
@@ -85,7 +87,6 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Override
     public View openItem(String messageId) {
-        final String userId = MgnlContext.getUser().getName();
         Message message = messagesManager.getMessageById(userId, messageId);
 
         MessageDetailPresenter messagePresenter = componentProvider.newInstance(MessageDetailPresenter.class, message);
@@ -95,7 +96,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     private void initView() {
-        Collection<Message> messages = messagesManager.getMessagesForUser(MgnlContext.getUser().getName());
+        Collection<Message> messages = messagesManager.getMessagesForUser(userId);
         HierarchicalContainer dataSource = container.createDataSource(messages);
         view.setDataSource(dataSource);
         view.refresh();
@@ -130,20 +131,19 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
         if (messageIds == null || messageIds.isEmpty()) {
             return;
         }
-        final String userName = MgnlContext.getUser().getName();
         for (String messageId : messageIds) {
-            Message message = messagesManager.getMessageById(userName, messageId);
+            Message message = messagesManager.getMessageById(userId, messageId);
             if (message == null) {
                 continue;
             }
-            messagesManager.removeMessage(userName, messageId);
+            messagesManager.removeMessage(userId, messageId);
         }
     }
 
     @Override
     public void onItemClicked(String messageId) {
         listener.openMessage(messageId);
-        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+        messagesManager.clearMessage(userId, messageId);
     }
 
     @Override
@@ -162,25 +162,22 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     private void doUnreadMessagesUpdate(final MessageType type) {
 
         int count;
-        final String userName = MgnlContext.getUser().getName();
-
         switch (type) {
-
         case ERROR:
         case WARNING:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
-            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.WARNING);
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.ERROR);
+            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.WARNING);
             view.updateCategoryBadgeCount(PulseItemCategory.PROBLEM, count);
             break;
         case INFO:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, type);
             view.updateCategoryBadgeCount(PulseItemCategory.INFO, count);
             break;
         }
     }
 
     public int getNumberOfUnclearedMessagesForCurrentUser() {
-        return messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName());
+        return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
     }
 
     /**

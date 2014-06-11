@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.context.Context;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -76,10 +76,11 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     private final TaskDefinitionRegistry taskDefinitionRegistry;
     private final ComponentProvider componentProvider;
     private final SimpleTranslator i18n;
+    private final String userId;
 
     @Inject
     public TasksListPresenter(final TasksListView view, final TasksContainer container, final ShellImpl shellImpl, final TasksManager tasksManager,
-            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n) {
+            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context) {
         super(container);
         this.view = view;
         this.shell = shellImpl;
@@ -87,6 +88,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         this.taskDefinitionRegistry = taskDefinitionRegistry;
         this.componentProvider = componentProvider;
         this.i18n = i18n;
+        this.userId = context.getUser().getName();
     }
 
     @Override
@@ -130,7 +132,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     private void initView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(MgnlContext.getUser().getName(), Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
+        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
         HierarchicalContainer dataSource = container.createDataSource(tasks);
         view.setDataSource(dataSource);
         view.refresh();
@@ -174,8 +176,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         if (itemIds == null || itemIds.isEmpty()) {
             return;
         }
-        final String userId = MgnlContext.getUser().getName();
-
         for (String taskId : itemIds) {
             Task task = tasksManager.getTaskById(taskId);
             if (task.getStatus() != Status.Created) {
@@ -192,21 +192,20 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
 
     private void doTasksStatusUpdate(final Task.Status status) {
 
-        final String userName = MgnlContext.getUser().getName();
         int count;
 
         switch (status) {
 
         case Created:
-            count = tasksManager.findTasksByUserAndStatus(userName, Arrays.asList(Status.Created)).size();
+            count = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Status.Created)).size();
             view.updateCategoryBadgeCount(PulseItemCategory.UNCLAIMED, count);
             break;
         case InProgress:
-            count = tasksManager.findTasksByAssigneeAndStatus(userName, Arrays.asList(Status.InProgress)).size();
+            count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.InProgress)).size();
             view.updateCategoryBadgeCount(PulseItemCategory.ONGOING, count);
             break;
         case Failed:
-            count = tasksManager.findTasksByAssigneeAndStatus(userName, Arrays.asList(Status.Failed)).size();
+            count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.Failed)).size();
             view.updateCategoryBadgeCount(PulseItemCategory.FAILED, count);
             break;
         default:
@@ -215,10 +214,11 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     public int getNumberOfPendingTasksForCurrentUser() {
-        return tasksManager.findPendingTasksByUser(MgnlContext.getUser().getName()).size();
+        return tasksManager.findPendingTasksByUser(userId).size();
     }
 
     public void setTabActive(PulseItemCategory category) {
+        initView();
         view.setTabActive(category);
     }
 

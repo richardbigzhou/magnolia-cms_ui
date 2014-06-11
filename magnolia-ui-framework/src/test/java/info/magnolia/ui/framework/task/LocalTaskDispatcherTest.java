@@ -33,17 +33,21 @@
  */
 package info.magnolia.ui.framework.task;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.task.Task;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
+import info.magnolia.test.mock.MockContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +60,28 @@ import org.junit.Test;
  * Test case for {@link LocalTaskDispatcher}.
  */
 public class LocalTaskDispatcherTest {
+
+    private Context context;
+    private LocalTaskDispatcher dispatcher;
+    private ArrayList<TaskEvent> events;
+    private EventBus eventBus;
+    private ComponentProvider componentProvider;
+
     @Before
     public void setUp() {
-        Context ctx = mock(Context.class);
+        this.context = mock(Context.class);
         User usr = mock(User.class);
-        when(ctx.getUser()).thenReturn(usr);
-        when(usr.getName()).thenReturn("peter");
-        MgnlContext.setInstance(ctx);
+        when(context.getUser()).thenReturn(usr);
+        MgnlContext.setInstance(context);
+        this.componentProvider = mock(ComponentProvider.class);
+        when(componentProvider.getComponent(eq(SystemContext.class))).thenReturn(new MockContext());
+
+        this.eventBus = new SimpleEventBus();
+        this.events = new ArrayList<TaskEvent>();
+        this.dispatcher = new LocalTaskDispatcher(eventBus, null, context, componentProvider);
+
+        eventBus.addHandler(TaskEvent.class, new CollectingTaskEventHandler(events));
+
     }
 
     @After
@@ -74,10 +93,7 @@ public class LocalTaskDispatcherTest {
     public void sendsEvents() throws InterruptedException {
 
         // GIVEN
-        EventBus eventBus = new SimpleEventBus();
-        LocalTaskDispatcher dispatcher = new LocalTaskDispatcher(eventBus, null);
-        ArrayList<TaskEvent> events = new ArrayList<TaskEvent>();
-        eventBus.addHandler(TaskEvent.class, new CollectingTaskEventHandler(events));
+
 
         // WHEN
         Task task = new Task();
@@ -112,10 +128,6 @@ public class LocalTaskDispatcherTest {
     public void sendsEventsEvenIfHandlersFail() throws InterruptedException {
 
         // GIVEN
-        EventBus eventBus = new SimpleEventBus();
-        LocalTaskDispatcher dispatcher = new LocalTaskDispatcher(eventBus, null);
-        ArrayList<TaskEvent> events = new ArrayList<TaskEvent>();
-        eventBus.addHandler(TaskEvent.class, new ThrowingMessageEventHandler(events));
         eventBus.addHandler(TaskEvent.class, new ThrowingMessageEventHandler(events));
 
         // WHEN
@@ -142,6 +154,25 @@ public class LocalTaskDispatcherTest {
         assertEquals("foo", events.get(1).getTask().getName());
         assertEquals(Task.Status.InProgress, events.get(2).getTask().getStatus());
         assertEquals(Task.Status.InProgress, events.get(3).getTask().getStatus());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDispatchingWithEmptyContextCreatesOneOnTheFly() throws Exception {
+        // GIVEN
+        MgnlContext.setInstance(null);
+
+        // WHEN
+        Task task = new Task();
+        task.setId("0");
+        task.setName("foo");
+        task.setStatus(Task.Status.Created);
+
+        dispatcher.onTaskEvent(new TaskEvent(task));
+
+        // THEN
+        verify(componentProvider, times(1)).getComponent(eq(SystemContext.class));
+        assertThat(MgnlContext.getInstance(), nullValue());
+        fail("Intentionally thrown exception.");
     }
 
     private static class CollectingTaskEventHandler implements TaskEventHandler {

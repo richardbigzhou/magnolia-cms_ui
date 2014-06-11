@@ -37,6 +37,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -44,6 +45,7 @@ import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.ConfiguredTaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
+import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
@@ -63,12 +65,17 @@ public class TasksListPresenterTest {
 
     @Before
     public void setUp() throws Exception {
+        MockContext context = new MockContext();
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("testuser");
+        context.setUser(user);
+
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
         this.tasksManager = mock(TasksManager.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),
-                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class));
+                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context);
 
         task.setName("testTask");
     }
