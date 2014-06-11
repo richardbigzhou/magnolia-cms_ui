@@ -178,7 +178,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         contentConnector = mock(ContentConnector.class);
         availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector);
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, contentConnector, availabilityChecker);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, mock(EventBus.class), contentConnector, availabilityChecker);
     }
 
     @Test

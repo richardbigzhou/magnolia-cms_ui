@@ -45,7 +45,9 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
@@ -113,7 +115,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private AvailabilityChecker checker;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ContentConnector contentConnector, AvailabilityChecker checker) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus, ContentConnector contentConnector, AvailabilityChecker checker) {
         super(subAppContext, view);
         this.checker = checker;
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
@@ -123,6 +125,26 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
         this.contentConnector = contentConnector;
+
+
+        /**
+         * Would be clearer if we'd track {@link info.magnolia.ui.api.app.AppLifecycleEventType#FOCUSED},
+         * but it is not reliable enough (not fired in some essential cases, see issue MGNLUI-2988 for more details).
+         * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2988"/>
+         */
+        adminCentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
+            @Override
+            public void onLocationChanged(LocationChangedEvent event) {
+                /**
+                 * If the new location actually points to this sub-app then we refresh it in order to avoid
+                 * synchronisation issues caused by the changes in the data-source that were not propagated to
+                 * underlying Vaadin containers of the browser.
+                 */
+                if (event.getNewLocation().equals(getCurrentLocation())) {
+                        restoreBrowser(getCurrentLocation());
+                }
+            }
+        });
     }
 
     /**
