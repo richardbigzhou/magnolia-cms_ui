@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -46,7 +47,10 @@ import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.vaadin.form.FormSection;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -59,6 +63,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -101,6 +106,37 @@ public class FormBuilderTest {
 
         // THEN
         verify(view).setCurrentLocale(locale);
+    }
+
+    @Test
+    public void testBuildReducedFormSkipEmptyTabs() {
+        // GIVEN
+        ConfiguredTabDefinition emptyTabDefinition = new ConfiguredTabDefinition();
+        emptyTabDefinition.setLabel("emptyTab");
+
+        ConfiguredTabDefinition nonEmptyTabDefinition = new ConfiguredTabDefinition();
+        nonEmptyTabDefinition.setLabel("nonEmptyTab");
+        nonEmptyTabDefinition.addField(new ConfiguredFieldDefinition());
+
+        ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
+        formDefinition.addTab(emptyTabDefinition);
+        formDefinition.addTab(nonEmptyTabDefinition);
+
+        Field field = mock(Field.class);
+        FieldFactory fieldFactory = mock(FieldFactory.class);
+        when(fieldFactory.createField()).thenReturn(field);
+        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
+        when(fieldFactoryFactory.createFieldFactory(any(FieldDefinition.class), anyObject())).thenReturn(fieldFactory);
+
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, null, null, null);
+        FormView view = mock(FormView.class);
+
+        // WHEN
+        builder.buildReducedForm(formDefinition, view, null, mock(FormItem.class));
+
+        // THEN
+        verify(view).addFormSection(eq("nonEmptyTab"), any(FormSection.class));
+        verify(view, times(0)).addFormSection(eq("emptyTab"), any(FormSection.class));
     }
 
     private class DummyI18NAuthoringSupport implements I18NAuthoringSupport {
