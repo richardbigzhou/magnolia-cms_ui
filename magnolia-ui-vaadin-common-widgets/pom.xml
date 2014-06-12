@@ -22,10 +22,6 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
     </dependency>
-    <dependency>
-      <groupId>info.magnolia.task</groupId>
-      <artifactId>task-management</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>

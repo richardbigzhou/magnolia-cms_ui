@@ -43,7 +43,7 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.task</groupId>
-      <artifactId>task-management</artifactId>
+      <artifactId>magnolia-task-management</artifactId>
     </dependency>
 
     <dependency>
