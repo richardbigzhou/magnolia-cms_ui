@@ -219,6 +219,14 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             }
         });
 
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
         goToLocation(detailLocation);
         return view;
     }
