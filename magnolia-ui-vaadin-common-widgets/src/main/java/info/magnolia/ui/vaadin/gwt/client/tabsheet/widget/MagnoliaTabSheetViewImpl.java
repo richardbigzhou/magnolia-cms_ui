@@ -236,9 +236,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public HandlerRegistration addActiveTabChangedHandler(ActiveTabChangedEvent.Handler handler) {
         return addHandler(handler, ActiveTabChangedEvent.TYPE);
-
-        //eventBus.addHandler(ActiveTabChangedEvent.TYPE, handler);
-        //return null;
     }
 
     @Override
