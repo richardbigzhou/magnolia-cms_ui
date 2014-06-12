@@ -124,7 +124,11 @@ public class FormBuilder {
         view.setSizeFull();
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+            List<FieldDefinition> fields = tabDefinition.getFields();
+            if (fields.size() == 0) { // skip empty tabs
+                continue;
+            }
+            for (final FieldDefinition fieldDefinition : fields) {
                 final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 if (formField == null) {
                     continue;
@@ -154,9 +158,13 @@ public class FormBuilder {
         boolean firstFieldIsBuilt = false;
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
+            List<FieldDefinition> fields = tabDefinition.getFields();
+            if (fields.size() == 0) { // skip empty tabs
+                continue;
+            }
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+            for (final FieldDefinition fieldDefinition : fields) {
                 final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 if (formField == null) {
                     continue;
