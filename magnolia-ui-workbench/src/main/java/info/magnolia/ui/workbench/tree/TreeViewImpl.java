@@ -149,7 +149,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public void expand(String itemId) {
-        rowScroller.expandTreeToNode(itemId, false);
+        rowScroller.expandTreeToNode(itemId, true);
     }
 
     @Override
