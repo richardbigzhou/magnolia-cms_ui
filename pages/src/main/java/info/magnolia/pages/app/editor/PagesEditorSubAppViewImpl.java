@@ -33,6 +33,7 @@
  */
 package info.magnolia.pages.app.editor;
 
+import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
@@ -88,6 +89,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     private final SubAppContext subAppContext;
 
     private final SimpleTranslator i18n;
+    private ServerConfiguration serverConfiguration;
 
     private HorizontalLayout activationStatus;
 
@@ -96,14 +98,15 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
      */
     @Deprecated
     public PagesEditorSubAppViewImpl(PageBarView pageBarView) {
-        this(pageBarView, Components.getComponent(SubAppContext.class), Components.getComponent(SimpleTranslator.class));
+        this(pageBarView, Components.getComponent(SubAppContext.class), Components.getComponent(SimpleTranslator.class), Components.getComponent(ServerConfiguration.class));
     }
 
     @Inject
-    public PagesEditorSubAppViewImpl(PageBarView pageBarView, SubAppContext subAppContext, SimpleTranslator i18n) {
+    public PagesEditorSubAppViewImpl(PageBarView pageBarView, SubAppContext subAppContext, SimpleTranslator i18n, ServerConfiguration serverConfiguration) {
         this.pageBarView = pageBarView;
         this.subAppContext = subAppContext;
         this.i18n = i18n;
+        this.serverConfiguration = serverConfiguration;
 
         root.setSizeFull();
         root.setStyleName("pageeditor");
@@ -165,18 +168,18 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     @Override
     public void setStatusBarView(StatusBarView statusBarView) {
-        DetailLocation location = DetailLocation.wrap(this.subAppContext.getLocation());
-        String nodePath = location.getNodePath();
-        HorizontalLayout status = getActivationStatus(nodePath);
-        if (this.statusBarView == null) {
-            this.statusBarView = statusBarView;
+        this.statusBarView = statusBarView;
+        if (serverConfiguration.isAdmin()) {
+            DetailLocation location = DetailLocation.wrap(this.subAppContext.getLocation());
+            String nodePath = location.getNodePath();
+            HorizontalLayout status = getActivationStatus(nodePath);
+            if (activationStatus != null) {
+                this.statusBarView.removeComponent(activationStatus);
+            }
             this.statusBarView.addComponent(status, Alignment.MIDDLE_CENTER);
-            container.addComponent(this.statusBarView.asVaadinComponent());
-        } else {
-            this.statusBarView.removeComponent(activationStatus);
-            this.statusBarView.addComponent(status, Alignment.MIDDLE_CENTER);
+            this.activationStatus = status;
         }
-        this.activationStatus = status;
+        container.addComponent(this.statusBarView.asVaadinComponent());
     }
 
     @Override
