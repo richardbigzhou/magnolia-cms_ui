@@ -44,16 +44,12 @@ import info.magnolia.ui.form.field.transformer.multi.MultiTransformer;
 
 import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
@@ -69,8 +65,6 @@ import com.vaadin.ui.VerticalLayout;
  * The Field values are handle by a configured {@link info.magnolia.ui.form.field.transformer.Transformer} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
 public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefinition, PropertysetItem> {
-
-    private static final Logger log = LoggerFactory.getLogger(MultiField.class);
 
     private final Button addButton = new NativeButton();
 
@@ -98,28 +92,12 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         addButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-
-                int newPropertyId = -1;
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
                 Property<?> property = null;
-
-                Transformer<?> transformer = ((TransformedProperty<?>) getPropertyDataSource()).getTransformer();
-                PropertysetItem item = (PropertysetItem) getPropertyDataSource().getValue();
-
                 if (transformer instanceof MultiTransformer) {
-                    // create property and find its propertyId
                     property = ((MultiTransformer) transformer).createProperty();
-                    newPropertyId = (Integer) findPropertyId(item, property);
-                } else {
-                    // get next propertyId based on property count
-                    newPropertyId = item.getItemPropertyIds().size();
                 }
-
-                if (newPropertyId == -1) {
-                    log.warn("Could not resolve new propertyId; cannot add new multifield entry to item '{}'.", item);
-                    return;
-                }
-
-                root.addComponent(createEntryComponent(newPropertyId, property), root.getComponentCount() - 1);
+                root.addComponent(createEntryComponent(property), root.getComponentCount() - 1);
             };
         });
 
@@ -138,9 +116,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         root.removeAllComponents();
         Iterator<?> it = newValue.getItemPropertyIds().iterator();
         while (it.hasNext()) {
-            Object propertyId = it.next();
-            Property<?> property = newValue.getItemProperty(propertyId);
-            root.addComponent(createEntryComponent(propertyId, property));
+            Property<?> property = newValue.getItemProperty(it.next());
+            root.addComponent(createEntryComponent(property));
         }
         root.addComponent(addButton);
     }
@@ -151,19 +128,15 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      * - a configured field <br>
      * - a remove Button<br>
      */
-    private Component createEntryComponent(final Object propertyId, Property<?> property) {
-
-        HorizontalLayout layout = new HorizontalLayout();
+    private Component createEntryComponent(Property<?> property) {
+        final HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
-
-        Field<?> field = createLocalField(fieldDefinition, property, true); // creates property datasource if given property is null
+        Field<?> field = createLocalField(fieldDefinition, property, true);
         layout.addComponent(field);
-
-        // bind the field's property to the item
         if (property == null) {
-            property = field.getPropertyDataSource();
-            ((PropertysetItem) getPropertyDataSource().getValue()).addItemProperty(propertyId, property);
+            int position = root.getComponentCount() - 1;
+            ((PropertysetItem) getPropertyDataSource().getValue()).addItemProperty(position, field.getPropertyDataSource());
         }
 
         // Delete Button
@@ -172,22 +145,20 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
         deleteButton.setDescription(buttonCaptionRemove);
-        deleteButton.addClickListener(new ClickListener() {
-
+        deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                Component layout = event.getComponent().getParent();
+                int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
-                Transformer<?> transformer = ((TransformedProperty<?>) getPropertyDataSource()).getTransformer();
+                Transformer<?> transformer = ((TransformedProperty) getPropertyDataSource()).getTransformer();
                 if (transformer instanceof MultiTransformer) {
-                    ((MultiTransformer) transformer).removeProperty(propertyId);
+                    ((MultiTransformer) transformer).removeProperty(position);
                 } else {
-                    if (propertyId != null && propertyId.getClass().isAssignableFrom(Integer.class)) {
-                        removeValueProperty((Integer) propertyId);
-                    }
+                    removeValueProperty(position);
                     getPropertyDataSource().setValue(getValue());
                 }
-            }
+
+            };
         });
         layout.addComponent(deleteButton);
 
