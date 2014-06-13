@@ -119,6 +119,20 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
+     * Helper method to find propertyId for a given property within item datasource.
+     */
+    protected int findPropertyId(Item item, Property<?> property) {
+        Iterator<?> it = item.getItemPropertyIds().iterator();
+        while (it.hasNext()) {
+            Object pos = it.next();
+            if (pos.getClass().isAssignableFrom(Integer.class) && property == item.getItemProperty(pos)) {
+                return (Integer) pos;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
      */
     protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> property, boolean setCaptionToNull) {
