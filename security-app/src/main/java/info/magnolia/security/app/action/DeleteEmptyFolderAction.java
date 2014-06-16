@@ -45,7 +45,6 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.action.DeleteAction;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.List;
 
@@ -72,28 +71,26 @@ public class DeleteEmptyFolderAction extends DeleteAction<DeleteEmptyFolderActio
 
     @Override
     public void onPreExecute() throws Exception {
-        final List<JcrItemAdapter> items = getItems();
 
-        if (!items.isEmpty()) {
+        final JcrItemAdapter item = getCurrentItem();
+
+        if (item != null) {
             try {
-                final String workspaceName = items.get(0).getJcrItem().getSession().getWorkspace().getName();
+                final String workspaceName = item.getWorkspace();
                 boolean empty = MgnlContext.doInSystemContext(new JCRSessionOp<Boolean>(workspaceName) {
 
                     @Override
                     public Boolean exec(Session session) throws RepositoryException {
-                        for (JcrItemAdapter item : items) {
-                            Item jcrItem = JcrItemUtil.getJcrItem(item.getItemId());
-                            if (jcrItem.isNode() && NodeUtil.getNodes((Node) jcrItem).iterator().hasNext()) {
-                                return false;
-                            }
+                        Item jcrItem = JcrItemUtil.getJcrItem(item.getItemId());
+                        if (jcrItem.isNode() && NodeUtil.getNodes((Node) jcrItem).iterator().hasNext()) {
+                            return false;
                         }
                         return true;
                     }
                 });
 
                 if (!empty) {
-                    getUiContext().openNotification(MessageStyleTypeEnum.ERROR, false, getDefinition().getFolderNotEmptyErrorMessage());
-                    throw new ActionExecutionException("Folder is not empty");
+                    throw new ActionExecutionException(getDefinition().getFolderNotEmptyErrorMessage());
                 }
 
             } catch (RepositoryException e) {
@@ -101,5 +98,10 @@ public class DeleteEmptyFolderAction extends DeleteAction<DeleteEmptyFolderActio
             }
         }
         super.onPreExecute();
+    }
+
+    @Override
+    protected void onError(Exception e) {
+        // Do nothing. The error message is already displayed by the AbsractMultiItemAction
     }
 }
