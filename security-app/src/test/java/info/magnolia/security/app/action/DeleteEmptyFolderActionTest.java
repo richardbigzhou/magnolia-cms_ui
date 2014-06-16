@@ -54,6 +54,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,8 +106,6 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
         exportModuleDef.setProperty("class", DeleteCommand.class.getName());
         exportModuleDef.getSession().save();
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
-
-        action = new DeleteEmptyFolderAction(definition, item, commandsManager, eventBus, uiContext, i18n);
     }
 
     @After
@@ -119,6 +118,7 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
     @Test
     public void testFolderIsDeleted() throws Exception {
         // GIVEN
+        action = new DeleteEmptyFolderAction(definition, item, commandsManager, eventBus, uiContext, i18n);
 
         // WHEN
         action.execute();
@@ -133,13 +133,31 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
         // GIVEN
         session.getNode("/testFolder").addNode("role", NodeTypes.Role.NAME);
         session.save();
+        definition.setFailureMessage("Folder Not Empty");
+        action = new DeleteEmptyFolderAction(definition, item, commandsManager, eventBus, uiContext, i18n);
 
         // WHEN
         action.execute();
 
         // THEN
-        verify(uiContext).openNotification(MessageStyleTypeEnum.ERROR, false, "security.delete.folder.folderNotEmpty");
+        verify(uiContext).openNotification(MessageStyleTypeEnum.ERROR, false, "Folder Not Empty<ul><li><b>/testFolder</b>: info.magnolia.ui.api.action.ActionExecutionException: security.delete.folder.folderNotEmpty</li></ul>");
         assertTrue(session.itemExists("/testFolder"));
+    }
+
+    @Test
+    public void testDeleteMultiFolders() throws Exception {
+        // GIVEN
+        Node folderNode1 = session.getRootNode().addNode("testFolder1", NodeTypes.Folder.NAME);
+        JcrItemAdapter item1 = new JcrNodeAdapter(folderNode1);
+        Node folderNode2 = session.getRootNode().addNode("testFolder2", NodeTypes.Folder.NAME);
+        JcrItemAdapter item2 = new JcrNodeAdapter(folderNode2);
+        action = new DeleteEmptyFolderAction(definition, Arrays.asList(item1, item2), commandsManager, eventBus, uiContext, i18n);
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(!session.itemExists("/testFolder1"));
+        assertTrue(!session.itemExists("/testFolder2"));
     }
 
 }
