@@ -116,13 +116,13 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private void onThumbnailDoubleClicked(Object itemId) {
         for (final ThumbnailDblClickListener listener : dblClickListeners) {
-            listener.onThumbnailDblClicked(String.valueOf(itemId));
+            listener.onThumbnailDblClicked(itemId);
         }
     }
 
     private void onThumbnailRightClicked(Object itemId, int clickX, int clickY) {
         for (final ThumbnailRightClickListener listener : rightClickListeners) {
-            listener.onThumbnailRightClicked(String.valueOf(itemId), clickX, clickY);
+            listener.onThumbnailRightClicked(itemId, clickX, clickY);
         }
     }
 
