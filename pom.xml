@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.3-m10</magnoliaVersion>
+    <magnoliaVersion>5.3-rc1</magnoliaVersion>
     <imagingVersion>3.0.1</imagingVersion>
     <vaadinVersion>7.1.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
@@ -189,7 +189,7 @@
       <dependency>
         <groupId>info.magnolia.task</groupId>
         <artifactId>magnolia-task-management</artifactId>
-        <version>1.0-m5</version>
+        <version>1.0-rc1</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia</groupId>
