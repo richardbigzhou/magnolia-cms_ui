@@ -45,6 +45,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -85,10 +86,15 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         String nodePath = "/a/b/c";
         Node testNode = NodeUtil.createPath(rootNode, nodePath, NodeTypes.Content.NAME);
         JcrItemId itemId = new JcrItemId(testNode.getIdentifier(), WORKSPACE);
+        String newNodeName = "test";
+        JcrNewNodeItemId newNodeItemId = new JcrNewNodeItemId(itemId.getUuid(), itemId.getWorkspace(), NodeTypes.ContentNode.NAME, newNodeName);
 
         // THEN
         String urlFragment = jcrContentConnector.getItemUrlFragment(itemId);
         assertEquals(nodePath, urlFragment);
+
+        String newNodeUrlFragment = jcrContentConnector.getItemUrlFragment(newNodeItemId);
+        assertEquals(newNodeUrlFragment, String.format("%s/%s", urlFragment, newNodeName));
     }
 
     /**
