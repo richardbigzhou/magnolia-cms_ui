@@ -82,6 +82,7 @@ import org.apache.jackrabbit.JcrConstants;
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
+    protected static final String UI_ACTIONS_IMPORT= "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
     /**
      * Check if the activation module is install and correctly configured.
      */
@@ -242,8 +243,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 ))));
 
         register(DeltaBuilder.update("5.2.7", "")
-                .addTask(new NodeExistsDelegateTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", new CreateNodeTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", "availability", NodeTypes.ContentNode.NAME)))
-                .addTask(new NodeExistsDelegateTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability", new NewPropertyTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability", "root", true))));
+                .addTask(new NodeExistsDelegateTask("Add new contend node availability to /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import.", UI_ACTIONS_IMPORT, new CreateNodeTask("Add new contend node availability to /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import.", UI_ACTIONS_IMPORT, "availability", NodeTypes.ContentNode.NAME)))
+                .addTask(new NodeExistsDelegateTask("Create new property root in /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability with value true.", UI_ACTIONS_IMPORT + "/availability", new NewPropertyTask("Create new property root in /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability with value true.", UI_ACTIONS_IMPORT + "/availability", "root", true))));
     }
 
     @Override

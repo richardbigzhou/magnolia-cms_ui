@@ -530,7 +530,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     @Test
     public void testUpdateFrom525() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Node activateAction = NodeUtil.createPath(session.getRootNode(), "modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", NodeTypes.Content.NAME);
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), AdmincentralModuleVersionHandler.UI_ACTIONS_IMPORT, NodeTypes.Content.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.5"));
