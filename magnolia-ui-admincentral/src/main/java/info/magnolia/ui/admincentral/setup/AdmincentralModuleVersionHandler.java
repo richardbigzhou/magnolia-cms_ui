@@ -240,6 +240,10 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                         new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
                 ))));
+
+        register(DeltaBuilder.update("5.2.7", "")
+                .addTask(new NodeExistsDelegateTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", new CreateNodeTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", "availability", NodeTypes.ContentNode.NAME)))
+                .addTask(new NodeExistsDelegateTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability", new NewPropertyTask("jmeno", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability", "root", true))));
     }
 
     @Override

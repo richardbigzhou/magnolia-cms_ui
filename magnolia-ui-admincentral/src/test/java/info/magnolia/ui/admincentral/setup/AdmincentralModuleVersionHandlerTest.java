@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -525,5 +525,18 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertThat(session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive"), hasProperty("asynchronous", "true"));
         assertThat(session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete"), hasProperty("asynchronous", "true"));
+    }
+
+    @Test
+    public void testUpdateFrom525() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), "modules/ui-admincentral/apps/configuration/subApps/browser/actions/import", NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.5"));
+
+        // THEN
+        assertThat(activateAction, hasNode("availability"));
+        assertThat(activateAction.getNode("availability"), hasProperty("root", true));
     }
 }
