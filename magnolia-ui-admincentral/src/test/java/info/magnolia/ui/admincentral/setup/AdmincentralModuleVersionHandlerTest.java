@@ -33,12 +33,15 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
@@ -53,6 +56,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -509,6 +513,19 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // THEN
         assertEquals("info.magnolia.ui.contentapp.ContentAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+    }
+
+    @Test
+    public void testUpdateFrom525() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), AdmincentralModuleVersionHandler.UI_ACTIONS_IMPORT, NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.5"));
+
+        // THEN
+        assertThat(activateAction, hasNode("availability"));
+        assertThat(activateAction.getNode("availability"), hasProperty("root", true));
     }
 
     @Test
