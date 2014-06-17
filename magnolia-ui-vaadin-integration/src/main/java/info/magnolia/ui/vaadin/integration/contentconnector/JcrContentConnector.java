@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -86,8 +87,15 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
                 JcrItemId jcrItemId = (JcrItemId) itemId;
                 javax.jcr.Item selected = JcrItemUtil.getJcrItem(jcrItemId);
                 String selectedPath = JcrItemUtil.getItemPath(selected);
-                String path = getRootPath();
-                return StringUtils.removeStart(selectedPath, "/".equals(path) ? "" : path);
+                String rootPath = getRootPath();
+                String urlFragment = StringUtils.removeStart(selectedPath, "/".equals(rootPath) ? "" : rootPath);
+                if (itemId instanceof JcrNewNodeItemId) {
+                    if (!urlFragment.endsWith("/")) {
+                        urlFragment += "/";
+                    }
+                    urlFragment += ((JcrNewNodeItemId)jcrItemId).getName();
+                }
+                return urlFragment;
             }
         } catch (RepositoryException e) {
             log.error("Failed to convert item id to URL fragment: " + e.getMessage(), e);
@@ -190,7 +198,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         try {
             Node parent = (Node)JcrItemUtil.getJcrItem((JcrItemId)parentId);
             JcrNewNodeItemId jcrNewNodeItemId = new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), primaryNodeType);
-            jcrNewNodeItemId.setName(NEW_NODE_NAME);
+            jcrNewNodeItemId.setName(Path.getUniqueLabel(parent, NEW_NODE_NAME));
             return jcrNewNodeItemId;
         } catch (RepositoryException e) {
             log.error("Failed to create new jcr node item id: " + e.getMessage(), e);

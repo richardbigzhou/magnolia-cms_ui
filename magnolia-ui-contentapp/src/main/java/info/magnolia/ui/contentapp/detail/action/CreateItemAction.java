@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.location.LocationController;
@@ -57,8 +56,6 @@ import com.vaadin.data.Item;
  * @see CreateItemActionDefinition
  */
 public class CreateItemAction extends AbstractAction<CreateItemActionDefinition> {
-
-    private static final String NEW_NODE_NAME = "untitled";
 
     private static final Logger log = LoggerFactory.getLogger(CreateItemAction.class);
 
@@ -85,9 +82,8 @@ public class CreateItemAction extends AbstractAction<CreateItemActionDefinition>
             log.warn("ContentConnector {{}} doesn't support creation of new items. No action will be performed.", contentConnector);
             return;
         }
-        String path = contentConnector.getItemUrlFragment(parentId);
-        path = Path.getAbsolutePath(path, NEW_NODE_NAME);
-
+        // Create a new id and retrieve its path with the content connector
+        String path = contentConnector.getItemUrlFragment(((SupportsCreation)contentConnector).getNewItemId(parentId, getDefinition().getNodeType()));
         DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, null);
         locationController.goTo(location);
     }
