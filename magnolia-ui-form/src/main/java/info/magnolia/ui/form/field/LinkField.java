@@ -41,9 +41,8 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -52,7 +51,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.server.ErrorMessage;
@@ -74,7 +72,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class LinkField extends CustomField<String> {
     private static final Logger log = LoggerFactory.getLogger(LinkField.class);
-    private final ContentConnector contentConnector;
 
     /**
      * Normal {@link TextField} only exposing the fireValueChange(... that is by default protected.
@@ -110,7 +107,6 @@ public class LinkField extends CustomField<String> {
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
-        this.contentConnector = componentProvider.getComponent(ContentConnector.class);
         setImmediate(true);
     }
 
@@ -292,19 +288,18 @@ public class LinkField extends CustomField<String> {
 
         @Override
         public void onItemChosen(String actionName, final Object chosenValue) {
-            Item chosenItem = contentConnector.getItem(chosenValue);
             String propertyName = definition.getTargetPropertyToPopulate();
             String newValue = null;
-            if (chosenItem != null && !(chosenItem instanceof NullItem)) {
-                javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenItem).getJcrItem();
-                if (jcrItem.isNode()) {
-                    final Node selected = (Node) jcrItem;
-                    try {
+            if (chosenValue instanceof JcrItemId) {
+                try {
+                    javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem((JcrItemId) chosenValue);
+                    if (jcrItem.isNode()) {
+                        final Node selected = (Node) jcrItem;
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
                         newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
-                    } catch (RepositoryException e) {
-                        log.error("Not able to access the configured property. Value will not be set.", e);
                     }
+                } catch (RepositoryException e) {
+                    log.error("Not able to access the configured property. Value will not be set.", e);
                 }
             }
             setValue(newValue);
