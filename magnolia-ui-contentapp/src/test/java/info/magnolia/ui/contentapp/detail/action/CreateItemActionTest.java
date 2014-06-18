@@ -43,6 +43,7 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
 
@@ -59,10 +60,15 @@ import com.vaadin.data.Item;
  */
 public class CreateItemActionTest {
 
+    public static final String PARENT_PATH = "/swiss-phones";
+    public static final String NEW_ITEM_PATH = PARENT_PATH + "/untitled";
     private Location location;
     private LocationController locationController;
     private ContentConnector contentConnector;
     private CreateItemActionDefinition definition;
+    private Object parentItemId = new Object();
+    private Item parentItem = new NullItem();
+    private Object newItemId = new Object();
 
     @Before
     public void setUp() throws Exception {
@@ -88,7 +94,9 @@ public class CreateItemActionTest {
 
         // mock content connector
         contentConnector = mock(ContentConnector.class, withSettings().extraInterfaces(SupportsCreation.class));
-        when(contentConnector.canHandleItem(any())).thenReturn(true);
+        doReturn(newItemId).when((SupportsCreation)contentConnector).getNewItemId(any(), any());
+        doReturn(parentItem).when(contentConnector).getItemId(parentItem);
+        doReturn(true).when(contentConnector).canHandleItem(any());
     }
 
     @After
@@ -98,9 +106,10 @@ public class CreateItemActionTest {
 
     @Test
     public void executeTriggersLocationChange() throws Exception {
-        // GIVEN
-        Item parentItem = null;
-        doReturn("/swiss-phones").when(contentConnector).getItemUrlFragment(any());
+        // GIVE
+        doReturn(PARENT_PATH).when(contentConnector).getItemUrlFragment(parentItemId);
+        doReturn(NEW_ITEM_PATH).when(contentConnector).getItemUrlFragment(newItemId);
+
         CreateItemAction action = new CreateItemAction(definition, locationController, parentItem, contentConnector);
 
         // WHEN
@@ -108,9 +117,9 @@ public class CreateItemActionTest {
 
         // THEN
         assertTrue(location instanceof DetailLocation);
-        assertEquals("phones", ((DetailLocation) location).getAppName());
-        assertEquals("detail", ((DetailLocation) location).getSubAppId());
-        assertEquals("/swiss-phones/untitled", ((DetailLocation) location).getNodePath());
+        assertEquals("phones", location.getAppName());
+        assertEquals("detail", location.getSubAppId());
+        assertEquals(NEW_ITEM_PATH, ((DetailLocation) location).getNodePath());
     }
 
 }
