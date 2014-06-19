@@ -239,20 +239,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             if (componentElement.getDeletable() != null && !componentElement.getDeletable()) {
                 actionbarPresenter.disable(PageEditorListener.ACTION_DELETE_COMPONENT);
-            } else {
-                actionbarPresenter.enable(PageEditorListener.ACTION_DELETE_COMPONENT);
             }
-
             if (componentElement.getMoveable() != null && !componentElement.getMoveable()) {
                 actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-            } else {
-                actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
             }
-
             if (componentElement.getWritable() != null && !componentElement.getWritable()) {
                 actionbarPresenter.disable(PageEditorListener.ACTION_EDIT_COMPONENT);
-            } else {
-                actionbarPresenter.enable(PageEditorListener.ACTION_EDIT_COMPONENT);
             }
 
         } else if (element instanceof AreaElement) {
@@ -260,8 +252,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             if (areaElement.getAddible() != null && !areaElement.getAddible()) {
                 actionbarPresenter.disable(PageEditorListener.ACTION_ADD_COMPONENT);
-            } else {
-                actionbarPresenter.enable(PageEditorListener.ACTION_ADD_COMPONENT);
             }
         }
     }
@@ -513,6 +503,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
         } else {
 
+            ActionbarSectionDefinition def;
+            String sectionName = null;
+
             if (element instanceof PageElement) {
 
                 if (!path.equals(parameters.getNodePath())) {
@@ -520,24 +513,26 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 }
 
                 if (parameters.isPreview()) {
-                    actionbarPresenter.showSection(SECTION_PAGE_PREVIEW);
-                    ActionbarSectionDefinition def = getActionbarSectionDefinitionByName(SECTION_PAGE_PREVIEW);
-                    enableOrDisableActions(def, path);
-
+                    sectionName = SECTION_PAGE_PREVIEW;
                 } else {
-                    actionbarPresenter.showSection(SECTION_PAGE);
-                    ActionbarSectionDefinition def = getActionbarSectionDefinitionByName(SECTION_PAGE);
-                    enableOrDisableActions(def, path);
+                    sectionName = SECTION_PAGE;
                 }
+
             } else if (element instanceof AreaElement) {
                 if (dialog == null) {
-                    actionbarPresenter.showSection(SECTION_AREA);
+                    sectionName = SECTION_AREA;
                 } else {
-                    actionbarPresenter.showSection(SECTION_EDITABLE_AREA);
+                    sectionName = SECTION_EDITABLE_AREA;
                 }
 
             } else if (element instanceof ComponentElement) {
-                actionbarPresenter.showSection(SECTION_COMPONENT);
+                sectionName = SECTION_COMPONENT;
+            }
+
+            if (sectionName != null) {
+                actionbarPresenter.showSection(sectionName);
+                def = getActionbarSectionDefinitionByName(sectionName);
+                enableOrDisableActions(def, path);
             }
             updateActions();
         }
