@@ -33,8 +33,8 @@
  */
 package info.magnolia.pages.app.setup;
 
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -47,6 +47,7 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
+import info.magnolia.pages.app.availability.CanAddComponentRule;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
@@ -58,6 +59,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -100,6 +102,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialog = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs", NodeTypes.ContentNode.NAME);
         dialog.getSession().save();
@@ -111,8 +114,8 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         activatePageAction = NodeUtil.createPath(detailActions, "activate", NodeTypes.ContentNode.NAME);
         deactivatePageAction = NodeUtil.createPath(detailActions, "deactivate", NodeTypes.ContentNode.NAME);
 
-        this.setupConfigNode("/modules/pages/apps/pages");
         this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/import/availability");
+        this.setupConfigNode(PagesModuleVersionHandler.ADD_COMPONENT_ACTION);
     }
 
     @Test
@@ -360,6 +363,11 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertThat(activateAction, hasProperty("availability/writePermissionRequired", true));
         assertThat(duplicateAction, hasProperty("availability/writePermissionRequired", true));
+
+        assertThat(session.getNode(PagesModuleVersionHandler.ADD_COMPONENT_ACTION), hasNode("availability/rules/CanAddComponentRule"));
+        assertThat(session.getNode(PagesModuleVersionHandler.ADD_COMPONENT_ACTION + "availability/rules/CanAddComponentRule"),
+                hasProperty("implementationClass", CanAddComponentRule.class.getName()));
+
         this.assertNoMessages(ctx);
     }
 
