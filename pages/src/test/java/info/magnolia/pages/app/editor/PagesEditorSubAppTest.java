@@ -67,6 +67,7 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
@@ -201,7 +202,6 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_AREA);
         verify(actionbarPresenter).disable(PageEditorPresenter.ACTION_CANCEL_MOVE_COMPONENT, PageEditorPresenter.ACTION_COPY_COMPONENT,
                 PageEditorPresenter.ACTION_PASTE_COMPONENT, PageEditorPresenter.ACTION_UNDO, PageEditorPresenter.ACTION_REDO);
-        verify(actionbarPresenter).enable(PageEditorListener.ACTION_ADD_COMPONENT);
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
@@ -221,11 +221,7 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("componentActions");
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
                 PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_DELETE_COMPONENT);
-        verify(actionbarPresenter).enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-        verify(actionbarPresenter).enable(PageEditorListener.ACTION_EDIT_COMPONENT);
-
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
@@ -331,5 +327,36 @@ public class PagesEditorSubAppTest {
 
         // THEN
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
+    }
+
+    @Test
+    public void testActionAvailabilityIsProcessedAlsoForAreaSection() {
+        // GIVEN
+        element = new AreaElement(null, null, null, null);
+        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
+
+        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
+        ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
+        ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
+        ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
+
+        item.setName(PageEditorListener.ACTION_ADD_COMPONENT);
+        group.addItem(item);
+        section.setName(PagesEditorSubApp.SECTION_AREA);
+        section.addGroup(group);
+        actionbar.addSection(section);
+        descriptor.setActionbar(actionbar);
+
+        ConfiguredAvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
+        availability.setRoot(false);
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setAvailability(availability);
+        when(actionExecutor.getActionDefinition(PageEditorListener.ACTION_ADD_COMPONENT)).thenReturn(actionDefinition);
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
     }
 }
