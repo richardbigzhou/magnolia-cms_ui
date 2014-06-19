@@ -47,7 +47,7 @@ import com.vaadin.data.Property;
 /**
  * Specific MultiSelect field {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
  * For example, the Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
- * 
+ *
  * @param <T>
  */
 public class ListToSetTransformer<T> extends BasicTransformer<T> {
@@ -65,6 +65,9 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
         if (p.getValue() instanceof List && newValue instanceof Set) {
             newValue = (T) new LinkedList((Set) newValue);
+            if (((List<?>) newValue).isEmpty()) {
+                newValue = null;
+            }
         }
         p.setValue(newValue);
     }
