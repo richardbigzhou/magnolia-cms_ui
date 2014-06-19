@@ -37,7 +37,6 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.CompositeField;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.List;
@@ -50,17 +49,17 @@ import com.vaadin.ui.Field;
 
 /**
  * Factory used to initialize a {@link CompositeField}.
- * 
+ *
  * @param <D>.
  */
-public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<CompositeFieldDefinition, PropertysetItem> {
+public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends AbstractFieldFactory<D, PropertysetItem> {
 
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
     @Inject
-    public CompositeFieldFactory(CompositeFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+    public CompositeFieldFactory(D definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;

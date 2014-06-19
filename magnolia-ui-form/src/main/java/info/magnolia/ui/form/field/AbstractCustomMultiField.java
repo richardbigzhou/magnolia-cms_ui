@@ -133,16 +133,18 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
-     * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
+     * Create a new {@link Field} based on a {@link FieldDefinition}.
      */
-    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Property<?> property, boolean setCaptionToNull) {
+    protected Field<?> createLocalField(FieldDefinition fieldDefinition, Property<?> property, boolean setCaptionToNull) {
 
         // If the property holds an item, use this item directly for the field creation (doesn't apply to ProperysetItems)
         FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, holdsItem(property) ? property.getValue() : new NullItem());
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
         // FIXME change i18n setting : MGNLUI-1548
-        fieldDefinition.setI18nBasename(definition.getI18nBasename());
+        if (fieldDefinition instanceof ConfiguredFieldDefinition) {
+            ((ConfiguredFieldDefinition) fieldDefinition).setI18nBasename(definition.getI18nBasename());
+        }
         Field<?> field = fieldfactory.createField();
 
         // If the value property is not an Item but a property, set this property as datasource to the field
