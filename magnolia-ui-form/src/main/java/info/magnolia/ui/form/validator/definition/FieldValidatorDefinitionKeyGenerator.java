@@ -48,11 +48,24 @@ public class FieldValidatorDefinitionKeyGenerator extends AbstractI18nKeyGenerat
     @Override
     protected void keysFor(List<String> keys, FieldValidatorDefinition object, AnnotatedElement el) {
         ConfiguredFieldDefinition fieldDefinition = getParentViaCast(object);
-        ConfiguredTabDefinition tabDefinition = getParentViaCast(fieldDefinition);
+        ConfiguredTabDefinition tabDefinition = getConfiguredTabDefinition(fieldDefinition);
         String idOrName = getIdOrNameForUnknownRoot(object);
 
         addKey(keys, idOrName, tabDefinition.getName(), fieldDefinition.getName(), "validation", fieldOrGetterName(el));
         addKey(keys, idOrName, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
         addKey(keys, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
+    }
+
+    /**
+     * Get by recursion the parent tab definition from a field definition.
+     */
+    private ConfiguredTabDefinition getConfiguredTabDefinition(ConfiguredFieldDefinition fieldDefinition) {
+        Object def = getParentViaCast(fieldDefinition);
+        if (def instanceof ConfiguredTabDefinition) {
+            return (ConfiguredTabDefinition) def;
+        } else if (def instanceof ConfiguredFieldDefinition) {
+            return getConfiguredTabDefinition((ConfiguredFieldDefinition) def);
+        }
+        return null;
     }
 }
