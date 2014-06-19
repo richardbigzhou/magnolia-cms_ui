@@ -50,7 +50,7 @@ import com.vaadin.ui.Field;
 /**
  * Factory used to initialize a {@link CompositeField}.
  *
- * @param <D>.
+ * @param <D> the field definition type — has to inherit from {@link CompositeFieldDefinition}.
  */
 public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends AbstractFieldFactory<D, PropertysetItem> {
 
