@@ -60,7 +60,7 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -552,7 +552,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                ConfiguredAvailabilityDefinition availabilityDefinition = (ConfiguredAvailabilityDefinition) actionExecutor.getActionDefinition(actionName).getAvailability();
+                AvailabilityDefinition availabilityDefinition = actionExecutor.getActionDefinition(actionName).getAvailability();
                 try {
                     Object itemId = JcrItemUtil.getItemId(node);
                     if (availabilityChecker.isAvailable(availabilityDefinition, Arrays.asList(itemId))) {
