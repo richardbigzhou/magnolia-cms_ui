@@ -267,6 +267,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     public void setFooter(PulseListFooter footer) {
         this.footer = footer;
         root.addComponent(footer);
+        footer.setHeight("60px");
     }
 
     private void construct(String emptyMessage) {
@@ -337,14 +338,8 @@ public abstract class AbstractPulseListView implements PulseListView {
         boolean isEmptyList = container.getItemIds().size() == 0;
         if (isEmptyList) {
             root.setExpandRatio(emptyPlaceHolder, 1f);
-            // Use expand ratio to hide message table.
-            // setVisible() would cause rendering issues.
-            root.setExpandRatio(itemTable, 0f);
-            root.setExpandRatio(footer, 0f);
         } else {
             root.setExpandRatio(emptyPlaceHolder, 0f);
-            root.setExpandRatio(itemTable, 1f);
-            root.setExpandRatio(footer, .1f);
         }
 
         itemTable.setVisible(!isEmptyList);

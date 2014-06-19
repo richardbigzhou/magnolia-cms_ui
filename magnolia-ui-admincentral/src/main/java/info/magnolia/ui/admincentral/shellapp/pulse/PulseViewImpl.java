@@ -44,14 +44,14 @@ import javax.inject.Inject;
 
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Default view implementation for Pulse.
  */
 public final class PulseViewImpl implements PulseView {
 
-    private final CssLayout layout = new CssLayout();
+    private final VerticalLayout layout = new VerticalLayout();
 
     private final PulseItemCategoryNavigator navigator;
 
@@ -71,6 +71,7 @@ public final class PulseViewImpl implements PulseView {
                 listener.onCategoryChange(category);
             }
         });
+        navigator.setHeight("25px");
         layout.addComponentAsFirst(navigator);
     }
 
@@ -81,6 +82,7 @@ public final class PulseViewImpl implements PulseView {
             layout.removeComponent(oldView);
         }
         layout.addComponent(view.asVaadinComponent(), 1);
+        layout.setExpandRatio(view.asVaadinComponent(), 1);
     }
 
     @Override
