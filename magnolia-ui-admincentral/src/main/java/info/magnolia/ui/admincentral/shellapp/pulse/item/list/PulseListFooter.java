@@ -151,7 +151,7 @@ public final class PulseListFooter extends CustomComponent {
         // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
         // but as this is not straightforward, for the time being we hack it like this
         if (user.getAllRoles().contains("superuser")) {
-            addDeleteMenuItem(i18n, itemsTable, contextMenu);
+            addRemoveMenuItem(i18n, itemsTable, contextMenu, "pages.publish.actions.archive");
         }
 
         return contextMenu;
@@ -161,17 +161,17 @@ public final class PulseListFooter extends CustomComponent {
         final ActionPopup contextMenu = new ActionPopup();
         contextMenu.setOpenAutomatically(false);
 
-        addDeleteMenuItem(i18n, itemsTable, contextMenu);
+        addRemoveMenuItem(i18n, itemsTable, contextMenu, "pages.publish.actions.delete");
 
         return contextMenu;
     }
 
-    private static void addDeleteMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu) {
+    private static void addRemoveMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu, final String i18nKey) {
         final ExternalResource iconDeleteResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-delete");
 
-        final ContextMenuItem delete = contextMenu.addItem(i18n.translate("pages.publish.actions.delete"), iconDeleteResource);
+        final ContextMenuItem remove = contextMenu.addItem(i18n.translate(i18nKey), iconDeleteResource);
 
-        delete.addItemClickListener(new ContextMenuItemClickListener() {
+        remove.addItemClickListener(new ContextMenuItemClickListener() {
 
             @Override
             public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
@@ -183,9 +183,10 @@ public final class PulseListFooter extends CustomComponent {
                 messagesListener.deleteItems(selectedItems);
             }
         });
-        delete.setEnabled(false);
 
-        menuItems.add(delete);
+        remove.setEnabled(false);
+
+        menuItems.add(remove);
     }
 
     public void updateStatus() {
