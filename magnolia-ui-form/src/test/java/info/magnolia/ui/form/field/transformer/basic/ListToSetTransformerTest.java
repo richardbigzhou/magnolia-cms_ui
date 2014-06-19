@@ -154,4 +154,28 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         assertTrue(property.contains("d"));
     }
 
+    @Test
+    public void testWriteRemovesPropertyIfEmpty() throws RepositoryException {
+        // GIVEN
+        definition.setMultiselect(true);
+        rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        Object value = handler.readFromItem();
+        assertNotNull(value);
+        assertTrue(value instanceof HashSet);
+        ((HashSet) value).remove("a");
+        ((HashSet) value).remove("b");
+        ((HashSet) value).remove("c");
+
+        // WHEN
+        handler.writeToItem(value);
+        rootItem.applyChanges();
+
+        // THEN
+        assertNull(rootItem.getItemProperty(propertyName).getValue());
+        assertFalse(rootNode.hasProperty(propertyName));
+    }
+
 }
