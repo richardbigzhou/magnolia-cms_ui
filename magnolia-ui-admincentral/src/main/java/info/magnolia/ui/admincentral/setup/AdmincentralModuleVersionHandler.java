@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import static info.magnolia.nodebuilder.Ops.*;
+
 import info.magnolia.cms.core.ItemType;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
@@ -59,6 +61,8 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.nodebuilder.task.ErrorHandling;
+import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
@@ -243,8 +247,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 ))));
 
         register(DeltaBuilder.update("5.2.7", "")
-                .addTask(new NodeExistsDelegateTask("Add new contend node availability to /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import.", UI_ACTIONS_IMPORT, new CreateNodeTask("Add new contend node availability to /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import.", UI_ACTIONS_IMPORT, "availability", NodeTypes.ContentNode.NAME)))
-                .addTask(new NodeExistsDelegateTask("Create new property root in /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability with value true.", UI_ACTIONS_IMPORT + "/availability", new NewPropertyTask("Create new property root in /modules/ui-admincentral/apps/configuration/subApps/browser/actions/import/availability with value true.", UI_ACTIONS_IMPORT + "/availability", "root", true))));
+                .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
+                        new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
+                                addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                        addProperty("root", true)
+                                        )
+                                )
+                        )
+                ));
     }
 
     @Override
