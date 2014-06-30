@@ -122,7 +122,9 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             List<Object> ids = new ArrayList<Object>(1);
 
-            ids.add(rootItemId);
+            if (rootItemId != null) {
+                ids.add(rootItemId);
+            }
             setSelectedItemIds(ids);
         } else {
             List<Object> selectedIds = new ArrayList<Object>(itemIds.size());

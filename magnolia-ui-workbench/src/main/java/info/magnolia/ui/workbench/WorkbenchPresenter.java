@@ -196,7 +196,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         // restore selection
         if (selectedIds.isEmpty()) {
             Object workbenchRootItemId = contentConnector.getDefaultItemId();
-            selectedIds.add(workbenchRootItemId);
+            if (workbenchRootItemId != null) {
+                selectedIds.add(workbenchRootItemId);
+            }
         }
 
         activePresenter.setSelectedItemIds(selectedIds);

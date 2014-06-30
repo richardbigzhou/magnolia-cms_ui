@@ -85,7 +85,7 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
         Object defaultId = contentConnector.getDefaultItemId();
         // In order to be compatible with the old logic and to let shorthand criteria work - we substitute a default item id with null
         // TODO - this should be done in a nicer way!
-        if (idsToCheck.contains(defaultId)) {
+        if (idsToCheck.contains(defaultId) || (idsToCheck.isEmpty() && defaultId == null)) {
             idsToCheck.remove(defaultId);
             idsToCheck.add(null);
         }
