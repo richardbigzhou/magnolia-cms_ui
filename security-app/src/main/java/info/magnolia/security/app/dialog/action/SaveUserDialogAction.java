@@ -51,12 +51,16 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +76,7 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
     private SecuritySupport securitySupport;
+    private final List<String> protectedProperties = Arrays.asList(PROPERTY_PASSWORD, "name", NODE_GROUPS, NODE_ROLES);
 
     public SaveUserDialogAction(SaveUserDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
@@ -143,18 +148,6 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 }
             }
 
-            String enabled = userItem.getItemProperty(PROPERTY_ENABLED).toString();
-            userManager.setProperty(user, PROPERTY_ENABLED, enabled);
-
-            String title = userItem.getItemProperty(PROPERTY_TITLE).toString();
-            userManager.setProperty(user, PROPERTY_TITLE, title);
-
-            String email = userItem.getItemProperty(PROPERTY_EMAIL).toString();
-            userManager.setProperty(user, PROPERTY_EMAIL, email);
-
-            String language = userItem.getItemProperty(PROPERTY_LANGUAGE).toString();
-            userManager.setProperty(user, PROPERTY_LANGUAGE, language);
-
             final Collection<String> groups = (Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue();
             log.debug("Assigning user the following groups [{}]", groups);
             storeCollectionAsNodeWithProperties(userNode, NODE_GROUPS, groups);
@@ -162,6 +155,15 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
             final Collection<String> roles = (Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue();
             log.debug("Assigning user the following roles [{}]", roles);
             storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
+
+            Collection<?> userProperties = userItem.getItemPropertyIds();
+            ValueFactory valueFactory = userNode.getSession().getValueFactory();
+            for (Object propertyName : userProperties) {
+                if (!protectedProperties.contains(propertyName)) {
+                    Value propertyValue = PropertyUtil.createValue(userItem.getItemProperty(propertyName).getValue(), valueFactory);
+                    userManager.setProperty(user, propertyName.toString(), propertyValue);
+                }
+            }
 
             userNode.getSession().save();
 
