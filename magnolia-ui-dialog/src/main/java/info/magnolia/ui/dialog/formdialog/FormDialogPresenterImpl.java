@@ -52,13 +52,16 @@ import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -66,6 +69,8 @@ import com.vaadin.data.Item;
  * Presenter for forms opened inside dialogs.
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter, EditorValidator {
+
+    private static final Logger log = LoggerFactory.getLogger(FormDialogPresenterImpl.class);
 
     private EditorCallback callback;
 
@@ -177,13 +182,20 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     protected Iterable<ActionDefinition> filterActions() {
-        List<ActionDefinition> result = new LinkedList<ActionDefinition>();
-        for (ActionDefinition action : getDefinition().getActions().values()) {
-            if (checker.isAvailable(action.getAvailability(), Arrays.asList(contentConnector.getItemId(item)))) {
-                result.add(action);
+        List<ActionDefinition> actions = new ArrayList<ActionDefinition>(getDefinition().getActions().values());
+        Iterator<ActionDefinition> it = actions.iterator();
+        Object itemId = contentConnector.getItemId(item);
+        if (itemId != null) {
+            while (it.hasNext()) {
+                ActionDefinition action = it.next();
+                if (!checker.isAvailable(action.getAvailability(), Arrays.asList(itemId))) {
+                    it.remove();
+                }
             }
+        } else {
+            log.info("Could not resolve itemId for item {}:{}, will not restrict availability of dialog actions.", item.getClass().getName(), item);
         }
-        return result;
+        return actions;
     }
 
     @Override
