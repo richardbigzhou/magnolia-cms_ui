@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.cms.util.ServletUtil;
+import info.magnolia.util.EscapeUtil;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -212,7 +213,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private String getStackTrace(Throwable e) {
         final StringBuilder result = new StringBuilder("<p id=\"stacktrace\">");
-        result.append(e.toString());
+        result.append(EscapeUtil.escapeXss(e.toString()));
 
         // add each element of the stack trace
         for (StackTraceElement element : e.getStackTrace()) {
