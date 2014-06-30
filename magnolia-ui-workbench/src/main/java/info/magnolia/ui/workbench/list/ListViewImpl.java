@@ -95,7 +95,7 @@ public class ListViewImpl implements ListView {
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
                 // icon style is expected on the whole table row, not on a column matching a specific propertyId
-                if (propertyId == null) {
+                if (propertyId == null && itemId != null) {
                     final Item item = source.getContainerDataSource().getItem(itemId);
                     if (item == null) {
                         return DELETED_ROW_STYLENAME;
