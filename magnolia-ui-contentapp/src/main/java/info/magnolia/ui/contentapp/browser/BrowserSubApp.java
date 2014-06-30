@@ -265,8 +265,11 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
                 String actionName = itemDefinition.getName();
                 menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition);
-                AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
-                menuItem.setEnabled(checker.isAvailable(availability, browser.getSelectedItemIds()));
+                ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+                if (actionDefinition != null) {
+                    AvailabilityDefinition availability = actionDefinition.getAvailability();
+                    menuItem.setEnabled(checker.isAvailable(availability, browser.getSelectedItemIds()));
+                }
             }
 
             // Add group separator.
@@ -329,11 +332,14 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
-                    if (checker.isAvailable(availability, browser.getSelectedItemIds())) {
-                        actionbar.enable(actionName);
-                    } else {
-                        actionbar.disable(actionName);
+                    ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+                    if (actionDefinition != null) {
+                        AvailabilityDefinition availability = actionDefinition.getAvailability();
+                        if (checker.isAvailable(availability, browser.getSelectedItemIds())) {
+                            actionbar.enable(actionName);
+                        } else {
+                            actionbar.disable(actionName);
+                        }
                     }
                 }
             }
