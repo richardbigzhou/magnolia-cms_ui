@@ -123,7 +123,9 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         String title = task.getName();
         try {
             TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
-            title = definition.getTitle();
+            if (definition != null) {
+                title = definition.getTitle();
+            }
         } catch (RegistrationException e) {
             log.error("Could not get task definition for {}.", task.getName(), e);
         }
