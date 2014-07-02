@@ -67,7 +67,7 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private MagnoliaTreeTable tree;
+    private TreeTable tree;
 
     private boolean editable;
     private final List<Object> editableColumns = new ArrayList<Object>();
@@ -80,14 +80,14 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private TreeRowScroller rowScroller;
 
     @Override
-    protected MagnoliaTreeTable createTable(com.vaadin.data.Container container) {
-        tree = new MagnoliaTreeTable(container);
-        return tree;
+    protected TreeTable createTable(com.vaadin.data.Container container) {
+        return new MagnoliaTreeTable(container);
     }
 
     @Override
     protected void initializeTable(Table table) {
         super.initializeTable(table);
+        this.tree = (TreeTable)table;
         rowScroller = new TreeRowScroller((MagnoliaTreeTable) table);
         tree.setSortEnabled(false);
         int size = tree.size();
