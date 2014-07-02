@@ -36,8 +36,11 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogComponentProviderUtil;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
@@ -62,6 +65,7 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -100,16 +104,26 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
     private final UiContext uiContext;
     private final SimpleTranslator i18n;
-
+    private final ComponentProvider componentProvider;
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
-
+    @Inject
     public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
-            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.uiContext = uiContext;
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
         this.i18n = i18n;
+        this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.3.1. {@link ComponentProvider} has to be injected in order to create the choose-dialog specific component provider, with proper bindings for e.g. {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} or {@link info.magnolia.ui.imageprovider.ImageProvider}.
+     */
+    @Deprecated
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
+            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+        this(definition, relatedFieldItem, uiContext, workbenchChooseDialogPresenter, i18n, Components.getComponentProvider());
     }
 
     @Override
@@ -302,6 +316,13 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
         fieldDef.setWorkbench(wbDef);
         def.setField(fieldDef);
+
+        // create chooseDialogComponentProvider and get new instance of presenter from there
+        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(def, componentProvider);
+        workbenchChooseDialogPresenter = chooseDialogComponentProvider.newInstance(def.getPresenterClass(), chooseDialogComponentProvider);
+
+        // Define selected ItemId
+
         ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
             @Override
             public void onItemChosen(String actionName, Object value) {
@@ -320,7 +341,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             @Override
             public void onCancel() {
             }
-        }, def, uiContext, null);
+        }, def, uiContext, textField.getValue());
         chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));
     }
 
@@ -367,4 +388,5 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
         return nodeTypes;
     }
+
 }
