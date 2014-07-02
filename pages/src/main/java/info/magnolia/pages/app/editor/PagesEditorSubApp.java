@@ -526,16 +526,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 if (parameters.isPreview()) {
                     actionbarPresenter.showSection(SECTION_PAGE_PREVIEW);
                     ActionbarSectionDefinition def = getActionbarSectionDefinitionByName(SECTION_PAGE_PREVIEW);
-                    if (def != null) {
-                        enableOrDisableActions(def, path);
-                    }
+                    enableOrDisableActions(def, path);
 
                 } else {
                     actionbarPresenter.showSection(SECTION_PAGE);
                     ActionbarSectionDefinition def = getActionbarSectionDefinitionByName(SECTION_PAGE);
-                    if (def != null) {
-                        enableOrDisableActions(def, path);
-                    }
+                    enableOrDisableActions(def, path);
                 }
             } else if (element instanceof AreaElement) {
                 if (dialog == null) {
@@ -552,6 +548,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     private void enableOrDisableActions(final ActionbarSectionDefinition def, final String path) {
+        if (def == null) {
+            return;
+        }
         // Evaluate availability of each action within the section
         Node node = SessionUtil.getNode(workspace, path);
         for (ActionbarGroupDefinition groupDefinition : def.getGroups()) {
