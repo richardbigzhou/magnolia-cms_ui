@@ -91,7 +91,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @deprecated since version 5.3.1, use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, FormBuilder, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector)} instead.
      */
     @Deprecated
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n) {
+    public FormDialogPresenterImpl(DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n) {
         this(dialogDefinitionRegistry, formBuilder, componentProvider, executor, view, i18nizer, i18n, componentProvider.getComponent(AvailabilityChecker.class), componentProvider.getComponent(ContentConnector.class));
     }
 
