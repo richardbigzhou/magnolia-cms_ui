@@ -44,6 +44,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.location.PagesLocation;
 import info.magnolia.rendering.template.TemplateAvailability;
@@ -70,7 +71,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
-
 import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.ArrayList;
@@ -102,10 +102,11 @@ public class PagesEditorSubAppTest {
     private AbstractElement element;
     private ConfiguredTemplateDefinition definition;
     private VersionManager versionManager;
-    ConfiguredDetailSubAppDescriptor descriptor;
+    private ConfiguredDetailSubAppDescriptor descriptor;
     private SimpleTranslator i18n;
     private ConfiguredEditorDefinition editorDefinition;
     private StatusBarView statusBarView;
+    private PagesEditorSubApp editor;
 
     @Before
     public void setUp() throws Exception {
@@ -114,7 +115,7 @@ public class PagesEditorSubAppTest {
         MockWebContext ctx = new MockWebContext();
         Session session = mock(Session.class);
         MockNode component = new MockNode();
-        component.setProperty("mgnl:template", "someTemplate");
+        component.setProperty(NodeTypes.Renderable.TEMPLATE, "someTemplate");
         when(session.getNode(anyString())).thenReturn(component);
         ctx.addSession(null, session);
         User user = mock(User.class);
@@ -152,6 +153,9 @@ public class PagesEditorSubAppTest {
         definition = new ConfiguredTemplateDefinition(new ConfiguredTemplateAvailability());
 
         i18n = mock(SimpleTranslator.class);
+
+        editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
+                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
     }
 
     @After
@@ -165,18 +169,16 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
-        verify(actionbarPresenter).showSection("areaActions");
-        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
-
+        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
+        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_AREA);
+        verify(actionbarPresenter).disable(PageEditorPresenter.ACTION_CANCEL_MOVE_COMPONENT, PageEditorPresenter.ACTION_COPY_COMPONENT,
+                PageEditorPresenter.ACTION_PASTE_COMPONENT, PageEditorPresenter.ACTION_UNDO, PageEditorPresenter.ACTION_REDO);
         verify(actionbarPresenter).enable(PageEditorListener.ACTION_ADD_COMPONENT);
-
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
@@ -187,15 +189,15 @@ public class PagesEditorSubAppTest {
         element.setMoveable(true);
         element.setDeletable(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
+        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
         verify(actionbarPresenter).showSection("componentActions");
-        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        verify(actionbarPresenter).disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
+                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
 
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_DELETE_COMPONENT);
         verify(actionbarPresenter).enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
@@ -210,31 +212,28 @@ public class PagesEditorSubAppTest {
         AreaElement element = new AreaElement(null, null, null, null);
         element.setAddible(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
-        verify(actionbarPresenter).showSection("areaActions");
-        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
-
+        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
+        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_AREA);
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
-
+        verify(actionbarPresenter).disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
+                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
     @Test
     public void testEnableOrDisablePagePreviewActionsBasedOnUserPermissions() {
         // GIVEN
-        String sectionName = "pagePreviewActions";
         String unavailableAction = "bar";
         String availableAction = "foo";
 
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
-        section.setName(sectionName);
+        section.setName(PagesEditorSubApp.SECTION_PAGE_PREVIEW);
 
         ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
         ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
@@ -255,8 +254,6 @@ public class PagesEditorSubAppTest {
         when(actionExecutor.isAvailable(unavailableAction, null)).thenReturn(false);
         when(actionExecutor.isAvailable(availableAction, null)).thenReturn(true);
 
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
-
         // param 'view' means preview
         editor.start(new PagesLocation("/:view"));
 
@@ -264,7 +261,7 @@ public class PagesEditorSubAppTest {
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).showSection(sectionName);
+        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_PAGE_PREVIEW);
         verify(actionbarPresenter).disable(unavailableAction);
         verify(actionbarPresenter).enable(availableAction);
     }
@@ -272,7 +269,6 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPagePreviewSetMgnlPreviewRequestParameter() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
 
         // WHEN
         // param 'view' means preview
@@ -285,8 +281,7 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPageEditSetsMgnlPreviewToFalse() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
-       editor.start(new PagesLocation("/:view"));
+        editor.start(new PagesLocation("/:view"));
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
 
         // WHEN
@@ -299,7 +294,6 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPagePreviewSetsMgnlPreviewToTrue() {
         // GIVEN
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, statusBarView);
         editor.start(new PagesLocation("/:edit"));
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
 
