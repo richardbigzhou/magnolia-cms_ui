@@ -126,4 +126,29 @@ public class StringToCalendarConverterTest {
         assertThat(calendar.get(Calendar.MONTH), is(4));
         assertThat(calendar.get(Calendar.DAY_OF_MONTH), is(26));
     }
+
+    @Test
+    public void testCalendarToPresentationForNullValue() throws Exception {
+        // GIVEN
+        Locale locale = Locale.ENGLISH;
+
+        // WHEN
+        String presentation = converter.convertToPresentation(null, String.class, locale);
+
+        // THEN
+        assertThat(presentation, isEmptyOrNullString());
+    }
+
+    @Test
+    public void testPresentationToCalendarForNullValue() throws Exception {
+        // GIVEN
+        String presentation = null;
+
+        // WHEN
+        Locale locale = Locale.ENGLISH;
+        Calendar model = converter.convertToModel(presentation, Calendar.class, locale);
+
+        // THEN
+        assertThat(model, nullValue());
+    }
 }

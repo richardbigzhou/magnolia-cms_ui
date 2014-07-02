@@ -37,6 +37,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.converter.StringToDateConverter;
 
@@ -52,6 +54,9 @@ public class StringToCalendarConverter implements Converter<String, Calendar> {
 
     @Override
     public Calendar convertToModel(String value, Class<? extends Calendar> targetType, Locale locale) throws ConversionException {
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
         Date date = dateConverter.convertToModel(value, Date.class, locale);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -60,6 +65,9 @@ public class StringToCalendarConverter implements Converter<String, Calendar> {
 
     @Override
     public String convertToPresentation(Calendar value, Class<? extends String> targetType, Locale locale) throws ConversionException {
+        if (value == null) {
+            return StringUtils.EMPTY;
+        }
         return dateConverter.convertToPresentation(value.getTime(), targetType, locale);
     }
 
