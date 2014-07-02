@@ -34,39 +34,23 @@
 package info.magnolia.ui.contentapp;
 
 
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.configuration.ComponentConfigurer;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
-import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentConnectorProvider;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogImageProviderProvider;
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogComponentProviderUtil;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -74,7 +58,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.name.Names;
 import com.rits.cloning.Cloner;
 
 /**
@@ -84,7 +67,6 @@ public class ContentApp extends BaseApp {
 
     private static final Logger log = LoggerFactory.getLogger(ContentApp.class);
 
-    private static final String CHOOSE_DIALOG_COMPONENT_ID = "choosedialog";
 
     private ComponentProvider componentProvider;
     private Cloner cloner = new Cloner();
@@ -114,34 +96,10 @@ public class ContentApp extends BaseApp {
         chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
 
         // create chooseDialogComponentProvider and get new instance of presenter from there
-        ComponentProvider chooseDialogComponentProvider = createChooseDialogComponentProvider(chooseDialogDefinition);
+        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(chooseDialogDefinition, componentProvider);
         presenter = chooseDialogComponentProvider.newInstance(chooseDialogDefinition.getPresenterClass(), chooseDialogComponentProvider);
 
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
-    }
-
-    ComponentProvider createChooseDialogComponentProvider(final ChooseDialogDefinition chooseDialogDefinition) {
-        ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-        ComponentProviderConfiguration configuration =
-                configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) componentProvider);
-
-        ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
-            @Override
-            protected void configure() {
-                // add binding for ChooseDialogDefinition to feed guice providers
-                bind(ChooseDialogDefinition.class).toInstance(chooseDialogDefinition);
-
-                bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toInstance(new SimpleEventBus());
-                bind(ContentConnector.class).toProvider(ChooseDialogContentConnectorProvider.class);
-                bind(ImageProvider.class).toProvider(ChooseDialogImageProviderProvider.class);
-            }
-        };
-        return builder.build(c);
     }
 
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition, String targetTreeRootPath) {
