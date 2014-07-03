@@ -54,12 +54,21 @@ import java.util.List;
 import com.google.inject.name.Names;
 
 /**
- * Utility class creating a {@link ComponentProvider} with a choose dialog scope including correct contentConnector,...<br>
+ * The {@link ChooseDialogComponentProviderUtil} helps creating a {@link ComponentProvider} dedicated to a choose dialog.
  */
 public class ChooseDialogComponentProviderUtil {
 
     private static final String CHOOSE_DIALOG_COMPONENT_ID = "choosedialog";
 
+    /**
+     * Creates the choose-dialog specific component provider, with proper bindings for e.g. {@link ContentConnector} or {@link ImageProvider}.
+     * <p>
+     * In particular, this ensures that within the dialog, these components get their dependencies as configured in the choose-dialog definition, rather than from current sub-app context.
+     * 
+     * @param chooseDialogDefinition the choose-dialog definition, as configured for a content app, or built by code.
+     * @param componentProvider the parent {@link ComponentProvider}.
+     * @return a new component provider, to create {@link info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter ChooseDialogPresenter} with.
+     */
     public static ComponentProvider createChooseDialogComponentProvider(final ChooseDialogDefinition chooseDialogDefinition, ComponentProvider componentProvider) {
         ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
