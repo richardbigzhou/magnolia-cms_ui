@@ -352,12 +352,14 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     public void testUpdateFrom525() throws Exception {
         // GIVEN
         Node activateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "activate", NodeTypes.ContentNode.NAME);
+        Node duplicateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "duplicate", NodeTypes.ContentNode.NAME);
 
         // WHEN
         InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.5"));
 
         // THEN
         assertThat(activateAction, hasProperty("availability/writePermissionRequired", true));
+        assertThat(duplicateAction, hasProperty("availability/writePermissionRequired", true));
         this.assertNoMessages(ctx);
     }
 

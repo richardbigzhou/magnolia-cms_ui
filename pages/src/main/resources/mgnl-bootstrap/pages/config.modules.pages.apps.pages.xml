@@ -530,6 +530,9 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="writePermissionRequired" sv:type="Boolean">
+              <sv:value>true</sv:value>
+            </sv:property>  
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.ui.api.availability.IsNotDeletedRule</sv:value>
             </sv:property>
