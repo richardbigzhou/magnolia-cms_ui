@@ -84,6 +84,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/apps/security/subApps/users/actions");
         setupConfigNode("/modules/security-app/apps/security/subApps/groups/actions");
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/actions");
+
+        // for 5.3.1 update:
+        setupConfigNode("/modules/security-app/dialogs/role");
     }
 
     @Override
