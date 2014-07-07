@@ -78,31 +78,32 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
                     return false;
                 }
                 String template = NodeTypes.Renderable.getTemplate(areaNode.getParent());
-                TemplateDefinition parentPageDefinition = templateRegistry.getTemplateDefinition(template);
-                AreaDefinition areaDefinition = parentPageDefinition.getAreas().get(areaNode.getName());
-                if (areaDefinition == null) {
-                    return true;
-                }
-                String areaType = areaDefinition.getType() == null ? AreaDefinition.DEFAULT_TYPE : areaDefinition.getType();
+                TemplateDefinition parentTemplateDefinition = templateRegistry.getTemplateDefinition(template);
+                if (parentTemplateDefinition != null) {
+                    AreaDefinition areaDefinition = parentTemplateDefinition.getAreas().get(areaNode.getName());
 
-                if (AreaDefinition.TYPE_NO_COMPONENT.equals(areaType)) {
-                    return false;
-                }
+                    if (areaDefinition != null) {
+                        String areaType = areaDefinition.getType() == null ? AreaDefinition.DEFAULT_TYPE : areaDefinition.getType();
 
-                int maxComponentsProperty = areaDefinition.getMaxComponents() == null ? Integer.MAX_VALUE : areaDefinition.getMaxComponents();
-                int numberOfComponents = NodeUtil.asList(NodeUtil.getNodes(areaNode, new ComponentsAndContentNodesPredicate())).size();
-                if (numberOfComponents >= maxComponentsProperty || numberOfComponents > 0 && AreaDefinition.TYPE_SINGLE.equals(areaType)) {
-                    return false;
-                }
-                return true;
+                        if (AreaDefinition.TYPE_NO_COMPONENT.equals(areaType)) {
+                            return false;
+                        }
 
+                        int maxComponentsProperty = areaDefinition.getMaxComponents() == null ? Integer.MAX_VALUE : areaDefinition.getMaxComponents();
+                        int numberOfComponents = NodeUtil.asList(NodeUtil.getNodes(areaNode, new ComponentsAndContentNodesPredicate())).size();
+                        if (numberOfComponents >= maxComponentsProperty || numberOfComponents > 0 && AreaDefinition.TYPE_SINGLE.equals(areaType)) {
+                            return false;
+                        }
+                        return true;
+                    }
+                }
             } catch (RepositoryException e) {
                 log.warn("Error evaluating availability for node [{}], returning false: {}", areaNode, e);
             } catch (RegistrationException e) {
                 log.warn("Error evaluating availability for node [{}], returning false: {}", areaNode, e);
             }
         }
-        return false;
+        return true;
     }
 
     private static class ComponentsAndContentNodesPredicate extends AbstractPredicate<Node> {
