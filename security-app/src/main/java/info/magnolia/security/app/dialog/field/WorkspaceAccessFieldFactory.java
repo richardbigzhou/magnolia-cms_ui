@@ -37,6 +37,7 @@ import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogComponentProviderUtil;
@@ -100,7 +101,6 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
     public static final String INTERMEDIARY_FORMAT_PROPERTY_NAME = "__intermediary_format";
     public static final String ACCESS_TYPE_PROPERTY_NAME = "accessType";
-    private static final String CHOOSE_DIALOG_COMPONENT_ID = "choosedialog";
 
     private final UiContext uiContext;
     private final SimpleTranslator i18n;
@@ -115,6 +115,15 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
         this.i18n = i18n;
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.3.1. {@link ComponentProvider} has to be injected in order to create the choose-dialog specific component provider, with proper bindings for e.g. {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} or {@link info.magnolia.ui.imageprovider.ImageProvider}.
+     */
+    @Deprecated
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
+            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+        this(definition, relatedFieldItem, uiContext, workbenchChooseDialogPresenter, i18n, Components.getComponentProvider());
     }
 
     @Override
