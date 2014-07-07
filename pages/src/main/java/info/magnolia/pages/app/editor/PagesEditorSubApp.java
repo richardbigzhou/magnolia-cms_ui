@@ -62,6 +62,7 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
@@ -208,6 +209,13 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
+        admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
+            @Override
+            public void onLocationChanged(LocationChangedEvent event) {
                 view.setStatusBarView(statusBarView);
             }
         });
