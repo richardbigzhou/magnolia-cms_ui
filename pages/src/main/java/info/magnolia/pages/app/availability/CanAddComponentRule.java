@@ -85,6 +85,9 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
                 String template = NodeTypes.Renderable.getTemplate(areaNode.getParent());
                 TemplateDefinition parentPageDefinition = templateRegistry.getTemplateDefinition(template);
                 AreaDefinition areaDefinition = parentPageDefinition.getAreas().get(areaNode.getName());
+                if (areaDefinition == null) {
+                    return true;
+                }
                 String areaType = areaDefinition.getType() == null ? AreaDefinition.DEFAULT_TYPE : areaDefinition.getType();
 
                 if (AreaDefinition.TYPE_NO_COMPONENT.equals(areaType)) {
