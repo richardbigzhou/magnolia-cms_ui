@@ -14,7 +14,7 @@
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
-  <sv:property sv:name="wide" sv:type="String">
+  <sv:property sv:name="wide" sv:type="Boolean">
     <sv:value>true</sv:value>
   </sv:property>
   <sv:node sv:name="actions">
