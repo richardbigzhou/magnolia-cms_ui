@@ -213,7 +213,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
 
         register(DeltaBuilder.update("5.3.1", "")
-                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, "activate", "duplicate"))
+                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, "activate"))
                 .addTask(addAvailabilityForAddComponentAction));
     }
 

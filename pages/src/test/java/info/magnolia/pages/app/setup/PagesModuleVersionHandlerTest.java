@@ -372,7 +372,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     public void testUpdateFrom53() throws Exception {
         // GIVEN
         Node activateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "activate", NodeTypes.ContentNode.NAME);
-        Node duplicateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "duplicate", NodeTypes.ContentNode.NAME);
 
         // WHEN
         InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
@@ -380,9 +379,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertThat(activateAction, hasNode("availability"));
         assertThat(activateAction.getNode("availability"), hasProperty("writePermissionRequired", true));
-        assertThat(duplicateAction, hasNode("availability"));
-        assertThat(duplicateAction.getNode("availability"), hasProperty("writePermissionRequired", true));
-
         assertThat(session.getNode(PagesModuleVersionHandler.ADD_COMPONENT_ACTION), hasNode("availability/rules/CanAddComponentRule"));
         assertThat(session.getNode(PagesModuleVersionHandler.ADD_COMPONENT_ACTION + "availability/rules/CanAddComponentRule"),
                 hasProperty("implementationClass", CanAddComponentRule.class.getName()));
