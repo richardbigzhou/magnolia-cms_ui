@@ -54,7 +54,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines whether text alignment (left, center, right, justify) is allowed in this rich-text field.
-     * 
+     *
      * @return <code>true</code> if alignment is enabled, <code>false</code> otherwise. Defaults to <code>false</code>.
      */
     public boolean isAlignment() {
@@ -67,7 +67,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines whether images are allowed in this rich-text field.
-     * 
+     *
      * @return <code>true</code> if images are enabled, <code>false</code> otherwise. Defaults to <code>false</code>.
      */
     public boolean isImages() {
@@ -80,7 +80,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines whether lists are allowed in this rich-text field.
-     * 
+     *
      * @return <code>true</code> if lists are enabled, <code>false</code> otherwise. Defaults to <code>true</code>.
      */
     public boolean isLists() {
@@ -93,7 +93,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines whether source mode is allowed in this rich-text field.
-     * 
+     *
      * @return <code>true</code> if source mode is enabled, <code>false</code> otherwise. Defaults to <code>false</code>.
      */
     public boolean isSource() {
@@ -106,7 +106,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines whether tables are allowed in this rich-text field.
-     * 
+     *
      * @return <code>true</code> if tables are enabled, <code>false</code> otherwise. Defaults to <code>true</code>.
      */
     public boolean isTables() {
@@ -130,8 +130,8 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines the text colors that are allowed in this rich-text field.
-     * 
-     * @return a comma separated list of colors, as per CKEditor documentation (hexadecimal codes, without starting hash).
+     *
+     * @return a comma separated list of colors, as per CKEditor documentation (hexadecimal codes, without leading hash).
      * @see <a href="http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-colorButton_colors">http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-colorButton_colors</a>
      */
     public String getColors() {
@@ -144,7 +144,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines the font families that are allowed in this rich-text field.
-     * 
+     *
      * @return a semi-colon separated list of font names, as per CKEditor documentation.
      * @see <a href="http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-font_names">http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-font_names</a>
      */
@@ -158,7 +158,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines the font sizes that are allowed in this rich-text field.
-     * 
+     *
      * @return a semi-colon separated list of font sizes, as per CKEditor documentation (including CSS unit).
      * @see <a href="http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-fontSize_sizes">http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-fontSize_sizes</a>
      */
@@ -172,7 +172,7 @@ public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
     /**
      * Defines the custom configuration file for this rich-text field.
-     * 
+     *
      * @return a path to the config JavaScript file, relative to context path.
      */
     public String getConfigJsFile() {

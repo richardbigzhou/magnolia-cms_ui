@@ -70,7 +70,7 @@ import com.vaadin.ui.Field;
  */
 public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefinition, String> {
 
-    private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(RichTextFieldFactory.class);
 
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
