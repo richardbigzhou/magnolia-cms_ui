@@ -198,7 +198,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         ))));
 
         register(DeltaBuilder.update("5.2.7", "")
-                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, "activate", "duplicate"))
+                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, "activate"))
                 .addTask(addAvailabilityForAddComponentAction));
 
     }
