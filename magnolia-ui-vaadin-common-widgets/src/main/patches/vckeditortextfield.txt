@@ -1,0 +1,44 @@
+--- /src/main/java/org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java	2013-09-03 16:32:42.000000000 +0200
++++ /src/main/java/org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java	2014-07-09 10:21:46.000000000 +0200
+@@ -212,17 +212,7 @@
+ 				++i;
+ 			}
+ 			
+-			ScheduledCommand scE = new ScheduledCommand() {
+-				@Override
+-				public void execute() {
+-					ckEditor = (CKEditor)CKEditorService.loadEditor(paintableId,
+-							VCKEditorTextField.this,
+-							inPageConfig,
+-							VCKEditorTextField.super.getOffsetWidth(),
+-							VCKEditorTextField.super.getOffsetHeight());
+-					
+-				}
+-			};
++            ScheduledCommand scE = getLibraryLoadedCallback(inPageConfig);
+ 			
+ 			CKEditorService.loadLibrary(scE);
+ 			
+@@ -256,6 +246,22 @@
+ 		
+ 	}
+ 
++    /**
++     * Expose callback when CKEditor library is loaded so that extension can also ensure loading of external plugins before creating CKEditor instance.
++     */
++    protected ScheduledCommand getLibraryLoadedCallback(final String inPageConfig) {
++        return new ScheduledCommand() {
++            @Override
++            public void execute() {
++                ckEditor = (CKEditor) CKEditorService.loadEditor(paintableId,
++                        VCKEditorTextField.this,
++                        inPageConfig,
++                        VCKEditorTextField.super.getOffsetWidth(),
++                        VCKEditorTextField.super.getOffsetHeight());
++            }
++        };
++    }
++
+ 	// Listener callback
+ 	@Override
+ 	public void onSave() {
