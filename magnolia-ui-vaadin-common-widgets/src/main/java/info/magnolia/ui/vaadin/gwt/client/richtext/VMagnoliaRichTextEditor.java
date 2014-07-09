@@ -36,23 +36,28 @@ package info.magnolia.ui.vaadin.gwt.client.richtext;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditor;
 
 /**
- * Add support for handling custom plugins to CKEditor instance.
+ * Adds support for custom plugin events/listeners to CKEditor JSNI wrapper.
+ * <p>
+ * In particular, mind the following implementation details about subclasses of GWT's JavaScriptObject:
+ * <ul>
+ * <li>Constructors must be 'protected' in subclasses of JavaScriptObject</li>
+ * <li>Instance methods must be 'final' in non-final subclasses of JavaScriptObject</li>
+ * </ul>
+ *
+ * @see {@link com.google.gwt.core.client.JavaScriptObject JavaScriptObject}
  */
 public class VMagnoliaRichTextEditor extends CKEditor {
+
     protected VMagnoliaRichTextEditor() {
     }
 
-    public final native void addListener(final Listener listener, final String eventName) /*-{
+    public final native void addPluginListener(String eventName, Listener listener) /*-{
         this.on(eventName, function (ev) {
             ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
         }, null, listener);
-
-        this.on('change', function (ev) {
-            ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onChange()();
-        }, null, listener);
     }-*/;
 
-    public final native void fire(final String eventName, final String value) /*-{
+    public final native void fire(String eventName, String value) /*-{
         this.fire(eventName, value);
     }-*/;
 
@@ -60,8 +65,8 @@ public class VMagnoliaRichTextEditor extends CKEditor {
      * Listener interface for plugin events.
      */
     public interface Listener {
+
         void onPluginEvent(String eventName, String data);
 
-        void onChange();
     }
 }
