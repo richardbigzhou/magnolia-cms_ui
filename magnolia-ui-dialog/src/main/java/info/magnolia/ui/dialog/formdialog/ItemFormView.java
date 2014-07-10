@@ -148,8 +148,12 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         if (locales != null && !locales.isEmpty()) {
             languageSelector.removeAllItems();
             for (Locale locale : locales) {
+                String label= locale.getDisplayLanguage(MgnlContext.getLocale());
+                if (!locale.getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
+                    label += " (" + locale.getDisplayCountry(MgnlContext.getLocale()) + ")";
+                }
                 languageSelector.addItem(locale);
-                languageSelector.setItemCaption(locale, locale.getDisplayLanguage(MgnlContext.getLocale()));
+                languageSelector.setItemCaption(locale, label);
             }
             getActionAreaView().setToolbarComponent(languageSelector);
         }
