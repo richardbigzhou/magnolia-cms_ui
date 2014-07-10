@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
 import java.util.List;
@@ -129,9 +130,9 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
         if (locales != null && !locales.isEmpty()) {
             languageSelector.removeAllItems();
             for (Locale locale : locales) {
-                String label= locale.getDisplayLanguage();
-                if (!locale.getDisplayCountry().isEmpty()) {
-                    label += " (" + locale.getDisplayCountry() + ")";
+                String label= locale.getDisplayLanguage(MgnlContext.getLocale());
+                if (!locale.getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
+                    label += " (" + locale.getDisplayCountry(MgnlContext.getLocale()) + ")";
                 }
                 languageSelector.addItem(locale);
                 languageSelector.setItemCaption(locale, label);

@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyList;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.test.mock.MockWebContext;
 
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,14 +66,22 @@ public class PageBarViewImplTest {
     @Before
     public void setUp() throws Exception {
         pagebarviewer = new PageBarViewImpl();
+        MockWebContext ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
     }
 
     @Test
     public void testAvailableLocales() throws Exception {
         // GIVEN
-        String label= localeProvider.getLocale().getDisplayLanguage();
-        if (!localeProvider.getLocale().getDisplayCountry().isEmpty()) {
-            label += " (" + localeProvider.getLocale().getDisplayCountry() + ")";
+        MgnlContext.setLocale(Locale.ENGLISH);
+        String label= localeProvider.getLocale().getDisplayLanguage(MgnlContext.getLocale());
+        if (!localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
+            label += " (" + localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()) + ")";
         }
 
         CssLayout layout = pagebarviewer.getLayout();
@@ -84,6 +95,5 @@ public class PageBarViewImplTest {
 
         // THEN
         assertEquals("", label, selectorLabel);
-
     }
 }
