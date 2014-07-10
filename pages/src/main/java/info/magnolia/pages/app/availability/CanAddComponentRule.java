@@ -59,6 +59,7 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
 
     protected static final String PROPERTY_TYPE = "type";
     protected static final String PROPERTY_MAX_COMPONENTS = "maxComponents";
+    private static final boolean defaultValue = true;
 
     private TemplateDefinitionRegistry templateRegistry;
 
@@ -78,8 +79,8 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
                     return false;
                 }
                 String template = NodeTypes.Renderable.getTemplate(areaNode.getParent());
-                TemplateDefinition parentTemplateDefinition = templateRegistry.getTemplateDefinition(template);
-                if (parentTemplateDefinition != null) {
+                if (template != null) {
+                    TemplateDefinition parentTemplateDefinition = templateRegistry.getTemplateDefinition(template);
                     AreaDefinition areaDefinition = parentTemplateDefinition.getAreas().get(areaNode.getName());
 
                     if (areaDefinition != null) {
@@ -98,12 +99,12 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
                     }
                 }
             } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", areaNode, e);
+                log.warn("Error evaluating availability for node [{}], returning [{}]:", areaNode, defaultValue, e);
             } catch (RegistrationException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", areaNode, e);
+                log.warn("Error evaluating availability for node [{}], returning [{}]:", areaNode, defaultValue, e);
             }
         }
-        return true;
+        return defaultValue;
     }
 
     private static class ComponentsAndContentNodesPredicate extends AbstractPredicate<Node> {
