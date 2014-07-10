@@ -36,10 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.richtext;
 import java.util.Arrays;
 import java.util.List;
 
-import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
+import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditor;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.UIDL;
@@ -71,42 +70,36 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
 
         // list of plugin events that server is interested of handling.
-        if (uidl.hasAttribute(VAR_EVENTNAMES) && this.editor != null) {
+        if (uidl.hasAttribute(VAR_EVENTNAMES)) {
             pluginEvents = Arrays.asList(uidl.getStringArrayAttribute(VAR_EVENTNAMES));
         }
 
-        // Server wants to send an event to a plugin.
-        if (uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT) && this.editor != null) {
-            this.editor.fire(
-                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
-                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
-            );
-        }
-
-        if ( uidl.hasAttribute(ATTR_IMMEDIATE) ) {
+        if (uidl.hasAttribute(ATTR_IMMEDIATE)) {
             immediate = uidl.getBooleanAttribute(ATTR_IMMEDIATE);
         }
 
         super.updateFromUIDL(uidl, client);
+
+        // Server wants to send an event to a plugin, we must do this after super value update.
+        if (uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT) && this.editor != null) {
+            this.editor.fire(
+                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
+                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
+                    );
+        }
     }
 
     @Override
-    protected ScheduledCommand getLibraryLoadedCallback(String inPageConfig) {
-        final ScheduledCommand loadEditorCommand = super.getLibraryLoadedCallback(inPageConfig);
-        return new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                // Register external plugins
-                if (customPlugins != null && customPlugins.getKeySet() != null && !customPlugins.getKeySet().isEmpty()) {
-                    for (String plugin : customPlugins.getKeySet()) {
-                        addExternalPlugin(plugin, customPlugins.getString(plugin));
-                    }
-                }
-                // Load editor
-                loadEditorCommand.execute();
+    protected CKEditor loadEditor(String inPageConfig) {
+        // Register external plugins
+        if (customPlugins != null && customPlugins.getKeySet() != null && !customPlugins.getKeySet().isEmpty()) {
+            for (String plugin : customPlugins.getKeySet()) {
+                addExternalPlugin(plugin, customPlugins.getString(plugin));
             }
-        };
+        }
+        // Load editor
+        editor = (VMagnoliaRichTextEditor) super.loadEditor(inPageConfig);
+        return editor;
     }
 
     private native void addExternalPlugin(String pluginName, String path) /*-{
@@ -119,8 +112,6 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     @Override
     public void onInstanceReady() {
         super.onInstanceReady();
-
-        editor = (VMagnoliaRichTextEditor) CKEditorService.get(paintableId); // casting JavaScriptObject to gain access to JSNI methods
 
         // Add plugin listeners
         if (pluginEvents != null && !pluginEvents.isEmpty()) {
