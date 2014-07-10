@@ -33,18 +33,21 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,14 +72,22 @@ public class ItemFormViewTest {
     @Before
     public void setUp() throws Exception {
         formviewer = new ItemFormView(mock(SimpleTranslator.class),mock(I18NAuthoringSupport.class));
+        MockWebContext ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
     }
 
     @Test
     public void testAvailableLocales() throws Exception {
         // GIVEN
-        String label= localeProvider.getLocale().getDisplayLanguage();
-        if (!localeProvider.getLocale().getDisplayCountry().isEmpty()) {
-            label += " (" + localeProvider.getLocale().getDisplayCountry() + ")";
+        MgnlContext.setLocale(Locale.ENGLISH);
+        String label= localeProvider.getLocale().getDisplayLanguage(MgnlContext.getLocale());
+        if (!localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
+            label += " (" + localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()) + ")";
         }
 
         formviewer.setActionAreaView(new EditorActionAreaViewImpl());
@@ -92,6 +103,5 @@ public class ItemFormViewTest {
 
         // THEN
         assertEquals("", label, selectorLabel);
-
     }
 }
