@@ -451,13 +451,13 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     }
 
     @Test
-    public void testUpdateTo527SetsWritePermissionForUsersSubappActions() throws Exception {
+    public void updateFrom53SetsWritePermissionForUsersSubappActions() throws Exception {
         // GIVEN
         Node activateAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/activate", NodeTypes.ContentNode.NAME);
         Node deactivateAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/deactivate", NodeTypes.ContentNode.NAME);
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.6"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
 
         // THEN
         assertTrue(activateAction.hasNode("availability"));
