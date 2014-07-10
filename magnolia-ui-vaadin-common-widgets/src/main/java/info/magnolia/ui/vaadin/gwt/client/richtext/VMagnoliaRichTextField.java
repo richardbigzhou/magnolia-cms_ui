@@ -142,9 +142,11 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
      */
     @Override
     public void onChange() {
-        clientToServer.updateVariable(paintableId, VAR_TEXT, editor.getData(), false);
-        if (immediate) {
-            valueUpdateTimer.schedule(200);
+        if (editor != null && !editor.isReadOnly()) {
+            clientToServer.updateVariable(paintableId, VAR_TEXT, editor.getData(), false);
+            if (immediate) {
+                valueUpdateTimer.schedule(200);
+            }
         }
     }
 
