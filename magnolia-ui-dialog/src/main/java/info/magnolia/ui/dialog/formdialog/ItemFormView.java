@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
@@ -148,11 +147,16 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         if (locales != null && !locales.isEmpty()) {
             languageSelector.removeAllItems();
             for (Locale locale : locales) {
+                String label= locale.getDisplayLanguage();
+                if (!locale.getDisplayCountry().isEmpty()) {
+                    label += " (" + locale.getDisplayCountry() + ")";
+                }
                 languageSelector.addItem(locale);
-                languageSelector.setItemCaption(locale, locale.getDisplayLanguage(MgnlContext.getLocale()));
+                languageSelector.setItemCaption(locale, label);
             }
             getActionAreaView().setToolbarComponent(languageSelector);
         }
+
     }
 
     private void createLocaleSelector() {
