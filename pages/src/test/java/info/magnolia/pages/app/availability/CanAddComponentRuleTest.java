@@ -109,19 +109,6 @@ public class CanAddComponentRuleTest {
     }
 
     @Test
-    public void testSingleAreaWithSingletonOfTypeContentNode() throws Exception {
-        // GIVEN
-        areaDefinition.setType(AreaDefinition.TYPE_SINGLE);
-        area.addNode("singleton", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        boolean available = rule.isAvailableForItem(itemId);
-
-        // THEN
-        assertThat(available, is(false));
-    }
-
-    @Test
     public void testListArea() throws Exception {
         // GIVEN
         areaDefinition.setType(AreaDefinition.TYPE_LIST);

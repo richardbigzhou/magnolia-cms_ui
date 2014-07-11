@@ -33,7 +33,6 @@
  */
 package info.magnolia.pages.app.availability;
 
-import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
@@ -92,7 +91,7 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
                 }
 
                 int maxComponentsProperty = areaDefinition.getMaxComponents() == null ? Integer.MAX_VALUE : areaDefinition.getMaxComponents();
-                int numberOfComponents = NodeUtil.asList(NodeUtil.getNodes(areaNode, new ComponentsAndContentNodesPredicate())).size();
+                int numberOfComponents = NodeUtil.asList(NodeUtil.getNodes(areaNode, NodeTypes.Component.NAME)).size();
                 if (numberOfComponents >= maxComponentsProperty || numberOfComponents > 0 && AreaDefinition.TYPE_SINGLE.equals(areaType)) {
                     return false;
                 }
@@ -105,18 +104,5 @@ public class CanAddComponentRule extends AbstractAvailabilityRule {
             }
         }
         return false;
-    }
-
-    private static class ComponentsAndContentNodesPredicate extends AbstractPredicate<Node> {
-
-        @Override
-        public boolean evaluateTyped(Node node) {
-            try {
-                return NodeUtil.isNodeType(node, NodeTypes.Component.NAME) || NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME);
-            } catch (RepositoryException e) {
-                log.error("Failed to retrieve node type of '{}':", node, e);
-            }
-            return false;
-        }
     }
 }
