@@ -39,7 +39,6 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredAreaDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateAvailability;
@@ -65,13 +64,11 @@ public class CanAddComponentRuleTest {
     private ConfiguredTemplateDefinition templateDefinition;
     private ConfiguredAreaDefinition areaDefinition;
     private Node area;
-    private Node page;
 
     @Before
     public void setUp() throws Exception {
         MockSession session = new MockSession(RepositoryConstants.WEBSITE);
-        page = session.getRootNode().addNode("page", NodeTypes.Page.NAME);
-        page.addMixin(NodeTypes.Renderable.NAME);
+        Node page = session.getRootNode().addNode("page", NodeTypes.Page.NAME);
         NodeTypes.Renderable.set(page, "template");
         area = page.addNode("area", NodeTypes.Area.NAME);
 
@@ -80,7 +77,6 @@ public class CanAddComponentRuleTest {
         templateDefinition.addArea("area", areaDefinition);
         TemplateDefinitionRegistry templateRegistry = mock(TemplateDefinitionRegistry.class);
         when(templateRegistry.getTemplateDefinition("template")).thenReturn(templateDefinition);
-        when(templateRegistry.getTemplateDefinition(null)).thenThrow(new RegistrationException("The template with id null not registered."));
         rule = new CanAddComponentRule(templateRegistry);
         itemId = JcrItemUtil.getItemId(area);
 
@@ -179,18 +175,6 @@ public class CanAddComponentRuleTest {
         } catch (NullPointerException e) {
             fail("Rule shouldn't fail with NPE if page hasn't corresponding area definition.");
         }
-        assertThat(available, is(true));
-    }
-
-    @Test
-    public void testParentDoesntHaveTemplate() throws Exception {
-        // GIVEN
-        page.getProperty(NodeTypes.Renderable.TEMPLATE).remove();
-
-        // WHEN
-        boolean available = rule.isAvailableForItem(itemId);
-
-        // THEN
         assertThat(available, is(true));
     }
 
