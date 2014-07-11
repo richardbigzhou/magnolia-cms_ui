@@ -56,7 +56,6 @@ import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
-import info.magnolia.pages.app.availability.CanAddComponentRule;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
@@ -73,17 +72,6 @@ import java.util.List;
 public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
     public static final String PAGES_APP_ACTIONS = "/modules/pages/apps/pages/subApps/browser/actions/";
-    public static final String ADD_COMPONENT_ACTION = "/modules/pages/apps/pages/subApps/detail/actions/addComponent/";
-
-    private final Task addAvailabilityForAddComponentAction = new NodeBuilderTask("Add new availability for adding of components", "Add new availability for adding of components",
-            ErrorHandling.logging, RepositoryConstants.CONFIG, ADD_COMPONENT_ACTION,
-            addNode("availability", NodeTypes.ContentNode.NAME).then(
-                    addNode("rules", NodeTypes.ContentNode.NAME).then(
-                            addNode(CanAddComponentRule.class.getSimpleName(), NodeTypes.ContentNode.NAME).then(
-                                    addProperty("implementationClass", CanAddComponentRule.class.getName()))
-                            )
-                    )
-            );
 
     public PagesModuleVersionHandler() {
         super();
@@ -92,6 +80,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
                         new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml")))
                 .addTask(new ConvertAclToAppPermissionTask("Convert permissions for Pages app", "Convert ACL permissions for old 'Website' menu to new 'pages-app' permission", "/modules/adminInterface/config/menu/website", "/modules/pages/apps/pages", true)));
+
 
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
@@ -127,13 +116,13 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 addProperty("icon", "icon-show-versions"),
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
                                         addProperty("ruleClass", "info.magnolia.ui.api.availability.HasVersionsRule")
-                                        )
                                 )
-                        ))
+                        )
+                ))
                 // bootstrap versionActions to action bar if it doesn't exists already
                 .addTask(new NodeExistsDelegateTask("Bootstrap actionbar section group for versionActions", "", RepositoryConstants.CONFIG, "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions", null,
                         new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions")
-                        ))
+                ))
 
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
                 .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("pages"))
@@ -151,23 +140,24 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeBuilderTask("Add availability rule to edit action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/edit",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                                )
-                        ))
+                        )
+                ))
                 .addTask(new NodeBuilderTask("Add availability rule to activate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/activate",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                                )
-                        ))
+                        )
+                ))
                 .addTask(new NodeBuilderTask("Add availability rule to deactivate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/deactivate",
                         addNode("availability", NodeTypes.ContentNode.NAME).then(
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
-                                )
-                        ))
+                        )
+                ))
 
                 .addTask(new PartialBootstrapTask("Bootstrap move action in Pages app", "",
                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/move"))
                 .addTask(new PartialBootstrapTask("Bootstrap move action to Pages app actionbar", "Adds action move to folder/editingActions section in actionbar.",
-                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move")));
+                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move"))
+        );
 
         register(DeltaBuilder.update("5.1.1", "")
                 .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "import/availability",
@@ -183,24 +173,25 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new ArrayDelegateTask("",
                                 new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion"),
                                 new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/showVersions",
-                                        new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions"))))));
+                                    new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions")))))
+        );
 
         register(DeltaBuilder.update("5.2.3", "")
                 .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS,
                         new String[] { "add", "confirmDeletion", "edit", "editPageName", "editTemplate", "restorePreviousVersion", "import", "move", "restoreVersion" }))
-                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" })));
+                .addTask(new SetWritePermissionForActionsTask("/modules/pages/apps/pages/subApps/detail/actions", new String[] { "edit" }))
+        );
         register(DeltaBuilder.update("5.2.5", "")
                 .addTask(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
                         new NodeExistsDelegateTask("Configure recursive activation as asynchronous", PAGES_APP_ACTIONS + "activateRecursive",
                                 new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "activateRecursive", "asynchronous", "true")),
                         new NodeExistsDelegateTask("Configure deletion as asynchronous", PAGES_APP_ACTIONS + "delete",
                                 new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "asynchronous", "true"))
-                        ))));
+                ))));
 
         register(DeltaBuilder.update("5.2.7", "")
                 .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, new String [] { "activate", "activateRecursive", "deactivate", "activateDeletion" }))
-                .addTask(addAvailabilityForAddComponentAction));
-
+        );
     }
 
     @Override
@@ -212,7 +203,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "activateRecursive", "asynchronous", "true")),
                 new NodeExistsDelegateTask("Configure deletion as asynchronous", PAGES_APP_ACTIONS + "delete",
                         new SetPropertyTask(RepositoryConstants.CONFIG, PAGES_APP_ACTIONS + "delete", "asynchronous", "true"))
-                )));
+        )));
         return tasks;
     }
 }
