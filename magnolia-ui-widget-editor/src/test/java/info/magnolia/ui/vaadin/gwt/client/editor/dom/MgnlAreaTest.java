@@ -74,6 +74,7 @@ public class MgnlAreaTest {
     public void availabilityOfAddComponentActionForAreaOfSingleTypeWithNoComponent() {
         // GIVEN
         area.getAttributes().clear();
+        area.getAttributes().put("availableComponents", "[someComponent]");
         area.getAttributes().put("type", "single");
         area.getAttributes().put(OperationPermissionDefinition.ADDIBLE, "true");
         area.getChildren().clear();
@@ -89,6 +90,7 @@ public class MgnlAreaTest {
     public void availabilityOfAddComponentActionForCreatedOptionalArea() {
         // GIVEN
         area.getAttributes().clear();
+        area.getAttributes().put("availableComponents", "[someComponent]");
         area.getAttributes().put("type", "list");
         area.getAttributes().put("optional", "true");
         area.getAttributes().put("created", "true");
@@ -98,6 +100,36 @@ public class MgnlAreaTest {
 
         // THEN
         assertTrue(addible);
+    }
+
+    @Test
+    public void availabilityOfAddComponentActionForAreaWithNoAvailableComponent() {
+        // GIVEN
+        area.getAttributes().clear();
+        area.getAttributes().put("availableComponents", "");
+        area.getAttributes().put("type", "list");
+
+        // WHEN
+        boolean addible = area.getTypedElement().getAddible();
+
+        // THEN
+        assertFalse(addible);
+    }
+
+    @Test
+    public void availabilityOfAddComponentActionForAreaWithMaxComponentReached() {
+        // GIVEN
+        area.getAttributes().clear();
+        area.getAttributes().put("availableComponents", "[someComponent]");
+        area.getAttributes().put("type", "list");
+        area.getAttributes().put("showAddButton", "false");
+        area.getAttributes().put("showNewComponentArea", "true");
+
+        // WHEN
+        boolean addible = area.getTypedElement().getAddible();
+
+        // THEN
+        assertFalse(addible);
     }
 
     @Test
