@@ -34,7 +34,7 @@
 package info.magnolia.pages.app.availability;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -61,7 +61,6 @@ public class CanAddComponentRuleTest {
 
     private CanAddComponentRule rule;
     private Object itemId;
-    private ConfiguredTemplateDefinition templateDefinition;
     private ConfiguredAreaDefinition areaDefinition;
     private Node area;
 
@@ -72,7 +71,7 @@ public class CanAddComponentRuleTest {
         NodeTypes.Renderable.set(page, "template");
         area = page.addNode("area", NodeTypes.Area.NAME);
 
-        templateDefinition = new ConfiguredTemplateDefinition(new ConfiguredTemplateAvailability());
+        ConfiguredTemplateDefinition templateDefinition = new ConfiguredTemplateDefinition(new ConfiguredTemplateAvailability());
         areaDefinition = new ConfiguredAreaDefinition(new ConfiguredTemplateAvailability());
         templateDefinition.addArea("area", areaDefinition);
         TemplateDefinitionRegistry templateRegistry = mock(TemplateDefinitionRegistry.class);
@@ -159,23 +158,6 @@ public class CanAddComponentRuleTest {
 
         // THEN
         assertThat(available, is(false));
-    }
-
-    @Test
-    public void testAreaDoesntHaveItsDefinition() throws Exception {
-        // GIVEN
-        templateDefinition.getAreas().clear();
-        boolean available = false;
-
-        // WHEN
-        try {
-            available = rule.isAvailableForItem(itemId);
-
-            // THEN
-        } catch (NullPointerException e) {
-            fail("Rule shouldn't fail with NPE if page hasn't corresponding area definition.");
-        }
-        assertThat(available, is(true));
     }
 
 }
