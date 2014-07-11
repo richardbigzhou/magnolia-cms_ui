@@ -58,7 +58,6 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.pages.app.action.PreviewPreviousVersionActionDefinition;
 import info.magnolia.pages.app.action.RestorePreviousVersionActionDefinition;
-import info.magnolia.pages.app.availability.CanAddComponentRule;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
@@ -76,17 +75,6 @@ import java.util.List;
 public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
     public static final String PAGES_APP_ACTIONS = "/modules/pages/apps/pages/subApps/browser/actions/";
-    public static final String ADD_COMPONENT_ACTION = "/modules/pages/apps/pages/subApps/detail/actions/addComponent/";
-
-    private final Task addAvailabilityForAddComponentAction = new NodeBuilderTask("Add new availability for adding of components", "Add new availability for adding of components",
-            ErrorHandling.logging, RepositoryConstants.CONFIG, ADD_COMPONENT_ACTION,
-            addNode("availability", NodeTypes.ContentNode.NAME).then(
-                    addNode("rules", NodeTypes.ContentNode.NAME).then(
-                            addNode(CanAddComponentRule.class.getSimpleName(), NodeTypes.ContentNode.NAME).then(
-                                    addProperty("implementationClass", CanAddComponentRule.class.getName()))
-                            )
-                    )
-            );
 
     public PagesModuleVersionHandler() {
         super();
@@ -213,8 +201,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
 
         register(DeltaBuilder.update("5.3.1", "")
-                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, new String [] { "activate", "activateRecursive", "deactivate", "activateDeletion" }))
-                .addTask(addAvailabilityForAddComponentAction));
+                .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, new String [] { "activate", "activateRecursive", "deactivate", "activateDeletion" })));
     }
 
     @Override
