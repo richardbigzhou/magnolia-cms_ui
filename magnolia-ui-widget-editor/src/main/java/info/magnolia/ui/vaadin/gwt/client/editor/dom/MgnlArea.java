@@ -51,7 +51,7 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * Represents an area inside the {@link CmsNode}-tree.
  * An area can have 3 widgets associated with it:
- * 
+ *
  * <pre>
  *   <ul>
  *     <li>{@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar}</li>
@@ -59,7 +59,7 @@ import com.google.gwt.event.shared.EventBus;
  *     <li>{@link ComponentPlaceHolder}</li>
  *   </ul>
  * </pre>
- * 
+ *
  * Implements a listener interface for the {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar} and {@link ComponentPlaceHolder}.
  * Provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
@@ -105,19 +105,28 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
     @Override
     public AreaElement getTypedElement() {
-        AreaElement area = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
+        String availableComponents = getAttribute("availableComponents");
+        AreaElement area = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), availableComponents);
 
         boolean areaIsTypeSingle = "single".equals(getAttribute("type"));
         boolean areaHasChildComponents = getComponents().size() > 0;
         boolean optional = Boolean.parseBoolean(getAttribute("optional"));
         boolean created = Boolean.parseBoolean(getAttribute("created"));
+        boolean hasAvailableComponents = availableComponents != null && !availableComponents.isEmpty();
         boolean addible = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.ADDIBLE)) {
             addible = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.ADDIBLE));
         }
-        area.setAddible(addible && !(optional && !created) && !(areaIsTypeSingle && areaHasChildComponents));
+        area.setAddible(addible && hasAvailableComponents && !(optional && !created) && !(areaIsTypeSingle && areaHasChildComponents) && !isMaxComponentsReached());
 
         return area;
+    }
+
+    private boolean isMaxComponentsReached() {
+        boolean showAddButton = Boolean.parseBoolean(getAttribute("showAddButton"));
+        boolean showNewComponentArea = Boolean.parseBoolean(getAttribute("showNewComponentArea"));
+
+        return showNewComponentArea && !showAddButton;
     }
 
     @Override
@@ -180,12 +189,10 @@ public class MgnlArea extends MgnlElement implements AreaListener {
     @Override
     public String getPlaceHolderLabel() {
         String label = getAttribute("label");
-        boolean showAddButton = Boolean.parseBoolean(getAttribute("showAddButton"));
-        boolean showNewComponentArea = Boolean.parseBoolean(getAttribute("showNewComponentArea"));
-
         String labelString;
+
         // if the add new component area should be visible
-        if (showNewComponentArea && !showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
+        if (isMaxComponentsReached()) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
             labelString = getI18nMessage("buttons.component.maximum.js");
         } else { // maximum of components is NOT reached - show add new component area with ADD button
             labelString = getI18nMessage("buttons.component.new.js");
