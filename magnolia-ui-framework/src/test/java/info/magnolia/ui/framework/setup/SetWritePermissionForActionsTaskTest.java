@@ -90,4 +90,29 @@ public class SetWritePermissionForActionsTaskTest {
         assertTrue(updateAction.getNode("availability").getProperty("writePermissionRequired").getBoolean());
     }
 
+    @Test
+    public void executePassesIfWritePermissionIsAlreadySet() throws Exception {
+        // GIVEN
+        Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/dummy/apps/dummy/subApps/dummy/actions", NodeTypes.ContentNode.NAME);
+        Node createAction = actions.addNode("create", NodeTypes.ContentNode.NAME);
+        Node readAction = actions.addNode("read", NodeTypes.ContentNode.NAME);
+        Node updateAction = actions.addNode("update", NodeTypes.ContentNode.NAME);
+        updateAction.addNode("availability");
+
+        // WHEN
+        SetWritePermissionForActionsTask task = new SetWritePermissionForActionsTask("/modules/dummy/apps/dummy/subApps/dummy/actions",
+                new String[] { "create", "update" });
+        task.execute(ctx);
+        task.execute(ctx); // intentionally executing twice!
+
+        // THEN
+        assertTrue(createAction.hasNode("availability"));
+        assertTrue(createAction.getNode("availability").hasProperty("writePermissionRequired"));
+        assertTrue(createAction.getNode("availability").getProperty("writePermissionRequired").getBoolean());
+        assertFalse(readAction.hasNode("availability"));
+        assertTrue(updateAction.hasNode("availability"));
+        assertTrue(updateAction.getNode("availability").hasProperty("writePermissionRequired"));
+        assertTrue(updateAction.getNode("availability").getProperty("writePermissionRequired").getBoolean());
+    }
+
 }
