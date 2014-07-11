@@ -385,4 +385,38 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         this.assertNoMessages(ctx);
     }
+
+    @Test
+    public void testUpdateFrom53SetsWritePermissionForPagesBrowserActions() throws Exception {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activate", NodeTypes.ContentNode.NAME);
+        Node activateRecursiveAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", NodeTypes.ContentNode.NAME);
+        Node deactivateAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/deactivate", NodeTypes.ContentNode.NAME);
+        Node activateDeletionAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertTrue(activateAction.hasNode("availability"));
+        Node availability = activateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(activateRecursiveAction.hasNode("availability"));
+        availability = activateRecursiveAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(deactivateAction.hasNode("availability"));
+        availability = deactivateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(activateDeletionAction.hasNode("availability"));
+        availability = activateDeletionAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
+
 }
