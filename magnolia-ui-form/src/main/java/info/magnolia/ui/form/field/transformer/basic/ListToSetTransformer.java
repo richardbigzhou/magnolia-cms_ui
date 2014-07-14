@@ -78,20 +78,16 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
         if (!multiselect) {
             return super.readFromItem();
-        } else {
-            Property<T> p = getOrCreateProperty(type, false);
-            if (definition.isReadOnly()) {
-                p.setReadOnly(true);
-            }
-            T value = p.getValue();
-            if (value == null) {
-                return (T) new HashSet();
-            } else if (value instanceof List) {
-                return (T) new HashSet((List) value);
-            } else {
-                return null;
-            }
         }
+        Property<T> p = getOrCreateProperty(type, false);
+        if (definition.isReadOnly()) {
+            p.setReadOnly(true);
+        }
+        T value = p.getValue();
+        if (value != null && value instanceof List) {
+            return (T) new HashSet((List) value);
+        }
+        return null;
     }
 
 }
