@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldFactory.class);
 
-    private String initialSelectedKey;
+    private List<String> initialSelectedKey = new ArrayList<String>();
     private String optionValueName;
     private String optionLabelName;
     private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
@@ -166,7 +167,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 option.setValue(getValue(option));
                 option.setLabel(getMessage(getLabel(option)));
                 if (option.isSelected()) {
-                    initialSelectedKey = getValue(option);
+                    initialSelectedKey.add(getValue(option));
                 }
                 if (!hasOptionIcon && StringUtils.isNotBlank(option.getIconSrc())) {
                     hasOptionIcon = true;
@@ -242,8 +243,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         Object selectedValue = null;
         Object datasourceValue = dataSource.getValue();
 
-        if (initialSelectedKey != null) {
-            selectedValue = initialSelectedKey;
+        if (!initialSelectedKey.isEmpty()) {
+            if (select.isMultiSelect()) {
+                return new HashSet(initialSelectedKey);
+            }
+            selectedValue = initialSelectedKey.get(0);
         } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
@@ -292,7 +296,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
                     if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
                         option.setSelected(true);
-                        initialSelectedKey = option.getValue();
+                        initialSelectedKey.add(option.getValue());
                     }
                     if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
                         option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());
