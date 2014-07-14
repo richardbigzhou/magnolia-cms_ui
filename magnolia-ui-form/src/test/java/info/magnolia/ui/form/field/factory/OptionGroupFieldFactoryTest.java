@@ -40,7 +40,9 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.Test;
 
@@ -128,6 +130,47 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("[]", field.getValue().toString());
+    }
+
+    @Test
+    public void createFieldSelectsDefaultOption() throws Exception {
+        // GIVEN
+        SelectFieldOptionDefinition option1 = definition.getOptions().get(0);
+        option1.setSelected(true);
+        SelectFieldOptionDefinition option2 = definition.getOptions().get(1);
+        option2.setSelected(true);
+
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN
+        assertEquals("Option is not multiselect so the last selected is taken ", option1.getValue(), field.getValue().toString());
+    }
+
+    @Test
+    public void createFieldSelectsDefaultOptions() throws Exception {
+        // GIVEN
+        definition.setMultiselect(true);
+        SelectFieldOptionDefinition option1 = definition.getOptions().get(0);
+        option1.setSelected(true);
+        SelectFieldOptionDefinition option2 = definition.getOptions().get(1);
+        option2.setSelected(true);
+
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN
+        assertTrue(field.getValue() instanceof Collection);
+        Iterator it = ((Collection) field.getValue()).iterator();
+        while (it.hasNext()) {
+            assertTrue(Arrays.asList("1", "2").contains(it.next().toString()));
+        }
     }
 
     @Override
