@@ -124,7 +124,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         }
 
         Class<?> type = containerProperty.getType();
-        Field<?> field = createFieldByPropertyType(type);
+        Field<?> field = createFieldByPropertyType(itemId, propertyId, type);
         if (field != null) {
             field.setCaption(DefaultFieldFactory.createCaptionByPropertyId(propertyId));
             field.setSizeFull();
@@ -151,7 +151,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         return field;
     }
 
-    private Field<?> createFieldByPropertyType(Class<?> type) {
+    protected Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
         if (type == null) {
             return null;
         }
@@ -171,7 +171,10 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
      * As a result, this class will have a short life span, this is why it is kept private and deprecated.
      */
     @Deprecated
-    static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
+    protected static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
+        public StringToLongConverter() {
+        }
+
         // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used.
         @Override
         public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale) throws ConversionException {

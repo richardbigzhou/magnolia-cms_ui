@@ -87,7 +87,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     protected void initializeTable(Table table) {
         super.initializeTable(table);
-        this.tree = (TreeTable)table;
+        this.tree = (TreeTable) table;
         rowScroller = new TreeRowScroller((MagnoliaTreeTable) table);
         tree.setSortEnabled(false);
         int size = tree.size();
@@ -130,7 +130,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     public void setEditable(boolean editable) {
         if (editable) {
             // field factory
-            fieldFactory = new InplaceEditingFieldFactory();
+            fieldFactory = createInplaceEditingFieldFactory();
             fieldFactory.setFieldBlurListener(new BlurListener() {
 
                 @Override
@@ -195,6 +195,10 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
         tree.setEditable(editable);
         this.editable = editable;
+    }
+
+    protected InplaceEditingFieldFactory createInplaceEditingFieldFactory() {
+        return new InplaceEditingFieldFactory();
     }
 
     @Override
