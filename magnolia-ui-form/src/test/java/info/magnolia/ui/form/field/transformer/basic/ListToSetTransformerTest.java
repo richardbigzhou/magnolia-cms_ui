@@ -105,8 +105,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         Object value = handler.readFromItem();
 
         // THEN
-        assertNotNull(value);
-        assertTrue(value instanceof HashSet);
+        assertNull(value);
     }
 
     @Test

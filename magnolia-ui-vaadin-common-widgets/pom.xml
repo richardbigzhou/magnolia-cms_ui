@@ -4,7 +4,7 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.3.1-SNAPSHOT</version>
+    <version>5.3.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
@@ -109,7 +109,8 @@
             <fileset>
               <directory>src/main/java</directory>
               <includes>
-                <include>com/</include>
+                <include>com/vaadin/</include>
+                <include>org/vaadin/openesignforms/</include>
               </includes>
               <excludes>
                 <exclude>com/vaadin/README.txt</exclude>
@@ -202,6 +203,12 @@
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.vaadin.addons</groupId>
+                  <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                </artifactItem>
               </artifactItems>
               <includes>
                 com/vaadin/client/ui/VScrollTable.java,
@@ -210,7 +217,8 @@
                 com/vaadin/client/ui/table/TableConnector.java,
                 com/vaadin/client/ui/treetable/TreeTableConnector.java,
                 com/vaadin/client/ui/upload/UploadConnector.java,
-                com/vaadin/ui/DragAndDropWrapper.java
+                com/vaadin/ui/DragAndDropWrapper.java,
+                org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java
               </includes>
             </configuration>
           </execution>
@@ -228,6 +236,7 @@
             <patch>treetableconnector.txt</patch>
             <patch>uploadconnector.txt</patch>
             <patch>draganddropwrapper.txt</patch>
+            <patch>vckeditortextfield.txt</patch>
           </patches>
           <strip>4</strip>
         </configuration>
@@ -250,7 +259,7 @@
             <goals>
               <goal>execute</goal>
             </goals>
-             <!-- Rename patched table classes and execute Sass compilation. -->
+             <!-- Rename patched table classes -->
             <configuration>
               <source>
                 import java.io.File
@@ -281,6 +290,7 @@
           <excludes>
             com/vaadin/ui/**,
             com/vaadin/client/ui/**,
+            org/vaadin/openesignforms/ckeditor/widgetset/client/ui/**,
             org/vaadin/peter/contextmenu/**
           </excludes>
         </configuration>

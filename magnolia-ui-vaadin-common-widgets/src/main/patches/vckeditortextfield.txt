@@ -1,0 +1,37 @@
+--- /src/main/java/org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java	2013-09-03 16:32:42.000000000 +0200
++++ /src/main/java/org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java	2014-07-09 22:07:11.000000000 +0200
+@@ -215,12 +215,7 @@
+ 			ScheduledCommand scE = new ScheduledCommand() {
+ 				@Override
+ 				public void execute() {
+-					ckEditor = (CKEditor)CKEditorService.loadEditor(paintableId,
+-							VCKEditorTextField.this,
+-							inPageConfig,
+-							VCKEditorTextField.super.getOffsetWidth(),
+-							VCKEditorTextField.super.getOffsetHeight());
+-					
++                    ckEditor = loadEditor(inPageConfig);
+ 				}
+ 			};
+ 			
+@@ -256,6 +251,20 @@
+ 		
+ 	}
+ 
++    /**
++     * Expose <code>loadEditor</code> command to subclasses, so that they can perform additional logic
++     * before/after creating CKEditor instance on the page, e.g. register external plugins.
++     * <p>
++     * This method is executed as a callback scheduled command when loading the CKEditor library has completed.
++     */
++    protected CKEditor loadEditor(String inPageConfig) {
++        return (CKEditor) CKEditorService.loadEditor(paintableId,
++                VCKEditorTextField.this,
++                inPageConfig,
++                VCKEditorTextField.super.getOffsetWidth(),
++                VCKEditorTextField.super.getOffsetHeight());
++    }
++
+ 	// Listener callback
+ 	@Override
+ 	public void onSave() {

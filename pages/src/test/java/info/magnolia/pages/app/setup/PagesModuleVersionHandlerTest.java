@@ -34,7 +34,7 @@
 package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
-import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -42,7 +42,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.nodebuilder.NodeBuilderUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
@@ -112,7 +111,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         activatePageAction = NodeUtil.createPath(detailActions, "activate", NodeTypes.ContentNode.NAME);
         deactivatePageAction = NodeUtil.createPath(detailActions, "deactivate", NodeTypes.ContentNode.NAME);
 
-        this.setupConfigNode("/modules/pages/apps/pages");
         this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/import/availability");
     }
 
@@ -367,20 +365,36 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateFrom53() throws Exception {
+    public void testUpdateFrom53SetsWritePermissionForPagesBrowserActions() throws Exception {
         // GIVEN
-        Node activateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "activate", NodeTypes.ContentNode.NAME);
-        Node duplicateAction = NodeUtil.createPath(session.getRootNode(), PagesModuleVersionHandler.PAGES_APP_ACTIONS + "duplicate", NodeTypes.ContentNode.NAME);
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activate", NodeTypes.ContentNode.NAME);
+        Node activateRecursiveAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", NodeTypes.ContentNode.NAME);
+        Node deactivateAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/deactivate", NodeTypes.ContentNode.NAME);
+        Node activateDeletionAction = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", NodeTypes.ContentNode.NAME);
 
         // WHEN
-        InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
 
         // THEN
-        assertThat(activateAction, hasNode("availability"));
-        assertThat(activateAction.getNode("availability"), hasProperty("writePermissionRequired", true));
-        assertThat(duplicateAction, hasNode("availability"));
-        assertThat(duplicateAction.getNode("availability"), hasProperty("writePermissionRequired", true));
-        this.assertNoMessages(ctx);
+        assertTrue(activateAction.hasNode("availability"));
+        Node availability = activateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(activateRecursiveAction.hasNode("availability"));
+        availability = activateRecursiveAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(deactivateAction.hasNode("availability"));
+        availability = deactivateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(activateDeletionAction.hasNode("availability"));
+        availability = activateDeletionAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
     }
 
 }

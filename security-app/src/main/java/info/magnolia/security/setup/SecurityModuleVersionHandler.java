@@ -211,13 +211,18 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
                 .addTask(new NodeExistsDelegateTask("Reconfigure save action of user dialog", "/modules/security-app/dialogs/user/actions/commit",
                         new CheckAndModifyPropertyValueTask("/modules/security-app/dialogs/user/actions/commit", "class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition", "info.magnolia.security.app.dialog.action.SaveUserDialogActionDefinition")))
-
         );
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new ContentAppMigrationTask("/modules/security-app"))
                 .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass"))
-                .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "implementationClass")));
+                .addTask(new RemovePropertyTask("", "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "implementationClass"))
+                );
+
+        register(DeltaBuilder.update("5.3.1", "")
+                .addTask(new NewPropertyTask("Set security app role dialog to wide", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role","wide", true))
+                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions", new String[] { "activate", "deactivate" }))
+        );
     }
 
     @Override

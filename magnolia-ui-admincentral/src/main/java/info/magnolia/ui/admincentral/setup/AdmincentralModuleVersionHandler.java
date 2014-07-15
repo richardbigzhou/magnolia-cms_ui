@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import static info.magnolia.nodebuilder.Ops.*;
+
 import info.magnolia.cms.core.ItemType;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
@@ -41,6 +43,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.CheckOrCreatePropertyTask;
 import info.magnolia.module.delta.ConditionalDelegateTask;
 import info.magnolia.module.delta.CreateNodePathTask;
 import info.magnolia.module.delta.CreateNodeTask;
@@ -59,6 +62,8 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.nodebuilder.task.ErrorHandling;
+import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
 import info.magnolia.ui.admincentral.setup.for5_3.WidgetsetRelocationCondition;
@@ -82,6 +87,9 @@ import org.apache.jackrabbit.JcrConstants;
  * VersionHandler for the Admincentral module.
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    protected static final String UI_ACTIONS_IMPORT= "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
+    protected static final String UI_IMPORT_FIELD_NAME = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
 
     /**
      * Check if the activation module is install and correctly configured.
@@ -242,13 +250,23 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                         new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
                 ))));
-        
+
+        register(DeltaBuilder.update("5.2.7", "")
+                .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
+                        new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
+                                addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                        addProperty("root", true)
+                                )
+                        )
+                )
+                )
+                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME,
+                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME, "required", "true"))));
+
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
-                .addCondition(new WidgetsetRelocationCondition())
-
-        );
+                .addCondition(new WidgetsetRelocationCondition()));
     }
 
     @Override

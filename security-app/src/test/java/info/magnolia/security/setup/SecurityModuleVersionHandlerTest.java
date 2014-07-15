@@ -84,6 +84,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/apps/security/subApps/users/actions");
         setupConfigNode("/modules/security-app/apps/security/subApps/groups/actions");
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/actions");
+
+        // for 5.3.1 update:
+        setupConfigNode("/modules/security-app/dialogs/role");
     }
 
     @Override
@@ -445,6 +448,27 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+    }
+
+    @Test
+    public void updateFrom53SetsWritePermissionForUsersSubappActions() throws Exception {
+        // GIVEN
+        Node activateAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/activate", NodeTypes.ContentNode.NAME);
+        Node deactivateAction = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/deactivate", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertTrue(activateAction.hasNode("availability"));
+        Node availability = activateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+
+        assertTrue(deactivateAction.hasNode("availability"));
+        availability = deactivateAction.getNode("availability");
+        assertTrue(availability.hasProperty("writePermissionRequired"));
+        assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
     }
 
 }

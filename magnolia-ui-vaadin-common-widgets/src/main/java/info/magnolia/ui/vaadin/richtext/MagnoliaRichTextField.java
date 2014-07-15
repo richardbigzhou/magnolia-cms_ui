@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
-import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
@@ -73,6 +72,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
         super(config);
         this.config = config;
         serverPlugins = config.getServerPlugins();
+        customEvents = config.getListenedEvents();
     }
 
     @Override
@@ -80,13 +80,6 @@ public class MagnoliaRichTextField extends CKEditorTextField {
         super.changeVariables(source, variables);
 
         if (config != null && config.getListenedEvents().length > 0) {
-            // Editor is ready
-            if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
-                customEvents = config.getListenedEvents();
-
-                requestRepaint();
-            }
-
             // See if client sends events
             for (String eventName : config.getListenedEvents()) {
                 String eventNameResolved = VMagnoliaRichTextField.VAR_EVENT_PREFIX + eventName;
@@ -122,15 +115,13 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
 
+        if (serverPlugins != null) {
+            target.addAttribute(VMagnoliaRichTextField.VAR_SERVERPLUGINS, serverPlugins);
+        }
+
         // tell client that server is interested of these events
         if (customEvents != null) {
             target.addAttribute(VMagnoliaRichTextField.VAR_EVENTNAMES, customEvents);
-            customEvents = null;
-        }
-
-        if (serverPlugins != null) {
-            target.addAttribute(VMagnoliaRichTextField.VAR_SERVERPLUGINS, serverPlugins);
-            serverPlugins = null;
         }
 
         // send event to plugin
