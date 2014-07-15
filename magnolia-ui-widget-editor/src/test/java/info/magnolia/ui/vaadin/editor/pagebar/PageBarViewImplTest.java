@@ -34,12 +34,12 @@
 package info.magnolia.ui.vaadin.editor.pagebar;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyList;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.test.mock.MockWebContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -86,7 +86,7 @@ public class PageBarViewImplTest {
         }
 
         CssLayout layout = pagebarviewer.getLayout();
-        List<Locale> locales = anyList();
+        List<Locale> locales = new ArrayList<Locale>();
         locales.add(localeProvider.getLocale());
 
         // WHEN
