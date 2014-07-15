@@ -51,6 +51,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 
 /**
+ * Tests for {@link PageBarViewImpl}.
  */
 public class PageBarViewImplTest {
 
@@ -79,13 +80,13 @@ public class PageBarViewImplTest {
     public void testAvailableLocales() throws Exception {
         // GIVEN
         MgnlContext.setLocale(Locale.ENGLISH);
-        String label= localeProvider.getLocale().getDisplayLanguage(MgnlContext.getLocale());
+        String label = localeProvider.getLocale().getDisplayLanguage(MgnlContext.getLocale());
         if (!localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
             label += " (" + localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()) + ")";
         }
 
         CssLayout layout = (CssLayout) pagebarviewer.iterator().next();
-        List<Locale> locales= anyList();
+        List<Locale> locales = anyList();
         locales.add(localeProvider.getLocale());
 
         // WHEN
