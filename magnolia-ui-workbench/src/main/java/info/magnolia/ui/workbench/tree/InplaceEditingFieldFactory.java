@@ -121,7 +121,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         }
 
         Class<?> type = containerProperty.getType();
-        Field<?> field = createFieldByPropertyType(type);
+        Field<?> field = createFieldByPropertyType(itemId, propertyId, type);
         if (field != null) {
             field.setCaption(DefaultFieldFactory.createCaptionByPropertyId(propertyId));
             field.setSizeFull();
@@ -148,7 +148,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         return field;
     }
 
-    private Field<?> createFieldByPropertyType(Class<?> type) {
+    protected Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
         if (type == null) {
             return null;
         }
