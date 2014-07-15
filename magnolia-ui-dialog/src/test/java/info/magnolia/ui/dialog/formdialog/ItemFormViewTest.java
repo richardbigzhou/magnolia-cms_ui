@@ -34,7 +34,6 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
@@ -44,6 +43,7 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -93,7 +93,7 @@ public class ItemFormViewTest {
         formviewer.setActionAreaView(new EditorActionAreaViewImpl());
         HorizontalLayout layout = (HorizontalLayout) formviewer.getActionAreaView().asVaadinComponent();
         CssLayout toolbar = (CssLayout) layout.getComponent(0);
-        List<Locale> locales= anyList();
+        List<Locale> locales= new ArrayList<Locale>();
         locales.add(localeProvider.getLocale());
 
         // WHEN
