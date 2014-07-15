@@ -80,7 +80,7 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 if (listener != null) {
-                    listener.platformSelected((PlatformType)event.getProperty().getValue());
+                    listener.platformSelected((PlatformType) event.getProperty().getValue());
                 }
             }
         });
@@ -130,7 +130,7 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
         if (locales != null && !locales.isEmpty()) {
             languageSelector.removeAllItems();
             for (Locale locale : locales) {
-                String label= locale.getDisplayLanguage(MgnlContext.getLocale());
+                String label = locale.getDisplayLanguage(MgnlContext.getLocale());
                 if (!locale.getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
                     label += " (" + locale.getDisplayCountry(MgnlContext.getLocale()) + ")";
                 }
