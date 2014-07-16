@@ -34,7 +34,9 @@
 package info.magnolia.pages.app.editor;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
@@ -67,6 +69,7 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
@@ -76,10 +79,13 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.After;
@@ -109,13 +115,14 @@ public class PagesEditorSubAppTest {
     private ConfiguredEditorDefinition editorDefinition;
     private StatusBarView statusBarView;
     private PagesEditorSubApp editor;
+    private Session session;
 
     @Before
     public void setUp() throws Exception {
 
         // GIVEN
         MockWebContext ctx = new MockWebContext();
-        Session session = mock(Session.class);
+        session = mock(Session.class);
         MockNode component = new MockNode();
         component.setProperty(NodeTypes.Renderable.TEMPLATE, "someTemplate");
         when(session.getNode(anyString())).thenReturn(component);
@@ -331,4 +338,46 @@ public class PagesEditorSubAppTest {
         // THEN
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
     }
+
+    @Test
+    public void testDifferentI18NContentSupportSettingsForDifferentPages() throws RepositoryException {
+        // GIVEN
+        List<Locale> locales1 = Arrays.asList(new Locale[] {Locale.GERMAN, Locale.FRENCH});
+        List<Locale> locales2 = Arrays.asList(new Locale[] {Locale.ENGLISH, Locale.JAPAN});
+        MockNode node1 = new MockNode();
+        MockNode node2 = new MockNode();
+        when(session.getNode("/test1")).thenReturn(node1);
+        when(session.getNode("/test2")).thenReturn(node2);
+
+        i18nContentSupport = mock(I18nContentSupport.class);
+        when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
+        ComponentsTestUtil.setInstance(I18nContentSupport.class, i18nContentSupport);
+
+        DefaultI18NAuthoringSupport i18NAuthoringSupport = mock(DefaultI18NAuthoringSupport.class);
+        when(i18NAuthoringSupport.createI18NURI(eq(node1), any(Locale.class))).thenReturn("/test1");
+        when(i18NAuthoringSupport.createI18NURI(eq(node2), any(Locale.class))).thenReturn("/test2");
+        when(i18NAuthoringSupport.getAvailableLocales(node1)).thenReturn(locales1);
+        when(i18NAuthoringSupport.getAvailableLocales(node2)).thenReturn(locales2);
+        when(i18NAuthoringSupport.getDefaultLocale(node1)).thenReturn(Locale.GERMAN);
+        when(i18NAuthoringSupport.getDefaultLocale(node2)).thenReturn(Locale.ENGLISH);
+
+        editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus,
+                pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport,
+                versionManager, i18n, statusBarView);
+
+        // WHEN
+        editor.start(new PagesLocation("/test1:edit"));
+
+        // THEN
+        verify(pageBarView).setAvailableLanguages(locales1);
+        verify(pageBarView).setCurrentLanguage(Locale.GERMAN);
+
+        // WHEN
+        editor.locationChanged(new PagesLocation("/test2:view"));
+
+        // THEN
+        verify(pageBarView).setAvailableLanguages(locales2);
+        verify(pageBarView).setCurrentLanguage(Locale.ENGLISH);
+    }
+
 }

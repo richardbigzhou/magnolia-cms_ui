@@ -166,7 +166,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
-        this.currentLocale = i18nContentSupport.getLocale();
         this.versionManager = versionManager;
         this.i18n = i18n;
         view.setListener(this);
@@ -306,11 +305,30 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     private void updatePageBarAvailableLanguages(DetailLocation location) {
-        Node node = SessionUtil.getNode(workspace, location.getNodePath());
-        List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
-        pageBarView.setAvailableLanguages(locales);
-        Locale locale = currentLocale != null ? currentLocale : i18nContentSupport.getLocale();
-        pageBarView.setCurrentLanguage(locale);
+        try {
+            Node node = MgnlContext.getJCRSession(workspace).getNode(location.getNodePath());
+            List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
+            pageBarView.setAvailableLanguages(locales);
+            Locale locale = currentLocale != null && locales.contains(currentLocale) ? currentLocale : getDefaultLocale(node);
+            pageBarView.setCurrentLanguage(locale);
+        } catch (RepositoryException e) {
+            log.error("Unable to get node [{}] from workspace [{}]", location.getNodePath(), workspace, e);
+        }
+    }
+
+    /**
+     * Returns the default locale for the given page.
+     *
+     * TODO: Once {@link DefaultI18NAuthoringSupport#getDefaultLocale(javax.jcr.Node)} is added to {@link I18NAuthoringSupport} this method should go.
+     */
+    private Locale getDefaultLocale(Node node) {
+        Locale locale;
+        if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
+            locale = ((DefaultI18NAuthoringSupport)i18NAuthoringSupport).getDefaultLocale(node);
+        } else {
+            locale = i18nContentSupport.getDefaultLocale();
+        }
+        return locale;
     }
 
     private void setPageEditorParameters(DetailLocation location) {
