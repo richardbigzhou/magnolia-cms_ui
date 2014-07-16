@@ -309,7 +309,7 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
      */
     protected Component getFileDetailFileName() {
         if (this.editFileName && !isReadOnly()) {
-            final TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
+            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailNameCaption));
             textField.addValueChangeListener(new ValueChangeListener() {

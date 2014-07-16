@@ -72,7 +72,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryValue;
 import org.junit.After;
@@ -143,7 +142,7 @@ public class FileTransformerTest {
 
         // THEN
         assertNotNull(property);
-        assertTrue(StringUtils.isBlank(property.getFileName()));
+        assertEquals(UploadReceiver.INVALID_FILE_NAME, property.getFileName());
         assertEquals(0l, property.getFileSize());
     }
 
