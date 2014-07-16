@@ -139,6 +139,37 @@ public class UploadReceiverTest {
     }
 
     @Test
+    public void testGetFileNameInvalid() {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("", "image/jpeg");
+        uploadReceiver.setValue(uploadFile);
+
+        // WHEN
+        String res = uploadReceiver.getFileName();
+
+        // THEN
+        assertNotNull(res);
+        assertEquals(UploadReceiver.INVALID_FILE_NAME, res);
+    }
+
+    @Test
+    public void testSetFileName() {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
+        uploadReceiver.setValue(uploadFile);
+        uploadReceiver.setFileName("newMe.jpg");
+
+        // WHEN
+        String res = uploadReceiver.getFileName();
+
+        // THEN
+        assertNotNull(res);
+        assertEquals("newMe.jpg", res);
+    }
+
+    @Test
     public void testGetFileSize() {
         // GIVEN
         uploadReceiver = new UploadReceiver(directory, i18n);

@@ -37,9 +37,11 @@ import info.magnolia.cms.util.PathUtil;
 import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
+import java.io.OutputStream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
 import org.vaadin.easyuploads.UploadField.FieldType;
@@ -54,6 +56,8 @@ public class UploadReceiver extends FileBuffer {
     private static final long serialVersionUID = 1L;
     private File directory;
     private final SimpleTranslator i18n;
+    public static final String INVALID_FILE_NAME = "untitled";
+    private String fileName;
 
     @Inject
     public UploadReceiver(File directory, SimpleTranslator i18n) {
@@ -64,12 +68,21 @@ public class UploadReceiver extends FileBuffer {
     }
 
     @Override
+    public OutputStream receiveUpload(String filename, String MIMEType) {
+        this.fileName = filename;
+        return super.receiveUpload(filename, MIMEType);
+    }
+
+    @Override
     public FileFactory getFileFactory() {
         return new DefaultFileFactory(directory, i18n);
     }
 
     public String getFileName() {
-        return this.getLastFileName();
+        if (StringUtils.isBlank(this.fileName) || StringUtils.isBlank(PathUtil.getExtension(this.fileName))) {
+            return INVALID_FILE_NAME;
+        }
+        return this.fileName;
     }
 
     public long getFileSize() {
@@ -82,6 +95,10 @@ public class UploadReceiver extends FileBuffer {
 
     public String getExtension() {
         return PathUtil.getExtension(getFileName());
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
 }
