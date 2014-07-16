@@ -71,7 +71,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     /**
      * Returns the available locales for the given page, area or component node.<br>
-     * Please note though that this default implementation exclusively resolves locales through {@link i18nContentSupport},
+     * Please note though that this default implementation exclusively resolves locales through {@link #i18nContentSupport},
      * i.e. as configured in /server/i18n/content/locales, regardless of the passed node.
      *
      * @return the list of locales if both i18nAuthoringSupport and i18nContentSupport are enabled, <code>null</code> otherwise.
@@ -80,6 +80,18 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     public List<Locale> getAvailableLocales(Node node) {
         if (enabled && i18nContentSupport.isEnabled()) {
             return new ArrayList<Locale>(i18nContentSupport.getLocales());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the default locale for the given page, area or component node.
+     *
+     * TODO: create interface method in {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}
+     */
+    public Locale getDefaultLocale(Node node) {
+        if (enabled && i18nContentSupport.isEnabled()) {
+            return i18nContentSupport.getDefaultLocale();
         }
         return null;
     }
@@ -170,4 +182,5 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     public void setAuthorLocale(Locale locale) {
         this.authorLocale = locale;
     }
+
 }
