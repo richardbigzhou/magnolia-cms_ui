@@ -309,9 +309,16 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
      */
     protected Component getFileDetailFileName() {
         if (this.editFileName && !isReadOnly()) {
-            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
+            final TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailNameCaption));
+            textField.addValueChangeListener(new ValueChangeListener() {
+                @Override
+                public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                    getValue().setFileName(event.getProperty().getValue().toString());
+                    getPropertyDataSource().setValue(getValue());
+                }
+            });
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
