@@ -4,6 +4,7 @@
 @import "user-menu";
 @import "../magnolia/magnolia.scss";
 @import "../workbench/workbench.scss";
+@import "stubview.scss";
 
 @import "overlay/overlay-admincentral.scss";
 
@@ -35,3 +36,4 @@
 @include ui-app-pages;
 @include about-app;
 @include dependencies;
+@include stubview;

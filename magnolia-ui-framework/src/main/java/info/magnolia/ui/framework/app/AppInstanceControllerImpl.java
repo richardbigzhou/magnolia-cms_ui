@@ -70,6 +70,8 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.stub.FailedAppStub;
+import info.magnolia.ui.framework.app.stub.FailedSubAppStub;
 import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.overlay.OverlayPresenter;
@@ -215,11 +217,17 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
             shell.openNotification(MessageStyleTypeEnum.WARNING, false, i18n.translate("ui-framework.memoryLimitWarningMessage.template",memoryMessageCloseApps));
         }
 
-        app = componentProvider.newInstance(appDescriptor.getAppClass());
-        app.start(location);
+        try {
+            app = componentProvider.newInstance(appDescriptor.getAppClass());
+            app.start(location);
 
-        if (StringUtils.isNotBlank(appDescriptor.getTheme())) {
-            app.getView().setTheme(appDescriptor.getTheme());
+            if (StringUtils.isNotBlank(appDescriptor.getTheme())) {
+                app.getView().setTheme(appDescriptor.getTheme());
+            }
+        } catch (final Exception e) {
+            log.error("App {} failed to start: {}", appDescriptor.getName(), e.getMessage(), e);
+            app = componentProvider.newInstance(FailedAppStub.class, this, e);
+            app.start(location);
         }
 
         // Get icon colors from appLauncherLayoutManager
@@ -368,12 +376,23 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         if (subAppClass == null) {
             log.warn("Sub App {} doesn't define its sub app class or class doesn't exist or can't be instantiated.", subAppDescriptor.getName());
         } else {
-            SubApp subApp = subAppDetails.componentProvider.newInstance(subAppClass);
-            subAppContext.setSubApp(subApp);
+            SubApp subApp;
+            View subAppView;
+            boolean closable = true;
+            try {
+                subApp = subAppDetails.componentProvider.newInstance(subAppClass);
+                subAppContext.setSubApp(subApp);
+                subAppView = subApp.start(location);
+                closable = allowClose && subApp.isCloseable();
+            } catch (Exception e) {
+                log.error("Sub-app {} failed to start: {}", subAppDescriptor.getName(), e.getMessage(), e);
+                closeSubApp(subAppDescriptor.getName());
+                subAppDetails.eventBusProtector.resetEventBuses();
 
-            View subAppView = subApp.start(location);
-
-            boolean closable = allowClose && subApp.isCloseable();
+                subApp = subAppDetails.componentProvider.newInstance(FailedSubAppStub.class, e);
+                subAppView = subApp.start(location);
+                subAppContext.setSubApp(subApp);
+            }
 
             String instanceId = app.getView().addSubAppView(subAppView, subApp.getCaption(), closable);
 
