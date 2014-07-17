@@ -88,7 +88,7 @@ import org.apache.jackrabbit.JcrConstants;
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
     protected static final String UI_ACTIONS_IMPORT = "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
-    protected static final String UI_IMPORT_FIELD_NAME = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
+    protected static final String UI_IMPORT_FIELD = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
 
     /**
      * Check if the activation module is install and correctly configured.
@@ -253,13 +253,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
                         new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
-                                        addProperty("root", true)
-                                )
-                        )
-                )
-                )
-                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME,
-                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME, "required", "true")))
+                                        addProperty("root", true)))))
+                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD,
+                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true")))
         );
     }
 
