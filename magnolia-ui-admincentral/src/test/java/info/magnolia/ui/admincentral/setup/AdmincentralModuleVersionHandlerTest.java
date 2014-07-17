@@ -544,13 +544,14 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(moveAvailability.getProperty("properties").getBoolean());
 
     }
+
     @Test
-    public void testConfigurationUiImportFieldName() throws Exception {
+    public void testUpdateFrom531MakesImportFieldMandatory() throws Exception {
         // GIVEN
         NodeUtil.createPath(session.getRootNode(),AdmincentralModuleVersionHandler.UI_IMPORT_FIELD_NAME, NodeTypes.ContentNode.NAME);
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.4"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.1"));
 
         // THEN
         assertTrue(session.propertyExists(AdmincentralModuleVersionHandler.UI_IMPORT_FIELD_NAME + "/required"));

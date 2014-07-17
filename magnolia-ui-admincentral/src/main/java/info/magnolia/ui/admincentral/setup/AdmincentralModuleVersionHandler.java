@@ -255,18 +255,19 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
                         new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
-                                        addProperty("root", true)
-                                )
-                        )
-                )
-                )
-                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME,
-                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME, "required", "true"))));
+                                        addProperty("root", true)))))
+        );
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
-                .addCondition(new WidgetsetRelocationCondition()));
+                .addCondition(new WidgetsetRelocationCondition())
+        );
+
+        register(DeltaBuilder.update("5.3.2", "")
+                .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME,
+                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD_NAME, "required", "true")))
+        );
     }
 
     @Override
