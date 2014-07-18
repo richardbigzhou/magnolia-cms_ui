@@ -23,6 +23,11 @@
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
     </dependency>
     <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>

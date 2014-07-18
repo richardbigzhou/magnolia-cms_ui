@@ -57,11 +57,13 @@ import info.magnolia.module.delta.OrderNodeBeforeTask;
 import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
+import info.magnolia.module.delta.PropertyValueDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.module.delta.WarnTask;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
@@ -89,7 +91,7 @@ import org.apache.jackrabbit.JcrConstants;
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
-    protected static final String UI_ACTIONS_IMPORT= "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
+    protected static final String UI_ACTIONS_IMPORT = "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
     protected static final String UI_IMPORT_FIELD = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
 
     /**
@@ -174,7 +176,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Conditional removal of the node /modules/ui-framework/config", "Removes the node /modules/ui-framework/config if it exists (it should empty)", RepositoryConstants.CONFIG, "/modules/ui-framework/config", new RemoveNodeTask("Removing the empty node /modules/ui-framework/config", "Removes the empty node /modules/ui-framework/config", RepositoryConstants.CONFIG, "/modules/ui-framework/config")))
                 .addTask(new RemoveHardcodedI18nPropertiesFromAdmincentralTask())
 
-                        // update vaadin servlet params (we inject a custom UIProvider instead)
+                // update vaadin servlet params (we inject a custom UIProvider instead)
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
 
@@ -242,7 +244,6 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new OrderNodeToFirstPositionTask("Order edit user profile action to first position in user menu", "modules/ui-admincentral/config/userMenu/actions/editUserProfile")))
                 .addTask(new CheckAndModifyPropertyValueTask("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", "info.magnolia.ui.contentapp.ContentAppDescriptor")));
 
-
         register(DeltaBuilder.update("5.2.5", "")
                 .addTask(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
                         new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive",
@@ -250,31 +251,48 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                         new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
-                ))));
+                        ))));
 
         register(DeltaBuilder.update("5.2.7", "")
                 .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
                         new NodeBuilderTask("Allow import action at root level in configuration and STK apps", "", ErrorHandling.logging, RepositoryConstants.CONFIG, UI_ACTIONS_IMPORT,
                                 addNode("availability", NodeTypes.ContentNode.NAME).then(
-                                        addProperty("root", true)))))
-        );
+                                        addProperty("root", true))))));
 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench", "dropConstraintClass", "info.magnolia.ui.workbench.tree.drop.NodesAndPropsDropConstraint"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
-                .addCondition(new WidgetsetRelocationCondition())
-        );
+                .addCondition(new WidgetsetRelocationCondition()));
 
         register(DeltaBuilder.update("5.3.2", "")
                 .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD,
-                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true")))
-        );
+                        new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true"))));
         register(DeltaBuilder.update("5.3.4", "")
-                .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion"))
-        );
+                .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
         register(DeltaBuilder.update("5.3.6", "")
-                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/ui-admincentral/apps/"))
-        );
+                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/")));
+        register(DeltaBuilder.update("5.4", "")
+                .addTask(new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
+                        "Change the Configuration App's tree to one with auto-suggest by configuring the app to use a different tree presenter",
+                        "config",
+                        "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree",
+                        "class",
+                        "info.magnolia.ui.workbench.tree.TreePresenterDefinition",
+                        false,
+                        new PropertyExistsDelegateTask("Check that the autoSuggesterClass property does not already exist",
+                                "Check that the autoSuggesterClass property does not already exist",
+                                "config",
+                                "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree",
+                                "autoSuggesterClass",
+                                new WarnTask("Could not change Configuration App's tree to one with auto-suggest",
+                                        "Could not change Configuration App's tree to one with auto-suggest because tree view's autoSuggesterClass property already exists"
+                                ),
+                                new ArrayDelegateTask("Change the Configuration App's tree to one with auto-suggest",
+                                        new SetPropertyTask("config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "class", "info.magnolia.ui.workbench.autosuggest.AutoSuggestTreePresenterDefinition"),
+                                        new SetPropertyTask("config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "autoSuggesterClass", "info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp")
+                                )
+                        ),
+                        new WarnTask("Could not change Configuration App's tree to one with auto-suggest", "Could not change Configuration App's tree to one with auto-suggest because tree view's class property does not exist or is not the expected value"))));
     }
 
     @Override
