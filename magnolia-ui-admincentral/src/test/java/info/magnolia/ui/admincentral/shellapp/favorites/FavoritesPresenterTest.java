@@ -33,29 +33,28 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static info.magnolia.ui.framework.AdmincentralNodeTypes.Favorite.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlUserManager;
-import info.magnolia.cms.security.Realm;
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.SecuritySupportImpl;
-import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.net.URI;
@@ -63,92 +62,79 @@ import java.net.URISyntaxException;
 import java.util.Locale;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 /**
- * Tests.
+ * Tests for the {@link FavoritesPresenter}.
  */
 public class FavoritesPresenterTest {
-
-    public static final String TEST_USER = "MickeyMouse";
-    public static final String SERVER_NAME = "localhost";
-    public static final int SERVER_PORT = 8080;
-    public static final String WEBAPP_CONTEXT_PATH = "/myWebApp";
-    public static final String FULL_PROTOCOL = "HTTP/1.1";
-    public static final String PROTOCOL = "http";
-    public static final String FRAGMENT = "/.magnolia/admincentral#app:pages:;";
-
-    public static final String WEB_APP_URL = PROTOCOL + "://" + SERVER_NAME + ":" + SERVER_PORT + WEBAPP_CONTEXT_PATH;
 
     private MockSession session;
     private MockWebContext ctx;
     private FavoritesPresenter presenter;
 
-    private I18nizer i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new ContextLocaleProvider() {
-        @Override
-        public Locale getLocale() {
-            return Locale.ENGLISH;
-        }
-    });
-
     @Before
-    public void setUp() throws RegistrationException {
-        session = new MockSession(FavoriteStore.WORKSPACE_NAME);
+    public void setUp() throws RegistrationException, URISyntaxException {
+
         ctx = new MockWebContext();
-        final User user = mock(User.class);
-        when(user.getName()).thenReturn(TEST_USER);
-        ctx.setUser(user);
-        ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
-
-        final SecuritySupportImpl sec = new SecuritySupportImpl();
-
-        MgnlUserManager userMgr = new MgnlUserManager() {
-            {
-                setName(Realm.REALM_SYSTEM.getName());
-            }
-            @Override
-            public User getSystemUser() {
-                return user;
-            }
-        };
-        sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
-        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
-        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
-
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn(FULL_PROTOCOL);
-        when(request.getServerName()).thenReturn(SERVER_NAME);
-        when(request.getServerPort()).thenReturn(SERVER_PORT);
-        ctx.setRequest(request);
-
-        ctx.setContextPath(WEBAPP_CONTEXT_PATH);
-
         MgnlContext.setInstance(ctx);
 
-        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
+        session = new MockSession(FavoriteStore.WORKSPACE_NAME);
+        ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
+
+        FavoritesView view = mock(FavoritesView.class);
+
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        doAnswer(new Answer<JcrNewNodeAdapter>() {
+
+            @Override
+            public JcrNewNodeAdapter answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(session.getRootNode(), NAME);
+                newFavorite.addItemProperty(TITLE, new ObjectProperty<String>((String) args[1]));
+                newFavorite.addItemProperty(URL, new ObjectProperty<String>((String) args[0]));
+                newFavorite.addItemProperty(ICON, new ObjectProperty<String>(StringUtils.defaultIfEmpty((String) args[2], "icon-app")));
+                return newFavorite;
+            }
+        }).when(favoritesManager).createFavoriteSuggestion(anyString(), anyString(), anyString());
 
         /**
          * We mock a sample descriptor that would be returned when favorites presenter will ask.
          * We do not set the name/title for sake of testing the i18n functionality.
          */
+        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
+        descriptor.setName("favoritesRandomApp");
         doReturn(descriptor).when(registry).getAppDescriptor(anyString());
+        I18nizer i18nizer = mock(I18nizer.class); // simple I18nizer mock which only decorates based on appDescriptor name
+        doAnswer(new Answer<AppDescriptor>() {
 
-        presenter = new FavoritesPresenter(null, new FavoritesManagerImpl(new FavoriteStore()),registry, i18nizer);
-        initializeVaadinUI();
+            @Override
+            public AppDescriptor answer(InvocationOnMock invocation) throws Throwable {
+                ConfiguredAppDescriptor appDescriptor = (ConfiguredAppDescriptor) invocation.getArguments()[0];
+                appDescriptor.setIcon("icon-" + appDescriptor.getName());
+                appDescriptor.setLabel(StringUtils.capitalize(appDescriptor.getName()));
+                return appDescriptor;
+            }
+        }).when(i18nizer).decorate(any());
+
+        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer);
     }
 
     @After
     public void tearDown() {
+        ComponentsTestUtil.clear();
         MgnlContext.setInstance(null);
     }
 
@@ -158,40 +144,48 @@ public class FavoritesPresenterTest {
      * @throws RepositoryException
      */
     @Test
-    public void checkDeterminePreviousLocationDoesNotContainNull() throws RepositoryException {
-        //WHEN
+    public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException, URISyntaxException {
+        // GIVEN
+        initializeVaadinUI();
+
+        // WHEN
         JcrNodeAdapter node = presenter.determinePreviousLocation();
         node.applyChanges();
 
-        //THEN
-        assert(!node.getItemProperty("title").getValue().toString().startsWith("null"));
+        // THEN
+        assertThat(node.getJcrItem(), hasProperty("title"));
+        assertThat(node.getJcrItem().getProperty("title").getString(), not(containsString("null")));
     }
 
     @Test
     public void testGetWebAppRootURI() throws Exception{
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
         final String result = presenter.getWebAppRootURI();
 
         // THEN
-        assertThat(result, equalTo(WEB_APP_URL));
+        assertThat(result, equalTo("http://localhost:8080/myWebApp/.magnolia/admincentral"));
     }
 
     @Test
     public void testGetCompleteURIFromFragment() throws Exception {
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
-        final String result = presenter.getCompleteURIFromFragment(FRAGMENT);
+        final String result = presenter.getCompleteURIFromFragment("#app:pages:browser;/:treeview:");
 
         // THEN
-        assertThat("Fragment should have been completed.", result, equalTo(WEB_APP_URL + FRAGMENT));
+        assertThat("Fragment should have been completed.", result, equalTo("http://localhost:8080/myWebApp/.magnolia/admincentral#app:pages:browser;/:treeview:"));
     }
 
     @Test
-    public void testGetCompleteURIFromFragmentWithAbsoluteURI() {
+    public void testGetCompleteURIFromFragmentWithAbsoluteURI() throws URISyntaxException {
         // GIVEN
+        initializeVaadinUI();
+
         final String completeUri = "http://www.magnolia-cms.com/magnolia-cms.html";
 
         // WHEN
@@ -199,23 +193,70 @@ public class FavoritesPresenterTest {
 
         // THEN
         assertThat("Complete URIs should be returned unchanged.", result, equalTo(completeUri));
-
-
     }
 
     @Test
     public void testGetUrlFragmentFrom() throws Exception {
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
-        final String result = presenter.getUrlFragmentFromURI(new URI(WEB_APP_URL + FRAGMENT));
+        final String result = presenter.getUrlFragmentFromURI(new URI("http://localhost:8080/myWebApp/.magnolia/admincentral#app:pages:detail;/demo-project/about:edit"));
 
         // THEN
-        assertThat(result, equalTo(FRAGMENT));
+        assertThat(result, equalTo("#app:pages:detail;/demo-project/about:edit"));
     }
 
+    @Test
+    public void testGetUrlFragmentFromHttps() throws Exception {
+        // GIVEN
+        String webAppUri = "https://localhost/myWebApp/.magnolia/admincentral";
+        initializeVaadinUI(new URI(webAppUri));
 
-    private void initializeVaadinUI() {
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getUrlFragmentFromURI(new URI(webAppUri + fragment));
+
+        // THEN
+        assertThat(result, equalTo(fragment));
+    }
+
+    @Test
+    public void testGetUrlFragmentWithQueryParameter() throws URISyntaxException {
+        // GIVEN
+        String webAppUri = "https://localhost/myWebApp/.magnolia/admincentral?restartApplication";
+        initializeVaadinUI(new URI(webAppUri));
+
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getUrlFragmentFromURI(new URI(webAppUri + fragment));
+
+        // THEN
+        assertThat(result, equalTo(fragment));
+    }
+
+    @Test
+    public void testGetCompleteUriFromFragmentWithInitialQueryParameter() throws URISyntaxException {
+        // GIVEN
+        String webAppUri = "https://localhost:443/myWebApp/.magnolia/admincentral?restartApplication";
+        initializeVaadinUI(new URI(webAppUri));
+
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getCompleteURIFromFragment(fragment);
+
+        // THEN
+        assertThat(result, equalTo(webAppUri + fragment));
+    }
+
+    private void initializeVaadinUI() throws URISyntaxException {
+        initializeVaadinUI(new URI("http://localhost:8080/myWebApp/.magnolia/admincentral#shell:applauncher:;"));
+    }
+
+    private void initializeVaadinUI(final URI returnURI) {
         UI.setCurrent(new UI() {
             @Override
             protected void init(VaadinRequest request) {
@@ -229,19 +270,10 @@ public class FavoritesPresenterTest {
             @Override
             public Page getPage() {
                 Page page = mock(Page.class);
-                try {
-                    doReturn(new URI("http://test:8080/.magnolia/admincentral#app:test:test;")).when(page).getLocation();
-                } catch (URISyntaxException e) {
-                }
+                doReturn(returnURI).when(page).getLocation();
                 return page;
             }
         });
-
-        VaadinSession session = mock(VaadinSession.class);
-        when(session.hasLock()).thenReturn(true);
-        UI.getCurrent().setSession(session);
-        UI.getCurrent().getSession().lock();
-
     }
 
     /**

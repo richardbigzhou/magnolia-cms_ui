@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -47,13 +46,13 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Page;
+import com.vaadin.ui.UI;
 
 /**
  * Presenter for Favorites.
@@ -210,10 +209,15 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     String getWebAppRootURI() {
-        final HttpServletRequest request = MgnlContext.getWebContext().getRequest();
-        final String fullProtocolString = request.getProtocol();
-        String instancePrefix = fullProtocolString.substring(0, fullProtocolString.indexOf("/")).toLowerCase() + "://" + request.getServerName() + ":" + request.getServerPort();
-        instancePrefix += MgnlContext.getContextPath();
+        final URI currentUri = UI.getCurrent().getPage().getLocation();
+        String instancePrefix = currentUri.getScheme() + "://" + currentUri.getHost();
+        if (currentUri.getPort() > -1) {
+            instancePrefix += ":" + currentUri.getPort();
+        }
+        instancePrefix += currentUri.getPath(); // Path contains the ctx
+        if (StringUtils.isNotBlank(currentUri.getQuery())) {
+            instancePrefix += "?" + currentUri.getQuery();
+        }
         return instancePrefix;
     }
 
@@ -230,7 +234,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         try {
             uri = new URI(fragment);
         } catch (URISyntaxException e) {
-            log.warn("Could not creat URI from fragment {}. Exception: {}", fragment, e.toString());
+            log.warn("Could not create URI from fragment {}. Exception: {}", fragment, e.toString());
         }
         if (uri == null || uri.isAbsolute()) {
             return fragment;
