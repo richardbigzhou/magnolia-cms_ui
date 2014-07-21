@@ -38,7 +38,8 @@ import static info.magnolia.ui.framework.AdmincentralNodeTypes.Favorite.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -61,7 +62,6 @@ import java.net.URISyntaxException;
 import java.util.Locale;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
@@ -80,31 +80,15 @@ import com.vaadin.ui.UI;
  */
 public class FavoritesPresenterTest {
 
-    public static final String SERVER_NAME = "localhost";
-    public static final int SERVER_PORT = 8080;
-    public static final String WEBAPP_CONTEXT_PATH = "/myWebApp";
-    public static final String FULL_PROTOCOL = "HTTP/1.1";
-    public static final String PROTOCOL = "http";
-    public static final String FRAGMENT = "/.magnolia/admincentral#app:pages:;";
-
-    public static final String WEB_APP_URL = PROTOCOL + "://" + SERVER_NAME + ":" + SERVER_PORT + WEBAPP_CONTEXT_PATH;
-
     private MockSession session;
     private MockWebContext ctx;
     private FavoritesPresenter presenter;
 
     @Before
-    public void setUp() throws RegistrationException {
+    public void setUp() throws RegistrationException, URISyntaxException {
 
         ctx = new MockWebContext();
         MgnlContext.setInstance(ctx);
-
-        ctx.setContextPath(WEBAPP_CONTEXT_PATH);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn(FULL_PROTOCOL);
-        when(request.getServerName()).thenReturn(SERVER_NAME);
-        when(request.getServerPort()).thenReturn(SERVER_PORT);
-        ctx.setRequest(request);
 
         session = new MockSession(FavoriteStore.WORKSPACE_NAME);
         ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
@@ -146,7 +130,6 @@ public class FavoritesPresenterTest {
         }).when(i18nizer).decorate(any());
 
         presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer);
-        initializeVaadinUI();
     }
 
     @After
@@ -161,12 +144,15 @@ public class FavoritesPresenterTest {
      * @throws RepositoryException
      */
     @Test
-    public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException {
-        //WHEN
+    public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException, URISyntaxException {
+        // GIVEN
+        initializeVaadinUI();
+
+        // WHEN
         JcrNodeAdapter node = presenter.determinePreviousLocation();
         node.applyChanges();
 
-        //THEN
+        // THEN
         assertThat(node.getJcrItem(), hasProperty("title"));
         assertThat(node.getJcrItem().getProperty("title").getString(), not(containsString("null")));
     }
@@ -174,28 +160,32 @@ public class FavoritesPresenterTest {
     @Test
     public void testGetWebAppRootURI() throws Exception{
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
         final String result = presenter.getWebAppRootURI();
 
         // THEN
-        assertThat(result, equalTo(WEB_APP_URL));
+        assertThat(result, equalTo("http://localhost:8080/myWebApp/.magnolia/admincentral"));
     }
 
     @Test
     public void testGetCompleteURIFromFragment() throws Exception {
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
-        final String result = presenter.getCompleteURIFromFragment(FRAGMENT);
+        final String result = presenter.getCompleteURIFromFragment("#app:pages:browser;/:treeview:");
 
         // THEN
-        assertThat("Fragment should have been completed.", result, equalTo(WEB_APP_URL + FRAGMENT));
+        assertThat("Fragment should have been completed.", result, equalTo("http://localhost:8080/myWebApp/.magnolia/admincentral#app:pages:browser;/:treeview:"));
     }
 
     @Test
-    public void testGetCompleteURIFromFragmentWithAbsoluteURI() {
+    public void testGetCompleteURIFromFragmentWithAbsoluteURI() throws URISyntaxException {
         // GIVEN
+        initializeVaadinUI();
+
         final String completeUri = "http://www.magnolia-cms.com/magnolia-cms.html";
 
         // WHEN
@@ -203,21 +193,70 @@ public class FavoritesPresenterTest {
 
         // THEN
         assertThat("Complete URIs should be returned unchanged.", result, equalTo(completeUri));
-
     }
 
     @Test
     public void testGetUrlFragmentFrom() throws Exception {
         // GIVEN
+        initializeVaadinUI();
 
         // WHEN
-        final String result = presenter.getUrlFragmentFromURI(new URI(WEB_APP_URL + FRAGMENT));
+        final String result = presenter.getUrlFragmentFromURI(new URI("http://localhost:8080/myWebApp/.magnolia/admincentral#app:pages:detail;/demo-project/about:edit"));
 
         // THEN
-        assertThat(result, equalTo(FRAGMENT));
+        assertThat(result, equalTo("#app:pages:detail;/demo-project/about:edit"));
     }
 
-    private void initializeVaadinUI() {
+    @Test
+    public void testGetUrlFragmentFromHttps() throws Exception {
+        // GIVEN
+        String webAppUri = "https://localhost/myWebApp/.magnolia/admincentral";
+        initializeVaadinUI(new URI(webAppUri));
+
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getUrlFragmentFromURI(new URI(webAppUri + fragment));
+
+        // THEN
+        assertThat(result, equalTo(fragment));
+    }
+
+    @Test
+    public void testGetUrlFragmentWithQueryParameter() throws URISyntaxException {
+        // GIVEN
+        String webAppUri = "https://localhost/myWebApp/.magnolia/admincentral?restartApplication";
+        initializeVaadinUI(new URI(webAppUri));
+
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getUrlFragmentFromURI(new URI(webAppUri + fragment));
+
+        // THEN
+        assertThat(result, equalTo(fragment));
+    }
+
+    @Test
+    public void testGetCompleteUriFromFragmentWithInitialQueryParameter() throws URISyntaxException {
+        // GIVEN
+        String webAppUri = "https://localhost:443/myWebApp/.magnolia/admincentral?restartApplication";
+        initializeVaadinUI(new URI(webAppUri));
+
+        String fragment = "#app:pages:detail;/demo-project/about:edit;";
+
+        // WHEN
+        final String result = presenter.getCompleteURIFromFragment(fragment);
+
+        // THEN
+        assertThat(result, equalTo(webAppUri + fragment));
+    }
+
+    private void initializeVaadinUI() throws URISyntaxException {
+        initializeVaadinUI(new URI("http://localhost:8080/myWebApp/.magnolia/admincentral#shell:applauncher:;"));
+    }
+
+    private void initializeVaadinUI(final URI returnURI) {
         UI.setCurrent(new UI() {
             @Override
             protected void init(VaadinRequest request) {
@@ -231,10 +270,7 @@ public class FavoritesPresenterTest {
             @Override
             public Page getPage() {
                 Page page = mock(Page.class);
-                try {
-                    doReturn(new URI("http://test:8080/.magnolia/admincentral#app:test:test;")).when(page).getLocation();
-                } catch (URISyntaxException e) {
-                }
+                doReturn(returnURI).when(page).getLocation();
                 return page;
             }
         });
