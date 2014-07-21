@@ -134,12 +134,11 @@ public class UploadReceiverTest {
         String res = uploadReceiver.getFileName();
 
         // THEN
-        assertNotNull(res);
         assertEquals(uploadFile.getName(), res);
     }
 
     @Test
-    public void testGetFileNameInvalid() {
+    public void testGetDefaultFileName() {
         // GIVEN
         uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("", "image/jpeg");
@@ -149,7 +148,6 @@ public class UploadReceiverTest {
         String res = uploadReceiver.getFileName();
 
         // THEN
-        assertNotNull(res);
         assertEquals(UploadReceiver.INVALID_FILE_NAME, res);
     }
 

@@ -69,7 +69,7 @@ public class UploadReceiver extends FileBuffer {
 
     @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
-        this.fileName = filename;
+        setFileName(filename);
         return super.receiveUpload(filename, MIMEType);
     }
 
