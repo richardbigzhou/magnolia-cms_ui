@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.admincentral.usermenu.action;
 
-import info.magnolia.audit.AuditLoggingUtil;
-import info.magnolia.context.Context;
+import info.magnolia.cms.security.LogoutFilter;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.UserContext;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
@@ -54,13 +52,7 @@ public class LogoutAction extends AbstractAction<LogoutActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        Context ctx = MgnlContext.getInstance();
-        if (ctx instanceof UserContext) {
-            // log before actual op, to preserve username for logging
-            AuditLoggingUtil.log((UserContext) ctx);
-            ((UserContext) ctx).logout();
-        }
         UI.getCurrent().getSession().close();
-        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath());
+        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath() + "?" + LogoutFilter.PARAMETER_LOGOUT + "=true");
     }
 }
