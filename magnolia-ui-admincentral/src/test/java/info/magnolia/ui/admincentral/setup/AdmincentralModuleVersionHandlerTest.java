@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -65,7 +66,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class.
+ * Test class for {@link AdmincentralModuleVersionHandler}.
  */
 public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
@@ -544,14 +545,17 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     public void testUpdateFrom526MakesImportFieldMandatory() throws Exception {
         // GIVEN
         Node importField = NodeUtil.createPath(session.getRootNode(), AdmincentralModuleVersionHandler.UI_IMPORT_FIELD, NodeTypes.ContentNode.NAME);
+        Node websiteJCRBrowserWorkbench = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/workbench", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.6"));
 
         // THEN
-        assertTrue(importField.hasProperty("required"));
-        assertEquals(true, importField.getProperty("required").getBoolean());
+        assertThat(importField, hasProperty("required"));
+        assertThat(importField.getProperty("required").getBoolean(), is(true));
 
+        assertThat(websiteJCRBrowserWorkbench, hasProperty("includeSystemNodes"));
+        assertThat(websiteJCRBrowserWorkbench.getProperty("includeSystemNodes").getBoolean(), is(false));
     }
 
 }

@@ -256,6 +256,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                         addProperty("root", true)))))
                 .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD,
                         new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true")))
+                .addTask(new NodeExistsDelegateTask("Create 'includeSystemNodes' property for the websiteJCRBrowser", "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/workbench",
+                        new CheckOrCreatePropertyTask("Create 'includeSystemNodes' property for the websiteJCRBrowser", "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/workbench", "includeSystemNodes", "false")))
         );
     }
 
