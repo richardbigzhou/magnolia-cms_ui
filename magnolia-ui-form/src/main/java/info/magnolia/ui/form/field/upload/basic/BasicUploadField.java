@@ -309,14 +309,20 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
      * Else display a simple label.
      */
     protected Component getFileDetailFileName() {
+        // Build the file name without the extension
+        final String extension = "." + getValue().getExtension();
+        String fileName = StringUtils.removeEnd(getValue().getFileName(), extension);
+
         if (this.editFileName && !isReadOnly()) {
-            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), getValue().getFileName());
+            TextField textField = new TextField(i18n.translate(fileDetailNameCaption), fileName);
             textField.setNullRepresentation("");
             textField.setCaption(i18n.translate(fileDetailNameCaption));
             textField.addValueChangeListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(Property.ValueChangeEvent event) {
-                    getValue().setFileName(event.getProperty().getValue().toString());
+                    Object newFileNameObject = event.getProperty().getValue();
+                    String newFileName = (newFileNameObject != null && StringUtils.isNotBlank(newFileNameObject.toString())) ? newFileNameObject.toString() : UploadReceiver.INVALID_FILE_NAME;
+                    getValue().setFileName(newFileName + extension);
                     getPropertyDataSource().setValue(getValue());
                 }
             });
@@ -324,7 +330,7 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
         } else {
             Label label = new Label("", ContentMode.HTML);
             label.setCaption(i18n.translate(fileDetailNameCaption));
-            label.setValue(getValue().getFileName());
+            label.setValue(fileName);
             return label;
         }
     }

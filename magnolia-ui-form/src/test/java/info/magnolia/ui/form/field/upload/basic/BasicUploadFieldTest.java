@@ -43,10 +43,17 @@ import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 
 /**
  * Main test class for {@link BasicUploadField}.
@@ -56,6 +63,7 @@ public class BasicUploadFieldTest {
     private LocaleProvider localeProvider;
     private TranslationService translationService;
     private SimpleTranslator simpleTranslator;
+    private UploadReceiver receiver;
 
     @Before
     public void setUp() throws Exception {
@@ -72,6 +80,10 @@ public class BasicUploadFieldTest {
 
         setupTranslationServiceWith("field.upload.file.detail.header.media", "{0} detail");
         setupTranslationServiceWith("field.upload.note.success.media", "Your {0} has been uploaded successfully<br>{1}");
+
+        File tmp = File.createTempFile("tempfile", "");
+        tmp.deleteOnExit();
+        receiver = new UploadReceiver(tmp, simpleTranslator);
     }
 
     @Test
@@ -125,6 +137,60 @@ public class BasicUploadFieldTest {
         // THEN
         assertEquals("application detail", uploadField.getCaption("field.upload.file.detail.header", null));
         assertEquals("Your application has been uploaded successfully<br>/root/application", uploadField.getCaption("field.upload.note.success", new String[] { "/root/application" }));
+    }
+
+    @Test
+    public void displayFileNameWithoutExtension() throws IOException {
+        // GIVEN
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, new BasicUploadFieldDefinition(), simpleTranslator);
+        receiver.setFileName("me.jpg");
+        Property<UploadReceiver> property = new ObjectProperty<UploadReceiver>(receiver);
+
+        // WHEN
+        uploadField.setPropertyDataSource(property);
+
+        // THEN
+        Label label = (Label) uploadField.getFileDetailFileName();
+        assertEquals("me", label.getValue());
+    }
+
+    @Test
+    public void fileNameChangeIsPropagated() throws IOException {
+        // GIVEN
+        BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
+        definition.setEditFileName(true);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, definition, simpleTranslator);
+        receiver.setFileName("me.jpg");
+        Property<UploadReceiver> property = new ObjectProperty<UploadReceiver>(receiver);
+        uploadField.setPropertyDataSource(property);
+        TextField textField = (TextField) uploadField.getFileDetailFileName();
+        assertEquals("me", textField.getValue());
+
+        // WHEN
+        textField.setValue("newMe");
+
+        // THEN
+        assertEquals("newMe.jpg", receiver.getFileName());
+    }
+
+
+    @Test
+    public void inCaseOfInvalidNameADefaultNameIsPropagated() throws IOException {
+        // GIVEN
+        BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
+        definition.setEditFileName(true);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, definition, simpleTranslator);
+        receiver.setFileName("me.jpg");
+        Property<UploadReceiver> property = new ObjectProperty<UploadReceiver>(receiver);
+        uploadField.setPropertyDataSource(property);
+        TextField textField = (TextField) uploadField.getFileDetailFileName();
+        assertEquals("me", textField.getValue());
+
+        // WHEN
+        textField.setValue("");
+
+        // THEN
+        assertEquals(UploadReceiver.INVALID_FILE_NAME + ".jpg", receiver.getFileName());
     }
 
     private void setupTranslationServiceWith(String expectedKey, String desiredResult) {
