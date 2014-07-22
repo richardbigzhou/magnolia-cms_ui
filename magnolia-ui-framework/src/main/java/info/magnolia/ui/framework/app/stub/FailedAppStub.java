@@ -33,41 +33,50 @@
  */
 package info.magnolia.ui.framework.app.stub;
 
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.message.Message;
-import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.framework.app.BaseApp;
+import info.magnolia.ui.framework.app.DefaultAppView;
+
+import javax.inject.Inject;
 
 /**
- * FailedToStartSubAppStub.
- * TODO: Add proper JavaDoc.
+ * Stub {@link info.magnolia.ui.framework.app.BaseApp} extension showed in case an exception
+ * was thrown during the original app start-up phase. Displays a minimal view and sends the
+ * exception details to the Pulse in a form of a message.
  */
-public class FailedToStartSubAppStub extends BaseSubApp<StubView> {
+public class FailedAppStub extends BaseApp {
 
-    private Exception relatedException;
+    public static final String MSG_KEY = "ui-framework.app.start.failed";
 
-    public FailedToStartSubAppStub(SubAppContext subAppContext, Exception relatedException) {
-        super(subAppContext, new StubView("icon-warning"));
+    private Throwable relatedException;
+
+    private SimpleTranslator i18n;
+
+    @Inject
+    public FailedAppStub(final AppContext appContext, Throwable relatedException, SimpleTranslator i18n) {
+        super(appContext, new DefaultAppView());
         this.relatedException = relatedException;
+        this.i18n = i18n;
     }
 
     @Override
-    public StubView start(Location location) {
-        SubAppContext context = getSubAppContext();
-
-        String subAppName = context.getSubAppDescriptor().getName();
-        String message = String.format("%s sub-app failed to start", subAppName);
-
-        Message error = new Message(MessageType.ERROR, message, relatedException.getMessage());
-        context.getAppContext().sendLocalMessage(error);
-
-        return super.start(location);
+    public void locationChanged(Location location) {
+        // Do nothing
     }
 
     @Override
-    protected Location getCurrentLocation() {
-        return new DefaultLocation();
+    public void start(Location location) {
+        final String appName = appContext.getName();
+        final String message = i18n.translate(MSG_KEY, appName);
+
+        Message error = new ExceptionMessage(relatedException, message, i18n);
+        ((DefaultAppView)getView()).asVaadinComponent().addComponent(new StubView("icon-warning").asVaadinComponent());
+
+        appContext.sendLocalMessage(error);
     }
+
 }
+

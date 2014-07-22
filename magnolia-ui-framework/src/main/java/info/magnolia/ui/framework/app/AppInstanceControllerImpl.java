@@ -70,8 +70,8 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.app.stub.FailedToStartAppStub;
-import info.magnolia.ui.framework.app.stub.FailedToStartSubAppStub;
+import info.magnolia.ui.framework.app.stub.FailedAppStub;
+import info.magnolia.ui.framework.app.stub.FailedSubAppStub;
 import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.overlay.OverlayPresenter;
@@ -225,7 +225,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
                 app.getView().setTheme(appDescriptor.getTheme());
             }
         } catch (final Exception e) {
-            app = componentProvider.newInstance(FailedToStartAppStub.class, this, e);
+            log.error("App {} failed to start: {}", appDescriptor.getName(), e.getMessage(), e);
+            app = componentProvider.newInstance(FailedAppStub.class, this, e);
             app.start(location);
         }
 
@@ -384,11 +385,11 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
                 subAppView = subApp.start(location);
                 closable = allowClose && subApp.isCloseable();
             } catch (Exception e) {
-
+                log.error("Sub-app {} failed to start: {}", subAppDescriptor.getName(), e.getMessage(), e);
                 closeSubApp(subAppDescriptor.getName());
                 subAppDetails.eventBusProtector.resetEventBuses();
 
-                subApp = new FailedToStartSubAppStub(subAppContext, e);
+                subApp = subAppDetails.componentProvider.newInstance(FailedSubAppStub.class, e);
                 subAppView = subApp.start(location);
                 subAppContext.setSubApp(subApp);
             }
