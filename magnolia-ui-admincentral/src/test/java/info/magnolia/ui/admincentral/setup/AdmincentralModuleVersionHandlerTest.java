@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -66,7 +67,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class.
+ * Test class for {@link AdmincentralModuleVersionHandler}.
  */
 public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
@@ -542,7 +543,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertEquals(NodesAndPropsDropConstraint.class.getName(), workbench.getProperty("dropConstraintClass").getString());
         assertTrue(moveAvailability.hasProperty("properties"));
         assertTrue(moveAvailability.getProperty("properties").getBoolean());
-
     }
 
     @Test
@@ -554,9 +554,8 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.1"));
 
         // THEN
-        assertTrue(importField.hasProperty("required"));
-        assertEquals(true, importField.getProperty("required").getBoolean());
-
+        assertThat(importField, hasProperty("required"));
+        assertThat(importField.getProperty("required").getBoolean(), is(true));
     }
 
 }

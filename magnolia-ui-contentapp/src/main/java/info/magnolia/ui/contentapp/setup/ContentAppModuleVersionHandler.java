@@ -36,7 +36,9 @@ package info.magnolia.ui.contentapp.setup;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
+import info.magnolia.module.delta.CheckOrCreatePropertyTask;
 import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
@@ -48,6 +50,8 @@ import info.magnolia.ui.framework.setup.ReplaceSaveModeTypeFieldDefinitionTask;
  * Handles versioning for {@link info.magnolia.ui.contentapp.ContentAppModule}.
  */
 public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    public final static String UI_ADMINCENTRAL_CONTENTCONNECTOR = "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/contentConnector";
 
     private final String subAppsQuery = " select * from [nt:base] as t where name(t) = 'subApps' ";
 
@@ -67,6 +71,11 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
         register(DeltaBuilder.update("5.3", "")
                 .addTask(new BootstrapSingleResource("", "", "/mgnl-bootstrap/ui-contentapp/config.modules.ui-admincentral.apps.configuration.subApps.browser.actions.saveItemProperty.xml"))
                 .addTask(new ContentAppMigrationTask("/modules/ui-admincentral"))
+        );
+
+        register(DeltaBuilder.update("5.3.2", "")
+            .addTask(new NodeExistsDelegateTask("Create 'includeSystemNodes' property for the websiteJCRBrowser", UI_ADMINCENTRAL_CONTENTCONNECTOR,
+                    new CheckOrCreatePropertyTask("Create 'includeSystemNodes' property for the websiteJCRBrowser", UI_ADMINCENTRAL_CONTENTCONNECTOR, "includeSystemNodes", "false")))
         );
     }
 }

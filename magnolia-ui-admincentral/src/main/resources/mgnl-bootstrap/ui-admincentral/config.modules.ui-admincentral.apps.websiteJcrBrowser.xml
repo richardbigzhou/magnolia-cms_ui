@@ -138,6 +138,9 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>fb91defd-a098-40a1-882a-fb7f68597f87</sv:value>
         </sv:property>
+        <sv:property sv:name="includeSystemNodes" sv:type="String">
+          <sv:value>false</sv:value>
+        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>

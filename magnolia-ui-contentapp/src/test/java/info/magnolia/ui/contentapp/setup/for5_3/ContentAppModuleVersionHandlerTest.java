@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.contentapp.setup.for5_3;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
@@ -164,5 +166,18 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // THEN
         assertTrue(session.itemExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/saveItemProperty"));
         assertEquals(SaveItemPropertyActionDefinition.class.getCanonicalName(), session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/saveItemProperty").getProperty("class").getString());
+    }
+
+    @Test
+    public void testUpdateTo532AddsIncludeSystemNodesPropertyToJCRBrowser() throws Exception {
+        // GIVEN
+        Node websiteJCRBrowserContentConnector = NodeUtil.createPath(session.getRootNode(), ContentAppModuleVersionHandler.UI_ADMINCENTRAL_CONTENTCONNECTOR, NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertThat(websiteJCRBrowserContentConnector, hasProperty("includeSystemNodes"));
+        assertThat(websiteJCRBrowserContentConnector.getProperty("includeSystemNodes").getBoolean(), is(false));
     }
 }
