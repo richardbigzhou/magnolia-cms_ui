@@ -446,8 +446,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteEmptyFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteEmptyFolder"));
     }
 
     @Test
@@ -469,6 +469,24 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         availability = deactivateAction.getNode("availability");
         assertTrue(availability.hasProperty("writePermissionRequired"));
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
+
+    @Test
+    public void testUpdateTo532() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder/availability/rules"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder/availability/rules"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteEmptyFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteEmptyFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteEmptyFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteEmptyFolder"));
     }
 
 }

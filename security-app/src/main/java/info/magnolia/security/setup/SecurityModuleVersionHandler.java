@@ -223,6 +223,18 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NewPropertyTask("Set security app role dialog to wide", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role","wide", true))
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions", new String[] { "activate", "deactivate" }))
         );
+
+        register(DeltaBuilder.update("5.3.2", "")
+                .addTask(new ArrayDelegateTask("Bootstrap add NotEmpty rule for delete folder in Security app.",
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteFolder/availability/rules"),
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteFolder/availability/rules"),
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteEmptyFolder"),
+                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteEmptyFolder"),
+                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "confirmDeleteEmptyFolder", false)),
+                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "confirmDeleteEmptyFolder", false))))
+        );
     }
 
     @Override
