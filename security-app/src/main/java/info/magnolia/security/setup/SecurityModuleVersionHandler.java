@@ -104,7 +104,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", "class", "info.magnolia.security.app.action.DeleteRoleActionDefinition")))
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "label"))
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "label"))
-                // Remove hardcoded i18n properties, e.g. label, description, etc.
+                        // Remove hardcoded i18n properties, e.g. label, description, etc.
                 .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("security-app")));
 
         register(DeltaBuilder.update("5.1.1", "")
@@ -129,7 +129,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new PartialBootstrapTask("Bootstrap action bar section for folders in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actionbar/sections/folder"),
                         new NodeExistsDelegateTask("Configure add folder action in actionbar in groups sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items",
                                 new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
-                        ))
+                ))
                 .addTask(new ArrayDelegateTask("Add folder support to roles sub app.", "",
                         new PartialBootstrapTask("Bootstrap add folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addFolder"),
                         new PartialBootstrapTask("Bootstrap delete folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteFolder"),
@@ -144,14 +144,14 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new PartialBootstrapTask("Bootstrap action bar section for folders in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actionbar/sections/folder"),
                         new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
                                 new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
-                        ))
+                ))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static1", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "value"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static2", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "value"))
                 .addTask(new NodeExistsDelegateTask("Disallow renaming the superuser role.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName",
                         new ArrayDelegateTask("Configure role name field to be read only", "",
                                 new SetPropertyTask("Change the field type", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "class", ConditionalReadOnlyTextFieldDefinition.class.getName()),
                                 new SetPropertyTask("Set the conditional value to superuser", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "conditionalValue", "superuser"))
-                        )));
+                )));
         register(DeltaBuilder.update("5.2.1", "")
                 .addTask(new NewPropertyTask("Add user default action", "Adds edit user default action when a user is selected.", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar", "defaultAction", "editUser"))
                 .addTask(new NodeExistsDelegateTask("Add conditionalReadOnlyTextField field type", "Add conditionalReadOnlyTextField field type if it is not exist", RepositoryConstants.CONFIG, "/modules/security-app/fieldTypes/conditionalReadOnlyTextField", null,
@@ -195,28 +195,44 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.2.3", "")
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions",
-                        new String[] { "editUser", "addUser", "deleteUser", "confirmDeleteUser", "addFolder", "deleteFolder", "confirmDeleteFolder", "editFolder", "deleteItems", "duplicateUser", "moveUser", "confirmDeleteItems" }))
+                        new String[]{"editUser", "addUser", "deleteUser", "confirmDeleteUser", "addFolder", "deleteFolder", "confirmDeleteFolder", "editFolder", "deleteItems", "duplicateUser", "moveUser", "confirmDeleteItems"}))
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/groups/actions",
-                        new String[] { "addGroup", "deleteGroup", "confirmDeleteGroup", "editGroup", "addFolder", "deleteFolder", "editFolder", "duplicateGroup", "moveGroup" }))
+                        new String[]{"addGroup", "deleteGroup", "confirmDeleteGroup", "editGroup", "addFolder", "deleteFolder", "editFolder", "duplicateGroup", "moveGroup"}))
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/roles/actions",
-                        new String[] { "deleteRole", "confirmDeleteRole", "editRole", "addRole", "addFolder", "deleteFolder", "editFolder", "duplicateRole", "moveRole" }))
+                        new String[]{"deleteRole", "confirmDeleteRole", "editRole", "addRole", "addFolder", "deleteFolder", "editFolder", "duplicateRole", "moveRole"}))
         );
 
         register(DeltaBuilder.update("5.2.4", "")
                 .addTask(new ArrayDelegateTask("Add confirmation dialogs for folder deletion",
-                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteFolder"),
-                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteFolder"),
-                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder",
-                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true)),
-                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
-                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteFolder"),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteFolder"),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true)),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
                 .addTask(new NodeExistsDelegateTask("Reconfigure save action of user dialog", "/modules/security-app/dialogs/user/actions/commit",
                         new CheckAndModifyPropertyValueTask("/modules/security-app/dialogs/user/actions/commit", "class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition", "info.magnolia.security.app.dialog.action.SaveUserDialogActionDefinition")))
         );
 
         register(DeltaBuilder.update("5.2.7", "")
-                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions", new String[] { "activate", "deactivate" }))
+                .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions", new String[]{"activate", "deactivate"}))
         );
+
+        register(DeltaBuilder.update("5.2.8", "")
+                .addTask(new ArrayDelegateTask("Bootstrap add NotEmpty rule for delete folder in Security app.",
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder/availability",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsEmptyRule")),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder/availability",
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsEmptyRule")),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteEmptyFolder"),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteEmptyFolder"),
+
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "confirmDeleteEmptyFolder", false)),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "confirmDeleteEmptyFolder", false))))
+        );
+
     }
 
     @Override
