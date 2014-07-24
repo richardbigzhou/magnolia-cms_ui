@@ -235,7 +235,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public void setDragAndDropHandler(DropHandler dropHandler) {
         if (dropHandler != null) {
-            tree.setDragMode(TableDragMode.ROW);
+            tree.setDragMode(TableDragMode.MULTIROW);
             tree.setDropHandler(dropHandler);
         } else {
             tree.setDragMode(TableDragMode.NONE);

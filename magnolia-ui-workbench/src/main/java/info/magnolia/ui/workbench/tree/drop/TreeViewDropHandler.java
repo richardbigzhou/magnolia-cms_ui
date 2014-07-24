@@ -36,10 +36,14 @@ package info.magnolia.ui.workbench.tree.drop;
 import static info.magnolia.jcr.util.NodeUtil.*;
 
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
+
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -61,8 +65,7 @@ import com.vaadin.ui.TreeTable;
 
 /**
  * Generic implementation of {@link DropHandler} handling basic {@link Item}.
- * This Handler implementation uses constrained defined in
- * {@link DropConstraint} implemented class.
+ * This Handler implementation uses constrained defined in {@link DropConstraint} implemented class.
  */
 public class TreeViewDropHandler implements MoveHandler, DropHandler {
 
@@ -96,19 +99,28 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
         }
 
         AbstractSelectTargetDetails target = (AbstractSelectTargetDetails) dropEvent.getTargetDetails();
-        // Get ids of the dragged item and the target item
-        Object sourceItemId = getSourceId(dropEvent);
+        // Get id's of the target item
         Object targetItemId = target.getItemIdOver();
         // On which side of the target the item was dropped
         VerticalDropLocation location = target.getDropLocation();
-
         if (location == null) {
             log.debug("DropLocation is null. Do nothing.");
             return;
         }
+        // Get id's of the dragged items
+        Iterator<Object> selected = getSourceIds(dropEvent);
+        while (selected.hasNext()) {
+            Object sourceItemId = selected.next();
+            moveNode(sourceItemId, targetItemId, location);
+        }
+    }
 
-        moveNode(sourceItemId, targetItemId, location);
-
+    /**
+     * Return an Iterator containing the ItemId to move.
+     */
+    private Iterator<Object> getSourceIds(DragAndDropEvent dropEvent) {
+        Transferable t = dropEvent.getTransferable();
+        return ((Set) ((MagnoliaTreeTable) t.getSourceComponent()).getValue()).iterator();
     }
 
     /**
@@ -169,27 +181,25 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
     }
 
     /**
-     * Create a serverSide {@link AcceptCriterion} based on the
-     * {@link DropConstraint} implementation.
+     * Create a serverSide {@link AcceptCriterion} based on the {@link DropConstraint} implementation.
      */
     private void createAcceptCriterion() {
         serverSideCriterion = new ServerSideCriterion() {
 
             @Override
             public boolean accept(DragAndDropEvent dragEvent) {
-                Object sourceItemId = getSourceId(dragEvent);
-                HierarchicalJcrContainer container = (HierarchicalJcrContainer) tree.getContainerDataSource();
-                JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
-
-                return constraint.allowedToMove(sourceItem);
+                boolean res = true;
+                Iterator<Object> selected = getSourceIds(dragEvent);
+                while (selected.hasNext()) {
+                    Object sourceItemId = selected.next();
+                    HierarchicalJcrContainer container = (HierarchicalJcrContainer) tree.getContainerDataSource();
+                    JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
+                    res &= constraint.allowedToMove(sourceItem);
+                }
+                return res;
             }
         };
 
-    }
-
-    private Object getSourceId(DragAndDropEvent dropEvent) {
-        Transferable t = dropEvent.getTransferable();
-        return ((DataBoundTransferable) t).getItemId();
     }
 
     /**

@@ -34,10 +34,12 @@
 package info.magnolia.ui.workbench.tree.drop;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -50,6 +52,10 @@ import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -58,6 +64,11 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.shared.ui.dd.VerticalDropLocation;
+import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 
 /**
  * Tests for HierarchicalJcrContainer.
@@ -90,7 +101,6 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         ConfiguredContentPresenterDefinition contentView = new TreePresenterDefinition();
         configuredWorkbench.addContentView(contentView);
 
-
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(PROPERTY_1);
@@ -106,7 +116,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         nodeTypeDefinition.setName(NodeTypes.Content.NAME);
 
-        //workbenchDefinition = configuredWorkbench;
+        // workbenchDefinition = configuredWorkbench;
         connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         connectorDefinition.setRootPath("/");
         connectorDefinition.setWorkspace(WORKSPACE);
@@ -117,7 +127,6 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         rootNode = session.getRootNode();
         workspace = WORKSPACE;
     }
-
 
     @Test
     public void testMoveItem() throws RepositoryException {
@@ -152,7 +161,7 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
     public void testMoveItemFalseNoOperationOnProperty() throws RepositoryException {
         // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
-        Property sourceProperty = source.setProperty("property","property");
+        Property sourceProperty = source.setProperty("property", "property");
         source.getSession().save();
 
         // WHEN
@@ -200,5 +209,50 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         nodeIterator = rootNode.getNodes();
         nodeIterator.nextNode();
         assertEquals("second", nodeIterator.nextNode().getName());
+    }
+
+    @Test
+    public void moveMultipleItem() throws RepositoryException {
+        // GIVEN
+        // create source/target nodes/items
+        Node source1 = AbstractJcrContainerTest.createNode(rootNode, "source1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node source2 = AbstractJcrContainerTest.createNode(rootNode, "source2", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        target.getSession().save();
+        JcrNodeAdapter sourceItem1 = new JcrNodeAdapter(source1);
+        JcrNodeAdapter sourceItem2 = new JcrNodeAdapter(source2);
+        JcrNodeAdapter targetItem = new JcrNodeAdapter(target);
+        Set<Object> sources = new HashSet<Object>(Arrays.asList(sourceItem1, sourceItem2));
+
+        // Mock the TreeTable
+        MagnoliaTreeTable treeTable = mock(MagnoliaTreeTable.class);
+        HierarchicalJcrContainer jcrContainer = mock(HierarchicalJcrContainer.class);
+        when(treeTable.getContainerDataSource()).thenReturn(jcrContainer);
+        when(jcrContainer.getItem(sourceItem1)).thenReturn(sourceItem1);
+        when(jcrContainer.getItem(sourceItem2)).thenReturn(sourceItem2);
+        when(jcrContainer.getItem(targetItem)).thenReturn(targetItem);
+
+        // Mock the DDEvent and Transferable and Target Detail
+        DragAndDropEvent event = mock(DragAndDropEvent.class);
+        AbstractSelectTargetDetails targetDetail = mock(AbstractSelectTargetDetails.class);
+        when(targetDetail.getItemIdOver()).thenReturn(targetItem);
+        when(targetDetail.getDropLocation()).thenReturn(VerticalDropLocation.MIDDLE);
+        DataBoundTransferable transferable = mock(DataBoundTransferable.class);
+        when(transferable.getSourceComponent()).thenReturn(treeTable);
+        when(treeTable.getValue()).thenReturn(sources);
+        when(event.getTargetDetails()).thenReturn(targetDetail);
+        when(event.getTransferable()).thenReturn(transferable);
+
+        // Mock the constrain
+        DropConstraint constrain = mock(DropConstraint.class);
+        when(constrain.allowedAsChild(sourceItem1, targetItem)).thenReturn(true);
+        when(constrain.allowedAsChild(sourceItem2, targetItem)).thenReturn(true);
+
+        // WHEN
+        new TreeViewDropHandler(treeTable, constrain).drop(event);
+
+        // THEN
+        assertTrue(target.hasNode("source1"));
+        assertTrue(target.hasNode("source2"));
     }
 }
