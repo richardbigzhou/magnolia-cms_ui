@@ -78,6 +78,8 @@ public class AboutViewImpl implements AboutView {
         Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, i18n.translate("about.app.main.os"));
         Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, i18n.translate("about.app.main.java"));
         Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, i18n.translate("about.app.main.server"));
+        Component dbInfo = buildAndBind(AboutView.DB_INFO_KEY, i18n.translate("about.app.main.dbinfo"));
+        Component dbDriverInfo = buildAndBind(AboutView.DB_DRIVER_INFO_KEY, i18n.translate("about.app.main.dbdriverinfo"));
         Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, i18n.translate("about.app.main.repository"));
 
         // layout
@@ -98,6 +100,8 @@ public class AboutViewImpl implements AboutView {
         layout.addComponent(osInfo);
         layout.addComponent(javaInfo);
         layout.addComponent(serverInfo);
+        layout.addComponent(dbInfo);
+        layout.addComponent(dbDriverInfo);
         layout.addComponent(jcrInfo);
 
         return layout;
