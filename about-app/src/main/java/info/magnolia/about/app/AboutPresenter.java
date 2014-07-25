@@ -39,13 +39,26 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
@@ -92,6 +105,41 @@ public class AboutPresenter {
                 magnoliaProperties.getProperty("java.runtime.version"));
         String serverInfo = MgnlContext.getWebContext().getServletContext().getServerInfo();
 
+        String dbInfo;
+        String dbDriverInfo;
+        Connection connection = null;
+        try {
+
+            String connectionString[] = getConnectionString();
+
+            String repoHome = magnoliaProperties.getProperty("magnolia.repositories.home");
+            String repoName = getRepoName();
+            connectionString[0] = StringUtils.replace(connectionString[0], "${wsp.home}", repoHome + "/" + repoName + "/workspaces/default");
+            connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
+            DatabaseMetaData meta = connection.getMetaData();
+            dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
+            if (dbInfo.toLowerCase().indexOf("mysql") != -1) {
+                String engine = getMySQLEngineInfo(connection, connectionString);
+                if (engine != null) {
+                    dbInfo += engine;
+                }
+            }
+            dbDriverInfo = meta.getDriverName() + " " + meta.getDriverVersion();
+
+        } catch (SQLException e) {
+            log.debug("Failed to read DB and driver info from connection with {}", e.getMessage(), e);
+            dbInfo = i18n.translate("about.app.main.unknown");
+            dbDriverInfo = dbInfo;
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // ignore, nothing we can do
+                }
+            }
+        }
+
         String jcrInfo;
         try {
             Repository repo = JcrUtils.getRepository();
@@ -112,9 +160,114 @@ public class AboutPresenter {
         item.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<String>(javaInfo));
         item.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<String>(serverInfo));
         item.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<String>(jcrInfo));
+        item.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<String>(dbInfo));
+        item.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<String>(dbDriverInfo));
         view.setDataSource(item);
 
         return view;
     }
 
+    private String getMySQLEngineInfo(Connection connection, String[] connectionString) {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement("SHOW TABLE STATUS FROM `" + StringUtils.substringAfterLast(connectionString[0], "/") + "`;");
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String engine = resultSet.getString("Engine");
+                return " (" + engine + ")";
+            }
+        } catch (SQLException e) {
+            // can't get extra info, oh well
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+        return null;
+    }
+
+    String[] getConnectionString() {
+        String configPath = magnoliaProperties.getProperty("magnolia.repositories.jackrabbit.config");
+        File config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" + configPath);
+        final String[] connectionString = new String[3];
+        try {
+            SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
+                private boolean inPM;
+
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    super.startElement(uri, localName, qName, attributes);
+                    if ("PersistenceManager".equals(qName) || "DataSource".equals(qName)) {
+                        inPM = true;
+                    }
+                    if (inPM && "param".equals(qName)) {
+                        if ("url".equals(attributes.getValue("name"))) {
+                            connectionString[0] = attributes.getValue("value");
+                        }
+                        if ("user".equals(attributes.getValue("name"))) {
+                            connectionString[1] = attributes.getValue("value");
+                        }
+                        if ("password".equals(attributes.getValue("name"))) {
+                            connectionString[2] = attributes.getValue("value");
+                        }
+                    }
+                }
+
+                @Override
+                public void endElement(String uri, String localName, String qName) throws SAXException {
+                    super.endElement(uri, localName, qName);
+                    if ("PersistenceManager".equals(localName) || "DataSource".equals(qName)) {
+                        inPM = false;
+                    }
+                }
+            });
+            return connectionString;
+        } catch (Exception e) {
+            log.debug("Failed to obtain DB connection info with {}", e.getMessage(), e);
+        }
+        return null;
+    }
+
+    String getRepoName() {
+        String repoConfigPath = magnoliaProperties.getProperty("magnolia.repositories.config");
+        File config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" + repoConfigPath);
+        final String[] repoName = new String[1];
+        try {
+            SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
+                private boolean inRepo;
+
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    super.startElement(uri, localName, qName, attributes);
+                    if ("RepositoryMapping".equals(qName)) {
+                        inRepo = true;
+                    }
+                    if (inRepo && "Map".equals(qName)) {
+                        if ("config".equals(attributes.getValue("name"))) {
+                            repoName[0] = attributes.getValue("repositoryName");
+                        }
+                    }
+                }
+
+                @Override
+                public void endElement(String uri, String localName, String qName) throws SAXException {
+                    super.endElement(uri, localName, qName);
+                    if ("RepositoryMapping".equals(localName)) {
+                        inRepo = false;
+                    }
+                }
+            });
+            return repoName[0];
+        } catch (Exception e) {
+            log.debug("Failed to obtain repository configuration info with {}", e.getMessage(), e);
+        }
+        return null;
+    }
 }
