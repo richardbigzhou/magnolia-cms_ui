@@ -66,9 +66,6 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private ModalityLevel modalityLevel = ModalityLevel.STRONG;
 
-    public ConfiguredDialogDefinition() {
-    }
-
     @Override
     public String getId() {
         return id;
