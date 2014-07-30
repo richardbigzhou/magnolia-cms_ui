@@ -61,8 +61,6 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
-    public ConfiguredDialogDefinition() {}
-
     @Override
     public String getId() {
         return id;
