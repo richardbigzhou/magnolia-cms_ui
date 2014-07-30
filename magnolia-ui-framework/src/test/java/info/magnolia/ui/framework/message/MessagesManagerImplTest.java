@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import info.magnolia.cms.security.GroupManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -50,6 +51,9 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -92,8 +96,11 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         UserManager userManager = mock(UserManager.class);
         when(userManager.getAllUsers()).thenReturn(users);
 
+        GroupManager groupManager = mock(GroupManager.class);
+
         SecuritySupport securitySupport = mock(SecuritySupport.class);
         when(securitySupport.getUserManager()).thenReturn(userManager);
+        when(securitySupport.getGroupManager()).thenReturn(groupManager);
 
         messagesManager = new MessagesManagerImpl(Providers.of(securitySupport), messageStore);
     }
@@ -182,8 +189,13 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("bob", listenerB);
         final String testGroup = "bobOnlyGroup";
-        when(bob.inGroup(testGroup)).thenReturn(true);
-        when(alice.inGroup(testGroup)).thenReturn(false);
+
+        List<String> bobGroups = new LinkedList<String>() {{
+            add(testGroup);
+        }};
+
+        when(bob.getAllGroups()).thenReturn(bobGroups);
+        when(alice.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
 
         Message message = new Message();
         message.setType(MessageType.ERROR);
@@ -191,7 +203,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         message.setMessage("message");
 
         // WHEN
-        messagesManager.sendGroupMessage("bobOnlyGroup", message);
+        messagesManager.sendGroupMessage(testGroup, message);
 
         // THEN
         assertNull(message.getId());
@@ -200,6 +212,40 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         verify(listenerB).messageSent(any(Message.class));
 
         assertFalse("Alice is not in that group, so she should not have received any message", session.nodeExists("/alice"));
+        assertTrue("Bob is in that group, so he should have received a message", session.nodeExists("/bob/0"));
+    }
+
+    @Test
+    public void testSendTransitiveGroupMessage() throws RepositoryException {
+        // GIVEN
+        MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
+        messagesManager.registerMessagesListener("bob", listenerB);
+        final String directGroup = "group1";
+        final String transitiveGroup = "group2";
+
+        when(bob.inGroup(directGroup)).thenReturn(true);
+        when(bob.inGroup(transitiveGroup)).thenReturn(false);
+        when(bob.getGroups()).thenReturn(new LinkedList<String>() {{
+            add(directGroup);
+        }});
+        when(bob.getAllGroups()).thenReturn(new LinkedList<String>() {{
+            add(directGroup);
+            add(transitiveGroup);
+        }});
+
+        Message message = new Message();
+        message.setType(MessageType.ERROR);
+        message.setSubject("subject");
+        message.setMessage("message");
+
+        // WHEN
+        messagesManager.sendGroupMessage(transitiveGroup, message);
+
+        // THEN
+        assertNull(message.getId());
+
+        verify(listenerB).messageSent(any(Message.class));
+
         assertTrue("Bob is in that group, so he should have received a message", session.nodeExists("/bob/0"));
     }
 
