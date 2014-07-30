@@ -114,7 +114,8 @@ public class MessagesManagerImpl implements MessagesManager {
         }
 
         for (User user : users) {
-            if (user.inGroup(groupName)) {
+            Collection<String> groups = user.getAllGroups();
+            if (groups.contains(groupName)) {
                 sendMessage(user.getName(), message);
             }
         }
