@@ -41,16 +41,13 @@ import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
 import com.vaadin.ui.OptionGroup;
 
-/**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.OptionGroupFieldFactory}.
- */
+
 public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<OptionGroupFieldDefinition> {
 
     private OptionGroupFieldFactory dialogSelect;
@@ -166,9 +163,8 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
 
         // THEN
         assertTrue(field.getValue() instanceof Collection);
-        Iterator it = ((Collection) field.getValue()).iterator();
-        assertEquals("2", it.next().toString());
-        assertEquals("1", it.next().toString());
+        assertTrue(((Collection) field.getValue()).contains("1"));
+        assertTrue(((Collection) field.getValue()).contains("2"));
     }
 
     @Override
