@@ -37,15 +37,15 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.QueryTask;
+import info.magnolia.module.delta.NodeVisitorTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
 import info.magnolia.ui.contentapp.detail.action.RestorePreviousVersionActionDefinition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,18 +59,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Moves <code>nodeType</code> property from action definition to its availability definition.
  * This task normally is not meant to be used standalone.
- * 
+ *
  * @see {@link info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition AbstractItemActionDefinition} and its sub-classes
  * @see {@link ContentAppMigrationTask}
  */
-public class MoveActionNodeTypeRestrictionToAvailabilityTask extends QueryTask {
+public class MoveActionNodeTypeRestrictionToAvailabilityTask extends NodeVisitorTask {
 
     private static final Logger log = LoggerFactory.getLogger(MoveActionNodeTypeRestrictionToAvailabilityTask.class);
 
     public static final String NODE_TYPE = "nodeType";
     public static final String AVAILABILITY_NODE = "availability";
     public static final String NODE_TYPES = "nodeTypes";
-    public static final String QUERY_BASE = "select * from [mgnl:contentNode] as t where ";
 
     /**
      * The list of the common classes could also contain {@link info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition}
@@ -82,33 +81,38 @@ public class MoveActionNodeTypeRestrictionToAvailabilityTask extends QueryTask {
             RestorePreviousVersionActionDefinition.class,
     };
 
+    private final List<Class<?>> matchingActionDefinitionClasses = new ArrayList<Class<?>>();
+
     @Inject
-    public MoveActionNodeTypeRestrictionToAvailabilityTask(String path, Class<? extends ActionDefinition>... actionsToMigrateClasses) {
+    public MoveActionNodeTypeRestrictionToAvailabilityTask(String path, Class<? extends ActionDefinition>... additionalActionDefinitionClasses) {
         super(
               "Move nodeType property to availability definition",
               "Fix availability checking of actions defined with AbstractItemActionDefinition sub-class by moving the nodeType property from action definition to availability.",
-              RepositoryConstants.CONFIG, constructQuery(path, actionsToMigrateClasses));
+                RepositoryConstants.CONFIG, path);
+
+        matchingActionDefinitionClasses.addAll(Arrays.asList(commonActionDefinitionClasses));
+        matchingActionDefinitionClasses.addAll(Arrays.asList(additionalActionDefinitionClasses));
     }
 
-    private static String constructQuery(String path, Class<? extends ActionDefinition>[] actionsToMigrateClasses) {
-        final List<Class<?>> classes = new LinkedList<Class<?>>();
+    @Override
+    protected boolean nodeMatches(Node node) {
+        try {
+            return node.getPrimaryNodeType().getName().equals(NodeTypes.ContentNode.NAME) &&
+                    (node.hasProperty("class") && containsDefinitionClass(node.getProperty("class").getString()));
+        } catch (RepositoryException e) {
+            log.error("Couldn't evaluate visited node's type or class property", e);
+        }
+        return false;
+    }
 
-        classes.addAll(Arrays.asList(commonActionDefinitionClasses));
-        classes.addAll(Arrays.asList(actionsToMigrateClasses));
-
-        final StringBuilder sb = new StringBuilder(QUERY_BASE);
-        final Iterator<Class<?>> it = classes.iterator();
-
+    private boolean containsDefinitionClass(String className) {
+        Iterator<Class<?>> it = matchingActionDefinitionClasses.iterator();
         while (it.hasNext()) {
-            final Class<?> clazz = it.next();
-            sb.append("t.class='").append(clazz.getName()).append("' ");
-            if (it.hasNext()) {
-                sb.append("or ");
+            if (className.equals(it.next().getName())) {
+                return true;
             }
         }
-
-        sb.append(String.format(" and isdescendantnode('%s')", path));
-        return sb.toString();
+        return false;
     }
 
     @Override

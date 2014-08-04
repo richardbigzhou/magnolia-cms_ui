@@ -37,7 +37,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.QueryTask;
+import info.magnolia.module.delta.NodeVisitorTask;
 import info.magnolia.repository.RepositoryConstants;
 
 import javax.jcr.Node;
@@ -45,6 +45,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Substitutes availability rule class property with multiple availability rule definitions.
@@ -52,18 +54,29 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @see {@link ContentAppMigrationTask}
  */
-public class MigrateAvailabilityRulesTask extends QueryTask {
+public class MigrateAvailabilityRulesTask extends NodeVisitorTask {
+
+    private static final Logger log = LoggerFactory.getLogger(MigrateAvailabilityRulesTask.class);
 
     protected static final String RULE_CLASS = "ruleClass";
     protected static final String RULES = "rules";
-    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' and isdescendantnode('%s')";
 
     public MigrateAvailabilityRulesTask(String path) {
-        super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, String.format(QUERY, path));
+        super("Migrate availability rules", "Substitute availability rule class property with multiple availability rule definitions", RepositoryConstants.CONFIG, path);
     }
 
     public MigrateAvailabilityRulesTask() {
         this("/");
+    }
+
+    @Override
+    protected boolean nodeMatches(Node node) {
+        try {
+            return node.getPrimaryNodeType().getName().equals(NodeTypes.ContentNode.NAME) && node.getName().equals("availability");
+        } catch (RepositoryException e) {
+            log.error("Couldn't evaluate visited node's name or node-type", e);
+        }
+        return false;
     }
 
     @Override

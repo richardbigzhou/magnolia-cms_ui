@@ -34,8 +34,9 @@
 package info.magnolia.ui.contentapp.setup.for5_3;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.QueryTask;
+import info.magnolia.module.delta.NodeVisitorTask;
 import info.magnolia.repository.RepositoryConstants;
 
 import java.util.Collections;
@@ -45,26 +46,40 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A task which is changing values for availability@ruleClass-properties in the config app- for a few classes which have been moved from
  * package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.
  * This task normally is not meant to be used standalone.
- * 
+ *
  * @see {@link ContentAppMigrationTask}
  */
-public class ChangeAvailabilityRuleClassesTask extends QueryTask {
+public class ChangeAvailabilityRuleClassesTask extends NodeVisitorTask {
 
-    private static final String QUERY = " select * from [mgnl:contentNode] as t where name(t) = 'availability' and isdescendantnode('%s')";
+    private static final Logger log = LoggerFactory.getLogger(ChangeAvailabilityRuleClassesTask.class);
+
     private static final String RULE_CLASS = "ruleClass";
 
     private Map<String, String> classMappings;
 
     public ChangeAvailabilityRuleClassesTask(String path) {
-        super("Update rule classes to ui-framework", "This task changes availability@ruleClass properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, String.format(QUERY, path));
+        super("Update rule classes to ui-framework", "This task changes availability@ruleClass properties for classes which have been moved from package info.magnolia.ui.api.availability to package info.magnolia.ui.framework.availability.", RepositoryConstants.CONFIG, path);
     }
 
     public ChangeAvailabilityRuleClassesTask() {
         this("/");
+    }
+
+    @Override
+    protected boolean nodeMatches(Node node) {
+        try {
+            return node.getPrimaryNodeType().getName().equals(NodeTypes.ContentNode.NAME) && node.getName().equals("availability");
+        } catch (RepositoryException e) {
+            log.error("Couldn't evaluate visited node's name or node-type", e);
+        }
+        return false;
     }
 
     @Override
@@ -92,5 +107,6 @@ public class ChangeAvailabilityRuleClassesTask extends QueryTask {
         }
         return classMappings;
     }
+
 
 }

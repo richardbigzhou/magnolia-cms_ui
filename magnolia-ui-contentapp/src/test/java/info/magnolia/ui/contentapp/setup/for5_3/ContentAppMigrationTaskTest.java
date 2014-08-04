@@ -105,7 +105,10 @@ public class ContentAppMigrationTaskTest extends RepositoryTestCase {
         assertTrue(actionNode.getNode("availability").hasNode(NODE_TYPES));
         Node nodeTypes = actionNode.getNode("availability/nodeTypes");
         // It's a pity we have to help the either().or() matcher with generics here; 1.7 doesn't need this.
-        assertThat(nodeTypes, everyProperty(Matchers.<Property>either(propertyName(startsWith("jcr:"))).or(propertyValue(equalTo("mgnl:dummyNode")))));
+        assertThat(nodeTypes, everyProperty(Matchers.<Property>
+                either(propertyName(startsWith("jcr:"))).
+                or(propertyName(startsWith("mgnl:"))).
+                or(propertyValue(equalTo("mgnl:dummyNode")))));
     }
 
     /**
