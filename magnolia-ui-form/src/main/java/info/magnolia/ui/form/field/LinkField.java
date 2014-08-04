@@ -36,20 +36,12 @@ package info.magnolia.ui.form.field;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
@@ -57,7 +49,6 @@ import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
@@ -71,7 +62,6 @@ import com.vaadin.ui.VerticalLayout;
  * For example, display can be the Item path and value stored is the identifier of the Item.
  */
 public class LinkField extends CustomField<String> {
-    private static final Logger log = LoggerFactory.getLogger(LinkField.class);
 
     /**
      * Normal {@link TextField} only exposing the fireValueChange(... that is by default protected.
@@ -94,20 +84,21 @@ public class LinkField extends CustomField<String> {
     private String buttonCaptionNew;
     private String buttonCaptionOther;
 
-    private final AppController appController;
-    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
-    public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
+    public LinkField(LinkFieldDefinition linkFieldDefinition, ComponentProvider componentProvider) {
         this.definition = linkFieldDefinition;
         this.converter = definition.getIdentifierToPathConverter();
         if (this.converter != null) {
             this.converter.setWorkspaceName(definition.getTargetWorkspace());
         }
-        this.appController = appController;
-        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
         setImmediate(true);
+    }
+
+    @Deprecated
+    public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
+        this(linkFieldDefinition, componentProvider);
     }
 
     @Override
@@ -133,7 +124,6 @@ public class LinkField extends CustomField<String> {
             linkLayout.setExpandRatio(selectButton, 0);
             linkLayout.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
         }
-        selectButton.addClickListener(createButtonClickListener());
         setButtonCaption(StringUtils.EMPTY);
         rootLayout.addComponent(linkLayout);
 
@@ -237,24 +227,6 @@ public class LinkField extends CustomField<String> {
     }
 
     /**
-     * Create the Button click Listener. On click: Create a Dialog and
-     * Initialize callback handling.
-     */
-    private Button.ClickListener createButtonClickListener() {
-        return new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                ChooseDialogCallback callback = new LinkFieldChooseDialogCallback();
-                if (StringUtils.isNotBlank(definition.getTargetTreeRootPath())) {
-                    appController.openChooseDialog(definition.getAppName(), uiContext, definition.getTargetTreeRootPath(), textField.getValue(), callback);
-                } else {
-                    appController.openChooseDialog(definition.getAppName(), uiContext, textField.getValue(), callback);
-                }
-            }
-        };
-    }
-
-    /**
      * Caption section.
      */
     public void setButtonCaptionNew(String buttonCaptionNew) {
@@ -269,45 +241,16 @@ public class LinkField extends CustomField<String> {
     public boolean isValid() {
         if (this.isRequired() && StringUtils.isBlank(getValue())) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
-
 
     @Override
     public ErrorMessage getErrorMessage() {
         if (this.isRequired() && StringUtils.isBlank(getValue())) {
             return new UserError(getRequiredError());
-        } else {
-            return null;
         }
-    }
-
-    private class LinkFieldChooseDialogCallback implements ChooseDialogCallback {
-
-        @Override
-        public void onItemChosen(String actionName, final Object chosenValue) {
-            String propertyName = definition.getTargetPropertyToPopulate();
-            String newValue = null;
-            if (chosenValue instanceof JcrItemId) {
-                try {
-                    javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem((JcrItemId) chosenValue);
-                    if (jcrItem.isNode()) {
-                        final Node selected = (Node) jcrItem;
-                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
-                        newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
-                    }
-                } catch (RepositoryException e) {
-                    log.error("Not able to access the configured property. Value will not be set.", e);
-                }
-            }
-            setValue(newValue);
-        }
-
-        @Override
-        public void onCancel() {
-        }
+        return null;
     }
 
 }

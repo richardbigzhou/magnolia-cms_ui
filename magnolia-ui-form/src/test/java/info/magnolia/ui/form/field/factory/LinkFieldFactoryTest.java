@@ -54,7 +54,7 @@ import com.vaadin.ui.Field;
  */
 public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldDefinition> {
 
-    private LinkFieldFactory linkFieldFactory;
+    private LinkFieldFactory<LinkFieldDefinition> linkFieldFactory;
 
     private MockComponentProvider componentProvider;
 
@@ -69,11 +69,11 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     @Test
     public void simpleLinkFieldTest() throws Exception {
         // GIVEN
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
+        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         linkFieldFactory.setComponentProvider(componentProvider);
         // WHEN
-        Field field = linkFieldFactory.createField();
+        Field<String> field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -87,12 +87,12 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
+        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         linkFieldFactory.setComponentProvider(componentProvider);
 
         // WHEN
-        Field field = linkFieldFactory.createField();
+        Field<String> field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -107,10 +107,10 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
+        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         linkFieldFactory.setComponentProvider(componentProvider);
-        Field field = linkFieldFactory.createField();
+        Field<String> field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
         ((LinkField) field).getTextField().setValue("Changed");

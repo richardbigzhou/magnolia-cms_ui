@@ -35,14 +35,25 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Field;
 
 /**
@@ -51,7 +62,7 @@ import com.vaadin.ui.Field;
  * @param <D> definition type
  */
 public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<LinkFieldDefinition, String> {
-
+    private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
     public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
     private LinkField linkField;
@@ -76,13 +87,63 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
 
     @Override
     protected Field<String> createFieldComponent() {
-        linkField = new LinkField(definition, appController, uiContext, componentProvider);
+        linkField = new LinkField(definition, componentProvider);
         // Set Caption
         linkField.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
         linkField.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
-
+        // Add a callback listener on the select button
+        linkField.getSelectButton().addClickListener(createButtonClickListener());
         return linkField;
     }
 
+    /**
+     * Create the Button click Listener. On click: Create a Dialog and
+     * Initialize callback handling.
+     */
+    private Button.ClickListener createButtonClickListener() {
+        return new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                ChooseDialogCallback callback = createChooseDialogCallback();
+                String value = linkField.getTextField().getValue();
+                if (StringUtils.isNotBlank(definition.getTargetTreeRootPath())) {
+                    appController.openChooseDialog(definition.getAppName(), uiContext, definition.getTargetTreeRootPath(), value, callback);
+                } else {
+                    appController.openChooseDialog(definition.getAppName(), uiContext, value, callback);
+                }
+            }
+        };
+    }
+
+    /**
+     * @return specific {@link ChooseDialogCallback} implementation used to process the selected value.
+     */
+    protected ChooseDialogCallback createChooseDialogCallback() {
+        return new ChooseDialogCallback() {
+
+            @Override
+            public void onItemChosen(String actionName, final Object chosenValue) {
+                String propertyName = definition.getTargetPropertyToPopulate();
+                String newValue = null;
+                if (chosenValue instanceof JcrItemId) {
+                    try {
+                        javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem((JcrItemId) chosenValue);
+                        if (jcrItem.isNode()) {
+                            final Node selected = (Node) jcrItem;
+                            boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
+                            newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
+                        }
+                    } catch (RepositoryException e) {
+                        log.error("Not able to access the configured property. Value will not be set.", e);
+                    }
+                }
+                linkField.setValue(newValue);
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        };
+    }
 
 }
