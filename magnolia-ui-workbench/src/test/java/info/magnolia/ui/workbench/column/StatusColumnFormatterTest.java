@@ -53,7 +53,6 @@ import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
@@ -124,7 +123,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testActivationStatusNotActivated() {
+    public void testActivationStatusNotActivated() throws Exception {
         // GIVEN
         StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
 
@@ -138,7 +137,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testActivationStatusActivated() throws RepositoryException {
+    public void testActivationStatusActivated() throws Exception {
         // GIVEN
         NodeTypes.Activatable.update(node, "superuser", true);
         StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
@@ -153,9 +152,10 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testActivationStatusModified() throws RepositoryException {
+    public void testActivationStatusModified() throws Exception {
         // GIVEN
         NodeTypes.Activatable.update(node, "superuser", true);
+        Thread.sleep(5); // make sure lastActivated > lastModified, otherwise test fails if both happen to be set to the same millisecond (activation status is incorrect)
         node.setProperty("blabla", "He - I just modified the node. LUD wrapper should trigger updated of lastModified property...");
         node.getSession().save();
         StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
@@ -170,7 +170,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testReadPermissionsAreNotShown() throws RepositoryException {
+    public void testReadPermissionsAreNotShown() throws Exception {
         // GIVEN
         statusColumnDefinition.setActivation(false);
         StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
