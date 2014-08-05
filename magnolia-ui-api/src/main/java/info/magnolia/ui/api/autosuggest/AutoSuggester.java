@@ -33,9 +33,55 @@
  */
 package info.magnolia.ui.api.autosuggest;
 
+import java.util.List;
+
 /**
- * Returns suggestions and how to display them for a cell in the tree.
+ * Returns suggestions and how to display them given a field.
  */
 public interface AutoSuggester {
 
+    /**
+     * Get suggestions and how to display them given a tree field.
+     * 
+     * @param itemId identifies the row of the tree where the field resides
+     * @param propertyId identifies the column of the tree where the field resides
+     * @return the {@link AutoSuggesterResult} encapsulating suggestions for the field and how to display them
+     */
+    AutoSuggesterResult getSuggestionsFor(Object itemId, Object propertyId);
+
+    /**
+     * Suggestions and how to display them.
+     */
+    interface AutoSuggesterResult {
+        /**
+         * How to match suggestions to the current field value.
+         */
+        public static final int STARTS_WITH = 0;
+        public static final int CONTAINS = 1;
+
+        /**
+         * Whether suggestions could be calculated for the field.
+         */
+        boolean suggestionsAvailable();
+
+        /**
+         * Get suggestions for the field.
+         */
+        List<String> getSuggestions();
+
+        /**
+         * Get method to match suggestions to the current field value.
+         */
+        int getMatchMethod();
+
+        /**
+         * Whether to show suggestions that cannot match the current field value.
+         */
+        boolean showMismatchedSuggestions();
+
+        /**
+         * Whether to highlight the field as a possible error if the current field value does not match any of the suggestions.
+         */
+        boolean showErrorHighlighting();
+    }
 }

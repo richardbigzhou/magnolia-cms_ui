@@ -40,4 +40,10 @@ import info.magnolia.ui.api.autosuggest.AutoSuggester;
  */
 public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
+    @Override
+    public AutoSuggesterResult getSuggestionsFor(Object itemId, Object propertyId) {
+        // TODO Get suggestions and how to display them given a tree field in the Configuration app.
+        return null;
+    }
+
 }

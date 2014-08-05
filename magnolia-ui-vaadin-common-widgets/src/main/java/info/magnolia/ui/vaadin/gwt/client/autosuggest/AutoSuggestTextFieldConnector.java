@@ -59,6 +59,6 @@ public class AutoSuggestTextFieldConnector extends TextFieldConnector {
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
+        getWidget().setAutoSuggestTextFieldState(getState());
     }
-
 }
