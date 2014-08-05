@@ -33,10 +33,18 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
+import java.util.List;
+
 import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
 
 /**
  * Shared state for {@link info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField}.
+ * Used to communicate {@link info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult} to the client side code.
  */
 public class AutoSuggestTextFieldState extends AbstractTextFieldState {
+    public boolean suggestionsAvailable;
+    public List<String> suggestions;
+    public int matchMethod;
+    public boolean showMismatchedSuggestions;
+    public boolean showErrorHighlighting;
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.autosuggest;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.AutoSuggestTextFieldState;
 
 import com.vaadin.data.Property;
@@ -61,6 +62,42 @@ public class AutoSuggestTextField extends TextField {
 
     public AutoSuggestTextField(String caption, String value) {
         super(caption, value);
+    }
+
+    public AutoSuggestTextField(AutoSuggesterResult autoSuggesterResult) {
+        super();
+        setStateAccordingToAutoSuggesterResult(autoSuggesterResult);
+    }
+
+    public AutoSuggestTextField(String caption, AutoSuggesterResult autoSuggesterResult) {
+        super(caption);
+        setStateAccordingToAutoSuggesterResult(autoSuggesterResult);
+    }
+
+    public AutoSuggestTextField(Property dataSource, AutoSuggesterResult autoSuggesterResult) {
+        super(dataSource);
+        setStateAccordingToAutoSuggesterResult(autoSuggesterResult);
+    }
+
+    public AutoSuggestTextField(String caption, Property dataSource, AutoSuggesterResult autoSuggesterResult) {
+        super(caption, dataSource);
+        setStateAccordingToAutoSuggesterResult(autoSuggesterResult);
+    }
+
+    public AutoSuggestTextField(String caption, String value, AutoSuggesterResult autoSuggesterResult) {
+        super(caption, value);
+        setStateAccordingToAutoSuggesterResult(autoSuggesterResult);
+    }
+
+    private void setStateAccordingToAutoSuggesterResult(AutoSuggesterResult autoSuggesterResult) {
+        if (autoSuggesterResult != null) {
+            AutoSuggestTextFieldState state = this.getState();
+            state.suggestionsAvailable = autoSuggesterResult.suggestionsAvailable();
+            state.suggestions = autoSuggesterResult.getSuggestions();
+            state.matchMethod = autoSuggesterResult.getMatchMethod();
+            state.showMismatchedSuggestions = autoSuggesterResult.showMismatchedSuggestions();
+            state.showErrorHighlighting = autoSuggesterResult.showErrorHighlighting();
+        }
     }
 
     @Override

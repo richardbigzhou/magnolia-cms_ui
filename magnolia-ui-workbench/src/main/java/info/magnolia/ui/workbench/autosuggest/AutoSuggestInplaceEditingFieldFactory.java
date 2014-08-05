@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.autosuggest;
 
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField;
 import info.magnolia.ui.workbench.tree.InplaceEditingFieldFactory;
 
@@ -59,7 +60,11 @@ public class AutoSuggestInplaceEditingFieldFactory extends InplaceEditingFieldFa
         if (type == null) {
             return null;
         }
-        Field<?> field = new AutoSuggestTextField();
+        AutoSuggesterResult autoSuggesterResult = null;
+        if (this.autoSuggester != null) {
+            autoSuggesterResult = this.autoSuggester.getSuggestionsFor(itemId, propertyId);
+        }
+        Field<?> field = new AutoSuggestTextField(autoSuggesterResult);
         return field;
     }
 }

@@ -41,6 +41,8 @@ import com.vaadin.client.ui.VTextField;
  */
 public class VAutoSuggestTextField extends VTextField {
 
+    private AutoSuggestTextFieldState state = null;
+
     public VAutoSuggestTextField() {
         super();
     }
@@ -49,4 +51,7 @@ public class VAutoSuggestTextField extends VTextField {
         super(node);
     }
 
+    public void setAutoSuggestTextFieldState(AutoSuggestTextFieldState state) {
+        this.state = state;
+    }
 }
