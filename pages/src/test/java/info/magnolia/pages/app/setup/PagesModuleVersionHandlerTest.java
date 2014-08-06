@@ -34,7 +34,7 @@
 package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.addNode;
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -272,16 +272,19 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // THEN
         assertTrue(editPageAction.hasNode("availability"));
-        assertTrue(editPageAction.getNode("availability").hasProperty("ruleClass"));
-        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), editPageAction.getNode("availability").getProperty("ruleClass").getString());
+        Node availability = editPageAction.getNode("availability");
+        assertTrue(availability.hasNode("rules")); // expect 5.3-migrated rules node
+        assertThat(availability.getNode("rules"), hasNode(hasProperty("implementationClass", IsNotVersionedDetailLocationRule.class.getName())));
 
         assertTrue(activatePageAction.hasNode("availability"));
-        assertTrue(activatePageAction.getNode("availability").hasProperty("ruleClass"));
-        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), activatePageAction.getNode("availability").getProperty("ruleClass").getString());
+        availability = activatePageAction.getNode("availability");
+        assertTrue(availability.hasNode("rules")); // expect 5.3-migrated rules node
+        assertThat(availability.getNode("rules"), hasNode(hasProperty("implementationClass", IsNotVersionedDetailLocationRule.class.getName())));
 
         assertTrue(deactivatePageAction.hasNode("availability"));
-        assertTrue(deactivatePageAction.getNode("availability").hasProperty("ruleClass"));
-        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), deactivatePageAction.getNode("availability").getProperty("ruleClass").getString());
+        availability = deactivatePageAction.getNode("availability");
+        assertTrue(availability.hasNode("rules")); // expect 5.3-migrated rules node
+        assertThat(availability.getNode("rules"), hasNode(hasProperty("implementationClass", IsNotVersionedDetailLocationRule.class.getName())));
     }
 
     @Test
