@@ -37,11 +37,13 @@ import static info.magnolia.cms.security.MgnlUserManager.*;
 import static info.magnolia.cms.security.SecurityConstants.*;
 
 import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SilentSessionOp;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
-import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -51,12 +53,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -114,7 +116,7 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
             String newPassword = (String) userItem.getItemProperty(PROPERTY_PASSWORD).getValue();
 
             User user;
-            Node userNode;
+            Session session = userItem.getJcrItem().getSession();
             if (userItem instanceof JcrNewNodeAdapter) {
 
                 // JcrNewNodeAdapter returns the parent JCR item here
@@ -129,9 +131,8 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
-                userNode = parentNode.getNode(user.getName());
             } else {
-                userNode = userItem.getJcrItem();
+                Node userNode = userItem.getJcrItem();
                 String existingUserName = userNode.getName();
                 user = userManager.getUser(existingUserName);
 
@@ -148,16 +149,16 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 }
             }
 
-            final Collection<String> groups = (Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue();
+            final Collection<String> groups = resolveItemsNamesFromIdentifiers((Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue(), RepositoryConstants.USER_GROUPS);
             log.debug("Assigning user the following groups [{}]", groups);
-            storeCollectionAsNodeWithProperties(userNode, NODE_GROUPS, groups);
+            storeGroupsCollection(userManager, user, groups);
 
-            final Collection<String> roles = (Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue();
+            final Collection<String> roles = resolveItemsNamesFromIdentifiers((Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue(), RepositoryConstants.USER_ROLES);
             log.debug("Assigning user the following roles [{}]", roles);
-            storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
+            storeRolesCollection(userManager, user, roles);
 
             Collection<?> userProperties = userItem.getItemPropertyIds();
-            ValueFactory valueFactory = userNode.getSession().getValueFactory();
+            ValueFactory valueFactory = session.getValueFactory();
             for (Object propertyName : userProperties) {
                 if (!protectedProperties.contains(propertyName)) {
                     Value propertyValue = PropertyUtil.createValue(userItem.getItemProperty(propertyName).getValue(), valueFactory);
@@ -165,7 +166,7 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 }
             }
 
-            userNode.getSession().save();
+            session.save();
 
         } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
@@ -181,27 +182,53 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
         return StringUtils.substringBetween(userPath, "/");
     }
 
-    private void storeCollectionAsNodeWithProperties(Node parentNode, String name, Collection<String> values) throws RepositoryException {
-        try {
-            // create sub node (or get it, if it already exists)
-            Node node = NodeUtil.createPath(parentNode, name, NodeTypes.ContentNode.NAME);
-
-            // remove all previous properties
-            PropertyIterator pi = node.getProperties();
-            while (pi.hasNext()) {
-                javax.jcr.Property p = pi.nextProperty();
-                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                    p.remove();
-                }
-            }
-
-            int i = 0;
-            for (String value : values) {
-                PropertyUtil.setProperty(node, String.valueOf(i), value.trim());
-                i++;
-            }
-        } catch (RepositoryException ex) {
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex);
+    private void storeGroupsCollection(UserManager userManager, User user, Collection<String> newGroups){
+        Collection<String> oldGroups = new ArrayList<String>();
+        for (String group : user.getGroups()) {
+            oldGroups.add(group);
+        }
+        for(String newGroup : newGroups) {
+            userManager.addGroup(user, newGroup);
+            oldGroups.remove(newGroup);
+        }
+        for(String oldGroup : oldGroups) {
+            userManager.removeGroup(user, oldGroup);
         }
     }
+
+    private void storeRolesCollection(UserManager userManager, User user, Collection<String> newRoles){
+        Collection<String> oldRoles = new ArrayList<String>();
+        for (String role : user.getRoles()) {
+            oldRoles.add(role);
+        }
+        for(String newRole : newRoles) {
+            userManager.addRole(user, newRole);
+            oldRoles.remove(newRole);
+        }
+        for(String oldRole : oldRoles) {
+            userManager.removeRole(user, oldRole);
+        }
+    }
+
+    private Collection<String> resolveItemsNamesFromIdentifiers(Collection<String> itemsIdentifiers, String repository){
+        final Collection<String> itemsNames = new ArrayList<String>();
+        for (final String itemIdentifier : itemsIdentifiers) {
+            MgnlContext.doInSystemContext(new SilentSessionOp<Void>(repository) {
+
+                @Override
+                public Void doExec(Session session) {
+                    try {
+                        final String itemName =  session.getNodeByIdentifier(itemIdentifier).getName();
+                        itemsNames.add(itemName);
+                    } catch (RepositoryException e) {
+                        log.error("Can't resolve group/role with uuid: " + itemIdentifier);
+                        log.debug(e.getMessage());
+                    }
+                    return null;
+                }
+            });
+        }
+        return itemsNames;
+    }
+
 }
