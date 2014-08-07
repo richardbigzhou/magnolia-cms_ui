@@ -102,7 +102,10 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     public void select(List<Object> itemIds) {
         List<Object> objectIds = new ArrayList<Object>();
         for (Object itemId : itemIds) {
-            objectIds.add(itemId);
+            // the view (Vaadin table) is not interested in default selection
+            if (!itemId.equals(contentConnector.getDefaultItemId())) {
+                objectIds.add(itemId);
+            }
         }
         view.select(objectIds);
     }
