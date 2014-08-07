@@ -40,16 +40,21 @@ import info.magnolia.cms.security.SecurityConstants;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.context.SystemContext;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.jcr.MockValueFactory;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.api.ModelConstants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -72,6 +77,9 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
     private EditorCallback editorCallback;
     private SecuritySupport securitySupport;
 
+    private Session groupsSession;
+    private Session rolesSession;
+
     private Node userNode;
 
     private UserManager userManager;
@@ -91,6 +99,13 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
         Session session = mock(Session.class);
         when(userNode.getSession()).thenReturn(session);
         when(session.getValueFactory()).thenReturn(new MockValueFactory());
+
+        SystemContext systemContext = mock(SystemContext.class);
+        groupsSession = mock(Session.class);
+        rolesSession = mock(Session.class);
+        when(systemContext.getJCRSession(RepositoryConstants.USER_GROUPS)).thenReturn(groupsSession);
+        when(systemContext.getJCRSession(RepositoryConstants.USER_ROLES)).thenReturn(rolesSession);
+        ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
     }
 
     private void prepareMocks(JcrNodeAdapter userItem) throws RepositoryException {
@@ -114,10 +129,10 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
         when(userItem.getItemProperty(MgnlUserManager.PROPERTY_LANGUAGE)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "language"));
         when(userItem.getItemProperty(MgnlUserManager.PROPERTY_EMAIL)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "email"));
 
-        when(userItem.getItemProperty(SecurityConstants.NODE_GROUPS)).thenReturn(DefaultPropertyUtil.newDefaultProperty(List.class, "group"));
+        when(userItem.getItemProperty(SecurityConstants.NODE_GROUPS)).thenReturn(new DefaultProperty(List.class, new ArrayList<String>()));
         when(userNode.hasNode(SecurityConstants.NODE_GROUPS)).thenReturn(true);
         when(userNode.getNode(SecurityConstants.NODE_GROUPS)).thenReturn(userNode);
-        when(userItem.getItemProperty(SecurityConstants.NODE_ROLES)).thenReturn(DefaultPropertyUtil.newDefaultProperty(List.class, "role"));
+        when(userItem.getItemProperty(SecurityConstants.NODE_ROLES)).thenReturn(new DefaultProperty(List.class, new ArrayList<String>()));
         when(userNode.hasNode(SecurityConstants.NODE_ROLES)).thenReturn(true);
         when(userNode.getNode(SecurityConstants.NODE_ROLES)).thenReturn(userNode);
 
@@ -204,6 +219,96 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
 
         // THEN
         verify(securitySupport).getUserManager("admin");
+    }
+
+    @Test
+    public void testStoreGroupsCollection() throws ActionExecutionException, RepositoryException {
+        // GIVEN
+        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        prepareMocks(userItem);
+
+        when(userNode.getPath()).thenReturn("/admin/test");
+        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+
+        Collection<String> newGroupList = new ArrayList<String>();
+        newGroupList.add("firstGroupUuid");
+        newGroupList.add("secondGroupUuid");
+        newGroupList.add("thirdGroupUuid");
+        when(userItem.getItemProperty(SecurityConstants.NODE_GROUPS)).thenReturn(new DefaultProperty(List.class, newGroupList));
+
+        Node groupNode = mock(Node.class);
+        when(groupsSession.getNodeByIdentifier("firstGroupUuid")).thenReturn(groupNode);
+        when(groupsSession.getNodeByIdentifier("secondGroupUuid")).thenReturn(groupNode);
+        when(groupsSession.getNodeByIdentifier("thirdGroupUuid")).thenReturn(groupNode);
+        when(groupNode.getName()).thenReturn("firstGroupName", "secondGroupName", "thirdGroupName");
+
+        Collection<String> oldGroupList = new ArrayList<String>();
+        oldGroupList.add("firstGroupUuid");
+        oldGroupList.add("oldGroup");
+        when(user.getGroups()).thenReturn(oldGroupList);
+
+        SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
+
+        // WHEN
+        saveUserDialogAction.execute();
+
+        // THEN
+        //verify that all new groups are added to user
+        verify(userManager).addGroup(user, "firstGroupName");
+        verify(userManager).addGroup(user, "secondGroupName");
+        verify(userManager).addGroup(user, "thirdGroupName");
+
+        //verify that old group is removed from user groups
+        verify(userManager).removeGroup(user, "oldGroup");
+        verify(userManager, never()).addGroup(user, "oldGroup");
+
+        //verify that group which was already assigned to user is not removed
+        verify(userManager, never()).removeGroup(user, "firstGroupName");
+    }
+
+    @Test
+    public void testStoreRolesCollection() throws ActionExecutionException, RepositoryException {
+        // GIVEN
+        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        prepareMocks(userItem);
+
+        when(userNode.getPath()).thenReturn("/admin/test");
+        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+
+        Collection<String> newRoleList = new ArrayList<String>();
+        newRoleList.add("firstRoleUuid");
+        newRoleList.add("secondRoleUuid");
+        newRoleList.add("thirdRoleUuid");
+        when(userItem.getItemProperty(SecurityConstants.NODE_ROLES)).thenReturn(new DefaultProperty(List.class, newRoleList));
+
+        Node roleNode = mock(Node.class);
+        when(rolesSession.getNodeByIdentifier("firstRoleUuid")).thenReturn(roleNode);
+        when(rolesSession.getNodeByIdentifier("secondRoleUuid")).thenReturn(roleNode);
+        when(rolesSession.getNodeByIdentifier("thirdRoleUuid")).thenReturn(roleNode);
+        when(roleNode.getName()).thenReturn("firstRoleName", "secondRoleName", "thirdRoleName");
+
+        Collection<String> oldRoleList = new ArrayList<String>();
+        oldRoleList.add("firstRoleUuid");
+        oldRoleList.add("oldRole");
+        when(user.getRoles()).thenReturn(oldRoleList);
+
+        SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
+
+        // WHEN
+        saveUserDialogAction.execute();
+
+        // THEN
+        //verify that all new roles are added to user
+        verify(userManager).addRole(user, "firstRoleName");
+        verify(userManager).addRole(user, "secondRoleName");
+        verify(userManager).addRole(user, "thirdRoleName");
+
+        //verify that old role is removed from user roles
+        verify(userManager).removeRole(user, "oldRole");
+        verify(userManager, never()).addRole(user, "oldRole");
+
+        //verify that role which was already assigned to user is not removed
+        verify(userManager, never()).removeRole(user, "firstRoleName");
     }
 
 }
