@@ -68,7 +68,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Property;
 
@@ -286,8 +285,7 @@ public class AvailabilityCheckerImplTest extends MgnlTestCase {
     }
 
     private List<Object> getJcrPropertyItemIdsList(Property property) throws Exception {
-        Item propertyItem = (Item) property;
-        Node parentNode = propertyItem.getParent();
+        Node parentNode = property.getParent();
         return Arrays.asList((Object) new JcrPropertyItemId(parentNode.getIdentifier(), WORKSPACE, property.getName()));
     }
 

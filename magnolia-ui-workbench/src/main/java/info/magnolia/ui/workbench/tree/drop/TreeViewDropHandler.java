@@ -36,12 +36,13 @@ package info.magnolia.ui.workbench.tree.drop;
 import static info.magnolia.jcr.util.NodeUtil.*;
 
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -64,8 +65,10 @@ import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 import com.vaadin.ui.TreeTable;
 
 /**
- * Generic implementation of {@link DropHandler} handling basic {@link Item}.
- * This Handler implementation uses constrained defined in {@link DropConstraint} implemented class.
+ * Vaadin {@link DropHandler} for moving JCR nodes and properties in trees, with Drag and Drop.
+ * <p>
+ * Additionally, the dropping conditions can be restricted, by implementing a {@link DropConstraint}
+ * and configuring it in the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition WorkbenchDefinition}.
  */
 public class TreeViewDropHandler implements MoveHandler, DropHandler {
 
@@ -108,7 +111,7 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
             return;
         }
         // Get id's of the dragged items
-        Iterator<Object> selected = getSourceIds(dropEvent);
+        Iterator<Object> selected = getItemIdsToMove(dropEvent).iterator();
         while (selected.hasNext()) {
             Object sourceItemId = selected.next();
             moveNode(sourceItemId, targetItemId, location);
@@ -116,11 +119,24 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
     }
 
     /**
-     * Return an Iterator containing the ItemId to move.
+     * Returns a collection of itemIds to move:
+     * <ul>
+     * <li>all <em>selected</em> itemIds if and only if the dragging node is <em>also</em> selected</li>
+     * <li>only the dragging itemId if it's not selected</li>
+     * </ul>
      */
-    private Iterator<Object> getSourceIds(DragAndDropEvent dropEvent) {
+    private Collection<Object> getItemIdsToMove(DragAndDropEvent dropEvent) {
         Transferable t = dropEvent.getTransferable();
-        return ((Set) ((MagnoliaTreeTable) t.getSourceComponent()).getValue()).iterator();
+        Object draggingItemId = ((DataBoundTransferable) t).getItemId();
+
+        // all selected itemIds if and only if the dragging node is also selected
+        Set<Object> selectedItemIds = (Set<Object>) ((TreeTable) t.getSourceComponent()).getValue();
+        if (selectedItemIds.contains(draggingItemId)) {
+            return selectedItemIds;
+        }
+
+        // only the dragging itemId if it's not selected
+        return Arrays.asList(draggingItemId);
     }
 
     /**
@@ -189,7 +205,7 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
             @Override
             public boolean accept(DragAndDropEvent dragEvent) {
                 boolean res = true;
-                Iterator<Object> selected = getSourceIds(dragEvent);
+                Iterator<Object> selected = getItemIdsToMove(dragEvent).iterator();
                 while (selected.hasNext()) {
                     Object sourceItemId = selected.next();
                     HierarchicalJcrContainer container = (HierarchicalJcrContainer) tree.getContainerDataSource();

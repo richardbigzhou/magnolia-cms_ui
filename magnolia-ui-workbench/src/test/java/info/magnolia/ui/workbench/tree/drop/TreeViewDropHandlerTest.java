@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -53,7 +53,9 @@ import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
@@ -62,6 +64,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,11 +74,9 @@ import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 
 /**
- * Tests for HierarchicalJcrContainer.
+ * Tests for the {@link TreeViewDropHandler}.
  */
 public class TreeViewDropHandlerTest extends RepositoryTestCase {
-
-    private HierarchicalJcrContainer hierarchicalJcrContainer;
 
     private ConfiguredJcrContentConnectorDefinition connectorDefinition;
 
@@ -88,7 +89,13 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
     private Session session;
 
     private Node rootNode;
-    private String workspace;
+
+    private Node source1;
+    private Node source2;
+    private Node target;
+    private MagnoliaTreeTable treeTable;
+    private DropConstraint constrain;
+    private DragAndDropEvent event;
 
     @Override
     @Before
@@ -125,7 +132,6 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         // Init session
         session = MgnlContext.getJCRSession(WORKSPACE);
         rootNode = session.getRootNode();
-        workspace = WORKSPACE;
     }
 
     @Test
@@ -212,41 +218,9 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void moveMultipleItem() throws RepositoryException {
+    public void moveMultipleSelectedItems() throws RepositoryException {
         // GIVEN
-        // create source/target nodes/items
-        Node source1 = AbstractJcrContainerTest.createNode(rootNode, "source1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
-        Node source2 = AbstractJcrContainerTest.createNode(rootNode, "source2", NodeTypes.Content.NAME, PROPERTY_1, "name1");
-        Node target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
-        target.getSession().save();
-        JcrNodeAdapter sourceItem1 = new JcrNodeAdapter(source1);
-        JcrNodeAdapter sourceItem2 = new JcrNodeAdapter(source2);
-        JcrNodeAdapter targetItem = new JcrNodeAdapter(target);
-        Set<Object> sources = new HashSet<Object>(Arrays.asList(sourceItem1, sourceItem2));
-
-        // Mock the TreeTable
-        MagnoliaTreeTable treeTable = mock(MagnoliaTreeTable.class);
-        HierarchicalJcrContainer jcrContainer = mock(HierarchicalJcrContainer.class);
-        when(treeTable.getContainerDataSource()).thenReturn(jcrContainer);
-        when(jcrContainer.getItem(sourceItem1)).thenReturn(sourceItem1);
-        when(jcrContainer.getItem(sourceItem2)).thenReturn(sourceItem2);
-        when(jcrContainer.getItem(targetItem)).thenReturn(targetItem);
-
-        // Mock the DDEvent and Transferable and Target Detail
-        DragAndDropEvent event = mock(DragAndDropEvent.class);
-        AbstractSelectTargetDetails targetDetail = mock(AbstractSelectTargetDetails.class);
-        when(targetDetail.getItemIdOver()).thenReturn(targetItem);
-        when(targetDetail.getDropLocation()).thenReturn(VerticalDropLocation.MIDDLE);
-        DataBoundTransferable transferable = mock(DataBoundTransferable.class);
-        when(transferable.getSourceComponent()).thenReturn(treeTable);
-        when(treeTable.getValue()).thenReturn(sources);
-        when(event.getTargetDetails()).thenReturn(targetDetail);
-        when(event.getTransferable()).thenReturn(transferable);
-
-        // Mock the constrain
-        DropConstraint constrain = mock(DropConstraint.class);
-        when(constrain.allowedAsChild(sourceItem1, targetItem)).thenReturn(true);
-        when(constrain.allowedAsChild(sourceItem2, targetItem)).thenReturn(true);
+        initializeDropHandlerComponents("source1", Arrays.asList("source1", "source2"));
 
         // WHEN
         new TreeViewDropHandler(treeTable, constrain).drop(event);
@@ -255,4 +229,95 @@ public class TreeViewDropHandlerTest extends RepositoryTestCase {
         assertTrue(target.hasNode("source1"));
         assertTrue(target.hasNode("source2"));
     }
+
+    @Test
+    public void moveOneSelectedItems() throws RepositoryException {
+        // GIVEN
+        initializeDropHandlerComponents("source1", Arrays.asList("source1"));
+
+        // WHEN
+        new TreeViewDropHandler(treeTable, constrain).drop(event);
+
+        // THEN
+        assertTrue(target.hasNode("source1"));
+        assertFalse(target.hasNode("source2"));
+        assertTrue(rootNode.hasNode("source2"));
+    }
+
+    @Test
+    public void moveOneItemsNotSelected() throws RepositoryException {
+        // GIVEN
+        initializeDropHandlerComponents("source1", Arrays.asList(""));
+
+        // WHEN
+        new TreeViewDropHandler(treeTable, constrain).drop(event);
+
+        // THEN
+        assertTrue(target.hasNode("source1"));
+        assertFalse(target.hasNode("source2"));
+        assertTrue(rootNode.hasNode("source2"));
+    }
+
+    @Test
+    public void moveOneItemsNotSelectedAndNotSelectedOne() throws RepositoryException {
+        // GIVEN
+        initializeDropHandlerComponents("source1", Arrays.asList("source2"));
+
+        // WHEN
+        new TreeViewDropHandler(treeTable, constrain).drop(event);
+
+        // THEN
+        assertTrue(target.hasNode("source1"));
+        assertFalse(target.hasNode("source2"));
+        assertTrue(rootNode.hasNode("source2"));
+    }
+
+    private void initializeDropHandlerComponents(String dragginItemId, List<String> checkboxEdItemIds) throws RepositoryException {
+        // create source/target nodes/items
+        source1 = AbstractJcrContainerTest.createNode(rootNode, "source1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        source2 = AbstractJcrContainerTest.createNode(rootNode, "source2", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        target.getSession().save();
+        HashMap<String, Object> items = new HashMap<String, Object>();
+        JcrNodeAdapter sourceItem1 = new JcrNodeAdapter(source1);
+        items.put("source1", sourceItem1);
+        JcrNodeAdapter sourceItem2 = new JcrNodeAdapter(source2);
+        items.put("source2", sourceItem2);
+        JcrNodeAdapter targetItem = new JcrNodeAdapter(target);
+
+        // Mock the TreeTable
+        treeTable = mock(MagnoliaTreeTable.class);
+        Set<Object> value = new HashSet<Object>();
+        when(treeTable.getValue()).thenReturn(value);
+        if (checkboxEdItemIds.contains("source1")) {
+            value.add(sourceItem1);
+        }
+        if (checkboxEdItemIds.contains("source2")) {
+            value.add(sourceItem2);
+        }
+        HierarchicalJcrContainer jcrContainer = mock(HierarchicalJcrContainer.class);
+        when(treeTable.getContainerDataSource()).thenReturn(jcrContainer);
+        when(jcrContainer.getItem(sourceItem1)).thenReturn(sourceItem1);
+        when(jcrContainer.getItem(sourceItem2)).thenReturn(sourceItem2);
+        when(jcrContainer.getItem(targetItem)).thenReturn(targetItem);
+
+        // Mock the DDEvent and Transferable and Target Detail
+        event = mock(DragAndDropEvent.class);
+        AbstractSelectTargetDetails targetDetail = mock(AbstractSelectTargetDetails.class);
+        when(targetDetail.getItemIdOver()).thenReturn(targetItem);
+        when(targetDetail.getDropLocation()).thenReturn(VerticalDropLocation.MIDDLE);
+        DataBoundTransferable transferable = mock(DataBoundTransferable.class);
+        when(transferable.getSourceComponent()).thenReturn(treeTable);
+        if (StringUtils.isNotBlank(dragginItemId)) {
+            when(transferable.getItemId()).thenReturn(items.get(dragginItemId));
+        }
+        when(event.getTargetDetails()).thenReturn(targetDetail);
+        when(event.getTransferable()).thenReturn(transferable);
+
+        // Mock the constrain
+        constrain = mock(DropConstraint.class);
+        when(constrain.allowedAsChild(sourceItem1, targetItem)).thenReturn(true);
+        when(constrain.allowedAsChild(sourceItem2, targetItem)).thenReturn(true);
+    }
+
 }
