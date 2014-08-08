@@ -3626,7 +3626,7 @@
             <sv:value>f10ad095-b12b-41fc-a844-bd048359e715</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.action.DeleteFolderActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>
@@ -3644,7 +3644,7 @@
             <sv:value>superuser</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2014-01-28T16:03:06.518+02:00</sv:value>
+            <sv:value>2014-08-08T12:53:48.819+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
@@ -5880,7 +5880,7 @@
             <sv:value>1a60b011-431d-4b6c-a8b8-e02e182f59ae</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.action.DeleteFolderActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>
@@ -5898,7 +5898,7 @@
             <sv:value>superuser</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2014-01-28T15:51:23.375+02:00</sv:value>
+            <sv:value>2014-08-08T10:33:22.471+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
