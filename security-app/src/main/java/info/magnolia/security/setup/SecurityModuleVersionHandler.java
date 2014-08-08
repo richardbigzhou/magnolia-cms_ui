@@ -223,6 +223,15 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NewPropertyTask("Set security app role dialog to wide", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role","wide", true))
                 .addTask(new SetWritePermissionForActionsTask("/modules/security-app/apps/security/subApps/users/actions", new String[] { "activate", "deactivate" }))
         );
+
+        register(DeltaBuilder.update("5.3.2", "")
+                .addTask(new ArrayDelegateTask("Reconfigure delete folder actions",
+                        new NodeExistsDelegateTask("Reconfigure delete folder action in Groups", "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder",
+                                new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "class", "info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition", "info.magnolia.security.app.action.DeleteFolderActionDefinition")),
+                        new NodeExistsDelegateTask("Reconfigure delete folder action in Roles", "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder",
+                                new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "class", "info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition", "info.magnolia.security.app.action.DeleteFolderActionDefinition"))
+                        ))
+        );
     }
 
     @Override
