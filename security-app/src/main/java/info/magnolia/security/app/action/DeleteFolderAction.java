@@ -101,12 +101,8 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         return assignedTo;
     }
 
-    protected String getBaseErrorMessage() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     protected String getVerificationErrorMessage() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getI18n().translate("security.delete.folder.cannotVerifyError");
     }
 
     protected Collection<String> getGroupsOrRoles(User user) {
@@ -124,13 +120,15 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     }
 
     protected String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
-        //oprav na getIl8n
         StringBuilder message = new StringBuilder(getI18n().translate("security.delete.folder.roleOrGroupInfolderStillInUse"));
         message.append("<ul>");
         int i = 0;
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
-            if (i > 4) message.append("<li>...</li>");
+            if (i > 4) {
+                message.append("<li>...</li>");
+                break;
+            }
             i++;
         }
         message.append("</ul>");
