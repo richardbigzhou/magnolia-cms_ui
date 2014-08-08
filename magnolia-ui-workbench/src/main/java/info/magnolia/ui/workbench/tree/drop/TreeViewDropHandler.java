@@ -122,7 +122,7 @@ public class TreeViewDropHandler implements MoveHandler, DropHandler {
      * Returns a collection of itemIds to move:
      * <ul>
      * <li>all <em>selected</em> itemIds if and only if the dragging node is <em>also</em> selected</li>
-     * <li>only the dragging itemId if it's not selected</li>
+     * <li>only the dragging itemId if it's not selected</li>.
      * </ul>
      */
     private Collection<Object> getItemIdsToMove(DragAndDropEvent dropEvent) {
