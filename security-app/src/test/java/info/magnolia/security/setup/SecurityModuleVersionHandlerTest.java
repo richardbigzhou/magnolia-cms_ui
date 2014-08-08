@@ -44,7 +44,7 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
+import info.magnolia.security.app.action.DeleteFolderActionDefinition;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
@@ -390,8 +390,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/editActions/items/duplicateUser"));
         assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/editActions/items/duplicateGroup"));
         assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/editActions/items/duplicateRole"));
-        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
-        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteFolderActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteFolderActionDefinition.class.getName());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser/class").getString());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/class").getString());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteItems/class").getString());
@@ -469,6 +469,21 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         availability = deactivateAction.getNode("availability");
         assertTrue(availability.hasProperty("writePermissionRequired"));
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
+    }
+
+    @Test
+    public void updateFrom531ReconfigureDeleteFolderActions() throws Exception {
+        // GIVEN
+        NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition");
+        NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.1"));
+
+        // THEN
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteFolderActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteFolderActionDefinition.class.getName());
+
     }
 
 }
