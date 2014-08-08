@@ -54,14 +54,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 /**
  * Implements {@link info.magnolia.ui.api.availability.AvailabilityChecker}.
  */
 public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
-    private ComponentProvider componentProvider;
+    private final ComponentProvider componentProvider;
 
-    private ContentConnector contentConnector;
+    private final ContentConnector contentConnector;
 
     private JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
     private JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
@@ -79,16 +81,24 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     @Override
     public boolean isAvailable(AvailabilityDefinition definition, List<Object> ids) {
-        boolean isAvailable = true;
-        Iterator<AvailabilityRule> ruleIterator = prepareRules(definition).iterator();
+        // Prepare rules
+        List<AvailabilityRule> rules = prepareRules(definition);
+
         List<Object> idsToCheck = new ArrayList<Object>(ids);
-        Object defaultId = contentConnector.getDefaultItemId();
-        // In order to be compatible with the old logic and to let shorthand criteria work - we substitute a default item id with null
-        // TODO - this should be done in a nicer way!
-        if (idsToCheck.contains(defaultId) || (idsToCheck.isEmpty() && defaultId == null)) {
-            idsToCheck.remove(defaultId);
-            idsToCheck.add(null);
+        Object defaultItemId = contentConnector.getDefaultItemId();
+        // In case we have no id's (no selection) add the default itemId defined by the contentConnector.
+        if (idsToCheck.isEmpty() && defaultItemId != null) {
+            idsToCheck.add(defaultItemId);
         }
+
+        // Since we can't combine rules with AND/OR operands, 'root' availability should keep precedence over nodes/nodeTypes-allowed rules when the default item is selected.
+        if (definition.isRoot() && idsToCheck.size() == 1 && ObjectUtils.equals(idsToCheck.get(0), defaultItemId)) {
+            rules.remove(jcrNodesAllowedRule);
+            rules.remove(jcrNodeTypesAllowedRule);
+        }
+
+        boolean isAvailable = true;
+        Iterator<AvailabilityRule> ruleIterator = rules.iterator();
         while (isAvailable && ruleIterator.hasNext()) {
             AvailabilityRule rule = ruleIterator.next();
             boolean ruleHolds = rule.isAvailable(idsToCheck);
@@ -115,10 +125,14 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
         accessGrantedRule.setAccessDefinition(definition.getAccess());
         writePermissionRequiredRule.setWritePermissionRequired(definition.isWritePermissionRequired());
 
-        List<AvailabilityRule> shorthands = new ArrayList<AvailabilityRule>(6);
+        // set default itemId to check "root" availability against
+        Object defaultItemId = contentConnector.getDefaultItemId();
+        jcrRootAllowedRule.setDefaultItemId(defaultItemId);
+
+        List<AvailabilityRule> shorthands = new ArrayList<AvailabilityRule>();
+        shorthands.add(jcrRootAllowedRule);
         shorthands.add(jcrNodesAllowedRule);
         shorthands.add(jcrPropertiesAllowedRule);
-        shorthands.add(jcrRootAllowedRule);
         shorthands.add(jcrNodeTypesAllowedRule);
         shorthands.add(multipleItemsAllowedRule);
         shorthands.add(accessGrantedRule);

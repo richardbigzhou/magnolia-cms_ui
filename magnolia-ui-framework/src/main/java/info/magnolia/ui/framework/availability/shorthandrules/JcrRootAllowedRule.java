@@ -33,20 +33,19 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
- * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated item is the JCR rootAllowed.
+ * {@link info.magnolia.ui.api.availability.AvailabilityRule AvailabilityRule} implementation which returns true if evaluated item is the default itemId —
+ * typically the root node for JCR-based content apps.
  */
 public class JcrRootAllowedRule extends AbstractAvailabilityRule {
 
     private boolean rootAllowed;
+    private Object defaultItemId;
 
     public boolean isRootAllowed() {
         return rootAllowed;
@@ -56,19 +55,12 @@ public class JcrRootAllowedRule extends AbstractAvailabilityRule {
         this.rootAllowed = rootAllowed;
     }
 
-    private boolean isRoot(Object itemId) {
-        if (itemId instanceof JcrItemId) {
+    public Object getDefaultItemId() {
+        return defaultItemId;
+    }
 
-            JcrItemId jcrItemId = (JcrItemId) itemId;
-            Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
-            try {
-                node.getParent();
-                return false;
-            } catch (RepositoryException e) {
-                return true;
-            }
-        }
-        return false;
+    public void setDefaultItemId(Object defaultItemId) {
+        this.defaultItemId = defaultItemId;
     }
 
     @Override
@@ -77,7 +69,7 @@ public class JcrRootAllowedRule extends AbstractAvailabilityRule {
             return true;
         }
 
-        if (itemId == null || isRoot(itemId)) {
+        if (ObjectUtils.equals(getDefaultItemId(), itemId)) {
             return rootAllowed;
         }
         return true;
