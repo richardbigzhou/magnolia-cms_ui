@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.editor.availability;
+
+import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+
+import javax.inject.Inject;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * This rule returns true if the {@link PageEditorPresenter#selectedElement} in the page editor is a component
+ * and the user has permission to delete it based on the 'deletable' property.
  */
-public class ComponentElement extends AbstractElement {
+public class IsComponentDeletableRule extends AbstractElementAvailabilityRule<ComponentElement> {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
+    @Inject
+    public IsComponentDeletableRule(PageEditorPresenter pageEditorPresenter) {
+        super(pageEditorPresenter, ComponentElement.class);
     }
 
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
+    @Override
+    protected boolean isAvailableForElement(ComponentElement element) {
+        return element.getDeletable();
     }
 }

@@ -117,6 +117,9 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         if (getAttributes().containsKey(OperationPermissionDefinition.ADDIBLE)) {
             addible = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.ADDIBLE));
         }
+
+        area.setOptional(optional);
+        area.setCreated(created);
         area.setAddible(addible && hasAvailableComponents && !(optional && !created) && !(areaIsTypeSingle && areaHasChildComponents) && !isMaxComponentsReached());
 
         return area;

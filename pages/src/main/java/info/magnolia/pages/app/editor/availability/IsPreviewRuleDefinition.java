@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.editor.availability;
+
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * Definition for {@link IsPreviewRule}.
  */
-public class ComponentElement extends AbstractElement {
+public class IsPreviewRuleDefinition extends ConfiguredAvailabilityRuleDefinition {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
+    private boolean preview;
+
+    public IsPreviewRuleDefinition() {
+        setImplementationClass(IsPreviewRule.class);
     }
 
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
+    public boolean isPreview() {
+        return preview;
     }
 
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
+    public void setPreview(boolean preview) {
+        this.preview = preview;
     }
 }

@@ -37,6 +37,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.util.Collection;
@@ -65,8 +66,15 @@ public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
         if (nodeTypes.isEmpty()) {
             return true;
         }
-
-        if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
+        if (itemId instanceof JcrNewNodeItemId) {
+            for (String nodeType : nodeTypes) {
+                if (((JcrNewNodeItemId) itemId).getPrimaryNodeType().equals(nodeType)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             // else the node must match at least one of the configured node types
@@ -82,7 +90,6 @@ public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
 
             return false;
         }
-
         return true;
     }
 }

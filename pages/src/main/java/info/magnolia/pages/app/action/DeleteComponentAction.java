@@ -46,7 +46,10 @@ import javax.inject.Named;
 
 /**
  * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.api.event.ContentChangedEvent} on the {@link SubAppEventBus}.
+ *
+ * @deprecated since 5.4. Use {@link DeletePageItemAction}
  */
+@Deprecated
 public class DeleteComponentAction extends DeleteItemAction {
 
     @Inject

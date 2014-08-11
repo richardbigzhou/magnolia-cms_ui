@@ -51,6 +51,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * Presenter for the server side {@link PageEditorView}.
  * Serves multiple methods for actions triggered from the page editor.
  */
+@Singleton
 public class PageEditorPresenter implements PageEditorListener {
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
@@ -71,6 +73,7 @@ public class PageEditorPresenter implements PageEditorListener {
 
     private AbstractElement selectedElement;
     private boolean moving = false;
+    private Listener listener;
 
     @Inject
     public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
@@ -105,6 +108,8 @@ public class PageEditorPresenter implements PageEditorListener {
                 } else if (event.isServerSide()) {
                     view.cancelMoveComponent();
                 }
+
+                listener.updateActionbar(getSelectedElement());
             }
         });
 
@@ -141,5 +146,16 @@ public class PageEditorPresenter implements PageEditorListener {
 
     public boolean isMoving() {
         return moving;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * Listener interface to call {@link PageEditorPresenter}.
+     */
+    interface Listener {
+        void updateActionbar(AbstractElement element);
     }
 }

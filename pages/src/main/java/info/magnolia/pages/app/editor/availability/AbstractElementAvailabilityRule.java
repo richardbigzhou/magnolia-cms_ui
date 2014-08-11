@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.editor.availability;
+
+import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * Abstract rule for checking availability of {@link AbstractElement}s.
+ *
+ *  @param <E> the element sent from client side.
  */
-public class ComponentElement extends AbstractElement {
+public abstract class AbstractElementAvailabilityRule<E extends AbstractElement> extends AbstractAvailabilityRule {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
+    private final Class<E> type;
+    private E element;
+
+    public AbstractElementAvailabilityRule(PageEditorPresenter pageEditorPresenter, Class<E> type) {
+        this.type = type;
+        this.element = (E) pageEditorPresenter.getSelectedElement();
     }
 
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (type.isInstance(element)) {
+            return isAvailableForElement(element);
+        }
+        return false;
     }
 
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
-    }
+    protected abstract boolean isAvailableForElement(E element);
 }

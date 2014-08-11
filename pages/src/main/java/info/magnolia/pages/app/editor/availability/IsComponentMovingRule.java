@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.editor.availability;
+
+import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+
+import javax.inject.Inject;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * This rule returns true or false depending on {@link IsComponentMovingRuleDefinition#isStart()}
+ * if the moving of a component is in progress.
  */
-public class ComponentElement extends AbstractElement {
+public class IsComponentMovingRule extends AbstractAvailabilityRule {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
+    private final boolean isMoving;
+    private IsComponentMovingRuleDefinition definition;
+
+    @Inject
+    public IsComponentMovingRule(IsComponentMovingRuleDefinition definition, PageEditorPresenter pageEditorPresenter) {
+        this.definition = definition;
+        this.isMoving = pageEditorPresenter.isMoving();
     }
 
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        return isMoving == definition.isStart();
     }
 }

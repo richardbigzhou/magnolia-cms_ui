@@ -33,18 +33,16 @@
  */
 package info.magnolia.pages.app.editor;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -80,14 +78,12 @@ import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.Arrays;
@@ -108,22 +104,11 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener {
+public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener, PageEditorPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     protected static final String PROPERTY_TITLE = "title";
-
-    protected static final String SECTION_PAGE = "pageActions";
-    protected static final String SECTION_PAGE_PREVIEW = "pagePreviewActions";
-    protected static final String SECTION_AREA = "areaActions";
-    protected static final String SECTION_EDITABLE_AREA = "editableAreaActions";
-    protected static final String SECTION_COMPONENT = "componentActions";
-    protected static final String SECTION_PAGE_DELETE = "pageDeleteActions";
-    protected static final String SECTION_OPTIONAL_AREA = "optionalAreaActions";
-    protected static final String SECTION_OPTIONAL_EDITABLE_AREA = "optionalEditableAreaActions";
-    protected static final String[] ALL_SECTIONS = new String[] { SECTION_AREA, SECTION_COMPONENT, SECTION_EDITABLE_AREA,
-            SECTION_OPTIONAL_AREA, SECTION_OPTIONAL_EDITABLE_AREA, SECTION_PAGE, SECTION_PAGE_DELETE, SECTION_PAGE_PREVIEW };
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
@@ -134,6 +119,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final PageBarView pageBarView;
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
+    private final JcrContentConnector contentConnector;
     private AvailabilityChecker availabilityChecker;
     private final StatusBarView statusBarView;
     private final EditorDefinition editorDefinition;
@@ -152,17 +138,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
      */
     @Deprecated
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
-            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
-            ContentConnector contentConnector) {
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector) {
         this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
     }
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
-            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
-            ContentConnector contentConnector, StatusBarView statusBarView) {
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector, StatusBarView statusBarView) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -176,7 +162,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.availabilityChecker = availabilityChecker;
         this.statusBarView = statusBarView;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
-        this.workspace = ((JcrContentConnector) contentConnector).getContentConnectorDefinition().getWorkspace();
+        this.contentConnector = (JcrContentConnector) contentConnector;
+        this.workspace = this.contentConnector.getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
         this.versionManager = versionManager;
         this.i18n = i18n;
@@ -205,6 +192,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
 
         pageBarView.setListener(this);
+        pageEditorPresenter.setListener(this);
 
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
@@ -238,13 +226,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return view;
     }
 
-    private void updateActions() {
-        updateActionsAccordingToOperationPermissions();
-        // actions currently always disabled
-        actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
-                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-    }
-
     /**
      * Informs the app framework when navigating pages inside the page editor.
      * Updates the shell fragment, caption and current location.
@@ -256,34 +237,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
         view.setStatusBarView(statusBarView); // update page status bar
         pageEditorPresenter.updateParameters(parameters);
-    }
-
-    /**
-     * Show/Hide actions buttons according to operation permissions.
-     */
-    private void updateActionsAccordingToOperationPermissions() {
-        AbstractElement element = pageEditorPresenter.getSelectedElement();
-
-        if (element instanceof ComponentElement) {
-            ComponentElement componentElement = (ComponentElement) element;
-
-            if (componentElement.getDeletable() != null && !componentElement.getDeletable()) {
-                actionbarPresenter.disable(PageEditorListener.ACTION_DELETE_COMPONENT);
-            }
-            if (componentElement.getMoveable() != null && !componentElement.getMoveable()) {
-                actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-            }
-            if (componentElement.getWritable() != null && !componentElement.getWritable()) {
-                actionbarPresenter.disable(PageEditorListener.ACTION_EDIT_COMPONENT);
-            }
-
-        } else if (element instanceof AreaElement) {
-            AreaElement areaElement = (AreaElement) element;
-
-            if (areaElement.getAddible() != null && !areaElement.getAddible()) {
-                actionbarPresenter.disable(PageEditorListener.ACTION_ADD_COMPONENT);
-            }
-        }
     }
 
     @Override
@@ -410,7 +363,14 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection(ALL_SECTIONS);
+        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
+            actionbarPresenter.hideSection(section.getName());
+        }
     }
 
     private void bindHandlers() {
@@ -434,19 +394,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             }
         });
 
-        subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
-            @Override
-            public void onMove(ComponentMoveEvent event) {
-                if (event.isStart()) {
-                    actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-                    actionbarPresenter.enable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
-                } else {
-                    actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-                    actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
-                }
-            }
-        });
-
         subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
@@ -465,14 +412,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     protected void prepareAndExecutePagesEditorAction(String actionName) {
         AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
         try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            final javax.jcr.Item item = session.getItem(selectedElement.getPath());
-            actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item), selectedElement, pageEditorPresenter);
-
-        } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
-            log.error("An error occurred while executing action [{}]", actionName, e);
-            appContext.sendLocalMessage(error);
+            Object itemId = getItemdId(selectedElement);
+            actionExecutor.execute(actionName, contentConnector.getItem(itemId), selectedElement, pageEditorPresenter);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
@@ -502,118 +443,105 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     /**
      * This method has package visibility for testing purposes only.
      */
-    final PageEditorParameters getParameters() {
+    public PageEditorParameters getParameters() {
         return parameters;
     }
 
-    private boolean isDeletedNode(String workspace, String path) {
-        Node node = SessionUtil.getNode(workspace, path);
-        try {
-            if (node != null) {
-                return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } else {
-                return false;
-            }
-        } catch (RepositoryException re) {
-            log.warn("Not able to check if node has MixIn");
-            return false;
-        }
-    }
-
-    private void updateActionbar(final AbstractElement element) {
+    @Override
+    public void updateActionbar(final AbstractElement element) {
         String path = element.getPath();
-        String dialog = element.getDialog();
         if (StringUtils.isEmpty(path)) {
             path = "/";
         }
-        hideAllSections();
 
-        if (isDeletedNode(workspace, path)) {
-            actionbarPresenter.showSection(SECTION_PAGE_DELETE);
+        if (element instanceof PageElement) {
 
-            if (!getCurrentLocation().hasVersion()) {
-                actionbarPresenter.enable("showPreviousVersion");
-            } else {
-                actionbarPresenter.disable("showPreviousVersion");
+            if (!path.equals(parameters.getNodePath())) {
+                updateNodePath(path);
             }
-            actionbarPresenter.enable("restorePreviousVersion");
-            actionbarPresenter.enable("activateDelete");
-
-        } else {
-
-            ActionbarSectionDefinition def;
-            String sectionName = null;
-
-            if (element instanceof PageElement) {
-
-                if (!path.equals(parameters.getNodePath())) {
-                    updateNodePath(path);
-                }
-
-                if (parameters.isPreview()) {
-                    sectionName = SECTION_PAGE_PREVIEW;
-                } else {
-                    sectionName = SECTION_PAGE;
-                }
-
-            } else if (element instanceof AreaElement) {
-                if (dialog == null) {
-                    sectionName = SECTION_AREA;
-                } else {
-                    sectionName = SECTION_EDITABLE_AREA;
-                }
-
-            } else if (element instanceof ComponentElement) {
-                sectionName = SECTION_COMPONENT;
-            }
-
-            if (sectionName != null) {
-                actionbarPresenter.showSection(sectionName);
-                def = getActionbarSectionDefinitionByName(sectionName);
-                enableOrDisableActions(def, path);
-            }
-            updateActions();
         }
+        try {
+            enableOrDisableActions(element);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        // actions currently always disabled
+        actionbarPresenter.disable(PageEditorListener.ACTION_COPY_COMPONENT,
+                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
+
     }
 
-    private void enableOrDisableActions(final ActionbarSectionDefinition def, final String path) {
-        if (def == null) {
+    private void enableOrDisableActions(AbstractElement element) throws RepositoryException {
+
+        Object itemId = getItemdId(element);
+
+        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
             return;
         }
-        // Evaluate availability of each action within the section
-        Node node = SessionUtil.getNode(workspace, path);
-        for (ActionbarGroupDefinition groupDefinition : def.getGroups()) {
-            for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+        List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
+        // Figure out which section to show, only one
+        ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, itemId);
 
-                String actionName = itemDefinition.getName();
-                AvailabilityDefinition availabilityDefinition = actionExecutor.getActionDefinition(actionName).getAvailability();
-                try {
-                    Object itemId = JcrItemUtil.getItemId(node);
-                    if (availabilityChecker.isAvailable(availabilityDefinition, Arrays.asList(itemId))) {
-                        actionbarPresenter.enable(actionName);
-                    } else {
-                        actionbarPresenter.disable(actionName);
+        // Hide all other sections
+        for (ActionbarSectionDefinition section : sections) {
+            actionbarPresenter.hideSection(section.getName());
+        }
+
+        if (sectionDefinition != null) {
+            // Show our section
+            actionbarPresenter.showSection(sectionDefinition.getName());
+
+            // Evaluate availability of each action within the section
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                    String actionName = itemDefinition.getName();
+                    ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+                    if (actionDefinition != null) {
+                        AvailabilityDefinition availability = actionDefinition.getAvailability();
+                        if (availabilityChecker.isAvailable(availability, Arrays.asList(itemId))) {
+                            actionbarPresenter.enable(actionName);
+                        } else {
+                            actionbarPresenter.disable(actionName);
+                        }
                     }
-                } catch (RepositoryException e) {
-                    log.error("Failed to update action availability: " + e.getMessage(), e);
                 }
             }
         }
     }
 
-    private ActionbarSectionDefinition getActionbarSectionDefinitionByName(final String sectionName) {
-        ActionbarDefinition actionbarDefinition = ((DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
-        if (actionbarDefinition == null) {
-            log.warn("No actionbar definition found, returning null");
+    private Object getItemdId(AbstractElement element) {
+        if (element instanceof AreaElement && ((AreaElement) element).isOptional() && !((AreaElement) element).isCreated()) {
+
+            try {
+                int index = element.getPath().lastIndexOf("/");
+                String parentPath = element.getPath().substring(0, index);
+                String relPath = element.getPath().substring(index + 1);
+
+                Node parent = MgnlContext.getJCRSession(getWorkspace()).getNode(parentPath);
+
+                JcrNewNodeItemId jcrNewNodeItemId = new JcrNewNodeItemId(parent.getIdentifier(), getWorkspace(), NodeTypes.Area.NAME);
+                jcrNewNodeItemId.setName(Path.getUniqueLabel(parent, relPath));
+                return jcrNewNodeItemId;
+            } catch (RepositoryException e) {
+                log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
+            }
+
             return null;
         }
-
-        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
-            if (section.getName().equals(sectionName)) {
-                return section;
-            }
+        else {
+            return contentConnector.getItemIdByUrlFragment(element.getPath());
         }
-        log.warn("No section named [{}] found, returning null", sectionName);
+    }
+
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Object itemId) {
+        for (ActionbarSectionDefinition section : sections) {
+            if (availabilityChecker.isAvailable(section.getAvailability(), Arrays.asList(itemId)))
+                return section;
+        }
         return null;
     }
 
@@ -633,6 +561,10 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     protected String getWorkspace() {
         return workspace;
+    }
+
+    public PageEditorPresenter getPageEditorPresenter() {
+        return pageEditorPresenter;
     }
 
 }

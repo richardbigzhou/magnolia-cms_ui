@@ -34,11 +34,7 @@
 package info.magnolia.pages.app.editor;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.eq;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
@@ -47,6 +43,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.location.PagesLocation;
 import info.magnolia.rendering.template.TemplateAvailability;
@@ -60,27 +57,22 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
-import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.StatusBarView;
@@ -88,6 +80,7 @@ import info.magnolia.ui.workbench.StatusBarView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -113,7 +106,6 @@ public class PagesEditorSubAppTest {
     private PageBarView pageBarView;
     private I18NAuthoringSupport i18NAuthoringSupport;
     private I18nContentSupport i18nContentSupport;
-    private AbstractElement element;
     private ConfiguredTemplateDefinition definition;
     private VersionManager versionManager;
     private ConfiguredDetailSubAppDescriptor descriptor;
@@ -195,109 +187,6 @@ public class PagesEditorSubAppTest {
     }
 
     @Test
-    public void testButtonsVisibilityIsNotChangedForOtherThenComponentElement() {
-        // GIVEN
-        element = new AreaElement(null, null, null, null);
-        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-
-        // WHEN
-        eventBus.fireEvent(new NodeSelectedEvent(element));
-
-        // THEN
-        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
-        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_AREA);
-        verify(actionbarPresenter).disable(PageEditorPresenter.ACTION_CANCEL_MOVE_COMPONENT, PageEditorPresenter.ACTION_COPY_COMPONENT,
-                PageEditorPresenter.ACTION_PASTE_COMPONENT, PageEditorPresenter.ACTION_UNDO, PageEditorPresenter.ACTION_REDO);
-        verifyNoMoreInteractions(actionbarPresenter);
-    }
-
-    @Test
-    public void testHidingButtonsBasedOnOperationPermissionsForComponent() {
-        // GIVEN
-        ComponentElement element = new ComponentElement(null, null, null);
-        element.setMoveable(true);
-        element.setDeletable(false);
-        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-
-        // WHEN
-        eventBus.fireEvent(new NodeSelectedEvent(element));
-
-        // THEN
-        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
-        verify(actionbarPresenter).showSection("componentActions");
-        verify(actionbarPresenter).disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
-                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-        verify(actionbarPresenter).disable(PageEditorListener.ACTION_DELETE_COMPONENT);
-        verifyNoMoreInteractions(actionbarPresenter);
-    }
-
-    @Test
-    public void testHidingButtonsBasedOnOperationPermissionsForArea() {
-        // GIVEN
-        AreaElement element = new AreaElement(null, null, null, null);
-        element.setAddible(false);
-        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-
-        // WHEN
-        eventBus.fireEvent(new NodeSelectedEvent(element));
-
-        // THEN
-        verify(actionbarPresenter).hideSection(PagesEditorSubApp.ALL_SECTIONS);
-        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_AREA);
-        verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
-        verify(actionbarPresenter).disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, PageEditorListener.ACTION_COPY_COMPONENT,
-                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-        verifyNoMoreInteractions(actionbarPresenter);
-    }
-
-    @Test
-    public void testEnableOrDisablePagePreviewActionsBasedOnUserPermissions() {
-        // GIVEN
-        String unavailableAction = "bar";
-        String availableAction = "foo";
-
-        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
-        ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
-        section.setName(PagesEditorSubApp.SECTION_PAGE_PREVIEW);
-
-        ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
-        ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
-        item.setName(unavailableAction);
-        group.addItem(item);
-
-        ConfiguredActionbarItemDefinition item2 = new ConfiguredActionbarItemDefinition();
-        item2.setName(availableAction);
-        group.addItem(item2);
-
-        section.addGroup(group);
-        actionbar.addSection(section);
-        descriptor.setActionbar(actionbar);
-
-        PageElement element = new PageElement(null, null, null);
-        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-
-        ActionDefinition availableActionDefinition = new ConfiguredActionDefinition();
-        doReturn(availableActionDefinition).when(actionExecutor).getActionDefinition(availableAction);
-
-        ActionDefinition unavailableActionDefinition = new ConfiguredActionDefinition();
-        doReturn(unavailableActionDefinition).when(actionExecutor).getActionDefinition(unavailableAction);
-
-        when(availabilityChecker.isAvailable(eq(unavailableActionDefinition.getAvailability()), anyList())).thenReturn(false);
-        when(availabilityChecker.isAvailable(eq(availableActionDefinition.getAvailability()), anyList())).thenReturn(true);
-
-        // param 'view' means preview
-        editor.start(new PagesLocation("/:view"));
-
-        // WHEN
-        eventBus.fireEvent(new NodeSelectedEvent(element));
-
-        // THEN
-        verify(actionbarPresenter).showSection(PagesEditorSubApp.SECTION_PAGE_PREVIEW);
-        verify(actionbarPresenter).disable(unavailableAction);
-        verify(actionbarPresenter).enable(availableAction);
-    }
-
-    @Test
     public void testPagePreviewSetMgnlPreviewRequestParameter() {
         // GIVEN
 
@@ -333,37 +222,6 @@ public class PagesEditorSubAppTest {
 
         // THEN
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
-    }
-
-    @Test
-    public void testActionAvailabilityIsProcessedAlsoForAreaSection() {
-        // GIVEN
-        element = new AreaElement(null, null, null, null);
-        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-
-        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
-        ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
-        ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
-        ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
-
-        item.setName(PageEditorListener.ACTION_ADD_COMPONENT);
-        group.addItem(item);
-        section.setName(PagesEditorSubApp.SECTION_AREA);
-        section.addGroup(group);
-        actionbar.addSection(section);
-        descriptor.setActionbar(actionbar);
-
-        ConfiguredAvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
-        availability.setRoot(false);
-        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
-        actionDefinition.setAvailability(availability);
-        when(actionExecutor.getActionDefinition(PageEditorListener.ACTION_ADD_COMPONENT)).thenReturn(actionDefinition);
-
-        // WHEN
-        eventBus.fireEvent(new NodeSelectedEvent(element));
-
-        // THEN
-        verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
     }
 
     @Test
@@ -404,4 +262,44 @@ public class PagesEditorSubAppTest {
         verify(pageBarView).setCurrentLanguage(Locale.ENGLISH);
     }
 
+    @Test
+    public void testNodeSelectedUpdatesActionBar() throws Exception {
+        // GIVEN
+
+        String testSection = "testSection";
+        String actionName = "testAction";
+
+        root.addNode("page", NodeTypes.Page.NAME).addNode("area", NodeTypes.Area.NAME);
+
+        ActionbarDefinition actionbarDefinition = mock(ActionbarDefinition.class);
+        descriptor.setActionbar(actionbarDefinition);
+
+        final ActionbarSectionDefinition sectionDefinition = mock(ActionbarSectionDefinition.class);
+        final ActionbarItemDefinition itemDefinition = mock(ActionbarItemDefinition.class);
+        final ActionbarGroupDefinition groupDefinition = mock(ActionbarGroupDefinition.class);
+        ActionDefinition action = mock(ActionDefinition.class);
+
+        when(actionExecutor.getActionDefinition(actionName)).thenReturn(action);
+        when(actionbarDefinition.getSections()).thenReturn(new LinkedList<ActionbarSectionDefinition>() {{
+            add(sectionDefinition);
+        }});
+        when(groupDefinition.getItems()).thenReturn(new LinkedList<ActionbarItemDefinition>() {{
+            add(itemDefinition);
+        }});
+        when(sectionDefinition.getGroups()).thenReturn(new LinkedList<ActionbarGroupDefinition>() {{
+            add(groupDefinition);
+        }});
+        when(sectionDefinition.getName()).thenReturn(testSection);
+        when(itemDefinition.getName()).thenReturn(actionName);
+        when(availabilityChecker.isAvailable(any(AvailabilityDefinition.class), anyList())).thenReturn(true);
+        AreaElement element = mock(AreaElement.class);
+        when(element.getPath()).thenReturn("/page/area");
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter, times(1)).showSection(testSection);
+        verify(actionbarPresenter, times(1)).enable(actionName);
+    }
 }

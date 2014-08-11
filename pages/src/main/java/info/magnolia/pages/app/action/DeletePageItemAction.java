@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.action;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.action.DeleteItemAction;
+import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * Action for deleting components and areas. Overrides the default behaviour by sending the {@link info.magnolia.ui.api.event.ContentChangedEvent}
+ * on the {@link info.magnolia.ui.api.app.SubAppEventBus}. This notifies the {@link info.magnolia.pages.app.editor.PageEditorPresenter}.
  */
-public class ComponentElement extends AbstractElement {
+public class DeletePageItemAction extends DeleteItemAction {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
-    }
-
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
+    @Inject
+    public DeletePageItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, eventBus, uiContext, i18n);
     }
 }

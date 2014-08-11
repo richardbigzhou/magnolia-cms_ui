@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.pages.app.editor.availability;
+
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+
+import javax.inject.Inject;
 
 /**
- * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
- * Used for communication between server and client.
+ * This rule returns true if the current {@link info.magnolia.ui.api.app.SubAppContext#getLocation()} does not contain
+ * a version.
  */
-public class ComponentElement extends AbstractElement {
+public class LocationNotVersionedRule extends AbstractAvailabilityRule {
 
-    // attributes for showing/hiding buttons
-    private Boolean writable = false; // edit
-    private Boolean moveable = false; // move
-    private Boolean deletable = false; // delete
-    
-    public ComponentElement() {
+    private final DetailLocation location;
+
+    @Inject
+    public LocationNotVersionedRule(SubAppContext subAppContext) {
+        this.location = (DetailLocation) subAppContext.getLocation();
     }
 
-    public ComponentElement(String workspace, String path, String dialog) {
-        super(workspace, path, dialog);
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean editable) {
-        this.writable = editable;
-    }
-
-    public Boolean getMoveable() {
-        return moveable;
-    }
-
-    public void setMoveable(Boolean moveable) {
-        this.moveable = moveable;
-    }
-
-    public Boolean getDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(Boolean deletable) {
-        this.deletable = deletable;
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        return !location.hasVersion();
     }
 }
