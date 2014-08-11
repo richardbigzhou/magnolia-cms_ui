@@ -33,7 +33,7 @@
  */
 package info.magnolia.security.app.action;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.security.AccessDeniedException;
@@ -41,7 +41,6 @@ import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.MgnlGroupManager;
 import info.magnolia.cms.security.MgnlRoleManager;
 import info.magnolia.cms.security.Role;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.UserManager;
@@ -106,9 +105,8 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         eventBus = mock(EventBus.class);
         uiContext = mock(UiContext.class);
         i18n = mock(SimpleTranslator.class);
-        securitySupport = mock(SecuritySupport.class);
-
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
+        securitySupport = Components.getComponent(SecuritySupport.class);
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
         ComponentsTestUtil.setInstance(Map.class, new HashMap<String, Object>());
@@ -140,8 +138,8 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         actionGroups.execute();
 
         // THEN
-        assertTrue(!sessionRoles.itemExists("/testFolder"));
-        assertTrue(!sessionGroups.itemExists("/testFolder"));
+        assertFalse(sessionRoles.itemExists("/testFolder"));
+        assertFalse(sessionGroups.itemExists("/testFolder"));
     }
 
 
@@ -157,11 +155,11 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         Group g = mgnlGroupManager.createGroup("/", "testGroup");
         Group g1 = mgnlGroupManager.createGroup("/testFolder", "testGroup1");
 
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(mgnlGroupManager);
+        ((SecuritySupportImpl) securitySupport).setGroupManager(mgnlGroupManager);
 
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        ((SecuritySupportImpl) securitySupport).setUserManagers(new HashMap<String, UserManager>());
         mgnlGroupManager.addGroup(g, "testGroup1");
-        actionGroups = new DeleteFolderAction(definition, itemRoles, commandsManager, eventBus, uiContext, i18n, securitySupport);
+        actionGroups = new DeleteFolderAction(definition, itemGroups, commandsManager, eventBus, uiContext, i18n, securitySupport);
 
         // WHEN
         actionGroups.execute();
@@ -188,10 +186,10 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         Group g = mgnlGroupManager.createGroup("/", "testGroup");
         Role r = mgnlRoleManager.createRole("/testFolder", "testRole");
 
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(mgnlGroupManager);
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setRoleManager(mgnlRoleManager);
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
-        mgnlGroupManager.addRole(g, "testGroup");
+        ((SecuritySupportImpl) securitySupport).setGroupManager(mgnlGroupManager);
+        ((SecuritySupportImpl) securitySupport).setRoleManager(mgnlRoleManager);
+        ((SecuritySupportImpl) securitySupport).setUserManagers(new HashMap<String, UserManager>());
+        mgnlGroupManager.addRole(g, "testRole");
         actionRoles = new DeleteFolderAction(definition, itemRoles, commandsManager, eventBus, uiContext, i18n, securitySupport);
 
         // WHEN
@@ -213,8 +211,8 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         actionRoles.execute();
 
         // THEN
-        assertTrue(!sessionRoles.itemExists("/testFolder1"));
-        assertTrue(!sessionRoles.itemExists("/testFolder2"));
+        assertFalse(sessionRoles.itemExists("/testFolder1"));
+        assertFalse(sessionRoles.itemExists("/testFolder2"));
     }
 
     @Test
@@ -229,8 +227,32 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         actionGroups.execute();
 
         // THEN
-        assertTrue(!sessionGroups.itemExists("/testFolder1"));
-        assertTrue(!sessionGroups.itemExists("/testFolder2"));
+        assertFalse(sessionGroups.itemExists("/testFolder1"));
+        assertFalse(sessionGroups.itemExists("/testFolder2"));
     }
 
+    @Test
+    public void testFolderIsDeletedWhenContainsGroupAndGroupIsNotUsed() throws Exception {
+        // GIVEN
+        MgnlGroupManager mgnlGroupManager = new MgnlGroupManager() {
+            @Override
+            protected void validateGroupName(String name) throws AccessDeniedException {
+                //not needed for test
+            }
+        };
+
+        mgnlGroupManager.createGroup("/testFolder", "testGroup1");
+
+        ((SecuritySupportImpl) securitySupport).setGroupManager(mgnlGroupManager);
+
+        ((SecuritySupportImpl) securitySupport).setUserManagers(new HashMap<String, UserManager>());
+
+        actionGroups = new DeleteFolderAction(definition, itemGroups, commandsManager, eventBus, uiContext, i18n, securitySupport);
+
+        // WHEN
+        actionGroups.execute();
+
+        // THEN
+        assertFalse(sessionGroups.itemExists("/testFolder"));
+    }
 }
