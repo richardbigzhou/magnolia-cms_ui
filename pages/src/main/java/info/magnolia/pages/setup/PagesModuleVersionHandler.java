@@ -202,6 +202,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.3.1", "")
                 .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, new String [] { "activate", "activateRecursive", "deactivate", "activateDeletion" })));
+
+        register(DeltaBuilder.update("5.3.3", "")
+                .addTask(new UpdatePageEditorActionAvailability()));
     }
 
     @Override

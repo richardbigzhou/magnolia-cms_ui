@@ -33,9 +33,10 @@
  */
 package info.magnolia.pages.app.setup;
 
-import static info.magnolia.jcr.nodebuilder.Ops.addNode;
+import static info.magnolia.jcr.nodebuilder.Ops.*;
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -46,6 +47,8 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
+import info.magnolia.pages.app.action.DeleteComponentAction;
+import info.magnolia.pages.app.action.DeletePageItemAction;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
@@ -400,4 +403,125 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(availability.getProperty("writePermissionRequired").getBoolean());
     }
 
+    @Test
+    public void testUpdateTo533UpdatesActionAvailability() throws Exception {
+        // GIVEN
+        Node actions = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/detail/actions", NodeTypes.ContentNode.NAME);
+
+        String editArea = "editArea";
+        String addArea = "addArea";
+        String deleteArea = "deleteArea";
+        String editComponent = "editComponent";
+        String addComponent = "addComponent";
+        String deleteComponent = "deleteComponent";
+        String startMoveComponent = "startMoveComponent";
+        String stopMoveComponent = "stopMoveComponent";
+        String showPreviousVersion = "showPreviousVersion";
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, actions.getPath(),
+                addNode(editArea, NodeTypes.ContentNode.NAME),
+                addNode(addArea, NodeTypes.ContentNode.NAME),
+                addNode(deleteArea, NodeTypes.ContentNode.NAME),
+                addNode(editComponent, NodeTypes.ContentNode.NAME),
+                addNode(addComponent, NodeTypes.ContentNode.NAME),
+                addNode(deleteComponent, NodeTypes.ContentNode.NAME).then(
+                        addProperty("implementationClass", DeleteComponentAction.class.getName())
+                ),
+                addNode(startMoveComponent, NodeTypes.ContentNode.NAME),
+                addNode(stopMoveComponent, NodeTypes.ContentNode.NAME),
+                addNode(showPreviousVersion, NodeTypes.ContentNode.NAME)
+
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.2"));
+
+        // THEN
+        assertThat(actions.getNode(editArea), hasNode("availability"));
+        assertThat(actions.getNode(addArea), hasNode("availability"));
+        assertThat(actions.getNode(deleteArea), hasNode("availability"));
+        assertThat(actions.getNode(deleteArea), hasProperty("implementationClass", DeletePageItemAction.class.getName()));
+        assertThat(actions.getNode(editComponent), hasNode("availability"));
+        assertThat(actions.getNode(addComponent), hasNode("availability"));
+        assertThat(actions.getNode(deleteComponent), hasNode("availability"));
+        assertThat(actions.getNode(deleteComponent), hasProperty("implementationClass", DeletePageItemAction.class.getName()));
+        assertThat(actions.getNode(startMoveComponent), hasNode("availability"));
+        assertThat(actions.getNode(stopMoveComponent), hasNode("availability"));
+        assertThat(actions.getNode(showPreviousVersion), hasNode("availability"));
+    }
+
+    @Test
+    public void testUpdateTo533UpdatesActionbarSectionAvailability() throws Exception {
+        // GIVEN
+        Node actionbar = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/detail/actionbar/sections", NodeTypes.ContentNode.NAME);
+
+        String pagePreviewActions = "pagePreviewActions";
+        String pageActions = "pageActions";
+        String areaActions = "areaActions";
+        String componentActions = "componentActions";
+        String pageDeleteActions = "pageDeleteActions";
+
+        String editableAreaActions = "editableAreaActions";
+        String optionalAreaActions = "optionalAreaActions";
+        String optionalEditableAreaActions = "optionalEditableAreaActions";
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, actionbar.getPath(),
+                addNode(pagePreviewActions, NodeTypes.ContentNode.NAME),
+                addNode(pageActions, NodeTypes.ContentNode.NAME),
+                addNode(areaActions, NodeTypes.ContentNode.NAME),
+                addNode(componentActions, NodeTypes.ContentNode.NAME),
+                addNode(pageDeleteActions, NodeTypes.ContentNode.NAME),
+                addNode(editableAreaActions, NodeTypes.ContentNode.NAME),
+                addNode(optionalAreaActions, NodeTypes.ContentNode.NAME),
+                addNode(optionalEditableAreaActions, NodeTypes.ContentNode.NAME)
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.2"));
+
+        // THEN
+        assertThat(actionbar.getNode(pagePreviewActions), hasNode("availability"));
+        assertThat(actionbar.getNode(pageActions), hasNode("availability"));
+        assertThat(actionbar.getNode(areaActions), hasNode("availability"));
+        assertThat(actionbar.getNode(componentActions), hasNode("availability"));
+        assertThat(actionbar.getNode(pageDeleteActions), hasNode("availability"));
+
+        assertThat(actionbar, not(hasNode(editableAreaActions)));
+        assertThat(actionbar, not(hasNode(optionalAreaActions)));
+        assertThat(actionbar, not(hasNode(optionalEditableAreaActions)));
+
+    }
+
+    @Test
+    public void testUpdateTo533UpdatesAreaActions() throws Exception {
+
+        Node areaActions = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/detail/actionbar/sections/areaActions", NodeTypes.ContentNode.NAME);
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, areaActions.getPath(),
+                addNode("groups", NodeTypes.ContentNode.NAME).then(
+                        addNode("editingFlow", NodeTypes.ContentNode.NAME).then(
+                                addNode("items", NodeTypes.ContentNode.NAME).then(
+                                    addNode("preview", NodeTypes.ContentNode.NAME)
+                                )
+                        ),
+                        addNode("addingActions", NodeTypes.ContentNode.NAME).then(
+                                addNode("items", NodeTypes.ContentNode.NAME).then(
+                                        addNode("addComponent", NodeTypes.ContentNode.NAME)
+                                )
+                        )
+                )
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.2"));
+
+        // THEN
+        assertThat(areaActions, hasNode("availability"));
+        assertThat(areaActions.getNode("groups").getNode("editingActions/items"), hasNode("editArea"));
+        assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("addArea"));
+        assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("deleteArea"));
+        assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("addComponent"));
+
+
+    }
 }
