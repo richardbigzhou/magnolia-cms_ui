@@ -109,7 +109,7 @@ public class PageEditorPresenter implements PageEditorListener {
                     view.cancelMoveComponent();
                 }
 
-                listener.updateActionbar(getSelectedElement());
+                listener.onMove();
             }
         });
 
@@ -156,6 +156,6 @@ public class PageEditorPresenter implements PageEditorListener {
      * Listener interface to call {@link PageEditorPresenter}.
      */
     interface Listener {
-        void updateActionbar(AbstractElement element);
+        void onMove();
     }
 }

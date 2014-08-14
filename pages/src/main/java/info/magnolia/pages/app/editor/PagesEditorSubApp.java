@@ -67,7 +67,6 @@ import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
@@ -120,9 +119,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final I18NAuthoringSupport i18NAuthoringSupport;
     private final I18nContentSupport i18nContentSupport;
     private final JcrContentConnector contentConnector;
-    private AvailabilityChecker availabilityChecker;
+    private final AvailabilityChecker availabilityChecker;
     private final StatusBarView statusBarView;
-    private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
     private final VersionManager versionManager;
@@ -161,13 +159,11 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.i18nContentSupport = i18nContentSupport;
         this.availabilityChecker = availabilityChecker;
         this.statusBarView = statusBarView;
-        this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.contentConnector = (JcrContentConnector) contentConnector;
         this.workspace = this.contentConnector.getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
         this.versionManager = versionManager;
         this.i18n = i18n;
-        view.setListener(this);
         bindHandlers();
     }
 
@@ -183,6 +179,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     @Override
     public PagesEditorSubAppView start(Location location) {
+        view.setListener(this);
+
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
 
@@ -198,29 +196,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
         view.setStatusBarView(statusBarView);
-
-        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
-
-            @Override
-            public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
-
-        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
-
-            @Override
-            public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
-
-        admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
-            @Override
-            public void onLocationChanged(LocationChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
 
         goToLocation(detailLocation);
         return view;
@@ -267,7 +242,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     protected void doGoToLocation(DetailLocation location) {
         setPageEditorParameters(location);
-        hideAllSections();
+        updateActionbar();
         pageEditorPresenter.loadPageEditor(parameters);
         updatePageBarAvailableLanguages(location);
     }
@@ -362,17 +337,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return caption;
     }
 
-    private void hideAllSections() {
-        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
-        if (actionbarDefinition == null) {
-            return;
-        }
-        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
-            actionbarPresenter.hideSection(section.getName());
-        }
-    }
-
     private void bindHandlers() {
 
         admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
@@ -399,7 +363,39 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             @Override
             public void onItemSelected(NodeSelectedEvent event) {
                 AbstractElement element = event.getElement();
-                updateActionbar(element);
+                if (element instanceof PageElement) {
+                    String path = element.getPath();
+                    if (StringUtils.isEmpty(path)) {
+                        path = "/";
+                    }
+                    if (!path.equals(parameters.getNodePath())) {
+                        updateNodePath(path);
+                    }
+                }
+                updateActionbar();
+            }
+        });
+
+        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                view.setStatusBarView(statusBarView);
+            }
+        });
+
+        admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
+            @Override
+            public void onLocationChanged(LocationChangedEvent event) {
+                view.setStatusBarView(statusBarView);
             }
         });
     }
@@ -412,7 +408,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     protected void prepareAndExecutePagesEditorAction(String actionName) {
         AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
         try {
-            Object itemId = getItemdId(selectedElement);
+            Object itemId = getItemId(selectedElement);
             actionExecutor.execute(actionName, contentConnector.getItem(itemId), selectedElement, pageEditorPresenter);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
@@ -447,34 +443,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return parameters;
     }
 
-    @Override
-    public void updateActionbar(final AbstractElement element) {
-        String path = element.getPath();
-        if (StringUtils.isEmpty(path)) {
-            path = "/";
-        }
-
-        if (element instanceof PageElement) {
-
-            if (!path.equals(parameters.getNodePath())) {
-                updateNodePath(path);
-            }
-        }
-        try {
-            enableOrDisableActions(element);
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        // actions currently always disabled
-        actionbarPresenter.disable(PageEditorListener.ACTION_COPY_COMPONENT,
-                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-
-    }
-
-    private void enableOrDisableActions(AbstractElement element) throws RepositoryException {
-
-        Object itemId = getItemdId(element);
+    public void updateActionbar() {
+        Object itemId = getItemId(pageEditorPresenter.getSelectedElement());
 
         DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
@@ -511,10 +481,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 }
             }
         }
+        // actions currently always disabled
+        actionbarPresenter.disable(PageEditorListener.ACTION_COPY_COMPONENT,
+                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
+
     }
 
-    private Object getItemdId(AbstractElement element) {
-        if (element instanceof AreaElement && ((AreaElement) element).isOptional() && !((AreaElement) element).isCreated()) {
+    private Object getItemId(AbstractElement element) {
+        if (element == null) {
+            return null;
+        }
+        else if (element instanceof AreaElement && ((AreaElement) element).isOptional() && !((AreaElement) element).isCreated()) {
 
             try {
                 int index = element.getPath().lastIndexOf("/");
@@ -529,7 +506,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             } catch (RepositoryException e) {
                 log.error("Failed to create new jcr node item id: " + e.getMessage(), e);
             }
-
             return null;
         }
         else {
@@ -567,4 +543,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return pageEditorPresenter;
     }
 
+    @Override
+    public void onMove() {
+        updateActionbar();
+    }
 }
