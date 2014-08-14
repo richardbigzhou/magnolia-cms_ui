@@ -404,7 +404,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo533UpdatesActionAvailability() throws Exception {
+    public void testUpdateTo533UpdatesPageEditorActions() throws Exception {
         // GIVEN
         Node actions = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/detail/actions", NodeTypes.ContentNode.NAME);
 
@@ -413,10 +413,14 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         String deleteArea = "deleteArea";
         String editComponent = "editComponent";
         String addComponent = "addComponent";
+        String copyComponent = "copyComponent";
+        String pasteComponent = "pasteComponent";
         String deleteComponent = "deleteComponent";
         String startMoveComponent = "startMoveComponent";
         String stopMoveComponent = "stopMoveComponent";
         String showPreviousVersion = "showPreviousVersion";
+        String redo = "redo";
+        String undo = "undo";
 
         NodeBuilderUtil.build(RepositoryConstants.CONFIG, actions.getPath(),
                 addNode(editArea, NodeTypes.ContentNode.NAME),
@@ -428,9 +432,12 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
                         addProperty("implementationClass", DeleteComponentAction.class.getName())
                 ),
                 addNode(startMoveComponent, NodeTypes.ContentNode.NAME),
+                addNode(copyComponent, NodeTypes.ContentNode.NAME),
+                addNode(pasteComponent, NodeTypes.ContentNode.NAME),
                 addNode(stopMoveComponent, NodeTypes.ContentNode.NAME),
-                addNode(showPreviousVersion, NodeTypes.ContentNode.NAME)
-
+                addNode(showPreviousVersion, NodeTypes.ContentNode.NAME),
+                addNode(redo, NodeTypes.ContentNode.NAME),
+                addNode(undo, NodeTypes.ContentNode.NAME)
         );
 
         // WHEN
@@ -448,6 +455,10 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actions.getNode(startMoveComponent), hasNode("availability"));
         assertThat(actions.getNode(stopMoveComponent), hasNode("availability"));
         assertThat(actions.getNode(showPreviousVersion), hasNode("availability"));
+        assertThat(actions, not(hasNode(copyComponent)));
+        assertThat(actions, not(hasNode(pasteComponent)));
+        assertThat(actions, not(hasNode(redo)));
+        assertThat(actions, not(hasNode(undo)));
     }
 
     @Test

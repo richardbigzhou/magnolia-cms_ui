@@ -53,7 +53,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * Updates actions and actionbar section to use availability for all actions.
+ * Updates actions and actionbar section to use availability for all actions and remove unused actions.
  */
 public class UpdatePageEditorActionAvailability extends ArrayDelegateTask {
 
@@ -61,6 +61,7 @@ public class UpdatePageEditorActionAvailability extends ArrayDelegateTask {
     private String[] actions = {"editArea", "addArea", "deleteArea", "editComponent", "addComponent", "deleteComponent", "startMoveComponent", "stopMoveComponent", "showPreviousVersion"};
     private String[] actionbarSections = {"pagePreviewActions", "pageActions", "areaActions", "componentActions", "pageDeleteActions"};
     private String[] obsoleteActionbarSections = {"editableAreaActions", "optionalAreaActions", "optionalEditableAreaActions"};
+    private String[] unusedActions = {"redo", "undo", "copyComponent", "pasteComponent"};
 
 
     public UpdatePageEditorActionAvailability() {
@@ -69,6 +70,7 @@ public class UpdatePageEditorActionAvailability extends ArrayDelegateTask {
         bootstrapActionAvailability();
         bootstrapActionbarSectionAvailability();
         deleteObsoleteActionbarSections();
+        deleteUnusedAction();
 
         addTask(new NodeExistsDelegateTask("Update deleteArea action.", "/modules/pages/apps/pages/subApps/detail/actions/deleteArea",
                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/deleteArea", "implementationClass", DeletePageItemAction.class.getName())));
@@ -76,7 +78,18 @@ public class UpdatePageEditorActionAvailability extends ArrayDelegateTask {
         addTask(new NodeExistsDelegateTask("Update deleteArea action.", "/modules/pages/apps/pages/subApps/detail/actions/deleteComponent",
                 new CheckAndModifyPropertyValueTask("/modules/pages/apps/pages/subApps/detail/actions/deleteComponent", "implementationClass", DeleteComponentAction.class.getName(), DeletePageItemAction.class.getName())));
 
+
         addTask(new UpdateAreaSectionActionsTask());
+    }
+
+    private void deleteUnusedAction() {
+        for (String action : unusedActions) {
+            String actionPath = "/modules/pages/apps/pages/subApps/detail/actions/" + action;
+
+            addTask(new NodeExistsDelegateTask(String.format("Remove unused action: %s", action), actionPath,
+                    new RemoveNodeTask("", actionPath))
+            );
+        }
     }
 
     private void bootstrapActionAvailability() {
