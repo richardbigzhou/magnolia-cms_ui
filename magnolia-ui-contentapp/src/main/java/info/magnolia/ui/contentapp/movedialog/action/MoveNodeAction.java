@@ -53,9 +53,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 
 /**
@@ -64,8 +61,6 @@ import com.vaadin.data.Item;
  * @see MoveNodeActionDefinition
  */
 public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefinition> {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * The item where the items should be moved relative to.
