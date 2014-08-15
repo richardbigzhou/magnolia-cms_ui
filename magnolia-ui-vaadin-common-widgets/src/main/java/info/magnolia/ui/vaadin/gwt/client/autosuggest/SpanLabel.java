@@ -33,36 +33,68 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import java.util.Collections;
-
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.ui.textfield.TextFieldConnector;
-import com.vaadin.shared.ui.Connect;
-import com.vaadin.shared.ui.Connect.LoadStyle;
+import com.google.gwt.user.client.ui.LabelBase;
 
 /**
- * Client-side connector for {@link info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField}.
+ * SpanLabel.
  */
-@Connect(value = AutoSuggestTextField.class, loadStyle = LoadStyle.EAGER)
-public class AutoSuggestTextFieldConnector extends TextFieldConnector {
+public class SpanLabel extends LabelBase<String> {
 
-    @Override
-    public VAutoSuggestTextField getWidget() {
-        return (VAutoSuggestTextField) super.getWidget();
+    private static Set<SpanLabel> availableCache = new HashSet<SpanLabel>();
+
+    public static SpanLabel getAvailableInstance() {
+        Iterator<SpanLabel> iter = availableCache.iterator();
+        if (iter.hasNext()) {
+            SpanLabel label = iter.next();
+            label.setText(null);
+            iter.remove();
+            return label;
+        }
+        return new SpanLabel();
+    }
+
+    private SpanLabel() {
+        super(true);
+    }
+
+    public String getText() {
+        return getElement().getInnerText();
+    }
+
+    public void setText(String text) {
+        this.getElement().setInnerText(text);
+    }
+
+    public void setText(String text, String matchStr, boolean startsWith) {
+        String boldStr = SuggestionUtil.boldMatchStr(text, matchStr, startsWith);
+        if (boldStr != null) {
+            this.getElement().setInnerHTML(boldStr);
+        } else {
+            setText(text);
+        }
+    }
+
+    public String getHtml() {
+        return getElement().getInnerHTML();
+    }
+
+    public void setHtml(String html) {
+        getElement().setInnerHTML(html);
     }
 
     @Override
-    public AutoSuggestTextFieldState getState() {
-        return (AutoSuggestTextFieldState) super.getState();
+    protected void onAttach() {
+        super.onAttach();
+        availableCache.remove(this);
     }
 
     @Override
-    public void onStateChanged(StateChangeEvent stateChangeEvent) {
-        super.onStateChanged(stateChangeEvent);
-        AutoSuggestTextFieldState state = getState();
-        Collections.sort(state.suggestions);
-        getWidget().setAutoSuggestTextFieldState(state);
+    protected void onDetach() {
+        super.onDetach();
+        availableCache.add(this);
     }
 }
