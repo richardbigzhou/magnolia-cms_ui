@@ -56,9 +56,12 @@ import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
+import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -149,5 +152,20 @@ public class MoveNodeActionTest extends RepositoryTestCase {
 
         //WHEN
         action.executeOnItem(node3);
+    }
+
+    @Test
+    public void moveAfterPreservesOrder() throws Exception {
+        // GIVEN
+        definition.setMoveLocation(MoveLocation.AFTER);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        final Iterator<Node> iterator = NodeUtil.getNodes(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), JcrConstants.NT_UNSTRUCTURED).iterator();
+        assertThat(iterator.next(), nodeName(NODE_NAME_3));
+        assertThat(iterator.next(), nodeName(NODE_NAME_1));
+        assertThat(iterator.next(), nodeName(NODE_NAME_2));
     }
 }

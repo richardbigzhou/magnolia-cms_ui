@@ -47,6 +47,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Named;
@@ -127,4 +129,13 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
         return getDefinition().getFailureMessage();
     }
 
+    @Override
+    protected List<JcrItemAdapter> getSortedItems(Comparator<JcrItemAdapter> comparator) {
+        final List<JcrItemAdapter> sortedItems = super.getSortedItems(comparator);
+        if (MoveLocation.AFTER.equals(getDefinition().getMoveLocation())) {
+            // moving multiple items after another one would implicitly revert the order of those items - this can be avoided by reverting the collection
+            Collections.reverse(sortedItems);
+        }
+        return sortedItems;
+    }
 }
