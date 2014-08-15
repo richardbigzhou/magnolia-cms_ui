@@ -36,6 +36,9 @@ package info.magnolia.ui.vaadin.autosuggest;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.AutoSuggestTextFieldState;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.vaadin.data.Property;
 import com.vaadin.ui.TextField;
 
@@ -93,7 +96,11 @@ public class AutoSuggestTextField extends TextField {
         if (autoSuggesterResult != null) {
             AutoSuggestTextFieldState state = this.getState();
             state.suggestionsAvailable = autoSuggesterResult.suggestionsAvailable();
-            state.suggestions = autoSuggesterResult.getSuggestions();
+            state.suggestions = new ArrayList<String>();
+            Collection<String> suggestions = autoSuggesterResult.getSuggestions();
+            if (state.suggestionsAvailable && suggestions != null) {
+                state.suggestions.addAll(suggestions);
+            }
             state.matchMethod = autoSuggesterResult.getMatchMethod();
             state.showMismatchedSuggestions = autoSuggesterResult.showMismatchedSuggestions();
             state.showErrorHighlighting = autoSuggesterResult.showErrorHighlighting();

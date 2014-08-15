@@ -33,18 +33,23 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import java.util.List;
-
-import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Shared state for {@link info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField}.
- * Used to communicate {@link info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult} to the client side code.
+ * WrapSimplePanel.
  */
-public class AutoSuggestTextFieldState extends AbstractTextFieldState {
-    public boolean suggestionsAvailable;
-    public List<String> suggestions;
-    public int matchMethod;
-    public boolean showMismatchedSuggestions;
-    public boolean showErrorHighlighting;
+public class WrapSimplePanel extends SimplePanel {
+
+    public WrapSimplePanel(Element elem) {
+        super(elem);
+    }
+
+    public static WrapSimplePanel wrap(Element element) {
+        assert Document.get().getBody().isOrHasChild(element);
+        WrapSimplePanel panel = new WrapSimplePanel(element);
+        panel.onAttach();
+        return panel;
+    }
 }

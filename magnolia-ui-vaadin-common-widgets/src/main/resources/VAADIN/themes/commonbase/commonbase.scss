@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+@import "autoconfig/autoconfig.scss";
 @import "dialog/basedialog.scss";
 @import "viewport/appsviewport.scss";
 @import "closebutton.scss";
@@ -8,6 +9,7 @@
 
 @mixin commonbase {
 
+  @include autoconfig;
   @include basedialog;
   @include appsviewport;
   @include closebutton;

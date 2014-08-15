@@ -33,18 +33,40 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import java.util.List;
+import java.util.Date;
 
-import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
+import com.google.gwt.user.client.Timer;
 
 /**
- * Shared state for {@link info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField}.
- * Used to communicate {@link info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult} to the client side code.
+ * InputTimer.
  */
-public class AutoSuggestTextFieldState extends AbstractTextFieldState {
-    public boolean suggestionsAvailable;
-    public List<String> suggestions;
-    public int matchMethod;
-    public boolean showMismatchedSuggestions;
-    public boolean showErrorHighlighting;
+public class InputTimer extends Timer {
+
+    /**
+     * Executor.
+     */
+    public interface Executor {
+        public void execute();
+    }
+
+    private Executor executor;
+
+    private long lastTime;
+
+    public void execute(Executor executor) {
+        this.executor = executor;
+        if (new Date().getTime() - lastTime > 200) {
+            this.schedule(1);
+        } else {
+            this.schedule(200);
+        }
+        lastTime = new Date().getTime();
+    }
+
+    @Override
+    public void run() {
+        if (executor != null) {
+            executor.execute();
+        }
+    }
 }

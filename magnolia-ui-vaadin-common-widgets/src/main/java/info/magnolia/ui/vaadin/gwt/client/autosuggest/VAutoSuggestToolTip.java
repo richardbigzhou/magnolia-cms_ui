@@ -33,18 +33,47 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import java.util.List;
-
-import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Shared state for {@link info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField}.
- * Used to communicate {@link info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult} to the client side code.
+ * StickPopPanel.
  */
-public class AutoSuggestTextFieldState extends AbstractTextFieldState {
-    public boolean suggestionsAvailable;
-    public List<String> suggestions;
-    public int matchMethod;
-    public boolean showMismatchedSuggestions;
-    public boolean showErrorHighlighting;
+public class VAutoSuggestToolTip extends SimplePanel {
+
+    private Element container = DOM.createDiv();
+    private WrapSimplePanel wrapSimplePanel;
+
+    public VAutoSuggestToolTip() {
+        setVisible(false);
+        getElement().getStyle().setZIndex(Integer.MAX_VALUE);
+        getElement().getStyle().setPosition(Position.ABSOLUTE);
+    }
+
+    public void showRelativeTo(Element relative, int top, int left) {
+        if (relative != null) {
+            if (!this.isAttached()) {
+                container.getStyle().setWidth(0D, Unit.PX);
+                container.getStyle().setHeight(0D, Unit.PX);
+                relative.appendChild(container);
+                wrapSimplePanel = WrapSimplePanel.wrap(container);
+                wrapSimplePanel.add(this);
+            }
+            this.getElement().getStyle().setTop(top, Unit.PX);
+            this.getElement().getStyle().setLeft(left, Unit.PX);
+            this.setVisible(true);
+        }
+    }
+
+    @Override
+    protected void onUnload() {
+        super.onUnload();
+        if (wrapSimplePanel != null) {
+            wrapSimplePanel.removeFromParent();
+        }
+        container.removeFromParent();
+    }
 }
