@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.not;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -56,9 +57,9 @@ import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.Arrays;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Item;
@@ -69,26 +70,19 @@ import com.vaadin.data.Item;
 public class MoveNodeActionTest extends RepositoryTestCase {
 
     private static final String MOVE_ACTION_NAME = "move";
-
-    private MoveNodeActionDefinition definition = new MoveNodeActionDefinition();
+    private static final String NODE_NAME_1 = "node1";
+    private static final String NODE_NAME_2 = "node2";
+    private static final String NODE_NAME_3 = "node3";
 
     private ComponentProvider provider = mock(ComponentProvider.class);
-
-    private UiContext uiContext = mock(UiContext.class);
-
     private EventBus adminCentralEventBusMock = mock(EventBus.class);
 
-    private final String nodeName1 = "node1";
-
-    private final String nodeName2 = "node2";
-
-    private final String nodeName3 = "node3";
-
+    private MoveNodeActionDefinition definition = new MoveNodeActionDefinition();
+    private JcrNodeAdapter node1;
+    private JcrNodeAdapter node2;
     private JcrNodeAdapter node3;
 
-    private JcrNodeAdapter node1;
-
-    private JcrNodeAdapter node2;
+    private MoveNodeAction action;
 
     private MoveActionCallback callback = new MoveActionCallback() {
         @Override
@@ -107,66 +101,53 @@ public class MoveNodeActionTest extends RepositoryTestCase {
         }
     };
 
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        final Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        node1 = new JcrNodeAdapter(session.getRootNode().addNode(NODE_NAME_1));
+        node2 = new JcrNodeAdapter(session.getRootNode().addNode(NODE_NAME_2));
+        node3 = new JcrNodeAdapter(session.getRootNode().addNode(NODE_NAME_3));
+        action = new MoveNodeAction(definition, Arrays.asList((JcrItemAdapter) node1, node2), node3, adminCentralEventBusMock, mock(UiContext.class), callback, new TreeViewDropHandler(null, null));
+    }
+
     @Test
     public void testOrdinaryInside() throws Exception {
         //GIVEN
-        initNodes();
-        MoveNodeAction action = createAction();
         definition.setMoveLocation(MoveLocation.INSIDE);
+        when(provider.newInstance(any(Class.class), anyVararg())).thenReturn(action);
 
         //WHEN
-        when(provider.newInstance(any(Class.class), anyVararg())).thenReturn(action);
         executor.execute(MOVE_ACTION_NAME);
 
         //THEN
-        assertTrue(node3.getJcrItem().hasNode(node1.getJcrItem().getName()));
-        assertTrue(node3.getJcrItem().hasNode(node2.getJcrItem().getName()));
+        assertThat(node3.getJcrItem(), hasNode(NODE_NAME_1));
+        assertThat(node3.getJcrItem(), hasNode(NODE_NAME_2));
         // verify actions are fired - once for source, once for target
         verify(adminCentralEventBusMock, times(2)).fireEvent(any(ContentChangedEvent.class));
-
     }
 
     @Test
     public void testMoveWithParentTryingToBeMovedToChild() throws Exception {
         //GIVEN
-        initNodes();
         NodeUtil.moveNode(node3.getJcrItem(), node2.getJcrItem());
-        MoveNodeAction action = createAction();
+        definition.setMoveLocation(MoveLocation.INSIDE);
 
         //WHEN
-        definition.setMoveLocation(MoveLocation.INSIDE);
         action.execute();
 
         //THEN
-        assert(node3.getJcrItem().hasNode(node1.getJcrItem().getName()));
-        assert(!node3.getJcrItem().hasNode(node2.getJcrItem().getName()));
+        assertThat(node3.getJcrItem(), hasNode(NODE_NAME_1));
+        assertThat(node3.getJcrItem(), not(hasNode(NODE_NAME_2)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExecuteOnItemWithBasicBasicCheckFail() throws Exception {
         //GIVEN
-        initNodes();
-        MoveNodeAction action = createAction();
-
-        //WHEN
         definition.setMoveLocation(MoveLocation.INSIDE);
 
-        //THEN
+        //WHEN
         action.executeOnItem(node3);
-    }
-
-    private MoveNodeAction createAction() {
-        return new MoveNodeAction(definition, Arrays.asList((JcrItemAdapter) node1, node2), node3, adminCentralEventBusMock, uiContext, callback, new TreeViewDropHandler(null, null));
-    }
-
-    private void initNodes() {
-        try {
-            Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-            node1 = new JcrNodeAdapter(session.getRootNode().addNode(nodeName1));
-            node2 = new JcrNodeAdapter(session.getRootNode().addNode(nodeName2));
-            node3 = new JcrNodeAdapter(session.getRootNode().addNode(nodeName3));
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
     }
 }
