@@ -85,4 +85,10 @@ public class CheckBoxField extends CustomField<Boolean> {
     public Class<? extends Boolean> getType() {
         return Boolean.class;
     }
+
+    @Override
+    public void addValueChangeListener(Property.ValueChangeListener listener) {
+        checkBox.addValueChangeListener(listener);
+    }
+
 }
