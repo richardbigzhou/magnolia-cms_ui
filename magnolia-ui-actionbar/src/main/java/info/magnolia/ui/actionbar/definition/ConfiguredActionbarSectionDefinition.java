@@ -91,11 +91,6 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
         this.groups = groups;
     }
 
-    /**
-     * Adds a group to this section.
-     *
-     * @param groupDefinition the group definition
-     */
     public void addGroup(ActionbarGroupDefinition groupDefinition) {
         groups.add(groupDefinition);
     }

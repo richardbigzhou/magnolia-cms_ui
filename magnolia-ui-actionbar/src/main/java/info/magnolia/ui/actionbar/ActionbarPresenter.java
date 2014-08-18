@@ -67,8 +67,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
-    private ActionbarDefinition definition;
-
     private Map<String, ActionDefinition> actions;
 
     private ActionbarView view;
@@ -89,7 +87,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Initializes an action bar with the given definition and returns the view for the parent to add it.
      */
     public ActionbarView start(ActionbarDefinition definition, Map<String, ActionDefinition> actions) {
-        this.definition = definition;
         this.actions = actions;
 
         if (definition != null) {
