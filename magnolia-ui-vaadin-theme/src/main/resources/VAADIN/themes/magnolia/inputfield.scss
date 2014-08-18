@@ -15,6 +15,7 @@
     color: $c90;
     font-family: Verdana, sans-serif;
     font-size: 12px;
+    text-align: start; /* required for bidirectional text support */
     -webkit-appearance: none;
     -webkit-border-radius: 0;
 
