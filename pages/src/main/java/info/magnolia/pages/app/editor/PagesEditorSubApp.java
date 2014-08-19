@@ -479,10 +479,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 }
             }
         }
-        // actions currently always disabled
-        actionbarPresenter.disable(PageEditorListener.ACTION_COPY_COMPONENT,
-                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
-
     }
 
     private Object getItemId(AbstractElement element) {
