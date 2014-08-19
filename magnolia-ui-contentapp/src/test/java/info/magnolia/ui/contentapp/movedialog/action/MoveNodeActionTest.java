@@ -54,9 +54,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
+import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -145,5 +148,20 @@ public class MoveNodeActionTest extends RepositoryTestCase {
 
         //WHEN
         action.executeOnItem(node3);
+    }
+
+    @Test
+    public void moveAfterPreservesOrder() throws Exception {
+        // GIVEN
+        definition.setMoveLocation(MoveLocation.AFTER);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        final Iterator<Node> iterator = NodeUtil.getNodes(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), JcrConstants.NT_UNSTRUCTURED).iterator();
+        assertSame(NODE_NAME_3, iterator.next().getName());
+        assertSame(NODE_NAME_1, iterator.next().getName());
+        assertSame(NODE_NAME_2, iterator.next().getName());
     }
 }
