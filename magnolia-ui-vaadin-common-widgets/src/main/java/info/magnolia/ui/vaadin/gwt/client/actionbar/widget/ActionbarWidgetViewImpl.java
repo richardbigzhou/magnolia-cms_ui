@@ -69,6 +69,8 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private final EventBus eventBus;
 
+    private boolean bidi;
+
     private Presenter presenter;
 
     private int tabletRow = -1; // Used to assign rows and columns to each action item
@@ -187,7 +189,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     }
 
     public void addSection(ActionbarSection sectionParams) {
-        ActionbarSectionWidget section = new ActionbarSectionWidget(sectionParams);
+        ActionbarSectionWidget section = bidi ?
+                new ActionbarSectionWidget(sectionParams, bidi) :
+                new ActionbarSectionWidget(sectionParams);
         sections.put(sectionParams.getName(), section);
         add(section, root);
     }
@@ -211,7 +215,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 ((VActionbarItemTablet) action).setColumn(tabletColumn);
                 tabletColumn++;
             } else {
-                action = new ActionbarItemWidget(actionParams, group, eventBus);
+                action = bidi ?
+                        new ActionbarItemWidget(actionParams, group, eventBus, bidi) :
+                        new ActionbarItemWidget(actionParams, group, eventBus);
             }
             group.addAction(action);
         }
@@ -268,6 +274,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 }
             }
         }
+    }
+
+    @Override
+    public void setBidi(boolean bidi) {
+        this.bidi = bidi;
     }
 
     @Override

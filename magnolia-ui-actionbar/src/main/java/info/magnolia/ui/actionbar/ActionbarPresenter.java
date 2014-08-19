@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.actionbar;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -40,8 +41,10 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
+import java.awt.ComponentOrientation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -69,7 +72,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private Map<String, ActionDefinition> actions;
 
-    private ActionbarView view;
+    private final ActionbarView view;
 
     private Listener listener;
 
@@ -88,6 +91,12 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      */
     public ActionbarView start(ActionbarDefinition definition, Map<String, ActionDefinition> actions) {
         this.actions = actions;
+
+        Locale userLocale = MgnlContext.getLocale();
+        ComponentOrientation textOrientation = ComponentOrientation.getOrientation(userLocale);
+        if (textOrientation.isHorizontal() && !textOrientation.isLeftToRight()) {
+            view.setBidi(true);
+        }
 
         if (definition != null) {
 

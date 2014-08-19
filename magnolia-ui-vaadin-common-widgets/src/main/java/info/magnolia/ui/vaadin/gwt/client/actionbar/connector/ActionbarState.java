@@ -57,4 +57,6 @@ public class ActionbarState extends AbstractComponentState {
     public List<ActionbarItem> disabledActions = new ArrayList<ActionbarItem>();
 
     public boolean isOpen;
+
+    public boolean bidi = false;
 }

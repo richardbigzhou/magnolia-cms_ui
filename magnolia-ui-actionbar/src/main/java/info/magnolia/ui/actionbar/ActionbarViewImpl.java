@@ -141,6 +141,11 @@ public class ActionbarViewImpl implements ActionbarView {
     }
 
     @Override
+    public void setBidi(boolean bidi) {
+        actionBar.setBidi(bidi);
+    }
+
+    @Override
     public void setOpen(boolean isOpen) {
         actionBar.setOpen(isOpen);
     }

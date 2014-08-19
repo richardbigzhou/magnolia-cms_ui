@@ -16,6 +16,8 @@
   background: $c13;
 }
 
+.v-actionbar.bidi
+
 .v-actionbar-section {
   padding:11px 0 10px 0px;
 }
@@ -24,14 +26,19 @@
     padding-left: 10px;
 }
 
+.v-actionbar-open.bidi .v-actionbar-section {
+    padding-right: 10px;
+}
+
 .v-actionbar .v-actionbar-section-title {
   height:1.2em;
   margin:0;
-  padding:0 0 6px 4px;
+  padding:0 4px 6px;
   color:$c50;
   font-family:DINWebPro, Verdana;
   font-size:15px;
   font-weight:normal;
+  text-align: left; text-align: start;
 }
 .v-actionbar .v-actionbar-section-title {display:none;}
 .v-actionbar-open .v-actionbar-section-title {display:block;}
@@ -44,14 +51,14 @@
 }
 
 .v-action {
-  margin-right: 5px;
+/*   margin-right: 5px; */
   height: 25px;
   text-indent: 33px;
   overflow: hidden;
   cursor: pointer;
 }
 .v-actionbar .v-action {text-align:center;}
-.v-actionbar-open .v-action {text-align:left;}
+.v-actionbar-open .v-action {text-align: left; text-align: start;}
 
 .v-action.v-disabled {opacity:0.4;}
 .v-action.v-disabled:hover {cursor:default;}
@@ -82,6 +89,10 @@
   right:0;
   font-size:16px;
   cursor:pointer;
+}
+
+.v-actionbar-open.bidi .v-actionbar-toggle {
+  left:0;
 }
 
 .v-actionbar-toggle-icon {
@@ -136,7 +147,6 @@
 .v-actionbar-open .v-actionbar-section.preview {display:block;}
 
 .v-actionbar-section.preview .v-actionbar-section-title {
-  text-align:left;
   padding-left:0;
 }
 

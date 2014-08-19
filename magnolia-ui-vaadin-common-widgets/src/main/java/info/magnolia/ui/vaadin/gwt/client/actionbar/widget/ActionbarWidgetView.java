@@ -69,6 +69,8 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     void setSectionPreview(String sectionName, String previewUrl);
 
+    void setBidi(boolean bidi);
+
     /**
      * Update the classes on the actions so that they are positioned correctly.
      * Necessary to handle when sections are dynamically changed like in the page editor.

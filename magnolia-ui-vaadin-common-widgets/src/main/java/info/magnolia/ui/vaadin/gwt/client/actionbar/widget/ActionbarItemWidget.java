@@ -119,6 +119,11 @@ public class ActionbarItemWidget extends Widget {
         update();
     }
 
+    public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus, boolean bidi) {
+        this(data, group, eventBus);
+        setBidi(bidi);
+    }
+
     private void constructDOM() {
         setElement(root);
         setStyleName(CLASSNAME);
@@ -127,6 +132,14 @@ public class ActionbarItemWidget extends Widget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
+    }
+
+    private void setBidi(boolean bidi) {
+        if (bidi) {
+            getElement().setAttribute("dir", "auto");
+        } else {
+            getElement().removeAttribute("dir");
+        }
     }
 
     protected void bindHandlers() {

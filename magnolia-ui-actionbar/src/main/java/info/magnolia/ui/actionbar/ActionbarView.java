@@ -84,4 +84,6 @@ public interface ActionbarView extends View {
          */
         void onActionbarItemClicked(String actionToken);
     }
+
+    void setBidi(boolean bidi);
 }

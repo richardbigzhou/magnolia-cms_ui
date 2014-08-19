@@ -73,6 +73,16 @@ public class ActionbarSectionWidget extends FlowPanel {
         update();
     }
 
+    /**
+     * Instantiates a new action bar section with given data.
+     *
+     * @param data the data
+     */
+    public ActionbarSectionWidget(ActionbarSection data, boolean bidi) {
+        this(data);
+        setBidi(bidi);
+    }
+
     public String getName() {
         return data.getName();
     }
@@ -97,6 +107,14 @@ public class ActionbarSectionWidget extends FlowPanel {
         }
         add(preview);
         this.preview = preview;
+    }
+
+    private void setBidi(boolean bidi) {
+        if (bidi) {
+            heading.setAttribute("dir", "auto");
+        } else {
+            heading.removeAttribute("dir");
+        }
     }
 
     public void update() {

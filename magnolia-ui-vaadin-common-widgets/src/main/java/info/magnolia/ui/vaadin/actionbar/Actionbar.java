@@ -195,6 +195,15 @@ public class Actionbar extends AbstractComponent {
         }
     }
 
+    public boolean isBidi() {
+        return getState().bidi;
+    }
+
+    public void setBidi(boolean bidi) {
+        getState().bidi = bidi;
+        markAsDirty();
+    }
+
     public void registerActionIconResource(String actionName, ThemeResource iconResource) {
         setResource(actionName, iconResource);
     }

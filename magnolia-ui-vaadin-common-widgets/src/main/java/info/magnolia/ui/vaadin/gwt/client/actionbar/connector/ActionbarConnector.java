@@ -140,19 +140,32 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected void init() {
         super.init();
+        addStateChangeHandler("bidi", new StateChangeHandler() {
+
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                if (getState().bidi) {
+                    getWidget().addStyleName("bidi");
+                } else {
+                    getWidget().removeStyleName("bidi");
+                }
+                getWidget().setBidi(getState().bidi);
+            }
+        });
         addStateChangeHandler(previewChangeHandler);
         addStateChangeHandler("sections", sectionRearrangementHandler);
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
         addStateChangeHandler("isOpen", collapseChangeHandler);
+
         if (isDeviceTablet()) {
             setOpened(true);
         }
     }
 
     @Override
-    public Widget getWidget() {
-        return super.getWidget();
+    public ActionbarWidgetViewImpl getWidget() {
+        return (ActionbarWidgetViewImpl) super.getWidget();
     }
 
     @Override
