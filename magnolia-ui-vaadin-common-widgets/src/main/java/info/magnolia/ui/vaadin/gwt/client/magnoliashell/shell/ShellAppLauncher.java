@@ -107,9 +107,11 @@ public class ShellAppLauncher extends FlowPanel {
             @Override
             public void execute() {
                 getElement().getStyle().setTop(-60, Unit.PX);
-                JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
-                    setProperty("top", 0);
-                }});
+                JQueryWrapper.select(getElement()).animate(200, new AnimationSettings() {
+                    {
+                        setProperty("top", 0);
+                    }
+                });
             }
         });
     }
