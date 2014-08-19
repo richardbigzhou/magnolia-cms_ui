@@ -33,17 +33,20 @@
  */
 package info.magnolia.pages.app.editor;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.Event;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventHandler;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.location.PagesLocation;
 import info.magnolia.rendering.template.TemplateAvailability;
@@ -63,20 +66,25 @@ import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.StatusBarView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -155,7 +163,7 @@ public class PagesEditorSubAppTest {
         subAppContext = new SubAppContextImpl(descriptor, null);
         view = mock(PagesEditorSubAppView.class);
         eventBus = new SimpleEventBus();
-        adminCentralEventBus = new SimpleEventBus();
+        adminCentralEventBus = new ExceptionThrowingEventBus();
         pageEditorPresenter = mock(PageEditorPresenter.class);
         TemplateDefinitionRegistry registry = mock(TemplateDefinitionRegistry.class);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
@@ -301,5 +309,89 @@ public class PagesEditorSubAppTest {
         // THEN
         verify(actionbarPresenter, times(1)).showSection(testSection);
         verify(actionbarPresenter, times(1)).enable(actionName);
+    }
+
+    @Test
+    public void testContentChangedExistingNode() throws Exception {
+        // GIVEN
+        String nodePath = "/existing/node";
+        NodeUtil.createPath(root, nodePath, NodeTypes.Page.NAME);
+
+        String instanceId = "someId";
+        AppContext appContext = mock(AppContext.class);
+        subAppContext.setInstanceId(instanceId);
+        subAppContext.setAppContext(appContext);
+
+        subAppContext.setLocation(new DetailLocation("pages", "detail", nodePath + ":edit"));
+
+        JcrItemId itemId = mock(JcrItemId.class);
+        when(itemId.getWorkspace()).thenReturn(RepositoryConstants.WEBSITE);
+
+        // WHEN
+        adminCentralEventBus.fireEvent(new ContentChangedEvent(itemId));
+
+        // THEN
+        verify(appContext, times(0)).closeSubApp(instanceId);
+    }
+
+    @Test
+    public void testContentChangedOnRemovedNode() throws Exception {
+        // GIVEN
+        String instanceId = "someId";
+        AppContext appContext = mock(AppContext.class);
+        subAppContext.setInstanceId(instanceId);
+        subAppContext.setAppContext(appContext);
+
+        subAppContext.setLocation(new DetailLocation("pages", "detail", "/non/existing/node:edit"));
+
+        JcrItemId itemId = mock(JcrItemId.class);
+        when(itemId.getWorkspace()).thenReturn(RepositoryConstants.WEBSITE);
+
+        // WHEN
+        adminCentralEventBus.fireEvent(new ContentChangedEvent(itemId));
+
+        // THEN
+        verify(appContext, times(1)).closeSubApp(instanceId);
+    }
+
+    @Test
+    public void testContentChangedOnNonJcrItemIdDoesNotThrowCCE() throws Exception {
+        // GIVEN
+        this.editor = spy(editor);
+        String itemId = "randomItemId";
+
+        // WHEN
+        try {
+            adminCentralEventBus.fireEvent(new ContentChangedEvent(itemId));
+        }
+        catch (ClassCastException e) {
+            fail("We must be able to check for all kinds of items without throwing CCE.");
+        }
+
+        // THEN - we don't fail
+
+    }
+
+    /**
+     * Instead of catching and logging exceptions caught when dispatching events, we throw them.
+     */
+    private class ExceptionThrowingEventBus extends SimpleEventBus {
+        @Override
+        public <H extends EventHandler> void fireEvent(Event<H> event) {
+            for (H eventHandler : getHandlers(event)) {
+                event.dispatch(eventHandler);
+            }
+        }
+
+        private <H extends EventHandler> Collection<H> getHandlers(Event<H> event) {
+            try {
+                Method method = SimpleEventBus.class.getDeclaredMethod("internalGetHandlers", Event.class);
+                method.setAccessible(true);
+                return (Collection) method.invoke(this, event);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

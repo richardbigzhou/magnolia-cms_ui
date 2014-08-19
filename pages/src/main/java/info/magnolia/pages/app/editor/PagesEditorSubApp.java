@@ -81,7 +81,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.workbench.StatusBarView;
 
@@ -343,8 +342,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                JcrItemId itemId = (JcrItemId) event.getItemId();
-                if (itemId.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                if (contentConnector.canHandleItem(event.getItemId())) {
                     // Check if the node still exist
                     try {
                         String currentNodePath = getCurrentLocation().getNodePath();
