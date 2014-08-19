@@ -85,7 +85,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
      */
     private static final Pattern simpleTermsRegexPattern = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
 
-    private static final String illegalFullTextChars = "-+)\"\\";
+    private static final String illegalFullTextChars = "-+(){}[]\"\\";
 
     public SearchJcrContainer(JcrContentConnectorDefinition definition) {
         super(definition);
@@ -230,7 +230,12 @@ public class SearchJcrContainer extends FlatJcrContainer {
      * <li><code>[\abc]</code> don't escape
      * <li><code>[abc\]</code> don't escape
      * <li><code>[a\bc]</code> don't escape
+     * <li><code>[(]</code> escape
      * <li><code>[)]</code> escape
+     * <li><code>[{]</code> escape
+     * <li><code>[}]</code> escape
+     * <li><code>[[]</code> escape
+     * <li><code>[]]</code> escape
      * <li><code>["]</code> always escape unless it delimits a simple term, i.e <code>"foo -bar"</code>
      * </ul>
      * <strong>This method has package visibility for testing purposes.</strong>
@@ -249,7 +254,12 @@ public class SearchJcrContainer extends FlatJcrContainer {
                         sb.append('\\');
                     }
                     break;
+                case '(': // always escape no matter its position
                 case ')': // always escape no matter its position
+                case '{': // always escape no matter its position
+                case '}': // always escape no matter its position
+                case '[': // always escape no matter its position
+                case ']': // always escape no matter its position
                     sb.append('\\');
                     break;
                 case '\"':
