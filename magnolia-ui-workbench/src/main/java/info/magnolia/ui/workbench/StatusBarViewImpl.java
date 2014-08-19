@@ -98,4 +98,5 @@ public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView
         return this;
     }
 
+
 }

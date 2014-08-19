@@ -41,9 +41,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
+import info.magnolia.pages.app.editor.statusbar.StatusBarPresenter;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
@@ -63,7 +63,6 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
@@ -82,7 +81,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
-import info.magnolia.ui.workbench.StatusBarView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -119,14 +117,13 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final I18nContentSupport i18nContentSupport;
     private final JcrContentConnector contentConnector;
     private final AvailabilityChecker availabilityChecker;
-    private final StatusBarView statusBarView;
+    private final StatusBarPresenter statusBar;
     private final String workspace;
     private final AppContext appContext;
     private final VersionManager versionManager;
     private final SimpleTranslator i18n;
 
-    private PageEditorParameters parameters;
-    private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
+
     private Locale currentLocale;
     private String caption;
 
@@ -138,14 +135,14 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                              final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
                              I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
                              ContentConnector contentConnector) {
-        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarPresenter.class));
     }
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
                              final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
                              I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
-                             ContentConnector contentConnector, StatusBarView statusBarView) {
+                             ContentConnector contentConnector, StatusBarPresenter statusBar) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -157,7 +154,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.i18nContentSupport = i18nContentSupport;
         this.availabilityChecker = availabilityChecker;
-        this.statusBarView = statusBarView;
+        this.statusBar = statusBar;
         this.contentConnector = (JcrContentConnector) contentConnector;
         this.workspace = this.contentConnector.getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -190,11 +187,11 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
         pageBarView.setListener(this);
         pageEditorPresenter.setListener(this);
-
+        statusBar.setListener(this);
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
-        view.setStatusBarView(statusBarView);
+        view.setStatusBarView(statusBar.start(detailLocation));
 
         goToLocation(detailLocation);
         return view;
@@ -207,10 +204,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     protected void updateNodePath(String path) {
         DetailLocation detailLocation = getCurrentLocation();
         detailLocation.updateNodePath(path);
-        setPageEditorParameters(detailLocation);
+        updateLocationDependentComponents(detailLocation);
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
-        view.setStatusBarView(statusBarView); // update page status bar
-        pageEditorPresenter.updateParameters(parameters);
+        pageEditorPresenter.updateParameters();
     }
 
     @Override
@@ -234,15 +230,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     private void goToLocation(DetailLocation location) {
-        if (isLocationChanged(location)) {
+        if (pageEditorPresenter.isLocationChanged(location)) {
             doGoToLocation(location);
         }
     }
 
     protected void doGoToLocation(DetailLocation location) {
-        setPageEditorParameters(location);
+        updateLocationDependentComponents(location);
         updateActionbar();
-        pageEditorPresenter.loadPageEditor(parameters);
+        pageEditorPresenter.loadPageEditor();
         updatePageBarAvailableLanguages(location);
     }
 
@@ -273,49 +269,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return locale;
     }
 
-    private void setPageEditorParameters(DetailLocation location) {
-        DetailView.ViewType action = location.getViewType();
-        String path = location.getNodePath();
-        boolean isPreview = DetailView.ViewType.VIEW.getText().equals(action.getText());
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
-        this.parameters.setPlatformType(targetPreviewPlatform);
-        try {
-            Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
-            StringBuffer sb = new StringBuffer(uri);
+    private void updateLocationDependentComponents(DetailLocation location) {
 
-            if (isPreview) {
-                LinkUtil.addParameter(sb, "mgnlPreview", Boolean.toString(true));
-            } else {
-                // reset channel
-                this.targetPreviewPlatform = PlatformType.DESKTOP;
-                this.parameters.setPlatformType(targetPreviewPlatform);
-                pageBarView.setPlatFormType(targetPreviewPlatform);
-
-                LinkUtil.addParameter(sb, "mgnlPreview", Boolean.toString(false));
-            }
-            LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
-
-            if (location.hasVersion()) {
-                LinkUtil.addParameter(sb, "mgnlVersion", location.getVersion());
-            }
-            uri = sb.toString();
-            this.parameters.setUrl(uri);
-            updateCaption(location);
-            pageBarView.togglePreviewMode(isPreview);
-        } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
-    private boolean isLocationChanged(DetailLocation location) {
-        DetailView.ViewType action = location.getViewType();
-        String path = location.getNodePath();
-
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText())) && !location.hasVersion()) {
-            return false;
-        }
-        return true;
+        pageEditorPresenter.updateParameters(location);
+        updateCaption(location);
+        boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
+        pageBarView.togglePreviewMode(isPreview);
     }
 
     private String getPageTitle(DetailLocation location) {
@@ -366,7 +325,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                     if (StringUtils.isEmpty(path)) {
                         path = "/";
                     }
-                    if (!path.equals(parameters.getNodePath())) {
+                    if (!path.equals(getParameters().getNodePath())) {
                         updateNodePath(path);
                     }
                 }
@@ -374,28 +333,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             }
         });
 
-        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
-
-            @Override
-            public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
-
-        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
-
-            @Override
-            public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
-
-        admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
-            @Override
-            public void onLocationChanged(LocationChangedEvent event) {
-                view.setStatusBarView(statusBarView);
-            }
-        });
     }
 
     @Override
@@ -432,8 +369,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     @Override
     public void platformSelected(PlatformType platformType) {
-        if (platformType != null && !platformType.equals(targetPreviewPlatform)) {
-            this.targetPreviewPlatform = platformType;
+        if (platformType != null && !platformType.equals(pageEditorPresenter.getPlatformType())) {
+            pageEditorPresenter.setPlatformType(platformType);
             doGoToLocation(getCurrentLocation());
         }
     }
@@ -442,7 +379,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
      * This method has package visibility for testing purposes only.
      */
     public PageEditorParameters getParameters() {
-        return parameters;
+        return pageEditorPresenter.getParameters();
     }
 
     public void updateActionbar() {
@@ -544,5 +481,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Override
     public void onMove() {
         updateActionbar();
+    }
+
+    @Override
+    public void setPlatFormType(PlatformType platFormType) {
+        pageBarView.setPlatFormType(platFormType);
+    }
+
+    @Override
+    public Locale getCurrentLocale() {
+        return currentLocale;
     }
 }
