@@ -33,7 +33,14 @@
       <type>info.magnolia.pages.app.editor.PageEditorPresenter</type>
       <implementation>info.magnolia.pages.app.editor.PageEditorPresenter</implementation>
     </component>
-
+    <component>
+      <type>info.magnolia.pages.app.editor.statusbar.StatusBarPresenter</type>
+      <implementation>info.magnolia.pages.app.editor.statusbar.StatusBarPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusView</type>
+      <implementation>info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusViewImpl</implementation>
+    </component>
   </components>
 
   <components>
@@ -41,10 +48,6 @@
     <component>
       <type>info.magnolia.ui.vaadin.editor.pagebar.PageBarView</type>
       <implementation>info.magnolia.ui.vaadin.editor.pagebar.PageBarViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.workbench.StatusBarView</type>
-      <implementation>info.magnolia.pages.app.editor.PageEditorStatusBarViewImpl</implementation>
     </component>
   </components>
 

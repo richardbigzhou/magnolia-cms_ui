@@ -49,6 +49,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.location.PagesLocation;
+import info.magnolia.pages.app.editor.statusbar.StatusBarPresenter;
 import info.magnolia.rendering.template.TemplateAvailability;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateAvailability;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
@@ -77,12 +78,12 @@ import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
+import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.workbench.StatusBarView;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -123,7 +124,7 @@ public class PagesEditorSubAppTest {
 
     private ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
     private JcrContentConnector contentConnector;
-    private StatusBarView statusBarView;
+    private StatusBarPresenter statusBar;
     private PagesEditorSubApp editor;
     private MockSession session;
     private MockNode root;
@@ -164,7 +165,6 @@ public class PagesEditorSubAppTest {
         view = mock(PagesEditorSubAppView.class);
         eventBus = new SimpleEventBus();
         adminCentralEventBus = new ExceptionThrowingEventBus();
-        pageEditorPresenter = mock(PageEditorPresenter.class);
         TemplateDefinitionRegistry registry = mock(TemplateDefinitionRegistry.class);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
         actionbarPresenter = mock(ActionbarPresenter.class);
@@ -177,15 +177,16 @@ public class PagesEditorSubAppTest {
         when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
 
         pageBarView = mock(PageBarView.class);
-        statusBarView = mock(StatusBarView.class);
+        statusBar = mock(StatusBarPresenter.class);
 
         ComponentsTestUtil.setImplementation(TemplateAvailability.class, ConfiguredTemplateAvailability.class);
         definition = new ConfiguredTemplateDefinition(new ConfiguredTemplateAvailability());
 
         i18n = mock(SimpleTranslator.class);
 
-        editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
-                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
+        this.pageEditorPresenter = new PageEditorPresenter(actionExecutor, mock(PageEditorView.class), eventBus, subAppContext, i18n, i18NAuthoringSupport);
+        this.editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
+                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBar);
     }
 
     @After
@@ -222,7 +223,8 @@ public class PagesEditorSubAppTest {
     @Test
     public void testPagePreviewSetsMgnlPreviewToTrue() {
         // GIVEN
-        editor.start(new PagesLocation("/:edit"));
+        DetailLocation location = new DetailLocation("pages", "detail", "/:edit");
+        editor.start(location);
         assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
 
         // WHEN
@@ -253,7 +255,7 @@ public class PagesEditorSubAppTest {
         when(i18NAuthoringSupport.getDefaultLocale(node2)).thenReturn(Locale.ENGLISH);
 
         editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
-                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBarView);
+                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBar);
 
         // WHEN
         editor.start(new PagesLocation("/test1:edit"));
