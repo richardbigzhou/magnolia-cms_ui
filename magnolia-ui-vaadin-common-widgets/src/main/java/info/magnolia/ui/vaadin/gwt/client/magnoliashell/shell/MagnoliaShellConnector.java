@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
@@ -110,7 +111,21 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 Fragment f = getState().uriFragment;
                 if (f != null) {
-                    History.newItem(f.toFragment(), !f.isSameApp(lastHandledFragment));
+                    if (f.isApp()) {
+                        Scheduler.get().scheduleFinally(new Scheduler.RepeatingCommand() {
+                            @Override
+                            public boolean execute() {
+                                boolean layoutRunning = getLayoutManager().isLayoutRunning();
+
+                                if (!layoutRunning) {
+                                    ShellState.get().setAppStarted();
+                                }
+
+                                return layoutRunning;
+                            }
+                        });
+
+                    }
                 }
             }
         });
@@ -149,6 +164,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.addHandler(ShellAppStartingEvent.TYPE, new ShellAppStartingEvent.Handler() {
             @Override
             public void onShellAppStarting(ShellAppStartingEvent event) {
+                ShellState.get().setShellAppStarting();
                 view.onShellAppStarting(event.getType());
             }
         });
@@ -156,29 +172,41 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.addHandler(ShellAppStartedEvent.TYPE, new ShellAppStartedEvent.Handler() {
             @Override
             public void onShellAppStarted(ShellAppStartedEvent event) {
-                lastHandledFragment = Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + "");
-                activateShellApp(lastHandledFragment);
+                Fragment fragment = Fragment.fromString(History.getToken());
+                String newShellAppName = event.getType().name();
+                ShellState.get().setShellAppStarted();
+                if (!fragment.isShellApp() || !fragment.getAppName().equalsIgnoreCase(newShellAppName)) {
+                    final Fragment newFragment = Fragment.fromString("shell:" + newShellAppName.toLowerCase() + ":" + "");
+                    History.newItem(newFragment.toFragment(), false);
+                    lastHandledFragment = newFragment;
+                    activateShellApp(newFragment);
+                }
             }
         });
 
         eventBus.addHandler(HideShellAppsRequestedEvent.TYPE, new HideShellAppsRequestedEvent.Handler() {
             @Override
             public void onHideShellAppsRequest(HideShellAppsRequestedEvent event) {
-                onHideShellAppsRequested();
+                if (ShellState.get().isShellAppStarted() || ShellState.get().isShellAppStarting()) {
+                    onHideShellAppsRequested();
+                }
             }
         });
 
         eventBus.addHandler(ShellAppsHiddenEvent.TYPE, new ShellAppsHiddenEvent.Handler() {
             @Override
             public void onShellAppsHidden(ShellAppsHiddenEvent event) {
-                rpc.stopCurrentShellApp();
+                    rpc.stopCurrentShellApp();
             }
         });
 
         eventBus.addHandler(ActivateAppEvent.TYPE, new ActivateAppEvent.Handler() {
             @Override
             public void onActivateApp(ActivateAppEvent event) {
-                rpc.activateApp(Fragment.fromString("app:" + event.getName()));
+                if (!ShellState.get().isShellAppStarting()) {
+                    ShellState.get().setAppStarting();
+                    rpc.activateApp(Fragment.fromString("app:" + event.getName()));
+                }
             }
         });
 
@@ -186,11 +214,14 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
-                if (newFragment.isShellApp()) {
+                if (newFragment.isShellApp() && !newFragment.equals(lastHandledFragment)) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    loadApp(newFragment.getAppName());
-                    rpc.activateApp(newFragment);
+                    if (!ShellState.get().isAppStarted()) {
+                        ShellState.get().setAppStarting();
+                        loadApp(newFragment.getAppName());
+                        rpc.activateApp(newFragment);
+                    }
                 }
                 lastHandledFragment = newFragment;
             }
@@ -204,6 +235,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void closeCurrentApp() {
+        ShellState.get().setAppClosing();
         rpc.stopCurrentApp();
     }
 
@@ -220,7 +252,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void showShellApp(ShellAppType shellAppType) {
-        eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
+        final ShellState shellState = ShellState.get();
+        if (!shellState.isAppStarting()) {
+            eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
+        }
     }
 
     private void doFullScreen(boolean isFullScreen) {
@@ -236,6 +271,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         Widget currentApp = appViewportWidget.getCurrentApp();
         if (currentApp != null) {
             view.onAppStarting();
+            ShellState.get().setShellAppClosing();
             eventBus.fireEvent(new HideShellAppsEvent());
         } else {
             showShellApp(ShellAppType.APPLAUNCHER);

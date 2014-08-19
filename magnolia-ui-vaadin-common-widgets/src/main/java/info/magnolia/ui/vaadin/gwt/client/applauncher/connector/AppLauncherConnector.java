@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherViewImpl;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,6 +104,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
                     view.setAppActive(tile.getName(), false);
                 }
 
+
             }
         }
     }
@@ -118,6 +120,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         this.view.setPresenter(new Presenter() {
             @Override
             public void activateApp(String appName) {
+                ShellState.get().setAppStarting();
                 History.newItem("app:" + appName, true);
             }
         });
