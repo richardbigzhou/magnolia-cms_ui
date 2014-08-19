@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.FullScreenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
@@ -92,6 +93,7 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                 final String appName = event.getAppName();
                 if (isAppRegistered(appName)) {
                     if (!isAppRunning(appName)) {
+                        ShellState.get().setAppStarting();
                         getWidget().showAppPreloader(appName);
                     }
                 }
@@ -136,6 +138,7 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                 @Override
                 public void run() {
                     getWidget().removePreloader();
+                    ShellState.get().setAppStarted();
                 }
             }.schedule(500);
         }

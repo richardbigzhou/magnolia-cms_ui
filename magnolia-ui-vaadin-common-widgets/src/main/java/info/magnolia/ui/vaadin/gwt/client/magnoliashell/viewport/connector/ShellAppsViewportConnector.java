@@ -47,7 +47,6 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 import com.vaadin.shared.ui.Connect;
@@ -58,27 +57,10 @@ import com.vaadin.shared.ui.Connect;
 @Connect(ShellAppsViewport.class)
 public class ShellAppsViewportConnector extends ViewportConnector implements ShellAppsViewportWidget.Listener {
 
-    public boolean locked = false;
-
     @Override
     protected void init() {
         super.init();
-        getWidget().setTransitionDelegate(new ShellAppsTransitionDelegate(getWidget(), getConnection()));
-        getConnection().addHandler(ApplicationConnection.ResponseHandlingStartedEvent.TYPE, new ApplicationConnection.CommunicationHandler() {
-            @Override
-            public void onRequestStarting(ApplicationConnection.RequestStartingEvent e) {
-                locked = true;
-            }
-
-            @Override
-            public void onResponseHandlingStarted(ApplicationConnection.ResponseHandlingStartedEvent e) {
-                locked = false;
-            }
-
-            @Override
-            public void onResponseHandlingEnded(ApplicationConnection.ResponseHandlingEndedEvent e) {
-            }
-        });
+        getWidget().setTransitionDelegate(new ShellAppsTransitionDelegate(getWidget()));
     }
 
     public void showShellApp(ShellAppType type) {
