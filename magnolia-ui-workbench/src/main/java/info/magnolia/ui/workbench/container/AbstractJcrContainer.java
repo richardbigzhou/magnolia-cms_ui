@@ -667,6 +667,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
             updateCount((int) pageSize);
         } catch (RepositoryException e) {
+            updateCount(0);
             handleRepositoryException(log, "Could not update size with statement: " + stmt, e);
         }
     }
