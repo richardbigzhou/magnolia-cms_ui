@@ -35,11 +35,14 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate.BaseTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.ZoomAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+
+import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -53,7 +56,7 @@ import com.vaadin.client.Util;
  */
 public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
-    private Object lock = new Object();
+    private static final Logger log = Logger.getLogger(AppsTransitionDelegate.class.getName());
 
     private static final double CURTAIN_ALPHA = 0.9;
 
@@ -67,6 +70,12 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private AppsViewportWidget viewport;
 
+    /**
+     * Since we reveal the already loaded apps instantly - we could use a lock
+     * that ensures the zooming animation is distracted with Vaadin layout.
+     */
+    private Object lock = new Object();
+
     private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false) {
         @Override
         protected void onComplete() {
@@ -79,12 +88,15 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         @Override
         protected void onStart() {
             super.onStart();
+            setCurtainAttached(false);
             Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
         }
 
         @Override
         protected void onComplete() {
             super.onComplete();
+            ShellState.get().setAppStarted();
+            log.warning("Switching to 'APP STARTED' state after zoom-in animation");
             Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
         }
     };
@@ -119,6 +131,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             zoomInAnimation.run(ZOOM_DURATION, app.getElement());
         } else {
             viewport.showChildNoTransition(app);
+            ShellState.get().setAppStarted();
+            log.warning("Switching to 'APP STARTED' state without app transition");
         }
     }
 
@@ -151,5 +165,10 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         } else if (viewportElement.isOrHasChild(curtain)) {
             viewportElement.removeChild(curtain);
         }
+    }
+
+    @Override
+    public boolean inProgress() {
+        return zoomInAnimation.isRunning() || zoomOutAnimation.isRunning();
     }
 }

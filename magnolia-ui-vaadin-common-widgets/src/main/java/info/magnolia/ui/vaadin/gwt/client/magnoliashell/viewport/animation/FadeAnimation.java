@@ -36,16 +36,13 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
-import com.vaadin.client.ApplicationConnection;
-
 /**
  * Fades an element in or out.
  */
 public class FadeAnimation extends JQueryAnimation {
 
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
+    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
         setProperty("opacity", opacityValue);
         if (clearAfterCompleted) {
             addCallback(new JQueryCallback() {
@@ -55,10 +52,6 @@ public class FadeAnimation extends JQueryAnimation {
                 }
             });
         }
-    }
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
     }
 
 }

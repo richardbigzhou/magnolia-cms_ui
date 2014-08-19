@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 
@@ -59,22 +58,14 @@ public class ZoomAnimation extends Animation {
     public void run(final int duration, final double startTime, final Element element) {
         this.element = element;
         element.getStyle().setVisibility(Style.Visibility.HIDDEN);
-        if (isZoomIn) {
-            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                @Override
-                public void execute() {
-                    doRun(element, duration, startTime);
-                }
-            });
-        } else {
-            doRun(element, duration, startTime);
-        }
+        doRun(element, duration, startTime);
     }
 
     private void doRun(Element element, int duration, double startTime) {
         element.getStyle().setVisibility(Style.Visibility.VISIBLE);
         element.addClassName(isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
-        ZoomAnimation.super.run(duration, startTime, element);
+
+        super.run(duration, startTime, element);
     }
 
     @Override

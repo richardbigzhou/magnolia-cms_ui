@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
@@ -148,10 +149,18 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
                 // App Stack Navigation.
                 case '9':
-                    appViewport().goToPreviousApp();
+                    // We have more than one app open
+                    if (appViewport().readyForAppSwipeOrShortcutNavigation()) {
+                        ShellState.get().setAppStarting();
+                        appViewport().goToPreviousApp();
+                    }
                     break;
                 case '0':
-                    appViewport().goToNextApp();
+                    // We have more than one app open
+                    if (appViewport().readyForAppSwipeOrShortcutNavigation()) {
+                        ShellState.get().setAppStarting();
+                        appViewport().goToNextApp();
+                    }
                     break;
 
                 default:
@@ -193,8 +202,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     protected native Element elementInFocus(Element element) /*-{
-                                                             return element.ownerDocument.activeElement;
-                                                             }-*/;
+        return element.ownerDocument.activeElement;
+    }-*/;
 
 
     protected AppsViewportWidget appViewport() {

@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -63,6 +64,17 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     private AppLauncherView view;
 
     private EventBus eventBus = new SimpleEventBus();
+
+    private Event.NativePreviewHandler eventPreviewHandler = new Event.NativePreviewHandler() {
+        @Override
+        public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+            int eventCode = event.getTypeInt();
+            boolean isTouchOrMouse = (eventCode & Event.MOUSEEVENTS) > 0 || (eventCode & Event.TOUCHEVENTS) > 0;
+            if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
+                event.cancel();
+            }
+        }
+    };
 
     public AppLauncherConnector() {
 
@@ -94,6 +106,14 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         });
     }
 
+    @Override
+    protected void init() {
+        super.init();
+
+
+        Event.addNativePreviewHandler(eventPreviewHandler);
+    }
+
     private void updateRunningAppTiles() {
         for (final AppGroup appGroup : getState().appGroups.values()) {
             for (final AppTile tile : appGroup.getAppTiles()) {
@@ -102,7 +122,6 @@ public class AppLauncherConnector extends AbstractComponentConnector {
                 } else {
                     view.setAppActive(tile.getName(), false);
                 }
-
             }
         }
     }
@@ -117,7 +136,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         this.view = new AppLauncherViewImpl(eventBus);
         this.view.setPresenter(new Presenter() {
             @Override
-            public void activateApp(String appName) {
+            public void activateApp(final String appName) {
                 History.newItem("app:" + appName, true);
             }
         });
