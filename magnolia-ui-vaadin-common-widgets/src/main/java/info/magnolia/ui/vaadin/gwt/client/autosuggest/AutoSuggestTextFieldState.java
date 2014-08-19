@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
 
@@ -43,7 +43,7 @@ import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
  */
 public class AutoSuggestTextFieldState extends AbstractTextFieldState {
     public boolean suggestionsAvailable;
-    public List<String> suggestions;
+    public Collection<String> suggestions;
     public int matchMethod;
     public boolean showMismatchedSuggestions;
     public boolean showErrorHighlighting;

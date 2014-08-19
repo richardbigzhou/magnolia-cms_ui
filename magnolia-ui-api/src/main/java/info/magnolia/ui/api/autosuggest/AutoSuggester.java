@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.autosuggest;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Returns suggestions and how to display them given a field.
@@ -67,7 +67,7 @@ public interface AutoSuggester {
         /**
          * Get suggestions for the field.
          */
-        List<String> getSuggestions();
+        Collection<String> getSuggestions();
 
         /**
          * Get method to match suggestions to the current field value.
