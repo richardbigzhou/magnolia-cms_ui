@@ -36,8 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
-import com.vaadin.client.ApplicationConnection;
-
 /**
  * Slide animation of an element.
  */
@@ -45,8 +43,11 @@ public class SlideAnimation extends JQueryAnimation {
 
     private boolean isVertical = true;
 
-    public SlideAnimation(boolean isVertical, boolean clearOnComplete, ApplicationConnection connection) {
-        super(connection);
+    public SlideAnimation(boolean clearOnComplete) {
+        this(true, clearOnComplete);
+    }
+
+    public SlideAnimation(boolean isVertical, boolean clearOnComplete) {
         this.isVertical = isVertical;
         if (clearOnComplete) {
             addCallback(new JQueryCallback() {
@@ -60,19 +61,6 @@ public class SlideAnimation extends JQueryAnimation {
                 }
             });
         }
-    }
-
-    public SlideAnimation(boolean clearOnComplete, ApplicationConnection connection) {
-        this(true, clearOnComplete, connection);
-
-    }
-
-    public SlideAnimation(boolean clearOnComplete) {
-        this(clearOnComplete, null);
-    }
-
-    public SlideAnimation(boolean isVertical, boolean clearOnComplete) {
-        this(isVertical, clearOnComplete, null);
     }
 
     public void setTargetValue(int value) {

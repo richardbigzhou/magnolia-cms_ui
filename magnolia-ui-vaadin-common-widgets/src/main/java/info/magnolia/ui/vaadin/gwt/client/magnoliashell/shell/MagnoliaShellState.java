@@ -59,7 +59,7 @@ public class MagnoliaShellState extends AbstractLayoutState {
 
     public List<Connector> overlays = new ArrayList<Connector>();
 
-    public Fragment uriFragment;
+    public Fragment currentAppUriFragment;
 
     public Connector userMenu;
 

@@ -142,16 +142,24 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     public JcrNewNodeAdapter determinePreviousLocation() {
+        JcrNewNodeAdapter favoriteLocation;
+
         // at this point the current location in the browser hasn't yet changed to favorite shellapp,
         // so it is what we need to pre-populate the form for creating a new favorite
         final URI previousLocation = Page.getCurrent().getLocation();
         final String previousLocationFragment = previousLocation.getFragment();
+
+        // skip bookmark resolution if for some reason fragment is empty
+        if (previousLocationFragment == null) {
+            return createNewFavoriteSuggestion("", "", "");
+        }
+
         final String appName = DefaultLocation.extractAppName(previousLocationFragment);
         final String appType = DefaultLocation.extractAppType(previousLocationFragment);
         // TODO MGNLUI-1190 should this be added to DefaultLocation as a convenience static method?
         final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
-        JcrNewNodeAdapter favoriteLocation;
-        // skip bookmarking shell apps
+
+        // skip bookmark resolution shell apps
         if (Location.LOCATION_TYPE_SHELL_APP.equals(appType)) {
             favoriteLocation = createNewFavoriteSuggestion("", "", "");
         } else {
