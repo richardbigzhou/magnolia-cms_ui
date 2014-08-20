@@ -85,7 +85,6 @@ public class SearchJcrContainer extends FlatJcrContainer {
      */
     private static final Pattern simpleTermsRegexPattern = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
 
-    private static final String illegalFullTextChars = "-+)\"\\";
 
     public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
         super(workbenchDefinition);
@@ -214,25 +213,10 @@ public class SearchJcrContainer extends FlatJcrContainer {
     }
 
     /**
-     * "Within a term, each “"” (double quote), “-” (minus sign), and “\” (backslash) must be escaped by a preceding “\”. An implementation may, however, restrict acceptable search strings further by augmenting this grammar and expanding the semantics appropriately."
-     * (See http://www.day.com/specs/jcr/2.0/6_Query.html#6.7.19%20FullTextSearch)
-     * Rules for escaping illegal chars (chars or simple terms included in square brackets for better readability):
-     * <ul>
-     * <li><code>[-]</code> escape
-     * <li><code>[-abc]</code> don't escape
-     * <li><code>[abc-]</code> don't escape
-     * <li><code>[ab-c]</code> don't escape
-     * <li><code>[+]</code> escape
-     * <li><code>[+abc]</code> don't escape
-     * <li><code>[abc+]</code> don't escape
-     * <li><code>[ab+c]</code> don't escape
-     * <li><code>[\]</code> escape
-     * <li><code>[\abc]</code> don't escape
-     * <li><code>[abc\]</code> don't escape
-     * <li><code>[a\bc]</code> don't escape
-     * <li><code>[)]</code> escape
-     * <li><code>["]</code> always escape unless it delimits a simple term, i.e <code>"foo -bar"</code>
-     * </ul>
+     * Within a term, each sensitive char must be escaped by a preceding “\”.<br>
+     * - “-” (minus sign), “+” (plus sign) and “\” (backslash) are escaped if they are the single element of the term <br>
+     * - "()[]{}" (all brackets) are always escaped<br>
+     * - “"” (double quote) is always escape unless it delimits a simple term, i.e <code>"foo -bar"</code><br>
      * <strong>This method has package visibility for testing purposes.</strong>
      */
     final String escapeIllegalFullTextSearchChars(final String simpleTerm) {
@@ -240,23 +224,10 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
         for (int i = 0; i < simpleTerm.length(); i++) {
             char ch = simpleTerm.charAt(i);
-            if (illegalFullTextChars.indexOf(ch) != -1) {
-                switch (ch) {
-                case '-':
-                case '+':
-                case '\\':
-                    if (simpleTerm.length() == 1) {
-                        sb.append('\\');
-                    }
-                    break;
-                case ')': // always escape no matter its position
-                    sb.append('\\');
-                    break;
-                case '\"':
-                    if ((simpleTerm.startsWith("\"") && simpleTerm.endsWith("\"")) && (i != 0 && i != simpleTerm.length() - 1)) {
-                        sb.append('\\');
-                    }
-                }
+            if (("\\+-".contains(String.valueOf(ch)) && simpleTerm.length() == 1)
+                    || ("()[]{}".contains(String.valueOf(ch)))
+                    || ("\"".contains(String.valueOf(ch)) && (i != 0 && i != simpleTerm.length() - 1))) {
+                sb.append('\\');
             }
             sb.append(ch);
         }

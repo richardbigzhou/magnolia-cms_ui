@@ -808,6 +808,38 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         }
     }
 
+    @Test
+    public void testUdpateSize() throws Exception {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
+        node1.getSession().save();
+        assertEquals(Integer.MIN_VALUE, jcrContainer.size());
+
+        // WHEN
+        jcrContainer.updateSize();
+
+        // THEN
+        assertEquals(2, jcrContainer.size());
+    }
+
+    @Test
+    public void testUdpateSizeJcrQueryIssue() throws Exception {
+        // GIVEN
+        Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
+        node1.getSession().save();
+        jcrContainer.updateSize();
+        assertEquals(2, jcrContainer.size());
+        jcrContainer.createWrongQuery();
+
+        // WHEN
+        jcrContainer.updateSize();
+
+        // THEN
+        assertEquals(0, jcrContainer.size());
+    }
+
     /**
      * Define the sorting criteria.
      */
@@ -838,6 +870,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
+        private String whereStatement;
+
         public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {
             super(workbenchDefinition);
         }
@@ -848,6 +882,18 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         @Override
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
+        }
+
+        public void createWrongQuery() {
+            whereStatement = "some*()W*!@BullShit";
+        }
+
+        @Override
+        protected String getQueryWhereClause() {
+            if (whereStatement == null) {
+                return super.getQueryWhereClause();
+            }
+            return whereStatement;
         }
     }
 

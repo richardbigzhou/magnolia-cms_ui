@@ -35,7 +35,6 @@ package info.magnolia.ui.workbench.search;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
@@ -43,8 +42,6 @@ import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
@@ -61,7 +58,6 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     private String workspace = "config";
     private String colName1 = "name";
     private String colName2 = "shortname";
-    private Session session;
     private ConfiguredWorkbenchDefinition configuredWorkbench;
 
     @Override
@@ -98,8 +94,6 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         jcrContainer = new SearchJcrContainer(configuredWorkbench);
 
-        // Init session
-        session = MgnlContext.getJCRSession(workspace);
     }
 
     @Override
@@ -248,7 +242,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testEscapeIllegalJcrFullTextSearchChars() throws Exception {
+    public void testEscapeIllegalJcrFullTextSearchCharsMinus() throws Exception {
         // GIVEN
         String simpleTerm = "-";
 
@@ -257,133 +251,186 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals("\\-", escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsMinusBefore() throws Exception {
         // GIVEN
-        simpleTerm = "-abc";
+        String simpleTerm = "-abc";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsMinusAfter() throws Exception {
         // GIVEN
-        simpleTerm = "abc-";
+        String simpleTerm = "abc-";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
-
-        // THEN
-
-        assertEquals(simpleTerm, escaped);
-        // GIVEN
-        simpleTerm = "ab-c";
-
-        // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsMinusInBetween() throws Exception {
         // GIVEN
-        simpleTerm = "+";
+        String simpleTerm = "ab-c";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+    }
+
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsPlus() throws Exception {
+        // GIVEN
+        String simpleTerm = "+";
+
+        // WHEN
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals("\\+", escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsPlusBefore() throws Exception {
         // GIVEN
-        simpleTerm = "+abc";
+        String simpleTerm = "+abc";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsPlusAfter() throws Exception {
         // GIVEN
-        simpleTerm = "abc+";
+        String simpleTerm = "abc+";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsPlusInBetween() throws Exception {
         // GIVEN
-        simpleTerm = "ab+c";
+        String simpleTerm = "ab+c";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsDoubleSlash() throws Exception {
         // GIVEN
-        simpleTerm = "\\";
+        String simpleTerm = "\\";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals("\\\\", escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsDoubleSlashBefore() throws Exception {
         // GIVEN
-        simpleTerm = "\\abc";
+        String simpleTerm = "\\abc";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsDoubleSlashAfter() throws Exception {
         // GIVEN
-        simpleTerm = "abc\\";
+        String simpleTerm = "abc\\";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsDoubleSlashInBetween() throws Exception {
         // GIVEN
-        simpleTerm = "ab\\c";
+        String simpleTerm = "ab\\c";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsParentheses() throws Exception {
         // GIVEN
-        simpleTerm = ")ab)c)";
+        String simpleTerm = ")ab)c)";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals("\\)ab\\)c\\)", escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsSimpleSlash() throws Exception {
         // GIVEN
-        simpleTerm = "\"foo bar\"";
+        String simpleTerm = "\"foo bar\"";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals(simpleTerm, escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsSimpleSlashInBetween() throws Exception {
         // GIVEN
-        simpleTerm = "\"foo \" bar\"";
+        String simpleTerm = "\"foo \" bar\"";
 
         // WHEN
-        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
 
         // THEN
         assertEquals("\"foo \\\" bar\"", escaped);
+    }
 
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchCharsBrackets() throws Exception {
+        // GIVEN
+        String simpleTerm = "(a)b{c}d[e]f";
+
+        // WHEN
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\\(a\\)b\\{c\\}d\\[e\\]f", escaped);
     }
 
     protected void assertContains(final String searchString, final String string) {
