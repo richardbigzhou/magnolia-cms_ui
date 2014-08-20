@@ -45,6 +45,7 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.vaadin.bidi.Bidi;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
@@ -183,8 +184,14 @@ public class FormBuilder {
                     tab.setComponentHelpDescription(field, helpDescription);
                 }
 
+                // stretcher extension
                 if (field instanceof TextArea || field instanceof CKEditorTextField) {
                     TextAreaStretcher.extend(field);
+                }
+
+                // rtl extension
+                if (field.getType().isAssignableFrom(String.class)) {
+                    Bidi.extend(field);
                 }
 
                 view.addField(field);
