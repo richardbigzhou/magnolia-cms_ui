@@ -60,7 +60,7 @@ import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,10 +126,9 @@ public class AvailabilityCheckerImplTest extends MgnlTestCase {
         availabilityChecker = new AvailabilityCheckerImpl(componentProvider, jcrContentConnector);
 
         rootNode = mockSession.getRootNode();
-        List<Object> itemId = getJcrItemIdsList(rootNode);
+        Object itemId = JcrItemUtil.getItemId(rootNode);
         doReturn(itemId).when(jcrContentConnector).getDefaultItemId();
         testNode = rootNode.addNode("test");
-
     }
 
     @Test
@@ -164,8 +163,8 @@ public class AvailabilityCheckerImplTest extends MgnlTestCase {
         availabilityDefinitionNotForRoot.setRoot(false);
 
         // THEN
-        assertFalse(availabilityChecker.isAvailable(availabilityDefinitionNotForRoot, getJcrItemIdsList(rootNode)));
-        assertTrue(availabilityChecker.isAvailable(availabilityDefinitionNotForRoot, getJcrItemIdsList(testNode)));
+        assertTrue(availabilityChecker.isAvailable(availabilityDefinitionForRoot, getJcrItemIdsList(rootNode)));
+        assertTrue(availabilityChecker.isAvailable(availabilityDefinitionForRoot, getJcrItemIdsList(testNode)));
         assertFalse(availabilityChecker.isAvailable(availabilityDefinitionNotForRoot, getJcrItemIdsList(rootNode)));
         assertTrue(availabilityChecker.isAvailable(availabilityDefinitionNotForRoot, getJcrItemIdsList(testNode)));
     }
@@ -281,12 +280,11 @@ public class AvailabilityCheckerImplTest extends MgnlTestCase {
     }
 
     private List<Object> getJcrItemIdsList(Node node) throws Exception {
-        return Arrays.asList((Object) new JcrItemId(node.getIdentifier(), WORKSPACE));
+        return Arrays.asList((Object) JcrItemUtil.getItemId(node));
     }
 
     private List<Object> getJcrPropertyItemIdsList(Property property) throws Exception {
-        Node parentNode = property.getParent();
-        return Arrays.asList((Object) new JcrPropertyItemId(parentNode.getIdentifier(), WORKSPACE, property.getName()));
+        return Arrays.asList((Object) JcrItemUtil.getItemId(property));
     }
 
     /**
