@@ -34,16 +34,13 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -69,12 +66,12 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.framework.availability.IsDeletedRule;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.availability.AvailabilityCheckerImpl;
+import info.magnolia.ui.framework.availability.IsDeletedRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -100,7 +97,6 @@ import org.mockito.stubbing.Answer;
 public class BrowserSubAppTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
-    private final static String ROOT_PATH = "/";
     private final static String TEST_CONTENT_NODE = "testContentNode";
     private final static String TEST_PAGE = "testPage";
     private final static String TEST_PROPERTY = "testProperty";
@@ -145,7 +141,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     // nodes
     private Node testContentNode;
 
-    private I18nizer i18nizer;
     private ContentConnector contentConnector;
     private AvailabilityChecker availabilityChecker;
 
@@ -156,7 +151,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         componentProvider = mock(ComponentProvider.class);
-        i18nizer = mock(I18nizer.class);
         doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         initActions();
