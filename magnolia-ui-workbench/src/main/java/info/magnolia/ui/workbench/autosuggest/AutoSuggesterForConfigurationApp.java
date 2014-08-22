@@ -50,6 +50,7 @@ import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
@@ -91,7 +92,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
         // If processing a JCR node
         if (itemId instanceof JcrNodeItemId) {
-            Node node = getNodeFromJcrNodeItemId((JcrNodeItemId) itemId);
+            Node node = getNodeFromJcrItemId((JcrNodeItemId) itemId);
 
             if (node != null) {
                 // If processing name field of a node
@@ -110,20 +111,28 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         // If processing a JCR property
         else if (itemId instanceof JcrPropertyItemId) {
             JcrPropertyItemId propertyItemId = (JcrPropertyItemId) itemId;
+            Node parentNode = getNodeFromJcrItemId(propertyItemId);
 
-            // If processing name field of a property
-            if ("jcrName".equals(propertyId)) {
-                return getSuggestionsForNameOfProperty(propertyItemId);
+            if (parentNode != null) {
+                String propertyName = propertyItemId.getPropertyName();
+
+                // If processing name field of a property
+                if ("jcrName".equals(propertyId)) {
+                    return getSuggestionsForNameOfProperty(propertyName, parentNode);
+                }
+                // If processing value field of a property
+                else if ("value".equals(propertyId)) {
+                    return getSuggestionsForValueOfProperty(propertyName, parentNode);
+                }
+                // If processing type field of a property
+                else if ("type".equals(propertyId)) {
+                    return getSuggestionsForTypeOfProperty(propertyName, parentNode);
+                }
+                // If not processing name, value, or type field of a property
+                else {
+                    return noSuggestionsAvailable();
+                }
             }
-            // If processing value field of a property
-            else if ("value".equals(propertyId)) {
-                return getSuggestionsForValueOfProperty(propertyItemId);
-            }
-            // If processing type field of a property
-            else if ("type".equals(propertyId)) {
-                return getSuggestionsForTypeOfProperty(propertyItemId);
-            }
-            // If not processing name, value, or type field of a property
             else {
                 return noSuggestionsAvailable();
             }
@@ -203,11 +212,18 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                     // If node's parent is /modules/<moduleName>
                     if (parentPath.startsWith("/modules/") && parentPath.indexOf("/", "/modules/".length()) == -1) {
 
-                        // QUESTION Would it not be better to make suggestions based on existing subfolders under /modules/<moduleName>/ rather than hardcoding it?
-                        final Collection<String> suggestions = getAllPossibleNewSubnodeNames(node, parentNode, Arrays.asList(
-                                "apps", "templates", "dialogs", "commands", "fieldTypes", "virtualURIMapping", "renderers", "config"));
+                        String nodeName = node.getName();
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, false);
+                        if (nodeName != null) {
+                            // QUESTION Would it not be better to make suggestions based on existing subfolders under /modules/<moduleName>/ rather than hardcoding it?
+                            final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, Arrays.asList(
+                                    "apps", "templates", "dialogs", "commands", "fieldTypes", "virtualURIMapping", "renderers", "config"));
+
+                            return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, false);
+                        }
+                        else {
+                            return noSuggestionsAvailable();
+                        }
                     }
                     // If node's parent is not /modules/<moduleName>
                     else {
@@ -252,40 +268,106 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
             return noSuggestionsAvailable();
         }
 
-        final Collection<String> possibleSubnodeNames = getAllPossibleSubnodeNames(parentNodeTypeDescriptor);
-        if (possibleSubnodeNames != null) {
-            final Collection<String> suggestions = getAllPossibleNewSubnodeNames(node, parentNode, possibleSubnodeNames);
+        try {
+            final Collection<String> possibleSubnodeNames = getAllPossibleSubnodeNames(parentNodeTypeDescriptor);
+            if (possibleSubnodeNames != null) {
+                String nodeName = node.getName();
 
-            return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
-        }
-        else {
+                if (nodeName != null) {
+                    final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, possibleSubnodeNames);
+
+                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        } catch (RepositoryException ex) {
+            log.warn("Could not get suggestions for name of node in bean: " + ex);
             return noSuggestionsAvailable();
         }
     }
 
-    protected AutoSuggesterResult getSuggestionsForNameOfProperty(JcrPropertyItemId propertyItemId) {
+    protected AutoSuggesterResult getSuggestionsForNameOfProperty(String propertyName, Node parentNode) {
+        if (propertyName == null || parentNode == null) {
+            return getSuggestionsForNameOfPropertyBasedOnJCROnly(propertyName, parentNode);
+        }
+
+        TypeDescriptor parentTypeDescriptor = getNodeTypeDescriptor(parentNode);
+
+        // If we can get the type of the parent node
+        if (parentTypeDescriptor != null) {
+            Collection<String> possibleSubpropertyNames = getAllPossibleSubpropertyNames(parentTypeDescriptor);
+
+            if (possibleSubpropertyNames != null) {
+                Collection<String> suggestions = getAllPossibleNewSubpropertyNames(propertyName, parentNode, possibleSubpropertyNames);
+
+                return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+            }
+            else {
+                return getSuggestionsForNameOfPropertyBasedOnJCROnly(propertyName, parentNode);
+            }
+        }
+        // If we cannot get the type of the parent node
+        else {
+            return getSuggestionsForNameOfPropertyBasedOnJCROnly(propertyName, parentNode);
+        }
+    }
+
+    /**
+     * Try to get suggestions for name of property based on JCR only, when we cannot use the bean to get suggestions.
+     * Always suggest "extends" and "class" unless the node already has it and it is not the one being named.
+     */
+    protected AutoSuggesterResult getSuggestionsForNameOfPropertyBasedOnJCROnly(String propertyName, Node parentNode) {
+        if (propertyName == null || parentNode == null) {
+            return noSuggestionsAvailable();
+        }
+
+        Collection<String> possibleSubpropertyNames = new HashSet<String>();
+        possibleSubpropertyNames.add("class");
+        possibleSubpropertyNames.add("extends");
+
+        // Check if we should suggest the version property if property's parent is a folder /modules/<moduleName>
+        try {
+            // If parent node is a folder
+            if (NodeUtil.isNodeType(parentNode, NodeTypes.Content.NAME)) {
+                String parentPath = parentNode.getPath();
+
+                // If property's parent is /modules/<moduleName>
+                if (parentPath != null && parentPath.startsWith("/modules/") && parentPath.indexOf("/", "/modules/".length()) == -1) {
+                    possibleSubpropertyNames.add("version");
+                }
+            }
+        } catch (RepositoryException ex) {
+            log.warn("Could not check if version property should be added as a suggestion: " + ex);
+        }
+
+        Collection<String> suggestions = getAllPossibleNewSubpropertyNames(propertyName, parentNode, possibleSubpropertyNames);
+
+        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+    }
+
+    protected AutoSuggesterResult getSuggestionsForValueOfProperty(String propertyName, Node parentNode) {
         // TODO
         return noSuggestionsAvailable();
     }
 
-    protected AutoSuggesterResult getSuggestionsForValueOfProperty(JcrPropertyItemId propertyItemId) {
-        // TODO
-        return noSuggestionsAvailable();
-    }
-
-    protected AutoSuggesterResult getSuggestionsForTypeOfProperty(JcrPropertyItemId propertyItemId) {
+    protected AutoSuggesterResult getSuggestionsForTypeOfProperty(String propertyName, Node parentNode) {
         // TODO
         return noSuggestionsAvailable();
     }
 
     // UTILITY METHODS
 
-    private Node getNodeFromJcrNodeItemId(JcrNodeItemId nodeItemId) {
-        if (nodeItemId == null) {
+    private Node getNodeFromJcrItemId(JcrItemId itemId) {
+        if (itemId == null) {
             return null;
         }
 
-        return SessionUtil.getNodeByIdentifier(nodeItemId.getWorkspace(), nodeItemId.getUuid());
+        return SessionUtil.getNodeByIdentifier(itemId.getWorkspace(), itemId.getUuid());
     }
 
     /**
@@ -717,11 +799,30 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         }
     }
 
-    /**
-     * For a node which is a bean, get all possible subnode names. Use the implementing class mapped
-     * to the type by ComponentProvider to deduce the subnode names.
-     */
     private Collection<String> getAllPossibleSubnodeNames(TypeDescriptor nodeTypeDescriptor) {
+        if (nodeTypeDescriptor == null) {
+            return null;
+        }
+
+        return getAllPossibleSubnodeAndSubpropertyNames(nodeTypeDescriptor, true);
+    }
+
+    private Collection<String> getAllPossibleSubpropertyNames(TypeDescriptor nodeTypeDescriptor) {
+        if (nodeTypeDescriptor == null) {
+            return null;
+        }
+
+        return getAllPossibleSubnodeAndSubpropertyNames(nodeTypeDescriptor, false);
+    }
+
+    /**
+     * For a node which is a bean, get all possible subnode or subproperty names. Use the implementing
+     * class mapped to the type by ComponentProvider to deduce the subnode or subproperty names. Take
+     * into consideration that "extends" and "class" are always possible property names. getSubnode is
+     * true to get subnode names, false to get property names. Return null if the type of the node is
+     * not a bean.
+     */
+    private Collection<String> getAllPossibleSubnodeAndSubpropertyNames(TypeDescriptor nodeTypeDescriptor, boolean getSubnode) {
         if (typeMapping == null) {
             log.warn("Could not get subnode names because TypeMapping does not exist.");
             return null;
@@ -743,61 +844,91 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         }
         // If the node is a bean
         else {
-            Map<String, PropertyTypeDescriptor> propertyTypeDescriptors = getAllPropertyTypeDescriptors(implementedNodeTypeDescriptor);
+            Map<String, PropertyTypeDescriptor> subnodeOrSubpropertyPropertyTypeDescriptors = getAllPropertyTypeDescriptors(implementedNodeTypeDescriptor);
 
-            if (propertyTypeDescriptors != null) {
-                Collection<String> possibleSubnodeNames = new HashSet<String>();
+            // If we can get the PropertyTypeDescriptors of subnodes and sub-properties
+            if (subnodeOrSubpropertyPropertyTypeDescriptors != null) {
+                Collection<String> possibleSubnodeOrSubpropertyNames = new HashSet<String>();
 
-                for (PropertyTypeDescriptor propertyTypeDescriptor : propertyTypeDescriptors.values()) {
-                    TypeDescriptor typeDescriptor = propertyTypeDescriptor.getType();
+                for (PropertyTypeDescriptor subnodeOrSubpropertyPropertyTypeDescriptor : subnodeOrSubpropertyPropertyTypeDescriptors.values()) {
+                    TypeDescriptor subnodeOrSubpropertyTypeDescriptor = subnodeOrSubpropertyPropertyTypeDescriptor.getType();
 
-                    if (typeDescriptor != null) {
+                    if (subnodeOrSubpropertyTypeDescriptor != null) {
+                        String propertyName = subnodeOrSubpropertyPropertyTypeDescriptor.getName();
 
-                        if (isTypeDescriptorForContentNode(typeDescriptor)) {
-                            String propertyName = propertyTypeDescriptor.getName();
+                        if (propertyName != null) {
 
-                            if (propertyName != null) {
-                                possibleSubnodeNames.add(propertyName);
+                            if ((getSubnode && isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))
+                                    || (!getSubnode && !isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))) {
+                                possibleSubnodeOrSubpropertyNames.add(propertyName);
                             }
                         }
                     }
                 }
 
-                return possibleSubnodeNames;
+                // "class" and "extends" are always possible property names
+                if (!getSubnode) {
+                    possibleSubnodeOrSubpropertyNames.add("class");
+                    possibleSubnodeOrSubpropertyNames.add("extends");
+                }
+
+                return possibleSubnodeOrSubpropertyNames;
             }
+            // If we cannot get the PropertyTypeDescriptors of subnodes and sub-properties
             else {
                 return null;
             }
         }
     }
 
-    /**
-     * Get all names from possibleSubnodeNames that are not already subnodes of parentNode.
-     * If one of the names matches the current node's name and the current node is a subnode
-     * of parentNode, include it also.
-     */
-    private Collection<String> getAllPossibleNewSubnodeNames(Node node, Node parentNode, Collection<String> possibleSubnodeNames) {
-        Collection<String> possibleNewSubnodeNames = new HashSet<String>();
-
-        if (node == null || parentNode == null || possibleSubnodeNames == null) {
+    private Collection<String> getAllPossibleNewSubnodeNames(String subnodeName, Node parentNode, Collection<String> possibleSubnodeNames) {
+        if (subnodeName == null || parentNode == null || possibleSubnodeNames == null) {
             return null;
         }
 
+        return getAllPossibleNewSubnodeOrSubpropertyNames(subnodeName, parentNode, possibleSubnodeNames, true);
+    }
+
+    private Collection<String> getAllPossibleNewSubpropertyNames(String subpropertyName, Node parentNode, Collection<String> possibleSubpropertyNames) {
+        if (subpropertyName == null || parentNode == null || possibleSubpropertyNames == null) {
+            return null;
+        }
+
+        return getAllPossibleNewSubnodeOrSubpropertyNames(subpropertyName, parentNode, possibleSubpropertyNames, false);
+    }
+
+    /**
+     * Get all names from possibleSubnodeNames that are not already subnodes of parentNode.
+     * If one of the names matches the current node's name and the current node is a subnode
+     * of parentNode, include it also. getSubnode is true to get node names, false to get
+     * property names.
+     */
+    private Collection<String> getAllPossibleNewSubnodeOrSubpropertyNames(String subnodeOrSubpropertyName, Node parentNode, Collection<String> possibleSubnodeOrSubpropertyNames, boolean getSubnode) {
+        if (subnodeOrSubpropertyName == null || parentNode == null || possibleSubnodeOrSubpropertyNames == null) {
+            return null;
+        }
+
+        Collection<String> possibleNewSubnodeOrSubpropertyNames = new HashSet<String>();
+
         try {
-            // Add all names in possibleSubnodeNames that are not already subnodes of parentNode
-            for (String possibleSubnodeName : possibleSubnodeNames) {
-                if (!parentNode.hasNode(possibleSubnodeName)) {
-                    possibleNewSubnodeNames.add(possibleSubnodeName);
+            // Add all names in possibleSubnodeOrSubpropertyNames that are not already subnodes or sub-properties of parentNode
+            for (String possibleSubnodeOrSubpropertyName : possibleSubnodeOrSubpropertyNames) {
+
+                if ((getSubnode && !parentNode.hasNode(possibleSubnodeOrSubpropertyName))
+                        || (!getSubnode && !parentNode.hasProperty(possibleSubnodeOrSubpropertyName))) {
+                    possibleNewSubnodeOrSubpropertyNames.add(possibleSubnodeOrSubpropertyName);
                 }
             }
 
-            // Add current node name as well if it is one of the possibleSubnodeNames and is a subnode of parentNode
-            String nodeName = node.getName();
-            if (nodeName != null && possibleSubnodeNames.contains(nodeName) && parentNode.hasNode(nodeName)) {
-                possibleNewSubnodeNames.add(nodeName);
+            // Add current node or property name as well if it is one of the possibleSubnodeOrSubpropertyNames and is a subnode or sub-property of parentNode
+            if (possibleSubnodeOrSubpropertyNames.contains(subnodeOrSubpropertyName)) {
+                if ((getSubnode && parentNode.hasNode(subnodeOrSubpropertyName))
+                        || (!getSubnode && parentNode.hasProperty(subnodeOrSubpropertyName))) {
+                    possibleNewSubnodeOrSubpropertyNames.add(subnodeOrSubpropertyName);
+                }
             }
 
-            return possibleNewSubnodeNames;
+            return possibleNewSubnodeOrSubpropertyNames;
         } catch (RepositoryException ex) {
             log.warn("Could not get nonexisting subnode names: " + ex);
             return null;
