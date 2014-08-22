@@ -355,9 +355,99 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         return noSuggestionsAvailable();
     }
 
+    /**
+     * Get suggestion for JCR type of a property based on the logic below.
+     * - If can get bean type of parent
+     * --| If can get type of property from type of parent
+     * --|-| If one of the Java types we know how to map to a JCR type
+     * --|-|-| Suggest based on following map from Java to JCR type {String, Char, Class, Enum = String; Byte, Short, Int, Long = Long; Float, Double = Double; Boolean = Boolean}
+     * --|-| Else if not one of the Java types we know how to map to a JCR type
+     * --|-|-- If "class" or "extends"
+     * --|-|---| Suggest String
+     * --|-|-- Else if not class or extends
+     * --|-|---- Suggest all JCR types
+     * --| Else if cannot get type of property from type of parent
+     * --|-- If "class" or "extends"
+     * --|---| Suggest String
+     * --|-- Else if not class or extends
+     * --|---- Suggest all JCR types
+     * - Else if cannot get bean type of parent
+     * --- If "class" or "extends"
+     * ----| Suggest String
+     * --- Else if not class or extends
+     * ----- Suggest all JCR types
+     */
     protected AutoSuggesterResult getSuggestionsForTypeOfProperty(String propertyName, Node parentNode) {
-        // TODO
-        return noSuggestionsAvailable();
+        if (propertyName == null || parentNode == null) {
+            return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+        }
+
+        TypeDescriptor parentTypeDescriptor = getNodeTypeDescriptor(parentNode);
+
+        // If we can get the type of the node containing the property
+        if (parentTypeDescriptor != null) {
+            PropertyTypeDescriptor valuePropertyTypeDescriptor = getPropertyTypeDescriptor(propertyName, parentTypeDescriptor);
+
+            // If we can get the type of the property from the type of the node containing the property
+            if (valuePropertyTypeDescriptor != null) {
+                TypeDescriptor valueTypeDescriptor = valuePropertyTypeDescriptor.getType();
+
+                if (valueTypeDescriptor != null) {
+                    Class<?> propertyClass = valueTypeDescriptor.getType();
+
+                    if (propertyClass != null) {
+
+                        // If Java class String, Character, Class, or Enum, map to JCR type String
+                        if (propertyClass.equals(String.class) || propertyClass.isEnum() || propertyClass.equals(Class.class) || ClassUtils.isAssignable(propertyClass, Character.class)) {
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, false);
+                        }
+                        // If Java class Boolean, map to JCR type Boolean
+                        else if (ClassUtils.isAssignable(propertyClass, Boolean.class)) {
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Boolean"), AutoSuggesterResult.STARTS_WITH, true, false);
+                        }
+                        // If Java class Long, Integer, or Byte, map to JCR type Long
+                        else if (ClassUtils.isAssignable(propertyClass, Long.class) || ClassUtils.isAssignable(propertyClass, Integer.class) || ClassUtils.isAssignable(propertyClass, Byte.class) || ClassUtils.isAssignable(propertyClass, Short.class)) {
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Long"), AutoSuggesterResult.STARTS_WITH, true, false);
+                        }
+                        // If Java class Double or Float, map to JCR type Double
+                        else if (ClassUtils.isAssignable(propertyClass, Double.class) || ClassUtils.isAssignable(propertyClass, Float.class)) {
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Double"), AutoSuggesterResult.STARTS_WITH, true, false);
+                        }
+                        // If Java type that does not map to a JCR type
+                        else {
+                            return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+                        }
+                    }
+                    else {
+                        return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+                    }
+                }
+                else {
+                    return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+                }
+            }
+            // If we cannot get the type of the property from the type of the node containing the property
+            else {
+                return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+            }
+        }
+        // If we cannot get the type of the node containing the property
+        else {
+            return getSuggestionsForTypeOfPropertyBasedOnJCROnly(propertyName);
+        }
+    }
+
+    protected AutoSuggesterResult getSuggestionsForTypeOfPropertyBasedOnJCROnly(String propertyName) {
+        if (propertyName == null) {
+            return noSuggestionsAvailable();
+        }
+
+        // If property name is "class" or "extends"
+        if ("class".equals(propertyName) || "extends".equals(propertyName)) {
+            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, false);
+        } else {
+            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String", "Boolean", "Long", "Double"), AutoSuggesterResult.STARTS_WITH, true, false);
+        }
     }
 
     // UTILITY METHODS
