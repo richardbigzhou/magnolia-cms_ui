@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.autosuggest;
 
-import info.magnolia.cms.beans.config.DefaultVirtualURIMapping;
+import info.magnolia.cms.beans.config.VirtualURIMapping;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.jcr.node2bean.PropertyTypeDescriptor;
 import info.magnolia.jcr.node2bean.TypeDescriptor;
@@ -44,23 +44,29 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.jcr.wrapper.DelegateNodeWrapper;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.rendering.renderer.AbstractRenderer;
+import info.magnolia.rendering.renderer.Renderer;
+import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
-import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -68,6 +74,9 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +89,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
     private TypeMapping typeMapping = null;
     private DialogDefinitionRegistry dialogDefinitionRegistry = null;
+    private Reflections reflections = null;
 
     public AutoSuggesterForConfigurationApp() {
         typeMapping = Components.getComponentProvider().getComponent(TypeMapping.class);
@@ -91,6 +101,9 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         if (dialogDefinitionRegistry == null) {
             log.warn("Could not get DialogDefinitionRegistry using component provider.");
         }
+
+        // QUESTION Can we efficiently search for subclasses in user packages to suggest the value of class properties?
+        reflections = new Reflections(ClasspathHelper.forPackage("info.magnolia"), new SubTypesScanner());
     }
 
     @Override
@@ -404,7 +417,73 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsDialogReference(propertyName, valueJCRType, parentClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for a class reference
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsClassReference(propertyName, parentNode, valueJCRType, parentClass, valuePropertyTypeDescriptor, valueClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for property value according to the logic below, if it is a reference to a class.
+     * - If parent has bean class
+     * --| If property named "class"
+     * --|-| If JCR String
+     * --|-|-| Suggest based on parentNodeType determined from grandparent if possible, otherwise parent
+     * --|-| Else if not JCR String
+     * --|-|-- No suggestions
+     * --| Else if property not named "class"
+     * --|-- If property has bean type Class
+     * --|---| If generic parameter gotten
+     * --|---|-| Suggest based on generic parameter
+     * --|---| Else if no generic parameter gotten
+     * --|---|-- No suggestions
+     * --|-- Else if property does not have bean type Class
+     * --|---- No suggestions
+     * - Else if parent does not have bean class
+     * --- No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsClassReference(String propertyName, Node parentNode, int valueJCRType, Class<?> parentClass, PropertyTypeDescriptor valuePropertyTypeDescriptor, Class<?> valueClass) {
+        if (parentClass != null) {
+
+            if ("class".equals(propertyName)) {
+                if (valueJCRType == PropertyType.STRING) {
+                    Class<?> mostGeneralNodeClass = null;
+                    if (parentNode != null) {
+                        mostGeneralNodeClass = getMostGeneralNodeClass(parentNode);
+                    }
+                    mostGeneralNodeClass = (mostGeneralNodeClass == null ? parentClass : mostGeneralNodeClass);
+
+                    Collection<String> suggestions = getSubclassNames(mostGeneralNodeClass);
+
+                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                if (valuePropertyTypeDescriptor != null && valueClass != null && ClassUtils.isAssignable(valueClass, Class.class)) {
+                    Class<?> genericTypeParameter = getGenericTypeParameterOfClassType(valuePropertyTypeDescriptor);
+
+                    if (genericTypeParameter != null) {
+                        Collection<String> suggestions = getSubclassNames(genericTypeParameter);
+
+                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    }
+                    else {
+                        return noSuggestionsAvailable();
+                    }
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+        }
         else {
             return noSuggestionsAvailable();
         }
@@ -681,7 +760,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                 if (parentNode != null) {
 
                     // Try to use path information to get the type of the node
-                    nodeAndEntryTypeDescriptor = getNodeAndEntryTypeDescriptorBasedOnParentFolder(extendedNode, parentNode);
+                    nodeAndEntryTypeDescriptor = getImplementingNodeAndEntryTypeDescriptorBasedOnParentFolder(extendedNode, parentNode);
 
                     // If we are able to use path information to get the type of the node
                     if (nodeAndEntryTypeDescriptor != null) {
@@ -726,7 +805,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                                             // If the type of the node is an array, collection, or map
                                             if (nodeTypeDescriptor.isArray() || nodeTypeDescriptor.isCollection() || nodeTypeDescriptor.isMap()) {
                                                 return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(nodeTypeDescriptor),
-                                                        getImplementingTypeDescriptor(nodePropertyTypeDescriptor.getCollectionEntryType()));
+                                                        nodePropertyTypeDescriptor.getCollectionEntryType());
                                             }
                                             // If the type of the node is not array, collection, or map
                                             else {
@@ -831,7 +910,39 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
      * Similarly for templates, dialogs, etc. Take implementations mapped by ComponentProvider into account.
      * Returns null if the type cannot be guessed based on folders.
      */
-    private NodeAndEntryTypeDescriptor getNodeAndEntryTypeDescriptorBasedOnParentFolder(Node node, Node parentNode) {
+    private NodeAndEntryTypeDescriptor getImplementingNodeAndEntryTypeDescriptorBasedOnParentFolder(Node node, Node parentNode) {
+        if (node == null || parentNode == null) {
+            return null;
+        }
+
+        NodeAndEntryTypeDescriptor nodeAndEntryTypeDescriptor = getUnimplementingNodeAndEntryTypeDescriptorBasedOnParentFolder(node, parentNode);
+
+        if (nodeAndEntryTypeDescriptor != null) {
+            TypeDescriptor nodeTypeDescriptor = nodeAndEntryTypeDescriptor.getTypeDescriptor();
+            TypeDescriptor entryTypeDescriptor = nodeAndEntryTypeDescriptor.getEntryTypeDescriptor();
+
+            TypeDescriptor implementingNodeTypeDescriptor = (nodeTypeDescriptor == null ? null : getImplementingTypeDescriptor(nodeTypeDescriptor));
+            TypeDescriptor implementingEntryTypeDescriptor = (entryTypeDescriptor == null ? null : getImplementingTypeDescriptor(entryTypeDescriptor));
+
+            if (implementingNodeTypeDescriptor != null) {
+                return new NodeAndEntryTypeDescriptor(implementingNodeTypeDescriptor, implementingEntryTypeDescriptor);
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Try to use path information to get the type of a node. For example, if all a node's ancestors are
+     * folders and node is in /modules/<moduleName>/apps/, then we can assume it is a ConfiguredAppDescriptor.
+     * Similarly for templates, dialogs, etc. Does not take implementations mapped by ComponentProvider into account.
+     * Returns null if the type cannot be guessed based on folders.
+     */
+    private NodeAndEntryTypeDescriptor getUnimplementingNodeAndEntryTypeDescriptorBasedOnParentFolder(Node node, Node parentNode) {
         if (typeMapping == null) {
             log.warn("Could not get type of node based on path because TypeMapping does not exist.");
             return null;
@@ -859,31 +970,31 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
                         // If node is in /modules/<moduleName>/apps/
                         if (nodePathStartingAfterSubfolderOfModule.startsWith("apps/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(ConfiguredAppDescriptor.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(AppDescriptor.class), null);
                         }
                         // If node is in /modules/<moduleName>/templates/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("templates/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(ConfiguredTemplateDefinition.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(TemplateDefinition.class), null);
                         }
                         // If node is in /modules/<moduleName>/dialogs/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("dialogs/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(ConfiguredFormDialogDefinition.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(FormDialogDefinition.class), null);
                         }
                         // If node is in /modules/<moduleName>/commands/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("commands/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(Command.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(Command.class), null);
                         }
                         // If node is in /modules/<moduleName>/fieldTypes/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("fieldTypes/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(ConfiguredFieldTypeDefinition.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(FieldTypeDefinition.class), null);
                         }
                         // If node is in /modules/<moduleName>/virtualURIMapping/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("virtualURIMapping/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(DefaultVirtualURIMapping.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(VirtualURIMapping.class), null);
                         }
                         // If node is in /modules/<moduleName>/renderers/
                         else if (nodePathStartingAfterSubfolderOfModule.startsWith("renderers/")) {
-                            return new NodeAndEntryTypeDescriptor(getImplementingTypeDescriptor(typeMapping.getTypeDescriptor(AbstractRenderer.class)), null);
+                            return new NodeAndEntryTypeDescriptor(typeMapping.getTypeDescriptor(Renderer.class), null);
                         }
                         // QUESTION Are there more cases when we can tell the type of a node based on its path?
                         // If node is not in a recognized subfolder of /modules/<moduleName>/
@@ -1246,6 +1357,226 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
             }
         }
         else {
+            return null;
+        }
+    }
+
+    /**
+     * For a property of type Class<T> where T is either a raw type, parameterized type or a wildcard
+     * type with one or more upper bounds, return either T if T is a raw or parameterized type or the
+     * first upper bound. If parameter does not fit above description, return null.
+     */
+    private Class<?> getGenericTypeParameterOfClassType(PropertyTypeDescriptor propertyTypeDescriptor) {
+        if (propertyTypeDescriptor == null) {
+            return null;
+        }
+
+        Method writeMethod = propertyTypeDescriptor.getWriteMethod();
+
+        // If we can get the write method for the property
+        if (writeMethod != null) {
+            Type[] parameterTypes = writeMethod.getGenericParameterTypes();
+
+            // If the write method has exactly one parameter
+            if (parameterTypes != null && parameterTypes.length == 1) {
+
+                // If the single parameter to write method is a parameterized type (like Class<? extend T>)
+                if (parameterTypes[0] instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) parameterTypes[0];
+                    Type parameterRawType = parameterizedType.getRawType();
+                    Type[] genericTypeParameters = parameterizedType.getActualTypeArguments();
+
+                    // If the single parameter is of type Class<T> where T can be raw or parameterized type or wildcard
+                    if (parameterRawType != null && parameterRawType instanceof Class && ClassUtils.isAssignable((Class<?>) parameterRawType, Class.class)
+                            && genericTypeParameters != null && genericTypeParameters.length == 1) {
+                        Type genericTypeParameter = genericTypeParameters[0];
+
+                        // T is a parameterized type like List<String>
+                        if (genericTypeParameter instanceof ParameterizedType) {
+                            Type genericTypeParameterRawType = ((ParameterizedType) genericTypeParameter).getRawType();
+
+                            if (genericTypeParameterRawType instanceof Class) {
+                                return (Class<?>) genericTypeParameterRawType;
+                            }
+                            else {
+                                return null;
+                            }
+                        }
+                        // T is a wildcard, with possible upper and lower bounds
+                        else if (genericTypeParameter instanceof WildcardType) {
+                            WildcardType wildcardType = (WildcardType) genericTypeParameter;
+
+                            // If one or more upper bounds
+                            if (wildcardType.getUpperBounds().length > 0) {
+                                // QUESTION Is there a better way to handle multiple upper bounds?
+                                Type firstUpperBound = wildcardType.getUpperBounds()[0];
+
+                                if (firstUpperBound instanceof Class) {
+                                    return (Class<?>) firstUpperBound;
+                                }
+                                else {
+                                    return null;
+                                }
+                            }
+                            // If no upper bounds
+                            else {
+                                return null;
+                            }
+                        }
+                        // T is a raw type
+                        else if (genericTypeParameter instanceof Class) {
+                            return (Class<?>) genericTypeParameter;
+                        }
+                        // T is neither a wildcard nor raw type nor a parameterized type
+                        else {
+                            return null;
+                        }
+                    }
+                    // If the single parameter is not of type Class<T> where T can be raw or parameterized type or wildcard
+                    else {
+                        return null;
+                    }
+                }
+                // If the single parameter to write method is not a parameterized type
+                else {
+                    return null;
+                }
+            }
+            // If the write method does not have exactly one parameter
+            else {
+                return null;
+            }
+        }
+        // We cannot get the write method
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the names of all subclasses of the class parameter from the package that the
+     * reflector is configured with. Includes the name of the class parameter itself.
+     * Excludes inner classes.
+     */
+    private Collection<String> getSubclassNames(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+
+        Set<?> subclasses = reflections.getSubTypesOf(clazz);
+
+        if (subclasses != null) {
+            Collection<String> subclassNames = new HashSet<String>();
+            subclassNames.add(clazz.getName());
+
+            for (Object subclassObj : subclasses) {
+                Class<?> subclass = (Class<?>) subclassObj;
+
+                if (!ClassUtils.isInnerClass(subclass)) {
+                    subclassNames.add(subclass.getName());
+                }
+
+            }
+
+            return subclassNames;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the bean class of the node based on its parent bean's property associated with it.
+     * Return null if can't get a bean class associated with node from parent.
+     */
+    private Class<?> getMostGeneralNodeClass(Node node) {
+        if (node == null) {
+            return null;
+        }
+
+        try {
+            Node parentNode = node.getParent();
+
+            // If can get parent
+            if (parentNode != null) {
+
+                NodeAndEntryTypeDescriptor nodeAndEntryTypeDescriptor = getUnimplementingNodeAndEntryTypeDescriptorBasedOnParentFolder(node, parentNode);
+
+                // If can get type based on parent folder
+                if (nodeAndEntryTypeDescriptor != null) {
+                    TypeDescriptor nodeTypeDescriptor = nodeAndEntryTypeDescriptor.getTypeDescriptor();
+
+                    if (nodeTypeDescriptor != null) {
+                        return nodeTypeDescriptor.getType();
+                    }
+                    else {
+                        return null;
+                    }
+                }
+                // If cannot get type based on parent folder
+                else {
+                    NodeAndEntryTypeDescriptor parentNodeAndEntryTypeDescriptor = getNodeAndEntryTypeDescriptor(parentNode);
+
+                    // If can get type of parent
+                    if (parentNodeAndEntryTypeDescriptor != null) {
+                        TypeDescriptor parentTypeDescriptor = parentNodeAndEntryTypeDescriptor.getTypeDescriptor();
+
+                        if (parentTypeDescriptor != null) {
+
+                            // If parent is array, collection, or map
+                            if (parentTypeDescriptor.isArray() || parentTypeDescriptor.isCollection() || parentTypeDescriptor.isMap()) {
+                                TypeDescriptor parentEntryTypeDescriptor = parentNodeAndEntryTypeDescriptor.getEntryTypeDescriptor();
+
+                                // If parent's entry type is known and is for a content node mapped to a bean
+                                if (parentEntryTypeDescriptor != null && isTypeDescriptorForContentNode(parentEntryTypeDescriptor)
+                                        && !parentEntryTypeDescriptor.isArray() && !parentEntryTypeDescriptor.isCollection() && !parentEntryTypeDescriptor.isMap()) {
+                                    return parentEntryTypeDescriptor.getType();
+                                }
+                                // If parent's entry type is either not known or is not for a content node mapped to a bean
+                                else {
+                                    return null;
+                                }
+                            }
+                            // If parent is not array, collection, or map, and thus assumed to be a bean
+                            else {
+                                PropertyTypeDescriptor nodePropertyTypeDescriptor = getPropertyTypeDescriptor(node.getName(), parentTypeDescriptor);
+
+                                // If can use the name of the node to get the type from the parent
+                                if (nodePropertyTypeDescriptor != null) {
+                                    TypeDescriptor nodeTypeDescriptor = nodePropertyTypeDescriptor.getType();
+
+                                    // If type gotten from the parent is for a content node mapped to a bean
+                                    if (nodeTypeDescriptor != null && isTypeDescriptorForContentNode(nodeTypeDescriptor)
+                                            && !nodeTypeDescriptor.isArray() && !nodeTypeDescriptor.isCollection() && !nodeTypeDescriptor.isMap()) {
+                                        return nodeTypeDescriptor.getType();
+                                    }
+                                    // If type gotten from the parent is not for a content node mapped to a bean
+                                    else {
+                                        return null;
+                                    }
+                                }
+                                // If cannot use the name of the node to get the type from the parent
+                                else {
+                                    return null;
+                                }
+                            }
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                    // If cannot get type of the parent
+                    else {
+                        return null;
+                    }
+                }
+            }
+            // If cannot get parent
+            else {
+                return null;
+            }
+        } catch (RepositoryException ex) {
+            log.warn("Could not get the property class of the node: " + ex);
             return null;
         }
     }
