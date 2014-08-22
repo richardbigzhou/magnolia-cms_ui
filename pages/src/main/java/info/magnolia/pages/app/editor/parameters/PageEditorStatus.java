@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor.pagebar;
+package info.magnolia.pages.app.editor.parameters;
 
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+
+import java.util.Locale;
 
 /**
- * Interface of the page bar view - a top-most component in the page editor that
- * contains the name of the current displayed page and the selectors of language/platform.
- *
- * @param <L> listener interface.
+ * Holds and updates the necessary status information used between server and client.
+ * Creates {@link PageEditorParameters} object.
  */
-public interface PageBarView<L extends PageBarView.Listener> extends View {
+public interface PageEditorStatus {
 
-    void setPageName(String pageTitle, String path);
+    public static final String VERSION_PARAMETER = "mgnlVersion";
+    public static final String PREVIEW_PARAMETER = "mgnlPreview";
+    public static final String CHANNEL_PARAMETER = "mgnlChannel";
 
-    void setListener(L listener);
+    void updateStatusFromLocation(DetailLocation location);
 
-    void togglePreviewMode(boolean isPreview);
+    boolean isLocationChanged(DetailLocation location);
 
-    void addPageBarComponent(View component);
+    String getNodePath();
 
-    /**
-     * Listener interface for {@link PageBarView}.
-     */
-    interface Listener {
-    }
+    PlatformType getPlatformType();
+
+    Locale getLocale();
+
+    String getVersion();
+
+    boolean isPreview();
+
+    void setPlatformType(PlatformType platform);
+
+    void setLocale(Locale locale);
+
+    PageEditorParameters getParameters();
+
+    void setNodePath(String nodePath);
 }

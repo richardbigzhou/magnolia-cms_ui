@@ -47,7 +47,7 @@ public interface PagesEditorSubAppView extends ContentSubAppView {
     /**
      * Listener.
      */
-    public interface Listener extends PageBarView.Listener {
+    public interface Listener {
 
         void onEscape();
     }

@@ -33,14 +33,8 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
+import info.magnolia.ui.api.view.View;
 
-import java.util.List;
-import java.util.Locale;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
@@ -48,17 +42,16 @@ import com.vaadin.ui.Label;
 
 /**
  * Implements {@link PageBarView}.
+ *
+ * @param <L> listener interface.
  */
-public class PageBarViewImpl extends CustomComponent implements PageBarView {
+public class PageBarViewImpl<L extends PageBarView.Listener> extends CustomComponent implements PageBarView<L> {
 
     private CssLayout layout = new CssLayout();
 
     private Label pageNameLabel = new Label();
 
-    private ComboBox languageSelector = new ComboBox();
-    private ComboBox platformSelector = new ComboBox();
-
-    private PageBarView.Listener listener;
+    protected L listener;
 
     public PageBarViewImpl() {
         super();
@@ -69,42 +62,10 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     private void construct() {
         layout.addStyleName("pagebar");
 
-        for (PlatformType type : PlatformType.values()) {
-            platformSelector.addItem(type);
-        }
-        platformSelector.setSizeUndefined();
-        platformSelector.setImmediate(true);
-        platformSelector.setNullSelectionAllowed(false);
-        platformSelector.setTextInputAllowed(false);
-        platformSelector.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (listener != null) {
-                    listener.platformSelected((PlatformType) event.getProperty().getValue());
-                }
-            }
-        });
-
-        languageSelector.setSizeUndefined();
-        languageSelector.setImmediate(true);
-        languageSelector.setNullSelectionAllowed(false);
-        languageSelector.setTextInputAllowed(false);
-        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (listener != null) {
-                    listener.languageSelected((Locale) event.getProperty().getValue());
-                }
-            }
-        });
-
-        this.platformSelector.setValue(PlatformType.DESKTOP);
         this.pageNameLabel.setSizeUndefined();
         this.pageNameLabel.addStyleName("title");
 
         layout.addComponent(pageNameLabel);
-        layout.addComponent(languageSelector);
-        layout.addComponent(platformSelector);
     }
 
     @Override
@@ -114,38 +75,12 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     }
 
     @Override
-    public void setListener(PageBarView.Listener listener) {
+    public void setListener(L listener) {
         this.listener = listener;
     }
 
     @Override
-    public void setCurrentLanguage(Locale locale) {
-        if (languageSelector != null) {
-            languageSelector.setValue(locale);
-        }
-    }
-
-    @Override
-    public void setAvailableLanguages(List<Locale> locales) {
-        if (locales != null && !locales.isEmpty()) {
-            languageSelector.removeAllItems();
-            for (Locale locale : locales) {
-                String label = locale.getDisplayLanguage(MgnlContext.getLocale());
-                if (!locale.getDisplayCountry(MgnlContext.getLocale()).isEmpty()) {
-                    label += " (" + locale.getDisplayCountry(MgnlContext.getLocale()) + ")";
-                }
-                languageSelector.addItem(locale);
-                languageSelector.setItemCaption(locale, label);
-            }
-            languageSelector.setVisible(true);
-        } else {
-            languageSelector.setVisible(false);
-        }
-    }
-
-    @Override
     public void togglePreviewMode(boolean isPreview) {
-        platformSelector.setVisible(isPreview);
         if (isPreview) {
             layout.addStyleName("preview");
         } else {
@@ -154,8 +89,8 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     }
 
     @Override
-    public void setPlatFormType(PlatformType targetPreviewPlatform) {
-        platformSelector.setValue(targetPreviewPlatform);
+    public void addPageBarComponent(View component) {
+        layout.addComponent(component.asVaadinComponent());
     }
 
     @Override

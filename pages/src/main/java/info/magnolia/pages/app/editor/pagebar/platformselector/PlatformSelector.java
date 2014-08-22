@@ -31,29 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.availability;
+package info.magnolia.pages.app.editor.pagebar.platformselector;
 
 import info.magnolia.pages.app.editor.PageEditorPresenter;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
 import javax.inject.Inject;
 
 /**
- * This rule returns true if the page editor is in preview mode.
+ * Selector for the {@link PlatformType}. Notifies the {@link PageEditorPresenter} about changes.
  */
-public class IsPreviewRule extends AbstractAvailabilityRule {
+public class PlatformSelector implements PlatformSelectorView.Listener {
 
-    private IsPreviewRuleDefinition definition;
+    private PlatformSelectorView view;
     private PageEditorPresenter pageEditorPresenter;
 
+
     @Inject
-    public IsPreviewRule(IsPreviewRuleDefinition definition, PageEditorPresenter pageEditorPresenter) {
-        this.definition = definition;
+    public PlatformSelector(PlatformSelectorView view, PageEditorPresenter pageEditorPresenter) {
+        this.view = view;
         this.pageEditorPresenter = pageEditorPresenter;
     }
 
+    public View start() {
+        view.setListener(this);
+        return view;
+    }
+
     @Override
-    protected boolean isAvailableForItem(Object itemId) {
-        return definition.isPreview() == pageEditorPresenter.getStatus().isPreview();
+    public void platformSelected(PlatformType platformType) {
+        PlatformType currentPlatFormType = pageEditorPresenter.getStatus().getPlatformType();
+        if (platformType != null && !platformType.equals(currentPlatFormType)) {
+            pageEditorPresenter.getStatus().setPlatformType(platformType);
+            pageEditorPresenter.loadPageEditor();
+        }
+    }
+
+    public void setVisible(boolean visible) {
+        view.setVisible(visible);
+    }
+
+    public void onLocationUpdate(DetailLocation location) {
+        boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
+
+        if (!isPreview) {
+            resetCurrentPlatform();
+        }
+
+        setVisible(isPreview);
+    }
+
+    private void resetCurrentPlatform() {
+        pageEditorPresenter.getStatus().setPlatformType(PlatformType.DESKTOP);
+        view.setPlatFormType(PlatformType.DESKTOP);
     }
 }
