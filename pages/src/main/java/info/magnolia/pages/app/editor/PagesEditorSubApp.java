@@ -56,9 +56,11 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -81,13 +83,16 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.workbench.StatusBarView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -129,6 +134,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
     private Locale currentLocale;
     private String caption;
+
+    private List<PageEditorExtension> extensions = new ArrayList<PageEditorExtension>();
 
     /**
      * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
@@ -196,6 +203,11 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         view.setPageEditorView(pageEditorPresenter.start());
         view.setStatusBarView(statusBarView);
 
+        loadExtensions(getSubAppContext().getSubAppDescriptor());
+
+        for (PageEditorExtension e : extensions) {
+            e.onStart(view, detailLocation.getNodePath(), (UiContext) this.appContext);
+        }
         goToLocation(detailLocation);
         return view;
     }
@@ -211,6 +223,31 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
         view.setStatusBarView(statusBarView); // update page status bar
         pageEditorPresenter.updateParameters(parameters);
+    }
+
+    /**
+     * Loads additional Vaadin extensions into the page editor. The order of loading is the same as declared at <code>/modules/pages/apps/pages/subApps/detail/extensions</code>.
+     */
+    protected void loadExtensions(final SubAppDescriptor subAppDescriptor) {
+        if (!(subAppDescriptor instanceof PageEditorSubAppDescriptor)) {
+            log.warn("Expected an instance of PageEditorSubAppDescriptor but got {}. No extensions will be loaded.", subAppDescriptor.getClass().getName());
+            return;
+        }
+
+        PageEditorSubAppDescriptor descriptor = (PageEditorSubAppDescriptor) subAppDescriptor;
+        for (Entry<String, PageEditorExtensionDescriptor> extension : descriptor.getExtensions().entrySet()) {
+
+            log.debug("Loading extension {}", extension.getKey());
+
+            Class<? extends PageEditorExtension> clazz = extension.getValue().getExtensionClass();
+            if (clazz == null) {
+                log.error("No class extension configured for {}. Please, check your configuration at /modules/pages/apps/pages/subApps/detail/extensions", extension.getKey());
+                continue;
+            }
+            // the extension has to take care of adding itself to the view in its onStart(..) method
+            PageEditorExtension e = Components.newInstance(clazz);
+            extensions.add(e);
+        }
     }
 
     @Override
@@ -342,7 +379,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId())) {
+                JcrItemId itemId = (JcrItemId) event.getItemId();
+                if (itemId.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
                     try {
                         String currentNodePath = getCurrentLocation().getNodePath();
@@ -408,6 +446,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         try {
             Object itemId = getItemId(selectedElement);
             actionExecutor.execute(actionName, contentConnector.getItem(itemId), selectedElement, pageEditorPresenter);
+
+            if (actionName.equals(PageEditorPresenter.ACTION_VIEW_PREVIEW)) {
+                for (PageEditorExtension e : extensions) {
+                    e.onPreview();
+                }
+            } else if (actionName.equals(PageEditorPresenter.ACTION_VIEW_EDIT)) {
+                for (PageEditorExtension e : extensions) {
+                    e.onEdit();
+                }
+            }
+
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
@@ -479,6 +528,10 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 }
             }
         }
+        // actions currently always disabled
+        actionbarPresenter.disable(PageEditorListener.ACTION_COPY_COMPONENT,
+                PageEditorListener.ACTION_PASTE_COMPONENT, PageEditorListener.ACTION_UNDO, PageEditorListener.ACTION_REDO);
+
     }
 
     private Object getItemId(AbstractElement element) {
@@ -540,5 +593,13 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Override
     public void onMove() {
         updateActionbar();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        for (PageEditorExtension e : extensions) {
+            e.onStop();
+        }
     }
 }

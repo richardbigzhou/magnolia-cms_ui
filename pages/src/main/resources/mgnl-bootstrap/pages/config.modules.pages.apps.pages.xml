@@ -3830,7 +3830,7 @@
         <sv:value>d5b84213-9925-46dc-9532-8787e791531c</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor</sv:value>
+        <sv:value>info.magnolia.pages.app.editor.PageEditorSubAppDescriptor</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -7501,6 +7501,29 @@
         </sv:property>
         <sv:property sv:name="workspace" sv:type="String">
           <sv:value>website</sv:value>
+        </sv:property>
+      </sv:node>
+      <sv:node sv:name="extensions">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:contentNode</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>1b3b48c3-97ec-4705-8034-d6fc16d3d36c</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2014-08-18T16:21:39.387+02:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2014-08-18T16:21:49.070+02:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

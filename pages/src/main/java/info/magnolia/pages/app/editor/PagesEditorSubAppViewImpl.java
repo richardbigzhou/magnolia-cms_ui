@@ -199,6 +199,11 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     }
 
+    @Override
+    public StatusBarView getStatusBarView() {
+        return statusBarView;
+    }
+
     private HorizontalLayout getActivationStatus(String nodePath) {
         Integer status;
         String icon = "activation-status ";
@@ -237,5 +242,6 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
         return layout;
     }
+
 
 }
