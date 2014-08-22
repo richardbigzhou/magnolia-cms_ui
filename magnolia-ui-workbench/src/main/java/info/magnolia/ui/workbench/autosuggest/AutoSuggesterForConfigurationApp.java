@@ -373,7 +373,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
     }
 
     protected AutoSuggesterResult getSuggestionsForValueOfProperty(String propertyName, Node parentNode) {
-        // TODO
+        // TODO More scenarios to suggest property values
         if (propertyName == null || parentNode == null) {
             return noSuggestionsAvailable();
         }
@@ -421,7 +421,42 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsClassReference(propertyName, parentNode, valueJCRType, parentClass, valuePropertyTypeDescriptor, valueClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for a enum
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsEnum(valueJCRType, valueClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsEnum(int valueJCRType, Class<?> valueClass) {
+        if (valueClass == null) {
+            return noSuggestionsAvailable();
+        }
+
+        if (valueJCRType == PropertyType.STRING) {
+
+            if (valueClass.isEnum()) {
+                Object[] enumConstants = valueClass.getEnumConstants();
+
+                if (enumConstants != null) {
+                    Collection<String> suggestions = new HashSet<String>();
+                    for (Object enumConstant : enumConstants) {
+                        suggestions.add(enumConstant.toString());
+                    }
+
+                    return new AutoSuggesterForConfigurationAppResult(suggestions.size() > 0, suggestions, AutoSuggesterResult.STARTS_WITH, true, false);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        }
         else {
             return noSuggestionsAvailable();
         }
