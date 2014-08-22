@@ -38,9 +38,11 @@ import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
-import javax.inject.Singleton;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Singleton;
 
 /**
  * Maintains a registry of dialog providers registered by id.
@@ -78,5 +80,9 @@ public class DialogDefinitionRegistry {
 
     public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
         return registry.removeAndPutAll(registeredIds, providers);
+    }
+
+    public Collection<String> getRegisteredDialogNames() {
+        return registry.keySet();
     }
 }

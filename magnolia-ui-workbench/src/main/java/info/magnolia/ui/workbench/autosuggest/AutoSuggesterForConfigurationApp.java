@@ -46,9 +46,11 @@ import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.renderer.AbstractRenderer;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
@@ -77,11 +79,17 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
     private static Logger log = LoggerFactory.getLogger(AutoSuggesterForConfigurationApp.class);
 
     private TypeMapping typeMapping = null;
+    private DialogDefinitionRegistry dialogDefinitionRegistry = null;
 
     public AutoSuggesterForConfigurationApp() {
         typeMapping = Components.getComponentProvider().getComponent(TypeMapping.class);
         if (typeMapping == null) {
             log.warn("Could not get TypeMapping using component provider.");
+        }
+
+        dialogDefinitionRegistry = Components.getComponentProvider().getComponent(DialogDefinitionRegistry.class);
+        if (dialogDefinitionRegistry == null) {
+            log.warn("Could not get DialogDefinitionRegistry using component provider.");
         }
     }
 
@@ -359,6 +367,10 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
         // Get all values that may be useful for subsequent method calls
         TypeDescriptor parentTypeDescriptor = getNodeTypeDescriptor(parentNode);
+        Class<?> parentClass = null;
+        if (parentTypeDescriptor != null) {
+            parentClass = parentTypeDescriptor.getType();
+        }
         Property valueProperty = null;
         int valueJCRType = -1;
         try {
@@ -388,6 +400,10 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsTypeBoolean(propertyName, parentNode, parentTypeDescriptor, valueProperty, valueJCRType, valuePropertyTypeDescriptor, valueClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for a dialog reference
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsDialogReference(propertyName, valueJCRType, parentClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
         else {
             return noSuggestionsAvailable();
@@ -395,7 +411,61 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
     }
 
     /**
-     * Get suggestion for property value if it is a boolean according to the logic below, otherwise return a suggestions unavailable.
+     * Get suggestions for property value according to the logic below, if it is a reference to a dialog.
+     * - If can get bean type of parent
+     * --| If parent bean type is subclass of ConfiguredTemplateDefinition
+     * --|-| If property is "dialog" and property JCR type is String
+     * --|-|-| Suggest dialogs
+     * --|-| Else if property is not "dialog" or property JCR type is not String
+     * --|-|-- Suggest dialogs
+     * --| Else if parent bean type is subclass of ConfiguredActionDefinition
+     * --|-| If property is "dialogName" and property JCR type is String
+     * --|-|-| Suggest dialogs
+     * --|-| Else if property is not "dialogName" or property JCR type is not String
+     * --|-|-- No suggestions
+     * --| Else if parent bean type is not any of the above types
+     * --|-- No suggestions
+     * - Else cannot get bean type of parent
+     * --- No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsDialogReference(String propertyName, int valueJCRType, Class<?> parentClass) {
+        if (dialogDefinitionRegistry == null) {
+            log.warn("Could not get suggestions for dialog reference because dialogDefinitionRegistry does not exist.");
+            return noSuggestionsAvailable();
+        }
+
+        if (parentClass != null) {
+            if (ClassUtils.isAssignable(parentClass, ConfiguredTemplateDefinition.class)) {
+                if ("dialog".equals(propertyName) && valueJCRType == PropertyType.STRING) {
+                    Collection<String> suggestions = dialogDefinitionRegistry.getRegisteredDialogNames();
+
+                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else if (ClassUtils.isAssignable(parentClass, ConfiguredActionDefinition.class)) {
+                if ("dialogName".equals(propertyName) && valueJCRType == PropertyType.STRING) {
+                    Collection<String> suggestions = dialogDefinitionRegistry.getRegisteredDialogNames();
+
+                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        }
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for property value if it is a boolean according to the logic below, otherwise return a suggestions unavailable.
      * - If can get bean type of parent
      * --| If can get type of property from type of parent
      * --|-| If type of property from type of parent is Boolean and JCR type is Boolean or String
