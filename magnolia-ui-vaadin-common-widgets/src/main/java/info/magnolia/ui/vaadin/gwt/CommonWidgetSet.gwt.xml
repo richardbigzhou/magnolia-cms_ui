@@ -15,6 +15,8 @@
 
   <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 
+  <inherits name="com.github.wolfie.refresher.RefresherWidgetset" />
+
   <stylesheet src="jcrop/jquery.Jcrop.css" />
 
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
