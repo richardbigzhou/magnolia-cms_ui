@@ -43,6 +43,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
+import info.magnolia.pages.app.editor.pagebar.PageBarPresenter;
 import info.magnolia.pages.app.editor.statusbar.StatusBarPresenter;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -70,21 +71,18 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
-import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -98,9 +96,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * PagesEditorSubApp.
+ * SubApp putting together:
+ * <ul>
+ *   <li>{@link PageEditorPresenter}</li>
+ *   <li>{@link ActionbarPresenter}</li>
+ *   <li>{@link StatusBarPresenter}</li>
+ *   <li>{@link PageBarPresenter}</li>
+ * </ul>
+ * Keeps track on changes coming from the client side of the {@link PageEditorPresenter} by registering a {@link NodeSelectedEvent.Handler}
+ * to the subApp eventbus. This is triggered every time the {@link PageElement}, {@link AreaElement} or {@link info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement}
+ * is selected inside the iFrame. This will result in updating the {@link ActionbarPresenter} accordingly using action
+ * availability. <br />
+ *
+ * When a page change happens, e.g. the user browses inside the iFrame, this will also be detected and trigger a chain
+ * of actions taking care of updating all necessary parts of the UI as well as the underlying framework.
+ *
  */
-public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener, PageEditorPresenter.Listener {
+public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageEditorPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -112,19 +124,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private final EventBus admincentralEventBus;
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
-    private final PageBarView pageBarView;
-    private final I18NAuthoringSupport i18NAuthoringSupport;
-    private final I18nContentSupport i18nContentSupport;
     private final JcrContentConnector contentConnector;
     private final AvailabilityChecker availabilityChecker;
     private final StatusBarPresenter statusBar;
+    private final PageBarPresenter pageBar;
     private final String workspace;
     private final AppContext appContext;
     private final VersionManager versionManager;
     private final SimpleTranslator i18n;
 
-
-    private Locale currentLocale;
     private String caption;
 
     /**
@@ -135,14 +143,13 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                              final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
                              I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
                              ContentConnector contentConnector) {
-        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarPresenter.class));
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarPresenter.class), Components.getComponent(PageBarPresenter.class));
     }
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
-                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
-                             ContentConnector contentConnector, StatusBarPresenter statusBar) {
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector, StatusBarPresenter statusBar, PageBarPresenter pageBar) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -150,11 +157,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.admincentralEventBus = admincentralEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.pageBarView = pageBarView;
-        this.i18NAuthoringSupport = i18NAuthoringSupport;
-        this.i18nContentSupport = i18nContentSupport;
         this.availabilityChecker = availabilityChecker;
         this.statusBar = statusBar;
+        this.pageBar = pageBar;
         this.contentConnector = (JcrContentConnector) contentConnector;
         this.workspace = this.contentConnector.getContentConnectorDefinition().getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -170,7 +175,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     public void updateCaption(DetailLocation location) {
         this.caption = getPageTitle(location);
-        pageBarView.setPageName(caption, location.getNodePath());
+        pageBar.setPageName(caption, location.getNodePath());
     }
 
     @Override
@@ -184,16 +189,18 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         Map<String, ActionDefinition> actionDefinitions = getSubAppContext().getSubAppDescriptor().getActions();
         actionbarPresenter.setListener(this);
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
+        hideActionbarSections();
 
-        pageBarView.setListener(this);
+        pageBar.setListener(this);
         pageEditorPresenter.setListener(this);
         statusBar.setListener(this);
         view.setActionbarView(actionbar);
-        view.setPageBarView(pageBarView);
-        view.setPageEditorView(pageEditorPresenter.start());
+        view.setPageBarView(pageBar.start());
+        view.setPageEditorView(pageEditorPresenter.start(detailLocation));
         view.setStatusBarView(statusBar.start(detailLocation));
 
-        goToLocation(detailLocation);
+        updateLocationDependentComponents(detailLocation);
+
         return view;
     }
 
@@ -206,6 +213,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         detailLocation.updateNodePath(path);
         updateLocationDependentComponents(detailLocation);
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
+        pageEditorPresenter.getStatus().setNodePath(path);
         pageEditorPresenter.updateParameters();
     }
 
@@ -226,55 +234,16 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     public void locationChanged(Location location) {
         DetailLocation itemLocation = DetailLocation.wrap(location);
         super.locationChanged(itemLocation);
-        goToLocation(itemLocation);
-    }
 
-    private void goToLocation(DetailLocation location) {
-        if (pageEditorPresenter.isLocationChanged(location)) {
-            doGoToLocation(location);
+        if (pageEditorPresenter.getStatus().isLocationChanged(itemLocation)) {
+            pageEditorPresenter.reload(itemLocation);
+            updateLocationDependentComponents(itemLocation);
         }
-    }
-
-    protected void doGoToLocation(DetailLocation location) {
-        updateLocationDependentComponents(location);
-        updateActionbar();
-        pageEditorPresenter.loadPageEditor();
-        updatePageBarAvailableLanguages(location);
-    }
-
-    private void updatePageBarAvailableLanguages(DetailLocation location) {
-        try {
-            Node node = MgnlContext.getJCRSession(workspace).getNode(location.getNodePath());
-            List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
-            pageBarView.setAvailableLanguages(locales);
-            Locale locale = currentLocale != null && locales.contains(currentLocale) ? currentLocale : getDefaultLocale(node);
-            pageBarView.setCurrentLanguage(locale);
-        } catch (RepositoryException e) {
-            log.error("Unable to get node [{}] from workspace [{}]", location.getNodePath(), workspace, e);
-        }
-    }
-
-    /**
-     * Returns the default locale for the given page.
-     *
-     * TODO: Once {@link DefaultI18NAuthoringSupport#getDefaultLocale(javax.jcr.Node)} is added to {@link I18NAuthoringSupport} this method should go.
-     */
-    private Locale getDefaultLocale(Node node) {
-        Locale locale;
-        if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
-            locale = ((DefaultI18NAuthoringSupport)i18NAuthoringSupport).getDefaultLocale(node);
-        } else {
-            locale = i18nContentSupport.getDefaultLocale();
-        }
-        return locale;
     }
 
     private void updateLocationDependentComponents(DetailLocation location) {
-
-        pageEditorPresenter.updateParameters(location);
+        pageBar.onLocationUpdate(location);
         updateCaption(location);
-        boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
-        pageBarView.togglePreviewMode(isPreview);
     }
 
     private String getPageTitle(DetailLocation location) {
@@ -325,7 +294,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                     if (StringUtils.isEmpty(path)) {
                         path = "/";
                     }
-                    if (!path.equals(getParameters().getNodePath())) {
+                    if (!path.equals(pageEditorPresenter.getStatus().getNodePath())) {
                         updateNodePath(path);
                     }
                 }
@@ -356,42 +325,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         }
     }
 
-    @Override
-    public void languageSelected(Locale locale) {
-        if (locale != null && !locale.equals(currentLocale)) {
-            this.currentLocale = locale;
-            if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
-                ((DefaultI18NAuthoringSupport) i18NAuthoringSupport).setAuthorLocale(locale);
-            }
-            doGoToLocation(getCurrentLocation());
-        }
-    }
-
-    @Override
-    public void platformSelected(PlatformType platformType) {
-        if (platformType != null && !platformType.equals(pageEditorPresenter.getPlatformType())) {
-            pageEditorPresenter.setPlatformType(platformType);
-            doGoToLocation(getCurrentLocation());
-        }
-    }
-
-    /**
-     * This method has package visibility for testing purposes only.
-     */
-    public PageEditorParameters getParameters() {
-        return pageEditorPresenter.getParameters();
-    }
-
     public void updateActionbar() {
         Object itemId = getItemId(pageEditorPresenter.getSelectedElement());
 
-        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
-        if (actionbarDefinition == null) {
-            return;
-        }
-        List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
+
         // Figure out which section to show, only one
+        List<ActionbarSectionDefinition> sections = getSections();
         ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, itemId);
 
         // Hide all other sections
@@ -448,6 +387,21 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         }
     }
 
+    private List<ActionbarSectionDefinition> getSections() {
+        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return actionbarDefinition.getSections();
+    }
+
+    private void hideActionbarSections() {
+        for (ActionbarSectionDefinition sectionDefinition : getSections()) {
+            actionbarPresenter.hideSection(sectionDefinition.getName());
+        }
+    }
+
     private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Object itemId) {
         for (ActionbarSectionDefinition section : sections) {
             if (availabilityChecker.isAvailable(section.getAvailability(), Arrays.asList(itemId)))
@@ -474,22 +428,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         return workspace;
     }
 
-    public PageEditorPresenter getPageEditorPresenter() {
-        return pageEditorPresenter;
-    }
-
     @Override
     public void onMove() {
         updateActionbar();
     }
 
-    @Override
-    public void setPlatFormType(PlatformType platFormType) {
-        pageBarView.setPlatFormType(platFormType);
-    }
-
-    @Override
-    public Locale getCurrentLocale() {
-        return currentLocale;
-    }
 }

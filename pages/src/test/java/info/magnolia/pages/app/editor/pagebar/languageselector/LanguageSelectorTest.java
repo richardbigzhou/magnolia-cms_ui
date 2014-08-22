@@ -31,10 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.availability;
+package info.magnolia.pages.app.editor.pagebar.languageselector;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
@@ -47,77 +45,86 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockRepositoryAcquiringStrategy;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for {@link IsPreviewRule}.
+ * Tests for {@link LanguageSelector}.
  */
-public class IsPreviewRuleTest {
+public class LanguageSelectorTest {
 
-    private IsPreviewRuleDefinition definition;
-    private IsPreviewRule rule;
-    private PageEditorStatus pageEditorStatus;
+    private LanguageSelector selector;
+    private DefaultI18NAuthoringSupport i18NAuthoringSupport;
+    private I18nContentSupport i18nContentSupport;
+    private MockSession session;
+    private LanguageSelectorView view;
 
     @Before
     public void setUp() throws Exception {
+
         MockWebContext ctx = new MockWebContext();
-        MockSession session =  new MockSession(RepositoryConstants.WEBSITE);
+        this.session = new MockSession(RepositoryConstants.WEBSITE);
+
         ctx.addSession(null, session);
         MockRepositoryAcquiringStrategy strategy = new MockRepositoryAcquiringStrategy();
         strategy.addSession(RepositoryConstants.WEBSITE, session);
         ctx.setRepositoryStrategy(strategy);
         MgnlContext.setInstance(ctx);
 
-        I18nContentSupport i18nContentSupport = mock(I18nContentSupport.class);
+        this.i18NAuthoringSupport = mock(DefaultI18NAuthoringSupport.class);
+        this.i18nContentSupport = mock(I18nContentSupport.class);
+
+        when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
+
+        view = mock(LanguageSelectorView.class);
+        PageEditorPresenter pageEditorPresenter = mock(PageEditorPresenter.class);
+        PageEditorStatus pageEditorStatus = new DefaultPageEditorStatus(mock(DefaultI18NAuthoringSupport.class));
+        when(pageEditorPresenter.getStatus()).thenReturn(pageEditorStatus);
+        this.selector = new LanguageSelector(view, i18NAuthoringSupport, i18nContentSupport, pageEditorPresenter);
+
+    }
+
+    @Test
+    public void testDifferentI18NContentSupportSettingsForDifferentPages() throws RepositoryException {
+        // GIVEN
+        List<Locale> locales1 = Arrays.asList(new Locale[]{Locale.GERMAN, Locale.FRENCH});
+        List<Locale> locales2 = Arrays.asList(new Locale[] {Locale.ENGLISH, Locale.JAPAN});
+        Node node1 = session.getRootNode().addNode("test1");
+        Node node2 = session.getRootNode().addNode("test2");
+
         when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
         ComponentsTestUtil.setInstance(I18nContentSupport.class, i18nContentSupport);
 
-        I18NAuthoringSupport i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
-        when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
-
-        this.definition = mock(IsPreviewRuleDefinition.class);
-
-        pageEditorStatus = new DefaultPageEditorStatus(i18NAuthoringSupport);
-        PageEditorPresenter pageEditorPresenter = mock(PageEditorPresenter.class);
-
-        when(pageEditorPresenter.getStatus()).thenReturn(pageEditorStatus);
-        this.rule = new IsPreviewRule(definition, pageEditorPresenter);
-
-    }
-
-    @Test
-    public void testExpectingToBeInPreviewAndIsPreview() throws Exception {
-        // GIVEN
-        when(definition.isPreview()).thenReturn(true);
-        pageEditorStatus.updateStatusFromLocation(new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, "/", null));
+        when(i18NAuthoringSupport.createI18NURI(eq(node1), any(Locale.class))).thenReturn("/test1");
+        when(i18NAuthoringSupport.createI18NURI(eq(node2), any(Locale.class))).thenReturn("/test2");
+        when(i18NAuthoringSupport.getAvailableLocales(node1)).thenReturn(locales1);
+        when(i18NAuthoringSupport.getAvailableLocales(node2)).thenReturn(locales2);
+        when(i18NAuthoringSupport.getDefaultLocale(node1)).thenReturn(Locale.GERMAN);
+        when(i18NAuthoringSupport.getDefaultLocale(node2)).thenReturn(Locale.ENGLISH);
 
         // WHEN
-        boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
+        selector.onLocationUpdate(new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/test1", null));
 
-        assertTrue(result);
-
-    }
-
-    @Test
-    public void testExpectingToBeInPreviewAndIsNotPreview() throws Exception {
-        // GIVEN
-        when(definition.isPreview()).thenReturn(true);
-        pageEditorStatus.updateStatusFromLocation(new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/", null));
+        // THEN
+        verify(view).setAvailableLanguages(locales1);
+        verify(view).setCurrentLanguage(Locale.GERMAN);
 
         // WHEN
-        boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
+        selector.onLocationUpdate(new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, "/test2", null));
 
-        assertFalse(result);
-
+        // THEN
+        verify(view).setAvailableLanguages(locales2);
+        verify(view).setCurrentLanguage(Locale.ENGLISH);
     }
 }

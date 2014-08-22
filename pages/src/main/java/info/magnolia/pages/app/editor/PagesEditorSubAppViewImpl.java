@@ -68,12 +68,8 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private final CssLayout actionBarWrapper = new CssLayout();
 
-    private PageBarView pageBarView;
-
-
     @Inject
-    public PagesEditorSubAppViewImpl(PageBarView pageBarView) {
-        this.pageBarView = pageBarView;
+    public PagesEditorSubAppViewImpl() {
 
         root.setSizeFull();
         root.setStyleName("pageeditor");
@@ -105,12 +101,10 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
-        this.pageBarView.setListener(listener);
     }
 
     @Override
     public void setPageBarView(PageBarView pageBarView) {
-        this.pageBarView = pageBarView;
         container.addComponentAsFirst(pageBarView.asVaadinComponent());
     }
 

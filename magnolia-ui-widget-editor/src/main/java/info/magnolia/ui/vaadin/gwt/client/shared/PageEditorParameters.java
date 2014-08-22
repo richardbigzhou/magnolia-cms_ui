@@ -42,7 +42,7 @@ import java.io.Serializable;
  */
 public class PageEditorParameters implements Serializable {
 
-    private PlatformType platformType = PlatformType.DESKTOP;
+    private PlatformType platformType;
 
     private String contextPath;
 

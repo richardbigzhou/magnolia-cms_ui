@@ -31,17 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.availability;
+package info.magnolia.pages.app.editor.parameters;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.pages.app.editor.PageEditorPresenter;
-import info.magnolia.pages.app.editor.parameters.DefaultPageEditorStatus;
-import info.magnolia.pages.app.editor.parameters.PageEditorStatus;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockRepositoryAcquiringStrategy;
@@ -50,7 +49,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
 import java.util.Locale;
 
@@ -60,18 +59,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for {@link IsPreviewRule}.
+ * Tests for {@link DefaultPageEditorStatus}.
  */
-public class IsPreviewRuleTest {
+public class DefaultPageEditorStatusTest {
 
-    private IsPreviewRuleDefinition definition;
-    private IsPreviewRule rule;
-    private PageEditorStatus pageEditorStatus;
+    private PageEditorStatus status;
+    private MockSession session;
 
     @Before
     public void setUp() throws Exception {
         MockWebContext ctx = new MockWebContext();
-        MockSession session =  new MockSession(RepositoryConstants.WEBSITE);
+        this.session = new MockSession(RepositoryConstants.WEBSITE);
         ctx.addSession(null, session);
         MockRepositoryAcquiringStrategy strategy = new MockRepositoryAcquiringStrategy();
         strategy.addSession(RepositoryConstants.WEBSITE, session);
@@ -84,40 +82,56 @@ public class IsPreviewRuleTest {
 
         I18NAuthoringSupport i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
         when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
-
-        this.definition = mock(IsPreviewRuleDefinition.class);
-
-        pageEditorStatus = new DefaultPageEditorStatus(i18NAuthoringSupport);
-        PageEditorPresenter pageEditorPresenter = mock(PageEditorPresenter.class);
-
-        when(pageEditorPresenter.getStatus()).thenReturn(pageEditorStatus);
-        this.rule = new IsPreviewRule(definition, pageEditorPresenter);
-
+        this.status = new DefaultPageEditorStatus(i18NAuthoringSupport);
     }
 
     @Test
-    public void testExpectingToBeInPreviewAndIsPreview() throws Exception {
-        // GIVEN
-        when(definition.isPreview()).thenReturn(true);
-        pageEditorStatus.updateStatusFromLocation(new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, "/", null));
+    public void testUpdateStatusFromLocation() throws Exception {
+        session.getRootNode().addNode("test");
+        DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/test", "1.2");
+        status.updateStatusFromLocation(location);
+
 
         // WHEN
-        boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
+        String url = status.getParameters().getUrl();
 
-        assertTrue(result);
-
+        assertThat(url, containsString(DefaultPageEditorStatus.PREVIEW_PARAMETER + "=false"));
+        assertThat(url, containsString(DefaultPageEditorStatus.CHANNEL_PARAMETER + "=" + PlatformType.DESKTOP.getId()));
+        assertThat(url, containsString(DefaultPageEditorStatus.VERSION_PARAMETER + "=1.2"));
     }
 
     @Test
-    public void testExpectingToBeInPreviewAndIsNotPreview() throws Exception {
-        // GIVEN
-        when(definition.isPreview()).thenReturn(true);
-        pageEditorStatus.updateStatusFromLocation(new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/", null));
+    public void testUpdateStatusFromLocationWithPlatform() throws Exception {
+        session.getRootNode().addNode("test");
+        DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, "/test", null);
+        status.updateStatusFromLocation(location);
+        status.setPlatformType(PlatformType.MOBILE);
+
 
         // WHEN
-        boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
+        String url = status.getParameters().getUrl();
 
-        assertFalse(result);
-
+        assertThat(url, containsString(DefaultPageEditorStatus.PREVIEW_PARAMETER + "=true"));
+        assertThat(url, containsString(DefaultPageEditorStatus.CHANNEL_PARAMETER + "=" + PlatformType.MOBILE.getId()));
+        assertThat(url, not(containsString(DefaultPageEditorStatus.VERSION_PARAMETER)));
     }
+
+    @Test
+    public void testHasLocationChanged() throws Exception {
+        session.getRootNode().addNode("test");
+        DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/test", "1.2");
+        status.updateStatusFromLocation(location);
+
+
+        // WHEN
+        boolean notChanged = status.isLocationChanged(new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/test", "1.2"));
+        boolean versionChanged = status.isLocationChanged(new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, "/test", null));
+        boolean viewTypeChanged = status.isLocationChanged(new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, "/test", "1.2"));
+
+        assertFalse(notChanged);
+        assertTrue(versionChanged);
+        assertTrue(viewTypeChanged);
+    }
+
+
 }
