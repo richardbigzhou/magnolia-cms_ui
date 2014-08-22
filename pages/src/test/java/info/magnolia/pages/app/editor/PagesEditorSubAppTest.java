@@ -33,7 +33,7 @@
  */
 package info.magnolia.pages.app.editor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
@@ -48,7 +48,8 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
-import info.magnolia.pages.app.editor.location.PagesLocation;
+import info.magnolia.pages.app.editor.pagebar.PageBarPresenter;
+import info.magnolia.pages.app.editor.parameters.PageEditorStatus;
 import info.magnolia.pages.app.editor.statusbar.StatusBarPresenter;
 import info.magnolia.rendering.template.TemplateAvailability;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateAvailability;
@@ -77,9 +78,7 @@ import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
-import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
@@ -87,14 +86,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -112,7 +108,6 @@ public class PagesEditorSubAppTest {
     private EventBus eventBus;
     private EventBus adminCentralEventBus;
     private ActionbarPresenter actionbarPresenter;
-    private PageBarView pageBarView;
     private I18NAuthoringSupport i18NAuthoringSupport;
     private I18nContentSupport i18nContentSupport;
     private ConfiguredTemplateDefinition definition;
@@ -128,6 +123,7 @@ public class PagesEditorSubAppTest {
     private PagesEditorSubApp editor;
     private MockSession session;
     private MockNode root;
+    private PageEditorStatus pageEditorStatus;
 
     @Before
     public void setUp() throws Exception {
@@ -176,7 +172,6 @@ public class PagesEditorSubAppTest {
         i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
         when(i18NAuthoringSupport.createI18NURI(any(Node.class), any(Locale.class))).thenReturn("/");
 
-        pageBarView = mock(PageBarView.class);
         statusBar = mock(StatusBarPresenter.class);
 
         ComponentsTestUtil.setImplementation(TemplateAvailability.class, ConfiguredTemplateAvailability.class);
@@ -184,9 +179,10 @@ public class PagesEditorSubAppTest {
 
         i18n = mock(SimpleTranslator.class);
 
-        this.pageEditorPresenter = new PageEditorPresenter(actionExecutor, mock(PageEditorView.class), eventBus, subAppContext, i18n, i18NAuthoringSupport);
-        this.editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
-                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBar);
+        pageEditorStatus = mock(PageEditorStatus.class);
+        this.pageEditorPresenter = new PageEditorPresenter(actionExecutor, mock(PageEditorView.class), eventBus, subAppContext, i18n, pageEditorStatus);
+        this.editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter,
+                versionManager, i18n, availabilityChecker, contentConnector, statusBar, mock(PageBarPresenter.class));
     }
 
     @After
@@ -196,80 +192,30 @@ public class PagesEditorSubAppTest {
     }
 
     @Test
-    public void testPagePreviewSetMgnlPreviewRequestParameter() {
-        // GIVEN
-
-        // WHEN
-        // param 'view' means preview
-        editor.start(new PagesLocation("/:view"));
-
-        // THEN
-        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
-    }
-
-    @Test
     public void testPageEditSetsMgnlPreviewToFalse() {
         // GIVEN
-        editor.start(new PagesLocation("/:view"));
-        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
+        editor.start(new DetailLocation("pages", "detail", "/:view"));
+        DetailLocation newLocation = new DetailLocation("pages", "detail", "/:edit");
+        when(pageEditorStatus.isLocationChanged(newLocation)).thenReturn(true);
 
         // WHEN
-        editor.locationChanged(new PagesLocation("/:edit"));
+        editor.locationChanged(newLocation);
 
         // THEN
-        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
+        verify(pageEditorStatus, times(1)).isLocationChanged(newLocation);
+        verify(pageEditorStatus, times(1)).updateStatusFromLocation(newLocation);
     }
 
     @Test
-    public void testPagePreviewSetsMgnlPreviewToTrue() {
+    public void testStatusUpdatedWhenSubAppStarts() {
         // GIVEN
         DetailLocation location = new DetailLocation("pages", "detail", "/:edit");
+
+        // WHEN
         editor.start(location);
-        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
-
-        // WHEN
-        editor.locationChanged(new PagesLocation("/:view"));
 
         // THEN
-        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
-    }
-
-    @Test
-    public void testDifferentI18NContentSupportSettingsForDifferentPages() throws RepositoryException {
-        // GIVEN
-        List<Locale> locales1 = Arrays.asList(new Locale[] {Locale.GERMAN, Locale.FRENCH});
-        List<Locale> locales2 = Arrays.asList(new Locale[] {Locale.ENGLISH, Locale.JAPAN});
-        Node node1 = root.addNode("test1");
-        Node node2 = root.addNode("test2");
-
-        i18nContentSupport = mock(I18nContentSupport.class);
-        when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
-        ComponentsTestUtil.setInstance(I18nContentSupport.class, i18nContentSupport);
-
-        DefaultI18NAuthoringSupport i18NAuthoringSupport = mock(DefaultI18NAuthoringSupport.class);
-        when(i18NAuthoringSupport.createI18NURI(eq(node1), any(Locale.class))).thenReturn("/test1");
-        when(i18NAuthoringSupport.createI18NURI(eq(node2), any(Locale.class))).thenReturn("/test2");
-        when(i18NAuthoringSupport.getAvailableLocales(node1)).thenReturn(locales1);
-        when(i18NAuthoringSupport.getAvailableLocales(node2)).thenReturn(locales2);
-        when(i18NAuthoringSupport.getDefaultLocale(node1)).thenReturn(Locale.GERMAN);
-        when(i18NAuthoringSupport.getDefaultLocale(node2)).thenReturn(Locale.ENGLISH);
-
-        editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView,
-                i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, statusBar);
-
-        // WHEN
-        editor.start(new PagesLocation("/test1:edit"));
-
-        // THEN
-        verify(pageBarView).setAvailableLanguages(locales1);
-        verify(pageBarView).setCurrentLanguage(Locale.GERMAN);
-
-        // WHEN
-        editor.locationChanged(new PagesLocation("/test2:view"));
-
-        // THEN
-        verify(pageBarView).setAvailableLanguages(locales2);
-        verify(pageBarView).setCurrentLanguage(Locale.ENGLISH);
+        verify(pageEditorStatus, times(1)).updateStatusFromLocation(location);
     }
 
     @Test

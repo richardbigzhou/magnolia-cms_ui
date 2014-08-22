@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor.pagebar;
+package info.magnolia.pages.app.editor.pagebar.languageselector;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.LocaleProvider;
@@ -48,14 +49,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
 
 /**
- * Tests for {@link PageBarViewImpl}.
+ * Tests for {@link LanguageSelectorView}.
  */
-public class PageBarViewImplTest {
+public class LanguageSelectorViewTest {
 
-    private PageBarViewImpl pagebarviewer;
+    private LanguageSelectorView view;
 
     final LocaleProvider localeProvider = new LocaleProvider() {
         @Override
@@ -66,7 +66,7 @@ public class PageBarViewImplTest {
 
     @Before
     public void setUp() throws Exception {
-        pagebarviewer = new PageBarViewImpl();
+        view = new LanguageSelectorViewImpl();
         MockWebContext ctx = new MockWebContext();
         MgnlContext.setInstance(ctx);
     }
@@ -85,16 +85,16 @@ public class PageBarViewImplTest {
             label += " (" + localeProvider.getLocale().getDisplayCountry(MgnlContext.getLocale()) + ")";
         }
 
-        CssLayout layout = pagebarviewer.getLayout();
         List<Locale> locales = new ArrayList<Locale>();
         locales.add(localeProvider.getLocale());
 
         // WHEN
-        pagebarviewer.setAvailableLanguages(locales);
-        ComboBox selector = (ComboBox) layout.getComponent(1);
+        view.setAvailableLanguages(locales);
+
+        ComboBox selector = (ComboBox) view.asVaadinComponent();
         String selectorLabel = selector.getItemCaption(selector.getItemIds().toArray()[0]);
 
         // THEN
-        assertEquals("", label, selectorLabel);
+        assertThat(label, is(selectorLabel));
     }
 }

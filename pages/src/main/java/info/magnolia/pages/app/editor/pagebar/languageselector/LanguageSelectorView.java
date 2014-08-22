@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor.pagebar;
+package info.magnolia.pages.app.editor.pagebar.languageselector;
 
 import info.magnolia.ui.api.view.View;
 
+import java.util.List;
+import java.util.Locale;
+
 /**
- * Interface of the page bar view - a top-most component in the page editor that
- * contains the name of the current displayed page and the selectors of language/platform.
- *
- * @param <L> listener interface.
+ * View interface for {@link LanguageSelector}.
  */
-public interface PageBarView<L extends PageBarView.Listener> extends View {
+public interface LanguageSelectorView extends View  {
+    void setListener(Listener listener);
 
-    void setPageName(String pageTitle, String path);
+    void setAvailableLanguages(List<Locale> locales);
 
-    void setListener(L listener);
-
-    void togglePreviewMode(boolean isPreview);
-
-    void addPageBarComponent(View component);
+    void setCurrentLanguage(Locale locale);
 
     /**
-     * Listener interface for {@link PageBarView}.
+     * Listener interface.
      */
-    interface Listener {
+    public interface Listener {
+        void languageSelected(Locale locale);
     }
 }

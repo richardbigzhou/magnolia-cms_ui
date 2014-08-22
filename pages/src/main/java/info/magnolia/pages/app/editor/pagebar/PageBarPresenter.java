@@ -1,0 +1,94 @@
+/**
+ * This file Copyright (c) 2014 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.pages.app.editor.pagebar;
+
+import info.magnolia.pages.app.editor.PagesEditorSubApp;
+import info.magnolia.pages.app.editor.pagebar.languageselector.LanguageSelector;
+import info.magnolia.pages.app.editor.pagebar.platformselector.PlatformSelector;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+
+import javax.inject.Inject;
+
+/**
+ * Presenter for the page bar displayed on top of the page editor. Takes care of loading and displaying components inside
+ * its view.
+ */
+public class PageBarPresenter implements PageBarView.Listener {
+
+    private final PageBarView view;
+
+    private LanguageSelector languageSelector;
+    private PlatformSelector platformSelector;
+    protected PagesEditorSubApp listener;
+
+    @Inject
+    public PageBarPresenter(PageBarView view, LanguageSelector languageSelector, PlatformSelector platformSelector) {
+        this.view = view;
+        this.languageSelector = languageSelector;
+        this.platformSelector = platformSelector;
+    }
+
+    public PageBarView start() {
+        view.addPageBarComponent(languageSelector.start());
+        view.addPageBarComponent(platformSelector.start());
+        view.setListener(this);
+        return view;
+    }
+
+    public void setListener(PagesEditorSubApp listener) {
+        this.listener = listener;
+    }
+
+    public void setPageName(String caption, String nodePath) {
+        view.setPageName(caption, nodePath);
+    }
+
+    private void togglePreviewMode(boolean preview) {
+        view.togglePreviewMode(preview);
+    }
+
+    public PageBarView getView() {
+        return view;
+    }
+
+    public void onLocationUpdate(DetailLocation location) {
+        languageSelector.onLocationUpdate(location);
+        platformSelector.onLocationUpdate(location);
+
+        boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
+        togglePreviewMode(isPreview);
+    }
+}
