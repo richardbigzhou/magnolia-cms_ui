@@ -62,6 +62,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -352,7 +353,96 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
     protected AutoSuggesterResult getSuggestionsForValueOfProperty(String propertyName, Node parentNode) {
         // TODO
-        return noSuggestionsAvailable();
+        if (propertyName == null || parentNode == null) {
+            return noSuggestionsAvailable();
+        }
+
+        // Get all values that may be useful for subsequent method calls
+        TypeDescriptor parentTypeDescriptor = getNodeTypeDescriptor(parentNode);
+        Property valueProperty = null;
+        int valueJCRType = -1;
+        try {
+            valueProperty = parentNode.getProperty(propertyName);
+            valueJCRType = valueProperty.getType();
+        } catch (RepositoryException ex) {
+            valueProperty = null;
+            valueJCRType = -1;
+        }
+        PropertyTypeDescriptor valuePropertyTypeDescriptor = null;
+        Class<?> valueClass = null;
+        if (parentTypeDescriptor != null) {
+            valuePropertyTypeDescriptor = getPropertyTypeDescriptor(propertyName, parentTypeDescriptor);
+
+            if (valuePropertyTypeDescriptor != null) {
+                TypeDescriptor valueTypeDescriptor = valuePropertyTypeDescriptor.getType();
+
+                if (valueTypeDescriptor != null) {
+                    valueClass = valueTypeDescriptor.getType();
+                }
+            }
+        }
+
+        AutoSuggesterResult autoSuggesterResult = null;
+
+        // If suggest true/false for a boolean value
+        if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsTypeBoolean(propertyName, parentNode, parentTypeDescriptor, valueProperty, valueJCRType, valuePropertyTypeDescriptor, valueClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
+        // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestion for property value if it is a boolean according to the logic below, otherwise return a suggestions unavailable.
+     * - If can get bean type of parent
+     * --| If can get type of property from type of parent
+     * --|-| If type of property from type of parent is Boolean and JCR type is Boolean or String
+     * --|-|-| Suggest true/false
+     * --|-| Else if type of property from type of parent is not Boolean or JCR type is not Boolean or String
+     * --|-|-- No suggestions
+     * --| Else if cannot get type of property from type of parent
+     * --|-- If property has JCR type Boolean
+     * --|---| Suggest true/false
+     * --|-- Else if property does not have JCR type Boolean
+     * --|---- No suggestions
+     * - Else if cannot get bean type of parent
+     * ---- If property has JCR type Boolean
+     * -----| Suggest true/false
+     * ---- Else if property does not have JCR type Boolean
+     * ------ No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsTypeBoolean(String propertyName, Node parentNode, TypeDescriptor parentTypeDescriptor, Property valueProperty, int valueJCRType, PropertyTypeDescriptor valuePropertyTypeDescriptor, Class<?> valueClass) {
+        if (parentTypeDescriptor != null) {
+            if (valueClass != null) {
+                if (ClassUtils.isAssignable(valueClass, Boolean.class) && (valueJCRType == PropertyType.BOOLEAN || valueJCRType == PropertyType.STRING)) {
+                    return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("true", "false"), AutoSuggesterResult.STARTS_WITH, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return getSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanBasedOnJCROnly(valueProperty, valueJCRType);
+            }
+        }
+        else {
+            return getSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanBasedOnJCROnly(valueProperty, valueJCRType);
+        }
+    }
+
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanBasedOnJCROnly(Property valueProperty, int valueJCRType) {
+        if (valueProperty == null) {
+            return noSuggestionsAvailable();
+        }
+
+        if (PropertyType.BOOLEAN == valueJCRType) {
+            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("true", "false"), AutoSuggesterResult.STARTS_WITH, true, true);
+        }
+        else {
+            return noSuggestionsAvailable();
+        }
     }
 
     /**
