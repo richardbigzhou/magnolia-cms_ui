@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,43 +33,36 @@
  */
 package info.magnolia.pages.app.editor;
 
-import info.magnolia.ui.actionbar.ActionbarView;
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
-import info.magnolia.ui.workbench.StatusBarView;
+import info.magnolia.ui.api.context.UiContext;
+
+import com.vaadin.server.Extension;
 
 /**
- * PagesEditorSubAppView.
+ * Page editor extensions, i.e. non visual Vaadin components which are attached to the page editor subapp view, need to implement this interface
+ * in order to be loaded. Extensions need to be configured at <code>/modules/pages/apps/pages/subApps/detail/extensions</code>. The order of loading is the
+ * same as it appears in the configuration tree.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public interface PageEditorExtension extends Extension {
 
     /**
-     * Listener.
+     * Called upon page editor subapp start. An extension, i.e. a non visual component, will typically "add itself" to the view by using its protected extend(..) method.
+     * 
+     * @see com.vaadin.server.AbstractExtension.
      */
-    public interface Listener extends PageBarView.Listener {
-
-        void onEscape();
-    }
-
-    void setListener(Listener listener);
-
-    void setPageBarView(PageBarView pageBarView);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    void setStatusBarView(StatusBarView statusBarView);
+    void onStart(PagesEditorSubAppView view, String nodePath, UiContext uiContext);
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * Called upon page editor subapp stop.
      */
-    void setActionbarView(ActionbarView actionbar);
+    void onStop();
 
     /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
+     * Called when page editor is in preview mode.
      */
-    void hideActionbar(boolean hide);
+    void onPreview();
 
-    StatusBarView getStatusBarView();
-
+    /**
+     * Called when page editor is in edit mode.
+     */
+    void onEdit();
 }

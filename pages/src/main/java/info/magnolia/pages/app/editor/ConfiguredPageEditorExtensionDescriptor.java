@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,43 +33,20 @@
  */
 package info.magnolia.pages.app.editor;
 
-import info.magnolia.ui.actionbar.ActionbarView;
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
-import info.magnolia.ui.workbench.StatusBarView;
 
 /**
- * PagesEditorSubAppView.
+ * ConfiguredPageEditorExtensionDescriptor.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class ConfiguredPageEditorExtensionDescriptor implements PageEditorExtensionDescriptor {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    private Class<? extends PageEditorExtension> extensionClass;
 
-        void onEscape();
+    @Override
+    public Class<? extends PageEditorExtension> getExtensionClass() {
+        return extensionClass;
     }
 
-    void setListener(Listener listener);
-
-    void setPageBarView(PageBarView pageBarView);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    void setStatusBarView(StatusBarView statusBarView);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
-
-    StatusBarView getStatusBarView();
-
+    public void setExtensionClass(Class<? extends PageEditorExtension> extensionClass) {
+        this.extensionClass = extensionClass;
+    }
 }
