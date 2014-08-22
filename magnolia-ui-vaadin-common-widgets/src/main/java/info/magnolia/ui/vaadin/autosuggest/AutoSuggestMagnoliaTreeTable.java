@@ -34,9 +34,13 @@
 package info.magnolia.ui.vaadin.autosuggest;
 
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
+import java.util.Collection;
+
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 
 /**
  * An extension of {@link MagnoliaTreeTable} that highlights possible mistakes in the tree using a colored squiggly line.
@@ -48,6 +52,32 @@ public class AutoSuggestMagnoliaTreeTable extends MagnoliaTreeTable {
     public AutoSuggestMagnoliaTreeTable() {
         super();
         this.autoSuggester = null;
+    }
+
+    @Override
+    protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+        if (property == null) {
+            return "";
+        }
+
+        if (autoSuggester != null) {
+            Object value = property.getValue();
+            if (value != null) {
+                AutoSuggesterResult result = autoSuggester.getSuggestionsFor(rowId, colId);
+                if (result != null && result.suggestionsAvailable()) {
+                    if (result.showErrorHighlighting()) {
+                        Collection<String> suggestions = result.getSuggestions();
+                        if (suggestions != null) {
+                            if (!suggestions.contains(value.toString())) {
+                                return "<span class=\"suggestion-warning\">" + super.formatPropertyValue(rowId, colId, property) + "</span>";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return super.formatPropertyValue(rowId, colId, property);
     }
 
     public AutoSuggestMagnoliaTreeTable(Container dataSource) {
