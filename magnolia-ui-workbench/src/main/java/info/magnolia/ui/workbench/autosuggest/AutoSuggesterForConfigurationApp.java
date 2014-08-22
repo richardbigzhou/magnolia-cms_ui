@@ -673,19 +673,19 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
                         // If Java class String, Character, Class, or Enum, map to JCR type String
                         if (propertyClass.equals(String.class) || propertyClass.isEnum() || propertyClass.equals(Class.class) || ClassUtils.isAssignable(propertyClass, Character.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, false);
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, true);
                         }
                         // If Java class Boolean, map to JCR type Boolean
                         else if (ClassUtils.isAssignable(propertyClass, Boolean.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Boolean"), AutoSuggesterResult.STARTS_WITH, true, false);
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Boolean"), AutoSuggesterResult.STARTS_WITH, true, true);
                         }
                         // If Java class Long, Integer, or Byte, map to JCR type Long
                         else if (ClassUtils.isAssignable(propertyClass, Long.class) || ClassUtils.isAssignable(propertyClass, Integer.class) || ClassUtils.isAssignable(propertyClass, Byte.class) || ClassUtils.isAssignable(propertyClass, Short.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Long"), AutoSuggesterResult.STARTS_WITH, true, false);
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Long"), AutoSuggesterResult.STARTS_WITH, true, true);
                         }
                         // If Java class Double or Float, map to JCR type Double
                         else if (ClassUtils.isAssignable(propertyClass, Double.class) || ClassUtils.isAssignable(propertyClass, Float.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Double"), AutoSuggesterResult.STARTS_WITH, true, false);
+                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Double"), AutoSuggesterResult.STARTS_WITH, true, true);
                         }
                         // If Java type that does not map to a JCR type
                         else {
@@ -718,9 +718,9 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
         // If property name is "class" or "extends"
         if ("class".equals(propertyName) || "extends".equals(propertyName)) {
-            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, false);
+            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, true);
         } else {
-            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String", "Boolean", "Long", "Double"), AutoSuggesterResult.STARTS_WITH, true, false);
+            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String", "Boolean", "Long", "Double"), AutoSuggesterResult.STARTS_WITH, true, true);
         }
     }
 
