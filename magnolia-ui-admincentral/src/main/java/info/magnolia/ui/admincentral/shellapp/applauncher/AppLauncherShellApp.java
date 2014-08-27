@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventHandler;
@@ -50,12 +50,15 @@ import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.vaadin.server.ClientConnector;
 
 /**
  * App launcher shell app. Listen to: system EventBus: LayoutEvent. Reload
@@ -67,6 +70,7 @@ import javax.inject.Named;
 public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter {
 
     private final AppLauncherView view;
+    private final AppLauncherLayoutChangedEventHandler handler;
 
     private AppController appController;
 
@@ -86,14 +90,16 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         /**
          * Handle ReloadAppEvent.
          */
-        systemEventBus.addHandler(AppLauncherLayoutChangedEvent.class, new AppLauncherLayoutChangedEventHandler() {
+        handler = new AppLauncherLayoutChangedEventHandler() {
 
             @Override
             public void onAppLayoutChanged(AppLauncherLayoutChangedEvent event) {
                 // Reload Layout
                 reloadLayout();
             }
-        });
+        };
+
+        final HandlerRegistration systemRegistration = systemEventBus.addHandler(AppLauncherLayoutChangedEvent.class, handler);
 
         /**
          * Add Handler of type AppLifecycleEventHandler in order to catch stop
@@ -118,6 +124,13 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
             @Override
             public void onAppStarted(AppLifecycleEvent event) {
                 activateButton(true, event.getAppDescriptor().getName());
+            }
+        });
+        // Remove handler once the view is detached.
+        view.asVaadinComponent().addDetachListener(new ClientConnector.DetachListener() {
+            @Override
+            public void detach(ClientConnector.DetachEvent event) {
+                systemRegistration.removeHandler();
             }
         });
     }
