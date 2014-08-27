@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.vaadin.extension.ShortcutProtector;
 import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -42,6 +43,7 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreeView;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +54,7 @@ import org.apache.commons.lang.StringUtils;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
@@ -319,6 +322,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private TextField buildSearchField() {
         final TextField field = new TextField();
+        ShortcutProtector.extend(field, Arrays.asList(KeyCode.ENTER));
         final String inputPrompt = i18n.translate("toolbar.search.prompt");
 
         field.setInputPrompt(inputPrompt);
