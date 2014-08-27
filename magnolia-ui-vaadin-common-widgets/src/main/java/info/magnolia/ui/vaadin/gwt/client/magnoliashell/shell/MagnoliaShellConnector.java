@@ -229,8 +229,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void onHideShellAppsRequested() {
-        ViewportWidget viewportWidget =
-                (ViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
         AppsViewportWidget appViewportWidget =
                 (AppsViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
 

@@ -67,31 +67,21 @@ public final class PulseListFooter extends CustomComponent {
     private HorizontalLayout footer;
     private NativeButton actionPopupTrigger;
     private TreeTable itemsTable;
-    private static SimpleTranslator i18n;
+    private SimpleTranslator i18n;
     private Label status;
-    private static PulseListView.Listener messagesListener;
-    private static TasksListView.Listener tasksListener;
-    private final ContextMenu contextMenu;
+    private PulseListView.Listener messagesListener;
+    private TasksListView.Listener tasksListener;
+    private ContextMenu contextMenu;
     // can't get the menu items from ContextMenu
-    private static List<ContextMenuItem> menuItems = new ArrayList<ContextMenuItem>();
+    private List<ContextMenuItem> menuItems = new ArrayList<ContextMenuItem>();
 
-    private PulseListFooter(final TreeTable itemsTable, final SimpleTranslator i18n, final ContextMenu contextMenu) {
-        super();
+    public PulseListFooter(final TreeTable itemsTable, final SimpleTranslator i18n, boolean withTaskContextMenu) {
+    	super();
         this.itemsTable = itemsTable;
-        PulseListFooter.i18n = i18n;
-        this.contextMenu = contextMenu;
+        this.i18n = i18n;
+        this.contextMenu = withTaskContextMenu ? buildTaskContextMenu(i18n, itemsTable) : buildMessageContextMenu(i18n, itemsTable);
         construct();
         setCompositionRoot(footer);
-    }
-
-    public static PulseListFooter createTasksFooter(final TreeTable itemsTable, final SimpleTranslator i18n) {
-        ContextMenu cm = buildTaskContextMenu(i18n, itemsTable);
-        return new PulseListFooter(itemsTable, i18n, cm);
-    }
-
-    public static PulseListFooter createMessagesFooter(final TreeTable itemsTable, final SimpleTranslator i18n) {
-        ContextMenu cm = buildMessageContextMenu(i18n, itemsTable);
-        return new PulseListFooter(itemsTable, i18n, cm);
     }
 
     private void construct() {
@@ -123,7 +113,7 @@ public final class PulseListFooter extends CustomComponent {
         contextMenu.setAsContextMenuOf(actionPopupTrigger);
     }
 
-    private static ContextMenu buildTaskContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
+    private ContextMenu buildTaskContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
         final ActionPopup contextMenu = new ActionPopup();
         contextMenu.setOpenAutomatically(false);
 
@@ -157,7 +147,7 @@ public final class PulseListFooter extends CustomComponent {
         return contextMenu;
     }
 
-    private static ContextMenu buildMessageContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
+    private ContextMenu buildMessageContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
         final ActionPopup contextMenu = new ActionPopup();
         contextMenu.setOpenAutomatically(false);
 
@@ -166,7 +156,7 @@ public final class PulseListFooter extends CustomComponent {
         return contextMenu;
     }
 
-    private static void addRemoveMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu, final String i18nKey) {
+    private void addRemoveMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu, final String i18nKey) {
         final ExternalResource iconDeleteResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-delete");
 
         final ContextMenuItem remove = contextMenu.addItem(i18n.translate(i18nKey), iconDeleteResource);
@@ -221,11 +211,11 @@ public final class PulseListFooter extends CustomComponent {
     }
 
     public void setMessagesListener(final PulseListView.Listener listener) {
-        PulseListFooter.messagesListener = listener;
+        this.messagesListener = listener;
     }
 
     public void setTasksListener(final TasksListView.Listener listener) {
-        PulseListFooter.tasksListener = listener;
+        this.tasksListener = listener;
     }
 
     private void enableActions(boolean enable) {

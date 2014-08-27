@@ -73,7 +73,7 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
                 i18n.translate("pulse.tasks.empty"),
                 PulseItemCategory.UNCLAIMED, PulseItemCategory.ONGOING, PulseItemCategory.DONE, PulseItemCategory.FAILED, PulseItemCategory.ALL_TASKS);
         constructTable();
-        setFooter(PulseListFooter.createTasksFooter(getItemTable(), i18n));
+        setFooter(new PulseListFooter(getItemTable(), i18n, true));
     }
 
     private void constructTable() {

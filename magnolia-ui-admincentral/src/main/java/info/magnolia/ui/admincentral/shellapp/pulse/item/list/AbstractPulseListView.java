@@ -291,7 +291,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         root.addComponent(emptyPlaceHolder);
 
         // create an initial default footer to avoid NPE exception. This will be replaced later on by specific implementations
-        footer = PulseListFooter.createMessagesFooter(itemTable, i18n);
+        footer = new PulseListFooter(itemTable, i18n, false);
         root.addComponent(footer);
 
         setComponentVisibility(itemTable.getContainerDataSource());

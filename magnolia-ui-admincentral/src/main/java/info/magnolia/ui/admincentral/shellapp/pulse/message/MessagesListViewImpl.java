@@ -148,7 +148,7 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
                 i18n.translate("pulse.messages.empty"),
                 PulseItemCategory.ALL_MESSAGES, PulseItemCategory.INFO, PulseItemCategory.PROBLEM);
         buildTable(getItemTable());
-        setFooter(PulseListFooter.createMessagesFooter(getItemTable(), i18n));
+        setFooter(new PulseListFooter(getItemTable(), i18n, false));
     }
 
     private void buildTable(TreeTable itemTable) {
