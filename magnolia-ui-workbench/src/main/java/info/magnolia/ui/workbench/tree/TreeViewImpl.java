@@ -290,6 +290,11 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             }
             ShortcutAction shortcut = (ShortcutAction) action;
 
+            // Because shortcutActionManager is typically the workbench's keyboardEventPanel, this handler might be called from other content views
+            if (tree == null || !tree.isAttached()) {
+                return;
+            }
+
             if (target != tree && target instanceof Field) {
                 Field<?> field = (Field<?>) target;
 
