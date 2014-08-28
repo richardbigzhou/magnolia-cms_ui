@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
 
+import com.vaadin.client.VConsole;
+
 /**
  * Singleton object which helps to track the state of the Magnolia Shell component.
  * The update of the state is on behalf of Shell/Viewport implementation.
@@ -62,7 +64,12 @@ public class ShellState {
         return type == StateType.shellAppStarting;
     }
 
+    private void log(StateType stateType) {
+        VConsole.error(stateType.toString());
+    }
+
     public void setShellAppStarting() {
+        log(StateType.shellAppStarting);
         this.type = StateType.shellAppStarting;
     }
 
@@ -71,14 +78,16 @@ public class ShellState {
     }
 
     public void setAppStarting() {
+        log(StateType.appStarting);
         this.type = StateType.appStarting;
     }
 
     public boolean isAppStarted() {
-        return type == StateType.appStarting;
+        return type == StateType.appStarted;
     }
 
     public void setAppStarted() {
+        log(StateType.appStarted);
         this.type = StateType.appStarted;
     }
 
@@ -87,6 +96,7 @@ public class ShellState {
     }
 
     public void setShellAppStarted() {
+        log(StateType.shellAppStarted);
         this.type = StateType.shellAppStarted;
     }
 
@@ -95,6 +105,7 @@ public class ShellState {
     }
 
     public void setAppClosing() {
+        log(StateType.appClosing);
         this.type = StateType.appClosing;
     }
 
@@ -103,6 +114,7 @@ public class ShellState {
     }
 
     public void setShellAppClosing() {
+        log(StateType.shellAppClosing);
         this.type = StateType.shellAppClosing;
     }
 

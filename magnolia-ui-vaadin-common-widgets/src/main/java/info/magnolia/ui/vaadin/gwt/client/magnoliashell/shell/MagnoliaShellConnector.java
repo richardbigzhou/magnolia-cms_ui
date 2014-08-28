@@ -106,6 +106,17 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        addStateChangeHandler("uriFragment", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                Fragment f = getState().uriFragment;
+                if (f != null) {
+                    if (f.isApp()) {
+                        ShellState.get().setAppStarted();
+                    }
+                }
+            }
+        });
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
             @Override
             public void showMessage(String type, String topic, String msg, String id) {
@@ -180,6 +191,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
+                    ShellState.get().setAppStarting();
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
             }
@@ -192,7 +204,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 if (newFragment.isShellApp() && !newFragment.equals(lastHandledFragment)) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    if (!newFragment.isSameApp(lastHandledFragment)) {
+                    if (!ShellState.get().isAppStarted()) {
+                        ShellState.get().setAppStarting();
                         loadApp(newFragment.getAppName());
                         rpc.activateApp(newFragment);
                     }
@@ -226,7 +239,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void showShellApp(ShellAppType shellAppType) {
-        if (!ShellState.get().isAppStarting()) {
+        final ShellState shellState = ShellState.get();
+        if (!shellState.isAppStarting()) {
             eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
         }
     }
