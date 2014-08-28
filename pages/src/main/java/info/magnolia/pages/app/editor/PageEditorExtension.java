@@ -35,6 +35,7 @@ package info.magnolia.pages.app.editor;
 
 import info.magnolia.ui.api.context.UiContext;
 
+import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Extension;
 
 /**
@@ -45,7 +46,7 @@ import com.vaadin.server.Extension;
 public interface PageEditorExtension extends Extension {
 
     /**
-     * Called upon page editor subapp start. An extension, i.e. a non visual component, will typically "add itself" to the view by using its protected extend(..) method.
+     * Called upon page editor subapp start.
      * 
      * @see com.vaadin.server.AbstractExtension.
      */
@@ -65,4 +66,9 @@ public interface PageEditorExtension extends Extension {
      * Called when page editor is in edit mode.
      */
     void onEdit();
+
+    /**
+     * An extension will typically "add itself" to the connector by using its protected extend(..) method.
+     */
+    void addTo(AbstractClientConnector connector);
 }

@@ -104,6 +104,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.server.AbstractClientConnector;
+
 /**
  * PagesEditorSubApp.
  */
@@ -244,8 +246,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                 log.error("No class extension configured for {}. Please, check your configuration at /modules/pages/apps/pages/subApps/detail/extensions", extension.getKey());
                 continue;
             }
-            // the extension has to take care of adding itself to the view in its onStart(..) method
             PageEditorExtension e = Components.newInstance(clazz);
+            // add the extension to the current view
+            e.addTo((AbstractClientConnector) view.asVaadinComponent());
             extensions.add(e);
         }
     }
@@ -597,5 +600,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         for (PageEditorExtension e : extensions) {
             e.onStop();
         }
+    }
+
+    /**
+     * For testing purposes only.
+     */
+    List<PageEditorExtension> getExtensions() {
+        return extensions;
     }
 }

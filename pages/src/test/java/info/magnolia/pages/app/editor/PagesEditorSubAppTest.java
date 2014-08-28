@@ -34,6 +34,7 @@
 package info.magnolia.pages.app.editor;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
@@ -70,8 +71,10 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
@@ -91,6 +94,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -98,6 +102,10 @@ import javax.jcr.RepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.AbstractExtension;
 
 /**
  * Tests for {@link PagesEditorSubApp}.
@@ -307,8 +315,8 @@ public class PagesEditorSubAppTest {
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter, times(1)).showSection(testSection);
-        verify(actionbarPresenter, times(1)).enable(actionName);
+        verify(actionbarPresenter).showSection(testSection);
+        verify(actionbarPresenter).enable(actionName);
     }
 
     @Test
@@ -351,7 +359,7 @@ public class PagesEditorSubAppTest {
         adminCentralEventBus.fireEvent(new ContentChangedEvent(itemId));
 
         // THEN
-        verify(appContext, times(1)).closeSubApp(instanceId);
+        verify(appContext).closeSubApp(instanceId);
     }
 
     @Test
@@ -370,6 +378,102 @@ public class PagesEditorSubAppTest {
 
         // THEN - we don't fail
 
+    }
+
+    @Test
+    public void testLoadExtensions() throws Exception {
+        // GIVEN
+        PageEditorSubAppDescriptor subAppDescriptor = mock(PageEditorSubAppDescriptor.class);
+
+        ConfiguredPageEditorExtensionDescriptor extensionDescriptor = new ConfiguredPageEditorExtensionDescriptor();
+        extensionDescriptor.setExtensionClass(DummyPageExtension.class);
+
+        Map<String, PageEditorExtensionDescriptor> extensions = ImmutableMap.of("foo", (PageEditorExtensionDescriptor) extensionDescriptor);
+        when(subAppDescriptor.getExtensions()).thenReturn(extensions);
+
+        // WHEN
+        editor.loadExtensions(subAppDescriptor);
+
+        // THEN
+        assertEquals(1, editor.getExtensions().size());
+    }
+
+    @Test
+    public void testStartPageEditorCallsExtensionOnStartMethod() throws Exception {
+        // GIVEN
+        PageEditorExtension extension = mock(PageEditorExtension.class);
+        editor.getExtensions().add(extension);
+
+        // WHEN
+        editor.start(new DefaultLocation("foo", "bar", "baz"));
+
+        // THEN
+        verify(extension).onStart(any(PagesEditorSubAppView.class), anyString(), any(UiContext.class));
+    }
+
+    @Test
+    public void testStopPageEditorCallsExtensionOnStopMethod() throws Exception {
+        // GIVEN
+        PageEditorExtension extension = mock(PageEditorExtension.class);
+        editor.getExtensions().add(extension);
+
+        // WHEN
+        editor.stop();
+
+        // THEN
+        verify(extension).onStop();
+    }
+
+    @Test
+    public void testPrepareAndExecutePagesEditorActionCallsExtensionOnEditMethod() throws Exception {
+        // GIVEN
+        PageEditorExtension extension = mock(PageEditorExtension.class);
+        editor.getExtensions().add(extension);
+
+        // WHEN
+        editor.prepareAndExecutePagesEditorAction(PageEditorPresenter.ACTION_VIEW_EDIT);
+
+        // THEN
+        verify(extension).onEdit();
+    }
+
+    @Test
+    public void testPrepareAndExecutePagesEditorActionCallsExtensionOnPreviewMethod() throws Exception {
+        // GIVEN
+        PageEditorExtension extension = mock(PageEditorExtension.class);
+        editor.getExtensions().add(extension);
+
+        // WHEN
+        editor.prepareAndExecutePagesEditorAction(PageEditorPresenter.ACTION_VIEW_PREVIEW);
+
+        // THEN
+        verify(extension).onPreview();
+    }
+
+    /**
+     * DummyPageExtension.
+     */
+    public static final class DummyPageExtension extends AbstractExtension implements PageEditorExtension {
+
+        @Override
+        public void onStart(PagesEditorSubAppView view, String nodePath, UiContext uiContext) {
+        }
+
+        @Override
+        public void onStop() {
+        }
+
+        @Override
+        public void onPreview() {
+        }
+
+        @Override
+        public void onEdit() {
+        }
+
+        @Override
+        public void addTo(AbstractClientConnector connector) {
+        }
     }
 
     /**
