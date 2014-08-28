@@ -112,11 +112,24 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 Fragment f = getState().uriFragment;
                 if (f != null) {
                     if (f.isApp()) {
-                        ShellState.get().setAppStarted();
+                        Scheduler.get().scheduleFinally(new Scheduler.RepeatingCommand() {
+                            @Override
+                            public boolean execute() {
+                                boolean layoutRunning = getLayoutManager().isLayoutRunning();
+
+                                if (!layoutRunning) {
+                                    ShellState.get().setAppStarted();
+                                }
+
+                                return layoutRunning;
+                            }
+                        });
+
                     }
                 }
             }
         });
+
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
             @Override
             public void showMessage(String type, String topic, String msg, String id) {

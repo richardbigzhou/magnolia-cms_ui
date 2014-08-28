@@ -68,6 +68,7 @@ public class ShellAppsViewportConnector extends ViewportConnector implements She
         Widget w = shellAppConnector.getWidget();
         getWidget().showChild(w);
         if (!getWidget().isActive()) {
+            w.getElement().getStyle().clearOpacity();
             getWidget().setActive(true);
         }
         getLayoutManager().setNeedsMeasure(shellAppConnector);
