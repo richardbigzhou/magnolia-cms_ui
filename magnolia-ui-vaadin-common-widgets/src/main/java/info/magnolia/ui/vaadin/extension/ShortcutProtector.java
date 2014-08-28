@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.extension;
 
-import info.magnolia.ui.vaadin.gwt.client.extension.StopPropagationForKeyDownState;
+import info.magnolia.ui.vaadin.gwt.client.extension.ShortcutProtectorState;
 
 import java.util.List;
 
@@ -43,9 +43,9 @@ import com.vaadin.server.AbstractExtension;
 /**
  * An extension that prevents specified keydown events from propagating out of the extended component.
  */
-public class StopPropagationForKeyDown extends AbstractExtension {
+public class ShortcutProtector extends AbstractExtension {
 
-    public StopPropagationForKeyDown(AbstractClientConnector target, List<Integer> keys) {
+    public ShortcutProtector(AbstractClientConnector target, List<Integer> keys) {
         super.extend(target);
         this.getState().keys = keys;
     }
@@ -56,11 +56,11 @@ public class StopPropagationForKeyDown extends AbstractExtension {
     }
 
     public static void addTo(AbstractClientConnector target, List<Integer> keys) {
-        new StopPropagationForKeyDown(target, keys);
+        new ShortcutProtector(target, keys);
     }
 
     @Override
-    protected StopPropagationForKeyDownState getState() {
-        return (StopPropagationForKeyDownState) super.getState();
+    protected ShortcutProtectorState getState() {
+        return (ShortcutProtectorState) super.getState();
     }
 }

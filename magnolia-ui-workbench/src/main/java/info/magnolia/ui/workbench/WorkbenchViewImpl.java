@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.vaadin.extension.StopPropagationForKeyDown;
+import info.magnolia.ui.vaadin.extension.ShortcutProtector;
 import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -322,7 +322,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private TextField buildSearchField() {
         final TextField field = new TextField();
-        StopPropagationForKeyDown.addTo(field, Arrays.asList(KeyCode.ENTER));
+        ShortcutProtector.addTo(field, Arrays.asList(KeyCode.ENTER));
         final String inputPrompt = i18n.translate("toolbar.search.prompt");
 
         field.setInputPrompt(inputPrompt);

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.extension;
 
-import info.magnolia.ui.vaadin.extension.StopPropagationForKeyDown;
+import info.magnolia.ui.vaadin.extension.ShortcutProtector;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -44,10 +44,10 @@ import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Connector for {@link info.magnolia.ui.vaadin.extension.StopPropagationForKeyDown}.
+ * Connector for {@link info.magnolia.ui.vaadin.extension.ShortcutProtector}.
  */
-@Connect(StopPropagationForKeyDown.class)
-public class StopPropagationForKeyDownConnector extends AbstractExtensionConnector {
+@Connect(ShortcutProtector.class)
+public class ShortcutProtectorConnector extends AbstractExtensionConnector {
 
     @Override
     protected void extend(ServerConnector target) {
@@ -55,7 +55,7 @@ public class StopPropagationForKeyDownConnector extends AbstractExtensionConnect
         widget.addDomHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
-                StopPropagationForKeyDownState state = getState();
+                ShortcutProtectorState state = getState();
                 if (state.keys.contains(event.getNativeKeyCode())) {
                     event.stopPropagation();
                 }
@@ -64,7 +64,7 @@ public class StopPropagationForKeyDownConnector extends AbstractExtensionConnect
     }
 
     @Override
-    public StopPropagationForKeyDownState getState() {
-        return (StopPropagationForKeyDownState) super.getState();
+    public ShortcutProtectorState getState() {
+        return (ShortcutProtectorState) super.getState();
     }
 }

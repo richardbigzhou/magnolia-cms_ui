@@ -38,9 +38,9 @@ import java.util.List;
 import com.vaadin.shared.communication.SharedState;
 
 /**
- * State for {@link info.magnolia.ui.vaadin.extension.StopPropagationForKeyDown}.
+ * State for {@link info.magnolia.ui.vaadin.extension.ShortcutProtector}.
  */
-public class StopPropagationForKeyDownState extends SharedState {
+public class ShortcutProtectorState extends SharedState {
 
     public List<Integer> keys;
 }
