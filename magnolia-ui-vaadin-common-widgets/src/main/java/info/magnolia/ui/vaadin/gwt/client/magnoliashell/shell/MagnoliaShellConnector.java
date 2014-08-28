@@ -258,6 +258,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         Widget currentApp = appViewportWidget.getCurrentApp();
         if (currentApp != null) {
             view.onAppStarting();
+            ShellState.get().setShellAppClosing();
             eventBus.fireEvent(new HideShellAppsEvent());
         } else {
             showShellApp(ShellAppType.APPLAUNCHER);

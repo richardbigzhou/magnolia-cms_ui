@@ -77,7 +77,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
     }
 
     private void initAnimations() {
-        this.fadeInAnimation = new FadeAnimation(ALPHA_MAX, true) {
+        this.fadeInAnimation = new FadeAnimation(ALPHA_MAX, false) {
             @Override
             protected void onStart() {
                 super.onStart();
@@ -103,17 +103,21 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         this.slideDownAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                viewport.onShellAppLoaded(viewport.getVisibleChild());
+                if (!slideDownAnimation.isCancelled()) {
+                    viewport.onShellAppLoaded(viewport.getVisibleChild());
+                }
             }
         });
 
         this.slideUpAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                viewport.onShellAppsHidden();
+                if (!slideUpAnimation.isCancelled()) {
+                    viewport.onShellAppsHidden();
+                }
             }
         });
-        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true);
+        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, false);
     }
 
     /**

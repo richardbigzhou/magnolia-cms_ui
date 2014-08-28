@@ -53,6 +53,8 @@ public class JQueryAnimation extends Animation {
 
     private boolean isClearTopAfterThisAnimation = false;
 
+    private boolean isCancelled = false;
+
     public void setProperty(String property, Object value) {
         settings.setProperty(property, value);
     }
@@ -106,12 +108,14 @@ public class JQueryAnimation extends Animation {
     @Override
     public void cancel() {
         getJQueryWrapper().stop();
+        this.isCancelled = true;
         onComplete();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        this.isCancelled = false;
     }
 
     @Override
@@ -132,4 +136,7 @@ public class JQueryAnimation extends Animation {
     }
 
 
+    public boolean isCancelled() {
+        return isCancelled;
+    }
 }
