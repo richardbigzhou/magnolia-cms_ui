@@ -53,6 +53,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -705,6 +707,243 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenParentBeanTypeIsNullAndNodeIsModuleFolderAndNodeHasNoProperties() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "/modules/core", NodeTypes.Content.NAME, true);
+        core.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenParentBeanTypeIsNullAndNodeIsNotModuleFolderAndNodeHasNoProperties() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "/modules", NodeTypes.Content.NAME, true);
+        core.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenParentBeanTypeIsNullAndNodeIsContentNodeAndNodeHasNoPropertiess() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 4);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("booleanProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("stringProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsBeanAndNodeHasSomePropertiesAndPropertyIsInBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        workbench.setProperty("booleanProperty", true);
+        workbench.setProperty("stringProperty", "");
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("booleanProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("booleanProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsBeanAndNodeHasSomePropertiesAndPropertyIsNotInBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        workbench.setProperty("booleanProperty", true);
+        workbench.setProperty("stringProperty", "");
+        workbench.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsNotBeanAndNodeIsModuleFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "/modules/core", NodeTypes.Content.NAME, true);
+        core.setProperty("class", HashMap.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsNotBeanAndNodeIsNotModuleFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "/modules", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", HashMap.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfPropertyWhenNodeIsNotBeanAndNodeIsContentNode() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", HashMap.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    private class TestBeanForNameOfProperty {
+        private boolean booleanProperty;
+        private String stringProperty;
+        private Object objectProperty;
+        private Map<String, String> mapProperty;
+        private TestBean testBean;
+
+        public boolean isBooleanProperty() {
+            return booleanProperty;
+        }
+
+        public void setBooleanProperty(boolean booleanProperty) {
+            this.booleanProperty = booleanProperty;
+        }
+
+        public String getStringProperty() {
+            return stringProperty;
+        }
+
+        public void setStringProperty(String stringProperty) {
+            this.stringProperty = stringProperty;
+        }
+
+        public Object getObjectProperty() {
+            return objectProperty;
+        }
+
+        public void setObjectProperty(Object objectProperty) {
+            this.objectProperty = objectProperty;
+        }
+
+        public Map<String, String> getMapProperty() {
+            return mapProperty;
+        }
+
+        public void setMapProperty(Map<String, String> mapProperty) {
+            this.mapProperty = mapProperty;
+        }
+
+        public TestBean getTestBean() {
+            return testBean;
+        }
+
+        public void setTestBean(TestBean testBean) {
+            this.testBean = testBean;
+        }
+
     }
 
     private class TestBean {
