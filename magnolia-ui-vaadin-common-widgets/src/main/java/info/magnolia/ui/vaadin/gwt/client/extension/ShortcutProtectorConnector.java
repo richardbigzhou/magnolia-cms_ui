@@ -44,7 +44,7 @@ import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Connector for {@link info.magnolia.ui.vaadin.extension.ShortcutProtector}.
+ * Client-side connector for the {@link ShortcutProtector} extension.
  */
 @Connect(ShortcutProtector.class)
 public class ShortcutProtectorConnector extends AbstractExtensionConnector {

@@ -38,7 +38,7 @@ import java.util.List;
 import com.vaadin.shared.communication.SharedState;
 
 /**
- * State for {@link info.magnolia.ui.vaadin.extension.ShortcutProtector}.
+ * Shared state for the {@link info.magnolia.ui.vaadin.extension.ShortcutProtector} extension.
  */
 public class ShortcutProtectorState extends SharedState {
 

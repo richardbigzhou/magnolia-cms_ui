@@ -322,7 +322,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private TextField buildSearchField() {
         final TextField field = new TextField();
-        ShortcutProtector.addTo(field, Arrays.asList(KeyCode.ENTER));
+        ShortcutProtector.extend(field, Arrays.asList(KeyCode.ENTER));
         final String inputPrompt = i18n.translate("toolbar.search.prompt");
 
         field.setInputPrompt(inputPrompt);

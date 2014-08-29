@@ -41,22 +41,24 @@ import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 
 /**
- * An extension that prevents specified keydown events from propagating out of the extended component.
+ * An extension that prevents keyboard events from propagating out of the extended component.
+ * This is helpful when we want to bypass the usual Vaadin shortcut handling mechanism.
  */
 public class ShortcutProtector extends AbstractExtension {
 
     public ShortcutProtector(AbstractClientConnector target, List<Integer> keys) {
         super.extend(target);
-        this.getState().keys = keys;
+        getState().keys = keys;
     }
 
-    @Override
-    public void extend(AbstractClientConnector target) {
-        super.extend(target);
-    }
-
-    public static void addTo(AbstractClientConnector target, List<Integer> keys) {
-        new ShortcutProtector(target, keys);
+    /**
+     * Applies "shortcut protection" to the given component for the given list of key codes.
+     *
+     * @param component the component to apply keyboard shortcut protection to
+     * @param keys a list of {@link com.vaadin.event.ShortcutAction.KeyCode KeyCodes} for which events shouldn't be propagated.
+     */
+    public static void extend(AbstractClientConnector component, List<Integer> keys) {
+        new ShortcutProtector(component, keys);
     }
 
     @Override
