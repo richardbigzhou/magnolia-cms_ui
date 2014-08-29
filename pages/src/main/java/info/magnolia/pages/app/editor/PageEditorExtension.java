@@ -39,16 +39,16 @@ import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Extension;
 
 /**
- * Page editor extensions, i.e. non visual Vaadin components which are attached to the page editor subapp view, need to implement this interface
+ * A page editor extension, i.e. a Vaadin plug-in which adds functionalities to the page editor, needs to implement this interface
  * in order to be loaded. Extensions need to be configured at <code>/modules/pages/apps/pages/subApps/detail/extensions</code>. The order of loading is the
  * same as it appears in the configuration tree.
+ * 
+ * @see Extension
  */
 public interface PageEditorExtension extends Extension {
 
     /**
      * Called upon page editor subapp start.
-     * 
-     * @see com.vaadin.server.AbstractExtension.
      */
     void onStart(PagesEditorSubAppView view, String nodePath, UiContext uiContext);
 
@@ -58,17 +58,19 @@ public interface PageEditorExtension extends Extension {
     void onStop();
 
     /**
-     * Called when page editor is in preview mode.
+     * Called when page editor switches to preview mode.
      */
     void onPreview();
 
     /**
-     * Called when page editor is in edit mode.
+     * Called when page editor switches to edit mode.
      */
     void onEdit();
 
     /**
      * An extension will typically "add itself" to the connector by using its protected extend(..) method.
+     * 
+     * @see com.vaadin.server.AbstractExtension.
      */
     void addTo(AbstractClientConnector connector);
 }
