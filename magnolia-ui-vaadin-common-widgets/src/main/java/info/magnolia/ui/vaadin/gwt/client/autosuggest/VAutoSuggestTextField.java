@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.autosuggest.VAutoSuggestPopup.ResizePo
 
 import java.util.List;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.EventTarget;
@@ -52,7 +53,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.vaadin.client.ui.VTextField;
 
 /**
@@ -81,6 +85,10 @@ public class VAutoSuggestTextField extends VTextField {
 
     private InputTimer inputTimer;
 
+    private PopupPanel tip = new PopupPanel();
+    private Timer tipTimer;
+    private JavaScriptObject scrollFn;
+
     public VAutoSuggestTextField() {
         super();
         inputTimer = new InputTimer();
@@ -108,9 +116,24 @@ public class VAutoSuggestTextField extends VTextField {
         return state.matchMethod == AutoSuggestTextFieldState.STARTS_WITH;
     }
 
+    public void tryClearTip() {
+        tip.hide();
+    }
+
     private void initLayout() {
         initRelativeEl();
         popup = new VAutoSuggestPopup(relativeEl, this);
+        tip.addStyleName("nosuggestions-tooltip");
+        tip.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
+        Label tipMsg = new Label(state.noSuggestionsMsg);
+        tipMsg.addStyleName("nosuggestions-tooltip-text");
+        tip.setWidget(tipMsg);
+        tipTimer = new Timer() {
+            @Override
+            public void run() {
+                tip.hide();
+            }
+        };
     }
 
     /**
@@ -202,6 +225,7 @@ public class VAutoSuggestTextField extends VTextField {
                 }
             }
         });
+        scrollFn = setScrollEvent(relativeEl);
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             @Override
@@ -211,6 +235,20 @@ public class VAutoSuggestTextField extends VTextField {
         });
     }
 
+    private native JavaScriptObject setScrollEvent(Element relativeEl) /*-{
+                                                                       var self = this;
+                                                                       var scrollFn = relativeEl.onscroll;
+                                                                       relativeEl.onscroll = function() {
+                                                                       scrollFn.apply(this, arguments);
+                                                                       self.@info.magnolia.ui.vaadin.gwt.client.autosuggest.VAutoSuggestTextField::tryClearTip()();
+                                                                       };
+                                                                       return scrollFn
+                                                                       }-*/;
+
+    private native void resetScrollEvent(Element relativeEl, JavaScriptObject scrollFn) /*-{
+                                                                                        relativeEl.onscroll = scrollFn;
+                                                                                        }-*/;
+
     @Override
     protected void onUnload() {
         super.onUnload();
@@ -218,6 +256,8 @@ public class VAutoSuggestTextField extends VTextField {
             popup.removeFromParent();
         }
         resizeRegistration.removeHandler();
+        resetScrollEvent(relativeEl, scrollFn);
+        tryClearTip();
     }
 
     @Override
@@ -536,6 +576,15 @@ public class VAutoSuggestTextField extends VTextField {
 
     private void s2OnDownKey() {
         // default behavior is right;
+        int[] topAndLeft = SuggestionUtil.getOffset(this.getElement(), relativeEl);
+        int bottomPosition = relativeEl.getScrollTop() + relativeEl.getOffsetHeight();
+        if (topAndLeft[0] >= relativeEl.getScrollTop() && topAndLeft[0] + this.getOffsetHeight() <= bottomPosition) {
+            tip.show();
+            int tipLeft = this.getAbsoluteLeft();
+            int tipTop = this.getAbsoluteTop() - tip.getOffsetHeight();
+            tip.setPopupPosition(tipLeft, tipTop);
+            tipTimer.schedule(3000);
+        }
         changeToS2();
     }
 

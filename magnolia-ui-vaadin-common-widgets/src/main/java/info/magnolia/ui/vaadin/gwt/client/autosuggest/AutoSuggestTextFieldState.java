@@ -50,4 +50,5 @@ public class AutoSuggestTextFieldState extends AbstractTextFieldState {
     public int matchMethod;
     public boolean showMismatchedSuggestions;
     public boolean showErrorHighlighting;
+    public String noSuggestionsMsg;
 }

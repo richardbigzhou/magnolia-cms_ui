@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.autosuggest;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.AutoSuggestTextFieldState;
 
@@ -93,8 +95,8 @@ public class AutoSuggestTextField extends TextField {
     }
 
     private void setStateAccordingToAutoSuggesterResult(AutoSuggesterResult autoSuggesterResult) {
+        AutoSuggestTextFieldState state = this.getState();
         if (autoSuggesterResult != null) {
-            AutoSuggestTextFieldState state = this.getState();
             state.suggestionsAvailable = autoSuggesterResult.suggestionsAvailable();
             state.suggestions = new ArrayList<String>();
             Collection<String> suggestions = autoSuggesterResult.getSuggestions();
@@ -115,6 +117,8 @@ public class AutoSuggestTextField extends TextField {
             state.showMismatchedSuggestions = autoSuggesterResult.showMismatchedSuggestions();
             state.showErrorHighlighting = autoSuggesterResult.showErrorHighlighting();
         }
+        SimpleTranslator i18n = Components.getComponent(SimpleTranslator.class);
+        state.noSuggestionsMsg = i18n.translate("autosuggestion.nosuggestions");
     }
 
     @Override
