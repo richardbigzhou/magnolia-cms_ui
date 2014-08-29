@@ -179,9 +179,76 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenParentBeanTypeIsNull() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("enumProperty", TestEnum.enum2.toString());
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("enumProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsEnumTypeAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("enumProperty", TestEnum.enum2.toString());
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("enumProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(TestEnum.enum1.toString()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(TestEnum.enum2.toString()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(TestEnum.enum3.toString()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertFalse(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsEnumTypeAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("enumProperty", true);
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("enumProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsNotEnumType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
+        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("stringProperty", "hi");
+        Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("stringProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
     private class TestBean {
         private String stringProperty;
         private boolean booleanProperty;
+        private TestEnum enumProperty;
 
         public String getStringProperty() {
             return stringProperty;
@@ -198,6 +265,22 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         public void setBooleanProperty(boolean booleanProperty) {
             this.booleanProperty = booleanProperty;
         }
+
+        public TestEnum getEnumProperty() {
+            return enumProperty;
+        }
+
+        public void setEnumProperty(TestEnum enumProperty) {
+            this.enumProperty = enumProperty;
+        }
     }
 
+    /**
+     * TestEnum.
+     */
+    enum TestEnum {
+        enum1,
+        enum2,
+        enum3;
+    }
 }
