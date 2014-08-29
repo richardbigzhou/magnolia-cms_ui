@@ -80,6 +80,7 @@ public class VAutoSuggestPopup extends Composite {
     private static final String MANUAL_RESIZE = "manual-resize";
 
     private static final int ROW_HEIGHT = 20;
+    private static final int DEFAULT_ROWS = 10;
 
     private VAutoSuggestToolTip selectedToolTip;
     private VAutoSuggestTextField refField;
@@ -200,7 +201,7 @@ public class VAutoSuggestPopup extends Composite {
             }
         };
         scroll.sinkEvents(Event.ONMOUSEWHEEL);
-        scroll.getElement().getStyle().setProperty("maxHeight", ROW_HEIGHT * 10 + Unit.PX.getType());
+        scroll.getElement().getStyle().setProperty("maxHeight", ROW_HEIGHT * DEFAULT_ROWS + Unit.PX.getType());
         scroll.setWidget(vp);
         getScrollElement(scroll).getStyle().setOverflow(Overflow.AUTO);
 
@@ -277,8 +278,12 @@ public class VAutoSuggestPopup extends Composite {
             wrapSimplePanel = WrapSimplePanel.wrap(container);
             wrapSimplePanel.add(this);
         }
-        this.getElement().getStyle().setTop(top, Unit.PX);
-        this.getElement().getStyle().setLeft(left, Unit.PX);
+        if (top >= 0) {
+            this.getElement().getStyle().setTop(top, Unit.PX);
+        }
+        if (left >= 0) {
+            this.getElement().getStyle().setLeft(left, Unit.PX);
+        }
         if (dropDown) {
             grid.getRowFormatter().getElement(0).getStyle().setDisplay(Display.NONE);
             grid.getRowFormatter().getElement(2).getStyle().clearDisplay();
@@ -311,7 +316,7 @@ public class VAutoSuggestPopup extends Composite {
                 }
             }
         }
-        int popupHeight = (vp.getRowCount() >= 10 ? ROW_HEIGHT * 10 : ROW_HEIGHT * vp.getRowCount()) + 16;
+        int popupHeight = (vp.getRowCount() >= DEFAULT_ROWS ? ROW_HEIGHT * DEFAULT_ROWS : ROW_HEIGHT * vp.getRowCount()) + 16;
         int bottomPosition = relativeEl.getScrollTop() + relativeEl.getOffsetHeight();
         int relativeTop;
         if (topAndLeft[0] + refField.getOffsetHeight() + popupHeight > bottomPosition
@@ -325,19 +330,23 @@ public class VAutoSuggestPopup extends Composite {
                     relativeTop = topAndLeft[0] + refField.getOffsetHeight();
                 } else {
                     dropDown = false;
-                    relativeTop = topAndLeft[0] - popupHeight - (maxWidth > residualWidth ? 15 : 0);
+                    relativeTop = topAndLeft[0] - popupHeight - (vp.getRowCount() < DEFAULT_ROWS ? SuggestionUtil.getScrollBarWidth(scroll.getElement(), true) : 0);
                 }
             } else {
                 if (topAndLeft[0] - popupHeight > relativeEl.getScrollTop()) {
                     dropDown = false;
-                    relativeTop = topAndLeft[0] - popupHeight - (maxWidth > residualWidth ? 15 : 0);
+                    relativeTop = topAndLeft[0] - popupHeight - (vp.getRowCount() < DEFAULT_ROWS ? SuggestionUtil.getScrollBarWidth(scroll.getElement(), true) : 0);
                 } else {
                     dropDown = true;
                     relativeTop = topAndLeft[0] + refField.getOffsetHeight();
                 }
             }
         }
-        showRelativeTo(relativeTop, topAndLeft[1], dropDown);
+        if (scroll.getElement().getPropertyBoolean(MANUAL_RESIZE)) {
+            showRelativeTo(-1, topAndLeft[1], dropDown);
+        } else {
+            showRelativeTo(relativeTop, topAndLeft[1], dropDown);
+        }
     }
 
     private boolean isInFirstColumn() {
