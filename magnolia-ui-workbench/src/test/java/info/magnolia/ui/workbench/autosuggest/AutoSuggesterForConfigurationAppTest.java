@@ -39,12 +39,20 @@ import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -53,6 +61,7 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Test for AutoSuggesterForConfigurationApp.
@@ -61,7 +70,8 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
     private Session session;
     private Node rootNode;
-    AutoSuggesterForConfigurationApp autoSuggesterForConfigurationApp;
+    private AutoSuggesterForConfigurationApp autoSuggesterForConfigurationApp;
+    private DialogDefinitionRegistry dialogRegistry;
 
     @Override
     @Before
@@ -70,6 +80,18 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         rootNode = session.getRootNode();
+
+        dialogRegistry = Mockito.mock(DialogDefinitionRegistry.class);
+        Collection<String> dialogs = Arrays.asList(
+                "standard-templating-kit:components/teasers/stkLinkListArea",
+                "standard-templating-kit:components/links/stkDownloadLink",
+                "standard-templating-kit:components/stages/stkStagePaging"
+                );
+        Mockito.when(dialogRegistry.getRegisteredDialogNames()).thenReturn(dialogs);
+        ComponentProvider provider = Mockito.spy(Components.getComponentProvider());
+        Mockito.when(provider.getComponent(DialogDefinitionRegistry.class)).thenReturn(dialogRegistry);
+        Components.setComponentProvider(provider);
+
         autoSuggesterForConfigurationApp = new AutoSuggesterForConfigurationApp();
     }
 
@@ -237,6 +259,103 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         workbench.setProperty("class", TestBean.class.getName());
         workbench.setProperty("stringProperty", "hi");
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("stringProperty"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsConfiguredTemplateDefinitionAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("class", ConfiguredTemplateDefinition.class.getName());
+        template.setProperty("dialog", "");
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialog"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(dialogRegistry.getRegisteredDialogNames(), autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsConfiguredTemplateDefinitionAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("class", ConfiguredTemplateDefinition.class.getName());
+        template.setProperty("dialog", true);
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialog"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsConfiguredActionDefinitionAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("class", ConfiguredActionDefinition.class.getName());
+        template.setProperty("dialogName", "");
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialogName"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(dialogRegistry.getRegisteredDialogNames(), autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsConfiguredActionDefinitionAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("class", ConfiguredActionDefinition.class.getName());
+        template.setProperty("dialogName", 123);
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialogName"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsOtherType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("class", TestBean.class.getName());
+        template.setProperty("dialogName", "");
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialogName"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsNull() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
+        template.setProperty("dialogName", "");
+        Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialogName"));
 
         // WHEN
         AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
