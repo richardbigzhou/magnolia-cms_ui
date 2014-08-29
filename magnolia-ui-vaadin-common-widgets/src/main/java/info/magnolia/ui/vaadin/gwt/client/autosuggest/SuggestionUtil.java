@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.dom.client.Style.WhiteSpace;
@@ -51,14 +50,16 @@ public class SuggestionUtil {
 
     private static Element encodingEl = DOM.createDiv();
 
+    private static Element div = Document.get().createDivElement().cast();
     private static Element span = Document.get().createSpanElement().cast();
     static {
+        div.getStyle().setHeight(0D, Unit.PX);
+        div.addClassName("suggest-container");
+        span.addClassName("suggest-item");
         span.getStyle().setWhiteSpace(WhiteSpace.NOWRAP);
-        span.getStyle().setProperty("fontFamily", "Verdana, sans-serif");
-        span.getStyle().setFontSize(13D, Unit.PX);
-        span.getStyle().setTextAlign(TextAlign.LEFT);
         span.getStyle().setVisibility(Visibility.HIDDEN);
-        Document.get().getBody().appendChild(span);
+        div.appendChild(span);
+        Document.get().getBody().appendChild(div);
     }
 
     public static String encodingHTML(String html) {
