@@ -77,10 +77,14 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
     </dependency>
-     <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>refresher</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>refresher</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.jonatan</groupId>
+      <artifactId>contexthelp</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.jhlabs</groupId>
       <artifactId>filters</artifactId>
