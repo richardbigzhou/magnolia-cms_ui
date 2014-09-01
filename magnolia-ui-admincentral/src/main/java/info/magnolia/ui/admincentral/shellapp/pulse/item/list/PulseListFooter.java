@@ -76,7 +76,7 @@ public final class PulseListFooter extends CustomComponent {
     private List<ContextMenuItem> menuItems = new ArrayList<ContextMenuItem>();
 
     public PulseListFooter(final TreeTable itemsTable, final SimpleTranslator i18n, boolean withTaskContextMenu) {
-    	super();
+        super();
         this.itemsTable = itemsTable;
         this.i18n = i18n;
         this.contextMenu = withTaskContextMenu ? buildTaskContextMenu(i18n, itemsTable) : buildMessageContextMenu(i18n, itemsTable);
