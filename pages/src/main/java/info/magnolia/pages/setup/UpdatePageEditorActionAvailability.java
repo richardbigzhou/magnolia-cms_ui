@@ -80,6 +80,19 @@ public class UpdatePageEditorActionAvailability extends ArrayDelegateTask {
 
 
         addTask(new UpdateAreaSectionActionsTask());
+
+
+        addTask(new NodeExistsDelegateTask("Bootstrap new pageNodeAreaActions.", "/modules/pages/apps/pages/subApps/detail/actionbar/sections",
+                new PartialBootstrapTask("Bootstrap pageNodeAreaActions actionbar section.",
+                        bootstrapFile,
+                        "/pages/subApps/detail/actionbar/sections/pageNodeAreaActions"))
+        );
+
+        addTask(new NodeExistsDelegateTask("Bootstrap new editPageNodeArea action.", "/modules/pages/apps/pages/subApps/detail/actions/",
+                new PartialBootstrapTask("Bootstrap pageNodeAreaActions actionbar section.",
+                        bootstrapFile,
+                        "/pages/subApps/detail/actions/editPageNodeArea"))
+        );
     }
 
     private void deleteUnusedAction() {
