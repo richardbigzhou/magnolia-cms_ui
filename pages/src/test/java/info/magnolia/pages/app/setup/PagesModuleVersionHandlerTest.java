@@ -459,6 +459,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actions, not(hasNode(pasteComponent)));
         assertThat(actions, not(hasNode(redo)));
         assertThat(actions, not(hasNode(undo)));
+        assertThat(actions, hasNode("editPageNodeArea"));
     }
 
     @Test
@@ -501,6 +502,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actionbar, not(hasNode(optionalAreaActions)));
         assertThat(actionbar, not(hasNode(optionalEditableAreaActions)));
 
+        assertThat(actionbar, hasNode("pageNodeAreaActions"));
     }
 
     @Test
@@ -532,7 +534,5 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("addArea"));
         assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("deleteArea"));
         assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("addComponent"));
-
-
     }
 }
