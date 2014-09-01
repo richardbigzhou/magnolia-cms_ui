@@ -69,7 +69,7 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, Serializable {
 
-    private final CssLayout toolBar = new CssLayout();
+    private final CssLayout toolBar;
 
     private final CssLayout viewModes = new CssLayout();
 
@@ -125,40 +125,40 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         setMargin(new MarginInfo(true, false, false, true));
         addStyleName("workbench");
 
-        viewModes.setStyleName("view-modes");
+        // viewModes.setStyleName("view-modes");
+        //
+        // clearSearchBoxButton = new Button();
+        // clearSearchBoxButton.setStyleName("m-closebutton");
+        // clearSearchBoxButton.addStyleName("icon-delete-search");
+        // clearSearchBoxButton.addStyleName("searchbox-clearbutton");
+        // clearSearchBoxButton.addClickListener(new Button.ClickListener() {
+        //
+        // @Override
+        // public void buttonClick(ClickEvent event) {
+        // searchField.setValue("");
+        // }
+        // });
+        //
+        // searchIcon = new Icon("search");
+        // searchIcon.addStyleName("searchbox-icon");
+        //
+        // searchArrow = new Icon("arrow2_s");
+        // searchArrow.addStyleName("searchbox-arrow");
+        //
+        // searchField = buildSearchField();
+        //
+        // searchBox.setVisible(false);
+        // searchBox.addComponent(searchField);
+        // searchBox.addComponent(clearSearchBoxButton);
+        // searchBox.addComponent(searchIcon);
+        // searchBox.addComponent(searchArrow);
+        // searchBox.setStyleName("searchbox");
 
-        clearSearchBoxButton = new Button();
-        clearSearchBoxButton.setStyleName("m-closebutton");
-        clearSearchBoxButton.addStyleName("icon-delete-search");
-        clearSearchBoxButton.addStyleName("searchbox-clearbutton");
-        clearSearchBoxButton.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                searchField.setValue("");
-            }
-        });
-
-        searchIcon = new Icon("search");
-        searchIcon.addStyleName("searchbox-icon");
-
-        searchArrow = new Icon("arrow2_s");
-        searchArrow.addStyleName("searchbox-arrow");
-
-        searchField = buildSearchField();
-
-        searchBox.setVisible(false);
-        searchBox.addComponent(searchField);
-        searchBox.addComponent(clearSearchBoxButton);
-        searchBox.addComponent(searchIcon);
-        searchBox.addComponent(searchArrow);
-        searchBox.setStyleName("searchbox");
-
-        toolBar.addStyleName("toolbar");
-        toolBar.setWidth(100, Unit.PERCENTAGE);
-        toolBar.addComponent(viewModes);
-        toolBar.addComponent(searchBox);
-
+        // toolBar.addStyleName("toolbar");
+        // toolBar.setWidth(100, Unit.PERCENTAGE);
+        // toolBar.addComponent(viewModes);
+        // toolBar.addComponent(searchBox);
+        toolBar = buildToolBar();
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
 
@@ -286,6 +286,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         this.listener = listener;
     }
 
+    protected WorkbenchView.Listener getListener() {
+        return this.listener;
+    }
+
     private Button buildButton(final String viewType, final String icon, final boolean active) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
             @Override
@@ -349,4 +353,49 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
             contentViews.get(type).setMultiselect(multiselect);
         }
     }
+
+    protected CssLayout buildToolBar() {
+        // Init toolBar
+        CssLayout toolBar = new CssLayout();
+        toolBar.addStyleName("toolbar");
+        toolBar.setWidth(100, Unit.PERCENTAGE);
+
+        // Init view Modes
+        viewModes.setStyleName("view-modes");
+
+        // Init search
+        clearSearchBoxButton = new Button();
+        clearSearchBoxButton.setStyleName("m-closebutton");
+        clearSearchBoxButton.addStyleName("icon-delete-search");
+        clearSearchBoxButton.addStyleName("searchbox-clearbutton");
+        clearSearchBoxButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                searchField.setValue("");
+            }
+        });
+
+        searchIcon = new Icon("search");
+        searchIcon.addStyleName("searchbox-icon");
+
+        searchArrow = new Icon("arrow2_s");
+        searchArrow.addStyleName("searchbox-arrow");
+
+        searchField = buildSearchField();
+
+        searchBox.setVisible(false);
+        searchBox.addComponent(searchField);
+        searchBox.addComponent(clearSearchBoxButton);
+        searchBox.addComponent(searchIcon);
+        searchBox.addComponent(searchArrow);
+        searchBox.setStyleName("searchbox");
+
+        // Add component to the toolBar
+        toolBar.addComponent(viewModes);
+        toolBar.addComponent(searchBox);
+
+        return toolBar;
+    }
+
 }
