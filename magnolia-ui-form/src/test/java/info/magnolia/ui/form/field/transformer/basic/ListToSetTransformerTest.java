@@ -43,6 +43,7 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -151,6 +152,26 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         assertTrue(property.contains("b"));
         assertTrue(property.contains("c"));
         assertTrue(property.contains("d"));
+    }
+
+    @Test
+    public void testWriteToEmptyProperty() throws RepositoryException {
+        // GIVEN
+        definition.setMultiselect(true);
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, LinkedList.class);
+        HashSet<String> value = new HashSet<String>();
+        value.add("a");
+
+        // WHEN
+        handler.writeToItem(value);
+        rootItem.applyChanges();
+
+        // THEN
+        assertNotNull(rootItem.getItemProperty(propertyName).getValue());
+        assertEquals(1, rootNode.getProperty(propertyName).getValues().length);
+        assertEquals("a", rootNode.getProperty(propertyName).getValues()[0].getString());
     }
 
     @Test
