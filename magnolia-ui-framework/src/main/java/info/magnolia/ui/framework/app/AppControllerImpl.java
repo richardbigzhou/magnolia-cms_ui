@@ -70,6 +70,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.message.MessagesManager;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +89,6 @@ import com.google.inject.util.Providers;
 
 /**
  * Implementation of the {@link info.magnolia.ui.api.app.AppController}.
- *
  * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
  * It provides methods to start, stop and focus already running {@link info.magnolia.ui.api.app.App}s.
  * Registers handlers to the following location change events triggered by the {@link LocationController}:
@@ -96,13 +96,14 @@ import com.google.inject.util.Providers;
  * <li>{@link LocationChangedEvent}</li>
  * <li>{@link LocationChangeRequestedEvent}</li>
  * </ul>
- *
+ * 
  * @see LocationController
  * @see info.magnolia.ui.api.app.AppContext
  * @see info.magnolia.ui.api.app.App
+ * Controller is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
+public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler, Serializable {
 
     /**
      * Prefix for componentIds for apps.

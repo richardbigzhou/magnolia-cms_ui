@@ -61,6 +61,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,9 +74,10 @@ import com.vaadin.ui.Component;
 
 /**
  * Admin shell.
+ * Shell is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class ShellImpl extends AbstractUIContext implements Shell, MessageEventHandler {
+public class ShellImpl extends AbstractUIContext implements Shell, MessageEventHandler, Serializable {
 
     /**
      * Provides the current location of shell apps.

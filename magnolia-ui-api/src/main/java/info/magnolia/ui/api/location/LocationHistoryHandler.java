@@ -39,14 +39,17 @@ import info.magnolia.ui.api.shell.FragmentChangedEvent;
 import info.magnolia.ui.api.shell.FragmentChangedHandler;
 import info.magnolia.ui.api.shell.Shell;
 
+import java.io.Serializable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Monitors the browser history for location changes and calls the {@link LocationController} to initiate location changes
  * accordingly, also listens for location change events on the EventBus and updates the browser history to match.
+ * Handler is stored in user session and as such *must* implement {@link Serializable}.
  */
-public class LocationHistoryHandler {
+public class LocationHistoryHandler implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(LocationHistoryHandler.class.getName());
 

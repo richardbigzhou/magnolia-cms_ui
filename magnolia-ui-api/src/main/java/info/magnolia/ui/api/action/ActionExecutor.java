@@ -33,16 +33,19 @@
  */
 package info.magnolia.ui.api.action;
 
+import java.io.Serializable;
+
 
 /**
  * Responsible for executing actions, doing lookups of action definitions based on action names and evaluating if an
  * action is available. Creates a new instance of the action for each execution and allows the action to receive its
  * action definition object and all parameters given through injection as it is created.
- *
+ * ActionExutors (not to be mistaken for actions themselves) are referenced by apps and therefore stored in user session and as such *must* implement {@link Serializable}.
+ * 
  * @see Action
  * @see ActionDefinition
  */
-public interface ActionExecutor {
+public interface ActionExecutor extends Serializable {
 
     /**
      * Creates a new instance of the action for the supplied name and executes it. The arguments passed here along with

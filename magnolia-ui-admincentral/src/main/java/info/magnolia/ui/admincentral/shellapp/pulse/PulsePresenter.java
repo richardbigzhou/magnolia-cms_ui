@@ -48,6 +48,8 @@ import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -56,8 +58,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Presenter of {@link PulseView}.
+ * Presenter is stored in user session and as such *must* implement {@link Serializable}.
  */
-public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, MessagesListPresenter.Listener, TasksListPresenter.Listener, MessageEventHandler, TaskEventHandler {
+public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, MessagesListPresenter.Listener, TasksListPresenter.Listener, MessageEventHandler, TaskEventHandler, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 

@@ -39,6 +39,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.api.app.AppDescriptor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,24 +55,29 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The central registry for {@link AppDescriptor}s. Fires {@link AppRegistryEvent} when the registry changes.
- *
+ * 
  * @see AppDescriptor
  * @see AppDescriptorProvider
  * @see AppRegistryEvent
+ * Registry is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class AppDescriptorRegistry {
+public class AppDescriptorRegistry implements Serializable {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final RegistryMap<String, AppDescriptorProvider> registry = new RegistryMap<String, AppDescriptorProvider>() {
-
+    /**
+     * App descriptor registry map. Just like the registry itself, this map is stored in user session and as such *must* implement {@link Serializable}.
+     */
+    public static final class AppDescriptorRegistryMap extends RegistryMap<String, AppDescriptorProvider> implements Serializable {
         @Override
         protected String keyFromValue(AppDescriptorProvider provider) {
             return provider.getName();
         }
-    };
 
+    }
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final RegistryMap<String, AppDescriptorProvider> registry = new AppDescriptorRegistryMap();
     private EventBus systemEventBus;
 
     @Inject

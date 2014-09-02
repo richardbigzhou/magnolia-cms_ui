@@ -40,6 +40,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -72,6 +73,23 @@ import com.vaadin.shared.ApplicationConstants;
  */
 public class AdmincentralVaadinServlet extends VaadinServlet {
 
+    /**
+     * Bootstrap listener for Admin central.
+     * This listener is kept in session and as such *must* implement Serializable.
+     */
+    public static final class AdminCentralBootstrapListener implements BootstrapListener, Serializable {
+
+        @Override
+        public void modifyBootstrapPage(BootstrapPageResponse response) {
+            response.getDocument().head().append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
+        }
+
+        @Override
+        public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
+        }
+
+    }
+
     private static final Logger log = LoggerFactory.getLogger(AdmincentralVaadinServlet.class);
 
     private static final String ERROR_PAGE_STYLE = "<style>a {color: inherit; text-decoration:none;}" +
@@ -100,17 +118,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
         getService().addSessionInitListener(new SessionInitListener() {
             @Override
             public void sessionInit(SessionInitEvent event) {
-                event.getSession().addBootstrapListener(new BootstrapListener() {
-
-                    @Override
-                    public void modifyBootstrapPage(BootstrapPageResponse response) {
-                        response.getDocument().head().append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
-                    }
-
-                    @Override
-                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
-                    }
-                });
+                event.getSession().addBootstrapListener(new AdminCentralBootstrapListener());
 
                 // Set up and configure UIProvider for the admincentral
                 if (admincentralUiProvider != null) {

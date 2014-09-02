@@ -36,10 +36,13 @@ package info.magnolia.ui.admincentral.shellapp;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
+import java.io.Serializable;
+
 /**
  * Defines a shell app.
+ * Opened ShellApps are stored in user session and as such *must* implement {@link Serializable}.
  */
-public interface ShellApp {
+public interface ShellApp extends Serializable {
 
     View start(ShellAppContext context);
 

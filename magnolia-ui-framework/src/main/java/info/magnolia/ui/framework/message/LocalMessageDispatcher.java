@@ -38,6 +38,8 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -45,8 +47,9 @@ import com.vaadin.server.VaadinSession;
 
 /**
  * Dispatches events on an {@link EventBus} for a certain user.
+ * Dispatcher is stored in user session and as such *must* implement {@link Serializable}.
  */
-public class LocalMessageDispatcher implements MessageListener {
+public class LocalMessageDispatcher implements MessageListener, Serializable {
 
     private EventBus eventBus;
     private VaadinSession vaadinSession;

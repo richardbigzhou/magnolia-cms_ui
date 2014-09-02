@@ -84,6 +84,7 @@ import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeItemId;
 import info.magnolia.ui.workbench.StatusBarView;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -101,6 +102,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
+ * Subapp is stored in user session and as such *must* implement {@link Serializable}.
  */
 public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener, PageEditorPresenter.Listener {
 

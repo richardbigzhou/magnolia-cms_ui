@@ -41,6 +41,7 @@ import info.magnolia.task.Task;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -61,9 +62,10 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * LocalTaskDispatcherManager.
+ * Manager is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class LocalTaskDispatcherManager implements TaskEventHandler {
+public class LocalTaskDispatcherManager implements TaskEventHandler, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(LocalTaskDispatcherManager.class);
 

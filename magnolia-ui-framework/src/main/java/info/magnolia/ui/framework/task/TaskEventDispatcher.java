@@ -35,10 +35,13 @@ package info.magnolia.ui.framework.task;
 
 import info.magnolia.task.event.TaskEvent;
 
+import java.io.Serializable;
+
 /**
  * TaskEventDispatcher.
+ * Dispatchers are stored in user session as part of EventBus and as such *must* implement {@link Serializable}.
  */
-public interface TaskEventDispatcher {
+public interface TaskEventDispatcher extends Serializable {
 
     void onTaskEvent(TaskEvent task);
 }

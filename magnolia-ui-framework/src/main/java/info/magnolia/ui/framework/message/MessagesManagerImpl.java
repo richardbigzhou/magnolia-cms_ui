@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,9 +55,10 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * Implementation of {@link MessagesManager}.
+ * This class lives in a session and is persisted as part of it, hence it *must* implement Serializable.
  */
 @Singleton
-public class MessagesManagerImpl implements MessagesManager {
+public class MessagesManagerImpl implements MessagesManager, Serializable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

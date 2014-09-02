@@ -36,6 +36,8 @@ package info.magnolia.ui.api.event;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
+import java.io.Serializable;
+
 /**
  * Event fired when content is changed in a workspace. Holds an itemId of an item that is related to the changes made.
  * If the change was a deletion the itemId is the parent of the deleted item. If something was added the itemId is for
@@ -47,8 +49,9 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     /**
      * Handles {@link ContentChangedEvent} events.
+     * Handlers are stored in user session and as such *must* implement {@link Serializable}.
      */
-    public interface Handler extends EventHandler {
+    public interface Handler extends EventHandler, Serializable {
 
         void onContentChanged(ContentChangedEvent event);
 

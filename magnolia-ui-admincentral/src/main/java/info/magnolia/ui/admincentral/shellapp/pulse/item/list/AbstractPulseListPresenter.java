@@ -49,6 +49,13 @@ public abstract class AbstractPulseListPresenter<T, L extends PulseListPresenter
     protected AbstractPulseListContainer<T> container;
     protected L listener;
 
+    /**
+     * From Javadoc on Serialization: "During deserialization, the fields of non-serializable classes will be initialized using the public or protected no-arg constructor of the class. A no-arg constructor must be accessible to the subclass that is serializable. The fields of serializable subclasses will be restored from the stream."
+     * Do NOT use this constructor! It's exposed purely for needs of JVM during deserialization.
+     */
+    protected AbstractPulseListPresenter() {
+    }
+
     protected AbstractPulseListPresenter(AbstractPulseListContainer<T> container) {
         this.container = container;
     }

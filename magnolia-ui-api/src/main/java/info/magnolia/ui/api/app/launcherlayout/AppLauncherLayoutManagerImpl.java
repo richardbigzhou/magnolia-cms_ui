@@ -44,6 +44,7 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventHandler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -58,9 +59,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Default {@link AppLauncherLayoutManager} implementation.
+ * Manager is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
+public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager, Serializable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

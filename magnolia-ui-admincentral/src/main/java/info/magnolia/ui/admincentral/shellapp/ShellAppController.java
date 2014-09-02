@@ -35,17 +35,18 @@ package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +56,10 @@ import javax.inject.Singleton;
 
 /**
  * Manages the shell apps and raises callbacks to the app.
+ * Controller is stored in user session and as such *must* implement {@link Serializable}.
  */
 @Singleton
-public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
+public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler, Serializable {
 
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
 

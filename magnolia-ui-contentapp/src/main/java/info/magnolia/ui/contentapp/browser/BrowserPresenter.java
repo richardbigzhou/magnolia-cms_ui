@@ -59,6 +59,7 @@ import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -87,8 +88,10 @@ import com.vaadin.server.Resource;
  * </ul>
  * <p>
  * Its main configuration point is the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
+ * </p>
+ * Presenter is stored in user session and as such *must* implement {@link Serializable}.
  */
-public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserView.Listener {
+public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserView.Listener, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
 

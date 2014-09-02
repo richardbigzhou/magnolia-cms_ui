@@ -39,18 +39,20 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of a subApp with default behavior suitable for most sub apps.
- *
+ * 
  * @see info.magnolia.ui.api.app.SubApp
- *
  * @param <V> {@link View} implementation used by subApp.
+ * Subapps are (as part of apps) stored in user session and as such *must* implement {@link Serializable}.
  */
-public class BaseSubApp<V extends View> implements SubApp {
+public class BaseSubApp<V extends View> implements SubApp, Serializable {
 
     private final SubAppContext subAppContext;
     private final V view;
