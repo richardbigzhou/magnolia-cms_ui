@@ -63,13 +63,20 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
     public void writeToItem(T newValue) {
         Property<T> p = getOrCreateProperty(type, false);
 
-        if (p.getValue() instanceof List && newValue instanceof Set) {
+        if (isCollectionConversionNeeded(newValue, p.getType())) {
             newValue = (T) new LinkedList((Set) newValue);
             if (((List<?>) newValue).isEmpty()) {
                 newValue = null;
             }
         }
         p.setValue(newValue);
+    }
+
+    /**
+     * Check if the newValue has to be transformed from a {@link Set} to a {@link List}. {@link Set} is used by Vaadin multi fields and multi values are stored as {@link List} in Jcr.
+     */
+    protected boolean isCollectionConversionNeeded(T newValue, Class<?> propertyType) {
+        return List.class.isAssignableFrom(propertyType) && newValue instanceof Set;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
