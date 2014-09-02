@@ -271,8 +271,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
         register(DeltaBuilder.update("5.3.6", "")
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/")));
-        register(DeltaBuilder.update("5.4", "")
-                .addTask(new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
+        register(DeltaBuilder.update("5.4", "").
+                addTask(new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
                         "Change the Configuration App's tree to one with auto-suggest by configuring the app to use a different tree presenter",
                         "config",
                         "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree",
