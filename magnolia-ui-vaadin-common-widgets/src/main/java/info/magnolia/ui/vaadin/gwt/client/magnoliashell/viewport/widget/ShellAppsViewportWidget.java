@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import java.util.Iterator;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -80,6 +81,18 @@ public class ShellAppsViewportWidget extends ViewportWidget {
                 }
             }
         });
+
+        /**
+         * Make sure that initially the shell-app viewport is shifted out of view - so
+         * that it slides down when AdminCentral is ready.
+         */
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                getElement().getStyle().setTop(-getOffsetHeight(), Style.Unit.PX);
+            }
+        });
+
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS | Event.MOUSEEVENTS);
     }
 

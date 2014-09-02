@@ -219,8 +219,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 } else {
                     if (!ShellState.get().isAppStarted()) {
                         ShellState.get().setAppStarting();
-                        loadApp(newFragment.getAppName());
-                        rpc.activateApp(newFragment);
+                        if (!newFragment.isSameApp(lastHandledFragment)) {
+                            loadApp(newFragment.getAppName());
+                            rpc.activateApp(newFragment);
+                        }
                     }
                 }
                 lastHandledFragment = newFragment;
