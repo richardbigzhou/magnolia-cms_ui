@@ -269,7 +269,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
                 .addCondition(new WidgetsetRelocationCondition()));
 
-        register(DeltaBuilder.update("5.3.2", "").addTask(
+        register(DeltaBuilder.update("5.3.1", "").addTask(
                 new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
                         "Change the Configuration App's tree to one with auto-suggest by configuring the app to use a different tree presenter",
                         "config",
