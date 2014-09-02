@@ -45,8 +45,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -235,22 +233,6 @@ public class LinkField extends CustomField<String> {
 
     public void setButtonCaptionOther(String buttonCaptionOther) {
         this.buttonCaptionOther = buttonCaptionOther;
-    }
-
-    @Override
-    public boolean isValid() {
-        if (this.isRequired() && StringUtils.isBlank(getValue())) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public ErrorMessage getErrorMessage() {
-        if (this.isRequired() && StringUtils.isBlank(getValue())) {
-            return new UserError(getRequiredError());
-        }
-        return null;
     }
 
 }

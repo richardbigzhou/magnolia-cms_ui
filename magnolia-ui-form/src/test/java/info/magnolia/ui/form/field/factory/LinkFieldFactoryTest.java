@@ -33,20 +33,27 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.form.validator.factory.RegexpFieldValidatorFactory;
+import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.Field;
 
 /**
@@ -69,9 +76,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     @Test
     public void simpleLinkFieldTest() throws Exception {
         // GIVEN
-        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(componentProvider);
+        setFactory(null);
         // WHEN
         Field<String> field = linkFieldFactory.createField();
 
@@ -87,9 +92,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(componentProvider);
+        setFactory(null);
 
         // WHEN
         Field<String> field = linkFieldFactory.createField();
@@ -107,9 +110,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(componentProvider);
+        setFactory(null);
         Field<String> field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
@@ -117,6 +118,62 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
 
         // THEN
         assertEquals("Changed", baseItem.getItemProperty(propertyName).getValue());
+    }
+
+    @Test
+    public void linkFieldRequired() throws Exception {
+        // GIVEN
+        definition.setName(propertyName);
+        definition.setRequired(true);
+        baseNode.setProperty(propertyName, "notChanged");
+        baseItem = new JcrNodeAdapter(baseNode);
+        setFactory(null);
+        Field<String> field = linkFieldFactory.createField();
+        assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
+        // WHEN
+        ((LinkField) field).setValue(null);
+        ErrorMessage errorMessage = ((LinkField) field).getErrorMessage();
+
+        // THEN
+        assertNotNull(errorMessage);
+    }
+
+    @Test
+    public void linkFieldUsesValidator() throws Exception {
+        // GIVEN
+        baseNode.setProperty(propertyName, "notChanged");
+        baseItem = new JcrNodeAdapter(baseNode);
+
+        FieldValidatorFactoryFactory validatorFactory = mock(FieldValidatorFactoryFactory.class);
+        RegexpValidatorDefinition regexpValidator = new RegexpValidatorDefinition();
+        regexpValidator.setPattern("/demo-project(.*)");
+        regexpValidator.setErrorMessage("error {}");
+        RegexpFieldValidatorFactory regExpValidator = new RegexpFieldValidatorFactory(regexpValidator);
+        when(validatorFactory.createFieldValidatorFactory(regexpValidator, baseItem)).thenReturn(regExpValidator);
+
+        definition.setName(propertyName);
+        definition.setValidators(Arrays.asList((FieldValidatorDefinition) regexpValidator));
+        definition.setRequired(true);
+
+        setFactory(validatorFactory);
+        Field<String> field = linkFieldFactory.createField();
+        assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
+        // WHEN
+        ((LinkField) field).setValue("someValue");
+        ErrorMessage errorMessage = ((LinkField) field).getErrorMessage();
+
+        // THEN
+        assertNotNull(errorMessage);
+    }
+
+    /**
+     * @param validatorFactory
+     */
+    protected void setFactory(FieldValidatorFactoryFactory validatorFactory) {
+        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
+        linkFieldFactory.setFieldValidatorFactoryFactory(validatorFactory);
+        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(componentProvider);
     }
 
     @Override
