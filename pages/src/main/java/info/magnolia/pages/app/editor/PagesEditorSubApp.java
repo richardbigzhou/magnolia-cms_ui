@@ -225,6 +225,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
         view.setStatusBarView(statusBarView); // update page status bar
         pageEditorPresenter.updateParameters(parameters);
+        for (PageEditorExtension e : extensions) {
+            e.onNodeSelected(path);
+        }
     }
 
     /**

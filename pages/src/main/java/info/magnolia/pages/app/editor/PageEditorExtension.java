@@ -73,4 +73,9 @@ public interface PageEditorExtension extends Extension {
      * @see com.vaadin.server.AbstractExtension.
      */
     void addTo(AbstractClientConnector connector);
+
+    /**
+     * Called when the page selection changes.
+     */
+    void onNodeSelected(String path);
 }
