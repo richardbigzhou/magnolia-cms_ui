@@ -161,6 +161,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        /**
+         * Fired when the transition that reveals a shell app has just started.
+         */
         eventBus.addHandler(ShellAppStartingEvent.TYPE, new ShellAppStartingEvent.Handler() {
             @Override
             public void onShellAppStarting(ShellAppStartingEvent event) {
@@ -169,6 +172,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        /**
+         * Fired when the transition that reveals a shell app has just finished.
+         */
         eventBus.addHandler(ShellAppStartedEvent.TYPE, new ShellAppStartedEvent.Handler() {
             @Override
             public void onShellAppStarted(ShellAppStartedEvent event) {
@@ -184,6 +190,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+
+        /**
+         * Fired when the shell app icon was clicked twice, or area outside of a shell app was clicked.
+         */
         eventBus.addHandler(HideShellAppsRequestedEvent.TYPE, new HideShellAppsRequestedEvent.Handler() {
             @Override
             public void onHideShellAppsRequest(HideShellAppsRequestedEvent event) {
@@ -193,6 +203,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        /**
+         * Fired when the shell app viewport is completely hidden.
+         */
         eventBus.addHandler(ShellAppsHiddenEvent.TYPE, new ShellAppsHiddenEvent.Handler() {
             @Override
             public void onShellAppsHidden(ShellAppsHiddenEvent event) {
@@ -200,6 +213,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        /**
+         * This one is only fired after swipe/keyboard navigation.
+         */
         eventBus.addHandler(ActivateAppEvent.TYPE, new ActivateAppEvent.Handler() {
             @Override
             public void onActivateApp(ActivateAppEvent event) {
@@ -210,6 +226,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        /**
+         * Handles the address bar navigation.
+         */
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -217,12 +236,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 if (newFragment.isShellApp() && !newFragment.equals(lastHandledFragment)) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    if (!ShellState.get().isAppStarted()) {
+                    if (!newFragment.sameSubApp(lastHandledFragment)) {
                         ShellState.get().setAppStarting();
-                        if (!newFragment.isSameApp(lastHandledFragment)) {
-                            loadApp(newFragment.getAppName());
-                            rpc.activateApp(newFragment);
-                        }
+                        loadApp(newFragment.getAppName());
+                        rpc.activateApp(newFragment);
                     }
                 }
                 lastHandledFragment = newFragment;

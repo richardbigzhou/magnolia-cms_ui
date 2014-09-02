@@ -176,4 +176,8 @@ public class Fragment implements Serializable {
     public boolean isApp() {
         return !isShellApp();
     }
+
+    public boolean sameSubApp(Fragment other) {
+        return isSameApp(other) && subAppId.equals(other.subAppId);
+    }
 }
