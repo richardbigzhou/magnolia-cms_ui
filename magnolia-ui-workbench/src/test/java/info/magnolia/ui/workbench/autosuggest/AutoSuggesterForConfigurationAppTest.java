@@ -55,7 +55,6 @@ import info.magnolia.ui.workbench.autosuggest.MockSubClass.MockInnerSubClass;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -102,7 +101,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanWhenBeanPropertyIsBooleanTypeAndPropertyIsBooleanTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("booleanProperty", false);
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("booleanProperty"));
 
@@ -123,7 +122,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanWhenBeanPropertyIsBooleanTypeAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("booleanProperty", "false");
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("booleanProperty"));
 
@@ -144,7 +143,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanWhenBeanPropertyIsBooleanTypeAndPropertyIsLongTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("booleanProperty", 123);
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("booleanProperty"));
 
@@ -159,7 +158,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsTypeBooleanWhenBeanPropertyIsNotBooleanTypeAndPropertyIsBooleanTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("stringProperty", false);
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("stringProperty"));
 
@@ -222,7 +221,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsEnumTypeAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("enumProperty", TestEnum.enum2.toString());
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("enumProperty"));
 
@@ -244,7 +243,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsEnumTypeAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("enumProperty", true);
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("enumProperty"));
 
@@ -259,7 +258,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsEnumWhenBeanPropertyIsNotEnumType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBean.class.getName());
+        workbench.setProperty("class", MockBean.class.getName());
         workbench.setProperty("stringProperty", "hi");
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("stringProperty"));
 
@@ -342,7 +341,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForValueOfPropertyIfPropertyIsDialogReferenceWhenParentBeanTypeIsOtherType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node template = NodeUtil.createPath(rootNode, "template", NodeTypes.Content.NAME, true);
-        template.setProperty("class", TestBean.class.getName());
+        template.setProperty("class", MockBean.class.getName());
         template.setProperty("dialogName", "");
         Object jcrItemId = JcrItemUtil.getItemId(template.getProperty("dialogName"));
 
@@ -431,7 +430,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsStringType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("stringProperty", "workbench");
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("stringProperty"));
 
@@ -451,7 +450,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsIsCharacterType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("characterProperty", "workbench");
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("characterProperty"));
 
@@ -471,8 +470,8 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsClassType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
-        testNode.setProperty("classProperty", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
+        testNode.setProperty("classProperty", MockBean.class.getName());
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("classProperty"));
 
         // WHEN
@@ -491,7 +490,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsEnumType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("enumProperty", TestEnum.enum1.toString());
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("enumProperty"));
 
@@ -511,7 +510,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsPrimitiveBooleanType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("booleanProperty", true);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("booleanProperty"));
 
@@ -531,7 +530,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsWrappedBooleanType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("booleanWrappedProperty", true);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("booleanWrappedProperty"));
 
@@ -551,7 +550,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsLongType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("longProperty", 123);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("longProperty"));
 
@@ -571,7 +570,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsIntegerType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("integerProperty", 123);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("integerProperty"));
 
@@ -591,7 +590,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsByteType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("byteProperty", 1);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("byteProperty"));
 
@@ -611,7 +610,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsShortType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("shortProperty", 1);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("shortProperty"));
 
@@ -631,7 +630,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsDoubleType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("doubleProperty", 1.0);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("doubleProperty"));
 
@@ -651,7 +650,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsFloatType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("floatProperty", 1.0);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("floatProperty"));
 
@@ -671,7 +670,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsStringBufferTypeAndPropertyNameIsNotClassOrExtends() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("stringBufferProperty", "buffer");
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("stringBufferProperty"));
 
@@ -694,7 +693,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForTypeOfPropertyWhenBeanPropertyIsOtherTypeAndPropertyNameIsExtends() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node testNode = NodeUtil.createPath(rootNode, "test", NodeTypes.ContentNode.NAME, true);
-        testNode.setProperty("class", TestBean.class.getName());
+        testNode.setProperty("class", MockBean.class.getName());
         testNode.setProperty("extends", 123);
         Object jcrItemId = JcrItemUtil.getItemId(testNode.getProperty("extends"));
 
@@ -775,7 +774,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForNameOfPropertyWhenNodeIsBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        workbench.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("class"));
 
         // WHEN
@@ -797,7 +796,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForNameOfPropertyWhenNodeIsBeanAndNodeHasSomePropertiesAndPropertyIsInBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        workbench.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
         workbench.setProperty("booleanProperty", true);
         workbench.setProperty("stringProperty", "");
         Object jcrItemId = JcrItemUtil.getItemId(workbench.getProperty("booleanProperty"));
@@ -819,7 +818,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     public void testGetSuggestionsForNameOfPropertyWhenNodeIsBeanAndNodeHasSomePropertiesAndPropertyIsNotInBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node workbench = NodeUtil.createPath(rootNode, "workbench", NodeTypes.ContentNode.NAME, true);
-        workbench.setProperty("class", TestBeanForNameOfProperty.class.getName());
+        workbench.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
         workbench.setProperty("booleanProperty", true);
         workbench.setProperty("stringProperty", "");
         workbench.setProperty("untitled", "");
@@ -1127,182 +1126,170 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
-    private class TestBeanForNameOfProperty {
-        private boolean booleanProperty;
-        private String stringProperty;
-        private Object objectProperty;
-        private Map<String, String> mapProperty;
-        private TestBean testBean;
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenParentNodeIsNull() throws RepositoryException {
+        // GIVEN
+        Object jcrItemId = JcrItemUtil.getItemId(rootNode);
 
-        public boolean isBooleanProperty() {
-            return booleanProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public void setBooleanProperty(boolean booleanProperty) {
-            this.booleanProperty = booleanProperty;
-        }
-
-        public String getStringProperty() {
-            return stringProperty;
-        }
-
-        public void setStringProperty(String stringProperty) {
-            this.stringProperty = stringProperty;
-        }
-
-        public Object getObjectProperty() {
-            return objectProperty;
-        }
-
-        public void setObjectProperty(Object objectProperty) {
-            this.objectProperty = objectProperty;
-        }
-
-        public Map<String, String> getMapProperty() {
-            return mapProperty;
-        }
-
-        public void setMapProperty(Map<String, String> mapProperty) {
-            this.mapProperty = mapProperty;
-        }
-
-        public TestBean getTestBean() {
-            return testBean;
-        }
-
-        public void setTestBean(TestBean testBean) {
-            this.testBean = testBean;
-        }
-
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
-    private class TestBean {
-        private String stringProperty;
-        private boolean booleanProperty;
-        private TestEnum enumProperty;
-        private Boolean booleanWrappedProperty;
-        private Character characterProperty;
-        private Class<?> classProperty;
-        private Long longProperty;
-        private Integer integerProperty;
-        private Byte byteProperty;
-        private Short shortProperty;
-        private Double doubleProperty;
-        private Float floatProperty;
-        private StringBuffer stringBufferProperty;
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsNullAndNodeIsContentNodeAndParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
+        Node core = NodeUtil.createPath(rootNode, "modules/pages/core", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(core);
 
-        public String getStringProperty() {
-            return stringProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public void setStringProperty(String stringProperty) {
-            this.stringProperty = stringProperty;
-        }
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
 
-        public boolean isBooleanProperty() {
-            return booleanProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsNullAndNodeIsFolderAndParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
+        Node untitled = NodeUtil.createPath(rootNode, "modules/pages/untitled", NodeTypes.Content.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
 
-        public void setBooleanProperty(boolean booleanProperty) {
-            this.booleanProperty = booleanProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public TestEnum getEnumProperty() {
-            return enumProperty;
-        }
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 8);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("apps"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("templates"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("dialogs"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("commands"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("fieldTypes"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("virtualURIMapping"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("renderers"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("config"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertFalse(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
 
-        public void setEnumProperty(TestEnum enumProperty) {
-            this.enumProperty = enumProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsArray() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        NodeUtil.createPath(rootNode, "parent/arrayProperty", NodeTypes.ContentNode.NAME, true);
+        Node arrayMember = NodeUtil.createPath(rootNode, "parent/arrayProperty/arrayMember", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(arrayMember);
 
-        public Boolean getBooleanWrappedProperty() {
-            return booleanWrappedProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public void setBooleanWrappedProperty(Boolean booleanWrappedProperty) {
-            this.booleanWrappedProperty = booleanWrappedProperty;
-        }
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
 
-        public Character getCharacterProperty() {
-            return characterProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsCollection() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        NodeUtil.createPath(rootNode, "parent/collectionProperty", NodeTypes.ContentNode.NAME, true);
+        Node collectionMember = NodeUtil.createPath(rootNode, "parent/collectionProperty/collectionMember", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(collectionMember);
 
-        public void setCharacterProperty(Character characterProperty) {
-            this.characterProperty = characterProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public Class<?> getClassProperty() {
-            return classProperty;
-        }
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
 
-        public void setClassProperty(Class<?> classProperty) {
-            this.classProperty = classProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsMap() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        NodeUtil.createPath(rootNode, "parent/mapProperty", NodeTypes.ContentNode.NAME, true);
+        Node mapMember = NodeUtil.createPath(rootNode, "parent/mapProperty/mapMember", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(mapMember);
 
-        public Long getLongProperty() {
-            return longProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public void setLongProperty(Long longProperty) {
-            this.longProperty = longProperty;
-        }
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
 
-        public Integer getIntegerProperty() {
-            return integerProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        Node untitled = NodeUtil.createPath(rootNode, "parent/untitled", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
 
-        public void setIntegerProperty(Integer integerProperty) {
-            this.integerProperty = integerProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public Byte getByteProperty() {
-            return byteProperty;
-        }
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mapProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
 
-        public void setByteProperty(Byte byteProperty) {
-            this.byteProperty = byteProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        NodeUtil.createPath(rootNode, "parent/mapProperty", NodeTypes.ContentNode.NAME, true);
+        Node testBean = NodeUtil.createPath(rootNode, "parent/testBean", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(testBean);
 
-        public Short getShortProperty() {
-            return shortProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public void setShortProperty(Short shortProperty) {
-            this.shortProperty = shortProperty;
-        }
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
 
-        public Double getDoubleProperty() {
-            return doubleProperty;
-        }
+    @Test
+    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsNotInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        NodeUtil.createPath(rootNode, "parent/mapProperty", NodeTypes.ContentNode.NAME, true);
+        NodeUtil.createPath(rootNode, "parent/testBean", NodeTypes.ContentNode.NAME, true);
+        Node untitled = NodeUtil.createPath(rootNode, "parent/untitled", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
 
-        public void setDoubleProperty(Double doubleProperty) {
-            this.doubleProperty = doubleProperty;
-        }
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
 
-        public Float getFloatProperty() {
-            return floatProperty;
-        }
-
-        public void setFloatProperty(Float floatProperty) {
-            this.floatProperty = floatProperty;
-        }
-
-        public StringBuffer getStringBufferProperty() {
-            return stringBufferProperty;
-        }
-
-        public void setStringBufferProperty(StringBuffer stringBufferProperty) {
-            this.stringBufferProperty = stringBufferProperty;
-        }
-
-        public Integer getExtends() {
-            return null;
-        }
-
-        public void setExtends(Integer i) {
-
-        }
-
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     /**
