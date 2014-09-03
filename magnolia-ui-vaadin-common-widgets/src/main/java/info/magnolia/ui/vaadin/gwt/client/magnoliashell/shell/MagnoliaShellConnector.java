@@ -85,6 +85,7 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(MagnoliaShell.class)
 public class MagnoliaShellConnector extends AbstractLayoutConnector implements MagnoliaShellView.Presenter {
+    private static final boolean DEBUG_NAVIGATION = false;
 
     private ShellServerRpc rpc = RpcProxy.create(ShellServerRpc.class, this);
     private MagnoliaShellView view;
@@ -197,7 +198,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
-                    VConsole.error("starting " + event.getName());
+                    if (DEBUG_NAVIGATION) {
+                        VConsole.error("starting " + event.getName());
+                    }
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
             }
@@ -219,7 +222,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
                     ShellState shellState = ShellState.get();
-                    VConsole.error("last: " + lastHandledFragment.toFragment() + " new: " + newFragment.toFragment() + " event: " + (!shellState.isAppStarting() && !newFragment.equals(lastHandledFragment) ? "yes" : "no"));
+                    if (DEBUG_NAVIGATION) {
+                        if (lastHandledFragment != null) {
+                            VConsole.error("last: " + lastHandledFragment.toFragment() + " new: " + newFragment.toFragment() + " event: " + (!shellState.isAppStarting() && !newFragment.equals(lastHandledFragment) ? "yes" : "no"));
+                        }
+                    }
                     if (!shellState.isAppStarting() && !newFragment.sameSubApp(lastHandledFragment)) {
                         Fragment stateFragment = getState().uriFragment;
 

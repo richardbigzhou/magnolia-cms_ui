@@ -43,7 +43,7 @@ import com.vaadin.client.VConsole;
  */
 public class ShellState {
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 
     private static enum StateType {
 
