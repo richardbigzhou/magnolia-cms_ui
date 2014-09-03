@@ -42,18 +42,21 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.ZoomA
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
-import com.vaadin.client.VConsole;
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
  */
 public class AppsTransitionDelegate extends BaseTransitionDelegate {
+
+    private static final Logger log = Logger.getLogger(AppsTransitionDelegate.class.getName());
 
     private static final double CURTAIN_ALPHA = 0.9;
 
@@ -86,7 +89,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         protected void onComplete() {
             super.onComplete();
             ShellState.get().setAppStarted();
-            VConsole.error("zoom:" + getElement().getFirstChildElement().getClassName());
+            log.warning("Switching to 'APP STARTED' state after zoom-in animation");
         }
     };
 
@@ -121,7 +124,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         } else {
             viewport.showChildNoTransition(app);
             ShellState.get().setAppStarted();
-            VConsole.error("Instant: " + app.getElement().getFirstChildElement().getClassName());
+            log.warning("Switching to 'APP STARTED' state without app transition");
         }
     }
 

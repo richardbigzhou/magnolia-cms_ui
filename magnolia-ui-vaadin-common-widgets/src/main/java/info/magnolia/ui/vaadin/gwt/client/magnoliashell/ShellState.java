@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
 
-import com.vaadin.client.VConsole;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Singleton object which helps to track the state of the Magnolia Shell component.
@@ -43,7 +44,7 @@ import com.vaadin.client.VConsole;
  */
 public class ShellState {
 
-    private static boolean DEBUG = false;
+    private static Logger log = Logger.getLogger(ShellState.class.getName());
 
     private static enum StateType {
 
@@ -67,9 +68,7 @@ public class ShellState {
     }
 
     private void log(StateType stateType) {
-        if (DEBUG) {
-            VConsole.error(stateType.toString());
-        }
+        log.log(Level.WARNING, stateType.toString());
     }
 
     public void setShellAppStarting() {
