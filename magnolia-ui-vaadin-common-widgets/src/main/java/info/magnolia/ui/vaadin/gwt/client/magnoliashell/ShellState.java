@@ -42,7 +42,9 @@ import com.vaadin.client.VConsole;
  * and {@link info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.AppsViewportConnector}.
  */
 public class ShellState {
-    
+
+    private static boolean DEBUG = true;
+
     private static enum StateType {
 
         shellAppStarting,
@@ -65,7 +67,9 @@ public class ShellState {
     }
 
     private void log(StateType stateType) {
-        VConsole.error(stateType.toString());
+        if (DEBUG) {
+            VConsole.error(stateType.toString());
+        }
     }
 
     public void setShellAppStarting() {

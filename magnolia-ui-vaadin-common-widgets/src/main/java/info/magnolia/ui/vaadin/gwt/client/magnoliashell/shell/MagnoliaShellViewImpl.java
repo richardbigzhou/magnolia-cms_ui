@@ -134,7 +134,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
                 char c = event.getCharCode();
 
-                boolean isAppStarted = ShellState.get().isAppStarted();
                 switch (c) {
 
                 // Shell Apps
@@ -150,13 +149,15 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
                 // App Stack Navigation.
                 case '9':
-                    if (isAppStarted) {
+                    // We have more than one app open
+                    if (appViewport().readyForAppNavigation()) {
                         ShellState.get().setAppStarting();
                         appViewport().goToPreviousApp();
                     }
                     break;
                 case '0':
-                    if (isAppStarted) {
+                    // We have more than one app open
+                    if (appViewport().readyForAppNavigation()) {
                         ShellState.get().setAppStarting();
                         appViewport().goToNextApp();
                     }
@@ -201,8 +202,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     protected native Element elementInFocus(Element element) /*-{
-                                                             return element.ownerDocument.activeElement;
-                                                             }-*/;
+        return element.ownerDocument.activeElement;
+    }-*/;
 
 
     protected AppsViewportWidget appViewport() {

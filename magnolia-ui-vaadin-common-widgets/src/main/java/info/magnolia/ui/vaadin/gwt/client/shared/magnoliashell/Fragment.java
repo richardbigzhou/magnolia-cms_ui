@@ -180,4 +180,28 @@ public class Fragment implements Serializable {
     public boolean sameSubApp(Fragment other) {
         return isSameApp(other) && subAppId.equals(other.subAppId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Fragment)) return false;
+
+        Fragment fragment = (Fragment) o;
+
+        if (!appName.equals(fragment.appName)) return false;
+        if (appViewportType != fragment.appViewportType) return false;
+        if (!parameter.equals(fragment.parameter)) return false;
+        if (!subAppId.equals(fragment.subAppId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = appViewportType.hashCode();
+        result = 31 * result + appName.hashCode();
+        result = 31 * result + subAppId.hashCode();
+        result = 31 * result + parameter.hashCode();
+        return result;
+    }
 }

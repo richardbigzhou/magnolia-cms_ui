@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate.BaseTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.ZoomAnimation;
@@ -46,14 +47,13 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
+import com.vaadin.client.VConsole;
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
  */
 public class AppsTransitionDelegate extends BaseTransitionDelegate {
-
-    private Object lock = new Object();
 
     private static final double CURTAIN_ALPHA = 0.9;
 
@@ -77,15 +77,10 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private ZoomAnimation zoomInAnimation = new ZoomAnimation(true) {
         @Override
-        protected void onStart() {
-            super.onStart();
-            Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
-        }
-
-        @Override
         protected void onComplete() {
             super.onComplete();
-            Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
+            ShellState.get().setAppStarted();
+            VConsole.error("zoom:" + getElement().getFirstChildElement().getClassName());
         }
     };
 
@@ -119,6 +114,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             zoomInAnimation.run(ZOOM_DURATION, app.getElement());
         } else {
             viewport.showChildNoTransition(app);
+            ShellState.get().setAppStarted();
+            VConsole.error("Instant: " + app.getElement().getFirstChildElement().getClassName());
         }
     }
 
@@ -151,5 +148,10 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         } else if (viewportElement.isOrHasChild(curtain)) {
             viewportElement.removeChild(curtain);
         }
+    }
+
+    @Override
+    public boolean inProgress() {
+        return zoomInAnimation.isRunning() || zoomOutAnimation.isRunning();
     }
 }

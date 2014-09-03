@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
@@ -69,6 +70,8 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                 if (newActiveComponent != null && getWidget().getVisibleChild() != newActiveComponent) {
                     getWidget().showChild(newActiveComponent.getWidget());
                     newActiveComponent.getWidget().getElement().getStyle().clearOpacity();
+                } else if (newActiveComponent != null) {
+                    ShellState.get().setAppStarted();
                 }
             }
         });

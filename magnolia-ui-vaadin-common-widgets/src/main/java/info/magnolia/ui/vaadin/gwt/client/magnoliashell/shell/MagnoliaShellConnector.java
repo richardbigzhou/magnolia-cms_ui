@@ -70,6 +70,7 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.Util;
+import com.vaadin.client.VConsole;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
@@ -102,30 +103,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 while (it.hasNext()) {
                     final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
-                }
-            }
-        });
-
-        addStateChangeHandler("uriFragment", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                Fragment f = getState().uriFragment;
-                if (f != null) {
-                    if (f.isApp()) {
-                        Scheduler.get().scheduleFinally(new Scheduler.RepeatingCommand() {
-                            @Override
-                            public boolean execute() {
-                                boolean layoutRunning = getLayoutManager().isLayoutRunning();
-
-                                if (!layoutRunning) {
-                                    ShellState.get().setAppStarted();
-                                }
-
-                                return layoutRunning;
-                            }
-                        });
-
-                    }
                 }
             }
         });
@@ -221,6 +198,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
                     ShellState.get().setAppStarting();
+                    VConsole.error("starting " + event.getName());
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
             }
@@ -233,13 +211,27 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
-                if (newFragment.isShellApp() && !newFragment.equals(lastHandledFragment)) {
+
+                if (newFragment.equals(lastHandledFragment)) {
+                    return;
+                }
+
+                if (newFragment.isShellApp()) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    if (!newFragment.sameSubApp(lastHandledFragment)) {
-                        ShellState.get().setAppStarting();
+                    ShellState shellState = ShellState.get();
+                    VConsole.error("last: " + lastHandledFragment.toFragment() + " new: " + newFragment.toFragment() + " event: " + (!shellState.isAppStarting() && !newFragment.equals(lastHandledFragment) ? "yes" : "no"));
+                    if (!shellState.isAppStarting() && !newFragment.sameSubApp(lastHandledFragment)) {
+                        Fragment stateFragment = getState().uriFragment;
+                        if (!newFragment.isSameApp(stateFragment)) {
+                            ShellState.get().setAppStarting();
+                        }
                         loadApp(newFragment.getAppName());
                         rpc.activateApp(newFragment);
+                    } else {
+                        newFragment = lastHandledFragment;
+                        VConsole.error("started " + newFragment);
+                        ShellState.get().setAppStarted();
                     }
                 }
                 lastHandledFragment = newFragment;

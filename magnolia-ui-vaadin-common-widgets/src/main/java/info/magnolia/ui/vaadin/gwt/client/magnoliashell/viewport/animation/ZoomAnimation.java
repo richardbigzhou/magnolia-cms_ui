@@ -74,6 +74,7 @@ public class ZoomAnimation extends Animation {
     private void doRun(Element element, int duration, double startTime) {
         element.getStyle().setVisibility(Style.Visibility.VISIBLE);
         element.addClassName(isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
+
         ZoomAnimation.super.run(duration, startTime, element);
     }
 

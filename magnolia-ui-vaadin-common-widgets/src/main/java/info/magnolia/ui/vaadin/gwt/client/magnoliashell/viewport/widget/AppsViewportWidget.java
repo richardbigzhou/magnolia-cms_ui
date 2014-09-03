@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.gwt.client.CloseButton;
 import info.magnolia.ui.vaadin.gwt.client.FullScreenButton;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
@@ -79,11 +80,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
      * Listener interface for {@link AppsViewportWidget}.
      */
     public interface Listener {
+
         void closeCurrentApp();
-
         void setCurrentApp(String name);
-    };
 
+    };
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
     private final AppPreloader preloader = new AppPreloader();
@@ -99,6 +100,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     private final FullScreenButton fullScreenButton = new FullScreenButton();
 
     private Element curtain = DOM.createDiv();
+
+    public boolean readyForAppNavigation() {
+        return ShellState.get().isAppStarted() && getWidgetCount() > 1 && !getTransitionDelegate().inProgress();
+    }
 
     private void closeCurrentApp() {
         if (!isAppClosing()) {
