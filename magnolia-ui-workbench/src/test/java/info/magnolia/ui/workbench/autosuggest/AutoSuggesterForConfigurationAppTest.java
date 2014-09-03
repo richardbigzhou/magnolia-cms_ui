@@ -50,6 +50,7 @@ import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.ui.workbench.autosuggest.MockSubClass.MockInnerSubClass;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -895,6 +896,235 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenParentBeanTypeIsNullAndPropertyNameIsClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", "NoSuchClass");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenNoParentAndNoSubClassesAndPropertyIsStringTypeInJCRAndPropertyNameIsClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        rootNode.setProperty("class", MockClassWithoutSubClasses.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(rootNode.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithoutSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenNoParentAndHasSubClassesAndPropertyIsStringTypeInJCRAndPropertyNameIsClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        rootNode.setProperty("class", MockClassWithSubClasses.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(rootNode.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenHasParentAndNotInParentAndPropertyNameIsClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockClassWithoutSubClasses.class.getName());
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithoutSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenHasParentAndInParentAndPropertyNameIsClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockParentBean.class.getName());
+        Node testBean = NodeUtil.createPath(rootNode, "parent/child", NodeTypes.ContentNode.NAME, true);
+        testBean.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(testBean.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsClassAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockParentBean.class.getName());
+        Node testBean = NodeUtil.createPath(rootNode, "parent/child", NodeTypes.ContentNode.NAME, true);
+        testBean.setProperty("class", 123);
+        Object jcrItemId = JcrItemUtil.getItemId(testBean.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeWithNoTypeParameter() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithoutTypeParameter", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithoutTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeWithUnboundedWildcardTypeParameter() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithUnboundedWildcardTypeParameter", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithUnboundedWildcardTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeWithConcreteTypeParameter() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithConcreteTypeParameter", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithConcreteTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeWithLowerBoundedWildcardTypeParameter() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithLowerBoundedWildcardTypeParameter", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithLowerBoundedWildcardTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeWithUpperBoundedWildcardTypeParameter() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithUpperBoundedWildcardTypeParameter", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithUpperBoundedWildcardTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsClassTypeAndPropertyIsNotStringInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("classPropertyWithUpperBoundedWildcardTypeParameter", 123);
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("classPropertyWithUpperBoundedWildcardTypeParameter"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsClassReferenceWhenPropertyNameIsNotClassAndBeanPropertyIsNotClassType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node core = NodeUtil.createPath(rootNode, "core", NodeTypes.ContentNode.NAME, true);
+        core.setProperty("class", MockBeanWithClassProperties.class.getName());
+        core.setProperty("modelClass", "");
+        Object jcrItemId = JcrItemUtil.getItemId(core.getProperty("modelClass"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
     private class TestBeanForNameOfProperty {
