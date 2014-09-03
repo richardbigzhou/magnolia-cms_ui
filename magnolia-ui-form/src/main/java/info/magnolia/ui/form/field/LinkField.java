@@ -54,8 +54,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -264,25 +262,6 @@ public class LinkField extends CustomField<String> {
 
     public void setButtonCaptionOther(String buttonCaptionOther) {
         this.buttonCaptionOther = buttonCaptionOther;
-    }
-
-    @Override
-    public boolean isValid() {
-        if (this.isRequired() && StringUtils.isBlank(getValue())) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-
-    @Override
-    public ErrorMessage getErrorMessage() {
-        if (this.isRequired() && StringUtils.isBlank(getValue())) {
-            return new UserError(getRequiredError());
-        } else {
-            return null;
-        }
     }
 
     private class LinkFieldChooseDialogCallback implements ChooseDialogCallback {
