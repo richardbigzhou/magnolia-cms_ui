@@ -44,6 +44,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionD
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
@@ -59,6 +61,8 @@ import com.vaadin.shared.ui.Connect;
 @Connect(AppsViewport.class)
 public class AppsViewportConnector extends ViewportConnector implements AppsViewportWidget.Listener {
 
+    private static final Logger log = Logger.getLogger(AppsViewportConnector.class.getName());
+
     @Override
     protected void init() {
         super.init();
@@ -71,6 +75,7 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                     getWidget().showChild(newActiveComponent.getWidget());
                     newActiveComponent.getWidget().getElement().getStyle().clearOpacity();
                 } else if (newActiveComponent != null) {
+                    log.warning("Switching to 'APP STARTED' state since the active component did not change");
                     ShellState.get().setAppStarted();
                 }
             }

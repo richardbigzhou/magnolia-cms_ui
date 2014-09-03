@@ -162,7 +162,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 String newShellAppName = event.getType().name();
                 ShellState.get().setShellAppStarted();
                 if (!fragment.isShellApp() || !fragment.getAppName().equalsIgnoreCase(newShellAppName)) {
-                    final Fragment newFragment = Fragment.fromString("shell:" + newShellAppName.toLowerCase() + ":" + "");
+                    final Fragment newFragment = Fragment.fromString("shell:" + newShellAppName.toLowerCase() + ":");
                     History.newItem(newFragment.toFragment(), false);
                     lastHandledFragment = newFragment;
                     activateShellApp(newFragment);
@@ -201,6 +201,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
                     log.log(Level.WARNING, "Starting from swipe/keyboard: " + event.getName());
+                    ShellState.get().setAppStarting();
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
             }
@@ -219,25 +220,40 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 }
 
                 if (newFragment.isShellApp()) {
-                    showShellApp(newFragment.resolveShellAppType());
+                    doShowShellApp(newFragment.resolveShellAppType());
                 } else {
-                    ShellState shellState = ShellState.get();
-                    if (lastHandledFragment != null) {
-                        log.warning(
-                                String.format(
-                                        "App navigation from [%s] to [%s], request will %s be sent",
-                                        lastHandledFragment.toFragment(), !newFragment.sameSubApp(lastHandledFragment) ? "" : "not"));
-                    }
-                    if (!shellState.isAppStarting()) {
-                        Fragment stateFragment = getState().currentAppUriFragment;
+                    final ShellState shellState = ShellState.get();
 
-                        if (!newFragment.isSameApp(stateFragment)) {
+                    if (lastHandledFragment != null) {
+                        log.warning("App navigation from " +lastHandledFragment.toFragment()+ " to " + newFragment.toFragment() + (!newFragment.sameSubApp(lastHandledFragment) ? "" : "not") +", request will %s be sent");
+                    }
+
+                    // The fragment of the app that was last displayed in the viewport.
+                    final Fragment latestLoadedAppLocation = getState().currentAppUriFragment;
+
+                    /**
+                     * The new location points to the same app as before, means probably we have returned from the server roundtrip and app
+                     * state/location was refined. Either was - we should mark the state as 'app started'.
+                     */
+                    if (newFragment.isSameApp(latestLoadedAppLocation)) {
+                        log.warning("Switching to 'APP STARTED' state since the updated app is already active");
+                        ShellState.get().setAppStarted();
+                    }
+
+                    /**
+                     * If not somehow another app is starting already.
+                     */
+                    if (!shellState.isAppStarting()) {
+
+                        if (!newFragment.isSameApp(latestLoadedAppLocation)) {
                             ShellState.get().setAppStarting();
-                        } else {
-                            ShellState.get().setAppStarted();
                         }
 
-                        if (!newFragment.sameSubApp(lastHandledFragment)) {
+                        /**
+                         * We either have no active request -> the location change came directly from address bar, so we have to navigate,
+                         * or the new app is requested, so we notify the server about it.
+                         */
+                        if (!getConnection().hasActiveRequest() || !newFragment.isSameApp(lastHandledFragment)) {
                             loadApp(newFragment.getAppName());
                             rpc.activateApp(newFragment);
                         }
@@ -270,12 +286,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.fireEvent(new AppRequestedEvent(appName));
     }
 
-    @Override
-    public void showShellApp(ShellAppType shellAppType) {
-        final ShellState shellState = ShellState.get();
-        if (!shellState.isAppStarting()) {
-            eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
-        }
+    private void doShowShellApp(ShellAppType shellAppType) {
+        eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
     }
 
     private void doFullScreen(boolean isFullScreen) {
@@ -284,8 +296,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void onHideShellAppsRequested() {
-        AppsViewportWidget appViewportWidget =
-                (AppsViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
+        final AppsViewportWidget appViewportWidget = (AppsViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
 
         // If no app is active, then show or keep the applauncher.
         Widget currentApp = appViewportWidget.getCurrentApp();
@@ -294,7 +305,17 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             ShellState.get().setShellAppClosing();
             eventBus.fireEvent(new HideShellAppsEvent());
         } else {
-            showShellApp(ShellAppType.APPLAUNCHER);
+            doShowShellApp(ShellAppType.APPLAUNCHER);
+        }
+    }
+
+    @Override
+    public void showShellApp(ShellAppType type) {
+        // We don't trigger the shell apps via trinity icons and/or 1-3 buttons
+        // if there is a request being processed because it will cause another request (fired after transition is done)
+        // and eventually could lead to the location change race (so called Disco App effect).
+        if (!getConnection().hasActiveRequest()) {
+            doShowShellApp(type);
         }
     }
 
