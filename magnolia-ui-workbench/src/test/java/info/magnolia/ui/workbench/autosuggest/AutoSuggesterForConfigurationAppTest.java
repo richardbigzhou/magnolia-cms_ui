@@ -43,8 +43,10 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
@@ -1290,6 +1292,175 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testTypeInferenceWhenClassPropertyIsInAncestor() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node node = NodeUtil.createPath(rootNode, "node", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", MockGrandParentBean.class.getName());
+        Node child = NodeUtil.createPath(rootNode, "node/child/child", NodeTypes.ContentNode.NAME, true);
+        child.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(child.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithSubClasses.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
+    }
+
+    @Test
+    public void testTyeInferenceWhenNodeExtends() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node node1 = NodeUtil.createPath(rootNode, "node1", NodeTypes.ContentNode.NAME, true);
+        node1.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        Node node2 = NodeUtil.createPath(rootNode, "node2", NodeTypes.ContentNode.NAME, true);
+        node2.setProperty("extends", "/node1");
+        Node node3 = NodeUtil.createPath(rootNode, "node3", NodeTypes.ContentNode.NAME, true);
+        node3.setProperty("extends", "/node2");
+        Node untitled = NodeUtil.createPath(rootNode, "node3/testBean/untitled", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 4);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("arrayProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("collectionProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mapProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("stringBufferProperty"));
+    }
+
+    @Test
+    public void testTypeInferenceWhenInModuleFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        NodeUtil.createPath(rootNode, "/modules/pages/apps/folder", NodeTypes.Content.NAME, true);
+        Node node = NodeUtil.createPath(rootNode, "/modules/pages/apps/folder/pages", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(node.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() > 0);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(AppDescriptor.class.getName()));
+    }
+
+    @Test
+    public void testTypeInferenceWhenNotInFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        NodeUtil.createPath(rootNode, "/modules/pages/apps/node", NodeTypes.ContentNode.NAME, true);
+        Node node = NodeUtil.createPath(rootNode, "/modules/pages/apps/node/pages", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(node.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testTypeInferenceWhenInCollection() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        Node node = NodeUtil.createPath(rootNode, "parent/collectionProperty/node", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(node.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() > 0);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockBean.class.getName()));
+    }
+
+    @Test
+    public void testTypeInferenceWhenInMap() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        Node node = NodeUtil.createPath(rootNode, "parent/mapProperty/node", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(node.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() > 0);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockBean.class.getName()));
+    }
+
+    @Test
+    public void testTypeInferenceWhenInArray() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockBean.class.getName());
+        Node node = NodeUtil.createPath(rootNode, "parent/arrayProperty/node", NodeTypes.ContentNode.NAME, true);
+        node.setProperty("class", "");
+        Object jcrItemId = JcrItemUtil.getItemId(node.getProperty("class"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() > 0);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockBean.class.getName()));
+    }
+
+    @Test
+    public void testTypeInferenceWhenImplementingClass() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        ComponentsTestUtil.setImplementation(MockSuperInterface.class, MockImplementingClass.class);
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockSuperInterface.class.getName());
+        parent.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(parent.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("property1"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("booleanProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+    }
+
+    @Test
+    public void testTypeInferenceWhenSubInterface() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        parent.setProperty("class", MockSubInterface.class.getName());
+        parent.setProperty("untitled", "");
+        Object jcrItemId = JcrItemUtil.getItemId(parent.getProperty("untitled"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("property1"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("property2"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
     }
 
     /**
