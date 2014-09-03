@@ -73,6 +73,8 @@ public class MagnoliaRichTextField extends CKEditorTextField {
         this.config = config;
         serverPlugins = config.getServerPlugins();
         customEvents = config.getListenedEvents();
+        addStyleName("cke_rtl");
+        config.addExtraConfig("'contentsLangDirection'", "'rtl'");
     }
 
     @Override

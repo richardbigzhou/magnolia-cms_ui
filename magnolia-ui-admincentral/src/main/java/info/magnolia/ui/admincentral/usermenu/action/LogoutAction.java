@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.usermenu.action;
 
 import info.magnolia.cms.security.LogoutFilter;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
@@ -46,12 +47,17 @@ import com.vaadin.ui.UI;
  * Redirects to {@link MgnlContext#getContextPath()}.
  */
 public class LogoutAction extends AbstractAction<LogoutActionDefinition> {
-    public LogoutAction(LogoutActionDefinition definition) {
+    private TranslationService service;
+
+    public LogoutAction(LogoutActionDefinition definition, TranslationService service) {
         super(definition);
+
+        this.service = service;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        service.reloadMessageBundles();
         UI.getCurrent().getSession().close();
         UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath() + "?" + LogoutFilter.PARAMETER_LOGOUT + "=true");
     }

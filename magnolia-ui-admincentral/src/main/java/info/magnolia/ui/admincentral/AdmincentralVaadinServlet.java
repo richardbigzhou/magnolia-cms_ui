@@ -125,6 +125,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
+            //Thread.sleep(1500);
             String requestURI = ServletUtil.stripPathParameters(request.getRequestURI());
             if (requestURI != null && requestURI.endsWith("undefined.cache.js")) {
                 writeUnsupportedBrowserPage(request, response);

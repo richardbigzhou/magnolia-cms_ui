@@ -197,7 +197,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
-                    ShellState.get().setAppStarting();
                     VConsole.error("starting " + event.getName());
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
@@ -228,10 +227,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                         }
                         loadApp(newFragment.getAppName());
                         rpc.activateApp(newFragment);
-                    } else {
-                        newFragment = lastHandledFragment;
-                        VConsole.error("started " + newFragment);
-                        ShellState.get().setAppStarted();
                     }
                 }
                 lastHandledFragment = newFragment;
