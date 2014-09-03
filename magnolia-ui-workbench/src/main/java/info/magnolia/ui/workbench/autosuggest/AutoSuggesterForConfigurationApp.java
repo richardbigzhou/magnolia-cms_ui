@@ -1491,7 +1491,6 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
     /**
      * Gets the names of all subclasses of the class parameter from the package that the
      * reflector is configured with. Includes the name of the class parameter itself.
-     * Excludes inner classes.
      */
     private Collection<String> getSubclassNames(Class<?> clazz) {
         if (clazz == null) {
@@ -1506,11 +1505,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
             for (Object subclassObj : subclasses) {
                 Class<?> subclass = (Class<?>) subclassObj;
-
-                if (!ClassUtils.isInnerClass(subclass)) {
-                    subclassNames.add(subclass.getName());
-                }
-
+                subclassNames.add(subclass.getName());
             }
 
             return subclassNames;
