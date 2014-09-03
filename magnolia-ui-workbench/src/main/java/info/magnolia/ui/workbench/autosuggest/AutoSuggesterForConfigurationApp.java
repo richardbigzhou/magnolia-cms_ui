@@ -1440,11 +1440,12 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                         // T is a wildcard, with possible upper and lower bounds
                         else if (genericTypeParameter instanceof WildcardType) {
                             WildcardType wildcardType = (WildcardType) genericTypeParameter;
+                            Type[] upperBounds = wildcardType.getUpperBounds();
 
-                            // If one or more upper bounds
-                            if (wildcardType.getUpperBounds().length > 0) {
+                            // If one or more upper bounds that is more specific than Object
+                            if (upperBounds.length > 0 && !upperBounds[0].equals(Object.class)) {
                                 // QUESTION Is there a better way to handle multiple upper bounds?
-                                Type firstUpperBound = wildcardType.getUpperBounds()[0];
+                                Type firstUpperBound = upperBounds[0];
 
                                 if (firstUpperBound instanceof Class) {
                                     return (Class<?>) firstUpperBound;
