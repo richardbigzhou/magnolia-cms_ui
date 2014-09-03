@@ -77,6 +77,12 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private ZoomAnimation zoomInAnimation = new ZoomAnimation(true) {
         @Override
+        protected void onStart() {
+            super.onStart();
+            setCurtainAttached(false);
+        }
+
+        @Override
         protected void onComplete() {
             super.onComplete();
             ShellState.get().setAppStarted();

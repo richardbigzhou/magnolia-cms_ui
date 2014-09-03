@@ -222,9 +222,13 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     VConsole.error("last: " + lastHandledFragment.toFragment() + " new: " + newFragment.toFragment() + " event: " + (!shellState.isAppStarting() && !newFragment.equals(lastHandledFragment) ? "yes" : "no"));
                     if (!shellState.isAppStarting() && !newFragment.sameSubApp(lastHandledFragment)) {
                         Fragment stateFragment = getState().uriFragment;
+
                         if (!newFragment.isSameApp(stateFragment)) {
                             ShellState.get().setAppStarting();
+                        } else {
+                            ShellState.get().setAppStarted();
                         }
+
                         loadApp(newFragment.getAppName());
                         rpc.activateApp(newFragment);
                     }
