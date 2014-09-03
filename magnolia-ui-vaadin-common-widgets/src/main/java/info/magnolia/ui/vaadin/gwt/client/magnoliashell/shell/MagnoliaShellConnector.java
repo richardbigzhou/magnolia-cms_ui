@@ -59,6 +59,8 @@ import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -70,7 +72,6 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.Util;
-import com.vaadin.client.VConsole;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
@@ -85,7 +86,8 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(MagnoliaShell.class)
 public class MagnoliaShellConnector extends AbstractLayoutConnector implements MagnoliaShellView.Presenter {
-    private static final boolean DEBUG_NAVIGATION = false;
+
+    private static final Logger log = Logger.getLogger(MagnoliaShellConnector.class.getName());
 
     private ShellServerRpc rpc = RpcProxy.create(ShellServerRpc.class, this);
     private MagnoliaShellView view;
@@ -198,9 +200,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onActivateApp(ActivateAppEvent event) {
                 if (!ShellState.get().isShellAppStarting()) {
-                    if (DEBUG_NAVIGATION) {
-                        VConsole.error("starting " + event.getName());
-                    }
+                    log.log(Level.WARNING, "Starting from swipe/keyboard: " + event.getName());
                     rpc.activateApp(Fragment.fromString("app:" + event.getName()));
                 }
             }
@@ -222,10 +222,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
                     ShellState shellState = ShellState.get();
-                    if (DEBUG_NAVIGATION) {
-                        if (lastHandledFragment != null) {
-                            VConsole.error("last: " + lastHandledFragment.toFragment() + " new: " + newFragment.toFragment() + " event: " + (!shellState.isAppStarting() && !newFragment.equals(lastHandledFragment) ? "yes" : "no"));
-                        }
+                    if (lastHandledFragment != null) {
+                        log.warning(
+                                String.format(
+                                        "App navigation from [%s] to [%s], request will %s be sent",
+                                        lastHandledFragment.toFragment(), !newFragment.sameSubApp(lastHandledFragment) ? "" : "not"));
                     }
                     if (!shellState.isAppStarting()) {
                         Fragment stateFragment = getState().currentAppUriFragment;
