@@ -473,7 +473,10 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
      * --| Else if property not named "class"
      * --|-- If property has bean type Class
      * --|---| If generic parameter gotten
-     * --|---|-| Suggest based on generic parameter
+     * --|---|-| If JCR String
+     * --|---|-|-| Suggest based on generic parameter
+     * --|---|-| Else if not JCR String
+     * --|---|-|-- No suggestions
      * --|---| Else if no generic parameter gotten
      * --|---|-- No suggestions
      * --|-- Else if property does not have bean type Class
@@ -506,9 +509,14 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                     Class<?> genericTypeParameter = getGenericTypeParameterOfClassType(valuePropertyTypeDescriptor);
 
                     if (genericTypeParameter != null) {
-                        Collection<String> suggestions = getSubclassNames(genericTypeParameter);
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        if (valueJCRType == PropertyType.STRING) {
+                            Collection<String> suggestions = getSubclassNames(genericTypeParameter);
+                            return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        }
+                        else {
+                            return noSuggestionsAvailable();
+                        }
                     }
                     else {
                         return noSuggestionsAvailable();
