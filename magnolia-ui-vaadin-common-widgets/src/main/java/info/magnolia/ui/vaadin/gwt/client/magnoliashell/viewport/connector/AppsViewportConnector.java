@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.FullScreenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;

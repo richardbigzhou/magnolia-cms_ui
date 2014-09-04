@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
@@ -134,7 +133,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
                 char c = event.getCharCode();
 
-                boolean isAppStarted = ShellState.get().isAppStarted();
                 switch (c) {
 
                 // Shell Apps
@@ -150,16 +148,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
                 // App Stack Navigation.
                 case '9':
-                    if (isAppStarted) {
-                        ShellState.get().setAppStarting();
-                        appViewport().goToPreviousApp();
-                    }
+                    appViewport().goToPreviousApp();
                     break;
                 case '0':
-                    if (isAppStarted) {
-                        ShellState.get().setAppStarting();
-                        appViewport().goToNextApp();
-                    }
+                    appViewport().goToNextApp();
                     break;
 
                 default:

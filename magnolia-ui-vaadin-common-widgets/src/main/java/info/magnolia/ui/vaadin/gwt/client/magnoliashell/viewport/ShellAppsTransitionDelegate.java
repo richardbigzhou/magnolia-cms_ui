@@ -41,8 +41,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellApp
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.Util;
 
 /**
@@ -71,21 +71,21 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     private ShellAppsViewportWidget viewport;
 
-    public ShellAppsTransitionDelegate(final ShellAppsViewportWidget viewport) {
+    private final ApplicationConnection applicationConnection;
+
+    public ShellAppsTransitionDelegate(final ShellAppsViewportWidget viewport, ApplicationConnection connection) {
         this.viewport = viewport;
+        this.applicationConnection = connection;
         initAnimations();
     }
 
     private void initAnimations() {
-        this.fadeInAnimation = new FadeAnimation(ALPHA_MAX, false) {
+        this.fadeInAnimation = new FadeAnimation(ALPHA_MAX, true, applicationConnection) {
             @Override
             protected void onStart() {
                 super.onStart();
                 Style style = getCurrentElement().getStyle();
-                String currentOpacity = style.getOpacity();
-                if (currentOpacity == null || currentOpacity.isEmpty()) {
-                    style.setOpacity(0d);
-                }
+                style.setOpacity(0d);
                 style.clearDisplay();
             }
         };
@@ -97,27 +97,36 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         });
 
 
-        this.slideUpAnimation = new SlideAnimation(false);
-        this.slideDownAnimation = new SlideAnimation(false);
+        this.slideUpAnimation = new SlideAnimation(false, applicationConnection) {
+            @Override
+            protected void onStart() {
+                getCurrentElement().getStyle().setTop(0, Style.Unit.PX);
+                super.onStart();
+            }
+        };
+        this.slideDownAnimation = new SlideAnimation(false, applicationConnection) {
+            @Override
+            protected void onStart() {
+                getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
+                super.onStart();
+
+            }
+        };
 
         this.slideDownAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                if (!slideDownAnimation.isCancelled()) {
-                    viewport.onShellAppLoaded(viewport.getVisibleChild());
-                }
+                viewport.onShellAppLoaded(viewport.getVisibleChild());
             }
         });
 
         this.slideUpAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                if (!slideUpAnimation.isCancelled()) {
-                    viewport.onShellAppsHidden();
-                }
+                viewport.onShellAppsHidden();
             }
         });
-        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, false);
+        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, applicationConnection);
     }
 
     /**
@@ -125,22 +134,15 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
      */
     @Override
     public void setActive(final ViewportWidget viewport, boolean active) {
-        final Element viewportElement = viewport.getElement();
         if (active) {
-            boolean isViewportCurrentlyVisible = viewport.isVisible();
             viewport.setVisible(true);
-            // The Shell App viewport might not be visible due 'display' value,
-            // but it's top could still be equal to 0.
-            if (!isViewportCurrentlyVisible) {
-                viewportElement.getStyle().setTop(-viewportElement.getOffsetHeight(), Style.Unit.PX);
-            }
             slideUpAnimation.cancel();
             slideDownAnimation.setTargetValue(0);
-            slideDownAnimation.run(SLIDE_DURATION, viewportElement);
+            slideDownAnimation.run(SLIDE_DURATION, viewport.getElement());
         } else {
             slideDownAnimation.cancel();
             slideUpAnimation.setTargetValue(-viewport.getOffsetHeight());
-            slideUpAnimation.run(SLIDE_DURATION, viewportElement);
+            slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
         }
     }
 
