@@ -127,6 +127,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
     public void setActive(final ViewportWidget viewport, boolean active) {
         final Element viewportElement = viewport.getElement();
         if (active) {
+            viewport.getElement().getStyle().clearOpacity();
             boolean isViewportCurrentlyVisible = viewport.isVisible();
             viewport.setVisible(true);
             // The Shell App viewport might not be visible due 'display' value,

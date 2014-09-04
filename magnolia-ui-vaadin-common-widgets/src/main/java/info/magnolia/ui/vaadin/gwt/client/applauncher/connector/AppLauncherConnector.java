@@ -65,6 +65,17 @@ public class AppLauncherConnector extends AbstractComponentConnector {
 
     private EventBus eventBus = new SimpleEventBus();
 
+    private Event.NativePreviewHandler eventPreviewHandler = new Event.NativePreviewHandler() {
+        @Override
+        public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+            int eventCode = event.getTypeInt();
+            boolean isTouchOrMouse = (eventCode & Event.MOUSEEVENTS) > 0 || (eventCode & Event.TOUCHEVENTS) > 0;
+            if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
+                event.cancel();
+            }
+        }
+    };
+
     public AppLauncherConnector() {
 
         addStateChangeHandler("appGroups", new StateChangeHandler() {
@@ -98,16 +109,9 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected void init() {
         super.init();
-        Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
-            @Override
-            public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-                int eventCode = event.getTypeInt();
-                boolean isTouchOrMouse = (eventCode & Event.MOUSEEVENTS) > 0 || (eventCode & Event.TOUCHEVENTS) > 0;
-                if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
-                    event.cancel();
-                }
-            }
-        });
+
+
+        Event.addNativePreviewHandler(eventPreviewHandler);
     }
 
     private void updateRunningAppTiles() {

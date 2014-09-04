@@ -65,7 +65,7 @@ public class ZoomAnimation extends Animation {
         element.getStyle().setVisibility(Style.Visibility.VISIBLE);
         element.addClassName(isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
 
-        ZoomAnimation.super.run(duration, startTime, element);
+        super.run(duration, startTime, element);
     }
 
     @Override
