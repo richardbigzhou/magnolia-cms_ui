@@ -9,25 +9,28 @@
   font-size:14px;
   overflow:hidden;
 }
-.v-actionbar {width:36px; padding-top:24px;}
-.v-actionbar-open {width:270px; padding-top:0;}
+.v-actionbar { width: 36px; }
+.v-actionbar-open { width: 270px; }
 
 .v-actionbar.stub {
   background: $c13;
 }
 
 .v-actionbar-section {
-  padding:11px 0 10px 0px;
+  padding: 0;
+  overflow: auto;
+  margin-top: 35px;
 }
 
 .v-actionbar-open .v-actionbar-section {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .v-actionbar .v-actionbar-section-title {
+  position: absolute;
+  margin-top: -35px;
   height:1.2em;
-  margin:0;
-  padding:0 0 6px 4px;
+  padding: 11px 0 6px 4px;
   color:$c50;
   font-family:DINWebPro, Verdana;
   font-size:15px;
@@ -110,20 +113,13 @@
   right:0;
   bottom:0px;
   display:block;
-  max-height:184px;
+  max-height:194px;
+  margin: 0;
+  padding: 6px 10px 0;
   overflow:hidden;
-  padding-top:6px;
-  padding-left:14px;
-  padding-right:14px;
   background-color:$c91;
   text-align:center;
-  height: 200px;
   line-height: 200px;
-}
-
-.preview h3 {
-  position: absolute;
-  top: -85px;
 }
 
 .preview img {
@@ -136,8 +132,8 @@
 .v-actionbar-open .v-actionbar-section.preview {display:block;}
 
 .v-actionbar-section.preview .v-actionbar-section-title {
+  margin-top: -102px;
   text-align:left;
-  padding-left:0;
 }
 
 /*********************** TABLET STYLES ***/

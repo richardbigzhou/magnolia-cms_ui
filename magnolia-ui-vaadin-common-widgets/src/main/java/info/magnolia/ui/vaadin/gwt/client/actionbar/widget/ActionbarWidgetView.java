@@ -79,6 +79,8 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     void setOpen(boolean isOpen);
 
+    void updateLayout();
+
     /**
      * Presenter for the Actionbar view.
      */
