@@ -48,7 +48,6 @@ public interface ShellServerRpc extends ServerRpc {
 
     void stopCurrentApp();
 
-
     void activateApp(Fragment f);
 
     void activateShellApp(Fragment f);
