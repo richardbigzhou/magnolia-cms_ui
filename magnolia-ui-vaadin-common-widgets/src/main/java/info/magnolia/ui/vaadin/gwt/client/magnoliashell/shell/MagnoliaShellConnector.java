@@ -213,16 +213,17 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                Fragment newFragment = Fragment.fromString(event.getValue());
+                final Fragment newFragment = Fragment.fromString(event.getValue());
 
                 if (newFragment.equals(lastHandledFragment)) {
                     return;
                 }
 
                 if (newFragment.isShellApp()) {
-                    doShowShellApp(newFragment.resolveShellAppType());
+                    if (!getConnection().hasActiveRequest() || !ShellState.get().isAppStarting()) {
+                        doShowShellApp(newFragment.resolveShellAppType());
+                    }
                 } else {
-                    final ShellState shellState = ShellState.get();
 
                     if (lastHandledFragment != null) {
                         log.warning("App navigation from " +lastHandledFragment.toFragment()+ " to " + newFragment.toFragment() + (!newFragment.sameSubApp(lastHandledFragment) ? "" : "not") +", request will %s be sent");
@@ -241,22 +242,27 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     }
 
                     /**
-                     * If not somehow another app is starting already.
+                     * We either have no active request -> the location change came directly from address bar, so we have to navigate,
+                     * or the new app is requested, so we notify the server about it.
                      */
-                    if (!shellState.isAppStarting()) {
 
-                        if (!newFragment.isSameApp(latestLoadedAppLocation)) {
-                            ShellState.get().setAppStarting();
-                        }
+                    if (!getConnection().hasActiveRequest() || !newFragment.isSameApp(lastHandledFragment)) {
+                        loadApp(newFragment.getAppName());
+                    }
 
-                        /**
-                         * We either have no active request -> the location change came directly from address bar, so we have to navigate,
-                         * or the new app is requested, so we notify the server about it.
-                         */
-                        if (!getConnection().hasActiveRequest() || !newFragment.isSameApp(lastHandledFragment)) {
-                            loadApp(newFragment.getAppName());
-                            rpc.activateApp(newFragment);
-                        }
+                    if (ShellState.get().isAppStarting() || !getConnection().hasActiveRequest()) {
+                        rpc.activateApp(newFragment);
+                        Scheduler.get().scheduleFinally(new Scheduler.RepeatingCommand() {
+                            @Override
+                            public boolean execute() {
+                                boolean doneProcessingRequest = !getConnection().hasActiveRequest();
+                                if (doneProcessingRequest) {
+
+                                }
+                                return !doneProcessingRequest;
+                            }
+                        });
+
                     }
                 }
                 lastHandledFragment = newFragment;

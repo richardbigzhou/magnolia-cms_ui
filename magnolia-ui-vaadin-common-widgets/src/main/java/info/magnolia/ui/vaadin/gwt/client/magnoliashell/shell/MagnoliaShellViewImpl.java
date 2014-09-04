@@ -150,14 +150,14 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
                 // App Stack Navigation.
                 case '9':
                     // We have more than one app open
-                    if (appViewport().readyForAppNavigation()) {
+                    if (appViewport().readyForAppSwipeOrShortcutNavigation()) {
                         ShellState.get().setAppStarting();
                         appViewport().goToPreviousApp();
                     }
                     break;
                 case '0':
                     // We have more than one app open
-                    if (appViewport().readyForAppNavigation()) {
+                    if (appViewport().readyForAppSwipeOrShortcutNavigation()) {
                         ShellState.get().setAppStarting();
                         appViewport().goToNextApp();
                     }

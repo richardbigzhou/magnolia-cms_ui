@@ -42,16 +42,20 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.connector.MagnoliaTabSheetConnector;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
+import com.vaadin.client.Util;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.shared.ui.Connect;
 
@@ -100,7 +104,14 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                 final String appName = event.getAppName();
                 if (isAppRegistered(appName)) {
                     if (!isAppRunning(appName)) {
+                        ShellState.get().setAppStarting();
                         getWidget().showAppPreloader(appName);
+                    } else {
+                        final Widget appWidget = resolveAppWidgetHack(appName);
+                        if (appWidget != null && appWidget != getWidget().getVisibleChild()) {
+                            ShellState.get().setAppStarting();
+                            getWidget().showChild(appWidget);
+                        }
                     }
                 }
             }
@@ -172,8 +183,24 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
     }
 
     @Override
-    public void setCurrentApp(String name) {
-        eventBus.fireEvent(new ActivateAppEvent(name));
+    public void activateApp(Widget appWidget) {
+        String appName = resolveAppNameHack(appWidget);
+        eventBus.fireEvent(new ActivateAppEvent(appName));
     }
 
+    // TODO: Ideally AppsViewport shouldn't need to know about MagnoliaTabSheetConnector - improvement would be to have a mapping from connectors to app names. See MGNLUI-1679.
+    private String resolveAppNameHack(Widget appWidget) {
+        return ((MagnoliaTabSheetConnector) Util.findConnectorFor(appWidget)).getState().name;
+    }
+
+    private Widget resolveAppWidgetHack(String appName) {
+        final Iterator<Widget> it = getWidget().iterator();
+        while (it.hasNext()) {
+            final Widget widget = it.next();
+            if (appName.equals(((MagnoliaTabSheetConnector) Util.findConnectorFor(widget)).getState().name)) {
+                return widget;
+            }
+        }
+        return null;
+    }
 }

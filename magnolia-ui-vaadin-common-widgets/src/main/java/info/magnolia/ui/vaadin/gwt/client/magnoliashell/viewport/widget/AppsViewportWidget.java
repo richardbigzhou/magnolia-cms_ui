@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionD
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.SlideAnimation;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.connector.MagnoliaTabSheetConnector;
 
 import java.util.Iterator;
 
@@ -67,7 +66,6 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.Util;
 
 /**
  * Client side implementation of Apps viewport.
@@ -82,9 +80,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     public interface Listener {
 
         void closeCurrentApp();
-        void setCurrentApp(String name);
+
+        void activateApp(Widget appWidget);
 
     };
+
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
     private final AppPreloader preloader = new AppPreloader();
@@ -101,7 +101,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private Element curtain = DOM.createDiv();
 
-    public boolean readyForAppNavigation() {
+    /**
+     * Checks whether there are enough apps to navigate to next/previous app (> 1), that some app is loaded and displayed and
+     * that no animation is currently in progress.
+     */
+    public boolean readyForAppSwipeOrShortcutNavigation() {
         return ShellState.get().isAppStarted() && getWidgetCount() > 1 && !getTransitionDelegate().inProgress();
     }
 
@@ -344,9 +348,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                 // do not trigger transitions
                 showChild(newVisibleWidget);
                 dropZIndeces();
-                // TODO: Ideally AppsViewport shouldn't need to know about MagnoliaTabSheetConnector - improvement would be to have a mapping from connectors to app names. See MGNLUI-1679.
-                MagnoliaTabSheetConnector appConnector = (MagnoliaTabSheetConnector) Util.findConnectorFor(newVisibleWidget);
-                listener.setCurrentApp(appConnector.getState().name);
+                listener.activateApp(newVisibleWidget);
             }
         });
 

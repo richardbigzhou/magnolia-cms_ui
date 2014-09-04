@@ -70,6 +70,12 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private AppsViewportWidget viewport;
 
+    /**
+     * Since we reveal the already loaded apps instantly - we could use a lock
+     * that ensures the zooming animation is distracted with Vaadin layout.
+     */
+    private Object lock = new Object();
+
     private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false) {
         @Override
         protected void onComplete() {
@@ -83,6 +89,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         protected void onStart() {
             super.onStart();
             setCurtainAttached(false);
+            Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
         }
 
         @Override
@@ -90,6 +97,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             super.onComplete();
             ShellState.get().setAppStarted();
             log.warning("Switching to 'APP STARTED' state after zoom-in animation");
+            Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
         }
     };
 
