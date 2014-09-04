@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -47,6 +48,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
@@ -56,6 +58,8 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
 public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWidgetView, ActionTriggerEvent.Handler {
+
+    private static final Logger log = Logger.getLogger(ActionbarWidgetViewImpl.class.getName());
 
     public static final String CLASSNAME = "v-actionbar";
 
@@ -248,6 +252,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 addAction(action, section.getName());
             }
         }
+        updateLayout();
         refreshActionsPositionsTablet();
     }
 
@@ -256,6 +261,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         for (final ActionbarSectionWidget section : sections.values()) {
             section.setVisible(visibleSections.contains(section.getData()));
         }
+        updateLayout();
         refreshActionsPositionsTablet();
     }
 
@@ -280,6 +286,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         actualizeToggleState(isToggledOpen);
         if (isToggledOpen != isOpen) {
             presenter.forceLayout();
+            updateLayout();
         }
     }
 
@@ -289,6 +296,47 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         if (sectionWidget != null) {
             sectionWidget.addStyleName("preview");
             sectionWidget.setPreview(new Image(previewUrl));
+        }
+    }
+
+    @Override
+    public void updateLayout() {
+        // sections margin
+        final int MARGIN_TOP = 35;
+
+        int availableHeight = getOffsetHeight();
+        if (sections.containsKey("preview") && sections.get("preview").isVisible() && isToggledOpen) {
+            availableHeight -= 200;
+        }
+
+        int actualHeight = 0;
+        for (ActionbarSectionWidget section : sections.values()) {
+            if (!section.getName().equals("preview") && section.isVisible()) {
+                section.getElement().getStyle().clearProperty("maxHeight");
+                actualHeight += section.getOffsetHeight() + MARGIN_TOP; // add margin
+            }
+        }
+        log.fine("actualHeight/availableHeight: " + actualHeight + "/" + availableHeight);
+
+        // rewind from bottom-up to shrink sections
+        int i = getWidgetCount() - 1;
+        int minimumHeight = 75;
+        while (actualHeight > availableHeight && i >= 0) {
+            log.fine("rewinding widget list, current height diff: " + (actualHeight - availableHeight) + " (i=" + i + ")");
+            Widget widget = getWidget(i);
+            if (widget instanceof ActionbarSectionWidget && widget.isVisible()) {
+                String sectionName = ((ActionbarSectionWidget) widget).getName();
+                if (!sectionName.equals("preview")) {
+                    int currentHeight = widget.getOffsetHeight() + MARGIN_TOP;
+                    if (currentHeight > minimumHeight) {
+                        int newHeight = (actualHeight - availableHeight > currentHeight - minimumHeight) ? minimumHeight : currentHeight + availableHeight - actualHeight;
+                        log.fine(sectionName + " currentHeight => newHeight: " + currentHeight + "=>" + (newHeight - MARGIN_TOP));
+                        widget.getElement().getStyle().setPropertyPx("maxHeight", newHeight - MARGIN_TOP); // account for padding or margin;
+                        actualHeight -= (currentHeight - newHeight);
+                    }
+                }
+            }
+            i--;
         }
     }
 

@@ -55,6 +55,8 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -145,14 +147,23 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
         addStateChangeHandler("isOpen", collapseChangeHandler);
+
         if (isDeviceTablet()) {
             setOpened(true);
         }
+
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
+
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                getWidget().updateLayout();
+            }
+        });
     }
 
     @Override
-    public Widget getWidget() {
-        return super.getWidget();
+    public ActionbarWidgetViewImpl getWidget() {
+        return (ActionbarWidgetViewImpl) super.getWidget();
     }
 
     @Override
@@ -185,6 +196,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     public String getIconResourceURL(String actionName) {
         return getResourceUrl(actionName);
     }
+
 
     /**
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
