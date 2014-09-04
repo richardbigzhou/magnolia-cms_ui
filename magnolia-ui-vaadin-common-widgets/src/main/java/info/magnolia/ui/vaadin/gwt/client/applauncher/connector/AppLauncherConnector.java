@@ -45,6 +45,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
@@ -65,16 +67,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
 
     private EventBus eventBus = new SimpleEventBus();
 
-    private Event.NativePreviewHandler eventPreviewHandler = new Event.NativePreviewHandler() {
-        @Override
-        public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-            int eventCode = event.getTypeInt();
-            boolean isTouchOrMouse = (eventCode & Event.MOUSEEVENTS) > 0 || (eventCode & Event.TOUCHEVENTS) > 0;
-            if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
-                event.cancel();
-            }
-        }
-    };
+    private HandlerRegistration eventPreviewHandle;
 
     public AppLauncherConnector() {
 
@@ -109,9 +102,23 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected void init() {
         super.init();
+        this.eventPreviewHandle = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+            @Override
+            public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+                int eventCode = event.getTypeInt();
+                boolean isTouchOrMouse = (eventCode & Event.MOUSEEVENTS) > 0 || (eventCode & Event.TOUCHEVENTS) > 0;
 
+                final Element eventTarget = event.getNativeEvent().getEventTarget().cast();
 
-        Event.addNativePreviewHandler(eventPreviewHandler);
+                if (!getWidget().getElement().isOrHasChild(eventTarget)) {
+                    return;
+                }
+
+                if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
+                    event.cancel();
+                }
+            }
+        });
     }
 
     private void updateRunningAppTiles() {
@@ -151,6 +158,13 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected AppLauncherState createState() {
         return new AppLauncherState();
+    }
+
+
+    @Override
+    public void onUnregister() {
+        super.onUnregister();
+        eventPreviewHandle.removeHandler();
     }
 
     /**
