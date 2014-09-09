@@ -405,6 +405,10 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     protected void prepareAndExecutePagesEditorAction(String actionName) {
         AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
+        if (selectedElement == null) {
+            log.warn("Trying to execute action [{}] but no element was selected. Was the page actually loaded?", actionName);
+            return;
+        }
         try {
             Object itemId = getItemId(selectedElement);
             actionExecutor.execute(actionName, contentConnector.getItem(itemId), selectedElement, pageEditorPresenter);
