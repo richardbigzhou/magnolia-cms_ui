@@ -47,6 +47,8 @@ import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
@@ -55,6 +57,17 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(FormSection.class)
 public class FormSectionConnector extends AbstractLayoutConnector {
+
+    private ElementResizeListener sizeChangeListener = new ElementResizeListener() {
+        @Override
+        public void onElementResize(ElementResizeEvent e) {
+            getWidget().updateFieldSectionWidths(e.getElement().getOffsetWidth());
+            getLayoutManager().setNeedsMeasure(FormSectionConnector.this);
+            for (final ComponentConnector cc : getChildComponents()) {
+                    getLayoutManager().setNeedsMeasure(cc);
+            }
+        }
+    };
 
     @Override
     protected void init() {
@@ -73,6 +86,7 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             getWidget().setFieldDescription(((ComponentConnector)entry.getKey()).getWidget(), entry.getValue());
         }
 
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), sizeChangeListener);
     }
 
     private final StateChangeHandler childErrorMessageHandler = new StateChangeHandler() {
@@ -158,6 +172,7 @@ public class FormSectionConnector extends AbstractLayoutConnector {
 
     @Override
     public void onUnregister() {
+        getLayoutManager().removeElementResizeListener(getWidget().getElement(), sizeChangeListener);
         super.onUnregister();
     }
 }
