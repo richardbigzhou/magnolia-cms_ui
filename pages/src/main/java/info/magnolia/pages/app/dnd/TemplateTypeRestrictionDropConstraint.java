@@ -37,6 +37,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -44,7 +45,8 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -54,7 +56,7 @@ import com.vaadin.data.Item;
  */
 public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
 
-    private Logger log  = Logger.getLogger(getClass());
+    private static Logger log = LoggerFactory.getLogger(TemplateTypeRestrictionDropConstraint.class);
 
     private TemplateDefinitionAssignment templateAssignment;
 
@@ -92,17 +94,31 @@ public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
 
     @Override
     public boolean allowedBefore(Item sourceItem, Item targetItem) {
-        return true;
+        return checkIfAllowedAsChildOfTargetItemParent(sourceItem, targetItem);
     }
 
     @Override
     public boolean allowedAfter(Item sourceItem, Item targetItem) {
-        return true;
+        return checkIfAllowedAsChildOfTargetItemParent(sourceItem, targetItem);
     }
 
     @Override
     public boolean allowedToMove(Item sourceItem) {
         return applyChanges(sourceItem) != null;
+    }
+
+    private boolean checkIfAllowedAsChildOfTargetItemParent(Item sourceItem, Item targetItem) {
+        if (targetItem instanceof JcrNodeAdapter) {
+            final Node targetNode = applyChanges(targetItem);
+            try {
+                final AbstractJcrNodeAdapter targetParent = new JcrNodeAdapter(targetNode.getParent());
+                return allowedAsChild(sourceItem, targetParent);
+            } catch (RepositoryException e) {
+                // Pages are stored at least on the first level, so all of them should have a parent
+                log.warn("Failed to resolve target item [{}] parent", ((JcrNodeAdapter) targetItem).getNodeName(), e);
+            }
+        }
+        return false;
     }
 
     private Node applyChanges(final Item item) {

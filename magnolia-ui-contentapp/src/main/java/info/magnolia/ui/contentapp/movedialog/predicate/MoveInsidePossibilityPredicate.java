@@ -50,6 +50,6 @@ public class MoveInsidePossibilityPredicate extends MovePossibilityPredicate {
 
     @Override
     protected boolean checkItem(Item item, Item hostCandidate) {
-        return hostIsRoot(hostCandidate) || constraint.allowedAsChild(item, hostCandidate);
+        return constraint.allowedAsChild(item, hostCandidate);
     }
 }

@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -69,11 +71,12 @@ public class TemplateTypeRestrictionDropConstraintTest {
     private TemplateDefinitionAssignment templateAssignment;
     private TemplateDefinition sourceTemplateDefinition;
     private Collection<TemplateDefinition> availableTemplates;
+    private MockSession session;
 
     @Before
     public void setUp() throws Exception {
         MockUtil.initMockContext();
-        final MockSession session = new MockSession(RepositoryConstants.WEBSITE);
+        session = new MockSession(RepositoryConstants.WEBSITE);
         Node root = session.getRootNode();
         source = root.addNode("source", NodeTypes.Page.NAME);
         sourceItem = new JcrNodeAdapter(source);
@@ -118,5 +121,54 @@ public class TemplateTypeRestrictionDropConstraintTest {
 
         // THEN
         assertFalse(res);
+    }
+
+    @Test
+    public void testAllowedBeforeAndAfter() throws Exception {
+        // GIVEN
+        TemplateTypeRestrictionDropConstraint constraint = new TemplateTypeRestrictionDropConstraint(templateAssignment);
+        targetItem.addChild(sourceItem);
+
+        final TemplateDefinition templateDefinition = mock(TemplateDefinition.class);
+        final JcrNodeAdapter newChildNodeAdapter = createMockNodeAndBindToTemplate(templateDefinition);
+
+        availableTemplates.add(sourceTemplateDefinition);
+
+        // WHEN
+        boolean allowedAfter = constraint.allowedAfter(newChildNodeAdapter, sourceItem);
+        boolean allowedBefore = constraint.allowedBefore(newChildNodeAdapter, sourceItem);
+
+        // THEN
+        assertFalse(allowedAfter);
+        assertFalse(allowedBefore);
+
+    }
+
+    @Test
+    public void testNotAllowedBeforeAndAfter() throws Exception {
+        // GIVEN
+        TemplateTypeRestrictionDropConstraint constraint = new TemplateTypeRestrictionDropConstraint(templateAssignment);
+        targetItem.addChild(sourceItem);
+
+        final TemplateDefinition templateDefinition = mock(TemplateDefinition.class);
+        final JcrNodeAdapter newChildNodeAdapter = createMockNodeAndBindToTemplate(templateDefinition);
+
+        availableTemplates.add(sourceTemplateDefinition);
+        availableTemplates.add(templateDefinition);
+
+        // WHEN
+        boolean allowedAfter = constraint.allowedAfter(newChildNodeAdapter, sourceItem);
+        boolean allowedBefore = constraint.allowedBefore(newChildNodeAdapter, sourceItem);
+
+        // THEN
+        assertTrue(allowedAfter);
+        assertTrue(allowedBefore);
+    }
+
+    private JcrNodeAdapter createMockNodeAndBindToTemplate(TemplateDefinition templateDefinition) throws RepositoryException, RegistrationException {
+        final Node newChild = session.getRootNode().addNode("newChild");
+        final JcrNodeAdapter newChildNodeAdapter = new JcrNodeAdapter(newChild);
+        when(templateAssignment.getAssignedTemplateDefinition(newChild)).thenReturn(templateDefinition);
+        return newChildNodeAdapter;
     }
 }
