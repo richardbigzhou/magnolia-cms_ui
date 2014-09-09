@@ -59,13 +59,13 @@ public class VTemporaryAppGroupBar extends FlowPanel {
         if (group != null) {
             if (currentOpenGroup != group) {
                 if (currentOpenGroup != null) {
-                    currentOpenGroup.closeSection();
+                    currentOpenGroup.closeSection(false);
                 }
-                group.showSection();
+                group.showSection(true);
                 currentOpenGroup = group;
                 groupTile.openExpander();
             } else {
-                currentOpenGroup.closeSection();
+                currentOpenGroup.closeSection(true);
                 currentOpenGroup = null;
             }
         }

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 /**
@@ -44,6 +45,10 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
     private static final int OPEN_STATE_HEIGHT_PX = 80;
 
     private static final int VISIBILITY_TOGGLE_SPEED = 200;
+
+    private JQueryCallback closeCallback;
+
+    private JQueryCallback showCallback;
 
     public VTemporaryAppTileGroup(String color) {
         super(color);
@@ -56,22 +61,44 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
         closeSection();
     }
 
+    public void setCloseCallback(JQueryCallback closeCallback) {
+        this.closeCallback = closeCallback;
+    }
+
+    public void setShowCallback(JQueryCallback showCallback) {
+        this.showCallback = showCallback;
+    }
+
     public void closeSection() {
+        closeSection(false);
+    }
+
+    public void closeSection(final boolean fireCallback) {
         JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
 
             {
                 setProperty("height", 0);
+                if (fireCallback && closeCallback != null) {
+                    addCallback(closeCallback);
+                }
             }
         });
     }
 
     public void showSection() {
+        showSection(false);
+    }
+
+    public void showSection(final boolean fireCallback) {
         JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
 
             {
                 // Add a row to accommodate every 9 apps.
                 int iRows = 1 + (getChildren().size() - 1) / 9;
                 setProperty("height", OPEN_STATE_HEIGHT_PX * iRows);
+                if (fireCallback && showCallback != null) {
+                    addCallback(showCallback);
+                }
             }
         });
     }

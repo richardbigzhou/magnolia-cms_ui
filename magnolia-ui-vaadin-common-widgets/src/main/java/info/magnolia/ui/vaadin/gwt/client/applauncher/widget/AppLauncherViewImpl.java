@@ -36,12 +36,22 @@ package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.event.AppActivationEvent;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -57,11 +67,55 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
 
     private Presenter presenter;
 
+    private static final double TEMPORARY_PERMANENT_SECTIONS_OFFSET = 170.0;
+
+    private ScrollPanel permanentAppScrollPanel;
+
+    private FlowPanel permanentAppContainer;
+
     public AppLauncherViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
         add(temporarySectionsBar);
         this.eventBus.addHandler(AppActivationEvent.TYPE, this);
+
+        permanentAppScrollPanel = new ScrollPanel();
+        permanentAppScrollPanel.addStyleName("permanent-app-scroll-panel");
+        permanentAppScrollPanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
+        permanentAppContainer = new FlowPanel() {
+            private HandlerRegistration resizeRegistration;
+
+            @Override
+            protected void onAttach() {
+                super.onAttach();
+                setPermanentAppGroupBorder();
+                resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+                    @Override
+                    public void onResize(ResizeEvent event) {
+                        setPermanentAppGroupBorder();
+                    }
+                });
+            }
+
+            @Override
+            protected void onDetach() {
+                super.onDetach();
+                if (resizeRegistration != null) {
+                    resizeRegistration.removeHandler();
+                }
+            }
+
+            @Override
+            public void add(Widget w) {
+                super.add(w);
+                if (this.isAttached()) {
+                    setPermanentAppGroupBorder();
+                }
+            }
+        };
+        permanentAppScrollPanel.add(permanentAppContainer);
+        add(permanentAppScrollPanel);
     }
 
     @Override
@@ -74,7 +128,26 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
     }
 
     public void addTemporaryAppGroup(AppGroup groupParams) {
-        final VAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
+        final VTemporaryAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
+        group.setClientGroup(groupParams.isClientGroup());
+        // Shrink permanent app container when expanding temporary app group
+        group.setShowCallback(new JQueryCallback() {
+
+            @Override
+            public void execute(JQueryWrapper query) {
+                permanentAppScrollPanel.getElement().getStyle().setBottom(TEMPORARY_PERMANENT_SECTIONS_OFFSET + group.getOffsetHeight(), Unit.PX);
+                setPermanentAppGroupBorder();
+            }
+        });
+        // Expand permanent app container when shrinking temporary app group
+        group.setCloseCallback(new JQueryCallback() {
+
+            @Override
+            public void execute(JQueryWrapper query) {
+                permanentAppScrollPanel.getElement().getStyle().setBottom(TEMPORARY_PERMANENT_SECTIONS_OFFSET, Unit.PX);
+                setPermanentAppGroupBorder();
+            }
+        });
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
         temporarySectionsBar.addGroup(groupParams.getCaption(), group);
@@ -85,7 +158,14 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
         final VPermanentAppTileGroup group = new VPermanentAppTileGroup(groupParams.getCaption(), groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
-        add(group);
+        permanentAppContainer.add(group);
+    }
+
+    private void setPermanentAppGroupBorder() {
+        permanentAppScrollPanel.removeStyleName("permanent-app-group-border");
+        if (permanentAppScrollPanel.getMaximumVerticalScrollPosition() > 0) {
+            permanentAppScrollPanel.addStyleName("permanent-app-group-border");
+        }
     }
 
     @Override

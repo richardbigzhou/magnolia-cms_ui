@@ -8,7 +8,7 @@
   font-size: 13px;
   margin-top: 77px;
   width: 720px;
-  min-height: 365px;
+  min-height: 0px;
 }
 
 .app-list {
@@ -64,6 +64,25 @@
   }
 
 
+}
+
+.v-app-launcher .permanent-app-scroll-panel {
+    overflow-y: auto;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 160px;
+    border-top: solid 1px #77a42f;
+    border-bottom: solid 1px #77a42f;
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.v-app-launcher .permanent-app-scroll-panel.permanent-app-group-border {
+    border-top: solid 1px rgb(62, 89, 0);
+    border-bottom: solid 1px rgb(62, 89, 0);
+    border-top: solid 1px rgba(62, 89, 0, 1);
+    border-bottom: solid 1px rgba(62, 89, 0, 1);
 }
 
 .app-list .item .icon {
