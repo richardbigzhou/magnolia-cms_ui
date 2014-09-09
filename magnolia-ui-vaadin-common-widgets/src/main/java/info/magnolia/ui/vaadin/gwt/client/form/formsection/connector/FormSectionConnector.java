@@ -42,11 +42,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.client.ui.ManagedLayout;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
@@ -73,6 +77,24 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             getWidget().setFieldDescription(((ComponentConnector)entry.getKey()).getWidget(), entry.getValue());
         }
 
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                getWidget().updateFieldSectionWidths(e.getElement().getOffsetWidth());
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        for (final ComponentConnector cc : getChildComponents()) {
+                            if (cc instanceof ManagedLayout) {
+                                getLayoutManager().setNeedsLayout((ManagedLayout)cc);
+                            } else {
+                                getLayoutManager().setNeedsMeasure(cc);
+                            }
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private final StateChangeHandler childErrorMessageHandler = new StateChangeHandler() {

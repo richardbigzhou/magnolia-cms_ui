@@ -148,4 +148,8 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
     };
 
+    @Override
+    public void doResize() {
+        super.doResize();
+    }
 }
