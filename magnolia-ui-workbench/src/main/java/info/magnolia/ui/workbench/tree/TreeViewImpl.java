@@ -67,7 +67,7 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private TreeTable tree;
+    private MagnoliaTreeTable tree;
 
     private boolean editable;
     private final List<Object> editableColumns = new ArrayList<Object>();
@@ -87,13 +87,15 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     protected void initializeTable(Table table) {
         super.initializeTable(table);
-        this.tree = (TreeTable)table;
-        rowScroller = new TreeRowScroller((MagnoliaTreeTable) table);
+        this.tree = (MagnoliaTreeTable) table;
+        rowScroller = new TreeRowScroller(tree);
         tree.setSortEnabled(false);
         int size = tree.size();
         if (size > 0) {
             tree.setCollapsed(tree.firstItemId(), false);
         }
+        collapseListener = new CollapsedNodeListener();
+        tree.addCollapseListener(collapseListener);
     }
 
     @Override
@@ -144,7 +146,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             });
             tree.setTableFieldFactory(fieldFactory);
 
-            // expanding and collapsing tree must turn off editing
+            // expanding tree must turn off editing
             expandListener = new ExpandListener() {
 
                 @Override
@@ -152,15 +154,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                     setEditing(null, null);
                 }
             };
-            collapseListener = new CollapseListener() {
 
-                @Override
-                public void nodeCollapse(CollapseEvent event) {
-                    setEditing(null, null);
-                }
-            };
             tree.addExpandListener(expandListener);
-            tree.addCollapseListener(collapseListener);
 
             // double-click listener
             ItemClickListener clickListener = new ItemClickListener() {
@@ -184,9 +179,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             tree.setTableFieldFactory(null);
             fieldFactory = null;
             tree.removeExpandListener(expandListener);
-            tree.removeCollapseListener(collapseListener);
             expandListener = null;
-            collapseListener = null;
             if (shortcutActionManager != null) {
                 shortcutActionManager.removeActionHandler(editingKeyboardHandler);
             }
@@ -251,6 +244,31 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             shortcutActionManager.addActionHandler(editingKeyboardHandler);
         }
         this.shortcutActionManager = shortcutActionManager;
+    }
+
+    private final class CollapsedNodeListener implements CollapseListener {
+
+        @Override
+        public void nodeCollapse(CollapseEvent event) {
+            // collapsing tree must turn off editing
+            if (editable) {
+                setEditing(null, null);
+            }
+            Object collapsedNodeId = event.getItemId();
+            // collapsed node descendants should be unselected as they're not visible, yet any ops affect them
+            unselectDescendants(collapsedNodeId);
+        }
+    }
+
+    private void unselectDescendants(final Object parentId) {
+        if (tree.isMultiSelect()) {
+            Set<Object> selectedIds = (Set<Object>) tree.getValue();
+            for (Object id : selectedIds) {
+                if (tree.isDescendantOf(id, parentId)) {
+                    tree.unselect(id);
+                }
+            }
+        }
     }
 
     /**

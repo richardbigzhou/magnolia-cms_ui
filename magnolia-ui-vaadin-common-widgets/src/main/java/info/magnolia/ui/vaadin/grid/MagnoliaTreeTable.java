@@ -147,4 +147,19 @@ public class MagnoliaTreeTable extends TreeTable {
             log.warn("Could not enable partial-updates in tree.", e);
         }
     }
+
+    /**
+     * @return <code>true</code> if itemId is a descendant of parentId, <code>false</code> otherwise.
+     */
+    public boolean isDescendantOf(final Object itemId, final Object parentId) {
+        Hierarchical container = getContainerDataSource();
+        Object id = itemId;
+        while (!container.isRoot(id)) {
+            id = container.getParent(id);
+            if (id.equals(parentId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

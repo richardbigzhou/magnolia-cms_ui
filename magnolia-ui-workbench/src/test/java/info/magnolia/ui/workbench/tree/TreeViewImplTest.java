@@ -38,6 +38,8 @@ import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
@@ -77,6 +79,11 @@ public class TreeViewImplTest extends RepositoryTestCase {
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
         view = new TreeViewImpl();
 
+        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition.setStrict(false);
+        nodeTypeDefinition.setName("nt:unstructured");
+
+        connectorDefinition.setNodeTypes(Arrays.asList((NodeTypeDefinition) nodeTypeDefinition));
         connectorDefinition.setRootPath("/");
         connectorDefinition.setWorkspace(WORKSPACE);
 
@@ -160,5 +167,29 @@ public class TreeViewImplTest extends RepositoryTestCase {
         assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
         assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
         assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
+    }
+
+    @Test
+    public void testCollapseNodeWithSelectedChildUnselectsChild() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
+        Node parent = visibleRoot.addNode(NODE_PARENT);
+        Node node = parent.addNode(NODE);
+        Node child = node.addNode(NODE_CHILD);
+
+        Object visibleRootId = JcrItemUtil.getItemId(visibleRoot);
+        Object childId = JcrItemUtil.getItemId(child);
+
+        view.asVaadinComponent().setCollapsed(visibleRootId, false);
+        view.select(Arrays.asList((Object) visibleRootId, childId));
+
+        // WHEN
+        view.asVaadinComponent().setCollapsed(visibleRootId, true);
+
+        // THEN
+        assertTrue(view.asVaadinComponent().isCollapsed(visibleRootId));
+        assertTrue(view.asVaadinComponent().isSelected(visibleRootId));
+        assertFalse(view.asVaadinComponent().isSelected(childId));
     }
 }
