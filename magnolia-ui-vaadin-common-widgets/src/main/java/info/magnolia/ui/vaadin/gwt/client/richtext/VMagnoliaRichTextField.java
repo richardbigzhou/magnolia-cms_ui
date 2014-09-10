@@ -97,10 +97,18 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
                 addExternalPlugin(plugin, customPlugins.getString(plugin));
             }
         }
+
+        // Set convenience base path for registering external plugins in custom config.js
+        setVaadinDirUrl(clientToServer.getConfiguration().getVaadinDirUrl());
+
         // Load editor
         editor = (VMagnoliaRichTextEditor) super.loadEditor(inPageConfig);
         return editor;
     }
+
+    private native void setVaadinDirUrl(String vaadinDirUrl) /*-{
+        $wnd.CKEDITOR.vaadinDirUrl = vaadinDirUrl;
+    }-*/;
 
     private native void addExternalPlugin(String pluginName, String path) /*-{
         $wnd.CKEDITOR.plugins.addExternal(pluginName, path, 'plugin.js');

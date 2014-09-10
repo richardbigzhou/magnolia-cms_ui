@@ -151,17 +151,19 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     protected MagnoliaRichTextFieldConfig initializeCKEditorConfig() {
 
         MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
-        config.setBaseFloatZIndex(150);
         String path = VaadinService.getCurrentRequest().getContextPath();
 
-        // CUSTOM CKEDITOR CONFIGURATION
-        // config.js file provided, skip further configuration since CKEditor wrapper add-on ignores it too.
+        // MAGNOLIA LINK PLUGIN — may be used with/without customConfig
+        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+
+        // CUSTOM CONFIG.JS — bypass further config because it can't be overridden otherwise
         if (StringUtils.isNotBlank(definition.getConfigJsFile())) {
             config.addExtraConfig("customConfig", "'" + path + definition.getConfigJsFile() + "'");
             return config;
         }
 
-        // BASIC CONFIGURATION FROM DEFINITION
+        // DEFINITION
         if (!definition.isAlignment()) {
             config.addToRemovePlugins("justify");
         }
@@ -205,16 +207,14 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
             config.addToRemovePlugins("fontSize");
         }
 
-        // STATIC CONFIGURATION
+        // MAGNOLIA EXTRA CONFIG
         List<ToolbarGroup> toolbars = initializeToolbarConfig();
         config.addToolbarLine(toolbars);
 
         config.addToRemovePlugins("elementspath");
-        config.addToRemovePlugins("filebrowser");
+        config.setBaseFloatZIndex(150);
         config.setResizeEnabled(false);
 
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
-        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         return config;
     }
 
