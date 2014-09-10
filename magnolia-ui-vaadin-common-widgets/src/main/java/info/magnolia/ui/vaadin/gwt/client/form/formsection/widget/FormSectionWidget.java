@@ -40,7 +40,6 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,14 +199,5 @@ public class FormSectionWidget extends FlowPanel {
                         });
                     }
                 });
-    }
-
-    public void updateFieldSectionWidths(int offsetWidth) {
-        final Iterator<Widget> it = iterator();
-        while (it.hasNext()) {
-            final Widget w = it.next();
-            w.setWidth(offsetWidth + "px");
-        }
-
     }
 }

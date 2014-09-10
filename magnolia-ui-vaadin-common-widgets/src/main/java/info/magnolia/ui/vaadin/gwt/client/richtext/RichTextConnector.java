@@ -49,10 +49,4 @@ public class RichTextConnector extends CKEditorConnector {
     public VMagnoliaRichTextField getWidget() {
         return (VMagnoliaRichTextField) super.getWidget();
     }
-
-    @Override
-    public void layout() {
-        super.layout();
-        getWidget().doResize();
-    }
 }
