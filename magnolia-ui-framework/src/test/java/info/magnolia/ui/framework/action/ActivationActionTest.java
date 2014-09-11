@@ -167,6 +167,20 @@ public class ActivationActionTest extends RepositoryTestCase {
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));
     }
 
+    @Test
+    public void testBuildParamsSetsChangedOnlyParameter() throws Exception {
+        // GIVEN
+        definition.setModifiedOnly(true);
+
+        // WHEN
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(SimpleTranslator.class));
+        action.setCurrentItem((JcrItemAdapter) action.getItems().get(0));
+        action.onPreExecute();
+
+        // THEN
+        assertTrue((Boolean) action.getParams().get(ActivationAction.ATTRIBUTE_MODIFIEDONLY));
+    }
+
     // TODO remove Ignore - now due to missing bundle
     @Ignore
     @Test

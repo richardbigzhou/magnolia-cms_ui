@@ -68,6 +68,8 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     private SimpleTranslator i18n;
 
+    final static public String ATTRIBUTE_MODIFIEDONLY = "modifiedOnly";
+
 
     @Inject
     public ActivationAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager,
@@ -83,6 +85,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
     protected Map<String, Object> buildParams(final Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
         params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+        params.put(ATTRIBUTE_MODIFIEDONLY, getDefinition().isModifiedOnly());
 
         return params;
     }
