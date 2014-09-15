@@ -125,20 +125,19 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                 // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
                 roleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode);
-
+                roleNode = roleItem.applyChanges();
             } else {
-                roleNode = roleItem.getJcrItem();
-                String existingRoleName = roleNode.getName();
-
+                // First fetch the initial name (changes not applied yet here).
+                String existingRoleName = roleItem.getJcrItem().getName();
+                String pathBefore = roleItem.getJcrItem().getPath();
+                // Apply changes now since the further operations on ACL's are done on nodes.
+                roleNode = roleItem.applyChanges();
                 if (!StringUtils.equals(existingRoleName, newRoleName)) {
-                    String pathBefore = roleNode.getPath();
                     NodeUtil.renameNode(roleNode, newRoleName);
                     roleNode.setProperty("name", newRoleName);
                     UsersWorkspaceUtil.updateAcls(roleNode, pathBefore);
                 }
             }
-
-            roleNode = roleItem.applyChanges();
 
             if (roleNode.hasNode("acl_userroles/0")) {
                 Node entryNode = roleNode.getNode("acl_userroles/0");
@@ -175,7 +174,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             }
 
             roleNode.getSession().save();
-
         } catch (final Exception e) {
             throw new ActionExecutionException(e);
         }

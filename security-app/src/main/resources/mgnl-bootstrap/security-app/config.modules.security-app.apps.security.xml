@@ -5450,7 +5450,7 @@
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-05-22T15:11:53.637+02:00</sv:value>
+        <sv:value>2014-09-15T20:25:28.139+03:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>
@@ -6249,6 +6249,9 @@
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-duplicate</sv:value>
           </sv:property>
+          <sv:property sv:name="implementationClass" sv:type="String">
+            <sv:value>info.magnolia.security.app.dialog.action.DuplicateRoleAction</sv:value>
+          </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
@@ -6265,7 +6268,7 @@
             <sv:value>superuser</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2014-01-24T00:25:15.043+02:00</sv:value>
+            <sv:value>2014-09-15T20:25:28.146+03:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>

@@ -486,4 +486,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
     }
 
+    @Test
+    public void updateFrom533ReconfigureDuplicateRoleAction() throws Exception {
+        // GIVEN
+        NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
+                NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
+
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // THEN
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole/class").getString(), "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition");
+    }
 }

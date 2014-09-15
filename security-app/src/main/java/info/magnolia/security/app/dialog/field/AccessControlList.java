@@ -137,6 +137,19 @@ public class AccessControlList {
         public EntryKey createKey() {
             return new EntryKey(permissions,  path);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Entry)) return false;
+
+            return createKey().equals(((Entry)o).createKey());
+        }
+
+        @Override
+        public int hashCode() {
+            return createKey().hashCode();
+        }
     }
 
     private LinkedHashMap<EntryKey, Entry> entries = new LinkedHashMap<EntryKey, Entry>();
@@ -162,6 +175,19 @@ public class AccessControlList {
     }
 
     public void readEntry(Node entryNode) throws RepositoryException {
+        addEntry(doGetEntryFromNode(entryNode));
+    }
+
+    public Entry getEntryByNode(Node entryNode) throws RepositoryException {
+        Entry entry = doGetEntryFromNode(entryNode);
+        Entry existingEntry = entries.get(entry.createKey());
+        if (existingEntry != null) {
+            return existingEntry;
+        }
+        return entry;
+    }
+
+    private Entry doGetEntryFromNode(Node entryNode) throws RepositoryException {
         long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
         String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
 
@@ -180,7 +206,7 @@ public class AccessControlList {
             path = StringUtils.removeEnd(path, "/");
         }
 
-        addEntry(new Entry(permissions, accessType, path));
+        return new Entry(permissions, accessType, path);
     }
 
     public void saveEntries(Node aclNode) throws RepositoryException {

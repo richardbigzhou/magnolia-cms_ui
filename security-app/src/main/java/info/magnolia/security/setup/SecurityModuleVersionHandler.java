@@ -232,6 +232,16 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "class", "info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition", "info.magnolia.security.app.action.DeleteFolderActionDefinition"))
                         ))
         );
+
+        register(DeltaBuilder.update("5.3.4", "")
+                .addTask(
+                        new NodeExistsDelegateTask("Reconfigure duplicate role action in Groups", "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
+                                new CheckAndModifyPropertyValueTask(
+                                        "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
+                                        "class",
+                                        "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition",
+                                        "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition")
+                )));
     }
 
     @Override

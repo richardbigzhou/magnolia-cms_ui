@@ -58,7 +58,6 @@ import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
@@ -66,6 +65,7 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -242,15 +242,26 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
 
         // GIVEN
         roleManager.createRole("testRole");
+        final Node testRoleNode = session.getRootNode().getNode("testRole");
 
         // WHEN
-        JcrNodeAdapter roleItem = new JcrNodeAdapter(session.getRootNode().getNode("testRole"));
-        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("renamedRole"));
+        JcrNodeAdapter roleItem = new JcrNodeAdapter(testRoleNode);
 
+        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("renamedRole"));
         createAction(roleItem).execute();
 
         // THEN
         assertRoleHasReadAccessToItself("renamedRole");
+
+        // Assert that no other node present under '/renamedRole/acl_userroles/' except for the existed one,
+        // i.e there are no artifacts left after the action.
+        final Node userRoleAcls = session.getNode("/renamedRole/acl_userroles/");
+        assertEquals(userRoleAcls.getNodes().getSize(), 1);
+
+
+        // Make sure the ACL path is also updated after the action.
+        final String userRoleAcl = userRoleAcls.getNode("0").getProperty("path").getString();
+        assertEquals(userRoleAcl, "/renamedRole");
     }
 
     @Test
