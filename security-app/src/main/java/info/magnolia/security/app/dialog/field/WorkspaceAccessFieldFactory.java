@@ -36,6 +36,7 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -157,17 +158,28 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
                     aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
 
-                    for (AccessControlList.Entry entry : acl.getEntries()) {
+                    for (final Node aclEntryNode : NodeUtil.getNodes(aclNode)) {
+                        AccessControlList.Entry entry = acl.getEntryByNode(aclEntryNode);
 
                         long permissions = entry.getPermissions();
                         long accessType = entry.getAccessType();
                         String path = entry.getPath();
 
-                        JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                        JcrNodeAdapter entryItem = new JcrNodeAdapter(aclEntryNode);
                         entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
-                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
-                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
+                        if (entryItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME) == null) {
+                            entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
+                        }
+
+                        if (entryItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME) == null) {
+                            entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
+                        }
+
+                        if (entryItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME) == null) {
+                            entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
+                        }
+
+                        aclItem.addChild(entryItem);
 
                         Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
                         aclLayout.addComponent(ruleRow);
@@ -192,7 +204,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
                             aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
                         }
 
-                        JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                        JcrNodeAdapter entryItem = addAclEntryItem(aclItem);
                         entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
                         entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, Permission.ALL));
                         entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN));

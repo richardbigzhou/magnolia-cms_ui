@@ -162,6 +162,10 @@ public class AccessControlList {
     }
 
     public void readEntry(Node entryNode) throws RepositoryException {
+        addEntry(getEntryByNode(entryNode));
+    }
+
+    public Entry getEntryByNode(Node entryNode) throws RepositoryException {
         long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
         String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
 
@@ -180,7 +184,7 @@ public class AccessControlList {
             path = StringUtils.removeEnd(path, "/");
         }
 
-        addEntry(new Entry(permissions, accessType, path));
+        return new Entry(permissions, accessType, path);
     }
 
     public void saveEntries(Node aclNode) throws RepositoryException {
