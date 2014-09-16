@@ -51,6 +51,7 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDe
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -64,7 +65,9 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -158,26 +161,27 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
                     aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
 
+                    final Set<AccessControlList.Entry> uniqueEntries = new HashSet<AccessControlList.Entry>();
                     for (final Node aclEntryNode : NodeUtil.getNodes(aclNode)) {
                         AccessControlList.Entry entry = acl.getEntryByNode(aclEntryNode);
+                        if (uniqueEntries.contains(entry)) {
+                            continue;
+                        }
 
+                        uniqueEntries.add(entry);
                         long permissions = entry.getPermissions();
                         long accessType = entry.getAccessType();
                         String path = entry.getPath();
 
                         JcrNodeAdapter entryItem = new JcrNodeAdapter(aclEntryNode);
                         entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        if (entryItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME) == null) {
-                            entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
-                        }
+                        final Property<Long> permissionsProperty = getOrCreateProperty(entryItem, AccessControlList.PERMISSIONS_PROPERTY_NAME, Long.class);
+                        final Property<Long> accessProperty = getOrCreateProperty(entryItem, ACCESS_TYPE_PROPERTY_NAME, Long.class);
+                        final Property<String> pathProperty = getOrCreateProperty(entryItem, AccessControlList.PATH_PROPERTY_NAME, String.class);
 
-                        if (entryItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME) == null) {
-                            entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
-                        }
-
-                        if (entryItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME) == null) {
-                            entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
-                        }
+                        permissionsProperty.setValue(permissions);
+                        accessProperty.setValue(accessType);
+                        pathProperty.setValue(path);
 
                         aclItem.addChild(entryItem);
 
@@ -239,6 +243,15 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
                 return Object.class;
             }
         };
+    }
+
+    private <T> Property<T> getOrCreateProperty(JcrNodeAdapter parentItem, String propertyId, Class<T> type) {
+        Property<T> p = parentItem.getItemProperty(propertyId);
+        if (p == null) {
+            p = DefaultPropertyUtil.newDefaultProperty(type, null);
+            parentItem.addItemProperty(propertyId, p);
+        }
+        return p;
     }
 
     protected Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
