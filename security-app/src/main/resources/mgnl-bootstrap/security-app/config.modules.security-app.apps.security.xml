@@ -6244,13 +6244,10 @@
             <sv:value>d155c0ca-6b0b-4837-9705-49a0f1619c40</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.DuplicateNodeActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-duplicate</sv:value>
-          </sv:property>
-          <sv:property sv:name="implementationClass" sv:type="String">
-            <sv:value>info.magnolia.security.app.dialog.action.DuplicateRoleAction</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
