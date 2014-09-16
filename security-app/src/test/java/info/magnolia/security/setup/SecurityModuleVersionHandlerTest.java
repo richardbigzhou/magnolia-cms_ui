@@ -45,14 +45,12 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.action.DeleteFolderActionDefinition;
-import info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
-import info.magnolia.ui.framework.action.DuplicateNodeActionDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -492,13 +490,13 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     public void updateFrom533ReconfigureDuplicateRoleAction() throws Exception {
         // GIVEN
         NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
-                NodeTypes.ContentNode.NAME).setProperty("class", DuplicateNodeActionDefinition.class.getName());
+                NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
 
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
 
         // THEN
-        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole/class").getString(), DuplicateRoleActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole/class").getString(), "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition");
     }
 }

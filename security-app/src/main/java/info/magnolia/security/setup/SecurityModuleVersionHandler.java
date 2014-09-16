@@ -56,13 +56,11 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
-import info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
-import info.magnolia.ui.framework.action.DuplicateNodeActionDefinition;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 import java.util.ArrayList;
@@ -241,8 +239,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new CheckAndModifyPropertyValueTask(
                                         "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
                                         "class",
-                                        DuplicateNodeActionDefinition.class.getName(),
-                                        DuplicateRoleActionDefinition.class.getName())
+                                        "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition",
+                                        "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition")
                 )));
     }
 
