@@ -62,9 +62,11 @@ public class DuplicateRoleActionTest extends RepositoryTestCase {
 
     private MgnlRoleManager roleManager;
 
+    @Override
     @Before
-    public void setUp() throws Exception {roleManager = new MgnlRoleManager();
+    public void setUp() throws Exception {
         super.setUp();
+        roleManager = new MgnlRoleManager();
         securitySupport = mock(SecuritySupport.class);
         when(securitySupport.getRoleManager()).thenReturn(roleManager);
         ComponentsTestUtil.setInstance(SecuritySupport.class, securitySupport);
