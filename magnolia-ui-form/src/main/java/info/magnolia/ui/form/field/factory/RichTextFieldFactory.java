@@ -154,7 +154,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         String path = VaadinService.getCurrentRequest().getContextPath();
 
         // MAGNOLIA LINK PLUGIN — may be used with/without customConfig
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+        config.addExternalPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
 
         // CUSTOM CONFIG.JS — bypass further config because it can't be overridden otherwise
@@ -211,6 +211,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         List<ToolbarGroup> toolbars = initializeToolbarConfig();
         config.addToolbarLine(toolbars);
 
+        config.addToExtraPlugins(PLUGIN_NAME_MAGNOLIALINK);
         config.addToRemovePlugins("elementspath");
         config.setBaseFloatZIndex(150);
         config.setResizeEnabled(false);

@@ -1,11 +1,10 @@
 /**
  * External plugins added through the server-side FieldFactory are automatically registered.
- * Other external plugins (e.g. client-only) may still be added here.
+ * Other external plugins (e.g. client-only) may still be registered here (and subsequently added via config.extraPlugins).
  *
  * e.g. if your plugin resides in src/main/resources/VAADIN/js:
- * CKEDITOR.plugins.addExternal("magnolialink", CKEDITOR.vaadinDirUrl + "js/magnolialink/");
+ * CKEDITOR.plugins.addExternal("abbr", CKEDITOR.vaadinDirUrl + "js/abbr/");
  */
-
 CKEDITOR.editorConfig = function( config ) {
 
 	// MIRROR info.magnolia.ui.form.field.definition.RichTextFieldDefinition
@@ -72,6 +71,7 @@ CKEDITOR.editorConfig = function( config ) {
 	removePlugins.push("elementspath");
 	removePlugins.push("filebrowser");
 	config.removePlugins = removePlugins.join(",");
+	config.extraPlugins = "magnolialink,magnoliaFileBrowser";
 
 	config.baseFloatZIndex = 150;
 	config.resize_enabled = false;

@@ -51,7 +51,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     private List<String> events = new ArrayList<String>();
 
-    private Map<String, String> serverSidePlugins = new HashMap<String, String>();
+    private Map<String, String> externalPlugins = new HashMap<String, String>();
 
     /**
      * Adds list of toolbar groups. Groups are placed in one
@@ -77,13 +77,29 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
         return events.toArray(new String[0]);
     }
 
+    /**
+     * @deprecated Since 5.3.4, use {@link #addExternalPlugin(String, String)} and {@link #addToExtraPlugins(String)} separately.
+     * However, do not use {@link #addToExtraPlugins(String)} if you're using a custom CKEditor config.js file — otherwise you won't be able to override config.extraPlugins there.
+     */
+    @Deprecated
     public void addPlugin(String pluginName, String source) {
         addToExtraPlugins(pluginName);
-        this.serverSidePlugins.put(pluginName, source);
+        externalPlugins.put(pluginName, source);
     }
 
+    public void addExternalPlugin(String pluginName, String source) {
+        externalPlugins.put(pluginName, source);
+    }
+
+    /**
+     * @deprecated Since 5.3.4, renamed to {@link #getExternalPlugins()}.
+     */
     public Map<String, String> getServerPlugins() {
-        return Collections.unmodifiableMap(this.serverSidePlugins);
+        return Collections.unmodifiableMap(externalPlugins);
+    }
+
+    public Map<String, String> getExternalPlugins() {
+        return externalPlugins;
     }
 
     /**
