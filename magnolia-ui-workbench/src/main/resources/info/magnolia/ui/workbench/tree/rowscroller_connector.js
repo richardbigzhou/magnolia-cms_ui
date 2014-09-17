@@ -23,8 +23,9 @@ info_magnolia_ui_workbench_tree_RowScroller = function() {
             };
 
             var rowHeight = calculateRowHeight();
+            var targetRowPosition = rowHeight * rowIndex;
             var currentScrollTop = tableBody.get(0).scrollTop;
-            if (currentScrollTop < tableBody.height() || currentScrollTop > rowHeight * rowIndex) {
+            if (targetRowPosition < currentScrollTop || targetRowPosition > currentScrollTop + tableBody.height()) {
                 tableBody.get(0).scrollTop = rowHeight * rowIndex - tableBody.height() / 2;
             }
         }, 1);
