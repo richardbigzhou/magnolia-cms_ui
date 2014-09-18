@@ -108,13 +108,11 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     public void setUrl(String url) {
         getFrame().setUrl(url);
         this.url = url;
-        handler.notifyUrlChange();
     }
 
     @Override
     public void reload() {
         handler.reloadIFrame(iframe.getElement());
-        handler.notifyUrlChange();
     }
 
     @Override
