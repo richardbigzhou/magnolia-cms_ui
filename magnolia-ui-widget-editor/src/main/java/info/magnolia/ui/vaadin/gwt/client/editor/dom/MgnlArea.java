@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
-
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEvent;
@@ -196,11 +194,11 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
         // if the add new component area should be visible
         if (isMaxComponentsReached()) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
-            labelString = getI18nMessage("buttons.component.maximum.js");
+            labelString = "Maximum of components reached.";
         } else { // maximum of components is NOT reached - show add new component area with ADD button
-            labelString = getI18nMessage("buttons.component.new.js");
+            labelString = "New Component";
             if (label != null && !label.isEmpty()) {
-                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
+                labelString = "New" + " " + label + " " + "Component";
             }
         }
         return labelString;
