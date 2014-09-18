@@ -35,81 +35,42 @@ package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
 
 /**
  * WebkitFrameEventHandler. Provides separated implementations to overcome different bugs in the
  * handling of iframes on webkit browsers including the iPad.
- * See SCRUM-1593 for details.
  */
 public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
 
-    private MyTimer timer = new MyTimer();
-    private boolean loaded = false;
     private int touchStartY = 0;
 
     @Override
-    public void init() {
-        registerLoadHandler();
-    }
-
-    @Override
-    public void onFrameReady() {
-        super.onFrameReady();
-        timer.cancel();
-        registerUnloadHandler(getView().getFrame().getElement(), timer);
-    }
-
-    /**
-     * Registers two separated implementations of an onload event.
-     * In case the onload is not triggered it's supposed to fallback on a readystate poller.
-     * We have to make sure, that they don't interfere by using a loaded boolean.
-     */
     public void registerLoadHandler() {
-        Frame frame = getView().getFrame();
+        final Frame frame = getView().getFrame();
 
         frame.addLoadHandler(new LoadHandler() {
             @Override
             public void onLoad(LoadEvent event) {
-                if (loaded) {
-                    return;
-                }
-                loaded = true;
-                onFrameReady();
+                bindReadyHandler(frame.getElement());
             }
         });
-        timer.setIframe(frame);
-        timer.scheduleRepeating(100);
-
-    }
-
-    @Override
-    public void notifyUrlChange() {
-        loaded = false;
-        timer.scheduleRepeating(100);
     }
 
     /**
-     * This function is supposed to trigger an unload event, when the page inside the Iframe is changed.
-     * Doesn't work, that's why browsing inside the iframe is broken for webkit.
+     * Uses jQuery to detect when the iFrame is ready.
      */
-    public native void registerUnloadHandler(Element element, Timer timer) /*-{
-        var that = timer;
-        var poll = function(){
-            that.@com.google.gwt.user.client.Timer::scheduleRepeating(I)(100);
-        };
-
-        element.contentWindow.addEventListener('unload', poll, false);
+    public native void bindReadyHandler(Element iframe) /*-{
+        var that = this;
+        $wnd.$(iframe).ready(function() {
+            that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::onFrameReady()()
+        });
 
     }-*/;
+
 
     /**
      * Custom implementation for iPads of the touch end handling. Suppresses the selection, when scrolling.
@@ -156,37 +117,4 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
         }
     }-*/;
 
-    /**
-     * Poller to check the readystate of the contentdocument in the iframe.
-     */
-    private class MyTimer extends Timer {
-
-        Frame iframe;
-
-        @Override
-        public void run() {
-            GWT.log("timer started");
-            String readyState = getReadyState(iframe.getElement());
-
-            if (readyState != null && !readyState.isEmpty()) {
-                GWT.log("doc.readyState" + readyState);
-            }
-
-            if ("interactive".equals(readyState)) {
-                NativeEvent event = Document.get().createLoadEvent();
-                DomEvent.fireNativeEvent(event, iframe);
-            }
-        }
-
-        public void setIframe(Frame iframe) {
-            this.iframe = iframe;
-        }
-
-        public final native String getReadyState(Element element) /*-{
-            if (element.contentWindow != null) {
-                return element.contentWindow.document.readyState;
-            }
-            return '';
-        }-*/;
-    }
 }

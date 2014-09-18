@@ -40,15 +40,18 @@ import com.google.gwt.dom.client.Element;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * AbstractFrameEventHandler.
+ * Common functionality used by all browsers to handle frame events.
  */
 abstract public class AbstractFrameEventHandler {
 
-
     private EventBus eventBus;
-
     private PageEditorView view;
 
+    public void init() {
+        registerLoadHandler();
+    }
+
+    protected abstract void registerLoadHandler();
 
     /**
      * Force iframe to be reloaded. for example when content has been updated.
@@ -57,20 +60,6 @@ abstract public class AbstractFrameEventHandler {
         iframeElement.contentWindow.location.reload();
     }-*/;
 
-
-    public abstract void notifyUrlChange();
-
-    /**
-     * This functionality was added in 4.5. Not triggered at the moment.
-     */
-    private native void onPageEditorReady() /*-{
-        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
-        if(typeof callbacks != 'undefined') {
-            for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply();
-            }
-        }
-    }-*/;
 
     public EventBus getEventBus() {
         return eventBus;
@@ -87,8 +76,6 @@ abstract public class AbstractFrameEventHandler {
     public PageEditorView getView() {
         return view;
     }
-
-    public abstract void init();
 
     public void onFrameReady() {
         eventBus.fireEvent(new FrameLoadedEvent(view.getFrame()));

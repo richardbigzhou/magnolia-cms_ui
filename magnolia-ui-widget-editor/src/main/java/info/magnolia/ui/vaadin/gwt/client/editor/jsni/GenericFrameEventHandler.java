@@ -44,10 +44,6 @@ import com.google.gwt.user.client.ui.Frame;
 public class GenericFrameEventHandler extends AbstractFrameEventHandler {
 
     @Override
-    public void init() {
-        registerLoadHandler();
-    }
-
     public void registerLoadHandler() {
         Frame frame = getView().getFrame();
         frame.addLoadHandler(new LoadHandler() {
@@ -56,11 +52,6 @@ public class GenericFrameEventHandler extends AbstractFrameEventHandler {
                 onFrameReady();
             }
         });
-    }
-
-    @Override
-    public void notifyUrlChange() {
-
     }
 
     @Override
