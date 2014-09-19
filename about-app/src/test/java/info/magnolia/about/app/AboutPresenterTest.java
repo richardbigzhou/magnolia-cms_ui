@@ -33,7 +33,8 @@
  */
 package info.magnolia.about.app;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
@@ -41,6 +42,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 
 import java.io.File;
+import java.net.URL;
 
 import org.junit.Test;
 
@@ -65,11 +67,12 @@ public class AboutPresenterTest {
     }
 
     @Test
-    public void testConnectionString() {
+    public void testConnectionWithAbsolutePathForConfFile() {
         // GIVEN
         MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
-        when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn("jackrabbit-bundle-derby-search.xml");
-        when(properties.getProperty("magnolia.app.rootdir")).thenReturn(new File("target/test-classes").getAbsolutePath());
+        // AboutPresenter expects a an absolute path (when it's not starting with WEB-INF)
+        String configFilePathAbsPath = getAbsPathOfTestResource("jackrabbit-bundle-derby-search.xml");
+        when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFilePathAbsPath);
         AboutPresenter presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
 
         // WHEN
@@ -79,4 +82,29 @@ public class AboutPresenterTest {
         assertTrue(connection.length > 0);
         assertEquals("jdbc:derby:${rep.home}/version/db;create=true", connection[0]);
     }
+
+    @Test
+    public void testConnectionWithRelativePathForConfFile() {
+        // GIVEN
+        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
+        // AboutPresenter expects a relative path starting with "WEB-INF" (or an absolute path)
+        String configFileRelPath = "WEB-INF/jackrabbit-bundle-derby-search.xml";
+        when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFileRelPath);
+        String fakedMagnoliaAppRootDir = getAbsPathOfTestResource(".");
+        when(properties.getProperty("magnolia.app.rootdir")).thenReturn(fakedMagnoliaAppRootDir);
+        AboutPresenter presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
+
+        // WHEN
+        String[] connection = presenter.getConnectionString();
+
+        // THEN
+        assertTrue(connection.length > 0);
+        assertEquals("jdbc:derby:${rep.home}/version/db;create=true", connection[0]);
+    }
+
+    private String getAbsPathOfTestResource(String relPathInResources) {
+        URL url = Thread.currentThread().getContextClassLoader().getResource(relPathInResources);
+        return url.getPath();
+    }
+
 }

@@ -194,9 +194,21 @@ public class AboutPresenter {
     }
 
     String[] getConnectionString() {
-        String configPath = magnoliaProperties.getProperty("magnolia.repositories.jackrabbit.config");
-        File config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" + configPath);
-        final String[] connectionString = new String[3];
+        File config = null;
+        // Assuming, the path to the repository-config.-file is configured relative, starting with WEB-INF.
+        // Otherwise, assuming it's an absolute path for this config. (See JIRA MGNLUI-3163)
+        String configuredPath = magnoliaProperties.getProperty("magnolia.repositories.jackrabbit.config");
+        if(configuredPath!=null){
+            if(configuredPath.startsWith("WEB-INF")){
+                config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" +configuredPath);
+            }else {
+                config = new File(configuredPath);
+            }
+        }
+        // No special handling here if the config (file) is null or not existing.
+        // If the path is wrong or not set, Magnolia won't start up properly and it won't be possible to launch the About-app.
+
+       final String[] connectionString = new String[3];
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
                 private boolean inPM;
