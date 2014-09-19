@@ -48,6 +48,8 @@ public interface LanguageSelectorView extends View  {
 
     void setCurrentLanguage(Locale locale);
 
+    void setVisible(boolean visible);
+
     /**
      * Listener interface.
      */

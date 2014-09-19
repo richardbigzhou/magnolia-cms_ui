@@ -59,6 +59,9 @@ public class ActivationStatusViewImpl extends HorizontalLayout implements Activa
     @Override
     public void setActivationStatus(String label) {
         textLabel.setValue(label);
+        if (isVisible()) {
+            setVisible(true);
+        }
     }
 
     @Override

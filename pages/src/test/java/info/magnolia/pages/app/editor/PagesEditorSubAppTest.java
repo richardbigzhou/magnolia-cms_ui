@@ -124,6 +124,7 @@ public class PagesEditorSubAppTest {
     private MockSession session;
     private MockNode root;
     private PageEditorStatus pageEditorStatus;
+    private PageBarPresenter pageBar;
 
     @Before
     public void setUp() throws Exception {
@@ -179,10 +180,11 @@ public class PagesEditorSubAppTest {
 
         i18n = mock(SimpleTranslator.class);
 
-        pageEditorStatus = mock(PageEditorStatus.class);
+        this.pageEditorStatus = mock(PageEditorStatus.class);
         this.pageEditorPresenter = new PageEditorPresenter(actionExecutor, mock(PageEditorView.class), eventBus, subAppContext, i18n, pageEditorStatus);
+        this.pageBar = mock(PageBarPresenter.class);
         this.editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter,
-                versionManager, i18n, availabilityChecker, contentConnector, statusBar, mock(PageBarPresenter.class));
+                versionManager, i18n, availabilityChecker, contentConnector, statusBar, pageBar);
     }
 
     @After
@@ -318,6 +320,20 @@ public class PagesEditorSubAppTest {
 
         // THEN - we don't fail
 
+    }
+
+    @Test
+    public void testDeactivateComponents() throws Exception {
+        // GiVEN
+        this.editor = spy(editor);
+
+        // WHEN
+        editor.deactivateComponents();
+
+        // THEN
+        verify(editor, times(1)).updateActionbar();
+        verify(pageBar, times(1)).deactivateComponents();
+        verify(statusBar, times(1)).deactivateComponents();
     }
 
     /**

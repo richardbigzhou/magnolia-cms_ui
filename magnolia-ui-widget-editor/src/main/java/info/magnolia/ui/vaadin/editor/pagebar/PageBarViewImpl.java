@@ -69,9 +69,8 @@ public class PageBarViewImpl<L extends PageBarView.Listener> extends CustomCompo
     }
 
     @Override
-    public void setPageName(String pageTitle, String path) {
-        String label = pageTitle.toUpperCase() + "  -  " + path;
-        this.pageNameLabel.setValue(label);
+    public void setPageName(String PageName) {
+        this.pageNameLabel.setValue(PageName);
     }
 
     @Override
@@ -96,10 +95,6 @@ public class PageBarViewImpl<L extends PageBarView.Listener> extends CustomCompo
     @Override
     public Component asVaadinComponent() {
         return this;
-    }
-
-    protected CssLayout getLayout() {
-        return layout;
     }
 
 }

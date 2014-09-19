@@ -88,4 +88,8 @@ public class PlatformSelector implements PlatformSelectorView.Listener {
         pageEditorPresenter.getStatus().setPlatformType(PlatformType.DESKTOP);
         view.setPlatFormType(PlatformType.DESKTOP);
     }
+
+    public void deactivate() {
+        view.setVisible(false);
+    }
 }

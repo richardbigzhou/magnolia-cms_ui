@@ -52,6 +52,8 @@ public interface PageEditorServerRpc extends ServerRpc {
 
     void editComponent(ComponentElement element);
 
+    void selectExternalPage();
+
     void editArea(AreaElement element);
 
     void newArea(AreaElement areaElement);

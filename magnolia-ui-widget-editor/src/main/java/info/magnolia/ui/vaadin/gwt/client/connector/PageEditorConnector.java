@@ -79,6 +79,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -165,17 +166,28 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             @Override
             public void handle(FrameLoadedEvent event) {
                 model.reset();
-                Document document = event.getFrame().getContentDocument();
-                process(document);
-
-                view.initKeyEventListeners();
-
-                if (!getState().parameters.isPreview()) {
-                    view.initDomEventListeners();
-                    focusModel.init();
+                Document document = null;
+                try {
+                    document = event.getFrame().getContentDocument();
+                }
+                catch(JavaScriptException e) {
+                    GWT.log("Error getting content document from iframe: " + e.getMessage());
+                }
+                if (document == null) {
+                    rpc.selectExternalPage();
                 }
                 else {
-                    focusModel.select(model.getRootPage());
+                    process(document);
+
+                    view.initKeyEventListeners();
+
+                    if (!getState().parameters.isPreview()) {
+                        view.initDomEventListeners();
+                        focusModel.init();
+                    }
+                    else {
+                        focusModel.select(model.getRootPage());
+                    }
                 }
             }
         });
