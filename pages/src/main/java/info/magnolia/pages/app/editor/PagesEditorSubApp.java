@@ -179,6 +179,12 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     }
 
     @Override
+    public void updateCaptionForExternalPage(String title) {
+        this.caption = title;
+        pageBar.setPageName(caption);
+    }
+
+    @Override
     public PagesEditorSubAppView start(Location location) {
         view.setListener(this);
 
@@ -228,6 +234,13 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Override
     public DetailLocation getCurrentLocation() {
         return DetailLocation.wrap(super.getCurrentLocation());
+    }
+
+    @Override
+    public void deactivateComponents() {
+        updateActionbar();
+        pageBar.deactivateComponents();
+        statusBar.deactivateComponents();
     }
 
     @Override

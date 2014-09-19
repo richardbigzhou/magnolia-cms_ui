@@ -164,4 +164,7 @@ public class ActivationStatus {
         this.listener = listener;
     }
 
+    public void deactivate() {
+        view.setVisible(false);
+    }
 }

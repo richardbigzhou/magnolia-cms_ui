@@ -66,6 +66,7 @@ import org.slf4j.LoggerFactory;
 public class PageEditorPresenter implements PageEditorListener {
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
+    private static final String EXTERNAL_PAGE_CAPTION = "pages.edit.external.page.caption";
 
     private final ActionExecutor actionExecutor;
     private final PageEditorView view;
@@ -132,6 +133,13 @@ public class PageEditorPresenter implements PageEditorListener {
     }
 
     @Override
+    public void onExternalPageSelect() {
+        this.selectedElement = null;
+        listener.updateCaptionForExternalPage(i18n.translate(EXTERNAL_PAGE_CAPTION));
+        listener.deactivateComponents();
+    }
+
+    @Override
     public void onAction(String actionName, Object... args) {
         try {
             actionExecutor.execute(actionName, args);
@@ -175,5 +183,9 @@ public class PageEditorPresenter implements PageEditorListener {
         void onMove();
 
         DetailLocation getCurrentLocation();
+
+        void updateCaptionForExternalPage(String title);
+
+        void deactivateComponents();
     }
 }

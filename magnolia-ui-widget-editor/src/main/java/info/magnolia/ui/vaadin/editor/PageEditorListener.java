@@ -57,4 +57,6 @@ public interface PageEditorListener {
     void onElementSelect(AbstractElement nodeSelection);
 
     void onAction(String actionName, Object... args);
+
+    void onExternalPageSelect();
 }

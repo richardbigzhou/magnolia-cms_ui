@@ -43,7 +43,7 @@ import info.magnolia.ui.api.view.View;
  */
 public interface PageBarView<L extends PageBarView.Listener> extends View {
 
-    void setPageName(String pageTitle, String path);
+    void setPageName(String pageName);
 
     void setListener(L listener);
 

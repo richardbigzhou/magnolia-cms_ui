@@ -136,6 +136,10 @@ public class ElementProcessor {
     private native void registerOnclick(Element element) /*-{
         var that = this;
         var path = element.href;
+        var target = element.target;
+        if (target == '_blank') {
+            return true;
+        }
         if (element.onclick == null) {
             element.onclick = function() {
                 that.@info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor::navigate(Ljava/lang/String;)(path);

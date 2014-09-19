@@ -74,6 +74,11 @@ public class PageEditor extends AbstractComponent {
             }
 
             @Override
+            public void selectExternalPage() {
+                listener.onExternalPageSelect();
+            }
+
+            @Override
             public void newComponent(AreaElement areaElement) {
                 listener.onAction(PageEditorListener.ACTION_ADD_COMPONENT, areaElement);
             }

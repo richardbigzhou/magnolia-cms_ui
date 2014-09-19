@@ -124,4 +124,7 @@ public class LanguageSelector implements LanguageSelectorView.Listener {
     }
 
 
+    public void deactivate() {
+        view.setVisible(false);
+    }
 }

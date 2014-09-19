@@ -73,7 +73,12 @@ public class PageBarPresenter implements PageBarView.Listener {
     }
 
     public void setPageName(String caption, String nodePath) {
-        view.setPageName(caption, nodePath);
+        String pageName = caption.toUpperCase() + "  -  " + nodePath;
+        view.setPageName(pageName);
+    }
+
+    public void setPageName(String pageName) {
+        view.setPageName(pageName);
     }
 
     private void togglePreviewMode(boolean preview) {
@@ -91,4 +96,10 @@ public class PageBarPresenter implements PageBarView.Listener {
         boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
         togglePreviewMode(isPreview);
     }
+
+    public void deactivateComponents() {
+        languageSelector.deactivate();
+        platformSelector.deactivate();
+    }
+
 }

@@ -79,4 +79,8 @@ public class StatusBarPresenter {
     public void setListener(PagesEditorSubApp listener) {
         this.listener = listener;
     }
+
+    public void deactivateComponents() {
+        activationStatus.deactivate();
+    }
 }
