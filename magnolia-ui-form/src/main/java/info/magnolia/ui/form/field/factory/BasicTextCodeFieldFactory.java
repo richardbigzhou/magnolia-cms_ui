@@ -34,12 +34,12 @@
 package info.magnolia.ui.form.field.factory;
 
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.aceeditor.AceEditor;
-import org.vaadin.aceeditor.AceMode;
 
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -48,12 +48,19 @@ import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an Text code field definition.
- * 
+ *
  * @param <D> type of definition
  */
 public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> extends AbstractFieldFactory<D, String> {
 
     private static final Logger log = LoggerFactory.getLogger(BasicTextCodeFieldFactory.class);
+
+    public static final String FREEMARKER_LANGUAGE = "freemarker";
+
+    public static final String ACE_EDITOR_FTL_ID = "ftl";
+
+    public static final String ACE_EDITOR_RESOURCES = "/.resources/ace/";
+
     private AceEditor field;
 
     public BasicTextCodeFieldFactory(D definition, Item relatedFieldItem) {
@@ -68,6 +75,7 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
         field.addTextChangeListener(createTextChangeListener(field));
         // Set style
         field.setStyleName("textcodefield");
+        field.setUseWorker(false);
 
         return field;
     }
@@ -76,8 +84,14 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
      * @return newly constructed {@link AceEditor}.
      */
     protected AceEditor newAceEditor() {
-        AceEditor aceEditor =  new AceEditor();
-        aceEditor.setMode(checkModeType(definition.getLanguage()));
+        final AceEditor aceEditor =  new AceEditor();
+        if (MgnlContext.isWebContext()) {
+            String aceEditorResourcePath = MgnlContext.getContextPath() + ACE_EDITOR_RESOURCES;
+            aceEditor.setModePath(aceEditorResourcePath);
+            aceEditor.setWorkerPath(aceEditorResourcePath);
+            aceEditor.setThemePath(aceEditorResourcePath);
+        }
+        aceEditor.setMode(getModeType(definition.getLanguage()));
         return aceEditor;
     }
 
@@ -85,7 +99,7 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
      * Set {@link AceEditor} mode.
      */
     protected void setAceEditorMode() {
-        field.setMode(checkModeType(definition.getLanguage()));
+        field.setMode(getModeType(definition.getLanguage()));
     }
 
     /**
@@ -111,16 +125,13 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
     }
 
     /**
-     * Define the Ace Field mode type.
-     * If equivalent {@link AceMode} mode found, return Text mode.
+     * Get Ace-editor compliant mode type name for a language.
+     *
+     * TODO: currently only 'freemarker' -> 'ftl' case is handled, otherwise the method returns the string from definition.
+     * If needed we could craft our own mapping from human-readable language names into the Ace editor mode identifiers.
      */
-    private String checkModeType(String language) {
-        try {
-            return  AceMode.valueOf(language).name();
-        } catch(IllegalArgumentException iae) {
-            log.warn("Couldn't found the specified language {}. Text language will be used. ",language);
-            return AceMode.text.name();
-        }
+    private String getModeType(String language) {
+        return FREEMARKER_LANGUAGE.equals(language) ? ACE_EDITOR_FTL_ID : language;
     }
 
 }

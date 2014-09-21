@@ -220,7 +220,7 @@
       <dependency>
         <groupId>org.vaadin.addons</groupId>
         <artifactId>aceeditor</artifactId>
-        <version>0.8.5</version>
+        <version>0.8.11</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addon</groupId>
