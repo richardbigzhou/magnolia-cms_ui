@@ -87,6 +87,12 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         // for 5.3.1 update:
         setupConfigNode("/modules/security-app/dialogs/role");
+
+        // for 5.3.4 update:
+        setupConfigNode("/modules/security-app/apps/security/subApps/users/workbench");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/workbench");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench");
+
     }
 
     @Override
@@ -492,11 +498,30 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
                 NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
 
-
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
 
         // THEN
         assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole/class").getString(), "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition");
+    }
+
+    @Test
+    public void updateFrom533AddSearchToSubApps() throws Exception {
+        // GIVEN
+
+        Node contentViewsUsers = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/workbench/contentViews", NodeTypes.ContentNode.NAME);
+        Node contentViewsGroups = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/workbench/contentViews", NodeTypes.ContentNode.NAME);
+        Node contentViewsRoles = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/workbench/contentViews", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // THEN
+        assertTrue(contentViewsUsers.hasNode("list"));
+        assertTrue(contentViewsUsers.hasNode("search"));
+        assertTrue(contentViewsGroups.hasNode("list"));
+        assertTrue(contentViewsGroups.hasNode("search"));
+        assertTrue(contentViewsRoles.hasNode("list"));
+        assertTrue(contentViewsRoles.hasNode("search"));
     }
 }
