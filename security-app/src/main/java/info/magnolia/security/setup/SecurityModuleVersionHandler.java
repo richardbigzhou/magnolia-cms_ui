@@ -33,8 +33,12 @@
  */
 package info.magnolia.security.setup;
 
+import static info.magnolia.jcr.nodebuilder.Ops.*;
+
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
+import info.magnolia.jcr.nodebuilder.task.ErrorHandling;
+import info.magnolia.jcr.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
@@ -241,7 +245,10 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                         "class",
                                         "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition",
                                         "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition")
-                )));
+                        ))
+                .addTask(new AddListAndSearchViewTask("users"))
+                .addTask(new AddListAndSearchViewTask("groups"))
+                .addTask(new AddListAndSearchViewTask("roles")));
     }
 
     @Override
@@ -253,10 +260,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         return tasks;
     }
 
-
     /**
-     * Task capable of fixing DeleteFolder settings of Security app sub-apps. Precisely it sets definition class to {@link DeleteEmptyFolderActionDefinition}
-     * and removes implementationClass property as unnecessary.
+     * Task capable of fixing DeleteFolder settings of Security app sub-apps. Precisely it sets definition class to {@link DeleteEmptyFolderActionDefinition} and removes implementationClass property as unnecessary.
      */
     private static class DeleteFolderActionReconfigurationTask extends NodeExistsDelegateTask {
 
@@ -268,7 +273,29 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                     "",
                     new RemovePropertyTask("", "", RepositoryConstants.CONFIG, String.format(actionPathTemplate, subAppName), "implementationClass"),
                     new SetPropertyTask(RepositoryConstants.CONFIG, String.format(actionPathTemplate, subAppName), "class", DeleteEmptyFolderActionDefinition.class.getName())
-            ));
+                    ));
         }
     }
+
+    /**
+     * Add a List and Search view to a Security subapp which has only a Tree view.
+     */
+    private static class AddListAndSearchViewTask extends NodeBuilderTask {
+
+        private final static String workbenchPathTemplate = "/modules/security-app/apps/security/subApps/%s/workbench/";
+        private final static String taskTitleTemplate = "Add List and Search view to %s sub-app, in the Security app.";
+
+        public AddListAndSearchViewTask(String subAppName) {
+            super(String.format(taskTitleTemplate, subAppName), "", ErrorHandling.logging, RepositoryConstants.CONFIG, String.format(workbenchPathTemplate, subAppName),
+                    getNode("contentViews").then(
+                            addNode("list", NodeTypes.Content.NAME).then(
+                                    addProperty("class", "info.magnolia.ui.workbench.list.ListPresenterDefinition"),
+                                    addProperty("extends", "../tree")),
+                            addNode("search", NodeTypes.Content.NAME).then(
+                                    addProperty("class", "info.magnolia.ui.workbench.search.SearchPresenterDefinition"),
+                                    addProperty("extends", "../list"))
+                            ));
+        }
+    }
+
 }
