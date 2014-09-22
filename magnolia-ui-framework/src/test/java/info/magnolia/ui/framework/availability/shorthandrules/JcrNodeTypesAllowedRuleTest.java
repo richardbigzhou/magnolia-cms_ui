@@ -93,4 +93,34 @@ public class JcrNodeTypesAllowedRuleTest {
         // THEN
         assertFalse(String.format("Expected new itemId to be of type '%s', but was '%s'.", NodeTypes.Component.NAME, itemId.getPrimaryNodeType()), result);
     }
+
+    @Test
+    public void testItemIdIsNull() throws Exception {
+        // GIVEN
+        rule.setNodeTypes(new LinkedList() {{
+            add(NodeTypes.ContentNode.NAME);
+        }});
+
+        JcrNewNodeItemId itemId = null;
+
+        // WHEN
+        boolean result = rule.isAvailableForItem(itemId);
+
+        // THEN
+        assertFalse("Rule should return false in case the itemId is null.", result);
+    }
+
+    @Test
+    public void testItemIdIsNullAndNodeTypeEmpty() throws Exception {
+        // GIVEN
+        rule.setNodeTypes(new LinkedList());
+
+        JcrNewNodeItemId itemId = null;
+
+        // WHEN
+        boolean result = rule.isAvailableForItem(itemId);
+
+        // THEN
+        assertFalse("Rule should return false in case the itemId is null.", result);
+    }
 }

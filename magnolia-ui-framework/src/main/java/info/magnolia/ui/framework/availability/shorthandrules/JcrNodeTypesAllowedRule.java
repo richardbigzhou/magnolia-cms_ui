@@ -63,7 +63,7 @@ public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
     @Override
     protected boolean isAvailableForItem(Object itemId) {
         // if no node type defined, then valid for all node types
-        if (nodeTypes.isEmpty()) {
+        if (nodeTypes.isEmpty() && itemId != null) {
             return true;
         }
         if (itemId instanceof JcrNewNodeItemId) {
@@ -72,7 +72,6 @@ public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
                     return true;
                 }
             }
-            return false;
         }
         else if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
             JcrItemId jcrItemId = (JcrItemId) itemId;
@@ -87,9 +86,7 @@ public class JcrNodeTypesAllowedRule extends AbstractAvailabilityRule {
                     continue;
                 }
             }
-
-            return false;
         }
-        return true;
+        return false;
     }
 }
