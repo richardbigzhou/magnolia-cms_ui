@@ -89,6 +89,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/dialogs/role");
 
         // for 5.3.4 update:
+        setupConfigNode("/modules/security-app/apps/security/subApps/users/workbench");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/workbench");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench");
 
     }
 
@@ -505,7 +508,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void updateFrom533AddSearchToSubApps() throws Exception {
         // GIVEN
-        setupConfigNode("/modules/security-app/apps/security/subApps/groups/workbench/contentViews");
+
         Node contentViewsUsers = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/workbench/contentViews", NodeTypes.ContentNode.NAME);
         Node contentViewsGroups = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/workbench/contentViews", NodeTypes.ContentNode.NAME);
         Node contentViewsRoles = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/workbench/contentViews", NodeTypes.ContentNode.NAME);
