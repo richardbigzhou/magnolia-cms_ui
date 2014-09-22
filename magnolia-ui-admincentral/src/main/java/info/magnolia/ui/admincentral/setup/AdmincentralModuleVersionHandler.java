@@ -268,6 +268,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD,
                         new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true")))
         );
+        register(DeltaBuilder.update("5.3.4", "")
+                .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
     }
 
     @Override

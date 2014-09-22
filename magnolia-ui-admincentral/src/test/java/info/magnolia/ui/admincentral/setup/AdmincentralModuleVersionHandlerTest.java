@@ -558,4 +558,17 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertThat(importField.getProperty("required").getBoolean(), is(true));
     }
 
+    @Test
+    public void testUpdateFrom533() throws Exception {
+        // GIVEN
+        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/commands/default", NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // THEN
+        assertThat(config, hasNode("restorePreviousVersion"));
+
+    }
+
 }

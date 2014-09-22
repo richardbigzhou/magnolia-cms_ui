@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2010-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,108 +33,53 @@
  */
 package info.magnolia.pages.app.action;
 
-import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.contentapp.browser.action.RestoreItemPreviousVersionAction;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import javax.inject.Inject;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Restore the previous version of a page and edit it.
+ * Restores the previous version of a page using a command.
  */
-public class RestorePreviousVersionAction extends AbstractAction<RestorePreviousVersionActionDefinition> {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    private final AbstractJcrNodeAdapter nodeItemToEdit;
+public class RestorePreviousVersionAction extends RestoreItemPreviousVersionAction<RestorePreviousVersionActionDefinition> {
+
     private final LocationController locationController;
-    private final VersionManager versionManager;
-    private final SubAppContext subAppContext;
-    private final SimpleTranslator i18n;
-    private EventBus eventBus;
 
-    /**
-     * @deprecated since 5.3. Use {@link RestorePreviousVersionAction#RestorePreviousVersionAction(RestorePreviousVersionActionDefinition, AbstractJcrNodeAdapter, LocationController, VersionManager, SubAppContext, SimpleTranslator, EventBus) instead.
-     */
-    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
-            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n) {
-        this(definition, nodeItemToEdit, locationController, versionManager, subAppContext, i18n, null);
-    }
-
-    @Inject
-    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
-            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
-        super(definition);
-        this.nodeItemToEdit = nodeItemToEdit;
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, LocationController locationController) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n);
         this.locationController = locationController;
-        this.versionManager = versionManager;
-        this.subAppContext = subAppContext;
-        this.i18n = i18n;
-        this.eventBus = eventBus;
     }
+
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, LocationController locationController) {
+        super(definition, items, commandsManager, eventBus, uiContext, i18n);
+        this.locationController = locationController;
+    }
+
 
     @Override
-    public void execute() throws ActionExecutionException {
-        try {
-            final String path = nodeItemToEdit.getJcrItem().getPath();
+    protected void onPostExecute() throws Exception {
+        super.onPostExecute();
 
-            // Get last version.
-            Version version = getPreviousVersion();
-            // Check the version.
-            if (version == null) {
-                //
-                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.noVersion.actionCanceled.message"));
-                return;
-            }
-            // Restore previous version
-            Node node = nodeItemToEdit.getJcrItem();
-            versionManager.restore(node, version, true);
+        Node node = (Node) getCurrentItem().getJcrItem();
+        boolean restoreMultiple = getItems().size() > 1 || NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
 
-            if (this.getDefinition().isShowPreview()) {
-                DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
-                locationController.goTo(location);
-            } else if (eventBus != null) {
-                Object itemId = JcrItemUtil.getItemId(node);
-                eventBus.fireEvent(new ContentChangedEvent(itemId, true));
-            }
-
-        } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message"));
-            throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
+        // Show preview only if one page is restored
+        if (((RestorePreviousVersionActionDefinition) getDefinition()).isShowPreview() && !restoreMultiple) {
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, node.getPath(), "");
+            locationController.goTo(location);
         }
-    }
-
-    /**
-     * @return Previous version or null if not founded.
-     */
-    private Version getPreviousVersion() throws RepositoryException {
-        Version previousVersion = null;
-        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getJcrItem());
-        if (versionIterator == null) {
-            return previousVersion;
-        }
-
-        while (versionIterator.hasNext()) {
-            previousVersion = versionIterator.nextVersion();
-        }
-
-        return previousVersion;
     }
 }

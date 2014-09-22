@@ -9,9 +9,6 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>618a3159-f646-4780-9a2c-7616bc56d17d</sv:value>
   </sv:property>
-  <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-05-03T08:28:18.396+02:00</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -22,7 +19,7 @@
     <sv:value>2013-01-24T11:59:15.680+01:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-    <sv:value>2013-03-15T15:55:06.723+01:00</sv:value>
+    <sv:value>2014-09-26T10:02:47.618+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
     <sv:value>superuser</sv:value>
@@ -33,9 +30,6 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>3f962b57-a498-4b66-a396-7f0a8854aed2</sv:value>
-    </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-03T08:28:18.397+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -71,9 +65,6 @@
       <sv:property sv:name="enabled" sv:type="Boolean">
         <sv:value>true</sv:value>
       </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-03T08:28:23.718+02:00</sv:value>
-      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -105,9 +96,6 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.commands.impl.ExportCommand</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-03T08:28:18.398+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -141,9 +129,6 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.commands.impl.ImportCommand</sv:value>
       </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-03T08:28:18.399+02:00</sv:value>
-      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -171,16 +156,94 @@
         <sv:value>mgnl:contentNode</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>2c846e53-15f3-4bae-bb65-5b6a75f5d411</sv:value>
+        <sv:value>bfe05b87-0f52-4ffe-bceb-4b9a7406c25f</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2013-11-20T13:40:05.249+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2013-11-20T13:42:16.182+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:node sv:name="deactivate">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:contentNode</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>8df91bb9-479d-4b7b-be02-6ab5ab94e0f0</sv:value>
+        </sv:property>
+        <sv:property sv:name="class" sv:type="String">
+          <sv:value>info.magnolia.module.activation.commands.DeactivationCommand</sv:value>
+        </sv:property>
+        <sv:property sv:name="enabled" sv:type="String">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2013-11-20T13:40:19.425+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2013-11-20T13:42:34.980+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+      </sv:node>
+      <sv:node sv:name="delete">
+        <sv:property sv:name="jcr:primaryType" sv:type="Name">
+          <sv:value>mgnl:contentNode</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:uuid" sv:type="String">
+          <sv:value>70c54ba1-2fe9-4e9d-8d95-c2fc5a5f6e17</sv:value>
+        </sv:property>
+        <sv:property sv:name="class" sv:type="String">
+          <sv:value>info.magnolia.commands.impl.DeleteCommand</sv:value>
+        </sv:property>
+        <sv:property sv:name="enabled" sv:type="Boolean">
+          <sv:value>true</sv:value>
+        </sv:property>
+        <sv:property sv:name="jcr:createdBy" sv:type="String">
+          <sv:value>admin</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:created" sv:type="Date">
+          <sv:value>2013-11-20T13:40:55.806+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:createdBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+          <sv:value>2013-11-20T13:41:44.384+01:00</sv:value>
+        </sv:property>
+        <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+          <sv:value>superuser</sv:value>
+        </sv:property>
+      </sv:node>
+    </sv:node>
+    <sv:node sv:name="restorePreviousVersion">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>c1b916d0-c013-477f-a4d0-42d877833b9a</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.commands.impl.DeleteCommand</sv:value>
+        <sv:value>info.magnolia.commands.impl.RestorePreviousVersionCommand</sv:value>
       </sv:property>
       <sv:property sv:name="enabled" sv:type="Boolean">
         <sv:value>true</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-03T08:28:23.718+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -189,16 +252,19 @@
         <sv:value>false</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
-        <sv:value>2006-04-12T17:06:07.076+02:00</sv:value>
+        <sv:value>2014-09-26T10:53:13.582+02:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
-        <sv:value>2006-11-09T19:20:04.463+01:00</sv:value>
+        <sv:value>2014-09-26T10:53:13.584+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
         <sv:value>superuser</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-05-07T10:04:31.938+02:00</sv:value>
+        <sv:value>2014-09-26T10:55:02.050+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>

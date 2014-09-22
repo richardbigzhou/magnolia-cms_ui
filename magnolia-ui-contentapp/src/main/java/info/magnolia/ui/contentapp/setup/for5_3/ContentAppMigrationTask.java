@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.setup.for5_3;
 
 import info.magnolia.module.delta.ArrayDelegateTask;
-import info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 /**
  * Invokes JCR-liberated content app migration tasks. The list of such tasks includes:
@@ -53,11 +53,11 @@ public class ContentAppMigrationTask extends ArrayDelegateTask {
 
     /**
      * Constructs {@link ContentAppMigrationTask}.
+     * 
      * @param path path to the module/app to be updated.
-     * @param additionalActionsToMigrate if an app to be updated utilizes some descendants of {@link AbstractItemActionDefinition}
-     * they should be specified so that their configuration gets also updated.
+     * @param additionalActionsToMigrate if an app to be updated utilizes some descendants of {@link ActionDefinition} they should be specified so that their configuration gets also updated.
      */
-    public ContentAppMigrationTask(String path, Class<? extends AbstractItemActionDefinition>... additionalActionsToMigrate) {
+    public ContentAppMigrationTask(String path, Class<? extends ActionDefinition>... additionalActionsToMigrate) {
         super("Execute JCR-liberated content app migration tasks",
                 "Migrate availability rules from ui-api, move respective properties from workbench to content connector, update availability definition structure, fix AbstractItemActionDefinition and its descendants configuration.");
 

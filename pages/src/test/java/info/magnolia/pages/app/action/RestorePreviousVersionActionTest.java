@@ -34,11 +34,14 @@
 package info.magnolia.pages.app.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.impl.RestorePreviousVersionCommand;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventBus;
@@ -78,6 +81,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     private RestorePreviousVersionAction action;
     private VersionManager versionMan;
     private EventBus eventBus;
+    private CommandsManager commandsManager;
 
     @Override
     @Before
@@ -97,6 +101,8 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
         locationEventBus = new SimpleEventBus();
         locationController = new LocationController(locationEventBus, mock(Shell.class));
+        commandsManager = mock(CommandsManager.class);
+        when(commandsManager.getCommand(anyString(), anyString())).thenReturn(new RestorePreviousVersionCommand(VersionManager.getInstance()));
 
         subAppContext = mock(SubAppContext.class);
         i18n = mock(SimpleTranslator.class);
@@ -104,7 +110,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         versionMan = VersionManager.getInstance();
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         eventBus = mock(EventBus.class);
-        action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n, eventBus);
+        action = new RestorePreviousVersionAction(definition, item, commandsManager, eventBus, subAppContext, i18n, locationController);
     }
 
     @Test
@@ -116,10 +122,8 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        Location location = locationController.getWhere();
-        assertEquals("app:pages:detail;/node:edit", location.toString());
         assertEquals(versionMan.getBaseVersion(node).getName(), "1.0");
-        verify(eventBus, times(0)).fireEvent(any(Event.class));
+        verify(eventBus, times(1)).fireEvent(any(Event.class));
     }
 
     @Test

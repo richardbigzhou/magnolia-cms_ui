@@ -535,4 +535,17 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("deleteArea"));
         assertThat(areaActions.getNode("groups").getNode("addingActions/items"), hasNode("addComponent"));
     }
+
+    @Test
+    public void testUpdateTo534() throws Exception {
+
+        Node availability = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // THEN
+        assertThat(availability, hasProperty("multiple"));
+
+    }
 }

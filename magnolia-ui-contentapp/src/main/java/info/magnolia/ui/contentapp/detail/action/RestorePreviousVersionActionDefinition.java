@@ -35,7 +35,10 @@ package info.magnolia.ui.contentapp.detail.action;
 
 /**
  * ActionDefinition used for restoring the previous version on an item.
+ * 
+ * @deprecated since 5.3.4, please use {@link info.magnolia.ui.contentapp.browser.action.RestoreItemPreviousVersionActionDefinition} instead.
  */
+@Deprecated
 public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
 
     public RestorePreviousVersionActionDefinition() {

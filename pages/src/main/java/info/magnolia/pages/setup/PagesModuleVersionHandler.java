@@ -196,15 +196,19 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage",
                                 new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage", "modalityLevel", "strong")),
                         new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate",
-                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))
-                        ))
-                .addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
+                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/editTemplate", "modalityLevel", "light"))))
+         .addTask(new ContentAppMigrationTask("/modules/pages", RestorePreviousVersionActionDefinition.class, PreviewPreviousVersionActionDefinition.class)));
 
         register(DeltaBuilder.update("5.3.1", "")
                 .addTask(new SetWritePermissionForActionsTask(PAGES_APP_ACTIONS, new String [] { "activate", "activateRecursive", "deactivate", "activateDeletion" })));
 
         register(DeltaBuilder.update("5.3.3", "")
                 .addTask(new UpdatePageEditorActionAvailability()));
+
+        register(DeltaBuilder.update("5.3.4", "")
+                .addTask(new NodeExistsDelegateTask("Make action available on multiple nodes", "Makes restorePreviousVersion action available on multiple nodes.",
+                        RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability",
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", "multiple", true))));
     }
 
     @Override

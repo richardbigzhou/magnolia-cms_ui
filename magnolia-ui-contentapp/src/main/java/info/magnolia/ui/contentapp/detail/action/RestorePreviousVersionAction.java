@@ -55,7 +55,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Restore the previous version of an item.
+ * 
+ * @deprecated since 5.3.4, please use {@link info.magnolia.ui.contentapp.browser.action.RestoreItemPreviousVersionAction} instead.
  */
+@Deprecated
 public class RestorePreviousVersionAction extends AbstractAction<RestorePreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final AbstractJcrNodeAdapter nodeItemToEdit;

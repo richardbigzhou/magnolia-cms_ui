@@ -33,13 +33,13 @@
  */
 package info.magnolia.pages.app.action;
 
-import info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition;
+import info.magnolia.ui.contentapp.browser.action.RestoreItemPreviousVersionActionDefinition;
 
 
 /**
  * ActionDefinition used for restoring the previous version on a page.
  */
-public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
+public class RestorePreviousVersionActionDefinition extends RestoreItemPreviousVersionActionDefinition {
 
     private boolean showPreview = true;
 
@@ -54,4 +54,5 @@ public class RestorePreviousVersionActionDefinition extends AbstractItemActionDe
     public void setShowPreview(boolean showPreview) {
         this.showPreview = showPreview;
     }
+
 }
