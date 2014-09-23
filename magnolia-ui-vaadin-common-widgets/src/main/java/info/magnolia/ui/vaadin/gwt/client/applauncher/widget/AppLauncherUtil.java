@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,22 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.web.bindery.event.shared.EventBus;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.connector.AppLauncherConnector;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+
+import com.vaadin.client.Util;
 
 /**
- * Client side impl of AppLauncher.
+ * Helper functionality for easy location of app launcher connector/view.
  */
-public class VAppLauncher extends Composite implements AppLauncherView.Presenter {
+public class AppLauncherUtil {
 
-    private final AppLauncherView view;
-
-    private final EventBus internalEventBus = new SimpleEventBus();
-
-    public VAppLauncher() {
-        super();
-        this.view = new AppLauncherViewImpl(internalEventBus);
-        this.view.setPresenter(this);
-        initWidget(view.asWidget());
+    public static AppLauncherConnector getConnector() {
+        return (AppLauncherConnector) Util.findConnectorFor(getView().asWidget());
     }
 
-    @Override
-    public void activateApp(String appName) {
-        History.newItem("app:" + appName, true);
+    public static AppLauncherView getView() {
+        return Util.findWidget(JQueryWrapper.select(".v-app-launcher").get(0), AppLauncherViewImpl.class);
     }
 
 }

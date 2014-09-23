@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.applauncher.connector.AppLauncherConnector;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 /**
@@ -42,8 +44,16 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 public class VTemporaryAppTileGroup extends VAppTileGroup {
 
     private static final int OPEN_STATE_HEIGHT_PX = 80;
-
     private static final int VISIBILITY_TOGGLE_SPEED = 200;
+
+    private JQueryCallback layoutRequestCallback = new JQueryCallback() {
+        @Override
+        public void execute(JQueryWrapper query) {
+            AppLauncherConnector connector = AppLauncherUtil.getConnector();
+            connector.getLayoutManager().setNeedsMeasure(connector);
+            connector.getLayoutManager().layoutNow();
+        }
+    };
 
     public VTemporaryAppTileGroup(String color) {
         super(color);
@@ -57,23 +67,21 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
     }
 
     public void closeSection() {
-        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
+        final AnimationSettings settings = new AnimationSettings();
+        settings.setProperty("height", 0);
+        settings.addCallback(layoutRequestCallback);
 
-            {
-                setProperty("height", 0);
-            }
-        });
+        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, settings);
     }
 
     public void showSection() {
-        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
+        int iRows = 1 + (getChildren().size() - 1) / 9;
 
-            {
-                // Add a row to accommodate every 9 apps.
-                int iRows = 1 + (getChildren().size() - 1) / 9;
-                setProperty("height", OPEN_STATE_HEIGHT_PX * iRows);
-            }
-        });
+        final AnimationSettings settings = new AnimationSettings();
+        settings.setProperty("height", OPEN_STATE_HEIGHT_PX * iRows);
+        settings.addCallback(layoutRequestCallback);
+
+        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, settings);
     }
 
 }

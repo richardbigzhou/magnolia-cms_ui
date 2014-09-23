@@ -36,8 +36,10 @@ package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 
 /**
  * View interface of client side AppLauncher.
@@ -50,6 +52,8 @@ public interface AppLauncherView extends HasWidgets, IsWidget {
     public interface Presenter {
 
         void activateApp(String appName);
+
+        void registerElementResizeListener(Element element, ElementResizeListener elementResizeListener);
     }
 
     void setPresenter(Presenter presenter);

@@ -41,13 +41,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 
 /**
  * Implementation of AppLauncher view.
  */
 public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, AppActivationEvent.Handler {
+
+    private static final double TEMPORARY_PERMANENT_SECTIONS_OFFSET = 170.0;
+
+    private static final String PERMANENT_APP_GROUP_BORDER = "permanent-app-group-border";
+
+    private static final String PERMANENT_APP_GROUP_BORDER_BOTTOM = PERMANENT_APP_GROUP_BORDER + "-bottom";
+
+    private static final String PERMANENT_APP_GROUP_BORDER_TOP = PERMANENT_APP_GROUP_BORDER + "-top";
+
+    public static final String PERMANENT_APP_SCROLL_PANEL = "permanent-app-scroll-panel";
 
     private final Map<String, VAppTileGroup> groups = new HashMap<String, VAppTileGroup>();
 
@@ -57,11 +76,30 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
 
     private Presenter presenter;
 
+    private ScrollPanel permanentAppScrollPanel = new ScrollPanel();;
+
+    private FlowPanel permanentAppContainer = new FlowPanel();;
+
+    private ComputedStyle permanentAppScrollPanelStyle = new ComputedStyle(permanentAppScrollPanel.getElement());
+
     public AppLauncherViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
         add(temporarySectionsBar);
         this.eventBus.addHandler(AppActivationEvent.TYPE, this);
+
+        permanentAppScrollPanel.getElement().getStyle().setOverflowX(Style.Overflow.HIDDEN);
+        permanentAppScrollPanel.addStyleName(PERMANENT_APP_SCROLL_PANEL);
+        permanentAppScrollPanel.getElement().getStyle().setPosition(Position.ABSOLUTE);
+
+        permanentAppScrollPanel.add(permanentAppContainer);
+        permanentAppScrollPanel.addScrollHandler(new ScrollHandler() {
+            @Override
+            public void onScroll(ScrollEvent event) {
+                updatePermanentAppGroupBorder();
+            }
+        });
+        add(permanentAppScrollPanel);
     }
 
     @Override
@@ -74,18 +112,57 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
     }
 
     public void addTemporaryAppGroup(AppGroup groupParams) {
-        final VAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
+        final VTemporaryAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
         temporarySectionsBar.addGroup(groupParams.getCaption(), group);
         add(group);
+
+        presenter.registerElementResizeListener(group.getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                final VTemporaryAppTileGroup currentOpenGroup = temporarySectionsBar.getCurrentOpenGroup();
+                if (currentOpenGroup == null || group == currentOpenGroup) {
+                    permanentAppScrollPanel.getElement().getStyle().setBottom(TEMPORARY_PERMANENT_SECTIONS_OFFSET + group.getOffsetHeight(), Unit.PX);
+                    updatePermanentAppGroupBorder();
+                }
+            }
+        });
     }
 
     public void addPermanentAppGroup(AppGroup groupParams) {
         final VPermanentAppTileGroup group = new VPermanentAppTileGroup(groupParams.getCaption(), groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
-        add(group);
+        permanentAppContainer.add(group);
+
+        presenter.registerElementResizeListener(permanentAppScrollPanel.getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                updatePermanentAppGroupBorder();
+            }
+        });
+    }
+
+    private void updatePermanentAppGroupBorder() {
+        permanentAppScrollPanel.removeStyleName(PERMANENT_APP_GROUP_BORDER_BOTTOM);
+        permanentAppScrollPanel.removeStyleName(PERMANENT_APP_GROUP_BORDER_TOP);
+        int maxScrollPosition = getPermanentAppGroupMaxScrollTop();
+        if (maxScrollPosition > 0) {
+            int verticalScrollPosition = permanentAppScrollPanel.getVerticalScrollPosition();
+            if (verticalScrollPosition > 0) {
+                permanentAppScrollPanel.addStyleName(PERMANENT_APP_GROUP_BORDER_TOP);
+            }
+
+            if (verticalScrollPosition < maxScrollPosition) {
+                permanentAppScrollPanel.addStyleName(PERMANENT_APP_GROUP_BORDER_BOTTOM);
+            }
+
+        }
+    }
+
+    private int getPermanentAppGroupMaxScrollTop() {
+        return permanentAppScrollPanel.getMaximumVerticalScrollPosition() - permanentAppScrollPanelStyle.getBorder()[0] - permanentAppScrollPanelStyle.getBorder()[2];
     }
 
     @Override
@@ -125,5 +202,4 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
         }
         groups.clear();
     }
-
 }

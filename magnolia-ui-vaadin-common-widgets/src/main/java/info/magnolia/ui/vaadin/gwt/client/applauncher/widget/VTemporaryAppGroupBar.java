@@ -54,6 +54,16 @@ public class VTemporaryAppGroupBar extends FlowPanel {
         addStyleName("sections");
     }
 
+    public VTemporaryAppTileGroup getCurrentOpenGroup() {
+        return currentOpenGroup;
+    }
+
+    public void addGroup(String caption, VAppTileGroup group) {
+        VTemporaryAppGroupBarTile groupTile = new VTemporaryAppGroupBarTile(caption, group, this);
+        groupMap.put(groupTile, (VTemporaryAppTileGroup) group);
+        add(groupTile);
+    }
+
     protected void handleTileClick(VTemporaryAppTileGroup group, VTemporaryAppGroupBarTile groupTile) {
         closeCurrentOpenExpander();
         if (group != null) {
@@ -80,12 +90,6 @@ public class VTemporaryAppGroupBar extends FlowPanel {
                 }
             }
         }
-    }
-
-    public void addGroup(String caption, VAppTileGroup group) {
-        VTemporaryAppGroupBarTile groupTile = new VTemporaryAppGroupBarTile(caption, group, this);
-        groupMap.put(groupTile, (VTemporaryAppTileGroup) group);
-        add(groupTile);
     }
 
 }

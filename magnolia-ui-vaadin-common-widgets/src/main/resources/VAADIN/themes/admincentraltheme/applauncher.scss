@@ -7,8 +7,8 @@
   font-family: sans-serif;
   font-size: 13px;
   margin-top: 77px;
-  width: 720px;
-  min-height: 365px;
+  width: 740px;
+  min-height: 0px;
 }
 
 .app-list {
@@ -62,8 +62,20 @@
   .wordwrap {
     word-wrap: break-word;
   }
+}
 
+.v-app-launcher .permanent-app-scroll-panel {
+    bottom: 170px;
+    width: 100%;
+    top: 0px;
+}
 
+.v-app-launcher .permanent-app-scroll-panel.permanent-app-group-border-top {
+    border-top: solid 1px $c30;
+}
+
+.v-app-launcher .permanent-app-scroll-panel.permanent-app-group-border-bottom {
+    border-bottom: solid 1px $c30;
 }
 
 .app-list .item .icon {

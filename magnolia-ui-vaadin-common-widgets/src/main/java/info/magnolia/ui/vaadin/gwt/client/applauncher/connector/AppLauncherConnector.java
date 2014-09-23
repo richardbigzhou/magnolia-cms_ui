@@ -43,7 +43,10 @@ import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherViewImpl
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -55,19 +58,22 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * Client-side connector for {@link AppLauncher} component.
  */
 @Connect(AppLauncher.class)
-public class AppLauncherConnector extends AbstractComponentConnector {
+public class AppLauncherConnector extends AbstractComponentConnector implements Presenter {
 
     private AppLauncherView view;
 
     private EventBus eventBus = new SimpleEventBus();
 
     private HandlerRegistration eventPreviewHandle;
+
+    private Map<Element, ElementResizeListener> resizeListeners = new HashMap<Element, ElementResizeListener>();
 
     public AppLauncherConnector() {
 
@@ -141,12 +147,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected Widget createWidget() {
         this.view = new AppLauncherViewImpl(eventBus);
-        this.view.setPresenter(new Presenter() {
-            @Override
-            public void activateApp(final String appName) {
-                History.newItem("app:" + appName, true);
-            }
-        });
+        this.view.setPresenter(this);
         return view.asWidget();
     }
 
@@ -160,11 +161,26 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         return new AppLauncherState();
     }
 
-
     @Override
     public void onUnregister() {
         super.onUnregister();
         eventPreviewHandle.removeHandler();
+        final Iterator<Map.Entry<Element,ElementResizeListener>> it = resizeListeners.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<Element,ElementResizeListener> entry = it.next();
+            getLayoutManager().removeElementResizeListener(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public void activateApp(String appName) {
+        History.newItem("app:" + appName, true);
+    }
+
+    @Override
+    public void registerElementResizeListener(Element element, ElementResizeListener elementResizeListener) {
+        resizeListeners.put(element, elementResizeListener);
+        getLayoutManager().addElementResizeListener(element, elementResizeListener);
     }
 
     /**
