@@ -90,6 +90,11 @@ public class LanguageSelectorViewImpl implements LanguageSelectorView {
     }
 
     @Override
+    public boolean isVisible() {
+        return selector.isVisible();
+    }
+
+    @Override
     public void setAvailableLanguages(List<Locale> locales) {
         if (locales != null && !locales.isEmpty()) {
             selector.removeAllItems();

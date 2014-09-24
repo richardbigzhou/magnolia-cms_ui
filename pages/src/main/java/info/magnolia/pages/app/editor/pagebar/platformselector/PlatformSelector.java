@@ -34,6 +34,7 @@
 package info.magnolia.pages.app.editor.pagebar.platformselector;
 
 import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.pages.app.editor.extension.Extension;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
@@ -44,7 +45,7 @@ import javax.inject.Inject;
 /**
  * Selector for the {@link PlatformType}. Notifies the {@link PageEditorPresenter} about changes.
  */
-public class PlatformSelector implements PlatformSelectorView.Listener {
+public class PlatformSelector implements PlatformSelectorView.Listener, Extension {
 
     private PlatformSelectorView view;
     private PageEditorPresenter pageEditorPresenter;
@@ -56,6 +57,7 @@ public class PlatformSelector implements PlatformSelectorView.Listener {
         this.pageEditorPresenter = pageEditorPresenter;
     }
 
+    @Override
     public View start() {
         view.setListener(this);
         return view;
@@ -74,6 +76,7 @@ public class PlatformSelector implements PlatformSelectorView.Listener {
         view.setVisible(visible);
     }
 
+    @Override
     public void onLocationUpdate(DetailLocation location) {
         boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
 
@@ -89,6 +92,7 @@ public class PlatformSelector implements PlatformSelectorView.Listener {
         view.setPlatFormType(PlatformType.DESKTOP);
     }
 
+    @Override
     public void deactivate() {
         view.setVisible(false);
     }

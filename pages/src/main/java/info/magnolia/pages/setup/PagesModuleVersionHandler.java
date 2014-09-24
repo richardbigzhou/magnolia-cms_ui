@@ -42,6 +42,7 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapConditionally;
+import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
@@ -58,11 +59,13 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.pages.app.action.PreviewPreviousVersionActionDefinition;
 import info.magnolia.pages.app.action.RestorePreviousVersionActionDefinition;
+import info.magnolia.pages.app.editor.PagesEditorSubAppDescriptor;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
+import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
@@ -227,6 +230,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new PartialBootstrapTask("Bootstrap pageActions actionbar section availability rule.",
                                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
                                         "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isNotDeleted"))))
+        
+                .addTask(new NodeExistsDelegateTask("Bootstrap page editor extensions.", "/modules/pages/apps/pages/subApps/detail", new ArrayDelegateTask("",
+                        new CheckAndModifyPropertyValueTask("/modules/pages/apps/pages/subApps/detail", "class", DetailSubAppDescriptor.class.getName(), PagesEditorSubAppDescriptor.class.getName()),
+                        new PartialBootstrapTask("Bootstrap pageBar extensions", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/pageBar"),
+                        new PartialBootstrapTask("Bootstrap statusBar extensions", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/statusBar"))))
         );
     }
 

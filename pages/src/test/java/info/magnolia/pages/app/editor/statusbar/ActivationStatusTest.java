@@ -42,17 +42,13 @@ import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatus;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusView;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusViewImpl;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
@@ -69,11 +65,12 @@ public class ActivationStatusTest {
     private EventBus admincentralEventBus;
     private EventBus subAppEventBus;
     private MockSession session;
-    private ActivationStatusViewImpl view;
+    private ActivationStatusView view;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
-        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        this.i18n = mock(SimpleTranslator.class);
         this.serverConfiguration = mock(ServerConfiguration.class);
         this.contentConnector = mock(ContentConnector.class);
         this.admincentralEventBus = mock(EventBus.class);
@@ -85,10 +82,9 @@ public class ActivationStatusTest {
         systemContext.addSession(RepositoryConstants.WEBSITE, session);
         MgnlContext.setInstance(systemContext);
 
-        this.view = mock(ActivationStatusViewImpl.class);
-        ComponentsTestUtil.setInstance(ActivationStatusView.class, view);
+        this.view = new ActivationStatusViewImpl();
 
-        this.activationStatus = new ActivationStatus(i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus, Components.getComponentProvider());
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus);
     }
 
     @Test
@@ -100,14 +96,13 @@ public class ActivationStatusTest {
         when(location.getNodePath()).thenReturn("/path/to/node");
 
         // WHEN
-        View view = activationStatus.start(location);
+        activationStatus.start();
 
         // THEN
-        verify(subAppEventBus, times(1)).addHandler(eq(NodeSelectedEvent.class), any(NodeSelectedEvent.Handler.class));
         verify(subAppEventBus, times(1)).addHandler(eq(ContentChangedEvent.class), any(ContentChangedEvent.Handler.class));
         verify(admincentralEventBus, times(1)).addHandler(eq(ContentChangedEvent.class), any(ContentChangedEvent.Handler.class));
 
-        assertNotNull("The view should have been inititalized when on author instance.", view);
+        assertTrue("The view should be visible on author instance.", view.isVisible());
     }
 
     @Test
@@ -116,27 +111,30 @@ public class ActivationStatusTest {
         when(serverConfiguration.isAdmin()).thenReturn(false);
 
         // WHEN
-        View view = activationStatus.start(mock(DetailLocation.class));
+        activationStatus.start();
 
         // THEN
-        verify(subAppEventBus, times(0)).addHandler(eq(NodeSelectedEvent.class), any(NodeSelectedEvent.Handler.class));
         verify(subAppEventBus, times(0)).addHandler(eq(ContentChangedEvent.class), any(ContentChangedEvent.Handler.class));
         verify(admincentralEventBus, times(0)).addHandler(eq(ContentChangedEvent.class), any(ContentChangedEvent.Handler.class));
 
-        assertNull("The view should not be initialized on Public instance.", view);
+        assertFalse("The view should not be visible on Public instance.", view.isVisible());
     }
 
     @Test
-    public void test() throws Exception {
+    public void testUpdateActivationStatusOnLocationChange() throws Exception {
         // GIVEN
         DetailLocation location = mock(DetailLocation.class);
+        this.view = mock(ActivationStatusView.class);
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus);
 
+        when(view.isVisible()).thenReturn(true);
         when(serverConfiguration.isAdmin()).thenReturn(true);
         when(location.getNodePath()).thenReturn("/path/to/node");
         NodeUtil.createPath(session.getRootNode(), "/path/to/node", NodeTypes.Page.NAME);
 
         // WHEN
-        activationStatus.start(location);
+        activationStatus.start();
+        activationStatus.onLocationUpdate(location);
 
         // THEN
         verify(view, times(1)).setIconStyle(anyString());

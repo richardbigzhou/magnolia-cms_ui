@@ -182,8 +182,6 @@ public class PageEditorPresenter implements PageEditorListener {
     interface Listener {
         void onMove();
 
-        DetailLocation getCurrentLocation();
-
         void updateCaptionForExternalPage(String title);
 
         void deactivateComponents();

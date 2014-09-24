@@ -31,43 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.statusbar.activationstatus;
+package info.magnolia.pages.app.editor.statusbar.definition;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import info.magnolia.pages.app.editor.extension.definition.ExtensionDefinition;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * View implementation for {@link ActivationStatusView}.
+ * Configured {@link StatusBarDefinition}.
  */
-public class ActivationStatusViewImpl extends HorizontalLayout implements ActivationStatusView {
+public class ConfiguredStatusBarDefinition implements StatusBarDefinition {
 
-    private Label iconLabel;
-    private Label textLabel;
-
-    public ActivationStatusViewImpl() {
-        iconLabel = new Label();
-
-        textLabel = new Label();
-        textLabel.addStyleName("activationstatus");
-
-        addStyleName("statusbar");
-        addComponent(iconLabel);
-        addComponent(textLabel);
-    }
+    private Map<String, ExtensionDefinition> extensions = new LinkedHashMap<String, ExtensionDefinition>();
 
     @Override
-    public void setActivationStatus(String label) {
-        textLabel.setValue(label);
+    public Map<String, ExtensionDefinition> getExtensions() {
+        return extensions;
     }
 
-    @Override
-    public void setIconStyle(String iconStyle) {
-        iconLabel.setStyleName(iconStyle);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return this;
+    public void setExtensions(Map<String, ExtensionDefinition> extensions) {
+        this.extensions = extensions;
     }
 }

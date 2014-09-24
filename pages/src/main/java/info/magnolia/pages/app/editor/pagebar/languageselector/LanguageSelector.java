@@ -36,6 +36,7 @@ package info.magnolia.pages.app.editor.pagebar.languageselector;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.pages.app.editor.extension.Extension;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
@@ -55,7 +56,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Selector for the {@link Locale}s available on the page.
  */
-public class LanguageSelector implements LanguageSelectorView.Listener {
+public class LanguageSelector implements LanguageSelectorView.Listener, Extension {
 
     private static final Logger log = LoggerFactory.getLogger(LanguageSelector.class);
 
@@ -72,6 +73,7 @@ public class LanguageSelector implements LanguageSelectorView.Listener {
         this.pageEditorPresenter = pageEditorPresenter;
     }
 
+    @Override
     public View start() {
         view.setListener(this);
         return view;
@@ -94,7 +96,10 @@ public class LanguageSelector implements LanguageSelectorView.Listener {
         }
     }
 
+    @Override
     public void onLocationUpdate(DetailLocation location) {
+        if (view.isVisible())
+        view.setVisible(true);
         try {
             Node node = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE).getNode(location.getNodePath());
             List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
@@ -124,6 +129,7 @@ public class LanguageSelector implements LanguageSelectorView.Listener {
     }
 
 
+    @Override
     public void deactivate() {
         view.setVisible(false);
     }

@@ -49,10 +49,12 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.pages.app.action.DeleteComponentAction;
 import info.magnolia.pages.app.action.DeletePageItemAction;
+import info.magnolia.pages.app.editor.PagesEditorSubAppDescriptor;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
+import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -575,4 +577,30 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isNotDeleted"));
     }
 
+    @Test
+    public void testUpdateTo534UpdatesPagesEditorDescriptor() throws Exception {
+        setupConfigProperty("/modules/pages/apps/pages/subApps/detail", "class", DetailSubAppDescriptor.class.getName());
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // check that page editor class has been updated
+        Node pageEditorSubApp = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/pages/apps/pages/subApps/detail");
+        assertThat(pageEditorSubApp, hasProperty("class", PagesEditorSubAppDescriptor.class.getName()));
+    }
+
+    @Test
+    public void testUpdateTo534BootstrapsPageEditorExtensions() throws Exception {
+        setupConfigNode("/modules/pages/apps/pages/subApps/detail");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // check that page editor class has been updated
+        Node pageBarExtensions = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/pages/apps/pages/subApps/detail/pageBar/extensions");
+        Node statusBarExtensions = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/pages/apps/pages/subApps/detail/statusBar/extensions");
+        assertThat(pageBarExtensions, hasNode("languageSelector"));
+        assertThat(pageBarExtensions, hasNode("platformSelector"));
+        assertThat(statusBarExtensions, hasNode("activationStatus"));
+    }
 }

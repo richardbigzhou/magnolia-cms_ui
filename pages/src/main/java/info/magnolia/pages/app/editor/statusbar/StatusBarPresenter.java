@@ -33,13 +33,25 @@
  */
 package info.magnolia.pages.app.editor.statusbar;
 
-import info.magnolia.pages.app.editor.PagesEditorSubApp;
-import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatus;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.pages.app.editor.PagesEditorSubAppDescriptor;
+import info.magnolia.pages.app.editor.extension.ExtensionContainer;
+import info.magnolia.pages.app.editor.extension.Extension;
+import info.magnolia.pages.app.editor.extension.ExtensionFactory;
+import info.magnolia.pages.app.editor.extension.definition.ExtensionDefinition;
+import info.magnolia.pages.app.editor.statusbar.definition.StatusBarDefinition;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.workbench.StatusBarView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -48,39 +60,59 @@ import com.vaadin.ui.Alignment;
  * A presenter class for the {@link StatusBarView} displayed at the bottom of the page editor. Takes care of loading and
  * displaying the components inside the status bar.
  */
-public class StatusBarPresenter {
+public class StatusBarPresenter implements ExtensionContainer {
+
+    private static final Logger log = LoggerFactory.getLogger(StatusBarPresenter.class);
 
     private StatusBarView view;
-    private ActivationStatus activationStatus;
-    private PagesEditorSubApp listener;
+    private SubAppContext subAppContext;
+    private final ExtensionFactory extensionFactory;
+
+    private List<Extension> extensions = new ArrayList<Extension>();
 
     @Inject
-    public StatusBarPresenter(final StatusBarView view, ActivationStatus activationStatus) {
+    public StatusBarPresenter(final StatusBarView view, SubAppContext subAppContext, ExtensionFactory extensionFactory) {
         this.view = view;
-        this.activationStatus = activationStatus;
+        this.subAppContext = subAppContext;
+        this.extensionFactory = extensionFactory;
 
         view.asVaadinComponent().setHeight(24, Sizeable.Unit.PIXELS);
     }
 
-    public StatusBarView start(DetailLocation location) {
-        View activationStatusView = activationStatus.start(location);
-        if (activationStatusView != null) {
-            activationStatus.setListener(this);
-            view.addComponent(activationStatusView.asVaadinComponent(), Alignment.MIDDLE_CENTER);
+    @Override
+    public StatusBarView start() {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+
+        if (subAppDescriptor instanceof PagesEditorSubAppDescriptor) {
+            StatusBarDefinition definition = ((PagesEditorSubAppDescriptor) subAppDescriptor).getStatusBar();
+            if (definition != null) {
+                Map<String, ExtensionDefinition> extensionDefinitions = definition.getExtensions();
+                extensions = extensionFactory.createExtensions(extensionDefinitions);
+            }
+            else {
+                log.error("No statusBar definition defined for pages detail app, no extensions will be loaded.");
+            }
+        } else {
+            log.error("Expected an instance of {} but got {}. No extensions will be loaded.", PagesEditorSubAppDescriptor.class.getSimpleName(), subAppDescriptor.getClass().getName());
+        }
+        for (Extension extension : extensions) {
+            view.addComponent(extension.start().asVaadinComponent(), Alignment.MIDDLE_CENTER);
         }
         return view;
     }
 
-
-    public DetailLocation getCurrentLocation() {
-        return listener.getCurrentLocation();
+    @Override
+    public void onLocationUpdate(DetailLocation location) {
+        for (Extension extension : extensions) {
+            extension.onLocationUpdate(location);
+        }
     }
 
-    public void setListener(PagesEditorSubApp listener) {
-        this.listener = listener;
+    @Override
+    public void deactivateExtensions() {
+        for (Extension extension : extensions) {
+            extension.deactivate();
+        }
     }
 
-    public void deactivateComponents() {
-        activationStatus.deactivate();
-    }
 }

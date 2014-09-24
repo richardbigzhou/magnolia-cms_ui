@@ -50,6 +50,8 @@ public interface LanguageSelectorView extends View  {
 
     void setVisible(boolean visible);
 
+    boolean isVisible();
+
     /**
      * Listener interface.
      */

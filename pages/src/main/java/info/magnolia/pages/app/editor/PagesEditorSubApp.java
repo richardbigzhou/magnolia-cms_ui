@@ -198,13 +198,11 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
         hideActionbarSections();
 
-        pageBar.setListener(this);
         pageEditorPresenter.setListener(this);
-        statusBar.setListener(this);
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBar.start());
         view.setPageEditorView(pageEditorPresenter.start(detailLocation));
-        view.setStatusBarView(statusBar.start(detailLocation));
+        view.setStatusBarView(statusBar.start());
 
         updateLocationDependentComponents(detailLocation);
 
@@ -240,8 +238,8 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     @Override
     public void deactivateComponents() {
         updateActionbar();
-        pageBar.deactivateComponents();
-        statusBar.deactivateComponents();
+        pageBar.deactivateExtensions();
+        statusBar.deactivateExtensions();
     }
 
     @Override
@@ -257,6 +255,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     private void updateLocationDependentComponents(DetailLocation location) {
         pageBar.onLocationUpdate(location);
+        statusBar.onLocationUpdate(location);
         updateCaption(location);
     }
 

@@ -47,4 +47,6 @@ public interface ActivationStatusView extends View {
     void setIconStyle(String iconStyle);
 
     void setVisible(boolean visible);
+
+    boolean isVisible();
 }

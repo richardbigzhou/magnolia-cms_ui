@@ -41,6 +41,10 @@
       <type>info.magnolia.pages.app.editor.parameters.PageEditorStatus</type>
       <implementation>info.magnolia.pages.app.editor.parameters.DefaultPageEditorStatus</implementation>
     </component>
+    <component>
+      <type>info.magnolia.pages.app.editor.extension.ExtensionFactory</type>
+      <implementation>info.magnolia.pages.app.editor.extension.DefaultExtensionFactory</implementation>
+    </component>
 
     <!-- Status bar and extensions -->
     <component>
@@ -77,6 +81,22 @@
       <type>info.magnolia.pages.app.editor.pagebar.platformselector.PlatformSelectorView</type>
       <implementation>info.magnolia.pages.app.editor.pagebar.platformselector.PlatformSelectorViewImpl</implementation>
     </component>
+  </components>
+
+  <components>
+    <id>main</id>
+    <type-mapping>
+      <type>info.magnolia.pages.app.editor.extension.definition.ExtensionDefinition</type>
+      <implementation>info.magnolia.pages.app.editor.extension.definition.ConfiguredExtensionDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.pages.app.editor.pagebar.definition.PageBarDefinition</type>
+      <implementation>info.magnolia.pages.app.editor.pagebar.definition.ConfiguredPageBarDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.pages.app.editor.statusbar.definition.StatusBarDefinition</type>
+      <implementation>info.magnolia.pages.app.editor.statusbar.definition.ConfiguredStatusBarDefinition</implementation>
+    </type-mapping>
   </components>
 
   <components>

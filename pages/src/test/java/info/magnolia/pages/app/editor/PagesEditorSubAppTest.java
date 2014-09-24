@@ -332,8 +332,8 @@ public class PagesEditorSubAppTest {
 
         // THEN
         verify(editor, times(1)).updateActionbar();
-        verify(pageBar, times(1)).deactivateComponents();
-        verify(statusBar, times(1)).deactivateComponents();
+        verify(pageBar, times(1)).deactivateExtensions();
+        verify(statusBar, times(1)).deactivateExtensions();
     }
 
     /**

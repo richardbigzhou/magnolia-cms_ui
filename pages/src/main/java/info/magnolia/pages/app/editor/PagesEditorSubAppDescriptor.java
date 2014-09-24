@@ -31,43 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.statusbar.activationstatus;
+package info.magnolia.pages.app.editor;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import info.magnolia.pages.app.editor.pagebar.definition.PageBarDefinition;
+import info.magnolia.pages.app.editor.statusbar.definition.StatusBarDefinition;
+import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 
 /**
- * View implementation for {@link ActivationStatusView}.
+ * Extends the {@link info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor} by the definitions for the pagebar and
+ * statusbar used in pages app.
  */
-public class ActivationStatusViewImpl extends HorizontalLayout implements ActivationStatusView {
+public class PagesEditorSubAppDescriptor extends ConfiguredDetailSubAppDescriptor {
 
-    private Label iconLabel;
-    private Label textLabel;
+    private PageBarDefinition pageBar;
 
-    public ActivationStatusViewImpl() {
-        iconLabel = new Label();
+    private StatusBarDefinition statusBar;
 
-        textLabel = new Label();
-        textLabel.addStyleName("activationstatus");
-
-        addStyleName("statusbar");
-        addComponent(iconLabel);
-        addComponent(textLabel);
+    public PageBarDefinition getPageBar() {
+        return pageBar;
     }
 
-    @Override
-    public void setActivationStatus(String label) {
-        textLabel.setValue(label);
+    public StatusBarDefinition getStatusBar() {
+        return statusBar;
     }
 
-    @Override
-    public void setIconStyle(String iconStyle) {
-        iconLabel.setStyleName(iconStyle);
+    public void setPageBar(PageBarDefinition pageBar) {
+        this.pageBar = pageBar;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return this;
+    public void setStatusBar(StatusBarDefinition statusBar) {
+        this.statusBar = statusBar;
     }
 }

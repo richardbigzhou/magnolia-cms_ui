@@ -33,43 +33,69 @@
  */
 package info.magnolia.pages.app.editor.pagebar;
 
-import info.magnolia.pages.app.editor.PagesEditorSubApp;
-import info.magnolia.pages.app.editor.pagebar.languageselector.LanguageSelector;
-import info.magnolia.pages.app.editor.pagebar.platformselector.PlatformSelector;
+import info.magnolia.pages.app.editor.PagesEditorSubAppDescriptor;
+import info.magnolia.pages.app.editor.extension.Extension;
+import info.magnolia.pages.app.editor.extension.ExtensionContainer;
+import info.magnolia.pages.app.editor.extension.ExtensionFactory;
+import info.magnolia.pages.app.editor.extension.definition.ExtensionDefinition;
+import info.magnolia.pages.app.editor.pagebar.definition.PageBarDefinition;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Presenter for the page bar displayed on top of the page editor. Takes care of loading and displaying components inside
- * its view.
+ * Presenter for the page bar displayed on top of the page editor. Acts as container for {@link Extension}s defined under
+ * the pageBar.
  */
-public class PageBarPresenter implements PageBarView.Listener {
+public class PageBarPresenter implements ExtensionContainer, PageBarView.Listener {
+
+    private static final Logger log = LoggerFactory.getLogger(PageBarPresenter.class);
 
     private final PageBarView view;
+    private final SubAppContext subAppContext;
+    private final ExtensionFactory extensionFactory;
 
-    private LanguageSelector languageSelector;
-    private PlatformSelector platformSelector;
-    protected PagesEditorSubApp listener;
+    private List<Extension> extensions = new ArrayList<Extension>();
 
     @Inject
-    public PageBarPresenter(PageBarView view, LanguageSelector languageSelector, PlatformSelector platformSelector) {
+    public PageBarPresenter(PageBarView view, SubAppContext subAppContext, ExtensionFactory extensionFactory) {
         this.view = view;
-        this.languageSelector = languageSelector;
-        this.platformSelector = platformSelector;
+        this.subAppContext = subAppContext;
+        this.extensionFactory = extensionFactory;
     }
 
+    @Override
     public PageBarView start() {
-        view.addPageBarComponent(languageSelector.start());
-        view.addPageBarComponent(platformSelector.start());
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+
+        if (subAppDescriptor instanceof PagesEditorSubAppDescriptor) {
+            PageBarDefinition definition =  ((PagesEditorSubAppDescriptor) subAppDescriptor).getPageBar();
+            if (definition != null) {
+                Map<String, ExtensionDefinition> extensionDefinitions = definition.getExtensions();
+                extensions = extensionFactory.createExtensions(extensionDefinitions);
+            } else {
+                log.error("No pageBar definition defined for pages detail app, no extensions will be loaded.");
+            }
+        } else {
+            log.error("Expected an instance of {} but got {}. No extensions will be loaded.", PagesEditorSubAppDescriptor.class.getSimpleName(), subAppDescriptor.getClass().getName());
+        }
+
+        for (Extension extension : extensions) {
+            view.addPageBarComponent(extension.start());
+        }
         view.setListener(this);
         return view;
-    }
-
-    public void setListener(PagesEditorSubApp listener) {
-        this.listener = listener;
     }
 
     public void setPageName(String caption, String nodePath) {
@@ -89,17 +115,21 @@ public class PageBarPresenter implements PageBarView.Listener {
         return view;
     }
 
+    @Override
     public void onLocationUpdate(DetailLocation location) {
-        languageSelector.onLocationUpdate(location);
-        platformSelector.onLocationUpdate(location);
+        for (Extension extension : extensions) {
+            extension.onLocationUpdate(location);
+        }
 
         boolean isPreview = DetailView.ViewType.VIEW.equals(location.getViewType());
         togglePreviewMode(isPreview);
     }
 
-    public void deactivateComponents() {
-        languageSelector.deactivate();
-        platformSelector.deactivate();
+    @Override
+    public void deactivateExtensions() {
+        for (Extension extension : extensions) {
+            extension.deactivate();
+        }
     }
 
 }

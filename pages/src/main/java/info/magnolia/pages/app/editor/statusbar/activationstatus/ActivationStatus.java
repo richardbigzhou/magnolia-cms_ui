@@ -38,18 +38,16 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
-import info.magnolia.pages.app.editor.statusbar.StatusBarPresenter;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.pages.app.editor.extension.Extension;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,7 +58,7 @@ import javax.jcr.RepositoryException;
  * An extension displaying the current activation status of the page inside the status bar. Returns null on start, in
  * case this is not the admin instance.
  */
-public class ActivationStatus {
+public class ActivationStatus implements Extension {
 
     private final SimpleTranslator i18n;
     private final ServerConfiguration serverConfiguration;
@@ -69,45 +67,61 @@ public class ActivationStatus {
     private final EventBus subAppEventBus;
 
     private ActivationStatusView view;
-    private StatusBarPresenter listener;
-    private ComponentProvider componentProvider;
 
     @Inject
-    public ActivationStatus(SimpleTranslator i18n, ServerConfiguration serverConfiguration, ContentConnector contentConnector,
-                            final @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
+    public ActivationStatus(ActivationStatusView view, SimpleTranslator i18n, ServerConfiguration serverConfiguration, ContentConnector contentConnector,
+                            final @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+        this.view = view;
         this.i18n = i18n;
         this.serverConfiguration = serverConfiguration;
         this.contentConnector = contentConnector;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.componentProvider = componentProvider;
     }
 
-    public View start(DetailLocation location) {
+    @Override
+    public View start() {
         if (serverConfiguration.isAdmin()) {
             registerHandlers();
-            this.view = componentProvider.getComponent(ActivationStatusView.class);
-            updateActivationStatus(location.getNodePath());
+        }
+        else {
+            view.setVisible(false);
         }
         return view;
     }
 
-    private int getActivationStatus(String nodePath) {
+    private void updateActivationStatus(String nodePath) {
         int status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
         try {
             Node node = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE).getNode(nodePath);
+            if (!node.isNodeType(NodeTypes.Page.NAME)) {
+                node = NodeUtil.getNearestAncestorOfType(node, NodeTypes.Page.NAME);
+            }
             status = NodeTypes.Activatable.getActivationStatus(node);
         } catch (RepositoryException e) {
             // page has no activation status
         }
-        return status;
+        setActivationStatus(status);
     }
 
 
-    protected void updateActivationStatus(String nodePath) {
-        if (view != null) {
-            int status = getActivationStatus(nodePath);
+    private void updateActivationStatus(JcrNodeItemId itemId) {
+        int status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
+        try {
+            Node node = MgnlContext.getJCRSession(itemId.getWorkspace()).getNodeByIdentifier(itemId.getUuid());
+            if (!node.isNodeType(NodeTypes.Page.NAME)) {
+                node = NodeUtil.getNearestAncestorOfType(node, NodeTypes.Page.NAME);
+            }
+            status = NodeTypes.Activatable.getActivationStatus(node);
+        } catch (RepositoryException e) {
+            // page has no activation status
+        }
+        setActivationStatus(status);
 
+    }
+
+    protected void setActivationStatus(int status) {
+        if (view.isVisible()) {
             String icon = "activation-status ";
             String text = i18n.translate("pages.editPage.statusBar.unpublished");
             switch (status) {
@@ -129,22 +143,13 @@ public class ActivationStatus {
     }
 
     private void registerHandlers() {
-        subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
-            @Override
-            public void onItemSelected(NodeSelectedEvent event) {
-                AbstractElement element = event.getElement();
-                if (element instanceof PageElement) {
-                    updateActivationStatus(event.getElement().getPath());
-                }
-            }
-        });
-
         subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                DetailLocation location = listener.getCurrentLocation();
-                updateActivationStatus(location.getNodePath());
+                if (event.getItemId() instanceof JcrNodeItemId) {
+                    updateActivationStatus((JcrNodeItemId) event.getItemId());
+                }
             }
         });
 
@@ -152,18 +157,24 @@ public class ActivationStatus {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId())) {
-                    DetailLocation location = listener.getCurrentLocation();
-                    updateActivationStatus(location.getNodePath());
+                if (contentConnector.canHandleItem(event.getItemId()) && event.getItemId() instanceof JcrNodeItemId) {
+                    updateActivationStatus((JcrNodeItemId) event.getItemId());
                 }
             }
         });
     }
 
-    public void setListener(StatusBarPresenter listener) {
-        this.listener = listener;
+    @Override
+    public void onLocationUpdate(DetailLocation location) {
+        if (serverConfiguration.isAdmin()) {
+            if (!view.isVisible()) {
+                view.setVisible(true);
+            }
+            updateActivationStatus(location.getNodePath());
+        }
     }
 
+    @Override
     public void deactivate() {
         view.setVisible(false);
     }

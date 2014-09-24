@@ -31,43 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.editor.statusbar.activationstatus;
+package info.magnolia.pages.app.editor.extension;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
 
 /**
- * View implementation for {@link ActivationStatusView}.
+ * Interface for extensions displayed in the page- and status-bar.
  */
-public class ActivationStatusViewImpl extends HorizontalLayout implements ActivationStatusView {
+public interface Extension {
 
-    private Label iconLabel;
-    private Label textLabel;
+    View start();
 
-    public ActivationStatusViewImpl() {
-        iconLabel = new Label();
+    void onLocationUpdate(DetailLocation location);
 
-        textLabel = new Label();
-        textLabel.addStyleName("activationstatus");
-
-        addStyleName("statusbar");
-        addComponent(iconLabel);
-        addComponent(textLabel);
-    }
-
-    @Override
-    public void setActivationStatus(String label) {
-        textLabel.setValue(label);
-    }
-
-    @Override
-    public void setIconStyle(String iconStyle) {
-        iconLabel.setStyleName(iconStyle);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return this;
-    }
+    void deactivate();
 }
