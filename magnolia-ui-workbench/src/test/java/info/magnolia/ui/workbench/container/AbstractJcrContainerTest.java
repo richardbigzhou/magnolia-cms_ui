@@ -365,6 +365,30 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void itemIndexesAreClearedAfterSort() throws Exception {
+        // GIVEN
+        // set mini pageLength to not have to create tons of items
+        jcrContainer.setPageLength(1);
+        final int totalNumberOfItems = 3;
+        for (int i = 0; i < totalNumberOfItems; i++) {
+            createNode(rootNode, "node" + i, NodeTypes.Content.NAME, "name", "name" + i);
+        }
+        rootNode.getSession().save();
+
+        // force all items being in the itemIndexes
+        for (int i = 0; i < totalNumberOfItems; i++) {
+            jcrContainer.getIdByIndex(i);
+        }
+        assertEquals(totalNumberOfItems, jcrContainer.getItemIndexes().size());
+
+        // WHEN
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] { true });
+
+        // THEN
+        assertEquals("After sort only the pageLengths * ratio should have been retrieved from jcr and hence be cached in itemIndexes.", jcrContainer.getPageLength() * jcrContainer.getCacheRatio(), jcrContainer.getItemIndexes().size());
+    }
+
+    @Test
     public void testContainsIdWithNull() throws Exception {
         // WHEN
         final boolean result = jcrContainer.containsId(null);

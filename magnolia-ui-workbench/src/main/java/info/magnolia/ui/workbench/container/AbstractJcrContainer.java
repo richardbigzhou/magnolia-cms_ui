@@ -390,6 +390,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) {
+        clearItemIndexes();
         resetOffset();
         sorters.clear();
         for (int i = 0; i < propertyId.length; i++) {
