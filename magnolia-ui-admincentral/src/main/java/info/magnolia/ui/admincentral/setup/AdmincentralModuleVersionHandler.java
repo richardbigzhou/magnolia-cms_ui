@@ -269,8 +269,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/move/availability", "properties", "true"))
                 .addCondition(new WidgetsetRelocationCondition()));
 
-        register(DeltaBuilder.update("5.3.1", "").addTask(
-                new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
+        register(DeltaBuilder.update("5.3.1", "")
+                .addTask(new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
                         "Change the Configuration App's tree to one with auto-suggest by configuring the AutoSuggester class to use",
                         "config",
                         "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree",
@@ -287,7 +287,10 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 ),
                                 new SetPropertyTask("Set the autoSuggesterClass property", "config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "autoSuggesterClass", "info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp")
                         ),
-                        new WarnTask("Could not change Configuration App's tree to one with auto-suggest", "Could not change Configuration App's tree to one with auto-suggest because tree view's class property does not exist or is not the expected value"))));
+                        new WarnTask("Could not change Configuration App's tree to one with auto-suggest", "Could not change Configuration App's tree to one with auto-suggest because tree view's class property does not exist or is not the expected value")))
+                .addTask(new PartialBootstrapTask("Add \'Add definition\' action definition to Configuration App", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/addDefinition"))
+                .addTask(new PartialBootstrapTask("Add \'Add definition\' action to Configuration App actionbar", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition"))
+                .addTask(new OrderNodeAfterTask("Order \'Add definition\' action to appear after \'Add property\' action in Configuration App actionbar", "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition", "addProperty")));
     }
 
     @Override
