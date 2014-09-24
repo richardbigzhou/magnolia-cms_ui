@@ -64,7 +64,13 @@ public class AutoSuggestTreeViewImpl extends TreeViewImpl implements AutoSuggest
     @Override
     public void setAutoSuggester(AutoSuggester autoSuggester) {
         this.autoSuggester = autoSuggester;
-        this.tree.setAutoSuggester(this.autoSuggester);
-        this.fieldFactory.setAutoSuggester(this.autoSuggester);
+
+        if (this.tree != null) {
+            this.tree.setAutoSuggester(this.autoSuggester);
+        }
+
+        if (this.fieldFactory != null) {
+            this.fieldFactory.setAutoSuggester(this.autoSuggester);
+        }
     }
 }
