@@ -89,7 +89,7 @@ public class AboutPresenter {
 
         // magnolia information
         LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
-        String mgnlEdition = licenseProperties.get(LicenseFileExtractor.EDITION);
+        String mgnlEdition = licenseProperties.getEditionFromLicenseKey();
         String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ?
                 i18n.translate("about.app.main.instance.author") :
