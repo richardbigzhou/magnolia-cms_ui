@@ -433,6 +433,11 @@
     </component>
 
     <component>
+      <type>info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogPresenterImpl</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView</type>
       <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl</implementation>
     </component>

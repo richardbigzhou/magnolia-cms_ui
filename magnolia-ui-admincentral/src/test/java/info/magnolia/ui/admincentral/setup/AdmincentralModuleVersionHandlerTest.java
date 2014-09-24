@@ -620,4 +620,37 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertEquals("info.magnolia.ui.workbench.tree.TreePresenterDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class").getString());
         assertEquals("foobar", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/autoSuggesterClass").getString());
     }
+
+    @Test
+    public void testUpdateTo54AddsAddDefinitionActionToConfigurationApp() throws Exception {
+        // GIVEN
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+        Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items", NodeTypes.ContentNode.NAME);
+        actionbarItems.addNode("addFolder", NodeTypes.ContentNode.NAME);
+        actionbarItems.addNode("addNode", NodeTypes.ContentNode.NAME);
+        actionbarItems.addNode("addProperty", NodeTypes.ContentNode.NAME);
+        actionbarItems.addNode("confirmDeletion", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition"));
+        assertEquals("info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition/autoSuggesterClass").getString());
+        assertEquals("info.magnolia.ui.contentapp.autosuggest.action.OpenAddDefinitionDialogActionDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition/class").getString());
+
+        assertTrue(session.nodeExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition/availability/rules/AddDefinitionAvailabilityRule"));
+        assertEquals("info.magnolia.ui.contentapp.autosuggest.availability.AddDefinitionAvailabilityRuleDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition/availability/rules/AddDefinitionAvailabilityRule/class").getString());
+        assertEquals("info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/addDefinition/availability/rules/AddDefinitionAvailabilityRule/autoSuggesterClass").getString());
+
+        assertTrue(session.nodeExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition"));
+        Node node = session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items");
+        NodeIterator nodes = node.getNodes();
+        assertEquals("addFolder", nodes.nextNode().getName());
+        assertEquals("addNode", nodes.nextNode().getName());
+        assertEquals("addProperty", nodes.nextNode().getName());
+        assertEquals("addDefinition", nodes.nextNode().getName());
+        assertEquals("confirmDeletion", nodes.nextNode().getName());
+
+    }
 }
