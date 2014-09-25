@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.dialog.registry;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -58,18 +61,16 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for the dialog definition manager.
@@ -138,6 +139,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         FormDialogDefinition bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
         assertNotNull(bDialog);
         assertEquals("bModule:bDialog", bDialog.getId());
+
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().size() == 2);
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().contains("/modules/aModule/dialogs/aDialog"));
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().contains("/modules/bModule/dialogs/bDialog"));
+
     }
 
     @Test
@@ -161,6 +167,10 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // THEN a is gone
         assertDialogDefinitionIsRemoved("aModule:aDialog");
+
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().size() == 1);
+        assertFalse(dialogRegistry.getRegisteredDialogPaths().contains("/modules/aModule/dialogs/aDialog"));
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().contains("/modules/bModule/dialogs/bDialog"));
 
         // WHEN
         // Add a property and fire event
@@ -193,6 +203,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         assertDialogDefinitionIsRemoved("bModule:bDialog");
         // and dialog c is present.
         dialogRegistry.getDialogDefinition("bModule:cDialog");
+
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().size() == 1);
+        assertFalse(dialogRegistry.getRegisteredDialogPaths().contains("/modules/aModule/dialogs/aDialog"));
+        assertFalse(dialogRegistry.getRegisteredDialogPaths().contains("/modules/bModule/dialogs/bDialog"));
+        assertTrue(dialogRegistry.getRegisteredDialogPaths().contains("/modules/bModule/dialogs/cDialog"));
     }
 
     @Test

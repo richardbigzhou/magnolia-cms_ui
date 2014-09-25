@@ -51,10 +51,10 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.form.field.factory.StaticFieldFactory;
-import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.factory.StaticFieldFactory;
+import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
@@ -170,6 +170,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         FieldTypeDefinition aFieldType = fieldTypeRegistry.get("aFieldType");
         assertNotNull(aFieldType);
 
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().size() == 2);
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/aModule/fieldTypes/aFieldType"));
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/bModule/fieldTypes/bFieldType"));
+
         // WHEN
         // add fieldType c.
         String newPath = session.getNode(A_FIELD_TYPE_PATH).getParent().addNode("cFieldType").getPath();
@@ -180,6 +184,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
 
         // THEN c is added
         assertFieldTypeIsAdded("cFieldType");
+
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().size() == 3);
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/aModule/fieldTypes/aFieldType"));
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/aModule/fieldTypes/cFieldType"));
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/bModule/fieldTypes/bFieldType"));
     }
 
     @Test
@@ -195,6 +204,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         FieldTypeDefinition aFieldType = fieldTypeRegistry.get("aFieldType");
         assertNotNull(aFieldType);
 
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().size() == 2);
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/aModule/fieldTypes/aFieldType"));
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/bModule/fieldTypes/bFieldType"));
+
         // WHEN
         // Remove fieldType a:
         session.getNode(A_FIELD_TYPE_PATH).remove();
@@ -205,6 +218,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
 
         // THEN a is gone
         assertFieldTypeIsRemoved("aFieldType");
+
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().size() == 1);
+        assertFalse(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/aModule/fieldTypes/aFieldType"));
+        assertTrue(fieldTypeRegistry.getRegisteredFieldTypePaths().contains("/modules/bModule/fieldTypes/bFieldType"));
     }
 
     private void assertFieldTypeIsRemoved(final String id) {

@@ -38,12 +38,15 @@ import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
-import net.sf.cglib.proxy.Enhancer;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Singleton;
+
+import net.sf.cglib.proxy.Enhancer;
 
 /**
  * FieldTypeDefinitionRegistry.
@@ -94,5 +97,19 @@ public class FieldTypeDefinitionRegistry {
 
     public Set<String> unregisterAndRegister(Set<String> registeredIds, List<FieldTypeDefinitionProvider> providers) {
         return registry.removeAndPutAll(registeredIds, providers);
+    }
+
+    public Collection<String> getRegisteredFieldTypePaths() {
+        Set<String> registeredFieldTypePaths = new HashSet<String>();
+        Collection<FieldTypeDefinitionProvider> providers = registry.values();
+        for (FieldTypeDefinitionProvider provider : providers) {
+            if (provider instanceof ConfiguredFieldTypeDefinitionProvider) {
+                String path = ((ConfiguredFieldTypeDefinitionProvider) provider).getPath();
+                if (path != null) {
+                    registeredFieldTypePaths.add(path);
+                }
+            }
+        }
+        return registeredFieldTypePaths;
     }
 }

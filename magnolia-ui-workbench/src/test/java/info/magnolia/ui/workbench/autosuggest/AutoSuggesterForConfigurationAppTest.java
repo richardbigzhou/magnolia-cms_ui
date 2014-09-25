@@ -37,19 +37,27 @@ import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
+import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 import info.magnolia.ui.workbench.autosuggest.MockSubClass.MockInnerSubClass;
@@ -57,6 +65,8 @@ import info.magnolia.ui.workbench.autosuggest.MockSubClass.MockInnerSubClass;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -76,6 +86,9 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     private Node rootNode;
     private AutoSuggesterForConfigurationApp autoSuggesterForConfigurationApp;
     private DialogDefinitionRegistry dialogRegistry;
+    private AppDescriptorRegistry appDescriptorRegistry;
+    private TemplateDefinitionRegistry templateDefinitionRegistry;
+    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
 
     @Override
     @Before
@@ -85,15 +98,49 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         rootNode = session.getRootNode();
 
+        ComponentsTestUtil.setImplementation(EventBus.class, SimpleEventBus.class);
+
         dialogRegistry = Mockito.mock(DialogDefinitionRegistry.class);
         Collection<String> dialogs = Arrays.asList(
                 "standard-templating-kit:components/teasers/stkLinkListArea",
                 "standard-templating-kit:components/links/stkDownloadLink",
                 "standard-templating-kit:components/stages/stkStagePaging"
                 );
+        Collection<String> dialogPaths = Arrays.asList(
+                "/modules/standard-templating-kit/dialogs/components/teasers/stkLinkListArea",
+                "/modules/standard-templating-kit/dialogs/components/links/stkDownloadLink",
+                "/modules/standard-templating-kit/dialogs/components/stages/stkStagePaging"
+                );
         Mockito.when(dialogRegistry.getRegisteredDialogNames()).thenReturn(dialogs);
+        Mockito.when(dialogRegistry.getRegisteredDialogPaths()).thenReturn(dialogPaths);
         ComponentProvider provider = Mockito.spy(Components.getComponentProvider());
         Mockito.when(provider.getComponent(DialogDefinitionRegistry.class)).thenReturn(dialogRegistry);
+
+        appDescriptorRegistry = Mockito.mock(AppDescriptorRegistry.class);
+        Set<String> apps = new HashSet<String>();
+        apps.add("/modules/pages/apps/pages");
+        apps.add("/modules/security-app/apps/security");
+        apps.add("/modules/contacts/apps/contacts");
+        Mockito.when(appDescriptorRegistry.getRegisteredAppPaths()).thenReturn(apps);
+        Mockito.when(provider.getComponent(AppDescriptorRegistry.class)).thenReturn(appDescriptorRegistry);
+
+        templateDefinitionRegistry = Mockito.mock(TemplateDefinitionRegistry.class);
+        Collection<String> templates = Arrays.asList(
+                "/modules/standard-templating-kit/templates/components/content/stkTextImage",
+                "/modules/forum/templates/components/threadNew",
+                "/modules/form/templates/components/form"
+                );
+        Mockito.when(templateDefinitionRegistry.getRegisteredTemplatePaths()).thenReturn(templates);
+        Mockito.when(provider.getComponent(TemplateDefinitionRegistry.class)).thenReturn(templateDefinitionRegistry);
+
+        fieldTypeDefinitionRegistry = Mockito.mock(FieldTypeDefinitionRegistry.class);
+        Set<String> fieldTypes = new HashSet<String>();
+        fieldTypes.add("/modules/ui-framework/fieldTypes/textField");
+        fieldTypes.add("/modules/pages/fieldTypes/templateSelect");
+        fieldTypes.add("/modules/security-app/fieldTypes/roleManagementField");
+        Mockito.when(fieldTypeDefinitionRegistry.getRegisteredFieldTypePaths()).thenReturn(fieldTypes);
+        Mockito.when(provider.getComponent(FieldTypeDefinitionRegistry.class)).thenReturn(fieldTypeDefinitionRegistry);
+
         Components.setComponentProvider(provider);
 
         autoSuggesterForConfigurationApp = new AutoSuggesterForConfigurationApp();
@@ -1461,6 +1508,134 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("property1"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("property2"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsAppDescriptor() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node securityApp = NodeUtil.createPath(rootNode, "modules/security-app/apps/security", NodeTypes.ContentNode.NAME, true);
+        securityApp.setProperty("class", AppDescriptor.class.getName());
+        securityApp.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(securityApp.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(appDescriptorRegistry.getRegisteredAppPaths().size() - 1, autoSuggesterResult.getSuggestions().size());
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/pages/apps/pages"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/contacts/apps/contacts"));
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsFormDialogDefinition() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node stkLinkListAreaDialog = NodeUtil.createPath(rootNode, "modules/standard-templating-kit/dialogs/components/teasers/stkLinkListArea", NodeTypes.ContentNode.NAME, true);
+        stkLinkListAreaDialog.setProperty("class", FormDialogDefinition.class.getName());
+        stkLinkListAreaDialog.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(stkLinkListAreaDialog.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(dialogRegistry.getRegisteredDialogNames().size() - 1, autoSuggesterResult.getSuggestions().size());
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/dialogs/components/links/stkDownloadLink"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/dialogs/components/stages/stkStagePaging"));
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsTemplateDefinition() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node threadNew = NodeUtil.createPath(rootNode, "modules/forum/templates/components/threadNew", NodeTypes.ContentNode.NAME, true);
+        threadNew.setProperty("class", TemplateDefinition.class.getName());
+        threadNew.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(threadNew.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(templateDefinitionRegistry.getRegisteredTemplatePaths().size() - 1, autoSuggesterResult.getSuggestions().size());
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/templates/components/content/stkTextImage"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/form/templates/components/form"));
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsFieldTypeDefinition() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node templateSelect = NodeUtil.createPath(rootNode, "modules/pages/fieldTypes/templateSelect", NodeTypes.ContentNode.NAME, true);
+        templateSelect.setProperty("class", FieldTypeDefinition.class.getName());
+        templateSelect.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(templateSelect.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(fieldTypeDefinitionRegistry.getRegisteredFieldTypePaths().size() - 1, autoSuggesterResult.getSuggestions().size());
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/ui-framework/fieldTypes/textField"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/security-app/fieldTypes/roleManagementField"));
+        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsOtherType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editDialog = NodeUtil.createPath(rootNode, "editDialog", NodeTypes.ContentNode.NAME, true);
+        editDialog.setProperty("class", MockBean.class.getName());
+        editDialog.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(editDialog.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenParentBeanTypeIsNull() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editDialog = NodeUtil.createPath(rootNode, "editDialog", NodeTypes.ContentNode.NAME, true);
+        editDialog.setProperty("extends", "");
+        Object jcrItemId = JcrItemUtil.getItemId(editDialog.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsExtendsWhenPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editDialog = NodeUtil.createPath(rootNode, "editDialog", NodeTypes.ContentNode.NAME, true);
+        editDialog.setProperty("class", FormDialogDefinition.class.getName());
+        editDialog.setProperty("extends", 123);
+        Object jcrItemId = JcrItemUtil.getItemId(editDialog.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
     /**

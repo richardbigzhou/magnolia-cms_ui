@@ -123,6 +123,10 @@ public class ConfiguredAppDescriptorManagerTest {
         assertNotNull(b);
         assertEquals("appNameB", b.getName());
 
+        assertTrue(appRegistry.getRegisteredAppPaths().size() == 2);
+        assertTrue(appRegistry.getRegisteredAppPaths().contains("/modules/aModule/apps/app1"));
+        assertTrue(appRegistry.getRegisteredAppPaths().contains("/modules/bModule/apps/app1"));
+
     }
 
     @Test
@@ -146,6 +150,10 @@ public class ConfiguredAppDescriptorManagerTest {
 
         // THEN a is gone
         assertAppIsRemoved("appNameA");
+
+        assertTrue(appRegistry.getRegisteredAppPaths().size() == 1);
+        assertFalse(appRegistry.getRegisteredAppPaths().contains("/modules/aModule/apps/app1"));
+        assertTrue(appRegistry.getRegisteredAppPaths().contains("/modules/bModule/apps/app1"));
 
         // WHEN
         // Add a property and fire event
@@ -178,6 +186,10 @@ public class ConfiguredAppDescriptorManagerTest {
 
         AppDescriptor b = appRegistry.getAppDescriptor("appNameB_B");
         assertNotNull(b);
+
+        assertTrue(appRegistry.getRegisteredAppPaths().size() == 1);
+        assertFalse(appRegistry.getRegisteredAppPaths().contains("/modules/aModule/apps/app1"));
+        assertTrue(appRegistry.getRegisteredAppPaths().contains("/modules/bModule/apps/app1"));
     }
 
     private void assertAppIsRemoved(final String name) {
