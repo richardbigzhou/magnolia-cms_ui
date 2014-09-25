@@ -60,6 +60,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
@@ -75,7 +76,10 @@ public class AboutPresenter {
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
-    private final SimpleTranslator i18n;
+    protected final SimpleTranslator i18n;
+
+    // Object to transport data prepared in the presenter to the view
+    protected Item viewData = new PropertysetItem();
 
     @Inject
     public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n) {
@@ -89,7 +93,7 @@ public class AboutPresenter {
 
         // magnolia information
         LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
-        String mgnlEdition = licenseProperties.get(LicenseFileExtractor.EDITION);
+        String mgnlEdition = getEditionName();
         String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ?
                 i18n.translate("about.app.main.instance.author") :
@@ -151,20 +155,27 @@ public class AboutPresenter {
             jcrInfo = "-";
         }
 
-        // feed the view
-        PropertysetItem item = new PropertysetItem();
-        item.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<String>(mgnlEdition));
-        item.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<String>(mgnlVersion));
-        item.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<String>(authorInstance));
-        item.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<String>(osInfo));
-        item.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<String>(javaInfo));
-        item.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<String>(serverInfo));
-        item.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<String>(jcrInfo));
-        item.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<String>(dbInfo));
-        item.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<String>(dbDriverInfo));
-        view.setDataSource(item);
+        // Prepare information for the view
+        viewData.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<String>(mgnlEdition));
+        viewData.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<String>(mgnlVersion));
+        viewData.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<String>(authorInstance));
+        viewData.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<String>(osInfo));
+        viewData.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<String>(javaInfo));
+        viewData.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<String>(serverInfo));
+        viewData.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<String>(jcrInfo));
+        viewData.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<String>(dbInfo));
+        viewData.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<String>(dbDriverInfo));
+        view.setDataSource(viewData);
 
         return view;
+    }
+
+    /**
+     * Returns the name of the edition.
+     */
+    protected String getEditionName() {
+        // Hard code this in CE edition - value will be correctly populated for EE in EnterpriseAboutPresenter
+        return i18n.translate("about.app.main.communityEdition");
     }
 
     private String getMySQLEngineInfo(Connection connection, String[] connectionString) {
