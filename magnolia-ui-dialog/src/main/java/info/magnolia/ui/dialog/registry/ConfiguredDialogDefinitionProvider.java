@@ -51,10 +51,13 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
 
     private final String id;
 
+    private final String path;
+
     private final ConfiguredFormDialogDefinition dialogDefinition;
 
     public ConfiguredDialogDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
         this.id = id;
+        this.path = configNode.getPath();
         this.dialogDefinition = (ConfiguredFormDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, FormDialogDefinition.class);
         if (this.dialogDefinition != null) {
             this.dialogDefinition.setId(id);
@@ -74,5 +77,9 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
     @Override
     public Class<? extends FormDialogPresenter> getPresenterClass() throws RegistrationException {
         return dialogDefinition.getPresenterClass();
+    }
+
+    public String getPath() {
+        return path;
     }
 }

@@ -55,10 +55,13 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    private final String path;
+
     private final ConfiguredAppDescriptor appDescriptor;
 
     public ConfiguredAppDescriptorProvider(Node configNode) throws Node2BeanException, RepositoryException {
         super();
+        this.path = configNode.getPath();
         this.appDescriptor = (ConfiguredAppDescriptor) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, ConfiguredAppDescriptor.class);
     }
 
@@ -110,5 +113,9 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
      */
     private String getAppDescriptorProviderUniqueIdentifier(AppDescriptor app) {
         return app.getName() + app.isEnabled() + app.getIcon() + app.getAppClass() + app.getLabel();
+    }
+
+    public String getPath() {
+        return path;
     }
 }

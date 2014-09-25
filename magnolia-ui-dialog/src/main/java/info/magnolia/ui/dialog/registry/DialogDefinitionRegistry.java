@@ -39,6 +39,7 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,5 +85,19 @@ public class DialogDefinitionRegistry {
 
     public Collection<String> getRegisteredDialogNames() {
         return registry.keySet();
+    }
+
+    public Collection<String> getRegisteredDialogPaths() {
+        Set<String> registeredDialogPaths = new HashSet<String>();
+        Collection<DialogDefinitionProvider> providers = registry.values();
+        for (DialogDefinitionProvider provider : providers) {
+            if (provider instanceof ConfiguredDialogDefinitionProvider) {
+                String path = ((ConfiguredDialogDefinitionProvider) provider).getPath();
+                if (path != null) {
+                    registeredDialogPaths.add(path);
+                }
+            }
+        }
+        return registeredDialogPaths;
     }
 }

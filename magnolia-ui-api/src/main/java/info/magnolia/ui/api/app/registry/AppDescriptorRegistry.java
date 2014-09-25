@@ -42,6 +42,7 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -193,5 +194,19 @@ public class AppDescriptorRegistry {
         for (AppDescriptor appDescriptor : appDescriptors) {
             systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor, eventType));
         }
+    }
+
+    public Collection<String> getRegisteredAppPaths() {
+        Set<String> registeredAppPaths = new HashSet<String>();
+        Collection<AppDescriptorProvider> providers = registry.values();
+        for (AppDescriptorProvider provider : providers) {
+            if (provider instanceof ConfiguredAppDescriptorProvider) {
+                String path = ((ConfiguredAppDescriptorProvider) provider).getPath();
+                if (path != null) {
+                    registeredAppPaths.add(path);
+                }
+            }
+        }
+        return registeredAppPaths;
     }
 }

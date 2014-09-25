@@ -47,12 +47,15 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.renderer.Renderer;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
+import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
@@ -89,6 +92,9 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
     private TypeMapping typeMapping = null;
     private DialogDefinitionRegistry dialogDefinitionRegistry = null;
+    private AppDescriptorRegistry appDescriptorRegistry = null;
+    private TemplateDefinitionRegistry templateDefinitionRegistry = null;
+    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry = null;
     private Reflections reflections = null;
 
     public AutoSuggesterForConfigurationApp() {
@@ -100,6 +106,21 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         dialogDefinitionRegistry = Components.getComponentProvider().getComponent(DialogDefinitionRegistry.class);
         if (dialogDefinitionRegistry == null) {
             log.warn("Could not get DialogDefinitionRegistry using component provider.");
+        }
+
+        appDescriptorRegistry = Components.getComponentProvider().getComponent(AppDescriptorRegistry.class);
+        if (appDescriptorRegistry == null) {
+            log.warn("Could not get AppDescriptorRegistry using component provider.");
+        }
+
+        templateDefinitionRegistry = Components.getComponentProvider().getComponent(TemplateDefinitionRegistry.class);
+        if (templateDefinitionRegistry == null) {
+            log.warn("Could not get TemplateDefinitionRegistry using component provider.");
+        }
+
+        fieldTypeDefinitionRegistry = Components.getComponentProvider().getComponent(FieldTypeDefinitionRegistry.class);
+        if (fieldTypeDefinitionRegistry == null) {
+            log.warn("Could not get FieldTypeDefinitionRegistry using component provider.");
         }
 
         // QUESTION Can we efficiently search for subclasses in user packages to suggest the value of class properties?
@@ -425,7 +446,81 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsEnum(valueJCRType, valueClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for value of extends
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsExtends(propertyName, parentNode, valueJCRType, parentClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for property value according to the logic below, if it is the extends property of an app, dialog, template, or field.
+     * - If property name is extends
+     * --| If JCR type is String
+     * --|-| If can get bean type of parent
+     * --|-|-| If parent bean type is subclass of AppDescriptor
+     * --|-|-|-| Suggest paths to apps
+     * --|-|-| Else if parent bean type is subclass of DialogDefinition
+     * --|-|-|-| Suggest paths to dialogs
+     * --|-|-| Else if parent bean type is subclass of TemplateDefinition
+     * --|-|-|-| Suggest paths to templates
+     * --|-|-| Else if parent bean type is subclass of FieldTypeDefinition
+     * --|-|-|-| Suggest paths to fields
+     * --|-|-| Else if parent bean type is not any of the above types
+     * --|-|-|-| No suggestions
+     * --|-| Else cannot get bean type of parent
+     * --|-|-- No suggestions
+     * --| Else if JCR type is not String
+     * --|---No suggestions
+     * - Else if property name is not extends
+     * ----No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsExtends(String propertyName, Node parentNode, int valueJCRType, Class<?> parentClass) {
+        if (propertyName == null || parentNode == null) {
+            return noSuggestionsAvailable();
+        }
+
+        if ("extends".equals(propertyName)) {
+
+            if (valueJCRType == PropertyType.STRING) {
+
+                if (parentClass != null) {
+
+                    if (ClassUtils.isAssignable(parentClass, AppDescriptor.class)) {
+                        Collection<String> suggestions = getPathsToAllAppsExcept(parentNode);
+
+                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    }
+                    else if (ClassUtils.isAssignable(parentClass, FormDialogDefinition.class)) {
+                        Collection<String> suggestions = getPathsToAllDialogsExcept(parentNode);
+
+                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    }
+                    else if (ClassUtils.isAssignable(parentClass, TemplateDefinition.class)) {
+                        Collection<String> suggestions = getPathsToAllTemplatesExcept(parentNode);
+
+                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    }
+                    else if (ClassUtils.isAssignable(parentClass, FieldTypeDefinition.class)) {
+                        Collection<String> suggestions = getPathsToAllFieldsExcept(parentNode);
+
+                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    }
+                    else {
+                        return noSuggestionsAvailable();
+                    }
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        }
         else {
             return noSuggestionsAvailable();
         }
@@ -1616,6 +1711,114 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
             }
         } catch (RepositoryException ex) {
             log.warn("Could not get the property class of the node: " + ex);
+            return null;
+        }
+    }
+
+    private Collection<String> getPathsToAllFieldsExcept(Node parentNode) {
+        if (fieldTypeDefinitionRegistry == null) {
+            log.warn("Could not get suggestions for extends reference because fieldTypeDefinitionRegistry does not exist.");
+            return null;
+        }
+        if (parentNode == null) {
+            return null;
+        }
+        Collection<String> fieldTypePaths = new HashSet<String>();
+        Collection<String> registeredFieldTypePaths = fieldTypeDefinitionRegistry.getRegisteredFieldTypePaths();
+        if (registeredFieldTypePaths != null) {
+            fieldTypePaths.addAll(registeredFieldTypePaths);
+            try {
+                String path = parentNode.getPath();
+                if (path != null) {
+                    fieldTypePaths.remove(path);
+                }
+            } catch (RepositoryException ex) {
+                log.warn("Could not get path for node: " + ex);
+            }
+            return fieldTypePaths;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Collection<String> getPathsToAllTemplatesExcept(Node parentNode) {
+        if (templateDefinitionRegistry == null) {
+            log.warn("Could not get suggestions for extends reference because templateDefinitionRegistry does not exist.");
+            return null;
+        }
+        if (parentNode == null) {
+            return null;
+        }
+        Collection<String> templatePaths = new HashSet<String>();
+        Collection<String> registeredTemplatePaths = templateDefinitionRegistry.getRegisteredTemplatePaths();
+        if (registeredTemplatePaths != null) {
+            templatePaths.addAll(registeredTemplatePaths);
+            try {
+                String path = parentNode.getPath();
+                if (path != null) {
+                    templatePaths.remove(path);
+                }
+            } catch (RepositoryException ex) {
+                log.warn("Could not get path for node: " + ex);
+            }
+            return templatePaths;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Collection<String> getPathsToAllAppsExcept(Node parentNode) {
+        if (appDescriptorRegistry == null) {
+            log.warn("Could not get suggestions for extends reference because configuredAppDescriptorManager does not exist.");
+            return null;
+        }
+        if (parentNode == null) {
+            return null;
+        }
+        Collection<String> appPaths = new HashSet<String>();
+        Collection<String> registeredAppPaths = appDescriptorRegistry.getRegisteredAppPaths();
+        if (registeredAppPaths != null) {
+            appPaths.addAll(registeredAppPaths);
+            try {
+                String path = parentNode.getPath();
+                if (path != null) {
+                    appPaths.remove(path);
+                }
+            } catch (RepositoryException ex) {
+                log.warn("Could not get path for node: " + ex);
+            }
+            return appPaths;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Collection<String> getPathsToAllDialogsExcept(Node parentNode) {
+        if (dialogDefinitionRegistry == null) {
+            log.warn("Could not get suggestions for extends reference because dialogDefinitionRegistry does not exist.");
+            return null;
+        }
+        if (parentNode == null) {
+            return null;
+        }
+        Collection<String> dialogPaths = new HashSet<String>();
+        Collection<String> registeredDialogPaths = dialogDefinitionRegistry.getRegisteredDialogPaths();
+        if (registeredDialogPaths != null) {
+            dialogPaths.addAll(registeredDialogPaths);
+            try {
+                String path = parentNode.getPath();
+                if (path != null) {
+                    dialogPaths.remove(path);
+                }
+            } catch (RepositoryException ex) {
+                log.warn("Could not get path for node: " + ex);
+            }
+            return dialogPaths;
+        }
+        else {
             return null;
         }
     }

@@ -50,10 +50,13 @@ public class ConfiguredFieldTypeDefinitionProvider implements FieldTypeDefinitio
 
     private final String id;
 
+    private final String path;
+
     private final FieldTypeDefinition fieldTypeDefinition;
 
     public ConfiguredFieldTypeDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
         this.id = id;
+        this.path = configNode.getPath();
         this.fieldTypeDefinition = (FieldTypeDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, FieldTypeDefinition.class);
     }
 
@@ -65,5 +68,9 @@ public class ConfiguredFieldTypeDefinitionProvider implements FieldTypeDefinitio
     @Override
     public FieldTypeDefinition getFieldTypeDefinition() throws RegistrationException {
         return fieldTypeDefinition;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
