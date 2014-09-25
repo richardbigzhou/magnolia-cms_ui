@@ -275,7 +275,11 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
             stopSubAppInstance(instanceId);
         }
         currentSubAppContext = null;
-        app.stop();
+        if (app != null) {
+            app.stop();
+        } else {
+            log.warn("Cannot call stop on app that's already set to null. Name: {}, Thread: {}", getName(), Thread.currentThread().getName());
+        }
     }
 
     private void stopSubAppInstance(String instanceId) {
