@@ -46,6 +46,9 @@ public interface AboutView extends View {
     static final String MAGNOLIA_VERSION_KEY = "mgnlVersion";
     static final String MAGNOLIA_INSTANCE_KEY = "mgnlInstance";
 
+    static final String MAGNOLIA_LICENSE_OWNER_KEY = "mgnlLicenseOwner";
+    static final String MAGNOLIA_LICENSE_EXPIRATION_DATE_KEY = "mgnlLicenseExpirationDate";
+
     static final String JAVA_INFO_KEY = "javaInfo";
     static final String OS_INFO_KEY = "osInfo";
     static final String SERVER_INFO_KEY = "serverInfo";

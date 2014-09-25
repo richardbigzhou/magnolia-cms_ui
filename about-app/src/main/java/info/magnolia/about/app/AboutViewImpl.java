@@ -49,7 +49,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 
 /**
- * Default Vaadin implementation of the {@link AboutView} interface, for the community edition.
+ * Implementation of the {@link AboutView} interface, for the community edition.
  */
 public class AboutViewImpl implements AboutView {
 
@@ -59,7 +59,7 @@ public class AboutViewImpl implements AboutView {
 
     private Map<String, Property.Viewer> dataBindings = new HashMap<String, Property.Viewer>();
 
-    private final SimpleTranslator i18n;
+    protected final SimpleTranslator i18n;
 
     @Inject
     public AboutViewImpl(SimpleTranslator i18n) {
