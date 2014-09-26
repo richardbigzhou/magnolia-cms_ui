@@ -156,27 +156,26 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                 url += fragment.substring(fragment.indexOf("#"));
             }
 
-            StringBuilder output = new StringBuilder();
+            final StringBuilder output = new StringBuilder();
+            output.append(ERROR_PAGE_STYLE)
+                    .append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">")
+                    .append("<div id=\"main-launcher\"><a href=\"" + url + "\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\" /></a></div>")
+                    .append("<div class=\"error-message v-shell-viewport-slot\">")
 
-            output.append(ERROR_PAGE_STYLE);
-            output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
-                    "<div id=\"main-launcher\"><a href=\"" + url + "\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\" /></a></div>" +
-                    "<div class=\"error-message v-shell-viewport-slot\">");
+                    .append("<h2>Whoops!</h2>")
+                    .append("<p>The server has encountered an internal error.</p>")
 
-            output.append("<h2>Whoops!</h2>");
-            output.append("<p>The server has encountered an internal error.</p>");
+                    .append("<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\">")
+                    .append("<a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to attempt to recover from this</span>]</a></div>")
 
-            output.append("<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\">" +
-                    "<a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to attempt to recover from this</span>]</a></div>");
+                    .append("<p>We apologize for any inconvenience caused.</p>")
 
-            output.append("<p>We apologize for any inconvenience caused.</p>");
+                    .append("<p>If you keep experiencing difficulties, please contact your system administrator.<br/>")
+                    .append("Make sure you send along the stack trace below.</p>")
 
-            output.append("<p>If you keep experiencing difficulties, please contact your system administrator.<br/>" +
-                    "Make sure you send along the stack trace below.</p>");
-
-            output.append("<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">" +
-                    "[<span class=\"v-button-caption\">Click here to show the error's stack trace</span>]</div>");
-            output.append(getStackTrace(e));
+                    .append("<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">")
+                    .append("[<span class=\"v-button-caption\">Click here to show the error's stack trace</span>]</div>")
+                    .append(getStackTrace(e));
 
             output.append("</div></div>");
 
@@ -192,16 +191,16 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private void writeUnsupportedBrowserPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // build message
-        StringBuilder output = new StringBuilder();
-        output.append(ERROR_PAGE_STYLE);
-        output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
-                "<div id=\"main-launcher\"><a href=\"#\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>" +
-                "<div class=\"error-message v-shell-viewport-slot\">" +
-                "<h2>Sorry.</h2>" +
-                "<p>You're trying to use Magnolia 5 on a browser we currently do not support.</p>" +
-                "<p>Please log in using either Firefox, Chrome, Safari or IE8+.<br />" +
-                "We apologize for any inconvenience caused.</p>");
-        output.append("</div></div>");
+        final StringBuilder output = new StringBuilder();
+        output.append(ERROR_PAGE_STYLE)
+                .append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">")
+                .append("<div id=\"main-launcher\"><a href=\"#\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>")
+                .append("<div class=\"error-message v-shell-viewport-slot\">")
+                .append("<h2>Sorry.</h2>")
+                .append("<p>You're trying to use Magnolia 5 on a browser we currently do not support.</p>")
+                .append("<p>Please log in using either Firefox, Chrome, Safari or IE8+.<br />")
+                .append("We apologize for any inconvenience caused.</p>")
+                .append("</div></div>");
 
         // wrap as JS response
         output.replace(0, output.length(), output.toString().replaceAll("\\\"", "\\\\\\\""));
@@ -240,11 +239,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
             prefix = '/' + prefix;
         }
 
-        if (pathInfo.startsWith(prefix)) {
-            return true;
-        }
-
-        return false;
+        return pathInfo.startsWith(prefix);
     }
 
     /**
