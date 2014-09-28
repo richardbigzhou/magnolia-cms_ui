@@ -283,7 +283,21 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
 
     @Override
     public void selectElement(Element element) {
+        final MgnlComponent currentlySelected = model.getSelectedComponent();
+        final MgnlElement elementToSelect = model.getMgnlElement(element);
+        final MgnlComponent componentToPreserve = elementToSelect.isComponent() ? (MgnlComponent)elementToSelect : currentlySelected;
+
+        ElementScrollPositionPreserver scrollPositionPreserver = null;
+        if (componentToPreserve != null) {
+            scrollPositionPreserver = new ElementScrollPositionPreserver(componentToPreserve);
+        }
+
         focusModel.selectElement(element);
+
+        if (scrollPositionPreserver != null) {
+            final ElementScrollPositionPreserver preserver = scrollPositionPreserver;
+            preserver.restorePosition();
+        }
     }
 
     private void injectEditorStyles(final Document document) {

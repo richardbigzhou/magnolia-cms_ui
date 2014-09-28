@@ -248,6 +248,14 @@ public class JQueryWrapper extends JavaScriptObject {
           return this.get();
     }-*/;
 
+    public native final void setScrollTop(int scrollTop)  /*-{
+        this.scrollTop(scrollTop);
+    }-*/;
+
+    public native final int getScrollTop()  /*-{
+        return this.scrollTop();
+    }-*/;
+
     public final boolean isAnimationInProgress() {
         return is(":animated");
     }
