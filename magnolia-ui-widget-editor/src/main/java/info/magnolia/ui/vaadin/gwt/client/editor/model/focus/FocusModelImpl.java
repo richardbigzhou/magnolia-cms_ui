@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -91,12 +92,77 @@ public class FocusModelImpl implements FocusModel {
         }
         // first set the component, then set the area. the selected component is used for setting
         // the current area class.
+        final MgnlComponent componentToPreserve = component != null ? component : model.getSelectedComponent();
+        ElementScrollPositionPreserver scrollPositionPreserver = new ElementScrollPositionPreserver(componentToPreserve == null ? null : componentToPreserve.getControlBar().getElement());
         setComponentSelection(component);
         setAreaSelection(area);
         setPageSelection(page);
 
         select(mgnlElement);
+        scrollPositionPreserver.restorePosition();
+    }
 
+    /**
+     * Tracks the initial offset top position of an element and is capable of restoring it later.
+     */
+    private static class ElementScrollPositionPreserver {
+
+        private Element element;
+
+        private int currentBarTop = -1;
+
+        public ElementScrollPositionPreserver(Element element) {
+            this.element = element;
+            if (this.element != null) {
+                int offsetTop = getOffsetTop();
+                currentBarTop = offsetTop;
+            }
+        }
+
+        void restorePosition() {
+            if (this.element != null) {
+                int newBarTop = getOffsetTop();
+                int delta = newBarTop - currentBarTop;
+                final Element parent = getScrollParent(element);
+                parent.setScrollTop(parent.getScrollTop() + delta);
+            }
+        }
+
+        private int getOffsetTop() {
+            final Style style = element.getStyle();
+            final String displayValue = style.getDisplay();
+
+            style.clearDisplay();
+            int offsetTop = element.getOffsetTop();
+            if ("none".equalsIgnoreCase(displayValue)) {
+                offsetTop -= element.getOffsetHeight();
+            }
+            style.setProperty("display", displayValue);
+            return offsetTop;
+        }
+
+        /**
+         * Locates the nearest scrollable parent. If there's none - returns body element.
+         * Almost verbatim copy of JQuery UI getScrollParent() function.
+         * @see <a href="http://google.com">http://google.com</a>
+         */
+        private native Element getScrollParent(Element e) /*-{
+            var jq = $wnd.$(e);
+            jq.scrollParent = function( includeHidden ) {
+                var position = this.css( "position" ),
+                    excludeStaticParent = position === "absolute",
+                    overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/,
+                    scrollParent = this.parents().filter( function() {
+                        var parent = $wnd.$( this );
+                        if ( excludeStaticParent && parent.css( "position" ) === "static" ) {
+                            return false;
+                        }
+                        return overflowRegex.test( parent.css( "overflow" ) + parent.css( "overflow-y" ) + parent.css( "overflow-x" ) );
+                    }).eq( 0 );
+                return position === "fixed" || !scrollParent.length ? $wnd.$( this[ 0 ].ownerDocument || document).find('body') : scrollParent;
+            };
+            return jq.scrollParent(false).get(0);
+        }-*/;
     }
 
     @Override
