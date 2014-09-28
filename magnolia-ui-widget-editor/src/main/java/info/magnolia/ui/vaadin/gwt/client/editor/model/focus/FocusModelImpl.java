@@ -96,7 +96,6 @@ public class FocusModelImpl implements FocusModel {
         setPageSelection(page);
 
         select(mgnlElement);
-
     }
 
     @Override
