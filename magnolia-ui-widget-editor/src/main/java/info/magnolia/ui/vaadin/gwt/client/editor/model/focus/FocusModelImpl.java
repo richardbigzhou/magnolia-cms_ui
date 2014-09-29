@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStopMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -123,7 +124,7 @@ public class FocusModelImpl implements FocusModel {
             if (this.element != null) {
                 int newBarTop = getOffsetTop();
                 int delta = newBarTop - currentBarTop;
-                final Element parent = getScrollParent(element);
+                final JQueryWrapper parent = getScrollParent(element);
                 parent.setScrollTop(parent.getScrollTop() + delta);
             }
         }
@@ -144,9 +145,9 @@ public class FocusModelImpl implements FocusModel {
         /**
          * Locates the nearest scrollable parent. If there's none - returns body element.
          * Almost verbatim copy of JQuery UI getScrollParent() function.
-         * @see <a href="http://google.com">http://google.com</a>
+         * @see <a href="http://api.jqueryui.com/scrollParent/">getScrollParent()</a>
          */
-        private native Element getScrollParent(Element e) /*-{
+        private native JQueryWrapper getScrollParent(Element e) /*-{
             var jq = $wnd.$(e);
             jq.scrollParent = function( includeHidden ) {
                 var position = this.css( "position" ),
@@ -159,9 +160,9 @@ public class FocusModelImpl implements FocusModel {
                         }
                         return overflowRegex.test( parent.css( "overflow" ) + parent.css( "overflow-y" ) + parent.css( "overflow-x" ) );
                     }).eq( 0 );
-                return position === "fixed" || !scrollParent.length ? $wnd.$( this[ 0 ].ownerDocument || document).find('body') : scrollParent;
+                return position === "fixed" || !scrollParent.length ? $wnd.$( this[ 0 ].ownerDocument || document) : scrollParent;
             };
-            return jq.scrollParent(false).get(0);
+            return jq.scrollParent(false);
         }-*/;
     }
 
