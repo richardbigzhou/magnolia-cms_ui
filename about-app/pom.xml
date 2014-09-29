@@ -10,6 +10,9 @@
   <artifactId>magnolia-about-app</artifactId>
   <name>magnolia-about-app</name>
   <description>The about app shows an overview of the instance version, environment and license information.</description>
+  <properties>
+    <cloverCoverageThreshold>30</cloverCoverageThreshold>
+  </properties>
 
   <dependencies>
     <dependency>
