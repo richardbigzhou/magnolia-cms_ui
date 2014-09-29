@@ -67,12 +67,15 @@ import javax.jcr.RepositoryException;
 public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends AbstractVersionAction<D> {
 
     private final AppContext appContext;
+    protected final AbstractJcrNodeAdapter nodeAdapter;
 
     protected String dialogID;
 
     @Inject
     public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
-        super(definition, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
+        super(definition, locationController, uiContext, formDialogPresenter, i18n);
+
+        this.nodeAdapter = nodeAdapter;
         this.appContext = appContext;
         this.dialogID = "ui-contentapp:code:ShowVersionsAction.selectVersion";
     }

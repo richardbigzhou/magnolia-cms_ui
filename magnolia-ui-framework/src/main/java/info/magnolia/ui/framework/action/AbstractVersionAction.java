@@ -73,22 +73,36 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL = "{0} ({1}) ({2})";
     public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT = "{0} ({1})";
 
-    private final D definition;
     protected final LocationController locationController;
     protected final UiContext uiContext;
     protected final SimpleTranslator i18n;
     protected final FormDialogPresenter formDialogPresenter;
+    /**
+     * @deprecated since 5.3.4 - define and inject {@link AbstractJcrNodeAdapter} in your subclass.
+     */
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
 
-    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter,SimpleTranslator i18n) {
+    /**
+     * @deprecated since 5.3.4 - use {@link AbstractVersionAction(D, LocationController, UiContext, FormDialogPresenter, SimpleTranslator)} instead.
+     */
+    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
         super(definition);
-        this.definition = definition;
         this.locationController = locationController;
         this.uiContext = uiContext;
         this.formDialogPresenter = formDialogPresenter;
         this.nodeAdapter = nodeAdapter;
         this.i18n = i18n;
+    }
+
+    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, SimpleTranslator i18n) {
+        super(definition);
+        this.locationController = locationController;
+        this.uiContext = uiContext;
+        this.formDialogPresenter = formDialogPresenter;
+        this.i18n = i18n;
+
+        this.nodeAdapter = null;
     }
 
     @Override
@@ -130,20 +144,25 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     }
 
     protected List<VersionInfo> getAvailableVersionInfoList() throws ActionExecutionException {
-        final Node node;
+        Node node;
         try {
             node = getNode();
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
+
+        if (node != null) {
             List<VersionInfo> versionInfoList = VersionUtil.getVersionInfoList(node);
 
             // This should not happen, as we use action availability for this action
             if (versionInfoList == null || versionInfoList.isEmpty()) {
-                throw new ActionExecutionException(String.format(i18n.translate("ui-framework.version.infoList.noListForItem"), nodeAdapter.getItemId()));
+                throw new ActionExecutionException(String.format(i18n.translate("ui-framework.version.infoList.noListForItem"), node));
             }
 
             return versionInfoList;
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(String.format(i18n.translate("ui-framework.version.infoList.repositoryException"), nodeAdapter.getItemId()));
         }
+
+        return null;
     }
 
     protected String getVersionLabel(VersionInfo versionInfo) {
