@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-widget-editor</name>
   <properties>
-    <cloverCoverageThreshold>2</cloverCoverageThreshold>
+    <cloverCoverageThreshold>8</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
