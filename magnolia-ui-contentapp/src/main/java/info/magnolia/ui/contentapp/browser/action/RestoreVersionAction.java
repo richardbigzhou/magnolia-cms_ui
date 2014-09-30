@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 /**
  * UI action which allow to restore node to the state defined by the selected version.
  */
-public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActionDefinition>{
+public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(RestoreVersionAction.class);
 
@@ -83,7 +83,7 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
                 try {
                     Node node = getNode();
 
-                    if(getDefinition().isCreateVersionBeforeRestore()){
+                    if (getDefinition().isCreateVersionBeforeRestore()) {
                         createVersionBeforeRestore(node);
                     }
 
