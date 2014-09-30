@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.workbench.list.ListView;
 
 import com.vaadin.data.Property;
@@ -51,6 +52,8 @@ public interface TreeView extends ListView {
     void setEditableColumns(Object... propertyIds);
 
     void setDragAndDropHandler(DropHandler dropHandler);
+
+    void setAutoSuggester(AutoSuggester autoSuggester);
 
     /**
      * Tree-view specific listener interface.

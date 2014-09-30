@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField;
+
 import java.util.Locale;
 
 import com.vaadin.data.Container;
@@ -61,6 +64,8 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
 
     private Field<?> field;
     private BlurListener fieldBlurListener;
+
+    private AutoSuggester autoSuggester = null;
 
     /**
      * @return the id of the item currently being edited
@@ -96,6 +101,10 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
      */
     public void setFieldBlurListener(BlurListener fieldBlurListener) {
         this.fieldBlurListener = fieldBlurListener;
+    }
+
+    public void setAutoSuggester(AutoSuggester autoSuggester) {
+        this.autoSuggester = autoSuggester;
     }
 
     @Override
@@ -151,11 +160,11 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         return field;
     }
 
-    protected Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
+    private Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
         if (type == null) {
             return null;
         }
-        Field<?> field = new TextField();
+        Field<?> field = this.autoSuggester == null ? new TextField() : new AutoSuggestTextField(this.autoSuggester.getSuggestionsFor(itemId, propertyId));
         // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used. Currently we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
         if (Long.class.equals(type)) {
             ((AbstractTextField) field).setConverter(new StringToLongConverter());
@@ -171,10 +180,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
      * As a result, this class will have a short life span, this is why it is kept private and deprecated.
      */
     @Deprecated
-    protected static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
-        public StringToLongConverter() {
-        }
-
+    static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
         // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used.
         @Override
         public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale) throws ConversionException {

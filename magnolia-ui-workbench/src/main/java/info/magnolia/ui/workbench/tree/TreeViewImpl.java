@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
@@ -78,6 +79,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
     private TreeRowScroller rowScroller;
+    private AutoSuggester autoSuggester;
 
     @Override
     protected TreeTable createTable(com.vaadin.data.Container container) {
@@ -130,7 +132,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     public void setEditable(boolean editable) {
         if (editable) {
             // field factory
-            fieldFactory = createInplaceEditingFieldFactory();
+            fieldFactory = new InplaceEditingFieldFactory();
             fieldFactory.setFieldBlurListener(new BlurListener() {
 
                 @Override
@@ -195,10 +197,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
         tree.setEditable(editable);
         this.editable = editable;
-    }
-
-    protected InplaceEditingFieldFactory createInplaceEditingFieldFactory() {
-        return new InplaceEditingFieldFactory();
     }
 
     @Override
@@ -375,6 +373,15 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             editNextCell(firstSelectedId, propertyId);
         } else {
             setEditing(firstSelectedId, propertyId);
+        }
+    }
+
+    @Override
+    public void setAutoSuggester(AutoSuggester autoSuggester) {
+        this.autoSuggester = autoSuggester;
+
+        if (this.fieldFactory != null) {
+            this.fieldFactory.setAutoSuggester(this.autoSuggester);
         }
     }
 
