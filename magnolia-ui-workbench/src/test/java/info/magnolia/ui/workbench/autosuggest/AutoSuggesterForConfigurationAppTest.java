@@ -52,8 +52,8 @@ import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult.MatchMethod;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
@@ -164,7 +164,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("false"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("false"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -235,7 +235,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("false"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -285,7 +285,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(TestEnum.enum3.toString()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertFalse(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -332,7 +332,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
         assertEquals(dialogRegistry.getRegisteredDialogNames(), autoSuggesterResult.getSuggestions());
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }
@@ -366,7 +366,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
         assertEquals(dialogRegistry.getRegisteredDialogNames(), autoSuggesterResult.getSuggestions());
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }
@@ -431,7 +431,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -450,7 +450,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -472,7 +472,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Double"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -492,7 +492,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -512,7 +512,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -532,7 +532,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -552,7 +552,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("String"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -572,7 +572,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Boolean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -592,7 +592,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Boolean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -612,7 +612,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Long"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -632,7 +632,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Long"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -652,7 +652,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Long"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -672,7 +672,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Long"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -692,7 +692,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Double"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -712,7 +712,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Double"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -735,7 +735,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Double"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -755,7 +755,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("Long"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -776,7 +776,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -796,7 +796,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -816,7 +816,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -838,7 +838,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -860,7 +860,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -882,7 +882,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -903,7 +903,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -923,7 +923,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -943,7 +943,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -975,7 +975,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithoutSubClasses.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -995,7 +995,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1014,7 +1014,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockClassWithoutSubClasses.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1037,7 +1037,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1105,7 +1105,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1142,7 +1142,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains(MockInnerSubClass.class.getName()));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.CONTAINS == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.CONTAINS == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1224,7 +1224,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("config"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertFalse(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1294,7 +1294,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1316,7 +1316,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1338,7 +1338,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(AutoSuggester.AutoSuggesterResult.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
     }
 
     @Test
@@ -1526,7 +1526,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertEquals(appDescriptorRegistry.getRegisteredAppPaths().size() - 1, autoSuggesterResult.getSuggestions().size());
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/pages/apps/pages"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/contacts/apps/contacts"));
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }
@@ -1547,7 +1547,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertEquals(dialogRegistry.getRegisteredDialogNames().size() - 1, autoSuggesterResult.getSuggestions().size());
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/dialogs/components/links/stkDownloadLink"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/dialogs/components/stages/stkStagePaging"));
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }
@@ -1568,7 +1568,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertEquals(templateDefinitionRegistry.getRegisteredTemplatePaths().size() - 1, autoSuggesterResult.getSuggestions().size());
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/standard-templating-kit/templates/components/content/stkTextImage"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/form/templates/components/form"));
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }
@@ -1589,7 +1589,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         assertEquals(fieldTypeDefinitionRegistry.getRegisteredFieldTypePaths().size() - 1, autoSuggesterResult.getSuggestions().size());
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/ui-framework/fieldTypes/textField"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("/modules/security-app/fieldTypes/roleManagementField"));
-        assertTrue(autoSuggesterResult.getMatchMethod() == AutoSuggesterResult.CONTAINS);
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
     }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.autosuggest;
 
-import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.InputTimer.Executor;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.VAutoSuggestPopup.ClickItemHandler;
 import info.magnolia.ui.vaadin.gwt.client.autosuggest.VAutoSuggestPopup.HoverHandler;
@@ -106,7 +105,7 @@ public class VAutoSuggestTextField extends VTextField {
     }
 
     public boolean isStartsWith() {
-        return state.matchMethod == AutoSuggesterResult.STARTS_WITH;
+        return state.matchMethod == AutoSuggestTextFieldState.STARTS_WITH;
     }
 
     private void initLayout() {

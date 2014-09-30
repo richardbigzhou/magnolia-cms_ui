@@ -101,7 +101,17 @@ public class AutoSuggestTextField extends TextField {
             if (state.suggestionsAvailable && suggestions != null) {
                 state.suggestions.addAll(suggestions);
             }
-            state.matchMethod = autoSuggesterResult.getMatchMethod();
+            switch (autoSuggesterResult.getMatchMethod()) {
+            case STARTS_WITH:
+                state.matchMethod = AutoSuggestTextFieldState.STARTS_WITH;
+                break;
+            case CONTAINS:
+                state.matchMethod = AutoSuggestTextFieldState.CONTAINS;
+                break;
+            default:
+                state.matchMethod = AutoSuggestTextFieldState.STARTS_WITH;
+                break;
+            }
             state.showMismatchedSuggestions = autoSuggesterResult.showMismatchedSuggestions();
             state.showErrorHighlighting = autoSuggesterResult.showErrorHighlighting();
         }

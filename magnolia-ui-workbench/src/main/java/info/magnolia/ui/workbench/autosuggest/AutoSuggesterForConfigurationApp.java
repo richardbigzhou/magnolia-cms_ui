@@ -51,7 +51,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult.MatchMethod;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Returns suggestions and how to display them for a cell in the Configuration App tree.
  */
-public class AutoSuggesterForConfigurationApp implements AutoSuggester {
+public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
 
     private static Logger log = LoggerFactory.getLogger(AutoSuggesterForConfigurationApp.class);
 
@@ -186,10 +186,6 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         }
     }
 
-    protected AutoSuggesterResult noSuggestionsAvailable() {
-        return new AutoSuggesterForConfigurationAppResult();
-    }
-
     protected AutoSuggesterResult getSuggestionsForNameOfNode(Node node) {
         if (node == null) {
             return noSuggestionsAvailable();
@@ -262,7 +258,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                             final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, Arrays.asList(
                                     "apps", "templates", "dialogs", "commands", "fieldTypes", "virtualURIMapping", "renderers", "config"));
 
-                            return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, false);
+                            return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, false);
                         }
                         else {
                             return noSuggestionsAvailable();
@@ -319,7 +315,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                 if (nodeName != null) {
                     final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, possibleSubnodeNames);
 
-                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+                    return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, true);
                 }
                 else {
                     return noSuggestionsAvailable();
@@ -348,7 +344,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
             if (possibleSubpropertyNames != null) {
                 Collection<String> suggestions = getAllPossibleNewSubpropertyNames(propertyName, parentNode, possibleSubpropertyNames);
 
-                return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+                return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, true);
             }
             else {
                 return getSuggestionsForNameOfPropertyBasedOnJCROnly(propertyName, parentNode);
@@ -390,7 +386,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
         Collection<String> suggestions = getAllPossibleNewSubpropertyNames(propertyName, parentNode, possibleSubpropertyNames);
 
-        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.STARTS_WITH, true, true);
+        return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, true);
     }
 
     protected AutoSuggesterResult getSuggestionsForValueOfProperty(String propertyName, Node parentNode) {
@@ -492,22 +488,22 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                     if (ClassUtils.isAssignable(parentClass, AppDescriptor.class)) {
                         Collection<String> suggestions = getPathsToAllAppsExcept(parentNode);
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                     }
                     else if (ClassUtils.isAssignable(parentClass, FormDialogDefinition.class)) {
                         Collection<String> suggestions = getPathsToAllDialogsExcept(parentNode);
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                     }
                     else if (ClassUtils.isAssignable(parentClass, TemplateDefinition.class)) {
                         Collection<String> suggestions = getPathsToAllTemplatesExcept(parentNode);
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                     }
                     else if (ClassUtils.isAssignable(parentClass, FieldTypeDefinition.class)) {
                         Collection<String> suggestions = getPathsToAllFieldsExcept(parentNode);
 
-                        return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                        return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                     }
                     else {
                         return noSuggestionsAvailable();
@@ -542,7 +538,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                         suggestions.add(enumConstant.toString());
                     }
 
-                    return new AutoSuggesterForConfigurationAppResult(suggestions.size() > 0, suggestions, AutoSuggesterResult.STARTS_WITH, true, false);
+                    return new AutoSuggesterResultAdapter(suggestions.size() > 0, suggestions, MatchMethod.STARTS_WITH, true, false);
                 }
                 else {
                     return noSuggestionsAvailable();
@@ -592,7 +588,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
                     Collection<String> suggestions = getSubclassNames(mostGeneralNodeClass);
 
-                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    return new AutoSuggesterResultAdapter(suggestions != null && suggestions.size() > 0, suggestions, MatchMethod.CONTAINS, true, true);
 
                 }
                 else {
@@ -607,7 +603,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
                         if (valueJCRType == PropertyType.STRING) {
                             Collection<String> suggestions = getSubclassNames(genericTypeParameter);
-                            return new AutoSuggesterForConfigurationAppResult(suggestions != null && suggestions.size() > 0, suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                            return new AutoSuggesterResultAdapter(suggestions != null && suggestions.size() > 0, suggestions, MatchMethod.CONTAINS, true, true);
                         }
                         else {
                             return noSuggestionsAvailable();
@@ -656,7 +652,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                 if ("dialog".equals(propertyName) && valueJCRType == PropertyType.STRING) {
                     Collection<String> suggestions = dialogDefinitionRegistry.getRegisteredDialogNames();
 
-                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                 }
                 else {
                     return noSuggestionsAvailable();
@@ -666,7 +662,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
                 if ("dialogName".equals(propertyName) && valueJCRType == PropertyType.STRING) {
                     Collection<String> suggestions = dialogDefinitionRegistry.getRegisteredDialogNames();
 
-                    return new AutoSuggesterForConfigurationAppResult(suggestions != null && !suggestions.isEmpty(), suggestions, AutoSuggesterResult.CONTAINS, true, true);
+                    return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.CONTAINS, true, true);
                 }
                 else {
                     return noSuggestionsAvailable();
@@ -704,7 +700,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         if (parentTypeDescriptor != null) {
             if (valueClass != null) {
                 if (ClassUtils.isAssignable(valueClass, Boolean.class) && (valueJCRType == PropertyType.BOOLEAN || valueJCRType == PropertyType.STRING)) {
-                    return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("true", "false"), AutoSuggesterResult.STARTS_WITH, true, true);
+                    return new AutoSuggesterResultAdapter(true, Arrays.asList("true", "false"), MatchMethod.STARTS_WITH, true, true);
                 }
                 else {
                     return noSuggestionsAvailable();
@@ -725,7 +721,7 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         }
 
         if (PropertyType.BOOLEAN == valueJCRType) {
-            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("true", "false"), AutoSuggesterResult.STARTS_WITH, true, true);
+            return new AutoSuggesterResultAdapter(true, Arrays.asList("true", "false"), MatchMethod.STARTS_WITH, true, true);
         }
         else {
             return noSuggestionsAvailable();
@@ -776,19 +772,19 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
                         // If Java class String, Character, Class, or Enum, map to JCR type String
                         if (propertyClass.equals(String.class) || propertyClass.isEnum() || propertyClass.equals(Class.class) || ClassUtils.isAssignable(propertyClass, Character.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, true);
+                            return new AutoSuggesterResultAdapter(true, Arrays.asList("String"), MatchMethod.STARTS_WITH, true, true);
                         }
                         // If Java class Boolean, map to JCR type Boolean
                         else if (ClassUtils.isAssignable(propertyClass, Boolean.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Boolean"), AutoSuggesterResult.STARTS_WITH, true, true);
+                            return new AutoSuggesterResultAdapter(true, Arrays.asList("Boolean"), MatchMethod.STARTS_WITH, true, true);
                         }
                         // If Java class Long, Integer, or Byte, map to JCR type Long
                         else if (ClassUtils.isAssignable(propertyClass, Long.class) || ClassUtils.isAssignable(propertyClass, Integer.class) || ClassUtils.isAssignable(propertyClass, Byte.class) || ClassUtils.isAssignable(propertyClass, Short.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Long"), AutoSuggesterResult.STARTS_WITH, true, true);
+                            return new AutoSuggesterResultAdapter(true, Arrays.asList("Long"), MatchMethod.STARTS_WITH, true, true);
                         }
                         // If Java class Double or Float, map to JCR type Double
                         else if (ClassUtils.isAssignable(propertyClass, Double.class) || ClassUtils.isAssignable(propertyClass, Float.class)) {
-                            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("Double"), AutoSuggesterResult.STARTS_WITH, true, true);
+                            return new AutoSuggesterResultAdapter(true, Arrays.asList("Double"), MatchMethod.STARTS_WITH, true, true);
                         }
                         // If Java type that does not map to a JCR type
                         else {
@@ -821,9 +817,9 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
 
         // If property name is "class" or "extends"
         if ("class".equals(propertyName) || "extends".equals(propertyName)) {
-            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String"), AutoSuggesterResult.STARTS_WITH, true, true);
+            return new AutoSuggesterResultAdapter(true, Arrays.asList("String"), MatchMethod.STARTS_WITH, true, true);
         } else {
-            return new AutoSuggesterForConfigurationAppResult(true, Arrays.asList("String", "Boolean", "Long", "Double"), AutoSuggesterResult.STARTS_WITH, true, true);
+            return new AutoSuggesterResultAdapter(true, Arrays.asList("String", "Boolean", "Long", "Double"), MatchMethod.STARTS_WITH, true, true);
         }
     }
 
@@ -1820,65 +1816,6 @@ public class AutoSuggesterForConfigurationApp implements AutoSuggester {
         }
         else {
             return null;
-        }
-    }
-
-    /**
-     * Convenient adapter for AutoSuggesterResult.
-     */
-    private static class AutoSuggesterForConfigurationAppResult implements AutoSuggesterResult {
-        private boolean suggestionsAvailable;
-        private Collection<String> suggestions;
-        private int matchMethod;
-        boolean showMismatchedSuggestions;
-        boolean showErrorHighlighting;
-
-        public AutoSuggesterForConfigurationAppResult(boolean suggestionsAvailable, Collection<String> suggestions, int matchMethod, boolean showMismatchedSuggestions, boolean showErrorHighlighting) {
-            this.suggestionsAvailable = suggestionsAvailable;
-            this.suggestions = suggestions;
-            this.matchMethod = matchMethod;
-            this.showMismatchedSuggestions = showMismatchedSuggestions;
-            this.showErrorHighlighting = showErrorHighlighting;
-        }
-
-        /**
-         * The result constructed by default has no suggestions available.
-         */
-        public AutoSuggesterForConfigurationAppResult() {
-            this(false, null, STARTS_WITH, false, false);
-        }
-
-        @Override
-        public boolean suggestionsAvailable() {
-            if (!suggestionsAvailable) {
-                return false;
-            }
-            else if (suggestions == null || suggestions.isEmpty()) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-
-        @Override
-        public Collection<String> getSuggestions() {
-            return suggestions;
-        }
-
-        @Override
-        public int getMatchMethod() {
-            return matchMethod;
-        }
-
-        @Override
-        public boolean showMismatchedSuggestions() {
-            return showMismatchedSuggestions;
-        }
-
-        @Override
-        public boolean showErrorHighlighting() {
-            return showErrorHighlighting;
         }
     }
 
