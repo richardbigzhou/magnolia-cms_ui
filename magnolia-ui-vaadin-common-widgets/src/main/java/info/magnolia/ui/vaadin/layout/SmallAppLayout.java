@@ -38,7 +38,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -68,6 +72,18 @@ public class SmallAppLayout extends VerticalLayout {
         descriptionLabel.setContentMode(ContentMode.HTML);
         descriptionLabel.setConverter(new StringToHtmlConverter());
         descriptionLabel.setPropertyDataSource(description);
+        descriptionLabel.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                if (StringUtils.isNotBlank((String) event.getProperty().getValue())) {
+                    descriptionLabel.setVisible(true);
+                } else {
+                    descriptionLabel.setVisible(false);
+                }
+            }
+        });
+
         root.addComponent(descriptionLabel);
         root.setExpandRatio(descriptionLabel, 0);
 
@@ -117,7 +133,10 @@ public class SmallAppLayout extends VerticalLayout {
 
         @Override
         public String convertToPresentation(String value, Class<? extends String> targetType, Locale locale) throws com.vaadin.data.util.converter.Converter.ConversionException {
-            return value.replaceAll("\n", "<br/>");
+            if (value != null) {
+                return value.replaceAll("\n", "<br/>");
+            }
+            return null;
         }
 
         @Override
