@@ -49,15 +49,18 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult.MatchMethod;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 import info.magnolia.ui.workbench.autosuggest.MockSubClass.MockInnerSubClass;
@@ -89,6 +92,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     private AppDescriptorRegistry appDescriptorRegistry;
     private TemplateDefinitionRegistry templateDefinitionRegistry;
     private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
+    private Collection<String> iconSuggestions;
 
     @Override
     @Before
@@ -142,6 +146,8 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         Mockito.when(provider.getComponent(FieldTypeDefinitionRegistry.class)).thenReturn(fieldTypeDefinitionRegistry);
 
         Components.setComponentProvider(provider);
+
+        iconSuggestions = Arrays.asList("icon-appslauncher", "icon-pulse", "icon-favorites");
 
         autoSuggesterForConfigurationApp = new AutoSuggesterForConfigurationApp();
     }
@@ -1679,6 +1685,126 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         editDialog.setProperty("class", FormDialogDefinition.class.getName());
         editDialog.setProperty("extends", 123);
         Object jcrItemId = JcrItemUtil.getItemId(editDialog.getProperty("extends"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsAppDescriptorAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node pages = NodeUtil.createPath(rootNode, "pages", NodeTypes.ContentNode.NAME, true);
+        pages.setProperty("class", AppDescriptor.class.getName());
+        pages.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(pages.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(iconSuggestions, autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsAppDescriptorAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node pages = NodeUtil.createPath(rootNode, "pages", NodeTypes.ContentNode.NAME, true);
+        pages.setProperty("class", AppDescriptor.class.getName());
+        pages.setProperty("icon", true);
+        Object jcrItemId = JcrItemUtil.getItemId(pages.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsAppDescriptorSubclassAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node pages = NodeUtil.createPath(rootNode, "pages", NodeTypes.ContentNode.NAME, true);
+        pages.setProperty("class", ConfiguredAppDescriptor.class.getName());
+        pages.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(pages.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(iconSuggestions, autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsActionDefinitionAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editAction = NodeUtil.createPath(rootNode, "editAction", NodeTypes.ContentNode.NAME, true);
+        editAction.setProperty("class", ActionDefinition.class.getName());
+        editAction.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(editAction.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(iconSuggestions, autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsNodeTypeDefinitionAndPropertyIsStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node nodeType = NodeUtil.createPath(rootNode, "nodeType", NodeTypes.ContentNode.NAME, true);
+        nodeType.setProperty("class", NodeTypeDefinition.class.getName());
+        nodeType.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(nodeType.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertEquals(iconSuggestions, autoSuggesterResult.getSuggestions());
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsOtherType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editAction = NodeUtil.createPath(rootNode, "editAction", NodeTypes.ContentNode.NAME, true);
+        editAction.setProperty("class", MockBean.class.getName());
+        editAction.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(editAction.getProperty("icon"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsIconWhenParentBeanTypeIsNull() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node editAction = NodeUtil.createPath(rootNode, "editAction", NodeTypes.ContentNode.NAME, true);
+        editAction.setProperty("icon", "");
+        Object jcrItemId = JcrItemUtil.getItemId(editAction.getProperty("icon"));
 
         // WHEN
         AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");

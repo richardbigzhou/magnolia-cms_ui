@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'MagnoliaIcons';
+  src:url('fonts/MagnoliaIcons.eot?m23pt3');
+  src:url('fonts/MagnoliaIcons.eot?#iefixm23pt3') format('embedded-opentype'),
+    url('fonts/MagnoliaIcons.woff?m23pt3') format('woff'),
+    url('fonts/MagnoliaIcons.ttf?m23pt3') format('truetype'),
+    url('fonts/MagnoliaIcons.svg?m23pt3#MagnoliaIcons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* full list of classes, faster than generic 'class attribute contains' selector */
+.icon-appslauncher, .icon-pulse, .icon-favorites {
+  font-family: MagnoliaIcons !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-appslauncher:before {
+  content: "\e000";
+}
+.icon-pulse:before {
+  content: "\e001";
+}
+.icon-favorites:before {
+  content: "\e002";
+}
