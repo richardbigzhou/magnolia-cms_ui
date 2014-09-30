@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.autosuggest;
 
 import info.magnolia.cms.beans.config.VirtualURIMapping;
+import info.magnolia.cms.util.ClasspathResourcesUtil;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.jcr.node2bean.PropertyTypeDescriptor;
 import info.magnolia.jcr.node2bean.TypeDescriptor;
@@ -48,6 +49,7 @@ import info.magnolia.rendering.renderer.Renderer;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
@@ -56,18 +58,24 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
+import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,7 +84,9 @@ import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -90,12 +100,15 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
 
     private static Logger log = LoggerFactory.getLogger(AutoSuggesterForConfigurationApp.class);
 
+    private static List<String> magnoliaIcons = getMagnoliaIcons();
+
     private TypeMapping typeMapping = null;
     private DialogDefinitionRegistry dialogDefinitionRegistry = null;
     private AppDescriptorRegistry appDescriptorRegistry = null;
     private TemplateDefinitionRegistry templateDefinitionRegistry = null;
     private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry = null;
     private Reflections reflections = null;
+    private Collection<String> iconSuggestions = null;
 
     public AutoSuggesterForConfigurationApp() {
         typeMapping = Components.getComponentProvider().getComponent(TypeMapping.class);
@@ -466,7 +479,73 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsExtends(propertyName, parentNode, valueJCRType, parentClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for value of icon
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsIcon(propertyName, valueJCRType, parentClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for property value according to the logic below, if it is a reference to an icon font.
+     * - If property name is icon
+     * --| If JCR type is String
+     * --|-| If can get bean type of parent
+     * --|-|-| If parent bean type is subclass of AppDescriptor
+     * --|-|-|-| Suggest icons
+     * --|-|-| Else if parent bean type is subclass of ActionDefinition
+     * --|-|-|-| Suggest icons
+     * --|-|-| Else if parent bean type is subclass of NodeTypeDefinition
+     * --|-|-|-| Suggest icons
+     * --|-|-| Else if parent bean type is not any of the above types
+     * --|-|-|-| No suggestions
+     * --|-| Else cannot get bean type of parent
+     * --|-|-- No suggestions
+     * --| Else if JCR type is not String
+     * --|---No suggestions
+     * - Else if property name is not icon
+     * ----No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsIcon(String propertyName, int valueJCRType, Class<?> parentClass) {
+        if (magnoliaIcons != null && iconSuggestions == null) {
+            synchronized (magnoliaIcons) {
+                iconSuggestions = new ArrayList<String>(magnoliaIcons);
+            }
+        }
+
+        if (iconSuggestions == null) {
+            log.warn("Could not get suggestions for icon reference because iconSuggestions does not exist.");
+            return noSuggestionsAvailable();
+        }
+
+        if (propertyName == null) {
+            return noSuggestionsAvailable();
+        }
+
+        if ("icon".equals(propertyName)) {
+
+            if (valueJCRType == PropertyType.STRING) {
+
+                if (parentClass != null) {
+
+                    if (ClassUtils.isAssignable(parentClass, AppDescriptor.class) || ClassUtils.isAssignable(parentClass, ActionDefinition.class) || ClassUtils.isAssignable(parentClass, NodeTypeDefinition.class)) {
+                        return new AutoSuggesterResultAdapter(!iconSuggestions.isEmpty(), iconSuggestions, MatchMethod.CONTAINS, true, true);
+                    }
+                    else {
+                        return noSuggestionsAvailable();
+                    }
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        }
         else {
             return noSuggestionsAvailable();
         }
@@ -1835,6 +1914,49 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
             return dialogPaths;
         }
         else {
+            return null;
+        }
+    }
+
+    private static List<String> getMagnoliaIcons() {
+        List<String> lines = null;
+        try {
+            InputStream inputStream = ClasspathResourcesUtil.getStream("/VAADIN/themes/magnolia/magnolia-icons.scss");
+            if (inputStream != null) {
+                lines = IOUtils.readLines(inputStream);
+                if (lines != null) {
+                    for (String line : lines) {
+                        if (!StringUtils.isBlank(line) && line.startsWith(".icon") && line.endsWith("{") && !line.endsWith(":before {")) {
+                            String magnoliaIcons = StringUtils.replaceEach(line, new String[] { "{", " ", "." }, new String[] { "", "", "" });
+                            if (magnoliaIcons != null) {
+                                String[] icons = StringUtils.split(magnoliaIcons, ",");
+                                if (icons != null && icons.length > 0) {
+                                    for (String icon : icons) {
+                                        if (!icon.matches("icon-[a-zA-Z0-9_\\-]+")) {
+                                            return null;
+                                        }
+                                    }
+                                    return Collections.synchronizedList(Arrays.asList(icons));
+                                }
+                                else {
+                                    return null;
+                                }
+                            }
+                            else {
+                                return null;
+                            }
+                        }
+                    }
+                    return null;
+                }
+                else {
+                    return null;
+                }
+            }
+            else {
+                return null;
+            }
+        } catch (IOException e) {
             return null;
         }
     }
