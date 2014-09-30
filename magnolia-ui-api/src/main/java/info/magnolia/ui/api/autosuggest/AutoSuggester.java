@@ -52,12 +52,13 @@ public interface AutoSuggester {
     /**
      * Suggestions and how to display them.
      */
-    interface AutoSuggesterResult {
+    public static interface AutoSuggesterResult {
         /**
          * How to match suggestions to the current field value.
          */
-        public static final int STARTS_WITH = 0;
-        public static final int CONTAINS = 1;
+        public static enum MatchMethod {
+            STARTS_WITH, CONTAINS
+        }
 
         /**
          * Whether suggestions could be calculated for the field.
@@ -72,7 +73,7 @@ public interface AutoSuggester {
         /**
          * Get method to match suggestions to the current field value.
          */
-        int getMatchMethod();
+        MatchMethod getMatchMethod();
 
         /**
          * Whether to show suggestions that cannot match the current field value.

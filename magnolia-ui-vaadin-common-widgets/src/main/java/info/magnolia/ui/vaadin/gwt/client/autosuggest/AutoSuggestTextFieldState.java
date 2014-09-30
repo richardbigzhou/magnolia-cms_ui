@@ -42,6 +42,9 @@ import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
  * Used to communicate {@link info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult} to the client side code.
  */
 public class AutoSuggestTextFieldState extends AbstractTextFieldState {
+    public static final int STARTS_WITH = 0;
+    public static final int CONTAINS = 1;
+
     public boolean suggestionsAvailable;
     public List<String> suggestions;
     public int matchMethod;
