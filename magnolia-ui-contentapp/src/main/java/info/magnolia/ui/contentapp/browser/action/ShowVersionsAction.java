@@ -106,6 +106,7 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
         }
 
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
+        dialog.setModalityLevel(getModalityLevel());
         dialog.setId(dialogID);
         dialog.setForm(form);
 

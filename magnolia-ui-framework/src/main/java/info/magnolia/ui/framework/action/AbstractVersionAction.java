@@ -42,6 +42,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
@@ -175,6 +176,13 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
     protected BeanItem<?> getItem() {
         return item;
+    }
+
+    /**
+     * Returns the {@link info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel} for versions dialogs.
+     */
+    protected OverlayLayer.ModalityLevel getModalityLevel() {
+        return OverlayLayer.ModalityLevel.LIGHT;
     }
 
     protected abstract Class getBeanItemClass();
