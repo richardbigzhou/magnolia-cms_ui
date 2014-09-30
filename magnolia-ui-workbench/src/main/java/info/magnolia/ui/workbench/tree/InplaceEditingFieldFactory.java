@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextField;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -58,6 +61,8 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
 
     private Field<?> field;
     private BlurListener fieldBlurListener;
+
+    private AutoSuggester autoSuggester = null;
 
     /**
      * @return the id of the item currently being edited
@@ -93,6 +98,10 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
      */
     public void setFieldBlurListener(BlurListener fieldBlurListener) {
         this.fieldBlurListener = fieldBlurListener;
+    }
+
+    public void setAutoSuggester(AutoSuggester autoSuggester) {
+        this.autoSuggester = autoSuggester;
     }
 
     @Override
@@ -148,12 +157,11 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         return field;
     }
 
-    protected Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
+    private Field<?> createFieldByPropertyType(Object itemId, Object propertyId, Class<?> type) {
         if (type == null) {
             return null;
         }
-        Field<?> field = new TextField();
+        Field<?> field = this.autoSuggester == null ? new TextField() : new AutoSuggestTextField(this.autoSuggester.getSuggestionsFor(itemId, propertyId));
         return field;
     }
-
 }

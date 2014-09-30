@@ -35,10 +35,12 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
@@ -99,9 +101,26 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
             log.debug("Set following drop container {} to the treeTable", dropConstraintClass.getName());
         }
 
+        // Configure the TreeViewImpl with the AutoSuggester implementation specified by the user in the configuration tree
+        ContentPresenterDefinition presenterDefinition = this.getPresenterDefinition();
+        if (presenterDefinition != null && presenterDefinition instanceof TreePresenterDefinition) {
+            Class<? extends AutoSuggester> autoSuggesterClass = ((TreePresenterDefinition) presenterDefinition).getAutoSuggesterClass();
+
+            if (autoSuggesterClass != null) {
+                try {
+                    view.setAutoSuggester(autoSuggesterClass.newInstance());
+                } catch (InstantiationException ex) {
+                    view.setAutoSuggester(null);
+                    log.warn("Could not instantiate AutoSuggester implementation class " + autoSuggesterClass.getName() + ": " + ex);
+                } catch (IllegalAccessException ex) {
+                    view.setAutoSuggester(null);
+                    log.warn("Could not instantiate AutoSuggester implementation class " + autoSuggesterClass.getName() + ": " + ex);
+                }
+            }
+        }
+
         return view;
     }
-
 
     public void disableDragAndDrop() {
         ((TreeView) view).setDragAndDropHandler(null);
@@ -126,6 +145,6 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
     @Override
     protected AbstractJcrContainer createContainer() {
-        return new HierarchicalJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
+        return new HierarchicalJcrContainer(((JcrContentConnector) contentConnector).getContentConnectorDefinition());
     }
 }

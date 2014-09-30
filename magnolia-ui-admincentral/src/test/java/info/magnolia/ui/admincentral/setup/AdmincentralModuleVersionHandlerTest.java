@@ -572,40 +572,52 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo54AddsAutoSuggestToConfigurationApp() throws Exception {
-        // Test that version handler does nothing when tree presenter class property does not exist
+    public void testUpdateTo54DoesNotAddAutoSuggestToConfigurationAppWhenNoTreePresenterClass() throws Exception {
         // GIVEN
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
         // THEN
         assertFalse(session.propertyExists("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class"));
+    }
 
-        // Test that version handler works when tree presenter class property exists and is the expected value and autoSuggesterClass property doesn't exist
+    @Test
+    public void testUpdateTo54AddsAutoSuggestToConfigurationApp() throws Exception {
         // GIVEN
         setupConfigProperty("modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "class", "info.magnolia.ui.workbench.tree.TreePresenterDefinition");
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
-        // THEN
-        assertEquals("info.magnolia.ui.workbench.autosuggest.AutoSuggestTreePresenterDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class").getString());
-        assertEquals("info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/autoSuggesterClass").getString());
 
-        // Test that version handler does nothing when tree presenter class property exists but is not the expected value
+        // THEN
+        assertEquals("info.magnolia.ui.workbench.tree.TreePresenterDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class").getString());
+        assertEquals("info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/autoSuggesterClass").getString());
+    }
+
+    @Test
+    public void testUpdateTo54DoesNotAddAutoSuggestToConfigurationAppWhenTreePresenterClassHasUnexpectedValue() throws Exception {
         // GIVEN
         setupConfigProperty("modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "class", "foobar");
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
         // THEN
         assertEquals("foobar", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class").getString());
+    }
 
-        // Test that version handler does nothing when tree presenter class property exists and is the expected value, but the autoSuggesterClass property already exists
+    @Test
+    public void testUpdateTo54DoesNotAddAutoSuggestToConfigurationAppWhenAutoSuggesterClassExists() throws Exception {
         // GIVEN
         setupConfigProperty("modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "class", "info.magnolia.ui.workbench.tree.TreePresenterDefinition");
         setupConfigProperty("modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "autoSuggesterClass", "foobar");
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
         // THEN
         assertEquals("info.magnolia.ui.workbench.tree.TreePresenterDefinition", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/class").getString());
         assertEquals("foobar", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree/autoSuggesterClass").getString());
     }
-
 }

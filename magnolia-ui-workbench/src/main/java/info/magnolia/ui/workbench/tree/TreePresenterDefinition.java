@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.ui.api.autosuggest.AutoSuggester;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
@@ -42,6 +43,8 @@ public class TreePresenterDefinition extends ConfiguredContentPresenterDefinitio
 
     public static final String VIEW_TYPE = "treeview";
 
+    private Class<? extends AutoSuggester> autoSuggesterClass;
+
     public TreePresenterDefinition() {
         setImplementationClass(TreePresenter.class);
         setViewType(VIEW_TYPE);
@@ -49,4 +52,11 @@ public class TreePresenterDefinition extends ConfiguredContentPresenterDefinitio
         setIcon("icon-view-tree");
     }
 
+    public Class<? extends AutoSuggester> getAutoSuggesterClass() {
+        return autoSuggesterClass;
+    }
+
+    public void setAutoSuggesterClass(Class<? extends AutoSuggester> autoSuggesterClass) {
+        this.autoSuggesterClass = autoSuggesterClass;
+    }
 }

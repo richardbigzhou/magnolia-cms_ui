@@ -273,7 +273,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/")));
         register(DeltaBuilder.update("5.4", "").
                 addTask(new PropertyValueDelegateTask("Change the Configuration App's tree to one with auto-suggest",
-                        "Change the Configuration App's tree to one with auto-suggest by configuring the app to use a different tree presenter",
+                        "Change the Configuration App's tree to one with auto-suggest by configuring the AutoSuggester class to use",
                         "config",
                         "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree",
                         "class",
@@ -287,10 +287,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 new WarnTask("Could not change Configuration App's tree to one with auto-suggest",
                                         "Could not change Configuration App's tree to one with auto-suggest because tree view's autoSuggesterClass property already exists"
                                 ),
-                                new ArrayDelegateTask("Change the Configuration App's tree to one with auto-suggest",
-                                        new SetPropertyTask("config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "class", "info.magnolia.ui.workbench.autosuggest.AutoSuggestTreePresenterDefinition"),
-                                        new SetPropertyTask("config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "autoSuggesterClass", "info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp")
-                                )
+                                new SetPropertyTask("Set the autoSuggesterClass property", "config", "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/contentViews/tree", "autoSuggesterClass", "info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp")
                         ),
                         new WarnTask("Could not change Configuration App's tree to one with auto-suggest", "Could not change Configuration App's tree to one with auto-suggest because tree view's class property does not exist or is not the expected value"))));
     }

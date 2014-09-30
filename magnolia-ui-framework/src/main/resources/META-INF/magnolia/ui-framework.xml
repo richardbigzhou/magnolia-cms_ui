@@ -312,10 +312,6 @@
       <implementation>info.magnolia.ui.workbench.tree.TreeViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.workbench.autosuggest.AutoSuggestTreeView</type>
-      <implementation>info.magnolia.ui.workbench.autosuggest.AutoSuggestTreeViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
       <implementation>info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl</implementation>
     </component>
@@ -372,10 +368,6 @@
     <component>
       <type>info.magnolia.ui.workbench.tree.TreeView</type>
       <implementation>info.magnolia.ui.workbench.tree.TreeViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.workbench.autosuggest.AutoSuggestTreeView</type>
-      <implementation>info.magnolia.ui.workbench.autosuggest.AutoSuggestTreeViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
