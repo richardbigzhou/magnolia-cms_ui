@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
@@ -41,7 +42,9 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.MockValue;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -100,6 +103,7 @@ public class JcrPropertyAdapterTest {
         when(valueFactory.createValue(anyInt())).thenAnswer(valueFactoryAnswer);
         when(valueFactory.createValue(anyDouble())).thenAnswer(valueFactoryAnswer);
         when(valueFactory.createValue(anyBoolean())).thenAnswer(valueFactoryAnswer);
+        when(valueFactory.createValue(any(Calendar.class))).thenAnswer(valueFactoryAnswer);
         // add more parameter types here if necessary for tests
 
         session.setValueFactory(valueFactory);
@@ -119,9 +123,9 @@ public class JcrPropertyAdapterTest {
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
         // WHEN
-        Property nameProperty = adapter.getItemProperty(ModelConstants.JCR_NAME);
-        Property valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
-        Property typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY);
+        Property<Comparable> nameProperty = adapter.getItemProperty(ModelConstants.JCR_NAME);
+        Property<Comparable> valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property<Comparable> typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY);
 
         // THEN
         assertEquals(propertyName, nameProperty.getValue());
@@ -197,6 +201,27 @@ public class JcrPropertyAdapterTest {
         // THEN
         assertTrue(node.hasProperty(propertyName));
         assertEquals(newValue, node.getProperty(propertyName).getString());
+    }
+
+    @Test
+    public void testUpdateDatePropertyValue() throws Exception {
+        // GIVEN
+        Calendar oldDateValue = new GregorianCalendar(72, 1, 1, 7, 0);
+        Calendar newDateValue = new GregorianCalendar(72, 1, 1, 8, 0);
+
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, oldDateValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        Property prop = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        prop.setValue(newDateValue.getTime());
+        adapter.applyChanges();
+
+        // THEN
+        assertTrue(node.hasProperty(propertyName));
+        assertEquals(newDateValue.getTimeInMillis(), node.getProperty(propertyName).getDate().getTimeInMillis());
+        assertEquals(newDateValue, node.getProperty(propertyName).getDate());
     }
 
     @Test
@@ -288,7 +313,7 @@ public class JcrPropertyAdapterTest {
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
         // WHEN
-        adapter.addItemProperty("foobar", new ObjectProperty("value"));
+        adapter.addItemProperty("foobar", new ObjectProperty<String>("value"));
     }
 
     @Test
@@ -316,8 +341,8 @@ public class JcrPropertyAdapterTest {
         node.setProperty(propertyName, propertyValue);
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
-        Property itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
-        Property itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property<Comparable> itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property<Comparable> itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
 
         // WHEN
         itemProperty1.setValue("changed");
@@ -335,14 +360,14 @@ public class JcrPropertyAdapterTest {
         node.setProperty(propertyName, propertyValue);
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
-        Property itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property<Comparable> itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
 
         // WHEN
         itemProperty1.setValue("changed");
 
         // THEN
         assertTrue(itemProperty1.getValue().equals("changed"));
-        Property itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property<Comparable> itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
         assertTrue(itemProperty2.getValue().equals("changed"));
     }
 }

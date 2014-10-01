@@ -176,11 +176,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         } else if (VALUE_PROPERTY.equals(propertyId)) {
             if (property.getValue() != null) {
                 try {
-                    String valueString = property.getValue().toString();
-                    int valueType = jcrProperty.getType();
                     ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
 
-                    Value newValue = PropertyUtil.createValue(valueString, valueType, valueFactory);
+                    Value newValue = PropertyUtil.createValue(property.getValue(), valueFactory);
                     jcrProperty.setValue(newValue);
                 } catch (RepositoryException e) {
                     log.error("Could not set JCR property", e);
