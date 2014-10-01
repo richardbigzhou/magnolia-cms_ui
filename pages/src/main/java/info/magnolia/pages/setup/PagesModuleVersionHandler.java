@@ -208,7 +208,10 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.3.4", "")
                 .addTask(new NodeExistsDelegateTask("Make action available on multiple nodes", "Makes restorePreviousVersion action available on multiple nodes.",
                         RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability",
-                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", "multiple", true))));
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", "multiple", true)))
+                .addTask(new NodeExistsDelegateTask("Configure restorePreviousVersion", "Makes restorePreviousVersion action act only on mgnl:page node type.",
+                        RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion",
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion", "parentNodeTypeOnly", true))));
     }
 
     @Override

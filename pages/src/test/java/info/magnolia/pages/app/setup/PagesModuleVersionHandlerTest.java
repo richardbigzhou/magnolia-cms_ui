@@ -539,13 +539,15 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     @Test
     public void testUpdateTo534() throws Exception {
 
-        Node availability = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", NodeTypes.ContentNode.NAME);
+        Node restorePreviousVersion = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion", NodeTypes.ContentNode.NAME);
+        Node availability = restorePreviousVersion.addNode("availability", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
 
         // THEN
-        assertThat(availability, hasProperty("multiple"));
+        assertThat(restorePreviousVersion, hasProperty("parentNodeTypeOnly", true));
+        assertThat(availability, hasProperty("multiple", true));
 
     }
 }
