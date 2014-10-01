@@ -46,8 +46,10 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.StaticField;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
-import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +63,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.TextField;
 
 /**
@@ -191,17 +193,17 @@ public class DefaultI18nAuthoringSupportTest {
         // Create fields
         // Inner field
         AbstractField<String> innerField = new TextField();
-        TestLocaleTransformer innerTransfermer = new TestLocaleTransformer(true, "subProperty");
-        TransformedProperty<String> property = new TransformedProperty<String>(innerTransfermer);
+        TestLocaleTransformer innerTransformer = new TestLocaleTransformer(true, "subProperty");
+        TransformedProperty<String> property = new TransformedProperty<String>(innerTransformer);
         innerField.setPropertyDataSource(property);
         // Outer Field
-        TestI18nTransformerDelegator mainTransfermer = new TestI18nTransformerDelegator(true, "mainProperty");
-        TransformedProperty<String> mainProperty = new TransformedProperty<String>(mainTransfermer);
+        TestI18nTransformerDelegator mainTransformer = new TestI18nTransformerDelegator(true, "mainProperty");
+        TransformedProperty<String> mainProperty = new TransformedProperty<String>(mainTransformer);
         StaticField mainField = mock(StaticField.class, Answers.CALLS_REAL_METHODS.get());
         when(mainField.getPropertyDataSource()).thenReturn(mainProperty);
         List<Component> fields = new ArrayList<Component>();
         fields.add(innerField);
-        when(((HasComponents) mainField).iterator()).thenReturn(fields.iterator());
+        when(mainField.iterator()).thenReturn(fields.iterator());
 
         // Create Form
         CssLayout form = new CssLayout();
@@ -214,9 +216,62 @@ public class DefaultI18nAuthoringSupportTest {
 
         // THEN
         assertEquals(Locale.JAPANESE, mainField.getLocale());
-        assertEquals("mainProperty_ja", mainTransfermer.getI18NPropertyName());
+        assertEquals("mainProperty_ja", mainTransformer.getI18NPropertyName());
         assertEquals(Locale.JAPANESE, innerField.getLocale());
-        assertEquals("subProperty_ja", innerTransfermer.getI18NPropertyName());
+        assertEquals("subProperty_ja", innerTransformer.getI18NPropertyName());
+    }
+
+    @Test
+    public void i18nizeToJapaneseWhileJapaneseIsDefaultLanguage() {
+        // GIVEN
+        // Create field
+        AbstractField<String> field = new TextField();
+        JcrItemAdapter item = mock(JcrItemAdapter.class);
+        Node jcrItem = mock(Node.class);
+        when(item.getJcrItem()).thenReturn(jcrItem);
+        when(jcrItem.isNode()).thenReturn(true);
+        TestLocaleTransformer transformer = new TestLocaleTransformer(true, "propertyName", item);
+        TransformedProperty<String> property = new TransformedProperty<String>(transformer);
+        field.setPropertyDataSource(property);
+        // Create Form
+        CssLayout form = new CssLayout();
+        form.addComponent(field);
+        i18n.setEnabled(true);
+        i18n.setDefaultLocale(Locale.JAPANESE);
+        assertNull(field.getLocale());
+
+        // WHEN
+        i18nAuthoringSupport.i18nize(form, Locale.JAPANESE);
+
+        // THEN
+        assertEquals(Locale.JAPANESE, field.getLocale());
+        assertEquals("propertyName", transformer.getI18NPropertyName());
+    }
+
+    @Test
+    public void i18nizeToJapaneseWhileJapaneseIsNotDefaultLanguage() {
+        // GIVEN
+        // Create field
+        AbstractField<String> field = new TextField();
+        JcrItemAdapter item = mock(JcrItemAdapter.class);
+        Node jcrItem = mock(Node.class);
+        when(item.getJcrItem()).thenReturn(jcrItem);
+        when(jcrItem.isNode()).thenReturn(true);
+        TestLocaleTransformer transformer = new TestLocaleTransformer(true, "propertyName", item);
+        TransformedProperty<String> property = new TransformedProperty<String>(transformer);
+        field.setPropertyDataSource(property);
+        // Create Form
+        CssLayout form = new CssLayout();
+        form.addComponent(field);
+        i18n.setEnabled(true);
+        assertNull(field.getLocale());
+
+        // WHEN
+        i18nAuthoringSupport.i18nize(form, Locale.JAPANESE);
+
+        // THEN
+        assertEquals(Locale.JAPANESE, field.getLocale());
+        assertEquals("propertyName" + "_" + Locale.JAPANESE, transformer.getI18NPropertyName());
     }
 
     private LocaleDefinition createLocaleDefinition(Locale locale) {
@@ -229,15 +284,20 @@ public class DefaultI18nAuthoringSupportTest {
         }
     }
 
-    private class TestLocaleTransformer implements Transformer<String> {
+    private class TestLocaleTransformer extends BasicTransformer<String> {
         private Locale locale;
         private boolean hasI18nSupport = false;
         private String i18nPropertyName;
         private String propertyName;
 
-        public TestLocaleTransformer(boolean hasI18nSupport, String propertyName) {
+        public TestLocaleTransformer(boolean hasI18nSupport, String propertyName, Item item) {
+            super(item, mock(ConfiguredFieldDefinition.class), String.class);
             this.hasI18nSupport = hasI18nSupport;
             this.propertyName = propertyName;
+        }
+
+        public TestLocaleTransformer(boolean hasI18nSupport, String propertyName) {
+            this(hasI18nSupport, propertyName, mock(Item.class));
         }
 
         @Override

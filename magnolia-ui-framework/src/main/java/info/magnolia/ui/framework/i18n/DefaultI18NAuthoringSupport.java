@@ -38,6 +38,8 @@ import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -98,39 +100,51 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     @Override
     public void i18nize(HasComponents fieldContainer, Locale locale) {
-        Iterator<Component> it = fieldContainer.iterator();
-        boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
+        Locale defaultLocale = null;
+        Iterator<Component> fieldComponentIterator = fieldContainer.iterator();
         if (isEnabled() && i18nContentSupport.isEnabled() && locale != null) {
-            while (it.hasNext()) {
-                Component c = it.next();
-                if (c instanceof Field) {
-                    Field f = (Field) c;
-                    Property p = f.getPropertyDataSource();
+            while (fieldComponentIterator.hasNext()) {
+                Component component = fieldComponentIterator.next();
+                if (component instanceof Field) {
+                    Field field = (Field) component;
+                    Property propertyDataSource = field.getPropertyDataSource();
 
-                    if (p instanceof TransformedProperty) {
-                        final TransformedProperty i18nBaseProperty = (TransformedProperty) p;
+                    if (propertyDataSource instanceof TransformedProperty) {
+                        final TransformedProperty i18nBaseProperty = (TransformedProperty) propertyDataSource;
+
+                        if (defaultLocale == null && i18nBaseProperty.getTransformer() instanceof BasicTransformer) {
+                            com.vaadin.data.Item item = ((BasicTransformer) i18nBaseProperty.getTransformer()).getRelatedFormItem();
+                            if (item instanceof JcrItemAdapter) {
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
+                                if (jcrItem.isNode()) {
+                                    defaultLocale = getDefaultLocale((Node) jcrItem);
+                                }
+                            }
+                        }
+
+                        boolean isDefaultLocale = locale.equals(defaultLocale);
 
                         if (i18nBaseProperty.hasI18NSupport()) {
                             final Locale formerLocale = i18nBaseProperty.getTransformer().getLocale();
                             final String basePropertyName = i18nBaseProperty.getTransformer().getBasePropertyName();
-                            final String localizedPropertyName = isFallbackLanguage ?
+                            final String localizedPropertyName = isDefaultLocale ?
                                     basePropertyName :
                                     constructI18NPropertyName(basePropertyName, locale);
                             i18nBaseProperty.getTransformer().setI18NPropertyName(localizedPropertyName);
                             i18nBaseProperty.getTransformer().setLocale(locale);
                             i18nBaseProperty.fireI18NValueChange();
-                            String currentCaption = c.getCaption();
+                            String currentCaption = field.getCaption();
 
                             if (StringUtils.isNotBlank(currentCaption)) {
                                 if (formerLocale != null) {
                                     currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
                                 }
-                                f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
+                                field.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
                             }
 
                             // set locale on Vaadin field
-                            if (f instanceof AbstractField) {
-                                ((AbstractField) f).setLocale(locale);
+                            if (field instanceof AbstractField) {
+                                ((AbstractField) field).setLocale(locale);
                             }
                         }
 
@@ -138,8 +152,8 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                 }
 
                 // try to i18nize nested fields anyway
-                if (c instanceof HasComponents) {
-                    i18nize((HasComponents) c, locale);
+                if (component instanceof HasComponents) {
+                    i18nize((HasComponents) component, locale);
                 }
             }
         }

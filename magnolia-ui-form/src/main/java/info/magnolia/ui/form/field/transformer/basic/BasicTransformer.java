@@ -78,6 +78,10 @@ public class BasicTransformer<T> implements Transformer<T> {
         setType(type);
     }
 
+    public Item getRelatedFormItem() {
+        return relatedFormItem;
+    }
+
     @Override
     public void writeToItem(T newValue) {
         Property<T> p = getOrCreateProperty(type);

@@ -49,6 +49,8 @@ import info.magnolia.ui.vaadin.form.FormViewReduced;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,6 +58,8 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;
@@ -70,18 +74,25 @@ import com.vaadin.ui.TextArea;
  */
 public class FormBuilder {
 
+    private static final Logger log = LoggerFactory.getLogger(FormBuilder.class);
+
     private final FieldFactoryFactory fieldFactoryFactory;
-    private final I18nContentSupport i18nContentSupport;
     private final I18NAuthoringSupport i18nAuthoringSupport;
     private final ComponentProvider componentProvider;
 
     @Inject
-    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport,
-            I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
         this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.3.4 - use {@link FormBuilder(FieldFactoryFactory, I18NAuthoringSupport, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+        this(fieldFactoryFactory, i18nAuthoringSupport, componentProvider);
     }
 
     /**
@@ -110,12 +121,38 @@ public class FormBuilder {
             if (item instanceof JcrItemAdapter) {
                 javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
                 if (jcrItem.isNode()) {
-                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales((Node) jcrItem);
+                    Node node = (Node) jcrItem;
+                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
                     view.setAvailableLocales(locales);
-                    view.setCurrentLocale(i18nAuthoringSupport.getAuthorLocale() != null ? i18nAuthoringSupport.getAuthorLocale() : i18nContentSupport.getFallbackLocale());
+                    if (i18nAuthoringSupport.getAuthorLocale() != null) {
+                        view.setCurrentLocale(i18nAuthoringSupport.getAuthorLocale());
+                    } else {
+                        view.setCurrentLocale(getDefaultLocale(node));
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
+     */
+    private Locale getDefaultLocale(Node node) {
+        Method methodToFind;
+        try {
+            methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
+            if (methodToFind != null) {
+                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[] {node});
+            }
+        } catch (NoSuchMethodException e) {
+            log.error("Error getting method 'getDefaultLocale(Node)' from I18nAuthoringSupport", e);
+        } catch (InvocationTargetException e) {
+            log.error("Error invoking method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
+        } catch (IllegalAccessException e) {
+            log.error("Error accessing method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
+        }
+
+        return null;
     }
 
     public View buildView(FormDefinition formDefinition, Item item) {

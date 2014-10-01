@@ -98,7 +98,7 @@ public class FormBuilderTest {
         DummyI18NAuthoringSupport i18nAuthoringSupport = new DummyI18NAuthoringSupport();
         i18nAuthoringSupport.setAuthorLocale(new Locale("de"));
         FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        FormBuilder builder = new FormBuilder(fieldFactoryFactory, null, i18nAuthoringSupport, null);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, null);
         FormView view = mock(FormView.class);
 
         // WHEN
@@ -128,7 +128,7 @@ public class FormBuilderTest {
         FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
         when(fieldFactoryFactory.createFieldFactory(any(FieldDefinition.class), anyObject())).thenReturn(fieldFactory);
 
-        FormBuilder builder = new FormBuilder(fieldFactoryFactory, null, null, null);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, null, null);
         FormView view = mock(FormView.class);
 
         // WHEN
