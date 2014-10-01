@@ -63,6 +63,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.ModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
+import info.magnolia.ui.vaadin.gwt.client.editor.jsni.scroll.ElementScrollPositionPreserver;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;

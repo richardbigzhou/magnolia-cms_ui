@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.connector;
+package info.magnolia.ui.vaadin.gwt.client.editor.jsni.scroll;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
@@ -42,20 +42,20 @@ import com.google.gwt.dom.client.Style;
 /**
  * Tracks the initial offset top position of an element and is capable of restoring it later.
  */
-class ElementScrollPositionPreserver {
+public class ElementScrollPositionPreserver {
 
     private Element element = null;
 
-    private int currentBarTop = -1;
+    private int currentOffsetTop = -1;
 
     public ElementScrollPositionPreserver(MgnlComponent component) {
-        this.element = component.getControlBar().getElement();
-        currentBarTop = getOffsetTop();
+        this.element = component.getControlBar() != null ? component.getControlBar().getElement() : component.getFirstElement();
+        currentOffsetTop = getOffsetTop();
     }
 
-    void restorePosition() {
+    public void restorePosition() {
         int newBarTop = getOffsetTop();
-        int delta = newBarTop - currentBarTop;
+        int delta = newBarTop - currentOffsetTop;
         final JQueryWrapper parent = getScrollParent(element);
         parent.setScrollTop(parent.getScrollTop() + delta);
     }
