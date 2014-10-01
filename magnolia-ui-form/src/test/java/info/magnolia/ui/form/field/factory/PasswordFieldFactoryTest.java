@@ -58,7 +58,6 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(false);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = passwordFieldFactory.createField();
@@ -72,7 +71,6 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
@@ -89,7 +87,6 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
@@ -108,7 +105,6 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");

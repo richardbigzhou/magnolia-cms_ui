@@ -171,7 +171,6 @@ public class FormBuilder {
                     continue;
                 }
                 formField.setComponentProvider(componentProvider);
-                formField.setI18nContentSupport(i18nContentSupport);
 
                 final View fieldView = formField.getView();
 
@@ -207,7 +206,6 @@ public class FormBuilder {
                     continue;
                 }
                 formField.setComponentProvider(componentProvider);
-                formField.setI18nContentSupport(i18nContentSupport);
                 formField.setParent(tab);
                 final Field<?> field = formField.createField();
                 if (field instanceof AbstractComponent) {

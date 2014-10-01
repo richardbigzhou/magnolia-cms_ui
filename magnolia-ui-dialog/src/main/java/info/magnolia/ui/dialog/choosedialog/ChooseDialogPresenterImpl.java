@@ -132,7 +132,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
         final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), new NullItem());
         formField.setComponentProvider(componentProvider);
-        formField.setI18nContentSupport(i18nContentSupport);
         this.field = (Field<Object>) formField.createField();
         if (field instanceof AbstractComponent) {
             ((AbstractComponent) field).setImmediate(true);

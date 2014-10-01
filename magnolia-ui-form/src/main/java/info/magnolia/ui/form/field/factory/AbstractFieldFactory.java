@@ -80,7 +80,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     protected Field<T> field;
     protected D definition;
     private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
-    private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
     public AbstractFieldFactory(D definition, Item relatedFieldItem) {
@@ -93,9 +92,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
     }
 
+    /**
+     * @deprecated This is deprecated since 5.3.4; {@link i18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
+     * If any, {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} is the one that should be used.
+     */
     @Override
+    @Deprecated
     public void setI18nContentSupport(I18nContentSupport i18nContentSupport) {
-        this.i18nContentSupport = i18nContentSupport;
     }
 
     @Override

@@ -57,7 +57,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field<?> field = dialogSelect.createField();
@@ -72,7 +71,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -87,7 +85,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -102,7 +99,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // we keep baseItem as a regular JcrNodeAdapter here
         definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -116,7 +112,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = dialogSelect.createField();

@@ -35,10 +35,10 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
-import info.magnolia.ui.api.view.View;
 
 import com.vaadin.ui.Field;
 
@@ -71,6 +71,11 @@ public interface FieldFactory extends FormItem {
 
     void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory);
 
+    /**
+     * @deprecated This is deprecated since 5.3.4; {@link i18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
+     * If any, {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} is the one that should be used.
+     */
+    @Deprecated
     void setI18nContentSupport(I18nContentSupport i18nContentSupport);
 
     void setComponentProvider(ComponentProvider componentProvider);

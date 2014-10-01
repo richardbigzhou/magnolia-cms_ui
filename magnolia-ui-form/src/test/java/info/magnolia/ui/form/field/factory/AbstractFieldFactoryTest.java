@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.Components;
@@ -73,7 +74,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void simpleInitializationTest() {
         // GIVEN
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field<Object> field = fieldFactory.createField();
@@ -90,7 +90,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void changePropertyValueTest() throws Exception {
         // GIVEN
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -116,7 +115,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // Set do not change
         definition.setReadOnly(false);
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -137,7 +135,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -154,7 +151,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -173,7 +169,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         definition.setDefaultValue("defaultValue");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -192,7 +187,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         definition.setDefaultValue("defaultValue");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -210,7 +204,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // Set property Type
         definition.setType("Double");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<Object> field = fieldFactory.createField();
 
@@ -234,7 +227,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         definition.setLabel("message.label");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -250,7 +242,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         definition.setRequired(true);
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
         fieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -408,7 +399,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         /**
          * {@link com.vaadin.data.util.converter.ConverterFactory} is bound to the {@link VaadinSession}. To get The default converters to work we need to mock the VaadinSession.
-         * 
+         *
          * @see AbstractFieldFactoryTestCase where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
          */
         private class TestTextField extends TextField {

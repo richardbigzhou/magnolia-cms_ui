@@ -58,7 +58,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setI18nContentSupport(i18nContentSupport);
         checkBoxField.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -75,7 +74,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setI18nContentSupport(i18nContentSupport);
         checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("false");
 
@@ -92,7 +90,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setI18nContentSupport(i18nContentSupport);
         checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("true");
 

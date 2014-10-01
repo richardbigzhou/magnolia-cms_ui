@@ -81,7 +81,6 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         MockComponentProvider componentProvider = new MockComponentProvider();
         componentProvider.setInstance(TranslationService.class, translationService);
         basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext, mock(SimpleTranslator.class), componentProvider);
-        basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
     }
 
     @Test

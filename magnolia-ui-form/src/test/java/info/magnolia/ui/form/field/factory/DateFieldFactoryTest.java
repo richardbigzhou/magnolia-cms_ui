@@ -64,7 +64,6 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setI18nContentSupport(i18nContentSupport);
         dialogDate.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = dialogDate.createField();
@@ -86,7 +85,6 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setI18nContentSupport(i18nContentSupport);
         dialogDate.setComponentProvider(new MockComponentProvider());
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
@@ -117,7 +115,6 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setI18nContentSupport(i18nContentSupport);
         dialogDate.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = dialogDate.createField();

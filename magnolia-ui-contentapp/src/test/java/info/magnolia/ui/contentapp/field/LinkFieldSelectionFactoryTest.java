@@ -92,7 +92,6 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
-        builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -108,7 +107,6 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
-        builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
         itemIds.add(JcrItemUtil.getItemId(baseNode));
@@ -128,7 +126,6 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem = new JcrNodeAdapter(baseNode);
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty(String.class, "initial"));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
-        builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
         itemIds.add(JcrItemUtil.getItemId(baseNode));

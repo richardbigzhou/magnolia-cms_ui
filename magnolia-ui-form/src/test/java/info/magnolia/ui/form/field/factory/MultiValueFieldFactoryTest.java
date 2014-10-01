@@ -59,7 +59,6 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     public void testGetField() throws Exception {
         // GIVEN
         multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
-        multiFieldFactory.setI18nContentSupport(i18nContentSupport);
         multiFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = multiFieldFactory.createField();

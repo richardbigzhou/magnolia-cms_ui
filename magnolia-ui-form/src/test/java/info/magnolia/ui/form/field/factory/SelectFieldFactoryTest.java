@@ -67,7 +67,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -87,7 +86,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         option.setSelected(true);
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -101,7 +99,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     public void createFieldSelectsFirstOptionIfNoDefaultConfigured() throws Exception {
         // GIVEN
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -120,7 +117,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
             option.setName(option.getLabel().toLowerCase());
         }
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -141,7 +137,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -168,7 +163,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -197,7 +191,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -231,7 +224,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
 
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -266,7 +258,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setOptions(options);
 
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
@@ -307,7 +298,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
 
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
         dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN

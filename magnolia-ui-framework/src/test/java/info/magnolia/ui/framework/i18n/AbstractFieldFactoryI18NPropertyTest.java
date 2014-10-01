@@ -117,7 +117,6 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTe
 
     protected void initBuilder() {
         fieldFactory = new AbstractFieldFactoryTest.TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setI18nContentSupport(i18nContentSupport);
 
         MockComponentProvider cc = new MockComponentProvider();
         fieldFactory.setComponentProvider(cc);

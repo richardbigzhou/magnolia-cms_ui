@@ -172,7 +172,6 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     protected void setFactory(FieldValidatorFactoryFactory validatorFactory) {
         linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
         linkFieldFactory.setFieldValidatorFactoryFactory(validatorFactory);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         linkFieldFactory.setComponentProvider(componentProvider);
     }
 

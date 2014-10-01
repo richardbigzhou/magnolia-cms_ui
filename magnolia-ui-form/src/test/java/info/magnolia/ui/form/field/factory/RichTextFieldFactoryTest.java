@@ -61,7 +61,6 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
         CurrentInstance.set(VaadinRequest.class, request);
         // GIVEN
         richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null, null);
-        richTextFieldFactory.setI18nContentSupport(i18nContentSupport);
         richTextFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = richTextFieldFactory.createField();

@@ -140,7 +140,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         // If the property holds an item, use this item directly for the field creation (doesn't apply to ProperysetItems)
         FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, holdsItem(property) ? property.getValue() : new NullItem());
         fieldfactory.setComponentProvider(componentProvider);
-        fieldfactory.setI18nContentSupport(i18nContentSupport);
         // FIXME change i18n setting : MGNLUI-1548
         if (fieldDefinition instanceof ConfiguredFieldDefinition) {
             ((ConfiguredFieldDefinition) fieldDefinition).setI18nBasename(definition.getI18nBasename());

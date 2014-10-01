@@ -64,7 +64,6 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
-        twinSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
         Field field = twinSelect.createField();
@@ -82,7 +81,6 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
-        twinSelect.setI18nContentSupport(i18nContentSupport);
         Field field = twinSelect.createField();
         // WHEN
         ArrayList<String> selected = new ArrayList<String>();
@@ -102,7 +100,6 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
-        twinSelect.setI18nContentSupport(i18nContentSupport);
         Field field = twinSelect.createField();
         // WHEN
         ArrayList<String> selected = new ArrayList<String>();

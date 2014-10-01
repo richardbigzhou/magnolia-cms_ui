@@ -54,7 +54,6 @@ public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticF
     public void testGetField() {
         // GIVEN
         staticFieldFactory = new StaticFieldFactory(definition, baseItem);
-        staticFieldFactory.setI18nContentSupport(i18nContentSupport);
         staticFieldFactory.setComponentProvider(new MockComponentProvider());
 
         // WHEN
