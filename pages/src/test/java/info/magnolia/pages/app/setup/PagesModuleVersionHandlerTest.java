@@ -550,4 +550,27 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(availability, hasProperty("multiple", true));
 
     }
+
+    @Test
+    public void testUpdateTo534UpdatesActionbarPageSectionsAvailability() throws Exception {
+        // GIVEN
+        Node actionbar = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/detail/actionbar/sections", NodeTypes.ContentNode.NAME);
+
+        String pagePreviewActions = "pagePreviewActions";
+        String pageActions = "pageActions";
+
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, actionbar.getPath(),
+                addNode(pagePreviewActions, NodeTypes.ContentNode.NAME),
+                addNode(pageActions, NodeTypes.ContentNode.NAME)
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+
+        // THEN
+        assertThat(actionbar.getNode(pagePreviewActions), hasNode("availability/rules/isPageElement"));
+        assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isPageElement"));
+    }
+
 }

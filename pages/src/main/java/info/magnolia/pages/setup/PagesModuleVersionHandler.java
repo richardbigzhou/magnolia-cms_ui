@@ -211,7 +211,17 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion/availability", "multiple", true)))
                 .addTask(new NodeExistsDelegateTask("Configure restorePreviousVersion", "Makes restorePreviousVersion action act only on mgnl:page node type.",
                         RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion",
-                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion", "parentNodeTypeOnly", true))));
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion", "parentNodeTypeOnly", true)))
+
+                .addTask(new NodeExistsDelegateTask("Bootstrap actionbar availability.", "/modules/pages/apps/pages/subApps/detail/actionbar/sections",
+                        new ArrayDelegateTask("Bootstrap actionbar availability for pageActions and pagePreviewActions.",
+                                new PartialBootstrapTask("Bootstrap pagePreviewActions actionbar section availability rule.",
+                                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
+                                        "/pages/subApps/detail/actionbar/sections/pagePreviewActions/availability/rules/isPageElement"),
+                                new PartialBootstrapTask("Bootstrap pagePreviewActions actionbar section availability rule.",
+                                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
+                                        "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isPageElement"))))
+        );
     }
 
     @Override
