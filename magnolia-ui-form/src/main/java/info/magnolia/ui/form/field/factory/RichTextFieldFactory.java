@@ -186,7 +186,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
         if (definition.getColors() != null) {
             config.addExtraConfig("colorButton_colors", "'" + definition.getColors() + "'");
-            config.addExtraConfig("colorButton_enableMore", "'false'");
+            config.addExtraConfig("colorButton_enableMore", "false");
             config.addToRemovePlugins("colordialog");
         } else {
             config.addToRemovePlugins("colorbutton");
