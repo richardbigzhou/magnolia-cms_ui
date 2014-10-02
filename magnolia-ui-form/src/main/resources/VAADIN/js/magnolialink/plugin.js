@@ -128,16 +128,12 @@
                     for (var index = 0; index < WORKSPACES.length; index++) {
                         editor.getCommand(WORKSPACES[index]).setState(CKEDITOR.TRISTATE_DISABLED);
                     }
-                    editor.getCommand('link').setState(CKEDITOR.TRISTATE_DISABLED);
                     editor.getCommand('unlink').setState(CKEDITOR.TRISTATE_OFF);
 
                     var workspace = getWorkspace(element);
                     if (workspace) {
                         editor.getCommand(workspace).setState(CKEDITOR.TRISTATE_OFF);
-                    } else {
-                        editor.getCommand('link').setState(CKEDITOR.TRISTATE_OFF);
                     }
-
                 } else {
                     for (var index = 0; index < WORKSPACES.length; index++) {
                         editor.getCommand(WORKSPACES[index]).setState(CKEDITOR.TRISTATE_OFF);
