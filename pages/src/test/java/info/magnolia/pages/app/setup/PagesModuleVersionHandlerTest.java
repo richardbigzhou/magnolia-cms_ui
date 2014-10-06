@@ -571,6 +571,8 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertThat(actionbar.getNode(pagePreviewActions), hasNode("availability/rules/isPageElement"));
         assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isPageElement"));
+        assertThat(actionbar.getNode(pagePreviewActions), hasNode("availability/rules/isNotDeleted"));
+        assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isNotDeleted"));
     }
 
 }

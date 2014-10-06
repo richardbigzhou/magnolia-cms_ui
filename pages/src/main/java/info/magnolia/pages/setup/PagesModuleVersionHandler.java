@@ -220,7 +220,13 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                         "/pages/subApps/detail/actionbar/sections/pagePreviewActions/availability/rules/isPageElement"),
                                 new PartialBootstrapTask("Bootstrap pagePreviewActions actionbar section availability rule.",
                                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
-                                        "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isPageElement"))))
+                                        "/pages/subApps/detail/actionbar/sections/pagePreviewActions/availability/rules/isNotDeleted"),
+                                new PartialBootstrapTask("Bootstrap pageActions actionbar section availability rule.",
+                                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
+                                        "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isPageElement"),
+                                new PartialBootstrapTask("Bootstrap pageActions actionbar section availability rule.",
+                                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
+                                        "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isNotDeleted"))))
         );
     }
 
