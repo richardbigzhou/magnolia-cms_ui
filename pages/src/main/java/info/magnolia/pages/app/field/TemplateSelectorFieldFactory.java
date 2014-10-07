@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -65,9 +66,20 @@ import com.vaadin.data.Item;
 public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSelectorDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateSelectorFieldFactory.class);
+    private TemplateDefinitionAssignment templateAssignment;
 
+    /**
+     * @deprecated since 5.3.4 use the other constructor instead.
+     */
+    @Deprecated
     public TemplateSelectorFieldFactory(TemplateSelectorDefinition definition, Item relatedFieldItem) {
+        this(definition, relatedFieldItem, Components.getComponent(TemplateDefinitionAssignment.class));
+    }
+
+    @Inject
+    public TemplateSelectorFieldFactory(TemplateSelectorDefinition definition, Item relatedFieldItem, TemplateDefinitionAssignment templateDefinitionAssignment) {
         super(definition, relatedFieldItem);
+        this.templateAssignment = templateDefinitionAssignment;
     }
 
     /**
@@ -78,7 +90,6 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
         List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
 
         if (item instanceof JcrNodeAdapter) {
-            TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
             Node associatedNode = ((JcrNodeAdapter) item).getJcrItem();
 
             Collection<TemplateDefinition> templates = Collections.EMPTY_SET;
