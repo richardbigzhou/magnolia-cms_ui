@@ -44,6 +44,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -64,32 +65,70 @@ public class ChooseDialogComponentProviderUtil {
      * Creates the choose-dialog specific component provider, with proper bindings for e.g. {@link ContentConnector} or {@link ImageProvider}.
      * <p>
      * In particular, this ensures that within the dialog, these components get their dependencies as configured in the choose-dialog definition, rather than from current sub-app context.
-     * 
+     *
      * @param chooseDialogDefinition the choose-dialog definition, as configured for a content app, or built by code.
      * @param componentProvider the parent {@link ComponentProvider}.
      * @return a new component provider, to create {@link info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter ChooseDialogPresenter} with.
      */
-    public static ComponentProvider createChooseDialogComponentProvider(final ChooseDialogDefinition chooseDialogDefinition, ComponentProvider componentProvider) {
+    public static ComponentProvider createChooseDialogComponentProvider(ChooseDialogDefinition chooseDialogDefinition, ComponentProvider componentProvider) {
+        GuiceComponentProviderBuilder builder = createComponentProviderBuilder(componentProvider);
+        ComponentConfigurer chooseDialogBindings = getChooseDialogConfigurer(chooseDialogDefinition);
+        return builder.build(chooseDialogBindings);
+    }
+
+    /**
+     * Creates the choose-dialog specific component provider, with proper bindings for e.g. {@link ContentConnector} or {@link ImageProvider}, and registers given {@link UiContext} for further use.
+     * <p>
+     * In particular, this ensures that within the dialog, these components get their dependencies as configured in the choose-dialog definition, rather than from current sub-app context.
+     *
+     * @param uiContext the choose-dialog's UiContext, so that dialog actions can use it.
+     * @param chooseDialogDefinition the choose-dialog definition, as configured for a content app, or built by code.
+     * @param componentProvider the parent {@link ComponentProvider}.
+     * @return a new component provider, to create {@link info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter ChooseDialogPresenter} with.
+     */
+    public static ComponentProvider createChooseDialogComponentProvider(UiContext uiContext, ChooseDialogDefinition chooseDialogDefinition, ComponentProvider componentProvider) {
+        GuiceComponentProviderBuilder builder = createComponentProviderBuilder(componentProvider);
+        ComponentConfigurer chooseDialogConfigurer = getChooseDialogConfigurer(chooseDialogDefinition);
+        ComponentConfigurer uiContextConfigurer = getUiContextConfigurer(uiContext);
+        return builder.build(chooseDialogConfigurer, uiContextConfigurer);
+    }
+
+    private static GuiceComponentProviderBuilder createComponentProviderBuilder(ComponentProvider componentProvider) {
+
+        // fetch component bindings from module descriptors
         ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-        ComponentProviderConfiguration configuration =
-                configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
+        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
+
+        // build up Guice component provider
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
+        return builder;
+    }
 
-        ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
+    private static ComponentConfigurer getChooseDialogConfigurer(final ChooseDialogDefinition chooseDialogDefinition) {
+
+        return new AbstractGuiceComponentConfigurer() {
             @Override
             protected void configure() {
-                // add binding for ChooseDialogDefinition to feed guice providers
-                bind(ChooseDialogDefinition.class).toInstance(chooseDialogDefinition);
-
+                bind(ChooseDialogDefinition.class).toInstance(chooseDialogDefinition); // binding ChooseDialogDefinition to feed Guice providers below
                 bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toInstance(new SimpleEventBus());
                 bind(ContentConnector.class).toProvider(ChooseDialogContentConnectorProvider.class);
                 bind(ImageProvider.class).toProvider(ChooseDialogImageProviderProvider.class);
             }
         };
-        return builder.build(c);
     }
+
+    private static ComponentConfigurer getUiContextConfigurer(final UiContext uiContext) {
+
+        return new AbstractGuiceComponentConfigurer() {
+            @Override
+            protected void configure() {
+                bind(UiContext.class).toInstance(uiContext);
+            }
+        };
+    }
+
 }

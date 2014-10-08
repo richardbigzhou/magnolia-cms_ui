@@ -114,9 +114,10 @@ public class ContentAppTest {
     public void testCreateChooseDialogComponentProvider() throws Exception {
         // GIVEN
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
 
         // WHEN
-        app.openChooseDialog(null, null, null);
+        app.openChooseDialog(uiContext, null, null);
 
         // THEN
         assertNotNull(chooseDialogPresenter);
@@ -132,9 +133,10 @@ public class ContentAppTest {
         ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProviderDefinition);
 
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
 
         // WHEN
-        app.openChooseDialog(null, null, null);
+        app.openChooseDialog(uiContext, null, null);
 
         // THEN
         assertNotNull(chooseDialogPresenter);
@@ -151,9 +153,10 @@ public class ContentAppTest {
         ((ConfiguredContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).setImageProvider(imageProviderDefinition);
 
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
 
         // WHEN
-        app.openChooseDialog(null, null, null);
+        app.openChooseDialog(uiContext, null, null);
 
         // THEN
         assertNotNull(chooseDialogPresenter);
@@ -167,9 +170,10 @@ public class ContentAppTest {
     public void testOpenChooseDialogWithDefaultRootPathFromSubApp() throws Exception {
         // GIVEN
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
 
         // WHEN
-        app.openChooseDialog(null, null, null);
+        app.openChooseDialog(uiContext, null, null);
 
         // THEN
         assertEquals("/root", rootPath);
@@ -179,9 +183,10 @@ public class ContentAppTest {
     public void testOpenChooseDialogWithGivenRootPath() throws Exception {
         // GIVEN
         ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
 
         // WHEN
-        app.openChooseDialog(null, "/test", null, null);
+        app.openChooseDialog(uiContext, "/test", null, null);
 
         // THEN
         assertEquals("/test", rootPath);

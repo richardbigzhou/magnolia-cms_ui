@@ -96,7 +96,7 @@ public class ContentApp extends BaseApp {
         chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
 
         // create chooseDialogComponentProvider and get new instance of presenter from there
-        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(chooseDialogDefinition, componentProvider);
+        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(overlayLayer, chooseDialogDefinition, componentProvider);
         presenter = chooseDialogComponentProvider.newInstance(chooseDialogDefinition.getPresenterClass(), chooseDialogComponentProvider);
 
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);

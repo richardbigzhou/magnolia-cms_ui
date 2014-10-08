@@ -34,13 +34,14 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -70,7 +71,6 @@ public class ChooseDialogComponentProviderUtilTest {
         componentProvider = new GuiceComponentProviderBuilder().withConfiguration(configuration).build();
     }
 
-
     @Test
     public void createChooseDialogComponentProvider() {
         // GIVEN
@@ -81,6 +81,18 @@ public class ChooseDialogComponentProviderUtilTest {
         // THEN
         assertThat(newComponentProvider, notNullValue());
         assertThat(newComponentProvider.getParent(), is(componentProvider));
+    }
 
+    @Test
+    public void createChooseDialogComponentProviderWithUiContext() {
+        // GIVEN
+        UiContext uiContext = mock(UiContext.class);
+
+        // WHEN
+        ComponentProvider newComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(uiContext, chooseDialogDefinition, componentProvider);
+
+        // THEN
+        assertThat(newComponentProvider, notNullValue());
+        assertEquals(uiContext, newComponentProvider.getComponent(UiContext.class));
     }
 }
