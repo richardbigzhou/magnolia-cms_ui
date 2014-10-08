@@ -33,13 +33,14 @@
  */
 package info.magnolia.ui.dialog.actionarea.view;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
 import info.magnolia.ui.api.view.View;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Implementation of {@link EditorActionAreaView}. Composes dialog/editor footer with Vaadin components.
@@ -86,7 +87,7 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
     @Override
     public void addSecondaryAction(View actionView, String actionName) {
         actionNameToView.put(actionName, actionView);
-        secondaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
+        secondaryActionsContainer.addComponent(actionView.asVaadinComponent());
     }
 
     @Override

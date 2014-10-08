@@ -43,6 +43,9 @@ import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
@@ -62,6 +65,7 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
 
     @Override
     public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionListener listener, UiContext uiContext) {
+        final Map<String,View> secondaryActions = new HashMap<String,View>();
         for (ActionDefinition action : actions) {
             ActionRendererDefinition actionRendererDef = definition.getActionRenderers().get(action.getName());
             ActionRenderer actionRenderer = actionRendererDef == null ?
@@ -69,11 +73,22 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
                     componentProvider.newInstance(actionRendererDef.getRendererClass(), action, actionRendererDef, uiContext);
             final View actionView = actionRenderer.start(action, listener);
             if (definition.getSecondaryActions().contains(new SecondaryActionDefinition(action.getName()))) {
-                view.addSecondaryAction(actionView, action.getName());
+                // Store rendered secondary action
+                secondaryActions.put(action.getName(), actionView);
             } else {
                 view.addPrimaryAction(actionView, action.getName());
             }
         }
+
+        // Add secondary action views according to their order in definition
+        for (final SecondaryActionDefinition secondaryActionDefinition : definition.getSecondaryActions()) {
+            final String actionName = secondaryActionDefinition.getName();
+            final View actionView = secondaryActions.get(actionName);
+            if (actionView != null) {
+                view.addSecondaryAction(actionView, actionName);
+            }
+        }
+
         return view;
     }
 
