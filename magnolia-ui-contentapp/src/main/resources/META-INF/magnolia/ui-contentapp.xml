@@ -46,12 +46,18 @@
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
       <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.dialog.actionarea.DialogActionExecutor</type>
       <implementation>info.magnolia.ui.dialog.actionarea.DialogActionExecutor</implementation>
     </component>
-
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </component>
     <type-mapping>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl</implementation>
