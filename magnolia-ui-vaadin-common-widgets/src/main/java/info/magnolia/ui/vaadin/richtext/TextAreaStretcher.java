@@ -58,9 +58,10 @@ public class TextAreaStretcher extends AbstractExtension {
                     parent.setWidth(getState().collapsedStateWidth);
                     parent.setHeight(getState().collapsedStateHeight);
                 } else {
+
                     // We save the initial dimensions and clear size info from the state.
-                    getState().collapsedStateHeight = initialHeight + "px";
-                    getState().collapsedStateWidth = initialWidth + "px";
+                    getState().collapsedStateHeight = parent.getHeight() + parent.getHeightUnits().toString();
+                    getState().collapsedStateWidth = parent.getWidth() + parent.getWidthUnits().toString();
                     parent.setWidth("");
                     parent.setHeight("");
                 }

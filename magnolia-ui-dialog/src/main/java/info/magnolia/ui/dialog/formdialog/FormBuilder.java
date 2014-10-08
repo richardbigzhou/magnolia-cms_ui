@@ -60,6 +60,7 @@ import javax.jcr.Node;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;
@@ -218,7 +219,7 @@ public class FormBuilder {
                     tab.setComponentHelpDescription(field, helpDescription);
                 }
 
-                if (field instanceof TextArea || field instanceof CKEditorTextField) {
+                if (field instanceof TextArea || field instanceof CKEditorTextField || field instanceof AceEditor) {
                     TextAreaStretcher.extend(field);
                 }
 

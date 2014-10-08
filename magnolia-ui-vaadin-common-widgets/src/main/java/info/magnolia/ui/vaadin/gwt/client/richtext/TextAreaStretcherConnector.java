@@ -51,6 +51,7 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.ServerConnector;
+import com.vaadin.client.Util;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
@@ -82,11 +83,27 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         }
     };
 
+    private ElementResizeListener formResizeListener = new ElementResizeListener() {
+        @Override
+        public void onElementResize(ElementResizeEvent e) {
+            if (isRichTextEditor) {
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        updateSize();
+                    }
+                });
+            } else {
+                updateSize();
+            }
+        }
+    };;
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         if (stateChangeEvent.hasPropertyChanged("isCollapsed")) {
-            toggleCollapseState();
+            updateSize();
             if (!getState().isCollapsed) {
                 registerSizeChangeListeners();
             }
@@ -161,11 +178,15 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         final UIConnector ui = getConnection().getUIConnector();
         getParent().addStateChangeHandler(textAreaSizeHandler);
         lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+
+        final ComponentConnector formConnector = Util.findConnectorFor(this.form);
+        if (formConnector != null) {
+            formConnector.getLayoutManager().addElementResizeListener(this.form.getElement(), formResizeListener);
+        }
     }
 
-    private void toggleCollapseState() {
-        boolean isCollapsed = getState().isCollapsed;
-        if (!isCollapsed) {
+    private void updateSize() {
+        if (!getState().isCollapsed) {
             stretchControl.replaceClassName("icon-open-fullscreen-2", "icon-close-fullscreen-2");
             stretchControl.replaceClassName("collapsed", "stretched");
             form.asWidget().addStyleName("textarea-stretched");
@@ -222,6 +243,11 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         if (ui != null) {
             getParent().removeStateChangeHandler(textAreaSizeHandler);
             lm.removeElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+        }
+
+        final ComponentConnector formConnector = Util.findConnectorFor(this.form);
+        if (formConnector != null) {
+            formConnector.getLayoutManager().removeElementResizeListener(this.form.getElement(), formResizeListener);
         }
     }
 

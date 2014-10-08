@@ -373,6 +373,7 @@ fieldset {
   line-height: 1;
   width: 1em;
   height: 1em;
+  z-index: 10;
 }
 
 .textarea-stretcher:hover,
@@ -385,7 +386,6 @@ fieldset {
   position: absolute;
   right: 10px;
   top: 45px;
-  z-index: 5;
 }
 
 .textarea-stretcher.stretched.rich-text {
