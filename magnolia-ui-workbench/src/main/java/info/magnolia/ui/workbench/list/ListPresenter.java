@@ -68,11 +68,20 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         view.setListener(this);
         view.setContainer(container);
 
+        // clearColumns() is not in ListView api as of 5.2.x, but we do need to reset them according to column definitions
+        if (view instanceof ListViewImpl) {
+            ((ListViewImpl) view).clearColumns();
+        }
+
         // build columns
         Iterator<ColumnDefinition> it = getColumnsIterator();
 
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
+
+            if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInChooseDialog()) {
+                continue;
+            }
 
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             String title = column.getLabel();

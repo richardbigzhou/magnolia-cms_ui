@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
@@ -92,6 +93,7 @@ public class WorkbenchField extends CustomField<Object> {
 
     @Override
     protected Component initContent() {
+        ((ConfiguredWorkbenchDefinition)this.workbenchDefinition).setDialogWorkbench(true);
         this.view = presenter.start(workbenchDefinition, imageProvider, workbenchEventbus);
         this.view.setViewType(TreePresenterDefinition.VIEW_TYPE);
         this.view.asVaadinComponent().setHeight(DEFAULT_HEIGHT);

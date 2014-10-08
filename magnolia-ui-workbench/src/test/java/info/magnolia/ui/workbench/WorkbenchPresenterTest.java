@@ -37,17 +37,33 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
+import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreeViewImpl;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.Table;
 
 /**
  * Tests for {@link WorkbenchPresenter}.
@@ -61,15 +77,32 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
     private ComponentProvider componentProvider;
 
     private WorkbenchPresenter presenter;
+    private TreePresenter treePresenter;
 
     @Override
     @Before
     public void setUp() throws Exception {
-        WorkbenchView view = mock(WorkbenchView.class);
-        WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
+        this.componentProvider = mock(ComponentProvider.class);
+        final HierarchicalJcrContainer mockContainer = mock(HierarchicalJcrContainer.class);
+        doReturn(Arrays.asList("p1", "p2")).when(mockContainer).getContainerPropertyIds();
+        this.treePresenter = new TreePresenter(new TreeViewImpl(), componentProvider) {
 
-        componentProvider = mock(ComponentProvider.class);
-        doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
+            @Override
+            protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
+                return mockContainer;
+            }
+        };
+
+        final WorkbenchView view = new WorkbenchViewImpl(mock(SimpleTranslator.class));
+        final WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
+        doReturn(new StatusBarViewImpl() {
+            @Override
+            public Component asVaadinComponent() {
+                return new CssLayout();
+            }
+        }).when(statusBarPresenter).start(any(EventBus.class), any(WorkbenchDefinition.class));
+
+        doReturn(treePresenter).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
         MockUtil.initMockContext();
@@ -114,5 +147,61 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         assertTrue(hasTreeView);
         assertTrue(hasListView);
         assertFalse(hasThumbView);
+    }
+
+    @Test
+    public void testHidingColumnsForChooseDialog() {
+        // GIVEN
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(WORKSPACE);
+        workbenchDefinition.setPath(ROOT_PATH);
+        workbenchDefinition.setDialogWorkbench(true);
+
+        final TreePresenterDefinition treePresenterDefinition = new TreePresenterDefinition();
+        final PropertyColumnDefinition c1 = new PropertyColumnDefinition();
+        c1.setName("c1");
+        c1.setPropertyName("p1");
+        c1.setDisplayInChooseDialog(true);
+
+        final PropertyColumnDefinition c2 = new PropertyColumnDefinition();
+        c2.setName("c2");
+        c2.setPropertyName("p2");
+        c2.setDisplayInChooseDialog(false);
+
+        treePresenterDefinition.addColumn(c1);
+        treePresenterDefinition.addColumn(c2);
+
+        workbenchDefinition.addContentView(treePresenterDefinition);
+        treePresenterDefinition.setViewType("tree");
+        treePresenterDefinition.setActive(true);
+
+        workbenchDefinition.getContentViews().add(treePresenterDefinition);
+
+        // WHEN
+        final View view = presenter.start(workbenchDefinition, null, mock(EventBus.class));
+        presenter.onViewTypeChanged("tree");
+
+        // THEN
+        Table table = fetchVaadinTable(view.asVaadinComponent());
+        assertTrue(Arrays.asList(table.getVisibleColumns()).contains("p1"));
+        assertFalse(Arrays.asList(table.getVisibleColumns()).contains("p2"));
+    }
+
+    private Table fetchVaadinTable(Component component) {
+        if (component instanceof Table) {
+            return (Table) component;
+        }
+
+        if (component instanceof HasComponents) {
+            final Iterator<Component> it = ((HasComponents)component).iterator();
+            while (it.hasNext()) {
+                Table resolvedTable = fetchVaadinTable(it.next());
+                if (resolvedTable != null) {
+                    return resolvedTable;
+                }
+            }
+        }
+
+        return null;
     }
 }
