@@ -79,6 +79,10 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
 
+            if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInChooseDialog()) {
+                continue;
+            }
+
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             String title = column.getLabel();
 
