@@ -34,8 +34,12 @@
 package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
 import javax.inject.Inject;
@@ -49,26 +53,64 @@ import com.vaadin.ui.Field;
  */
 public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDefinition, Object> {
 
-    private WorkbenchFieldDefinition definition;
+    private final WorkbenchFieldDefinition definition;
 
-    private WorkbenchPresenter workbenchPresenter;
+    private final WorkbenchPresenter workbenchPresenter;
+    private final ContentConnector contentConnector;
 
-    private EventBus eventBus;
+    private final EventBus chooseDialogEventBus;
+    private final EventBus admincentralEventBus;
 
     @Inject
+    public WorkbenchFieldFactory(
+
+            WorkbenchFieldDefinition definition,
+            Item relatedFieldItem,
+            WorkbenchPresenter workbenchPresenter,
+            ContentConnector contentConnector,
+            @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
+
+        super(definition, relatedFieldItem);
+        this.definition = definition;
+        this.workbenchPresenter = workbenchPresenter;
+        this.contentConnector = contentConnector;
+        this.chooseDialogEventBus = chooseDialogEventBus;
+        this.admincentralEventBus = admincentralEventBus;
+    }
+
+    /**
+     * @deprecated since 5.3.4, replaced with {@link #WorkbenchFieldFactory(WorkbenchFieldDefinition, Item, WorkbenchPresenter, ContentConnector, EventBus, EventBus)}.
+     * Constructor should not be called explicitly, but rather use IoC anyway.
+     */
+    @Deprecated
     public WorkbenchFieldFactory(
             WorkbenchFieldDefinition definition,
             Item relatedFieldItem,
             WorkbenchPresenter workbenchPresenter,
             @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
-        super(definition, relatedFieldItem);
-        this.definition = definition;
-        this.workbenchPresenter = workbenchPresenter;
-        this.eventBus = eventBus;
+        this(definition, relatedFieldItem, workbenchPresenter, new DefaultContentConnector(), eventBus, null);
     }
 
     @Override
     protected Field<Object> createFieldComponent() {
-        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus);
+        final WorkbenchField workbenchField = new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, chooseDialogEventBus);
+
+        // Workaround for choose-dialogs to listen to ContentChangeEvents
+        // Ideally this goes in ChooseDialogPresenter but it should be relocated to ui-contentapp first.
+        if (admincentralEventBus != null) {
+            admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+                @Override
+                public void onContentChanged(ContentChangedEvent event) {
+                    Object itemId = event.getItemId();
+                    if (contentConnector.canHandleItem(itemId)) {
+                        workbenchField.getPresenter().refresh();
+                        workbenchField.getPresenter().select(itemId);
+                    }
+                }
+            });
+        }
+        return workbenchField;
     }
 }
