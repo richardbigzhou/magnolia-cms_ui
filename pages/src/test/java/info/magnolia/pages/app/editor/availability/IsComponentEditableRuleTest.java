@@ -67,7 +67,7 @@ public class IsComponentEditableRuleTest {
     @Test
     public void testComponentIsEditable() throws Exception {
         // GIVEN
-        when(element.getWritable()).thenReturn(true);
+        when(element.isEditable()).thenReturn(true);
 
         // WHEN
         boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
@@ -79,7 +79,7 @@ public class IsComponentEditableRuleTest {
     @Test
     public void testComponentIsNotEditable() throws Exception {
         // GIVEN
-        when(element.getWritable()).thenReturn(false);
+        when(element.isEditable()).thenReturn(false);
 
         // WHEN
         boolean result = rule.isAvailableForItem(mock(JcrItemId.class));
