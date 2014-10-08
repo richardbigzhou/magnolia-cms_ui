@@ -43,6 +43,7 @@ public class ComponentElement extends AbstractElement {
     private Boolean writable = false; // edit
     private Boolean moveable = false; // move
     private Boolean deletable = false; // delete
+    private Boolean editable = false; // editable
     
     public ComponentElement() {
     }
@@ -73,5 +74,13 @@ public class ComponentElement extends AbstractElement {
 
     public void setDeletable(Boolean deletable) {
         this.deletable = deletable;
+    }
+
+    public Boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
     }
 }

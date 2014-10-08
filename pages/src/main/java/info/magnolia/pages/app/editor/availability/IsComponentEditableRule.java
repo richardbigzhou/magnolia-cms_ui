@@ -51,6 +51,6 @@ public class IsComponentEditableRule extends AbstractElementAvailabilityRule<Com
 
     @Override
     protected boolean isAvailableForElement(ComponentElement element) {
-        return element.getWritable();
+        return element.getEditable();
     }
 }
