@@ -99,6 +99,10 @@ public class ContentApp extends BaseApp {
         ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(overlayLayer, chooseDialogDefinition, componentProvider);
         presenter = chooseDialogComponentProvider.newInstance(chooseDialogDefinition.getPresenterClass(), chooseDialogComponentProvider);
 
+        if (!StringUtils.isBlank(targetTreeRootPath) && !StringUtils.isBlank(selectedId) && !"/".equals(targetTreeRootPath) && selectedId.startsWith(targetTreeRootPath)) {
+            selectedId = StringUtils.removeStart(selectedId, targetTreeRootPath);
+        }
+
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
     }
 
