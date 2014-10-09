@@ -248,15 +248,15 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
      */
     @Override
     public void drop(DragAndDropEvent event) {
-
-        // start polling immediately on drop
-        startPolling();
-
-        DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
+        final DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
         final Html5File[] files = transferable.getFiles();
         if (files == null) {
             return;
         }
+
+        // start polling immediately on drop
+        startPolling();
+
         for (final Html5File html5File : files) {
             html5File.setStreamVariable(new StreamVariable() {
 
