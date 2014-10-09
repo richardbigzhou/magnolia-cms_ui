@@ -76,7 +76,7 @@ public class ComponentElement extends AbstractElement {
         this.deletable = deletable;
     }
 
-    public Boolean isEditable() {
+    public Boolean getEditable() {
         return editable;
     }
 
