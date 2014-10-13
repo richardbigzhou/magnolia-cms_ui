@@ -496,7 +496,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
             final JcrItemId itemId = JcrItemUtil.getItemId(node);
-            log.debug("Adding node {} to cached items.", itemId.getUuid());
+            log.trace("Adding node {} to cached items.", itemId.getUuid());
             itemIndexes.put(rowCount++, itemId);
         }
 
