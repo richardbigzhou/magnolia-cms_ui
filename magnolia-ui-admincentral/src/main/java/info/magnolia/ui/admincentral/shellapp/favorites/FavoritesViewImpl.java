@@ -128,9 +128,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
     @Override
     public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
-        layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell, i18n);
-        layout.addComponent(favoriteForm);
+        favoriteForm.setNewFavorite(newFavorite);
+        favoriteForm.setNewGroup(newGroup);
+        favoriteForm.setAvailableGroups(availableGroupsNames);
     }
 
     @Override
@@ -221,11 +221,12 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             splitPanel.getLeftContainer().addComponent(nogroupWrap);
         }
 
-        if (favoriteForm != null) {
-            layout.removeComponent(favoriteForm);
+        if (favoriteForm == null) {
+            favoriteForm = new FavoritesForm(listener, shell, i18n);
+            layout.addComponent(favoriteForm);
         }
-        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell, i18n);
-        layout.addComponent(favoriteForm);
+        setFavoriteLocation(favoriteSuggestion, groupSuggestion, availableGroups);
+        favoriteForm.setEditActionEnabled(listener.hasItems());
 
         for (EditableFavoriteItem item : getEditableFavoriteItemList()) {
             item.setIconsVisibility(itemIconsVisible);

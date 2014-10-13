@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.ObjectProperty;
@@ -70,7 +71,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public final class FavoritesForm extends CustomComponent {
 
-    private static final String editItemsMarkerCssStyle = "favItemEdit";
+    private static final String EDIT_ACTION_STYLENAME = "favItemEdit";
+
     private FavoritesView.Listener listener;
     private Shell shell;
     private TabSheet tabsheet;
@@ -79,16 +81,34 @@ public final class FavoritesForm extends CustomComponent {
     private InternalFavoriteGroupForm favoriteGroupForm;
     private final SimpleTranslator i18n;
 
-    public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups,
-                         final FavoritesView.Listener listener, final Shell shell, final SimpleTranslator i18n) {
-        addStyleName("favorites-form");
+    private Label editIcon;
+    private Label editLabel;
+
+    public FavoritesForm(FavoritesView.Listener listener, Shell shell, SimpleTranslator i18n) {
         this.listener = listener;
         this.shell = shell;
         this.i18n = i18n;
+        init();
+    }
 
+    /**
+     * Since 5.3.5 — use {@link #FavoritesForm(info.magnolia.ui.admincentral.shellapp.favorites.FavoritesView.Listener, Shell, SimpleTranslator)} as a constructor and populate fav/group entries individually through the new setters.
+     *
+     * @see #setNewFavorite(Item)
+     * @see #setNewGroup(Item)
+     * @see #setAvailableGroups(Map)
+     */
+    @Deprecated
+    public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups,
+            final FavoritesView.Listener listener, final Shell shell, final SimpleTranslator i18n) {
+        this(listener, shell, i18n);
+    }
+
+    private void init() {
+        addStyleName("favorites-form");
         final VerticalLayout favoriteForm = new VerticalLayout();
-        favoriteEntryForm = new InternalFavoriteEntryForm(newFavorite, newGroup, availableGroups);
-        favoriteGroupForm = new InternalFavoriteGroupForm(newGroup);
+        favoriteEntryForm = new InternalFavoriteEntryForm();
+        favoriteGroupForm = new InternalFavoriteGroupForm();
 
         tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
@@ -116,7 +136,7 @@ public final class FavoritesForm extends CustomComponent {
             @Override
             public void layoutClick(LayoutClickEvent event) {
                 // change the visibility of the group- and favorite-items
-                if (event.getClickedComponent() != null && event.getClickedComponent() instanceof Label && event.getClickedComponent().getPrimaryStyleName().equals(editItemsMarkerCssStyle)) {
+                if (event.getClickedComponent() == editIcon || event.getChildComponent() == editLabel) {
                     if (!listener.hasItems() || listener.itemsAreEditable()) {
                         listener.setToInitialState();
                     } else {
@@ -141,22 +161,18 @@ public final class FavoritesForm extends CustomComponent {
         final Label addNewLabel = new Label(i18n.translate("favorites.form.add"));
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
+
         // edit
-        final Label editIcon = new Label();
+        editIcon = new Label();
         editIcon.setSizeUndefined();
+        editIcon.addStyleName(EDIT_ACTION_STYLENAME);
         editIcon.addStyleName("icon");
         editIcon.addStyleName("icon-edit");
-        editIcon.setPrimaryStyleName(editItemsMarkerCssStyle);
-        if (!listener.hasItems()) {
-            editIcon.addStyleName("disabled");
-        }
-        final Label editLabel = new Label(i18n.translate("favorites.form.favorite.edit"));
+
+        editLabel = new Label(i18n.translate("favorites.form.favorite.edit"));
         editLabel.setSizeUndefined();
         editLabel.addStyleName("title");
-        editLabel.setPrimaryStyleName(editItemsMarkerCssStyle);
-        if (!listener.hasItems()) {
-            editLabel.addStyleName("disabled");
-        }
+        editLabel.addStyleName(EDIT_ACTION_STYLENAME);
 
         // arrow
         arrowIcon = new Label();
@@ -179,8 +195,34 @@ public final class FavoritesForm extends CustomComponent {
         setCompositionRoot(favoriteForm);
     }
 
+    public void setNewFavorite(Item newFavorite) {
+        favoriteEntryForm.setDataSource(newFavorite);
+    }
+
+    public void setNewGroup(Item newGroup) {
+        favoriteGroupForm.setDataSource(newGroup);
+    }
+
+    public void setAvailableGroups(Map<String, String> availableGroups) {
+        favoriteEntryForm.setAvailableGroups(availableGroups);
+    }
+
+    public void setEditActionEnabled(boolean enabled) {
+        if (!enabled) {
+            editIcon.addStyleName("disabled");
+            editLabel.addStyleName("disabled");
+        } else {
+            editIcon.removeStyleName("disabled");
+            editLabel.removeStyleName("disabled");
+        }
+    }
+
     public void close() {
         tabsheet.setVisible(false);
+        // reset form to its first tab when it is closed
+        if (tabsheet.getSelectedTab() != favoriteEntryForm) {
+            tabsheet.setSelectedTab(favoriteEntryForm);
+        }
         arrowIcon.removeStyleName("icon-arrow2_s");
         arrowIcon.addStyleName("icon-arrow2_n");
         // remove key shortcut listener or this might compete with the next element getting the focus.
@@ -206,14 +248,16 @@ public final class FavoritesForm extends CustomComponent {
     private class InternalFavoriteEntryForm extends CustomComponent {
 
         private TextField url = new TextField(i18n.translate("favorites.form.location"));
-
         private TextField title = new TextField(i18n.translate("favorites.form.title"));
-
         private ComboBox group;
 
         private ShortcutListener enterShortcutListener;
 
-        public InternalFavoriteEntryForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups) {
+        private final FieldGroup form;
+
+        private Map<String, String> availableGroups;
+
+        public InternalFavoriteEntryForm() {
             addStyleName("favorites-form-content");
             FormLayout layout = new FormLayout();
 
@@ -228,11 +272,6 @@ public final class FavoritesForm extends CustomComponent {
             group = new ComboBox(i18n.translate("favorites.form.groups"));
             group.setNewItemsAllowed(true);
             group.setImmediate(false);
-            for (Entry<String, String> entry : availableGroups.entrySet()) {
-                String id = entry.getKey();
-                group.addItem(id);
-                group.setItemCaption(id, entry.getValue());
-            }
             group.setNewItemHandler(new AbstractSelect.NewItemHandler() {
                 @Override
                 public void addNewItem(String newItemCaption) {
@@ -242,7 +281,7 @@ public final class FavoritesForm extends CustomComponent {
                     group.setValue(newGroupId);
                 }
             });
-            // the blur-listener below ensures "apropriate" behaviour wehn adding a new value and then clicking tab -> to blur -> to go to add-button
+            // the blur-listener below ensures "appropriate" behavior when adding a new value and then clicking tab -> to blur -> to go to add-button
             // without the listener the new value is NOT selected and sometimes not added (with tab, enter)
             // String value = event.getSource().toString() leads to a warning in the log-file and is discourage from VAADIN
             group.addBlurListener(new FieldEvents.BlurListener() {
@@ -256,9 +295,11 @@ public final class FavoritesForm extends CustomComponent {
             group.setDescription(i18n.translate("favorites.form.groups"));
             layout.addComponent(group);
 
-            // Now use a binder to bind the members
-            final FieldGroup binder = new FieldGroup(newFavorite);
-            binder.bindMemberFields(this);
+            // Bind fields individually — binding members doesn't seem to work with initial (null) datasource
+            form = new FieldGroup();
+            form.bind(title, "title");
+            form.bind(url, "url");
+            form.bind(group, "group");
 
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
@@ -267,7 +308,7 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    addFavorite(newFavorite, newGroup, binder, availableGroups);
+                    addFavorite();
                 }
             });
             addButton.addStyleName("commit");
@@ -278,11 +319,25 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void handleAction(Object sender, Object target) {
-                    addFavorite(newFavorite, newGroup, binder, availableGroups);
+                    addFavorite();
                 }
             };
 
             setCompositionRoot(layout);
+        }
+
+        void setDataSource(Item newFavorite) {
+            form.setItemDataSource(newFavorite);
+        }
+
+        void setAvailableGroups(Map<String, String> availableGroups) {
+            group.removeAllItems();
+            for (Entry<String, String> entry : availableGroups.entrySet()) {
+                String id = entry.getKey();
+                group.addItem(id);
+                group.setItemCaption(id, entry.getValue());
+            }
+            this.availableGroups = availableGroups;
         }
 
         public void addEnterKeyShortcutListener() {
@@ -294,26 +349,30 @@ public final class FavoritesForm extends CustomComponent {
             removeShortcutListener(enterShortcutListener);
         }
 
-        private void addFavorite(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final FieldGroup binder, Map availableGroups) {
+        private void addFavorite() {
             try {
-                binder.commit();
+                JcrNewNodeAdapter newFavorite = (JcrNewNodeAdapter) form.getItemDataSource();
+                form.commit();
+
                 // since MGNLUI-2599 it is possible to add a group and a favorite (which then goes into the group) at the same time
-                if (group == null || group.getValue() == null || !selectedItemsIsNew(availableGroups)) {
+                if (group == null || group.getValue() == null || !selectedGroupIsNew()) {
                     listener.addFavorite(newFavorite);
                 } else {
+                    JcrNewNodeAdapter newGroup = ((FavoritesPresenter) listener).createNewGroupSuggestion();
                     String newGroupId = (String) group.getValue();
                     String newGroupLabel = group.getItemCaption(newGroupId);
                     // must set the properties for the group here manually; properties of newFavorite are set in binder
-                    newGroup.addItemProperty("group", new ObjectProperty(newGroupId));
-                    newGroup.addItemProperty("title", new ObjectProperty(newGroupLabel));
+                    newGroup.addItemProperty("group", new ObjectProperty<String>(newGroupId));
+                    newGroup.addItemProperty("title", new ObjectProperty<String>(newGroupLabel));
                     listener.addFavoriteAndGroup(newFavorite, newGroup);
                 }
+                close(); // close form explicitly upon successful submit
             } catch (CommitException e) {
                 shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.fields.required"));
             }
         }
 
-        private boolean selectedItemsIsNew(Map availableGroups) {
+        private boolean selectedGroupIsNew() {
             if (availableGroups == null || availableGroups.size() == 0) {
                 return true;
             } else {
@@ -325,7 +384,6 @@ public final class FavoritesForm extends CustomComponent {
             return false;
         }
 
-
     }
 
     /**
@@ -334,21 +392,22 @@ public final class FavoritesForm extends CustomComponent {
     private class InternalFavoriteGroupForm extends CustomComponent {
 
         private TextField title = new TextField(i18n.translate("favorites.form.title"));
-        private ShortcutListener enterShortcutListener;
 
-        public InternalFavoriteGroupForm(final JcrNewNodeAdapter newGroup) {
+        private ShortcutListener enterShortcutListener;
+        private final FieldGroup form;
+
+        public InternalFavoriteGroupForm() {
             addStyleName("favorites-form-content");
             FormLayout layout = new FormLayout();
 
             title.setRequired(true);
             title.setDescription(i18n.translate("favorites.form.title"));// tooltip
-
             title.addStyleName("group-title");
             layout.addComponent(title);
 
-            // Now use a binder to bind the members
-            final FieldGroup binder = new FieldGroup(newGroup);
-            binder.bindMemberFields(this);
+            // Bind fields individually — binding members doesn't seem to work with initial (null) datasource
+            form = new FieldGroup();
+            form.bind(title, "title");
 
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
@@ -357,7 +416,7 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    addGroup(newGroup, binder);
+                    addGroup();
                 }
             });
             addButton.addStyleName("v-button-commit");
@@ -368,11 +427,15 @@ public final class FavoritesForm extends CustomComponent {
 
                 @Override
                 public void handleAction(Object sender, Object target) {
-                    addGroup(newGroup, binder);
+                    addGroup();
                 }
             };
 
             setCompositionRoot(layout);
+        }
+
+        void setDataSource(Item newGroup) {
+            form.setItemDataSource(newGroup);
         }
 
         public void addEnterKeyShortcutListener() {
@@ -384,10 +447,12 @@ public final class FavoritesForm extends CustomComponent {
             removeShortcutListener(enterShortcutListener);
         }
 
-        private void addGroup(final JcrNewNodeAdapter newGroup, final FieldGroup binder) {
+        private void addGroup() {
             try {
-                binder.commit();
+                JcrNewNodeAdapter newGroup = (JcrNewNodeAdapter) form.getItemDataSource();
+                form.commit();
                 listener.addGroup(newGroup);
+                close(); // close form explicitly upon successful submit
             } catch (CommitException e) {
                 shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.fields.required"));
             }
