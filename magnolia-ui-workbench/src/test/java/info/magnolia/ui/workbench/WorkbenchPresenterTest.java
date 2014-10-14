@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.workbench;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
@@ -46,6 +46,7 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
@@ -54,6 +55,7 @@ import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreeView;
 import info.magnolia.ui.workbench.tree.TreeViewImpl;
 
 import java.util.Arrays;
@@ -190,6 +192,32 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         Table table = fetchVaadinTable(view.asVaadinComponent());
         assertTrue(Arrays.asList(table.getVisibleColumns()).contains("p1"));
         assertFalse(Arrays.asList(table.getVisibleColumns()).contains("p2"));
+    }
+
+    /**
+     * Workbenches in Dialogs should not provide a UI for multiple selection..
+     */
+    @Test
+    public void testDialogWorkbenchDissallowsMultipleSelection() {
+        // GIVEN
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setDialogWorkbench(true);
+
+        final TreePresenterDefinition treePresenterDefinition = new TreePresenterDefinition();
+
+        workbenchDefinition.addContentView(treePresenterDefinition);
+        treePresenterDefinition.setViewType("tree");
+        treePresenterDefinition.setActive(true);
+        workbenchDefinition.getContentViews().add(treePresenterDefinition);
+
+        // WHEN
+        final WorkbenchView view = (WorkbenchViewImpl) presenter.start(workbenchDefinition, mock(ImageProviderDefinition.class), mock(EventBus.class));
+        presenter.onViewTypeChanged("tree");
+
+        // THEN
+        TreeView treeView = (TreeView) view.getSelectedView();
+        boolean isMultiSelect = ((MagnoliaTreeTable) treeView.asVaadinComponent()).isMultiSelect();
+        assertThat(isMultiSelect, equalTo(false));
     }
 
     private Table fetchVaadinTable(Component component) {

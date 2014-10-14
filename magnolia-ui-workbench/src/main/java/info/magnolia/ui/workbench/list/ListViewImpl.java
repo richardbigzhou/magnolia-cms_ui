@@ -39,6 +39,7 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,12 +118,12 @@ public class ListViewImpl implements ListView {
             public void valueChange(ValueChangeEvent event) {
                 Object value = event.getProperty().getValue();
 
-                log.debug("Handle value change Event: {}:{} for listener {}", value.getClass(), value, listener);
-
                 if (listener != null) {
                     Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
+                    } else if (value == null) {
+                        items = Collections.emptySet();
                     } else {
                         items = new LinkedHashSet<Object>();
                         items.add(value);
