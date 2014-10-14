@@ -149,11 +149,11 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
 
         private String versionName;
 
-        private String getVersionName() {
+        public String getVersionName() {
             return versionName;
         }
 
-        private void setVersionName(String versionName) {
+        public void setVersionName(String versionName) {
             this.versionName = versionName;
         }
     }

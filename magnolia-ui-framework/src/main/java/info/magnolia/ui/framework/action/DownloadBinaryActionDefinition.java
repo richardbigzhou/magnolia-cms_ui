@@ -42,7 +42,7 @@ import org.apache.jackrabbit.JcrConstants;
  */
 public class DownloadBinaryActionDefinition extends ConfiguredActionDefinition {
 
-    private String binaryNodeName = "binaryNodeName";
+    private String binaryNodeName = JcrConstants.JCR_CONTENT;
 
     private String dataProperty = JcrConstants.JCR_DATA;
 
