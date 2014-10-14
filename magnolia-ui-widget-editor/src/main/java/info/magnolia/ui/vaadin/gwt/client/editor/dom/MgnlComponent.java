@@ -76,14 +76,21 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }
 
         component.setDeletable(deletable && !inherited);
-        component.setWritable(hasEditButton());
+        boolean isWritable = hasEditButton();
+        component.setWritable(isWritable);
         component.setMoveable(isMovable());
 
-        String editableAttr = getAttribute("editable");
-        boolean editable = editableAttr == null || Boolean.parseBoolean(editableAttr);
-        component.setEditable(editable);
+        component.setEditable(isEditable() && isWritable);
 
         return component;
+    }
+
+    private boolean isEditable() {
+        if (isInherited()) {
+            return false;
+        }
+        String editableAttr = getAttribute("editable");
+        return editableAttr == null || Boolean.parseBoolean(editableAttr);
     }
 
     @Override
