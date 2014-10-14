@@ -122,10 +122,12 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
             }
         };
         StreamResource resource = new StreamResource(source, fileName);
+        // Accessing the DownloadStream via getStream() will set its cacheTime to whatever is set in the parent
+        // StreamResource. By default it is set to 1000 * 60 * 60 * 24, thus we have to override it beforehand.
+        // A negative value or zero will disable caching of this stream.
         resource.setCacheTime(-1);
         resource.getStream().setParameter("Content-Disposition", "attachment; filename=" + fileName + "\"");
         resource.setMIMEType(mimeType);
-        resource.setCacheTime(0);
 
         Page.getCurrent().open(resource, "", true);
     }
