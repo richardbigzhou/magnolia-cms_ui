@@ -36,6 +36,7 @@ package info.magnolia.ui.contentapp.browser.action;
 import info.magnolia.cms.core.version.VersionInfo;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.context.UiContext;
@@ -61,10 +62,9 @@ import javax.jcr.RepositoryException;
 /**
  * Opens a dialog with list of versions.
  * 
- * @see ShowVersionsActionDefinition
- * @param <D> {@link ShowVersionsActionDefinition}.
+ * @param <D> {@link ActionDefinition}.
  */
-public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends AbstractVersionAction<D> {
+public class ShowVersionsAction<D extends ActionDefinition> extends AbstractVersionAction<D> {
 
     private final AppContext appContext;
     protected final AbstractJcrNodeAdapter nodeAdapter;
@@ -78,6 +78,13 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
         this.nodeAdapter = nodeAdapter;
         this.appContext = appContext;
         this.dialogID = "ui-contentapp:code:ShowVersionsAction.selectVersion";
+    }
+
+    /**
+     * @deprecated since 5.3.5 - use {@link ShowVersionsAction(D, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator)} instead.
+     */
+    public ShowVersionsAction(ShowVersionsActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
+        this((D) definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
     }
 
     @Override
@@ -134,10 +141,16 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
             final Node node = getNode();
             final String path = node.getPath();
             final String appName = appContext.getName();
-            return new DetailLocation(appName, "detail", DetailView.ViewType.VIEW, path, (String) getItem().getItemProperty("versionName").getValue());
+            final String versionName = getVersionName();
+
+            return new DetailLocation(appName, "detail", DetailView.ViewType.VIEW, path, versionName);
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not get node from nodeAdapter " + nodeAdapter.getItemId());
         }
+    }
+
+    protected String getVersionName() {
+        return (String) getItem().getItemProperty(VersionName.PROPERTY_NAME_VERSION_NAME).getValue();
     }
 
     /**
