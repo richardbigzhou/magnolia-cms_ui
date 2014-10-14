@@ -127,6 +127,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         // add status bar
         view.setStatusBarView(statusBarPresenter.start(eventBus, activePresenter));
 
+        view.setMultiselect(workbenchDefinition.isMultipleSelection());
+
         view.setListener(this);
         return view;
     }

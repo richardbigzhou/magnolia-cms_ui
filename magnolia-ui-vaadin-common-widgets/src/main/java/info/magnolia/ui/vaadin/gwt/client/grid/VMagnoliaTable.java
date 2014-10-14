@@ -42,6 +42,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
@@ -181,6 +183,8 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             private CheckBox selectionCheckBox;
 
+            private Panel selectionCheckBoxSpacer;
+
             private String nodeIcon;
 
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
@@ -224,7 +228,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
                 if (td.equals(this.getElement().getFirstChildElement())) {
                     insertNodeIcon(td);
-                    insertSelectionCheckbox(td);
+                    if (isSingleSelectMode()) {
+                        insertSelectionCheckboxSpacer(td);
+                    } else {
+                        insertSelectionCheckbox(td);
+                    }
                 }
             }
 
@@ -233,7 +241,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 super.initCellWithWidget(w, align, style, sorted, td);
                 if (td.equals(this.getElement().getFirstChildElement())) {
                     insertNodeIcon(td);
-                    insertSelectionCheckbox(td);
+                    if (isSingleSelectMode()) {
+                        insertSelectionCheckboxSpacer(td);
+                    } else {
+                        insertSelectionCheckbox(td);
+                    }
                 }
             }
 
@@ -243,6 +255,14 @@ public class VMagnoliaTable extends VScrollTablePatched {
             private void insertSelectionCheckbox(final TableCellElement td) {
                 com.google.gwt.dom.client.Element container = td.getFirstChildElement();
                 container.insertFirst(selectionCheckBox.getElement());
+            }
+
+            /**
+             * Inserts a spacer element in the first column to ensure that positioning of content is the same when there is or is not a checkbox.
+             */
+            private void insertSelectionCheckboxSpacer(final TableCellElement td) {
+                com.google.gwt.dom.client.Element container = td.getFirstChildElement();
+                container.insertFirst(selectionCheckBoxSpacer.getElement());
             }
 
             protected void insertNodeIcon(TableCellElement td) {
@@ -292,6 +312,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 selectionCheckBox.addStyleName("v-selection-cb");
                 getChildren().add(selectionCheckBox);
                 VMagnoliaTable.this.adopt(selectionCheckBox);
+
+                selectionCheckBoxSpacer = new SimplePanel();
+                selectionCheckBoxSpacer.addStyleName("v-selection-cb");
+                getChildren().add(selectionCheckBoxSpacer);
+                VMagnoliaTable.this.adopt(selectionCheckBoxSpacer);
 
                 final TouchDelegate delegate = new TouchDelegate(this);
                 delegate.addTouchHandler(new MultiTapRecognizer(delegate, 1, 2));

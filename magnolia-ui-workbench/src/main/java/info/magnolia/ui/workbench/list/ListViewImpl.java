@@ -117,12 +117,15 @@ public class ListViewImpl implements ListView {
             public void valueChange(ValueChangeEvent event) {
                 Object value = event.getProperty().getValue();
 
-                log.debug("Handle value change Event: {}:{} for listener {}", value.getClass(), value, listener);
+                String valueClass = (value != null) ? value.getClass().toString() : "value=null";
+                log.debug("Handle value change Event: {}:{} for listener {}", valueClass, value, listener);
 
                 if (listener != null) {
                     Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
+                    } else if (value == null) {
+                        items = null;
                     } else {
                         items = new LinkedHashSet<Object>();
                         items.add(value);

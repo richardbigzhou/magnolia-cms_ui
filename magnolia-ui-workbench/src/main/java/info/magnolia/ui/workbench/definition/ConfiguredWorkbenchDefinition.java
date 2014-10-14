@@ -50,6 +50,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private boolean editable;
 
+    private boolean multipleSelection = true;
+
     private Class<? extends DropConstraint> dropConstraintClass;
     private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
 
@@ -78,6 +80,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    @Override
+    public boolean isMultipleSelection() {
+        return multipleSelection;
+    }
+
+    public void setMultipleSelection(boolean multipleSelection) {
+        this.multipleSelection = multipleSelection;
     }
 
     @Override
