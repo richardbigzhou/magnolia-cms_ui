@@ -93,7 +93,7 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
         tab.setName("versions");
 
         SelectFieldDefinition select = new SelectFieldDefinition();
-        select.setName("versionName");
+        select.setName(VersionName.PROPERTY_NAME_VERSION_NAME);
         select.setSortOptions(false);
         tab.addField(select);
 
@@ -143,7 +143,10 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
     /**
      * Simple POJO used to access user selection from dialog, see {@link com.vaadin.data.util.BeanItem}.
      */
-    private class VersionName {
+    protected class VersionName {
+
+        protected final static String PROPERTY_NAME_VERSION_NAME = "versionName";
+
         private String versionName;
 
         private String getVersionName() {

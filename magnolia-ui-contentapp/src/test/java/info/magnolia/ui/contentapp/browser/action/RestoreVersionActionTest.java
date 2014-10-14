@@ -203,7 +203,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
             BeanItem<?> item = super.getItem();
             Property property = new TextField();
             property.setValue(version);
-            item.addItemProperty("versionName", property);
+            item.addItemProperty(VersionName.PROPERTY_NAME_VERSION_NAME, property);
             return item;
         }
 
