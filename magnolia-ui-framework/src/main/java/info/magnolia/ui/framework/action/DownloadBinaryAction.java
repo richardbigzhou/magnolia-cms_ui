@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.InputStream;
 
+import javax.inject.Inject;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -58,6 +59,7 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
     private final DownloadBinaryActionDefinition definition;
     private final JcrItemAdapter item;
 
+    @Inject
     public DownloadBinaryAction(D definition, JcrItemAdapter item) {
         super(definition);
         this.definition = definition;
@@ -71,34 +73,45 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
             final InputStream inputStream;
             Node binaryNode;
             String fileName;
+            StreamResource streamResource;
             try {
                 binaryNode = getBinaryNode(node);
                 fileName = getFileName(binaryNode);
                 inputStream = getInputStream(binaryNode);
+                streamResource = getStreamResource(inputStream, fileName);
+
+                Page.getCurrent().open(streamResource, null, false);
             } catch (RepositoryException e) {
-                throw new ActionExecutionException(e);
+                throw new ActionExecutionException(String.format("Error getting binary data from node [%s] to download.", node), e);
             }
-
-            StreamResource.StreamSource source = new StreamResource.StreamSource() {
-                @Override
-                public InputStream getStream() {
-                    return inputStream;
-                }
-            };
-
-            StreamResource resource = new StreamResource(source, fileName);
-            resource.setCacheTime(-1);
-            resource.getStream().setParameter("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-            resource.setMIMEType(CONTENT_TYPE);
-            resource.setCacheTime(0);
-
-            Page.getCurrent().open(resource, null, false);
         }
     }
 
+    /**
+     * Returns a downloadable {@link StreamResource} created from the supplied {@link InputStream}.
+     *
+     * @see com.vaadin.server.DownloadStream#DEFAULT_CACHETIME
+     * @see StreamResource
+     */
+    private StreamResource getStreamResource(final InputStream inputStream, String fileName) {
+        final StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return inputStream;
+            }
+        }, fileName);
+        // Accessing the DownloadStream via getStream() will set its cacheTime to whatever is set in the parent
+        // StreamResource. By default it is set to 1000 * 60 * 60 * 24, thus we have to override it beforehand.
+        // A negative value or zero will disable caching of this stream.
+        resource.setCacheTime(-1);
+        resource.getStream().setParameter("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
+        resource.setMIMEType(CONTENT_TYPE);
+        return resource;
+    }
+
     protected InputStream getInputStream(Node binaryNode) throws RepositoryException {
-            Binary binary = binaryNode.getProperty(definition.getDataProperty()).getBinary();
-            return binary.getStream();
+        Binary binary = binaryNode.getProperty(definition.getDataProperty()).getBinary();
+        return binary.getStream();
     }
 
     protected String getFileName(Node binaryNode) throws RepositoryException {
@@ -110,4 +123,5 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
     protected Node getBinaryNode(Node node) throws RepositoryException {
         return node.getNode(definition.getBinaryNodeName());
     }
+
 }
