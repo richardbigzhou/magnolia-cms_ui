@@ -44,6 +44,7 @@ import java.io.InputStream;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,17 +67,16 @@ public class DownloadBinaryActionTest {
     public void setUp() throws Exception {
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("char_blume.png");
         Node root = new MockNode("root");
-        Node node = root.addNode("binaryNodeName");
+        Node node = root.addNode(JcrConstants.JCR_CONTENT);
         node.setProperty("fileName", "char_blume.png");
         node.setProperty("extension", "png");
         Binary binary = new BinaryImpl(inputStream);
-        node.setProperty("jcr:data", binary);
+        node.setProperty(JcrConstants.JCR_DATA, binary);
 
         UI ui = mock(UI.class);
         page = mock(Page.class);
         when(ui.getPage()).thenReturn(page);
         UI.setCurrent(ui);
-
 
         item = mock(JcrNodeAdapter.class);
         when(item.getJcrItem()).thenReturn(root);
