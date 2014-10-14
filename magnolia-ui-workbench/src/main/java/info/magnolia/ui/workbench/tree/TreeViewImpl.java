@@ -82,8 +82,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     public TreeViewImpl(TreeTable tree) {
         super(tree);
         tree.setSortEnabled(false);
-
-        tree.setCollapsed(tree.firstItemId(), false);
         rowScroller = new TreeRowScroller(tree);
         this.treeTable = tree;
     }
