@@ -1188,21 +1188,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsNullAndNodeIsContentNodeAndParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
-        // GIVEN
-        NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
-        Node core = NodeUtil.createPath(rootNode, "modules/pages/core", NodeTypes.ContentNode.NAME, true);
-        Object jcrItemId = JcrItemUtil.getItemId(core);
-
-        // WHEN
-        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
-
-        // THEN
-        assertFalse(autoSuggesterResult.suggestionsAvailable());
-    }
-
-    @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsNullAndNodeIsFolderAndParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfFolderNodeParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
         Node untitled = NodeUtil.createPath(rootNode, "modules/pages/untitled", NodeTypes.Content.NAME, true);
@@ -1228,7 +1214,70 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsArray() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeParentNodeIsModulesFolder() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
+        Node core = NodeUtil.createPath(rootNode, "modules/pages/core", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(core);
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfFolderNodeParentNodeIsModulesFolderAndAlsoBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node pages = NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
+        pages.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        Node untitled = NodeUtil.createPath(rootNode, "modules/pages/untitled", NodeTypes.Content.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 8);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("apps"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("templates"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("dialogs"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("commands"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("fieldTypes"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("virtualURIMapping"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("renderers"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("config"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertFalse(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfContentNodeParentNodeIsModulesFolderAndAlsoBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node pages = NodeUtil.createPath(rootNode, "modules/pages", NodeTypes.Content.NAME, true);
+        pages.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        Node untitled = NodeUtil.createPath(rootNode, "modules/pages/untitled", NodeTypes.ContentNode.NAME, true);
+        Object jcrItemId = JcrItemUtil.getItemId(untitled);
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "jcrName");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mapProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+    }
+
+    @Test
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsArray() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBean.class.getName());
@@ -1244,7 +1293,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsCollection() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsCollection() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBean.class.getName());
@@ -1260,7 +1309,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsMap() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsMap() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBean.class.getName());
@@ -1276,7 +1325,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsBean() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
@@ -1298,7 +1347,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
@@ -1320,7 +1369,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSuggestionsForNameOfNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsNotInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testGetSuggestionsForNameOfContentNodeWhenNodeParentTypeIsBeanAndParentNodeHasSomeNodesAndNodeIsNotInParent() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node parent = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
         parent.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
@@ -1362,7 +1411,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testTyeInferenceWhenNodeExtends() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testTypeInferenceWhenNodeExtends() throws AccessDeniedException, PathNotFoundException, RepositoryException {
         // GIVEN
         Node node1 = NodeUtil.createPath(rootNode, "node1", NodeTypes.ContentNode.NAME, true);
         node1.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());

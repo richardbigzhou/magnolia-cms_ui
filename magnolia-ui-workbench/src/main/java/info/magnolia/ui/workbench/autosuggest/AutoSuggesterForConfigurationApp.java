@@ -196,27 +196,39 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
 
             // If processing a node that has a parent node
             if (parentNode != null) {
-                TypeDescriptor parentNodeTypeDescriptor = getNodeTypeDescriptor(parentNode);
 
-                // If processing name field of a node whose parent has no class
-                if (parentNodeTypeDescriptor == null) {
-                    return getSuggestionsForNameOfNodeInUnknown(node, parentNode);
+                // If processing a node that is a content node
+                if (NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME)) {
+                    TypeDescriptor parentNodeTypeDescriptor = getNodeTypeDescriptor(parentNode);
+
+                    // If processing name field of a node whose parent has no class
+                    if (parentNodeTypeDescriptor == null) {
+                        return getSuggestionsForNameOfContentNodeInUnknown(node, parentNode);
+                    }
+                    // If processing name field of a node whose parent is an array
+                    else if (parentNodeTypeDescriptor.isArray()) {
+                        return getSuggestionsForNameOfContentNodeInArray(parentNode, parentNodeTypeDescriptor);
+                    }
+                    // If processing name field of a node whose parent is a collection
+                    else if (parentNodeTypeDescriptor.isCollection()) {
+                        return getSuggestionsForNameOfContentNodeInCollection(parentNode, parentNodeTypeDescriptor);
+                    }
+                    // If processing name field of a node whose parent is a map
+                    else if (parentNodeTypeDescriptor.isMap()) {
+                        return getSuggestionsForNameOfContentNodeInMap(parentNode, parentNodeTypeDescriptor);
+                    }
+                    // If processing name field of a node whose parent is a bean
+                    else {
+                        return getSuggestionsForNameOfContentNodeInBean(node, parentNode, parentNodeTypeDescriptor);
+                    }
                 }
-                // If processing name field of a node whose parent is an array
-                else if (parentNodeTypeDescriptor.isArray()) {
-                    return getSuggestionsForNameOfNodeInArray(parentNode, parentNodeTypeDescriptor);
+                // If processing a node that is a folder
+                else if (NodeUtil.isNodeType(node, NodeTypes.Content.NAME)) {
+                    return getSuggestionsForNameOfFolderNode(node, parentNode);
                 }
-                // If processing name field of a node whose parent is a collection
-                else if (parentNodeTypeDescriptor.isCollection()) {
-                    return getSuggestionsForNameOfNodeInCollection(parentNode, parentNodeTypeDescriptor);
-                }
-                // If processing name field of a node whose parent is a map
-                else if (parentNodeTypeDescriptor.isMap()) {
-                    return getSuggestionsForNameOfNodeInMap(parentNode, parentNodeTypeDescriptor);
-                }
-                // If processing name field of a node whose parent is a bean
+                // If processing a node that is neither a content node or a folder
                 else {
-                    return getSuggestionsForNameOfNodeInBean(node, parentNode, parentNodeTypeDescriptor);
+                    return noSuggestionsAvailable();
                 }
             }
             // If processing a node that does not have a parent
@@ -231,18 +243,72 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
 
     /**
      * Get suggestions for node name when node has a parent but the parent's type is unknown.
-     * This includes the case where the parent node is a folder.
      */
-    protected AutoSuggesterResult getSuggestionsForNameOfNodeInUnknown(final Node node, final Node parentNode) {
-        // QUESTION Are there other cases where we can recommend a name for the node when its parent type is unknown?
+    protected AutoSuggesterResult getSuggestionsForNameOfContentNodeInUnknown(final Node node, final Node parentNode) {
+        // TODO
+        // QUESTION Are there cases where we can recommend a name for the node when its parent type is unknown?
+        return noSuggestionsAvailable();
+    }
 
+    protected AutoSuggesterResult getSuggestionsForNameOfContentNodeInMap(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
+        // TODO
+        // QUESTION Are there special cases where we can make suggestions for the name of node in a map?
+        return noSuggestionsAvailable();
+    }
+
+    protected AutoSuggesterResult getSuggestionsForNameOfContentNodeInCollection(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
+        // TODO
+        // QUESTION Are there special cases where we can make suggestions for the name of node in a collection?
+        return noSuggestionsAvailable();
+    }
+
+    protected AutoSuggesterResult getSuggestionsForNameOfContentNodeInArray(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
+        // TODO
+        // QUESTION Are there special cases where we can make suggestions for the name of node in an array?
+        return noSuggestionsAvailable();
+    }
+
+    protected AutoSuggesterResult getSuggestionsForNameOfContentNodeInBean(final Node node, final Node parentNode, final TypeDescriptor parentNodeTypeDescriptor) {
+        if (node == null || parentNode == null || parentNodeTypeDescriptor == null) {
+            return noSuggestionsAvailable();
+        }
+
+        try {
+            final Collection<String> possibleSubnodeNames = getAllPossibleSubnodeNames(parentNodeTypeDescriptor);
+            if (possibleSubnodeNames != null) {
+                String nodeName = node.getName();
+
+                if (nodeName != null) {
+                    final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, possibleSubnodeNames);
+
+                    return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        } catch (RepositoryException ex) {
+            log.warn("Could not get suggestions for name of node in bean: " + ex);
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for name of folder node. If it is a sub-folder of /modules/<moduleName>, suggest
+     * the standard subfolder names: apps, templates, dialogs, commands, fieldTypes, virtualURIMapping,
+     * renderers, config.
+     */
+    protected AutoSuggesterResult getSuggestionsForNameOfFolderNode(Node node, Node parentNode) {
         if (node == null || parentNode == null) {
             return noSuggestionsAvailable();
         }
 
         try {
-            // If node is a folder and node's parent is a folder
-            if (NodeUtil.isNodeType(node, NodeTypes.Content.NAME) && NodeUtil.isNodeType(parentNode, NodeTypes.Content.NAME)) {
+            // If node's parent is a folder
+            if (NodeUtil.isNodeType(parentNode, NodeTypes.Content.NAME)) {
                 String parentPath = parentNode.getPath();
 
                 // If node's parent's path is available
@@ -274,58 +340,12 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                     return noSuggestionsAvailable();
                 }
             }
-            // If node is not a folder or node's parent is not a folder
+            // If node's parent is not a folder
             else {
                 return noSuggestionsAvailable();
             }
         } catch (RepositoryException ex) {
-            log.warn("Could not get suggestions for name of node when type of parent is unknown: " + ex);
-            return noSuggestionsAvailable();
-        }
-    }
-
-    protected AutoSuggesterResult getSuggestionsForNameOfNodeInMap(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
-        // TODO
-        // QUESTION Are there special cases where we can make suggestions for the name of node in a map?
-        return noSuggestionsAvailable();
-    }
-
-    protected AutoSuggesterResult getSuggestionsForNameOfNodeInCollection(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
-        // TODO
-        // QUESTION Are there special cases where we can make suggestions for the name of node in a collection?
-        return noSuggestionsAvailable();
-    }
-
-    protected AutoSuggesterResult getSuggestionsForNameOfNodeInArray(Node parentNode, TypeDescriptor parentNodeTypeDescriptor) {
-        // TODO
-        // QUESTION Are there special cases where we can make suggestions for the name of node in an array?
-        return noSuggestionsAvailable();
-    }
-
-    protected AutoSuggesterResult getSuggestionsForNameOfNodeInBean(final Node node, final Node parentNode, final TypeDescriptor parentNodeTypeDescriptor) {
-        if (node == null || parentNode == null || parentNodeTypeDescriptor == null) {
-            return noSuggestionsAvailable();
-        }
-
-        try {
-            final Collection<String> possibleSubnodeNames = getAllPossibleSubnodeNames(parentNodeTypeDescriptor);
-            if (possibleSubnodeNames != null) {
-                String nodeName = node.getName();
-
-                if (nodeName != null) {
-                    final Collection<String> suggestions = getAllPossibleNewSubnodeNames(nodeName, parentNode, possibleSubnodeNames);
-
-                    return new AutoSuggesterResultAdapter(suggestions != null && !suggestions.isEmpty(), suggestions, MatchMethod.STARTS_WITH, true, true);
-                }
-                else {
-                    return noSuggestionsAvailable();
-                }
-            }
-            else {
-                return noSuggestionsAvailable();
-            }
-        } catch (RepositoryException ex) {
-            log.warn("Could not get suggestions for name of node in bean: " + ex);
+            log.warn("Could not get suggestions for name of folder node: " + ex);
             return noSuggestionsAvailable();
         }
     }
