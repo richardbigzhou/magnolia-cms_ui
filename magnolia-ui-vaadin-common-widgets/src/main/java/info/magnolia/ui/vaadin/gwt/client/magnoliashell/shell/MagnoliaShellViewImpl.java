@@ -132,6 +132,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
                     return;
                 }
 
+                if (isFocusedElementGroovyConsole()) {
+                    return;
+                }
+
                 char c = event.getCharCode();
 
                 switch (c) {
@@ -189,12 +193,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     /**
      * Returns whether the currently focused element is one that accepts keyboard input.
-     * 
-     * @return
      */
     protected boolean isFocusedElementAnInputField() {
         Element focused = elementInFocus(RootPanel.get().getElement());
         String tagName = focused.getTagName();
+
         if ("input".equalsIgnoreCase(tagName) || "select".equalsIgnoreCase(tagName) || "textarea".equalsIgnoreCase(tagName)) {
             return true;
         }
@@ -348,5 +351,19 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         return getWidgetIndex(widget) != -1;
     }
 
+    /*
+     * We need to check for groovy console element (a DIV) css classname (terminal) and skip the shell apps shortcuts. Should the need arise for a generic mechanism usable by other components too,
+     * we could expose something like a special css class or better a special html5 data-* attribute. See http://jira.magnolia-cms.com/browse/MGNLGROOVY-123
+     */
+    private boolean isFocusedElementGroovyConsole() {
+        Element focused = elementInFocus(RootPanel.get().getElement());
+
+        String className = focused.getClassName();
+
+        if (className.contains("terminal")) {
+            return true;
+        }
+        return false;
+    }
 
 }
