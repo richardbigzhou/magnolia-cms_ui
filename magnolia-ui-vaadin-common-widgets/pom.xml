@@ -185,6 +185,7 @@
         <executions>
           <execution>
             <id>unpack-vaadin-sources</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -232,7 +233,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-patch-plugin</artifactId>
-          <configuration>
+        <configuration>
+          <optimizations>false</optimizations>
           <patches>
             <patch>vscrolltable.txt</patch>
             <patch>vtreetable.txt</patch>
@@ -243,11 +245,13 @@
             <patch>draganddropwrapper.txt</patch>
             <patch>vckeditortextfield.txt</patch>
           </patches>
+          <strictPatching>true</strictPatching>
           <strip>4</strip>
         </configuration>
         <executions>
           <execution>
             <id>patch</id>
+            <phase>process-sources</phase>
             <goals>
               <goal>apply</goal>
             </goals>
