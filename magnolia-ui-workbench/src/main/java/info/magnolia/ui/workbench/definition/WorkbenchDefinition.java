@@ -60,11 +60,6 @@ public interface WorkbenchDefinition extends Serializable {
     boolean isEditable();
 
     /**
-     * Whether multiple items can be selected at once.
-     */
-    boolean isMultipleSelection();
-
-    /**
      * @return the DropConstraint class used to handle drag&drop.
      */
     Class<? extends DropConstraint> getDropConstraintClass();

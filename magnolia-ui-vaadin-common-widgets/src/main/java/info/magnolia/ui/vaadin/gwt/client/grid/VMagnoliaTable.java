@@ -42,8 +42,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
@@ -183,7 +182,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             private CheckBox selectionCheckBox;
 
-            private Panel selectionCheckBoxSpacer;
+            private HTML selectionCheckBoxSpacer;
 
             private String nodeIcon;
 
@@ -313,7 +312,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 getChildren().add(selectionCheckBox);
                 VMagnoliaTable.this.adopt(selectionCheckBox);
 
-                selectionCheckBoxSpacer = new SimplePanel();
+                selectionCheckBoxSpacer = new HTML();
                 selectionCheckBoxSpacer.addStyleName("v-selection-cb");
                 getChildren().add(selectionCheckBoxSpacer);
                 VMagnoliaTable.this.adopt(selectionCheckBoxSpacer);

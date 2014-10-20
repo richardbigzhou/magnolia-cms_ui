@@ -145,7 +145,6 @@ public class ContentApp extends BaseApp {
                 ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) cloner.deepClone(subApp.getWorkbench());
                 // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
                 workbench.setDialogWorkbench(true);
-                workbench.setMultipleSelection(false);
                 workbenchField.setWorkbench(workbench);
             }
 

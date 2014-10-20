@@ -195,13 +195,13 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
     }
 
     /**
-     * Disabling multiple selection in the workbench definition should turn off the multiSelect of the views.
+     * Workbenches in Dialogs should not provide a UI for multiple selection..
      */
     @Test
-    public void testDisablingMultipleSelection() {
+    public void testDialogWorkbenchDissallowsMultipleSelection() {
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        workbenchDefinition.setMultipleSelection(false);
+        workbenchDefinition.setDialogWorkbench(true);
 
         final TreePresenterDefinition treePresenterDefinition = new TreePresenterDefinition();
 
