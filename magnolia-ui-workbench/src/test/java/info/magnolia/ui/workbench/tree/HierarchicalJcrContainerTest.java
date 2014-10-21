@@ -82,6 +82,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     private Node rootNode;
     private String workspace;
+    private ConfiguredNodeTypeDefinition nodeTypeDefinition;
 
     @Override
     @Before
@@ -107,7 +108,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         contentView.addColumn(colDef1);
         contentView.addColumn(colDef2);
 
-        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         nodeTypeDefinition.setName(NodeTypes.Content.NAME);
 
         //workbenchDefinition = configuredWorkbench;
@@ -217,6 +218,56 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertFalse(res);
+    }
+
+    @Test
+    public void testHasChildren() throws RepositoryException {
+        // GIVEN
+        nodeTypeDefinition.setStrict(true);
+        connectorDefinition.setIncludeProperties(true);
+
+        // Node with a sub-node
+        final String nameProperty = NodeTypes.JCR_PREFIX + PROPERTY_1;
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, nameProperty, "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, nameProperty, "name1_1");
+
+        // Node with a property
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, nameProperty, "name2");
+        node2.setProperty("property", "dummy");
+
+        // Childless node
+        Node node3 = AbstractJcrContainerTest.createNode(rootNode, "node3", NodeTypes.Content.NAME, nameProperty, "name3");
+
+        // Node with a sub-node of type different from config
+        Node node4 = AbstractJcrContainerTest.createNode(rootNode, "node4", NodeTypes.Content.NAME, nameProperty, "name4");
+        AbstractJcrContainerTest.createNode(node4, "node4_1", NodeTypes.ContentNode.NAME, nameProperty, "name4_1");
+
+        // Node with a jcr: property
+        Node node5 = AbstractJcrContainerTest.createNode(rootNode, "node5", NodeTypes.Content.NAME, nameProperty, "name5");
+        node5.setProperty("jcr:property", "dummy");
+
+        node1.getSession().save();
+
+        final JcrItemId containerItemId1 = JcrItemUtil.getItemId(node1);
+        final JcrItemId containerItemId2 = JcrItemUtil.getItemId(node2);
+        final JcrItemId containerItemId3 = JcrItemUtil.getItemId(node3);
+        final JcrItemId containerItemId4 = JcrItemUtil.getItemId(node4);
+        final JcrItemId containerItemId5 = JcrItemUtil.getItemId(node5);
+
+        // WHEN
+        boolean res1 = hierarchicalJcrContainer.hasChildren(containerItemId1);
+        boolean res2 = hierarchicalJcrContainer.hasChildren(containerItemId2);
+        boolean res3 = hierarchicalJcrContainer.hasChildren(containerItemId3);
+        boolean res4 = hierarchicalJcrContainer.hasChildren(containerItemId4);
+        boolean res5 = hierarchicalJcrContainer.hasChildren(containerItemId5);
+
+        // THEN
+        assertTrue(res1);
+        assertTrue(res2);
+
+        assertFalse(res3);
+        assertFalse(res4);
+        assertFalse(res5);
     }
 
     @Test
