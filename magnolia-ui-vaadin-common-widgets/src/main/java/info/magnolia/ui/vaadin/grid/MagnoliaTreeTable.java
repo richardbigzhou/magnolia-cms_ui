@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.grid;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
@@ -132,20 +131,6 @@ public class MagnoliaTreeTable extends TreeTable {
     @Override
     public Collection<Validator> getValidators() {
         return null;
-    }
-
-    @Override
-    public void setContainerDataSource(Container newDataSource) {
-        super.setContainerDataSource(newDataSource);
-
-        // enforce partial updates - those were disabled in Vaadin 7 but they are safe as long as we don't generate vaadin components in table cells.
-        try {
-            Field f = TreeTable.class.getDeclaredField("containerSupportsPartialUpdates");
-            f.setAccessible(true);
-            f.setBoolean(this, true);
-        } catch (Exception e) {
-            log.warn("Could not enable partial-updates in tree.", e);
-        }
     }
 
     /**
