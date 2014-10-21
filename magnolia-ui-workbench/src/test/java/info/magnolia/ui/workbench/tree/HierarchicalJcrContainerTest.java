@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
@@ -46,7 +47,6 @@ import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -80,6 +80,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     private Node rootNode;
 
+    private ConfiguredNodeTypeDefinition nodeTypeDefinition;
+    
     @Override
     @Before
     public void setUp() throws Exception {
@@ -106,8 +108,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         contentView.addColumn(colDef1);
         contentView.addColumn(colDef2);
 
-        NodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
-        ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
+        nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition.setName(NodeTypes.Content.NAME);
         configuredWorkbench.addNodeType(nodeTypeDefinition);
 
         workbenchDefinition = configuredWorkbench;
@@ -142,7 +144,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         node2.getSession().save();
-        String containerItemId = node1.getIdentifier();
+        String containerItemId = JcrItemUtil.getItemId(node1);
 
         // WHEN
         boolean res = hierarchicalJcrContainer.areChildrenAllowed(containerItemId);
@@ -216,6 +218,56 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertFalse(res);
+    }
+
+    @Test
+    public void testHasChildren() throws RepositoryException {
+        // GIVEN
+        nodeTypeDefinition.setStrict(true);
+        workbenchDefinition.setIncludeProperties(true);
+
+        // Node with a sub-node
+        final String nameProperty = NodeTypes.JCR_PREFIX + PROPERTY_1;
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, nameProperty, "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, nameProperty, "name1_1");
+
+        // Node with a property
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, nameProperty, "name2");
+        node2.setProperty("property", "dummy");
+
+        // Childless node
+        Node node3 = AbstractJcrContainerTest.createNode(rootNode, "node3", NodeTypes.Content.NAME, nameProperty, "name3");
+
+        // Node with a sub-node of type different from config
+        Node node4 = AbstractJcrContainerTest.createNode(rootNode, "node4", NodeTypes.Content.NAME, nameProperty, "name4");
+        AbstractJcrContainerTest.createNode(node4, "node4_1", NodeTypes.ContentNode.NAME, nameProperty, "name4_1");
+
+        // Node with a jcr: property
+        Node node5 = AbstractJcrContainerTest.createNode(rootNode, "node5", NodeTypes.Content.NAME, nameProperty, "name5");
+        node5.setProperty("jcr:property", "dummy");
+
+        node1.getSession().save();
+
+        final String containerItemId1 = JcrItemUtil.getItemId(node1);
+        final String containerItemId2 = JcrItemUtil.getItemId(node2);
+        final String containerItemId3 = JcrItemUtil.getItemId(node3);
+        final String containerItemId4 = JcrItemUtil.getItemId(node4);
+        final String containerItemId5 = JcrItemUtil.getItemId(node5);
+
+        // WHEN
+        boolean res1 = hierarchicalJcrContainer.hasChildren(containerItemId1);
+        boolean res2 = hierarchicalJcrContainer.hasChildren(containerItemId2);
+        boolean res3 = hierarchicalJcrContainer.hasChildren(containerItemId3);
+        boolean res4 = hierarchicalJcrContainer.hasChildren(containerItemId4);
+        boolean res5 = hierarchicalJcrContainer.hasChildren(containerItemId5);
+
+        // THEN
+        assertTrue(res1);
+        assertTrue(res2);
+
+        assertFalse(res3);
+        assertFalse(res4);
+        assertFalse(res5);
     }
 
     @Test

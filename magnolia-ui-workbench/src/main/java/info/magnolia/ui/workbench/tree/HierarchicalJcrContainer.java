@@ -156,7 +156,40 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean hasChildren(Object itemId) {
         final Item item = getJcrItem(itemId);
-        return item.isNode() && !getChildren(item).isEmpty();
+        if (item.isNode()) {
+            final Node node = (Node) item;
+            try {
+                final NodeIterator it = node.getNodes();
+                while (it.hasNext()) {
+                    if (isNodeVisible(it.nextNode())) {
+                        return true;
+                    }
+                }
+            } catch (RepositoryException e) {
+                log.warn("Failed to get child nodes of {}", NodeUtil.getPathIfPossible((node)));
+            }
+
+
+            if (getWorkbenchDefinition().isIncludeProperties()) {
+                try {
+                    final PropertyIterator propertyIterator = node.getProperties();
+                    while (propertyIterator.hasNext()) {
+                        final Property property = propertyIterator.nextProperty();
+                        if (!isJcrOrMgnlProperty(property)) {
+                            return true;
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Failed to get child nodes of {}", NodeUtil.getPathIfPossible((node)));
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isJcrOrMgnlProperty(Property property) throws RepositoryException {
+        final String propertyName = property.getName();
+        return propertyName.startsWith(NodeTypes.JCR_PREFIX) || propertyName.startsWith(NodeTypes.MGNL_PREFIX);
     }
 
     protected Collection<String> createContainerIds(Collection<Item> children) {
@@ -200,8 +233,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
                     final Property property = propertyIterator.nextProperty();
-                    final String propertyName = property.getName();
-                    if (!propertyName.startsWith(NodeTypes.JCR_PREFIX) && !propertyName.startsWith(NodeTypes.MGNL_PREFIX)) {
+                    if (!isJcrOrMgnlProperty(property)) {
                         properties.add(property);
                     }
                 }
