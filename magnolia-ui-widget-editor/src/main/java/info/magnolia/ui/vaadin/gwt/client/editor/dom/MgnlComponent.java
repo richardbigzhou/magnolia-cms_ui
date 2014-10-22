@@ -70,20 +70,27 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         ComponentElement component = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
         boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
 
-        boolean deletable = true;
-        if (getAttributes().containsKey(OperationPermissionDefinition.DELETABLE)) {
-            deletable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.DELETABLE));
-        }
 
-        component.setDeletable(deletable && !inherited);
         boolean isWritable = hasEditButton();
         component.setWritable(isWritable);
 
         boolean isEditable = isEditable() && isWritable;
         component.setEditable(isEditable);
 
-        component.setMoveable(isMovable() && isEditable);
+        boolean deletable = isDeletable() && !inherited && isEditable;
+        component.setDeletable(deletable);
+
+        boolean moveable = isMovable() && isEditable;
+        component.setMoveable(moveable);
         return component;
+    }
+
+    private boolean isDeletable() {
+        boolean deletable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.DELETABLE)) {
+            deletable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.DELETABLE));
+        }
+        return deletable;
     }
 
     private boolean isEditable() {
