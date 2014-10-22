@@ -37,6 +37,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import java.util.HashMap;
 
@@ -64,7 +65,8 @@ public class DefaultEditorActionRenderer implements ActionRenderer {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     listener.onActionFired(name, new HashMap<String, Object>());
-                    if (listener instanceof EditorValidator && !((EditorValidator) listener).isValid()) {
+                    // make sure we don't trigger useless validation for all form fields when the action is 'cancel'.
+                    if (!BaseDialog.CANCEL_ACTION_NAME.equals(name) && listener instanceof EditorValidator && !((EditorValidator) listener).isValid()) {
                         // have to re-enable button since validation failed
                         button.setEnabled(true);
                     }
