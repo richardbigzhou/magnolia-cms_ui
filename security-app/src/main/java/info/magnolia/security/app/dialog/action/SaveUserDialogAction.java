@@ -117,6 +117,7 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
 
             User user;
             Session session = userItem.getJcrItem().getSession();
+            final Node userNode;
             if (userItem instanceof JcrNewNodeAdapter) {
 
                 // JcrNewNodeAdapter returns the parent JCR item here
@@ -131,8 +132,9 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
+                userNode = parentNode.getNode(newUserName);
             } else {
-                Node userNode = userItem.getJcrItem();
+                userNode = userItem.getJcrItem();
                 String existingUserName = userNode.getName();
                 user = userManager.getUser(existingUserName);
 
@@ -165,6 +167,8 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                     userManager.setProperty(user, propertyName.toString(), propertyValue);
                 }
             }
+
+            userItem.updateChildren(userNode);
 
             session.save();
 
