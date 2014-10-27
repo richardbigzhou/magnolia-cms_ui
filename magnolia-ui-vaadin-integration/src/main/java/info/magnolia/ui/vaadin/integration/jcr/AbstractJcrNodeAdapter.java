@@ -196,8 +196,10 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     /**
      * Updates and removes children based on the {@link #children} and {@link #removedChildren} maps.
+     *
+     * TODO: Has been made public as of MGNLUI-3124 resolution. Needs further API improvement (e.g. no-arg version or possibly some other better way to update the JCR node internals).
      */
-    private void updateChildren(Node node) throws RepositoryException {
+    public void updateChildren(Node node) throws RepositoryException {
         if (!children.isEmpty()) {
             for (AbstractJcrNodeAdapter child : children.values()) {
                 // Update child node as well
