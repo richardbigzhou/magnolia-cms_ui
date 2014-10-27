@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -70,7 +69,6 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
 
     protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
-    protected DefaultI18nContentSupport i18nContentSupport;
     protected final String workspaceName = "workspace";
     protected MockSession session;
     protected String propertyName = "propertyName";
@@ -111,11 +109,6 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);
-
-        // Init i18n
-        i18nContentSupport = new DefaultI18nContentSupport();
-        i18nContentSupport.setFallbackLocale(DEFAULT_LOCALE);
-
     }
 
     @After

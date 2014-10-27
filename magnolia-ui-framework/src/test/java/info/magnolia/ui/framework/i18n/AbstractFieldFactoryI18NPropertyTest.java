@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.i18n;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
@@ -58,12 +59,17 @@ import com.vaadin.ui.Field;
  * Main testcase for {@link info.magnolia.ui.form.field.factory.AbstractFieldFactory} i18n property.
  */
 public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
+
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
+    private DefaultI18nContentSupport i18nContentSupport;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        // Init i18n
+        i18nContentSupport = new DefaultI18nContentSupport();
+        i18nContentSupport.setFallbackLocale(DEFAULT_LOCALE);
         i18nContentSupport.addLocale(LocaleDefinition.make("de", null, true));
         i18nContentSupport.addLocale(LocaleDefinition.make("it", null, false));
         i18nContentSupport.addLocale(LocaleDefinition.make("fr", null, true));

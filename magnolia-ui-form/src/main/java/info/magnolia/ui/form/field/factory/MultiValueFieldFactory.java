@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -52,20 +53,29 @@ import com.vaadin.ui.Field;
  * - Add remove Fields <br>
  * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
  * Field property datasource.
- * 
+ *
  * @param <T>
  */
 public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFieldDefinition, PropertysetItem> {
+
     private FieldFactoryFactory fieldFactoryFactory;
-    private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
+    private I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
+    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, fieldFactoryFactory, componentProvider, null);
     }
 
     @Override
@@ -73,7 +83,7 @@ public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFi
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        MultiField field = new MultiField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
+        MultiField field = new MultiField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
         // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));

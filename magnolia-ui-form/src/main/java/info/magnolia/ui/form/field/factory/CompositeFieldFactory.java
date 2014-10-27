@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CompositeField;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -55,15 +56,23 @@ import com.vaadin.ui.Field;
 public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends AbstractFieldFactory<D, PropertysetItem> {
 
     private FieldFactoryFactory fieldFactoryFactory;
-    private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
+    private final I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public CompositeFieldFactory(D definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+    public CompositeFieldFactory(D definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
+    public CompositeFieldFactory(D definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, fieldFactoryFactory, componentProvider, componentProvider.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override
@@ -71,7 +80,7 @@ public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends A
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        CompositeField field = new CompositeField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
+        CompositeField field = new CompositeField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
         return field;
     }
 

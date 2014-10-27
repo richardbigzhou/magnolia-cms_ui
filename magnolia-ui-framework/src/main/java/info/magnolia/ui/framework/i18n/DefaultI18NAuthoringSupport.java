@@ -37,6 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.form.field.AbstractCustomMultiField;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -146,6 +147,10 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                             if (field instanceof AbstractField) {
                                 ((AbstractField) field).setLocale(locale);
                             }
+
+                        } else if (field instanceof AbstractCustomMultiField) {
+                            // propagate locale to multifield even when itself is not i18nized; its entries must be created in current locale.
+                            ((AbstractCustomMultiField) field).setLocale(locale);
                         }
 
                     }

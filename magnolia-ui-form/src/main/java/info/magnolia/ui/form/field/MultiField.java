@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
@@ -72,15 +73,23 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
 
     private static final Logger log = LoggerFactory.getLogger(MultiField.class);
 
-    private final Button addButton = new NativeButton();
-
     private final ConfiguredFieldDefinition fieldDefinition;
+
+    private final Button addButton = new NativeButton();
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
 
-    public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
-        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
+    public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
         this.fieldDefinition = definition.getField();
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
+    public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        this(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, null);
     }
 
     @Override

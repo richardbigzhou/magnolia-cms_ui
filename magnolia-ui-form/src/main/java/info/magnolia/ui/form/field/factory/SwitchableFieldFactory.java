@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -71,17 +72,26 @@ import com.vaadin.ui.Field;
  * @param <D> definition type
  */
 public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<SwitchableFieldDefinition, PropertysetItem> {
+
     private static final Logger log = LoggerFactory.getLogger(SwitchableFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
-    private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
+    private final I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public SwitchableFieldFactory(SwitchableFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+    public SwitchableFieldFactory(SwitchableFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
+    public SwitchableFieldFactory(SwitchableFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, fieldFactoryFactory, componentProvider, componentProvider.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override
@@ -97,7 +107,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             definition.addField(createSelectFieldDefinition());
         }
 
-        SwitchableField field = new SwitchableField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
+        SwitchableField field = new SwitchableField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
         return field;
     }
 

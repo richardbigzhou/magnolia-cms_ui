@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
@@ -74,18 +75,33 @@ import com.vaadin.ui.HasComponents;
 public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> extends CustomField<T> {
 
     protected final FieldFactoryFactory fieldFactoryFactory;
-    protected final I18nContentSupport i18nContentSupport;
+
+    /** @deprecated since 5.3.5 (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization. */
+    @Deprecated
+    protected final I18nContentSupport i18nContentSupport = null;
+    private final I18NAuthoringSupport i18nAuthoringSupport;
+
     protected final ComponentProvider componentProvider;
     protected final D definition;
     protected final Item relatedFieldItem;
     protected AbstractOrderedLayout root;
 
-    protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+    private Locale currentLocale;
+
+    protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         this.definition = definition;
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
         this.relatedFieldItem = relatedFieldItem;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
+    protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        this(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, componentProvider.getComponent(I18NAuthoringSupport.class));
     }
 
     /**
@@ -106,6 +122,12 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         if (root != null) {
             initFields();
         }
+        this.currentLocale = locale;
+    }
+
+    @Override
+    public Locale getLocale() {
+        return currentLocale;
     }
 
     @SuppressWarnings("unchecked")
@@ -166,6 +188,21 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         }
 
         field.setWidth(100, Unit.PERCENTAGE);
+
+        // propagate locale to complex fields further down, in case they have i18n-aware fields
+        if (field instanceof AbstractCustomMultiField) {
+            ((AbstractCustomMultiField) field).setLocale(getLocale());
+        }
+        // i18nize field entry — crazily depends upon component hierarchy so we must do this after field is attached
+        if (fieldDefinition.isI18n()) {
+            field.addAttachListener(new AttachListener() {
+                @Override
+                public void attach(AttachEvent event) {
+                    i18nAuthoringSupport.i18nize(((Component) event.getSource()).getParent(), getLocale());
+                }
+            });
+        }
+
         return field;
     }
 

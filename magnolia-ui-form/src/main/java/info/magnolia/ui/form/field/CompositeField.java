@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.Layout;
@@ -55,8 +56,16 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefinition, PropertysetItem> {
 
+    public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.3.5 removing i18nContentSupport dependency (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization.
+     */
+    @Deprecated
     public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
-        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
+        this(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, componentProvider.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

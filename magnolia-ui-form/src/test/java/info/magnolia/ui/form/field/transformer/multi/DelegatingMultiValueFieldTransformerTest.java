@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import static org.junit.Assert.assertEquals;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -254,7 +252,6 @@ public class DelegatingMultiValueFieldTransformerTest {
         // create two elements
         transformer.createProperty();
         transformer.createProperty();
-        res = transformer.readFromItem();
         assertEquals(3, res.getItemPropertyIds().size());
         assertNotNull(res.getItemProperty(0));
         assertNotNull(res.getItemProperty(1));
@@ -263,7 +260,6 @@ public class DelegatingMultiValueFieldTransformerTest {
         transformer.removeProperty(1);
 
         // THEN
-        res = transformer.readFromItem();
         assertNotNull(res.getItemProperty(0));
         assertNotNull(res.getItemProperty(1));
         assertEquals(2, res.getItemPropertyIds().size());
