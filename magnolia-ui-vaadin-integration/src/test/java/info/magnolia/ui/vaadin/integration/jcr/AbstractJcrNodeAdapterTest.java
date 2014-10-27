@@ -38,6 +38,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -197,6 +198,35 @@ public class AbstractJcrNodeAdapterTest {
 
         // THEN
         assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());
+    }
+
+    @Test
+    public void testUpdateChildren() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final AbstractJcrNodeAdapter nodeAdapter = new DummyJcrNodeAdapter(underlyingNode);
+
+        // Pre-created sub-node associated with the child JCR node adapter
+        final Node existingChild = underlyingNode.addNode("existing");
+        final AbstractJcrNodeAdapter existingChildNodeAdapter = new DummyJcrNodeAdapter(existingChild);
+        nodeAdapter.addChild(existingChildNodeAdapter);
+
+        // New node child JCR node adapter
+        final JcrNewNodeAdapter newChildNodeAdapter = new JcrNewNodeAdapter(underlyingNode, NodeTypes.ContentNode.NAME, "newChild");
+        nodeAdapter.addChild(newChildNodeAdapter);
+
+        // WHEN
+        newChildNodeAdapter.addItemProperty("test", DefaultPropertyUtil.newDefaultProperty(String.class, "testValue"));
+        existingChildNodeAdapter.addItemProperty("test", DefaultPropertyUtil.newDefaultProperty(String.class, "testValue"));
+        nodeAdapter.updateChildren(underlyingNode);
+
+        // THEN
+        // The new child node is created
+        assertTrue(underlyingNode.hasNode("newChild"));
+
+        // Both children have the property created and stored
+        assertEquals("testValue", underlyingNode.getNode("newChild").getProperty("test").getString());
+        assertEquals("testValue", existingChild.getProperty("test").getString());
     }
 
     @Test
