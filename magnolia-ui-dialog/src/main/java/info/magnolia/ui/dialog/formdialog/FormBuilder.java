@@ -42,7 +42,10 @@ import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.FormTab;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
@@ -51,6 +54,7 @@ import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -116,9 +120,8 @@ public class FormBuilder {
         }
 
         buildReducedForm(formDefinition, view, item, parent);
-        boolean hasI18NAwareFields = hasI18NAwareFields(formDefinition);
 
-        if (hasI18NAwareFields) {
+        if (hasI18nAwareFields(formDefinition)) {
             if (item instanceof JcrItemAdapter) {
                 javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
                 if (jcrItem.isNode()) {
@@ -236,15 +239,39 @@ public class FormBuilder {
 
     }
 
-    private boolean hasI18NAwareFields(FormDefinition formDefinition) {
-        boolean hasI18NAwareFields = false;
-        for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                hasI18NAwareFields |= fieldDefinition.isI18n();
+    private boolean hasI18nAwareFields(FormDefinition formDefinition) {
+        Iterator<TabDefinition> tabs = formDefinition.getTabs().iterator();
+
+        while (tabs.hasNext()) {
+            TabDefinition tab = tabs.next();
+            Iterator<FieldDefinition> fields = tab.getFields().iterator();
+
+            while (fields.hasNext()) {
+                FieldDefinition field = fields.next();
+                if (isI18nAware(field)) {
+                    return true;
+                }
             }
         }
-        return hasI18NAwareFields;
+        return false;
+    }
 
+    private boolean isI18nAware(FieldDefinition field) {
+        if (field.isI18n()) {
+            return true;
+        }
+        if (field instanceof CompositeFieldDefinition) {
+            Iterator<ConfiguredFieldDefinition> fields = ((CompositeFieldDefinition) field).getFields().iterator();
+            while (fields.hasNext()) {
+                if (isI18nAware(fields.next())) {
+                    return true;
+                }
+            }
+        } else if (field instanceof MultiValueFieldDefinition) {
+            field = ((MultiValueFieldDefinition) field).getField();
+            return isI18nAware(field);
+        }
+        return false;
     }
 
     /**

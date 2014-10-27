@@ -46,8 +46,10 @@ import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.form.FormSection;
@@ -106,6 +108,31 @@ public class FormBuilderTest {
 
         // THEN
         verify(view).setCurrentLocale(locale);
+    }
+
+    @Test
+    public void buildFormFindsNestedI18nAwareFields() {
+        // GIVEN
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
+        CompositeFieldDefinition compositeField = new CompositeFieldDefinition();
+        TextFieldDefinition textField = new TextFieldDefinition();
+        textField.setI18n(true);
+        compositeField.addField(textField);
+        tab.addField(compositeField);
+        form.addTab(tab);
+
+        JcrItemAdapter item = new JcrNodeAdapter(session.getRootNode());
+        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
+        I18NAuthoringSupport i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, null);
+        FormView view = mock(FormView.class);
+
+        // WHEN
+        builder.buildForm(view, form, item, null);
+
+        // THEN
+        verify(view).setAvailableLocales(anyList());
     }
 
     @Test
