@@ -776,9 +776,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
-        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
-        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
         assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
@@ -796,13 +794,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
         AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "jcrName");
 
         // THEN
-        assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
-        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
-        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
-        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
-        assertTrue(autoSuggesterResult.showErrorHighlighting());
-        assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
     }
 
     @Test
@@ -903,9 +895,7 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
-        assertTrue(autoSuggesterResult.getSuggestions().contains("class"));
-        assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
         assertTrue(autoSuggesterResult.getSuggestions().contains("version"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());

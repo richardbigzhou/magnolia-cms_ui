@@ -391,7 +391,7 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
 
     /**
      * Try to get suggestions for name of property based on JCR only, when we cannot use the bean to get suggestions.
-     * Always suggest "extends" and "class" unless the node already has it and it is not the one being named.
+     * Always suggest "extends" and "class" for content nodes unless the node already has it and it is not the one being named.
      */
     protected AutoSuggesterResult getSuggestionsForNameOfPropertyBasedOnJCROnly(String propertyName, Node parentNode) {
         if (propertyName == null || parentNode == null) {
@@ -399,13 +399,16 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         }
 
         Collection<String> possibleSubpropertyNames = new HashSet<String>();
-        possibleSubpropertyNames.add("class");
-        possibleSubpropertyNames.add("extends");
 
         // Check if we should suggest the version property if property's parent is a folder /modules/<moduleName>
         try {
+            // If parent node is a content node
+            if (NodeUtil.isNodeType(parentNode, NodeTypes.ContentNode.NAME)) {
+                possibleSubpropertyNames.add("class");
+                possibleSubpropertyNames.add("extends");
+            }
             // If parent node is a folder
-            if (NodeUtil.isNodeType(parentNode, NodeTypes.Content.NAME)) {
+            else if (NodeUtil.isNodeType(parentNode, NodeTypes.Content.NAME)) {
                 String parentPath = parentNode.getPath();
 
                 // If property's parent is /modules/<moduleName>
@@ -414,7 +417,7 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                 }
             }
         } catch (RepositoryException ex) {
-            log.warn("Could not check if version property should be added as a suggestion: " + ex);
+            log.warn("Could not check if class, extends, or version properties should be added as a suggestion: " + ex);
         }
 
         Collection<String> suggestions = getAllPossibleNewSubpropertyNames(propertyName, parentNode, possibleSubpropertyNames);
