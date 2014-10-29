@@ -65,6 +65,8 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests for the {@link SaveUserDialogAction}.
@@ -169,7 +171,7 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         JcrNodeAdapter userItem  = new JcrNewNodeAdapter(adminNode, "testUser");
         prepareMocks(userItem);
 
-        when(userManager.createUser("/admin", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin", "testUser");
 
         SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
 
@@ -187,7 +189,7 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
         when(user.getName()).thenReturn("testUser");
 
         SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
@@ -206,7 +208,7 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
 
         Collection<String> newGroupList = Arrays.asList(
                 groupsSession.getRootNode().addNode("firstGroupName").getIdentifier(),
@@ -241,6 +243,17 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         verify(userManager, never()).removeGroup(user, "firstGroupName");
     }
 
+    private void mockUserCreation(final String path, final String name) {
+        when(userManager.createUser(path, name, "password")).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                userSession.getNode(path).addNode(name);
+                userSession.save();
+                return user;
+            }
+        });
+    }
+
     @Test
     public void testStoreRolesCollection() throws ActionExecutionException, RepositoryException {
         // GIVEN
@@ -248,7 +261,7 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
 
         Collection<String> newRoleList = Arrays.asList(
                 rolesSession.getRootNode().addNode("firstRoleName").getIdentifier(),
