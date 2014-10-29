@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUserManager;
@@ -40,11 +41,10 @@ import info.magnolia.cms.security.SecurityConstants;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
-import info.magnolia.context.SystemContext;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.MgnlTestCase;
-import info.magnolia.test.mock.jcr.MockValueFactory;
+import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
@@ -60,17 +60,18 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests for the {@link SaveUserDialogAction}.
  */
-public class SaveUserDialogActionTest extends MgnlTestCase {
+public class SaveUserDialogActionTest extends RepositoryTestCase {
 
     private SaveUserDialogActionDefinition definition;
     private EditorValidator editorValidator;
@@ -84,6 +85,8 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
 
     private UserManager userManager;
     private User user;
+    private Session userSession;
+    private Node adminNode;
 
     @Override
     @Before
@@ -95,18 +98,13 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
         editorCallback = mock(EditorCallback.class);
         securitySupport = mock(SecuritySupport.class);
 
-        userNode = mock(Node.class);
-        Session session = mock(Session.class);
-        when(userNode.getSession()).thenReturn(session);
-        when(session.getValueFactory()).thenReturn(new MockValueFactory());
+        userSession = MgnlContext.getJCRSession(RepositoryConstants.USERS);
+        adminNode = userSession.getRootNode().addNode("admin");
 
-        SystemContext systemContext = mock(SystemContext.class);
-        groupsSession = mock(Session.class);
-        rolesSession = mock(Session.class);
-        when(systemContext.getJCRSession(RepositoryConstants.USER_GROUPS)).thenReturn(groupsSession);
-        when(systemContext.getJCRSession(RepositoryConstants.USER_ROLES)).thenReturn(rolesSession);
-        ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
+        groupsSession = MgnlContext.getJCRSession(RepositoryConstants.USER_GROUPS);
+        rolesSession = MgnlContext.getJCRSession(RepositoryConstants.USER_ROLES);
     }
+
 
     private void prepareMocks(JcrNodeAdapter userItem) throws RepositoryException {
         when(editorValidator.isValid()).thenReturn(true);
@@ -116,38 +114,26 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
 
         when(securitySupport.getUserManager("admin")).thenReturn(userManager);
 
+        userItem.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, "testUser"));
+        userItem.addItemProperty(MgnlUserManager.PROPERTY_PASSWORD, DefaultPropertyUtil.newDefaultProperty(String.class, "password"));
 
-        when(userItem.getItemProperty(ModelConstants.JCR_NAME)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "testUser"));
-        when(userItem.getItemProperty(MgnlUserManager.PROPERTY_PASSWORD)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "password"));
+        userItem.addItemProperty(MgnlUserManager.PROPERTY_ENABLED, DefaultPropertyUtil.newDefaultProperty(String.class, "enabled"));
+        userItem.addItemProperty(MgnlUserManager.PROPERTY_LANGUAGE, DefaultPropertyUtil.newDefaultProperty(String.class, "language"));
+        userItem.addItemProperty(MgnlUserManager.PROPERTY_TITLE, DefaultPropertyUtil.newDefaultProperty(String.class, "title"));
+        userItem.addItemProperty(MgnlUserManager.PROPERTY_EMAIL, DefaultPropertyUtil.newDefaultProperty(String.class, "email"));
+        userItem.addItemProperty("customProps", DefaultPropertyUtil.newDefaultProperty(String.class, "customValue"));
 
-        when(userItem.getJcrItem()).thenReturn(userNode);
-        Collection propertyId = Arrays.asList(MgnlUserManager.PROPERTY_ENABLED, MgnlUserManager.PROPERTY_TITLE, MgnlUserManager.PROPERTY_EMAIL, MgnlUserManager.PROPERTY_LANGUAGE, MgnlUserManager.PROPERTY_EMAIL, "customProps");
-        when(userItem.getItemPropertyIds()).thenReturn(propertyId);
-        when(userItem.getItemProperty("customProps")).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "customValue"));
-        when(userItem.getItemProperty(MgnlUserManager.PROPERTY_ENABLED)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "enabled"));
-        when(userItem.getItemProperty(MgnlUserManager.PROPERTY_TITLE)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "title"));
-        when(userItem.getItemProperty(MgnlUserManager.PROPERTY_LANGUAGE)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "language"));
-        when(userItem.getItemProperty(MgnlUserManager.PROPERTY_EMAIL)).thenReturn(DefaultPropertyUtil.newDefaultProperty(String.class, "email"));
-
-        when(userItem.getItemProperty(SecurityConstants.NODE_GROUPS)).thenReturn(new DefaultProperty(List.class, new ArrayList<String>()));
-        when(userNode.hasNode(SecurityConstants.NODE_GROUPS)).thenReturn(true);
-        when(userNode.getNode(SecurityConstants.NODE_GROUPS)).thenReturn(userNode);
-        when(userItem.getItemProperty(SecurityConstants.NODE_ROLES)).thenReturn(new DefaultProperty(List.class, new ArrayList<String>()));
-        when(userNode.hasNode(SecurityConstants.NODE_ROLES)).thenReturn(true);
-        when(userNode.getNode(SecurityConstants.NODE_ROLES)).thenReturn(userNode);
-
-        PropertyIterator propertyIterator = mock(PropertyIterator.class);
-        when(userNode.getProperties()).thenReturn(propertyIterator);
-
+        userItem.addItemProperty(SecurityConstants.NODE_GROUPS, new DefaultProperty(List.class, new ArrayList<String>()));
+        userItem.addItemProperty(SecurityConstants.NODE_ROLES, new DefaultProperty(List.class, new ArrayList<String>()));
     }
 
     @Test
     public void testGetUserManagerWhenUserManagerRealmIsSpecifiedAndUserAlreadyExists() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNodeAdapter.class);
+        userNode = adminNode.addNode("testUser");
+        JcrNodeAdapter userItem = new JcrNodeAdapter(userNode);
         prepareMocks(userItem);
 
-        when(userNode.getName()).thenReturn("testUser");
         when(userManager.getUser("testUser")).thenReturn(user);
 
         definition.setUserManagerRealm("admin");
@@ -164,12 +150,10 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
     @Test
     public void testGetUserManagerWhenUserManagerRealmIsNotSpecifiedAndUserAlreadyExists() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNodeAdapter.class);
+        userNode = adminNode.addNode("testUser");
+        JcrNodeAdapter userItem = new JcrNodeAdapter(userNode);;
         prepareMocks(userItem);
 
-        when(userNode.getPath()).thenReturn("/admin/testUser");
-
-        when(userNode.getName()).thenReturn("testUser");
         when(userManager.getUser("testUser")).thenReturn(user);
 
         SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
@@ -184,13 +168,10 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
     @Test
     public void testGetUserManagerWhenUserManagerRealmIsNotSpecifiedAndCreateNewUserIntoRealmRoot() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        JcrNodeAdapter userItem  = new JcrNewNodeAdapter(adminNode, "testUser");
         prepareMocks(userItem);
 
-        when(userNode.getPath()).thenReturn("/admin");
-        when(userManager.createUser("/admin", "testUser", "password")).thenReturn(user);
-        when(user.getName()).thenReturn("testUser");
-        when(userNode.getNode("testUser")).thenReturn(userNode);
+        mockUserCreation("/admin", "testUser");
 
         SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
 
@@ -204,13 +185,12 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
     @Test
     public void testGetUserManagerWhenUserManagerRealmIsNotSpecifiedAndCreateNewUser() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        Node testNode = adminNode.addNode("test");
+        JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userNode.getPath()).thenReturn("/admin/test");
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
         when(user.getName()).thenReturn("testUser");
-        when(userNode.getNode("testUser")).thenReturn(userNode);
 
         SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
 
@@ -224,23 +204,20 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
     @Test
     public void testStoreGroupsCollection() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        Node testNode = adminNode.addNode("test");
+        JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userNode.getPath()).thenReturn("/admin/test");
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
 
-        Collection<String> newGroupList = new ArrayList<String>();
-        newGroupList.add("firstGroupUuid");
-        newGroupList.add("secondGroupUuid");
-        newGroupList.add("thirdGroupUuid");
-        when(userItem.getItemProperty(SecurityConstants.NODE_GROUPS)).thenReturn(new DefaultProperty(List.class, newGroupList));
+        Collection<String> newGroupList = Arrays.asList(
+                groupsSession.getRootNode().addNode("firstGroupName").getIdentifier(),
+                groupsSession.getRootNode().addNode("secondGroupName").getIdentifier(),
+                groupsSession.getRootNode().addNode("thirdGroupName").getIdentifier()
+        );
 
-        Node groupNode = mock(Node.class);
-        when(groupsSession.getNodeByIdentifier("firstGroupUuid")).thenReturn(groupNode);
-        when(groupsSession.getNodeByIdentifier("secondGroupUuid")).thenReturn(groupNode);
-        when(groupsSession.getNodeByIdentifier("thirdGroupUuid")).thenReturn(groupNode);
-        when(groupNode.getName()).thenReturn("firstGroupName", "secondGroupName", "thirdGroupName");
+        userItem.removeItemProperty(SecurityConstants.NODE_GROUPS);
+        userItem.addItemProperty(SecurityConstants.NODE_GROUPS, new DefaultProperty(List.class, newGroupList));
 
         Collection<String> oldGroupList = new ArrayList<String>();
         oldGroupList.add("firstGroupUuid");
@@ -266,26 +243,34 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
         verify(userManager, never()).removeGroup(user, "firstGroupName");
     }
 
+    private void mockUserCreation(final String path, final String name) {
+        when(userManager.createUser(path, name, "password")).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                userSession.getNode(path).addNode(name);
+                userSession.save();
+                return user;
+            }
+        });
+    }
+
     @Test
     public void testStoreRolesCollection() throws ActionExecutionException, RepositoryException {
         // GIVEN
-        JcrNodeAdapter userItem = mock(JcrNewNodeAdapter.class);
+        Node testNode = adminNode.addNode("test");
+        JcrNodeAdapter userItem  = new JcrNewNodeAdapter(testNode, "testUser");
         prepareMocks(userItem);
 
-        when(userNode.getPath()).thenReturn("/admin/test");
-        when(userManager.createUser("/admin/test", "testUser", "password")).thenReturn(user);
+        mockUserCreation("/admin/test", "testUser");
 
-        Collection<String> newRoleList = new ArrayList<String>();
-        newRoleList.add("firstRoleUuid");
-        newRoleList.add("secondRoleUuid");
-        newRoleList.add("thirdRoleUuid");
-        when(userItem.getItemProperty(SecurityConstants.NODE_ROLES)).thenReturn(new DefaultProperty(List.class, newRoleList));
+        Collection<String> newRoleList = Arrays.asList(
+                rolesSession.getRootNode().addNode("firstRoleName").getIdentifier(),
+                rolesSession.getRootNode().addNode("secondRoleName").getIdentifier(),
+                rolesSession.getRootNode().addNode("thirdRoleName").getIdentifier()
+        );
 
-        Node roleNode = mock(Node.class);
-        when(rolesSession.getNodeByIdentifier("firstRoleUuid")).thenReturn(roleNode);
-        when(rolesSession.getNodeByIdentifier("secondRoleUuid")).thenReturn(roleNode);
-        when(rolesSession.getNodeByIdentifier("thirdRoleUuid")).thenReturn(roleNode);
-        when(roleNode.getName()).thenReturn("firstRoleName", "secondRoleName", "thirdRoleName");
+        userItem.removeItemProperty(SecurityConstants.NODE_ROLES);
+        userItem.addItemProperty(SecurityConstants.NODE_ROLES, new DefaultProperty(List.class, newRoleList));
 
         Collection<String> oldRoleList = new ArrayList<String>();
         oldRoleList.add("firstRoleUuid");
@@ -309,6 +294,36 @@ public class SaveUserDialogActionTest extends MgnlTestCase {
 
         //verify that role which was already assigned to user is not removed
         verify(userManager, never()).removeRole(user, "firstRoleName");
+    }
+
+    @Test
+    public void testChildNodeIsUpdated() throws Exception {
+        // GIVEN
+        userNode = adminNode.addNode("testUser");
+        JcrNodeAdapter userItem = new JcrNodeAdapter(userNode);
+        prepareMocks(userItem);
+
+        when(userManager.getUser("testUser")).thenReturn(user);
+
+        final JcrNewNodeAdapter newChildItem = new JcrNewNodeAdapter(userNode, NodeTypes.ContentNode.NAME, "newChild");
+        userItem.addChild(newChildItem);
+
+        final Node existingChild = userNode.addNode("existingChild");
+        final JcrNodeAdapter existingChildItem = new JcrNodeAdapter(existingChild);
+        userItem.addChild(existingChildItem);
+
+        SaveUserDialogAction saveUserDialogAction = new SaveUserDialogAction(definition, userItem, editorValidator, editorCallback, securitySupport);
+
+        // WHEN
+        newChildItem.addItemProperty("test", DefaultPropertyUtil.newDefaultProperty(String.class, "testValue"));
+        existingChildItem.addItemProperty("test", DefaultPropertyUtil.newDefaultProperty(String.class, "testValue"));
+
+        saveUserDialogAction.execute();
+
+
+        // THEN
+        assertEquals("testValue", userNode.getNode("newChild").getProperty("test").getString());
+        assertEquals("testValue", userNode.getNode("existingChild").getProperty("test").getString());
     }
 
 }
