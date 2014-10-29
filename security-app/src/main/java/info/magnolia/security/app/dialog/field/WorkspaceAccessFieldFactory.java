@@ -112,8 +112,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
     @Inject
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
-            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.uiContext = uiContext;
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
@@ -125,8 +124,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
      * @deprecated since 5.3.1. {@link ComponentProvider} has to be injected in order to create the choose-dialog specific component provider, with proper bindings for e.g. {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} or {@link info.magnolia.ui.imageprovider.ImageProvider}.
      */
     @Deprecated
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
-            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         this(definition, relatedFieldItem, uiContext, workbenchChooseDialogPresenter, i18n, Components.getComponentProvider());
     }
 
@@ -245,13 +243,28 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         };
     }
 
+    /**
+     * Tries to get a property defined by its propertyId from the parent {@link JcrNodeAdapter}. If not found a new
+     * property will be created and returned. When there is a mismatch between supplied type and 'internal' type of the
+     * {@link Property} it tries to convert the value to given type and replaces the property in the parent item.
+     */
     private <T> Property<T> getOrCreateProperty(JcrNodeAdapter parentItem, String propertyId, Class<T> type) {
-        Property<T> p = parentItem.getItemProperty(propertyId);
-        if (p == null) {
-            p = DefaultPropertyUtil.newDefaultProperty(type, null);
-            parentItem.addItemProperty(propertyId, p);
+        Property<T> property = parentItem.getItemProperty(propertyId);
+        if (property == null) {
+            property = DefaultPropertyUtil.newDefaultProperty(type, null);
+            parentItem.addItemProperty(propertyId, property);
+        } else {
+            if (!type.isAssignableFrom(property.getType())) {
+                Object value = property.getValue();
+                if (value instanceof String) {
+                    value = DefaultPropertyUtil.createTypedValue(type, (String) value);
+                }
+                property = DefaultPropertyUtil.newDefaultProperty(type, null);
+                property.setValue((T) value);
+                parentItem.addItemProperty(propertyId, property); // 'Replace' property in parentItem
+            }
         }
-        return p;
+        return property;
     }
 
     protected Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {

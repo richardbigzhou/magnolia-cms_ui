@@ -39,8 +39,10 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -72,16 +74,20 @@ import com.vaadin.ui.VerticalLayout;
 public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
     private SimpleTranslator i18n;
+    private ComponentProvider componentProvider;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
         i18n = mock(SimpleTranslator.class);
         when(i18n.translate("security.workspace.field.choose")).thenReturn("Choose...");
         when(i18n.translate("security.workspace.field.delete")).thenReturn("Delete");
         when(i18n.translate("security.workspace.field.noAccess")).thenReturn("No access.");
         when(i18n.translate("security.workspace.field.addButton")).thenReturn("Add new");
+
+        componentProvider = new MockComponentProvider();
     }
 
     @Test
@@ -93,7 +99,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -129,7 +135,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -167,7 +173,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -188,6 +194,35 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         Button addButton = (Button) buttonLayout.iterator().next();
         assertEquals("Add new", addButton.getCaption());
+    }
+
+    @Test
+    public void testShowsFixesWrongTypeOfPermission() throws IOException, RepositoryException {
+        // GIVEN
+        Session session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
+                "/role/acl_config/0.permissions=63",
+                "/role/acl_config/0.path=/foobar"
+        );
+        MockUtil.setSessionAndHierarchyManager(session);
+        JcrNodeAdapter item = new JcrNodeAdapter(session.getNode("/role"));
+
+        WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
+        definition.setWorkspace(RepositoryConstants.CONFIG);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n, componentProvider);
+
+        // WHEN
+        Field<Object> field = builder.createFieldComponent();
+
+        // THEN
+        VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
+        assertEquals(1, layout.getComponentCount());
+
+        VerticalLayout aclLayout = (VerticalLayout) layout.iterator().next();
+        assertEquals(2, aclLayout.getComponentCount());
+
+        Iterator<Component> aclLayoutIterator = aclLayout.iterator();
+
+        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, AccessControlList.ACCESS_TYPE_NODE, "/foobar");
     }
 
     private void assertEntryLayout(HorizontalLayout entryLayout, long expectedPermissions, long expectedAccessType, String expectedPath) {
