@@ -143,7 +143,8 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
 
             for (String group : task.getGroupIds()) {
                 for (User user : allUsers) {
-                    if (user.inGroup(group)) {
+                    Collection<String> groups = user.getAllGroups();
+                    if (groups.contains(group)) {
                         users.add(user.getName());
                     }
                 }
