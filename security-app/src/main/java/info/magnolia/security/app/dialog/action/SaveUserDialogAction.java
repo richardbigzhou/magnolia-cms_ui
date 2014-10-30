@@ -132,7 +132,7 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
                 parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
-                userNode = session.getNodeByIdentifier(user.getIdentifier());
+                userNode = parentNode.getNode(newUserName);
             } else {
                 userNode = userItem.getJcrItem();
                 String existingUserName = userNode.getName();
