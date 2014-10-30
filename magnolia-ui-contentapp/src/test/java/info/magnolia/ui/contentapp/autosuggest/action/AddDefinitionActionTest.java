@@ -34,252 +34,295 @@
 package info.magnolia.ui.contentapp.autosuggest.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.AccessDeniedException;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
-import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogPresenter;
-import info.magnolia.ui.contentapp.autosuggest.ConfiguredTemplateTestDefinition;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.contentapp.autosuggest.AddDefinitionActionCallback;
+import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent;
+import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent.SelectedNames;
+import info.magnolia.ui.contentapp.autosuggest.MockBeanForNameOfPropertyAndNameOfNode;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
+
 /**
- * AddDefinitionActionTest.
+ * Tests for {@link AddDefinitionAction}.
  */
 public class AddDefinitionActionTest extends RepositoryTestCase {
 
     private Session session;
-    private Node rootNode;
+    private Node selectedNode;
+    private AutoSuggesterForConfigurationApp autoSuggester;
+    private JcrItemAdapter selectedItem;
+    private AddDefinitionDialogComponent addDefinitionDialogComponent;
+    private EventBus admincentralEventBus;
+    private AddDefinitionActionCallback callback;
 
-    private OpenAddDefinitionDialogActionDefinition definition;
-
-    private AppContext appContext;
-
-    private SubAppContext subAppContext;
-
-    private SubAppDescriptor subAppDescriptor;
-
-    private UiContext uiContext;
-
-    private EventBus eventBus;
-
-    private ContentConnector contentConnector;
-
-    private OverlayCloser closeHandle;
-
-    private DialogView dialogView;
-
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        dialogView = mock(DialogView.class);
-
-        when(dialogView.getModalityLevel()).thenReturn(ModalityLevel.LIGHT);
-
-        uiContext = mock(UiContext.class);
-        eventBus = mock(EventBus.class);
-        contentConnector = mock(ContentConnector.class);
-
-        appContext = mock(AppContext.class);
-        subAppContext = mock(SubAppContext.class);
-        subAppDescriptor = mock(BrowserSubAppDescriptor.class);
-
-        when(appContext.getActiveSubAppContext()).thenReturn(subAppContext);
-        when(subAppContext.getSubAppDescriptor()).thenReturn(subAppDescriptor);
-
-        closeHandle = mock(OverlayCloser.class);
-        when(appContext.openOverlay(dialogView, ModalityLevel.LIGHT)).thenReturn(closeHandle);
-
-        definition = new OpenAddDefinitionDialogActionDefinition();
-        definition.setAutoSuggesterClass(AutoSuggesterForConfigurationApp.class);
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        rootNode = session.getRootNode();
+        Node rootNode = session.getRootNode();
+
+        ComponentsTestUtil.setImplementation(EventBus.class, SimpleEventBus.class);
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+
+        ContextLocaleProvider provider = mock(ContextLocaleProvider.class);
+        when(provider.getLocale()).thenReturn(Locale.ENGLISH);
+        ComponentsTestUtil.setInstance(LocaleProvider.class, provider);
+
+        autoSuggester = new AutoSuggesterForConfigurationApp();
+
+        ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setWorkspace(RepositoryConstants.CONFIG);
+        ConfiguredNodeTypeDefinition mainNodeType = new ConfiguredNodeTypeDefinition();
+        mainNodeType.setName("mgnl:contentNode");
+        mainNodeType.setIcon("icon-node-content");
+        ConfiguredNodeTypeDefinition folderNodeType = new ConfiguredNodeTypeDefinition();
+        folderNodeType.setName("mgnl:content");
+        folderNodeType.setIcon("icon-folder-l");
+        contentConnectorDefinition.addNodeType(mainNodeType);
+        contentConnectorDefinition.addNodeType(folderNodeType);
+        ComponentProvider componentProvider = new MockComponentProvider();
+        ContentConnector contentConnector = new JcrContentConnector(null, contentConnectorDefinition, componentProvider);
+
+        selectedNode = NodeUtil.createPath(rootNode, "parent", NodeTypes.ContentNode.NAME, true);
+        selectedNode.setProperty("class", MockBeanForNameOfPropertyAndNameOfNode.class.getName());
+        selectedItem = new JcrNodeAdapter(selectedNode);
+
+        addDefinitionDialogComponent = new AddDefinitionDialogComponent(selectedItem, autoSuggester, contentConnector);
+
+        admincentralEventBus = mock(EventBus.class);
+        callback = mock(AddDefinitionActionCallback.class);
     }
 
-    @Ignore
     @Test
-    public void testActionWithEmptyContentNode() throws ActionExecutionException, AccessDeniedException, PathNotFoundException, RepositoryException {
+    public void testExecuteWhenNothingSelected() throws Exception {
         // GIVEN
-        NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages", NodeTypes.Content.NAME, true);
-        Node stkForum = NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages/stkForum", NodeTypes.ContentNode.NAME, true);
-        AddDefinitionDialogPresenterMockImpl presenter = createPresenter();
-        OpenAddDefinitionDialogAction action = createAction(new JcrNodeAdapter(stkForum), presenter);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
 
         // WHEN
         action.execute();
-        Collection<String> subNodeNames = presenter.getSubNodeNames();
-        Collection<String> propertyNames = presenter.getPropertyNames();
 
         // THEN
-        assertNotNull(subNodeNames);
-        assertNotNull(propertyNames);
-        assertEquals(5, subNodeNames.size());
-        assertEquals(17, propertyNames.size());
-        assertContains(subNodeNames,
-                "templateAvailability",
-                "autoGeneration",
-                "areas",
-                "parameters",
-                "variations");
-        assertContains(propertyNames,
-                "renderType",
-                "visible",
-                "extends",
-                "templateScript",
-                "writable",
-                "moveable",
-                "deletable",
-                "class",
-                "editable",
-                "autoPopulateFromRequest",
-                "id",
-                "title",
-                "modelClass",
-                "description",
-                "name",
-                "i18nBasename",
-                "dialog");
+        assertTrue(selectedNode.hasProperty("class"));
+        assertFalse(selectedNode.hasProperty("extends"));
+        assertFalse(selectedNode.hasProperty("booleanProperty"));
+        assertFalse(selectedNode.hasProperty("stringProperty"));
+        assertFalse(selectedNode.hasNodes());
     }
 
-    @Ignore
     @Test
-    public void testActionWithContentNodeAndClassProperty() throws ActionExecutionException, AccessDeniedException, PathNotFoundException, RepositoryException {
-
+    public void testExecuteWhenSubPropertiesSelected() throws Exception {
         // GIVEN
-        NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages", NodeTypes.Content.NAME, true);
-        Node stkForum = NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages/stkForum", NodeTypes.ContentNode.NAME, true);
-        PropertyUtil.setProperty(stkForum, "class", ConfiguredTemplateTestDefinition.class.getName());
-        AddDefinitionDialogPresenterMockImpl presenter = createPresenter();
-        OpenAddDefinitionDialogAction action = createAction(new JcrNodeAdapter(stkForum), presenter);
-
-        // WHEN
-        action.execute();
-        Collection<String> subNodeNames = presenter.getSubNodeNames();
-        Collection<String> propertyNames = presenter.getPropertyNames();
-
-        // THEN
-        assertNotNull(subNodeNames);
-        assertNotNull(propertyNames);
-        assertEquals(6, subNodeNames.size());
-        assertEquals(17, propertyNames.size());
-        assertContains(subNodeNames,
-                "templateAvailability",
-                "autoGeneration",
-                "areas",
-                "parameters",
-                "variations");
-        assertContains(propertyNames,
-                "renderType",
-                "visible",
-                "extends",
-                "templateScript",
-                "writable",
-                "moveable",
-                "deletable",
-                "editable",
-                "autoPopulateFromRequest",
-                "id",
-                "title",
-                "modelClass",
-                "description",
-                "name",
-                "i18nBasename",
-                "dialog",
-                "testProperty");
-
-    }
-
-    @Ignore
-    @Test
-    public void testActionWithContentNodeAndClassPropertyAndOtherSubItems() throws ActionExecutionException, AccessDeniedException, PathNotFoundException, RepositoryException {
-
-        // GIVEN
-        NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages", NodeTypes.Content.NAME, true);
-        Node stkForum = NodeUtil.createPath(rootNode, "/modules/standard-templating-kit/templates/pages/stkForum", NodeTypes.ContentNode.NAME, true);
-
-        stkForum.addNode("templateAvailability", NodeTypes.ContentNode.NAME);
-        stkForum.addNode("autoGeneration", NodeTypes.ContentNode.NAME);
-        stkForum.addNode("areas", NodeTypes.ContentNode.NAME);
-
-        PropertyUtil.setProperty(stkForum, "class", ConfiguredTemplateTestDefinition.class.getName());
-        PropertyUtil.setProperty(stkForum, "templateScript", "");
-        PropertyUtil.setProperty(stkForum, "renderType", "");
-        PropertyUtil.setProperty(stkForum, "description", "");
-
-        AddDefinitionDialogPresenterMockImpl presenter = createPresenter();
-        OpenAddDefinitionDialogAction action = createAction(new JcrNodeAdapter(stkForum), presenter);
-
-        // WHEN
-        action.execute();
-        Collection<String> subNodeNames = presenter.getSubNodeNames();
-        Collection<String> propertyNames = presenter.getPropertyNames();
-
-        // THEN
-        assertNotNull(subNodeNames);
-        assertNotNull(propertyNames);
-        assertEquals(3, subNodeNames.size());
-        assertEquals(14, propertyNames.size());
-        assertContains(subNodeNames,
-                "parameters",
-                "variations");
-        assertContains(propertyNames,
-                "visible",
-                "extends",
-                "writable",
-                "moveable",
-                "deletable",
-                "editable",
-                "autoPopulateFromRequest",
-                "id",
-                "title",
-                "modelClass",
-                "name",
-                "i18nBasename",
-                "dialog",
-                "testProperty");
-
-    }
-
-    private void assertContains(Collection<String> items, String... expected) {
-        for (String expectedValue : expected) {
-            assertTrue(items.contains(expectedValue));
+        List<HorizontalLayout> suggestedPropertyRows = addDefinitionDialogComponent.getSuggestedPropertyRows();
+        for (HorizontalLayout row : suggestedPropertyRows) {
+            CheckBox checkbox = (CheckBox) row.getComponent(0);
+            checkbox.setValue(Boolean.TRUE);
         }
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertTrue(selectedNode.hasProperty("extends"));
+        assertTrue(selectedNode.hasProperty("booleanProperty"));
+        assertTrue(selectedNode.hasProperty("stringProperty"));
+        assertFalse(selectedNode.hasNodes());
     }
 
-    private OpenAddDefinitionDialogAction createAction(JcrItemAdapter node, AddDefinitionDialogPresenter presenter) {
-        return new OpenAddDefinitionDialogAction(definition, appContext, node, presenter);
+    @Test
+    public void testExecuteWhenSubNodesSelected() throws Exception {
+        // GIVEN
+        List<CheckBox> suggestedRowCheckboxes = addDefinitionDialogComponent.getSuggestedRowCheckboxes();
+        suggestedRowCheckboxes.get(0).setValue(Boolean.TRUE);
+        suggestedRowCheckboxes.get(1).setValue(Boolean.TRUE);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertFalse(selectedNode.hasProperty("extends"));
+        assertFalse(selectedNode.hasProperty("booleanProperty"));
+        assertFalse(selectedNode.hasProperty("stringProperty"));
+        assertTrue(selectedNode.hasNodes());
+        assertTrue(selectedNode.hasNode("objectProperty"));
+        assertTrue(selectedNode.hasNode("mapProperty"));
+        assertTrue(selectedNode.getNodes().getSize() == 2);
     }
 
-    private AddDefinitionDialogPresenterMockImpl createPresenter() {
-        return new AddDefinitionDialogPresenterMockImpl(dialogView);
+    @Test
+    public void testExecuteWhenAllSelected() throws Exception {
+        // GIVEN
+        VerticalLayout table = (VerticalLayout) addDefinitionDialogComponent.getComponent(1);
+        HorizontalLayout firstRow = (HorizontalLayout) table.getComponent(0);
+        CheckBox firstRowCheckbox = (CheckBox) firstRow.getComponent(0);
+        firstRowCheckbox.setValue(Boolean.TRUE);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertTrue(selectedNode.hasProperty("extends"));
+        assertTrue(selectedNode.hasProperty("booleanProperty"));
+        assertTrue(selectedNode.hasProperty("stringProperty"));
+        assertTrue(selectedNode.hasNodes());
+        assertTrue(selectedNode.hasNode("objectProperty"));
+        assertTrue(selectedNode.hasNode("mapProperty"));
+        assertTrue(selectedNode.getNodes().getSize() == 2);
+    }
+
+    @Test
+    public void testExecuteWhenSomeSelectedSubNodesExist() throws Exception {
+        // GIVEN
+        List<CheckBox> suggestedRowCheckboxes = addDefinitionDialogComponent.getSuggestedRowCheckboxes();
+        suggestedRowCheckboxes.get(0).setValue(Boolean.TRUE);
+        suggestedRowCheckboxes.get(1).setValue(Boolean.TRUE);
+        selectedNode.addNode("objectProperty", NodeTypes.ContentNode.NAME);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertFalse(selectedNode.hasProperty("extends"));
+        assertFalse(selectedNode.hasProperty("booleanProperty"));
+        assertFalse(selectedNode.hasProperty("stringProperty"));
+        assertTrue(selectedNode.hasNodes());
+        assertTrue(selectedNode.hasNode("objectProperty"));
+        assertTrue(selectedNode.hasNode("mapProperty"));
+        assertTrue(selectedNode.getNodes().getSize() == 2);
+
+        verify(admincentralEventBus).fireEvent(any(ContentChangedEvent.class));
+        verify(callback).onAddDefinitionPerformed();
+    }
+
+    @Test
+    public void testExecuteWhenAllSelectedSubNodesExist() throws Exception {
+        // GIVEN
+        List<CheckBox> suggestedRowCheckboxes = addDefinitionDialogComponent.getSuggestedRowCheckboxes();
+        suggestedRowCheckboxes.get(0).setValue(Boolean.TRUE);
+        suggestedRowCheckboxes.get(1).setValue(Boolean.TRUE);
+        selectedNode.addNode("objectProperty", NodeTypes.ContentNode.NAME);
+        selectedNode.addNode("mapProperty", NodeTypes.ContentNode.NAME);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertFalse(selectedNode.hasProperty("extends"));
+        assertFalse(selectedNode.hasProperty("booleanProperty"));
+        assertFalse(selectedNode.hasProperty("stringProperty"));
+        assertTrue(selectedNode.hasNodes());
+        assertTrue(selectedNode.hasNode("objectProperty"));
+        assertTrue(selectedNode.hasNode("mapProperty"));
+        assertTrue(selectedNode.getNodes().getSize() == 2);
+
+        verify(admincentralEventBus).fireEvent(any(ContentChangedEvent.class));
+        verify(callback).onAddDefinitionPerformed();
+    }
+
+    @Test
+    public void testExecuteWhenSomeSelectedSubPropertiesExist() throws Exception {
+        // GIVEN
+        List<HorizontalLayout> suggestedPropertyRows = addDefinitionDialogComponent.getSuggestedPropertyRows();
+        for (HorizontalLayout row : suggestedPropertyRows) {
+            CheckBox checkbox = (CheckBox) row.getComponent(0);
+            checkbox.setValue(Boolean.TRUE);
+        }
+        selectedNode.setProperty("extends", "");
+        selectedNode.setProperty("booleanProperty", true);
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertTrue(selectedNode.hasProperty("extends"));
+        assertTrue(selectedNode.hasProperty("booleanProperty"));
+        assertTrue(selectedNode.hasProperty("stringProperty"));
+        assertFalse(selectedNode.hasNodes());
+
+        verify(admincentralEventBus).fireEvent(any(ContentChangedEvent.class));
+        verify(callback).onAddDefinitionPerformed();
+    }
+
+    @Test
+    public void testExecuteWhenAllSelectedSubPropertiesExist() throws Exception {
+        // GIVEN
+        List<HorizontalLayout> suggestedPropertyRows = addDefinitionDialogComponent.getSuggestedPropertyRows();
+        for (HorizontalLayout row : suggestedPropertyRows) {
+            CheckBox checkbox = (CheckBox) row.getComponent(0);
+            checkbox.setValue(Boolean.TRUE);
+        }
+        selectedNode.setProperty("extends", "");
+        selectedNode.setProperty("booleanProperty", true);
+        selectedNode.setProperty("stringProperty", "");
+        SelectedNames selectedNames = addDefinitionDialogComponent.getSelectedNames();
+        AddDefinitionAction action = new AddDefinitionAction(null, autoSuggester, selectedItem, selectedNames, admincentralEventBus, callback);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(selectedNode.hasProperty("class"));
+        assertTrue(selectedNode.hasProperty("extends"));
+        assertTrue(selectedNode.hasProperty("booleanProperty"));
+        assertTrue(selectedNode.hasProperty("stringProperty"));
+        assertFalse(selectedNode.hasNodes());
+
+        verify(admincentralEventBus).fireEvent(any(ContentChangedEvent.class));
+        verify(callback).onAddDefinitionPerformed();
     }
 }

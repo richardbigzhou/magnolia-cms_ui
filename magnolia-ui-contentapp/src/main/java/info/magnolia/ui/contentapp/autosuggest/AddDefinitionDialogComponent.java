@@ -466,4 +466,12 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
             }
         }
     }
+
+    public List<HorizontalLayout> getSuggestedPropertyRows() {
+        return new ArrayList<HorizontalLayout>(suggestedPropertyRows);
+    }
+
+    public List<CheckBox> getSuggestedRowCheckboxes() {
+        return new ArrayList<CheckBox>(suggestedRowCheckboxes);
+    }
 }
