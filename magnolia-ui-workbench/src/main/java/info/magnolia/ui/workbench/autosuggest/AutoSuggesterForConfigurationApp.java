@@ -45,7 +45,9 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.jcr.wrapper.DelegateNodeWrapper;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.rendering.model.RenderingModel;
 import info.magnolia.rendering.renderer.Renderer;
+import info.magnolia.rendering.template.RenderableDefinition;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
@@ -486,7 +488,48 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsIcon(propertyName, valueJCRType, parentClass)).suggestionsAvailable()) {
             return autoSuggesterResult;
         }
+        // If suggest for value of modelClass
+        else if ((autoSuggesterResult = getSuggestionsForValueOfPropertyIfPropertyIsModelClass(propertyName, valueJCRType, parentClass)).suggestionsAvailable()) {
+            return autoSuggesterResult;
+        }
         // If no suggestions for value of property
+        else {
+            return noSuggestionsAvailable();
+        }
+    }
+
+    /**
+     * Get suggestions for property value according to the logic below, if it is a reference to modelClass.
+     * - If can get bean type of parent
+     * --| If parent bean type is subclass of RenderableDefinition
+     * --|-| If property is "modelClass" and property JCR type is String
+     * --|-|-| Suggest classes which are subclasses of RenderingModel
+     * --|-| Else if property is not "modelClass" or property JCR type is not String
+     * --|-|-- No suggestions
+     * --| Else if parent bean type is not subclass of RenderableDefinition
+     * --|-- No suggestions
+     * - Else cannot get bean type of parent
+     * --- No suggestions
+     */
+    protected AutoSuggesterResult getSuggestionsForValueOfPropertyIfPropertyIsModelClass(String propertyName, int valueJCRType, Class<?> parentClass) {
+        if (propertyName == null) {
+            return noSuggestionsAvailable();
+        }
+
+        if (parentClass != null) {
+            if (ClassUtils.isAssignable(parentClass, RenderableDefinition.class)) {
+                if ("modelClass".equals(propertyName) && valueJCRType == PropertyType.STRING) {
+                    Collection<String> suggestions = getSubclassNames(RenderingModel.class);
+                    return new AutoSuggesterResultAdapter(suggestions != null && suggestions.size() > 0, suggestions, MatchMethod.CONTAINS, true, true);
+                }
+                else {
+                    return noSuggestionsAvailable();
+                }
+            }
+            else {
+                return noSuggestionsAvailable();
+            }
+        }
         else {
             return noSuggestionsAvailable();
         }
