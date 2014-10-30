@@ -67,7 +67,9 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -89,11 +91,14 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicates;
 
 /**
  * Returns suggestions and how to display them for a cell in the Configuration App tree.
@@ -1485,6 +1490,7 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         // If the node is a bean
         else {
             Map<String, PropertyTypeDescriptor> subnodeOrSubpropertyPropertyTypeDescriptors = getAllPropertyTypeDescriptors(implementedNodeTypeDescriptor);
+            Collection<String> deprecatedSubnodeOrSubpropertyNames = getAllPossibleDeprecatedSubnodeOrSubpropertyNames(implementedNodeTypeDescriptor);
 
             // If we can get the PropertyTypeDescriptors of subnodes and sub-properties
             if (subnodeOrSubpropertyPropertyTypeDescriptors != null) {
@@ -1497,6 +1503,10 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                         String propertyName = subnodeOrSubpropertyPropertyTypeDescriptor.getName();
 
                         if (propertyName != null) {
+
+                            if (deprecatedSubnodeOrSubpropertyNames != null && deprecatedSubnodeOrSubpropertyNames.contains(propertyName)) {
+                                continue;
+                            }
 
                             if ((getSubnode && isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))
                                     || (!getSubnode && !isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))) {
@@ -1519,6 +1529,83 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                 return null;
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<String> getAllPossibleDeprecatedSubnodeOrSubpropertyNames(TypeDescriptor implementedNodeTypeDescriptor) {
+        if (implementedNodeTypeDescriptor == null) {
+            return null;
+        }
+
+        Class<?> parentClass = implementedNodeTypeDescriptor.getType();
+        if (parentClass == null) {
+            return null;
+        }
+
+        Collection<String> possibleDeprecatedSubnodeOrSubpropertyNames = new HashSet<String>();
+
+        Set<Field> fields = ReflectionUtils.getAllFields(parentClass, ReflectionUtils.withAnnotation(Deprecated.class));
+        if (fields != null && !fields.isEmpty()) {
+            for (Field field : fields) {
+                if (field.getName() != null) {
+                    possibleDeprecatedSubnodeOrSubpropertyNames.add(field.getName());
+                }
+            }
+        }
+
+        Set<Method> methods = new HashSet<Method>();
+        Set<Method> setterMethods = ReflectionUtils.getAllMethods(parentClass,
+                Predicates.and(
+                        ReflectionUtils.withModifier(Modifier.PUBLIC),
+                        ReflectionUtils.withPrefix("set"),
+                        ReflectionUtils.withParametersCount(1),
+                        ReflectionUtils.withReturnType(void.class)));
+        if (setterMethods != null) {
+            methods.addAll(setterMethods);
+        }
+        Set<Method> getterMethods = ReflectionUtils.getAllMethods(parentClass,
+                Predicates.and(
+                        ReflectionUtils.withModifier(Modifier.PUBLIC),
+                        Predicates.or(ReflectionUtils.withPrefix("get"), ReflectionUtils.withPrefix("is")),
+                        ReflectionUtils.withParametersCount(0)));
+        if (getterMethods != null) {
+            methods.addAll(getterMethods);
+        }
+
+        if (!methods.isEmpty()) {
+            Set<Method> deprecatedMethods = ReflectionUtils.getAll(methods, ReflectionUtils.withAnnotation(Deprecated.class));
+            if (deprecatedMethods != null) {
+
+                Collection<String> tempPropertyNames = new HashSet<String>();
+                Collection<String> tempPropertyNamesWithSetMethod = new HashSet<String>();
+
+                for (Method method : deprecatedMethods) {
+                    String methodName = method.getName();
+                    if (methodName != null) {
+                        String propertyName = null;
+                        if (methodName.startsWith("set") || methodName.startsWith("get")) {
+                            propertyName = StringUtils.uncapitalize(StringUtils.substring(methodName, 3));
+                            if (methodName.startsWith("set")) {
+                                tempPropertyNamesWithSetMethod.add(propertyName);
+                            }
+                        }
+                        else if (methodName.startsWith("is")) {
+                            propertyName = StringUtils.uncapitalize(StringUtils.substring(methodName, 2));
+                        }
+
+                        if (propertyName != null) {
+                            if (!tempPropertyNames.contains(propertyName)) {
+                                tempPropertyNames.add(propertyName);
+                            }
+                            else if (tempPropertyNamesWithSetMethod.contains(propertyName)) {
+                                possibleDeprecatedSubnodeOrSubpropertyNames.add(propertyName);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return possibleDeprecatedSubnodeOrSubpropertyNames;
     }
 
     private Collection<String> getAllPossibleNewSubnodeNames(String subnodeName, Node parentNode, Collection<String> possibleSubnodeNames) {

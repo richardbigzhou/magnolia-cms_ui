@@ -38,13 +38,17 @@ import java.util.Map;
 /**
  * MockBeanForNameOfPropertyAndNameOfNode contains properties of primitive, map and bean types.
  */
-public class MockBeanForNameOfPropertyAndNameOfNode {
+public class MockBeanForNameOfPropertyAndNameOfNode extends MockParentBeanForNameOfPropertyAndNameOfNode {
 
     private boolean booleanProperty;
     private String stringProperty;
     private Object objectProperty;
     private Map<String, String> mapProperty;
     private MockBean testBean;
+    private boolean deprecatedBooleanProperty;
+    private MockBean deprecatedTestBean;
+    @Deprecated
+    private String deprecatedStringProperty;
 
     public boolean isBooleanProperty() {
         return booleanProperty;
@@ -84,6 +88,34 @@ public class MockBeanForNameOfPropertyAndNameOfNode {
 
     public void setTestBean(MockBean testBean) {
         this.testBean = testBean;
+    }
+
+    @Deprecated
+    public boolean isDeprecatedBooleanProperty() {
+        return deprecatedBooleanProperty;
+    }
+
+    @Deprecated
+    public void setDeprecatedBooleanProperty(boolean deprecatedBooleanProperty) {
+        this.deprecatedBooleanProperty = deprecatedBooleanProperty;
+    }
+
+    @Deprecated
+    public MockBean getDeprecatedTestBean() {
+        return deprecatedTestBean;
+    }
+
+    @Deprecated
+    public void setDeprecatedTestBean(MockBean deprecatedTestBean) {
+        this.deprecatedTestBean = deprecatedTestBean;
+    }
+
+    public String getDeprecatedStringProperty() {
+        return deprecatedStringProperty;
+    }
+
+    public void setDeprecatedStringProperty(String deprecatedStringProperty) {
+        this.deprecatedStringProperty = deprecatedStringProperty;
     }
 
 }
