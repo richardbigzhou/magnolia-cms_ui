@@ -43,6 +43,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.rendering.template.RenderableDefinition;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
@@ -1798,6 +1799,69 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // WHEN
         AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsModelClassWhenParentBeanTypeIsRenderableDefinition() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node formComponent = NodeUtil.createPath(rootNode, "modules/form/templates/components/form", NodeTypes.ContentNode.NAME, true);
+        formComponent.setProperty("class", RenderableDefinition.class.getName());
+        formComponent.setProperty("modelClass", "");
+        Object jcrItemId = JcrItemUtil.getItemId(formComponent.getProperty("modelClass"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertTrue(autoSuggesterResult.suggestionsAvailable());
+        assertTrue(autoSuggesterResult.getMatchMethod() == MatchMethod.CONTAINS);
+        assertTrue(autoSuggesterResult.getSuggestions().contains(MockRenderingModelSubClass.class.getName()));
+        assertTrue(autoSuggesterResult.showMismatchedSuggestions());
+        assertTrue(autoSuggesterResult.showErrorHighlighting());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsModelClassWhenParentBeanTypeIsRenderableDefinitionAndPropertyIsNotStringTypeInJCR() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node formComponent = NodeUtil.createPath(rootNode, "modules/form/templates/components/form", NodeTypes.ContentNode.NAME, true);
+        formComponent.setProperty("class", RenderableDefinition.class.getName());
+        formComponent.setProperty("modelClass", 123);
+        Object jcrItemId = JcrItemUtil.getItemId(formComponent.getProperty("modelClass"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsModelClassWhenParentBeanTypeIsOtherType() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node formComponent = NodeUtil.createPath(rootNode, "modules/form/templates/components/form", NodeTypes.ContentNode.NAME, true);
+        formComponent.setProperty("class", MockBean.class.getName());
+        formComponent.setProperty("modelClass", "");
+        Object jcrItemId = JcrItemUtil.getItemId(formComponent.getProperty("modelClass"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor((JcrPropertyItemId) jcrItemId, "value");
+
+        // THEN
+        assertFalse(autoSuggesterResult.suggestionsAvailable());
+    }
+
+    @Test
+    public void testGetSuggestionsForValueOfPropertyIfPropertyIsModelClassWhenParentBeanTypeIsNull() throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        // GIVEN
+        Node formComponent = NodeUtil.createPath(rootNode, "modules/form/templates/components/form", NodeTypes.ContentNode.NAME, true);
+        formComponent.setProperty("modelClass", "");
+        Object jcrItemId = JcrItemUtil.getItemId(formComponent.getProperty("modelClass"));
+
+        // WHEN
+        AutoSuggesterResult autoSuggesterResult = autoSuggesterForConfigurationApp.getSuggestionsFor(jcrItemId, "value");
 
         // THEN
         assertFalse(autoSuggesterResult.suggestionsAvailable());
