@@ -247,8 +247,9 @@ public class SaveUserDialogActionTest extends RepositoryTestCase {
         when(userManager.createUser(path, name, "password")).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                userSession.getNode(path).addNode(name);
+                Node node = userSession.getNode(path).addNode(name);
                 userSession.save();
+                doReturn(node.getIdentifier()).when(user).getIdentifier();
                 return user;
             }
         });
