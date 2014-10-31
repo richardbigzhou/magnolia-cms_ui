@@ -173,9 +173,12 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
                         JcrNodeAdapter entryItem = new JcrNodeAdapter(aclEntryNode);
                         entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        final Property<Long> permissionsProperty = getOrCreateProperty(entryItem, AccessControlList.PERMISSIONS_PROPERTY_NAME, Long.class);
-                        final Property<Long> accessProperty = getOrCreateProperty(entryItem, ACCESS_TYPE_PROPERTY_NAME, Long.class);
-                        final Property<String> pathProperty = getOrCreateProperty(entryItem, AccessControlList.PATH_PROPERTY_NAME, String.class);
+                        final Property<Long> permissionsProperty = DefaultPropertyUtil.newDefaultProperty(Long.class, null);
+                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, permissionsProperty);
+                        final Property<Long> accessProperty = DefaultPropertyUtil.newDefaultProperty(Long.class, null);
+                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, accessProperty);
+                        final Property<String> pathProperty = DefaultPropertyUtil.newDefaultProperty(String.class, null);
+                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, pathProperty);
 
                         permissionsProperty.setValue(permissions);
                         accessProperty.setValue(accessType);
@@ -241,30 +244,6 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
                 return Object.class;
             }
         };
-    }
-
-    /**
-     * Tries to get a property defined by its propertyId from the parent {@link JcrNodeAdapter}. If not found a new
-     * property will be created and returned. When there is a mismatch between supplied type and 'internal' type of the
-     * {@link Property} it tries to convert the value to given type and replaces the property in the parent item.
-     */
-    private <T> Property<T> getOrCreateProperty(JcrNodeAdapter parentItem, String propertyId, Class<T> type) {
-        Property<T> property = parentItem.getItemProperty(propertyId);
-        if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(type, null);
-            parentItem.addItemProperty(propertyId, property);
-        } else {
-            if (!type.isAssignableFrom(property.getType())) {
-                Object value = property.getValue();
-                if (value instanceof String) {
-                    value = DefaultPropertyUtil.createTypedValue(type, (String) value);
-                }
-                property = DefaultPropertyUtil.newDefaultProperty(type, null);
-                property.setValue((T) value);
-                parentItem.addItemProperty(propertyId, property); // 'Replace' property in parentItem
-            }
-        }
-        return property;
     }
 
     protected Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
