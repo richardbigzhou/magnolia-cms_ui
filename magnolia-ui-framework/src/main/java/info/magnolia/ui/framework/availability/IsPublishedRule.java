@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This rule returns true if the item is not a node, or if it is a node and has NOT the mgnl:deleted mixin type.
+ * This rule returns true if the item is not a node, or if it is a node and has NOT the ActivationStatus equals ACTIVATION_STATUS_NOT_ACTIVATED.
  */
 public class IsPublishedRule extends AbstractAvailabilityRule {
 
