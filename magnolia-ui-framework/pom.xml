@@ -111,11 +111,6 @@
       <artifactId>mockito-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
