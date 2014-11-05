@@ -229,10 +229,10 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                         "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isNotDeleted"))))
         );
         register(DeltaBuilder.update("5.3.6", "")
-                .addTask(new NodeExistsDelegateTask("Add IsPublishedRule to deactivate action.", "/modules/pages/apps/pages/subApps/detail/actionbar/sections",
+                .addTask(new NodeExistsDelegateTask("Add IsPublishedRule to deactivate action.", "/modules/pages/apps/pages/subApps/browser/actions/deactivate/availability/rules",
                         new PartialBootstrapTask("Bootstrap IsPublishedRule action deactivate availability rule.",
                                 "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
-                                "/modules/pages/apps/pages/subApps/browser/actions/deactivate/availability/rules/IsPublishedRule")))
+                                "/pages/subApps/browser/actions/deactivate/availability/rules/IsPublishedRule")))
         );
     }
 
