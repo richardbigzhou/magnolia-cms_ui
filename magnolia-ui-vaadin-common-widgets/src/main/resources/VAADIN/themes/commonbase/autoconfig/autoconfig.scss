@@ -103,6 +103,85 @@
             padding-left: 36px;
             width: 100%;
         }
+        .header {
+            color: $c10;
+            background-color: $c16;
+            font-size: 12px;
+            padding-left: 36px;
+            width: 100%;
+        }
+        .header .v-label {
+            line-height: 30px;
+        }
+        .v-button:focus {
+            outline: rgba(0,0,0,0) solid 2px;
+        }
+        .v-button.help-icon {
+            position: absolute;
+            padding-left: 0px;
+            padding-right: 0px;
+            width: 20px;
+            height: 18px;
+            background-color: $c16;
+            .v-button-caption {
+                color: $c12;
+                font-size: 12px;
+            }
+        }
+        .v-button.help-icon.help-all.help-icon-close {
+            right: 21px;
+        }
+        .v-button.help-icon.help-all.help-icon-open {
+            right: 21px;
+        }
+        .v-button.help-icon.help-icon-close {
+            background-color: transparent;
+            right: 6px;
+            top: 2px;
+        }
+        .v-button.help-icon.help-icon-close:before {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            top: 5px;
+            left: 0px;
+            border: 2px solid $c11;
+            border-radius: 50px;
+            background-color: $c80;
+        }
+        .v-button.help-icon.help-icon-close:after {
+            content: "?";
+            font-size: 13px;
+            color: $c11;
+            position: absolute;
+            top: 9px;
+            left: 6px;
+        }
+        .v-button.help-icon.help-icon-open {
+            background-color: transparent;
+            right: 6px;
+            top: 2px;
+        }
+        .v-button.help-icon.help-icon-open:before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            top: 5px;
+            left: 0px;
+            border: 2px solid $c15;
+            border-radius: 50px;
+            background-color: $c20;
+        }
+        .v-button.help-icon.help-icon-open:after {
+            content: "?";
+            font-size: 13px;
+            color: $c16;
+            position: absolute;
+            top: 9px;
+            left: 6px;
+        }
         .node-list-box {
             height: 321px;
             overflow-y: auto;
@@ -137,9 +216,37 @@
                 font-size: 12px;
                 color: $c90;
             }
+            .v-button.help-icon.help-icon-open .v-button-wrap:before {
+                content: "";
+                border: solid 10px $c24;
+                border-color: transparent transparent $c24 transparent;
+                position: relative;
+                left: -471px;
+                top: 0px;
+            }
+            .suggestion-field {
+                position: absolute;
+                right: 40px;
+                width: 260px;
+                border-width: 0px;
+                margin-top: 3px;
+                padding-left: 0px !important;
+                background-color: transparent;
+            }
+            .suggestion-field.focus {
+                background-color: $c80;
+                color: $c90;
+            }
         }
         .definition-item:hover {
             background-color: $c16;
+        }
+        .definition-item.empty:before {
+            content: "\2014";
+            position: absolute;
+            color: $c13;
+            top: 5px;
+            left: 252px;
         }
         .definition-item.selected {
             background-color: $c10;
@@ -148,6 +255,13 @@
             }
             .v-table-icon-element.v-label {
                 color: $c13;
+            }
+            .suggestion-field {
+                color: $c80;
+            }
+            .suggestion-field.focus {
+                background-color: $c80;
+                color: $c90;
             }
         }
         .definition-item.disabled {

@@ -38,19 +38,26 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.autosuggest.AutoSuggester;
+import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
+import info.magnolia.ui.vaadin.autosuggest.AutoSuggestTextFieldEx;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.workbench.autosuggest.AutoSuggesterForConfigurationApp;
 import info.magnolia.ui.workbench.autosuggest.AutoSuggesterUtil;
+import info.magnolia.ui.workbench.autosuggest.HelperUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -67,9 +74,20 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -88,6 +106,11 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
     private Map<String, List<HorizontalLayout>> nodeTypeNameToSuggestedNodeRowsMap = new HashMap<String, List<HorizontalLayout>>();
     private List<HorizontalLayout> suggestedPropertyRows = new ArrayList<HorizontalLayout>();
     private List<CheckBox> suggestedRowCheckboxes = new ArrayList<CheckBox>();
+    private List<TextField> propertyTextFields = new ArrayList<TextField>();
+    private Map<String, String> helpMessages;
+    private List<Button> helpButtons = new ArrayList<Button>();
+    private int helpOpenCount = 0;
+    private Button helpAll;
     private Map<String, SortedSet<String>> nodeTypeNameToExistingNodeNamesMap = new HashMap<String, SortedSet<String>>();
     private boolean isHandlingSuggestedRowCheckboxClick = false;
     private boolean isHandlingFirstRowCheckboxClick = false;
@@ -96,6 +119,7 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
     private int checkedCheckboxesCount = 0;
 
     public AddDefinitionDialogComponent(JcrItemAdapter selectedItem, AutoSuggester autoSuggester, ContentConnector contentConnector) {
+
         // Get the selected node
         JcrItemId itemId = selectedItem.getItemId();
         Node selectedNode = SessionUtil.getNodeByIdentifier(itemId.getWorkspace(), itemId.getUuid());
@@ -107,9 +131,31 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
 
                 // Create header row of table, containing column name
                 SimpleTranslator simpleTranslator = Components.getComponent(SimpleTranslator.class);
-                Label nodeNameColumnLabel = new Label(simpleTranslator.translate("websiteJcrBrowser.browser.views.treeview.name.label"));
-                nodeNameColumnLabel.setStyleName("node-name-header");
-                this.addComponent(nodeNameColumnLabel);
+                HorizontalLayout header = new HorizontalLayout();
+                Label titleLb = new Label(simpleTranslator.translate("websiteJcrBrowser.browser.views.treeview.name.label"));
+                header.setStyleName("header");
+                header.addComponent(titleLb);
+
+                helpAll = new Button();
+                helpAll.setData("close");
+                helpAll.addStyleName("help-icon help-all");
+                helpAll.addStyleName("help-icon-close");
+                helpAll.addClickListener(new ClickListener() {
+
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        String status = (String) helpAll.getData();
+                        if (helpButtons != null) {
+                            for (Button helpButton : helpButtons) {
+                                if (status.equals(helpButton.getData())) {
+                                    helpButton.click();
+                                }
+                            }
+                        }
+                    }
+                });
+                header.addComponent(helpAll);
+                this.addComponent(header);
 
                 // Create vertical layout containing rows of table
                 VerticalLayout tableRows = new VerticalLayout();
@@ -127,6 +173,8 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
                 firstRow.addComponent(new Label(selectedNode.getName()));
                 tableRows.addComponent(firstRow);
 
+                Collection<String> allSubNodeNames = new ArrayList<String>();
+
                 // Create rows for suggested nodes of each node type
                 List<String> jcrNodeTypeNames = AutoSuggesterUtil.getJcrNodeTypeNamesFromContentConnector(contentConnector);
                 for (String jcrNodeTypeName : jcrNodeTypeNames) {
@@ -138,6 +186,7 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
 
                     Collection<String> suggestedNodeNames = AutoSuggesterUtil.getSuggestedSubNodeNames(autoSuggester, selectedNode, jcrNodeTypeName);
                     if (suggestedNodeNames != null && !suggestedNodeNames.isEmpty()) {
+                        allSubNodeNames.addAll(suggestedNodeNames);
                         SortedSet<String> sortedSuggestedNodeNames = new TreeSet<String>(suggestedNodeNames);
                         String iconName = getIconNameForNodeType(contentConnector, jcrNodeTypeName, DEFAULT_NODE_ICON_NAME);
 
@@ -164,14 +213,30 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
                     SortedSet<String> sortedSuggestedPropertyNames = new TreeSet<String>(suggestedPropertyNames);
 
                     for (String subPropertyName : sortedSuggestedPropertyNames) {
-                        HorizontalLayout row = new HorizontalLayout();
+                        final HorizontalLayout row = new HorizontalLayout();
                         row.addStyleName("definition-item");
-                        CheckBox checkbox = new CheckBox();
+                        final CheckBox checkbox = new CheckBox();
                         Label icon = new Label();
                         icon.addStyleName(DEFAULT_PROPERTY_ICON_NAME + " v-table-icon-element");
                         row.addComponent(checkbox);
                         row.addComponent(icon);
                         row.addComponent(new Label(subPropertyName));
+
+                        Property property = selectedNode.setProperty(subPropertyName, "");
+                        JcrItemId propertyItemId = JcrItemUtil.getItemId(property);
+                        TextField field;
+                        if (autoSuggester != null) {
+                            AutoSuggesterResult autoSuggesterResult = autoSuggester.getSuggestionsFor(propertyItemId, "value");
+                            property.remove();
+                            field = new AutoSuggestTextFieldEx(autoSuggesterResult);
+                        } else {
+                            field = new TextField();
+                        }
+                        field.setImmediate(true);
+                        propertyTextFields.add(field);
+                        field.addStyleName("suggestion-field");
+                        row.addComponent(field);
+
                         tableRows.addComponent(row);
                         suggestedPropertyRows.add(row);
                         suggestedRowCheckboxes.add(checkbox);
@@ -251,6 +316,30 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
                     tableRows.addComponent(row);
                 }
 
+                helpMessages = getHelpMessage(allSubNodeNames, suggestedPropertyNames, autoSuggester, selectedNode);
+
+                if (helpMessages != null && helpMessages.size() > 0) {
+                    for (int i = 1; i < tableRows.getComponentCount(); i++) {
+                        HorizontalLayout row = (HorizontalLayout) tableRows.getComponent(i);
+                        final Label memberLabel = (Label) row.getComponent(2);
+                        if (helpMessages.get(memberLabel.getValue()) != null) {
+                            final Button help = new Button();
+                            help.setData("close");
+                            help.addStyleName("help-icon");
+                            help.addStyleName("help-icon-close");
+                            help.addClickListener(new ClickListener() {
+
+                                @Override
+                                public void buttonClick(ClickEvent event) {
+                                    clickHelp(event, memberLabel.getValue());
+                                }
+                            });
+                            row.addComponent(help);
+                            helpButtons.add(help);
+                        }
+                    }
+                }
+
                 // Add handler to first row checkbox
                 firstRowCheckbox.addValueChangeListener(new ValueChangeListener() {
                     private static final long serialVersionUID = 1L;
@@ -318,12 +407,77 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
                         }
                     });
                 }
+
+                // Add handler to suggested row property fields.
+                for (final TextField propertyField : propertyTextFields) {
+                    propertyField.addFocusListener(new FocusListener() {
+
+                        @Override
+                        public void focus(FocusEvent event) {
+                            propertyField.addStyleName("focus");
+                        }
+                    });
+                    propertyField.addBlurListener(new BlurListener() {
+
+                        @Override
+                        public void blur(BlurEvent event) {
+                            propertyField.removeStyleName("focus");
+                        }
+                    });
+                    propertyField.addTextChangeListener(new TextChangeListener() {
+
+                        @Override
+                        public void textChange(TextChangeEvent event) {
+                            HorizontalLayout row = (HorizontalLayout) propertyField.getParent();
+                            CheckBox checkbox = (CheckBox) row.getComponent(0);
+                            checkbox.setValue(true);
+                            if (event.getText() == null || event.getText().length() == 0) {
+                                row.addStyleName("empty");
+                            } else {
+                                row.removeStyleName("empty");
+                            }
+                        }
+                    });
+                }
             } catch (RepositoryException e) {
                 log.warn("Could not create Add definition dialog component: " + e);
             }
         }
         else {
             log.warn("Could not get the selected node for Add definition dialog.");
+        }
+    }
+
+    private void clickHelp(ClickEvent event, String itemName) {
+        Button help = event.getButton();
+        HorizontalLayout hp = (HorizontalLayout) help.getParent();
+        VerticalLayout tableRows = (VerticalLayout) hp.getParent();
+        int index = tableRows.getComponentIndex(hp);
+        if ("close".equals(help.getData())) {
+            Label helpLabel = new Label(helpMessages.get(itemName));
+            helpLabel.setWidth("100%");
+            helpLabel.addStyleName("help-message");
+            tableRows.addComponent(helpLabel, index + 1);
+            help.removeStyleName("help-icon-close");
+            help.addStyleName("help-icon-open");
+            help.setData("open");
+            helpOpenCount++;
+        } else {
+            Component comp = tableRows.getComponent(index + 1);
+            tableRows.removeComponent(comp);
+            help.removeStyleName("help-icon-open");
+            help.addStyleName("help-icon-close");
+            help.setData("close");
+            helpOpenCount--;
+        }
+        if (helpOpenCount == helpButtons.size()) {
+            helpAll.removeStyleName("help-icon-close");
+            helpAll.addStyleName("help-icon-open");
+            helpAll.setData("open");
+        } else {
+            helpAll.setData("close");
+            helpAll.removeStyleName("help-icon-open");
+            helpAll.addStyleName("help-icon-close");
         }
     }
 
@@ -407,11 +561,52 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
 
             if (checkbox.getValue()) {
                 Label label = (Label) row.getComponent(2);
-                selectedNames.addSelectedPropertyName(label.getValue());
+                TextField field = (TextField) row.getComponent(3);
+                selectedNames.addSelectedProperty(new PropertyItem(label.getValue(), field.getValue()));
             }
         }
 
         return selectedNames;
+    }
+
+    private Map<String, String> getHelpMessage(Collection<String> allSubNodeNames, Collection<String> suggestedPropertyNames, AutoSuggester autoSuggester, Node parentNode) {
+        String parentClass = null;
+        Set<String> suggestionItems = new HashSet<String>();
+        try {
+            NodeIterator nodeIterator = parentNode.getNodes();
+            while (nodeIterator.hasNext()) {
+                suggestionItems.add(nodeIterator.nextNode().getName());
+            }
+            PropertyIterator propertyIterator = parentNode.getProperties();
+            while (propertyIterator.hasNext()) {
+                suggestionItems.add(propertyIterator.nextProperty().getName());
+            }
+
+            if (parentNode.hasProperty("class")) {
+                Property classProperty = parentNode.getProperty("class");
+                if (classProperty != null) {
+                    parentClass = classProperty.getString();
+                }
+            }
+            else {
+                Class<?> mostGeneralNodeClass = ((AutoSuggesterForConfigurationApp) autoSuggester).getMostGeneralNodeClass(parentNode);
+                if (mostGeneralNodeClass != null) {
+                    parentClass = mostGeneralNodeClass.getName();
+                }
+            }
+            if (parentClass != null) {
+                suggestionItems.addAll(allSubNodeNames);
+                suggestionItems.addAll(suggestedPropertyNames);
+                try {
+                    return HelperUtil.getHelper(parentClass, suggestionItems);
+                } catch (Exception ex) {
+                    log.warn("Couldn't get help message for class " + parentClass, ex);
+                }
+            }
+        } catch (RepositoryException re) {
+            log.warn("Couldn't get help message for class " + parentClass, re);
+        }
+        return null;
     }
 
     /**
@@ -419,7 +614,7 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
      */
     public static class SelectedNames {
         private Map<String, List<String>> nodeTypeNameToSelectedNodeNamesMap = new HashMap<String, List<String>>();
-        private List<String> selectedSubPropertyNames = new ArrayList<String>();
+        private List<PropertyItem> selectedSubProperties = new ArrayList<PropertyItem>();
 
         public Map<String, List<String>> getNodeTypeNameToSelectedNodeNamesMap() {
             return nodeTypeNameToSelectedNodeNamesMap;
@@ -443,16 +638,16 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
             nodeNames.addAll(newNodeNames);
         }
 
-        public List<String> getSelectedPropertyNames() {
-            return selectedSubPropertyNames;
+        public List<PropertyItem> getSelectedProperties() {
+            return selectedSubProperties;
         }
 
-        private void addSelectedPropertyName(String name) {
-            selectedSubPropertyNames.add(name);
+        private void addSelectedProperty(PropertyItem propertyItem) {
+            selectedSubProperties.add(propertyItem);
         }
 
         public boolean isEmpty() {
-            if (!selectedSubPropertyNames.isEmpty()) {
+            if (!selectedSubProperties.isEmpty()) {
                 return false;
             }
             else {
@@ -464,6 +659,53 @@ public class AddDefinitionDialogComponent extends VerticalLayout {
 
                 return true;
             }
+        }
+    }
+
+    /**
+     * Both name and value of property.
+     */
+    public static class PropertyItem {
+        private String name;
+
+        private String value;
+
+        public PropertyItem() {
+
+        }
+
+        public PropertyItem(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || !(obj instanceof PropertyItem)) {
+                return false;
+            }
+            PropertyItem another = (PropertyItem) obj;
+            return name == null ? name == another.name : name.equals(another.name)
+                    && value == null ? value == another.value : value.equals(another.value);
         }
     }
 

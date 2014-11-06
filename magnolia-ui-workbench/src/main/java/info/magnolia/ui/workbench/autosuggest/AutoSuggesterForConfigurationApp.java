@@ -1764,7 +1764,7 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
      * Get the bean class of the node based on its parent bean's property associated with it.
      * Return null if can't get a bean class associated with node from parent.
      */
-    private Class<?> getMostGeneralNodeClass(Node node) {
+    public Class<?> getMostGeneralNodeClass(Node node) {
         if (node == null) {
             return null;
         }

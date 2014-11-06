@@ -50,6 +50,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent.PropertyItem;
 import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent.SelectedNames;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
@@ -229,7 +230,7 @@ public class AddDefinitionDialogComponentTest extends RepositoryTestCase {
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("objectProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("mapProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.Content.NAME).size() == 0);
-        assertTrue(selectedNames.getSelectedPropertyNames().size() == 0);
+        assertTrue(selectedNames.getSelectedProperties().size() == 0);
     }
 
     @Test
@@ -256,11 +257,11 @@ public class AddDefinitionDialogComponentTest extends RepositoryTestCase {
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.containsKey(NodeTypes.Content.NAME));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).size() == 0);
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.Content.NAME).size() == 0);
-        List<String> selectedSubPropertyNames = selectedNames.getSelectedPropertyNames();
+        List<PropertyItem> selectedSubPropertyNames = selectedNames.getSelectedProperties();
         assertTrue(selectedSubPropertyNames.size() == 3);
-        assertTrue(selectedSubPropertyNames.contains("extends"));
-        assertTrue(selectedSubPropertyNames.contains("booleanProperty"));
-        assertTrue(selectedSubPropertyNames.contains("stringProperty"));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("extends", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("booleanProperty", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("stringProperty", "")));
     }
 
     @Test
@@ -289,11 +290,11 @@ public class AddDefinitionDialogComponentTest extends RepositoryTestCase {
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("objectProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("mapProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.Content.NAME).size() == 0);
-        List<String> selectedSubPropertyNames = selectedNames.getSelectedPropertyNames();
+        List<PropertyItem> selectedSubPropertyNames = selectedNames.getSelectedProperties();
         assertTrue(selectedSubPropertyNames.size() == 3);
-        assertTrue(selectedSubPropertyNames.contains("extends"));
-        assertTrue(selectedSubPropertyNames.contains("booleanProperty"));
-        assertTrue(selectedSubPropertyNames.contains("stringProperty"));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("extends", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("booleanProperty", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("stringProperty", "")));
     }
 
     @Test
@@ -343,11 +344,11 @@ public class AddDefinitionDialogComponentTest extends RepositoryTestCase {
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).size() == 1);
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("objectProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.Content.NAME).size() == 0);
-        List<String> selectedSubPropertyNames = selectedNames.getSelectedPropertyNames();
+        List<PropertyItem> selectedSubPropertyNames = selectedNames.getSelectedProperties();
         assertTrue(selectedSubPropertyNames.size() == 3);
-        assertTrue(selectedSubPropertyNames.contains("extends"));
-        assertTrue(selectedSubPropertyNames.contains("booleanProperty"));
-        assertTrue(selectedSubPropertyNames.contains("stringProperty"));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("extends", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("booleanProperty", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("stringProperty", "")));
     }
 
     @Test
@@ -380,10 +381,10 @@ public class AddDefinitionDialogComponentTest extends RepositoryTestCase {
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("objectProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.ContentNode.NAME).contains("mapProperty"));
         assertTrue(nodeTypeNameToSelectedNodeNamesMap.get(NodeTypes.Content.NAME).size() == 0);
-        List<String> selectedSubPropertyNames = selectedNames.getSelectedPropertyNames();
+        List<PropertyItem> selectedSubPropertyNames = selectedNames.getSelectedProperties();
         assertTrue(selectedSubPropertyNames.size() == 3);
-        assertTrue(selectedSubPropertyNames.contains("extends"));
-        assertTrue(selectedSubPropertyNames.contains("booleanProperty"));
-        assertTrue(selectedSubPropertyNames.contains("stringProperty"));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("extends", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("booleanProperty", "")));
+        assertTrue(selectedSubPropertyNames.contains(new PropertyItem("stringProperty", "")));
     }
 }

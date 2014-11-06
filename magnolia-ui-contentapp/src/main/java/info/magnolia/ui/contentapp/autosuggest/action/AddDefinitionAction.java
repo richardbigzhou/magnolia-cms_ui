@@ -43,6 +43,7 @@ import info.magnolia.ui.api.autosuggest.AutoSuggester.AutoSuggesterResult;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.autosuggest.AddDefinitionActionCallback;
+import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent.PropertyItem;
 import info.magnolia.ui.contentapp.autosuggest.AddDefinitionDialogComponent.SelectedNames;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
@@ -120,9 +121,9 @@ public class AddDefinitionAction extends AbstractAction<ActionDefinition> {
                 }
 
                 // Add selected sub-properties
-                for (String propertyName : selectedNames.getSelectedPropertyNames()) {
+                for (PropertyItem property : selectedNames.getSelectedProperties()) {
                     try {
-                        Property newProperty = selectedNode.setProperty(propertyName, "");
+                        Property newProperty = selectedNode.setProperty(property.getName(), "");
 
                         // Try to set property to appropriate type
                         JcrItemId propertyItemId = JcrItemUtil.getItemId(newProperty);
@@ -134,20 +135,32 @@ public class AddDefinitionAction extends AbstractAction<ActionDefinition> {
                                 String typeName = suggestedTypes.iterator().next();
 
                                 if ("Boolean".equals(typeName)) {
-                                    newProperty.setValue(false);
+                                    if ("true".equals(property.getValue())) {
+                                        newProperty.setValue(true);
+                                    } else {
+                                        newProperty.setValue(false);
+                                    }
                                 } else if ("Long".equals(typeName)) {
-                                    newProperty.setValue(0L);
+                                    try {
+                                        newProperty.setValue(Long.parseLong(property.getValue()));
+                                    } catch (NumberFormatException nfe) {
+                                        newProperty.setValue(0L);
+                                    }
                                 } else if ("Double".equals(typeName)) {
-                                    newProperty.setValue(0D);
+                                    try {
+                                        newProperty.setValue(Double.parseDouble(property.getValue()));
+                                    } catch (NumberFormatException nfe) {
+                                        newProperty.setValue(0D);
+                                    }
                                 } else {
-                                    newProperty.setValue("");
+                                    newProperty.setValue(property.getValue());
                                 }
                             } else {
-                                newProperty.setValue("");
+                                newProperty.setValue(property.getValue());
                             }
                         }
                         else {
-                            newProperty.setValue("");
+                            newProperty.setValue(property.getValue());
                         }
 
                     } catch (RepositoryException ex) {
