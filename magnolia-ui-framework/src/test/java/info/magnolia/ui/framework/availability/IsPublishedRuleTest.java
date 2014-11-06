@@ -53,7 +53,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link IsPublishedRule}.
-
  */
 public class IsPublishedRuleTest  extends RepositoryTestCase {
 

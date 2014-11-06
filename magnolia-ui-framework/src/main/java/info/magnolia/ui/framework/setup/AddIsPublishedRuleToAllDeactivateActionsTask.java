@@ -56,6 +56,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
     private static String rule = "IsPublishedRule";
     private static String propertyName = "implementationClass";
     private static String propertyValue = "info.magnolia.ui.framework.availability.IsPublishedRule";
+    private String appRootNode;
 
     private NodeVisitor nodeVisitor = new NodeVisitor() {
         @Override
@@ -70,7 +71,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
                     if (!actionAvailability.hasNode(rules)) {
                         actionAvailability.addNode(rules);
                     }
-                    Node availabilityRules = action.getNode(rules);
+                    Node availabilityRules = actionAvailability.getNode(rules);
                     if (!availabilityRules.hasNode(rule)) {
                         availabilityRules.addNode(rule);
                     }
@@ -83,15 +84,16 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
         }
     };
 
-    public AddIsPublishedRuleToAllDeactivateActionsTask(String taskDescription) {
+    public AddIsPublishedRuleToAllDeactivateActionsTask(String taskDescription, String appRootNode) {
         super("Add IsPublishedRule to all deactivation actions.", taskDescription);
+        this.appRootNode = appRootNode;
     }
 
     @Override
     public void execute(InstallContext ctx) throws TaskExecutionException {
         try {
-            Session session = ctx.getJCRSession(RepositoryConstants.WEBSITE);
-            Node rootNode = session.getRootNode();
+            Session session = ctx.getJCRSession(RepositoryConstants.CONFIG);
+            Node rootNode = session.getNode(appRootNode);
             NodeUtil.visit(rootNode, nodeVisitor);
         } catch (RepositoryException e) {
             throw new TaskExecutionException(e.getMessage(), e);
