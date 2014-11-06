@@ -67,7 +67,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -98,6 +97,7 @@ import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 /**
@@ -1490,7 +1490,6 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         // If the node is a bean
         else {
             Map<String, PropertyTypeDescriptor> subnodeOrSubpropertyPropertyTypeDescriptors = getAllPropertyTypeDescriptors(implementedNodeTypeDescriptor);
-            Collection<String> deprecatedSubnodeOrSubpropertyNames = getAllPossibleDeprecatedSubnodeOrSubpropertyNames(implementedNodeTypeDescriptor);
 
             // If we can get the PropertyTypeDescriptors of subnodes and sub-properties
             if (subnodeOrSubpropertyPropertyTypeDescriptors != null) {
@@ -1503,10 +1502,6 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                         String propertyName = subnodeOrSubpropertyPropertyTypeDescriptor.getName();
 
                         if (propertyName != null) {
-
-                            if (deprecatedSubnodeOrSubpropertyNames != null && deprecatedSubnodeOrSubpropertyNames.contains(propertyName)) {
-                                continue;
-                            }
 
                             if ((getSubnode && isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))
                                     || (!getSubnode && !isTypeDescriptorForContentNode(subnodeOrSubpropertyTypeDescriptor))) {
@@ -1532,34 +1527,24 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<String> getAllPossibleDeprecatedSubnodeOrSubpropertyNames(TypeDescriptor implementedNodeTypeDescriptor) {
-        if (implementedNodeTypeDescriptor == null) {
+    private Map<String, PropertyTypeDescriptor> removeAllDeprecatedPropertyNames(TypeDescriptor implementedParentTypeDescriptor, Map<String, PropertyTypeDescriptor> propertyTypeDescriptors) {
+        if (implementedParentTypeDescriptor == null || propertyTypeDescriptors == null) {
             return null;
         }
 
-        Class<?> parentClass = implementedNodeTypeDescriptor.getType();
+        Class<?> parentClass = implementedParentTypeDescriptor.getType();
         if (parentClass == null) {
             return null;
-        }
-
-        Collection<String> possibleDeprecatedSubnodeOrSubpropertyNames = new HashSet<String>();
-
-        Set<Field> fields = ReflectionUtils.getAllFields(parentClass, ReflectionUtils.withAnnotation(Deprecated.class));
-        if (fields != null && !fields.isEmpty()) {
-            for (Field field : fields) {
-                if (field.getName() != null) {
-                    possibleDeprecatedSubnodeOrSubpropertyNames.add(field.getName());
-                }
-            }
         }
 
         Set<Method> methods = new HashSet<Method>();
         Set<Method> setterMethods = ReflectionUtils.getAllMethods(parentClass,
                 Predicates.and(
                         ReflectionUtils.withModifier(Modifier.PUBLIC),
+                        ReflectionUtils.withReturnType(void.class),
                         ReflectionUtils.withPrefix("set"),
-                        ReflectionUtils.withParametersCount(1),
-                        ReflectionUtils.withReturnType(void.class)));
+                        ReflectionUtils.withParametersCount(1)
+                        ));
         if (setterMethods != null) {
             methods.addAll(setterMethods);
         }
@@ -1585,27 +1570,77 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
                         String propertyName = null;
                         if (methodName.startsWith("set") || methodName.startsWith("get")) {
                             propertyName = StringUtils.uncapitalize(StringUtils.substring(methodName, 3));
-                            if (methodName.startsWith("set")) {
-                                tempPropertyNamesWithSetMethod.add(propertyName);
-                            }
-                        }
-                        else if (methodName.startsWith("is")) {
+                        } else if (methodName.startsWith("is")) {
                             propertyName = StringUtils.uncapitalize(StringUtils.substring(methodName, 2));
                         }
 
-                        if (propertyName != null) {
-                            if (!tempPropertyNames.contains(propertyName)) {
-                                tempPropertyNames.add(propertyName);
-                            }
-                            else if (tempPropertyNamesWithSetMethod.contains(propertyName)) {
-                                possibleDeprecatedSubnodeOrSubpropertyNames.add(propertyName);
+                        if (propertyName != null && propertyTypeDescriptors.containsKey(propertyName)) {
+                            PropertyTypeDescriptor propertyTypeDescriptor = propertyTypeDescriptors.get(propertyName);
+                            if (propertyTypeDescriptor != null) {
+                                TypeDescriptor typeDescriptor = propertyTypeDescriptor.getType();
+                                if (typeDescriptor != null) {
+                                    Class<?> clazz = typeDescriptor.getType();
+                                    if (clazz != null) {
+                                        if ((methodName.startsWith("set") && clazz.equals(method.getParameterTypes()[0])) ||
+                                                (methodName.startsWith("get") && clazz.equals(method.getReturnType())) ||
+                                                (methodName.startsWith("is") && clazz.equals(method.getReturnType()) && ClassUtils.isAssignable(clazz, Boolean.class))) {
+                                            Class<?> declaringClass = method.getDeclaringClass();
+                                            // consider subClass
+                                            Class<?> currentParentClass = parentClass;
+                                            boolean currentMethodIsNotDeprecatedInSubClass = false;
+                                            while (declaringClass != null && currentParentClass != null && !declaringClass.equals(currentParentClass)) {
+                                                Predicate<Method> predicate;
+                                                if (methodName.startsWith("set")) {
+                                                    predicate = Predicates.and(
+                                                            ReflectionUtils.withModifier(Modifier.PUBLIC),
+                                                            ReflectionUtils.withReturnType(void.class),
+                                                            ReflectionUtils.withName(methodName),
+                                                            ReflectionUtils.withParametersCount(1),
+                                                            ReflectionUtils.withParameters(clazz));
+                                                } else {
+                                                    predicate = Predicates.and(
+                                                            ReflectionUtils.withModifier(Modifier.PUBLIC),
+                                                            ReflectionUtils.withReturnType(clazz),
+                                                            ReflectionUtils.withName(methodName),
+                                                            ReflectionUtils.withParametersCount(0));
+                                                }
+                                                Set<Method> sameMethodInCurrentParentClass = ReflectionUtils.getMethods(currentParentClass, predicate);
+                                                if (sameMethodInCurrentParentClass != null && sameMethodInCurrentParentClass.size() == 1) {
+                                                    Set<Method> deprecatedMethodInCurrentParentClass = ReflectionUtils.getAll(sameMethodInCurrentParentClass, ReflectionUtils.withAnnotation(Deprecated.class));
+                                                    if (deprecatedMethodInCurrentParentClass == null || (deprecatedMethodInCurrentParentClass != null && deprecatedMethodInCurrentParentClass.size() == 0)) {
+                                                        currentMethodIsNotDeprecatedInSubClass = true;
+                                                        break;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                } else if (sameMethodInCurrentParentClass == null || sameMethodInCurrentParentClass.size() == 0) {
+                                                    currentParentClass = currentParentClass.getSuperclass();
+                                                    if (Object.class.equals(currentParentClass)) {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (currentMethodIsNotDeprecatedInSubClass) {
+                                                continue;
+                                            }
+                                            if (methodName.startsWith("set")) {
+                                                tempPropertyNamesWithSetMethod.add(propertyName);
+                                            }
+                                            if (!tempPropertyNames.contains(propertyName)) {
+                                                tempPropertyNames.add(propertyName);
+                                            } else if (tempPropertyNamesWithSetMethod.contains(propertyName)) {
+                                                propertyTypeDescriptors.remove(propertyName);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        return possibleDeprecatedSubnodeOrSubpropertyNames;
+        return propertyTypeDescriptors;
     }
 
     private Collection<String> getAllPossibleNewSubnodeNames(String subnodeName, Node parentNode, Collection<String> possibleSubnodeNames) {
@@ -1682,6 +1717,7 @@ public class AutoSuggesterForConfigurationApp extends AutoSuggesterAdapter {
         }
 
         Map<String, PropertyTypeDescriptor> propertyTypeDescriptors = implementedParentTypeDescriptor.getPropertyDescriptors(typeMapping);
+        propertyTypeDescriptors = removeAllDeprecatedPropertyNames(implementedParentTypeDescriptor, new HashMap<String, PropertyTypeDescriptor>(propertyTypeDescriptors));
 
         if (propertyTypeDescriptors != null) {
             Class<?> parentClass = implementedParentTypeDescriptor.getType();

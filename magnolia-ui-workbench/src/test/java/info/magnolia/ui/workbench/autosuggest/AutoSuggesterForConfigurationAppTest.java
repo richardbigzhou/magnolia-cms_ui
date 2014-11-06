@@ -1264,10 +1264,11 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 4);
         assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("mapProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mockBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
@@ -1334,10 +1335,11 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 4);
         assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("mapProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mockBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
@@ -1357,9 +1359,10 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
         assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("testBean"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mockBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
@@ -1380,8 +1383,9 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 1);
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 2);
         assertTrue(autoSuggesterResult.getSuggestions().contains("objectProperty"));
+        assertTrue(autoSuggesterResult.getSuggestions().contains("mockBean"));
         assertTrue(autoSuggesterResult.showMismatchedSuggestions());
         assertTrue(autoSuggesterResult.showErrorHighlighting());
         assertTrue(MatchMethod.STARTS_WITH == autoSuggesterResult.getMatchMethod());
@@ -1531,7 +1535,8 @@ public class AutoSuggesterForConfigurationAppTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(autoSuggesterResult.suggestionsAvailable());
-        assertTrue(autoSuggesterResult.getSuggestions().size() == 3);
+        assertTrue(autoSuggesterResult.getSuggestions().size() == 4);
+        assertTrue(autoSuggesterResult.getSuggestions().contains("property"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("property1"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("booleanProperty"));
         assertTrue(autoSuggesterResult.getSuggestions().contains("extends"));

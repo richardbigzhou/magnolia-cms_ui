@@ -40,6 +40,7 @@ public class MockImplementingClass implements MockSuperInterface {
 
     private String property1;
     private Boolean booleanProperty;
+    private String property;
 
     @Override
     public String getProperty1() {
@@ -56,6 +57,16 @@ public class MockImplementingClass implements MockSuperInterface {
 
     public void setBooleanProperty(Boolean booleanProperty) {
         this.booleanProperty = booleanProperty;
+    }
+
+    @Override
+    public String getProperty() {
+        return property;
+    }
+
+    @Override
+    public void setProperty(String property) {
+        this.property = property;
     }
 
 }

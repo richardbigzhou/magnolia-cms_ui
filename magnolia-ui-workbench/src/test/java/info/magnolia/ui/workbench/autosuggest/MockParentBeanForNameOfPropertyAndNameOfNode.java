@@ -38,19 +38,23 @@ package info.magnolia.ui.workbench.autosuggest;
  */
 public class MockParentBeanForNameOfPropertyAndNameOfNode {
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public MockBean getDeprecatedMockBean() {
         return new MockBean();
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void setDeprecatedMockBean(MockBean deprecatedMockBean) {
+
+    }
+
+    @Deprecated
+    public MockBean getMockBean() {
+        return new MockBean();
+    }
+
+    @Deprecated
+    public void setMockBean(MockBean mockBean) {
 
     }
 

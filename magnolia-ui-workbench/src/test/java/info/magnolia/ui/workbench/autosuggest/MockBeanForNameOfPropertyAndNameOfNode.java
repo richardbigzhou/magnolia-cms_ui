@@ -46,9 +46,9 @@ public class MockBeanForNameOfPropertyAndNameOfNode extends MockParentBeanForNam
     private Map<String, String> mapProperty;
     private MockBean testBean;
     private boolean deprecatedBooleanProperty;
-    private MockBean deprecatedTestBean;
-    @Deprecated
     private String deprecatedStringProperty;
+    private MockBean deprecatedTestBean;
+    private MockBean mockBean;
 
     public boolean isBooleanProperty() {
         return booleanProperty;
@@ -101,6 +101,16 @@ public class MockBeanForNameOfPropertyAndNameOfNode extends MockParentBeanForNam
     }
 
     @Deprecated
+    public String getDeprecatedStringProperty() {
+        return deprecatedStringProperty;
+    }
+
+    @Deprecated
+    public void setDeprecatedStringProperty(String deprecatedStringProperty) {
+        this.deprecatedStringProperty = deprecatedStringProperty;
+    }
+
+    @Deprecated
     public MockBean getDeprecatedTestBean() {
         return deprecatedTestBean;
     }
@@ -110,12 +120,12 @@ public class MockBeanForNameOfPropertyAndNameOfNode extends MockParentBeanForNam
         this.deprecatedTestBean = deprecatedTestBean;
     }
 
-    public String getDeprecatedStringProperty() {
-        return deprecatedStringProperty;
+    public MockBean getMockBean() {
+        return mockBean;
     }
 
-    public void setDeprecatedStringProperty(String deprecatedStringProperty) {
-        this.deprecatedStringProperty = deprecatedStringProperty;
+    public void setMockBean(MockBean mockBean) {
+        this.mockBean = mockBean;
     }
 
 }

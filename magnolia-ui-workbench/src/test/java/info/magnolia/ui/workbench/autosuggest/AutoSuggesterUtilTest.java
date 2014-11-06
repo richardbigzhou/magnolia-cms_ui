@@ -98,8 +98,8 @@ public class AutoSuggesterUtilTest extends RepositoryTestCase {
         Collection<String> suggestedSubNodeNames = AutoSuggesterUtil.getSuggestedSubContentNodeNames(autoSuggesterForConfigurationApp, testNode);
 
         // THEN
-        assertEquals(suggestedSubNodeNames.size(), 3);
-        assertTrue(suggestedSubNodeNames.containsAll(Arrays.asList("objectProperty", "mapProperty", "testBean")));
+        assertEquals(suggestedSubNodeNames.size(), 4);
+        assertTrue(suggestedSubNodeNames.containsAll(Arrays.asList("objectProperty", "mapProperty", "testBean", "mockBean")));
     }
 
     @Test
@@ -112,8 +112,8 @@ public class AutoSuggesterUtilTest extends RepositoryTestCase {
         Collection<String> suggestedSubNodeNames = AutoSuggesterUtil.getSuggestedSubContentNodeNames(autoSuggesterForConfigurationApp, testModule);
 
         // THEN
-        assertEquals(suggestedSubNodeNames.size(), 3);
-        assertTrue(suggestedSubNodeNames.containsAll(Arrays.asList("objectProperty", "mapProperty", "testBean")));
+        assertEquals(suggestedSubNodeNames.size(), 4);
+        assertTrue(suggestedSubNodeNames.containsAll(Arrays.asList("objectProperty", "mapProperty", "testBean", "mockBean")));
     }
 
     @Test

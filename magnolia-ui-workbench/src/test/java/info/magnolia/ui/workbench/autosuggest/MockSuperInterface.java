@@ -38,4 +38,10 @@ package info.magnolia.ui.workbench.autosuggest;
  */
 public interface MockSuperInterface {
     String getProperty1();
+
+    @Deprecated
+    public String getProperty();
+
+    @Deprecated
+    public void setProperty(String property);
 }
