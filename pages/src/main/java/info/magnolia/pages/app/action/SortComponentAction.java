@@ -36,11 +36,13 @@ package info.magnolia.pages.app.action;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -75,7 +77,6 @@ public class SortComponentAction extends AbstractAction<SortComponentActionDefin
 
             Session session = MgnlContext.getJCRSession(areaElement.getWorkspace());
 
-            Node parent = session.getNode(areaElement.getPath());
             Node sourceComponent = session.getNode(areaElement.getSourceComponent().getPath());
             Node targetComponent = session.getNode(areaElement.getTargetComponent().getPath());
 
@@ -86,7 +87,7 @@ public class SortComponentAction extends AbstractAction<SortComponentActionDefin
             }
 
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(areaElement.getPath()));
+            eventBus.fireEvent(new ContentChangedEvent(JcrItemUtil.getItemId(RepositoryConstants.WEBSITE, areaElement.getPath())));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
