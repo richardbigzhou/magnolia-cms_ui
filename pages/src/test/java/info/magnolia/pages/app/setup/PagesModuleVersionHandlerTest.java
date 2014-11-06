@@ -578,11 +578,11 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo534UpdatesPagesEditorDescriptor() throws Exception {
+    public void testUpdateTo54UpdatesPagesEditorDescriptor() throws Exception {
         setupConfigProperty("/modules/pages/apps/pages/subApps/detail", "class", DetailSubAppDescriptor.class.getName());
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.5"));
 
         // check that page editor class has been updated
         Node pageEditorSubApp = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/pages/apps/pages/subApps/detail");
@@ -590,11 +590,11 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo534BootstrapsPageEditorExtensions() throws Exception {
+    public void testUpdateTo54BootstrapsPageEditorExtensions() throws Exception {
         setupConfigNode("/modules/pages/apps/pages/subApps/detail");
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.5"));
 
         // check that page editor class has been updated
         Node pageBarExtensions = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/pages/apps/pages/subApps/detail/pageBar/extensions");

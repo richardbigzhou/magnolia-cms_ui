@@ -230,12 +230,14 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new PartialBootstrapTask("Bootstrap pageActions actionbar section availability rule.",
                                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
                                         "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isNotDeleted"))))
-        
+
+        );
+
+        register(DeltaBuilder.update("5.4", "")
                 .addTask(new NodeExistsDelegateTask("Bootstrap page editor extensions.", "/modules/pages/apps/pages/subApps/detail", new ArrayDelegateTask("",
                         new CheckAndModifyPropertyValueTask("/modules/pages/apps/pages/subApps/detail", "class", DetailSubAppDescriptor.class.getName(), PagesEditorSubAppDescriptor.class.getName()),
                         new PartialBootstrapTask("Bootstrap pageBar extensions", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/pageBar"),
-                        new PartialBootstrapTask("Bootstrap statusBar extensions", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/statusBar"))))
-        );
+                        new PartialBootstrapTask("Bootstrap statusBar extensions", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/statusBar")))));
     }
 
     @Override
