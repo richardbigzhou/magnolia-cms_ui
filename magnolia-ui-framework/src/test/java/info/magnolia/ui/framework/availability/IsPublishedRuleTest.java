@@ -70,7 +70,7 @@ public class IsPublishedRuleTest  extends RepositoryTestCase {
 
         webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         rule = new IsPublishedRule();
-        
+
         publishedNode = webSiteSession.getRootNode().addNode("a_a", NodeTypes.Page.NAME);
         modifiedNode = webSiteSession.getRootNode().addNode("a_b", NodeTypes.Page.NAME);
         unpublishedNode = webSiteSession.getRootNode().addNode("a_b/a_b_a", NodeTypes.Page.NAME);

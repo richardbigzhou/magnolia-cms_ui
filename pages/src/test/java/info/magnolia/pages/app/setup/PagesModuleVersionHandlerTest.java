@@ -575,15 +575,4 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isNotDeleted"));
     }
 
-    @Test
-    public void testUpdateTo536UpdatesActionDeactivateAvailabilityRules() throws Exception {
-        // GIVEN
-        Node rules = NodeUtil.createPath(session.getRootNode(),"/modules/pages/apps/pages/subApps/browser/actions/deactivate/availability/rules", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.5"));
-
-        // THEN
-        assertThat(rules, hasNode("IsPublishedRule"));
-    }
 }

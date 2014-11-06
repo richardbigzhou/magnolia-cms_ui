@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This rule returns true if the item is not a node, or if it is a node and has NOT the ActivationStatus equals ACTIVATION_STATUS_NOT_ACTIVATED.
+ * This rule returns true if it is a node and has NOT the ActivationStatus equals ACTIVATION_STATUS_NOT_ACTIVATED.
  */
 public class IsPublishedRule extends AbstractAvailabilityRule {
 
@@ -66,6 +66,6 @@ public class IsPublishedRule extends AbstractAvailabilityRule {
                 }
             }
         }
-        return true;
+        return false;
     }
 }
