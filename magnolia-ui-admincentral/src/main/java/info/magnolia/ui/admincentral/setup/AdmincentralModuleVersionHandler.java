@@ -70,6 +70,7 @@ import info.magnolia.ui.admincentral.setup.for5_3.WidgetsetRelocationCondition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
+import info.magnolia.ui.framework.setup.AddIsPublishedRuleToAllDeactivateActionsTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -269,7 +270,11 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new CheckOrCreatePropertyTask("Create a new property required in '/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name' with true value", UI_IMPORT_FIELD, "required", "true")))
         );
         register(DeltaBuilder.update("5.3.4", "")
-                .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
+                .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion"))
+        );
+        register(DeltaBuilder.update("5.3.6", "")
+                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/ui-admincentral/apps/"))
+        );
     }
 
     @Override
