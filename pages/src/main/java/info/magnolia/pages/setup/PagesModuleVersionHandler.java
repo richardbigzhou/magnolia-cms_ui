@@ -67,6 +67,7 @@ import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
+import info.magnolia.ui.framework.setup.AddIsPublishedRuleToAllDeactivateActionsTask;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 import java.util.ArrayList;
@@ -230,6 +231,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new PartialBootstrapTask("Bootstrap pageActions actionbar section availability rule.",
                                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml",
                                         "/pages/subApps/detail/actionbar/sections/pageActions/availability/rules/isNotDeleted"))))
+        );
+        register(DeltaBuilder.update("5.3.6", "")
+                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/pages/apps/"))
 
         );
 
