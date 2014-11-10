@@ -307,7 +307,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                     if (StringUtils.isEmpty(path)) {
                         path = "/";
                     }
-                    if (!path.equals(pageEditorPresenter.getStatus().getNodePath())) {
+                    if (!path.equals(getCurrentLocation().getNodePath())) {
                         updateNodePath(path);
                     }
                 }
