@@ -290,7 +290,10 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new WarnTask("Could not change Configuration App's tree to one with auto-suggest", "Could not change Configuration App's tree to one with auto-suggest because tree view's class property does not exist or is not the expected value")))
                 .addTask(new PartialBootstrapTask("Add \'Add definition\' action definition to Configuration App", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/addDefinition"))
                 .addTask(new PartialBootstrapTask("Add \'Add definition\' action to Configuration App actionbar", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition"))
-                .addTask(new OrderNodeAfterTask("Order \'Add definition\' action to appear after \'Add property\' action in Configuration App actionbar", "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition", "addProperty")));
+                .addTask(new OrderNodeAfterTask("Order \'Add definition\' action to appear after \'Add property\' action in Configuration App actionbar", "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items/addDefinition", "addProperty"))
+                .addTask(new PartialBootstrapTask("Add reload action definition to Configuration App", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/reloadConfig"))
+                .addTask(new PartialBootstrapTask("Add reload action to Configuration App actionbar", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/importExportActions/items/reloadConfig"))
+                .addTask(new OrderNodeAfterTask("Order reload action to appear after 'Import' action in Configuration App actionbar", "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/importExportActions/items/reloadConfig", "import")));
     }
 
     @Override
