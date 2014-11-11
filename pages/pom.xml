@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <name>magnolia-pages</name>
   <properties>
-    <cloverCoverageThreshold>47</cloverCoverageThreshold>
+    <cloverCoverageThreshold>48</cloverCoverageThreshold>
   </properties>
 
   <dependencies>

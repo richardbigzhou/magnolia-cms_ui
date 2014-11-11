@@ -39,9 +39,13 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.pages.app.editor.parameters.DefaultPageEditorStatus;
+import info.magnolia.pages.app.editor.parameters.PageEditorStatus;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatus;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusView;
 import info.magnolia.pages.app.editor.statusbar.activationstatus.ActivationStatusViewImpl;
@@ -49,8 +53,13 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
+
+import javax.jcr.Node;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +93,7 @@ public class ActivationStatusTest {
 
         this.view = new ActivationStatusViewImpl();
 
-        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus);
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus, mock(PageEditorPresenter.class));
     }
 
     @Test
@@ -125,7 +134,7 @@ public class ActivationStatusTest {
         // GIVEN
         DetailLocation location = mock(DetailLocation.class);
         this.view = mock(ActivationStatusView.class);
-        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus);
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus, mock(PageEditorPresenter.class));
 
         when(view.isVisible()).thenReturn(true);
         when(serverConfiguration.isAdmin()).thenReturn(true);
@@ -139,5 +148,66 @@ public class ActivationStatusTest {
         // THEN
         verify(view, times(1)).setIconStyle(anyString());
         verify(view, times(1)).setActivationStatus(anyString());
+    }
+
+    @Test
+    public void testUpdateActivationStatusForCurrentItem() throws Exception {
+        // GIVEN
+        this.view = mock(ActivationStatusView.class);
+        this.admincentralEventBus = new SimpleEventBus();
+
+        PageEditorStatus status = new DefaultPageEditorStatus(mock(I18NAuthoringSupport.class));
+        String nodePath = "/test";
+        status.setNodePath(nodePath);
+        PageEditorPresenter pageEditorPresenter = mock(PageEditorPresenter.class);
+
+        Node node = NodeUtil.createPath(session.getRootNode(), nodePath, NodeTypes.Page.NAME);
+        JcrItemId itemId = new JcrNodeItemId(node.getIdentifier(), RepositoryConstants.WEBSITE);
+
+        when(pageEditorPresenter.getStatus()).thenReturn(status);
+        when(contentConnector.canHandleItem(itemId)).thenReturn(true);
+        when(contentConnector.getItemUrlFragment(itemId)).thenReturn(nodePath);
+        when(view.isVisible()).thenReturn(true);
+        when(serverConfiguration.isAdmin()).thenReturn(true);
+
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus, pageEditorPresenter);
+
+        // WHEN
+        activationStatus.start();
+        admincentralEventBus.fireEvent(new ContentChangedEvent(itemId));
+
+        // THEN
+        verify(view, times(1)).setIconStyle(anyString());
+        verify(view, times(1)).setActivationStatus(anyString());
+    }
+
+    @Test
+    public void testDoNotUpdateActivationStatusForOtherItems() throws Exception {
+        // GIVEN
+        this.view = mock(ActivationStatusView.class);
+        this.admincentralEventBus = new SimpleEventBus();
+
+        PageEditorStatus status = new DefaultPageEditorStatus(mock(I18NAuthoringSupport.class));
+        status.setNodePath("/test");
+        PageEditorPresenter pageEditorPresenter = mock(PageEditorPresenter.class);
+
+        Node node = NodeUtil.createPath(session.getRootNode(), "/bla", NodeTypes.Page.NAME);
+        JcrItemId itemId = new JcrNodeItemId(node.getIdentifier(), RepositoryConstants.WEBSITE);
+
+        when(pageEditorPresenter.getStatus()).thenReturn(status);
+        when(contentConnector.canHandleItem(itemId)).thenReturn(true);
+        when(contentConnector.getItemUrlFragment(itemId)).thenReturn("/bla");
+        when(view.isVisible()).thenReturn(true);
+        when(serverConfiguration.isAdmin()).thenReturn(true);
+
+        this.activationStatus = new ActivationStatus(view, i18n, serverConfiguration, contentConnector, admincentralEventBus, subAppEventBus, pageEditorPresenter);
+
+        // WHEN
+        activationStatus.start();
+        admincentralEventBus.fireEvent(new ContentChangedEvent(itemId));
+
+        // THEN
+        verify(view, times(0)).setIconStyle(anyString());
+        verify(view, times(0)).setActivationStatus(anyString());
     }
 }

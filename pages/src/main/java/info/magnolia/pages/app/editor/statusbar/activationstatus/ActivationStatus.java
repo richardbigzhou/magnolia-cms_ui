@@ -39,6 +39,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.pages.app.editor.PageEditorPresenter;
 import info.magnolia.pages.app.editor.extension.Extension;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.app.SubAppEventBus;
@@ -65,18 +66,20 @@ public class ActivationStatus implements Extension {
     private final ContentConnector contentConnector;
     private final EventBus admincentralEventBus;
     private final EventBus subAppEventBus;
+    private PageEditorPresenter pageEditorPresenter;
 
     private ActivationStatusView view;
 
     @Inject
     public ActivationStatus(ActivationStatusView view, SimpleTranslator i18n, ServerConfiguration serverConfiguration, ContentConnector contentConnector,
-                            final @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+                            final @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, PageEditorPresenter pageEditorPresenter) {
         this.view = view;
         this.i18n = i18n;
         this.serverConfiguration = serverConfiguration;
         this.contentConnector = contentConnector;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
+        this.pageEditorPresenter = pageEditorPresenter;
     }
 
     @Override
@@ -157,7 +160,8 @@ public class ActivationStatus implements Extension {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId()) && event.getItemId() instanceof JcrNodeItemId) {
+                if (contentConnector.canHandleItem(event.getItemId()) && event.getItemId() instanceof JcrNodeItemId &&
+                        contentConnector.getItemUrlFragment(event.getItemId()).equals(pageEditorPresenter.getStatus().getNodePath())) {
                     updateActivationStatus((JcrNodeItemId) event.getItemId());
                 }
             }
