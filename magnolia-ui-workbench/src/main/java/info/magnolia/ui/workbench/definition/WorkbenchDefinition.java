@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.i18nsystem.I18nable;
+import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -68,4 +69,6 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the list of configured views.<br>
      */
     List<ContentPresenterDefinition> getContentViews();
+
+    List<ContentToolDefinition> getContentTools();
 }

@@ -206,6 +206,10 @@
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.contenttool.ContentToolDefinition</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.ConfiguredContentToolDefinition</implementation>
+    </type-mapping>
 
     <!-- Actionbar -->
     <type-mapping>

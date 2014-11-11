@@ -53,7 +53,6 @@ import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
@@ -89,7 +88,6 @@ import com.vaadin.server.ExternalResource;
  *  <ul>
  *      <li> {@link SelectionChangedEvent}
  *      <li> {@link ViewTypeChangedEvent}
- *      <li> {@link SearchEvent}
  *  </ul>
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
  *  <ul>
@@ -384,7 +382,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * <ul>
      * <li> {@link ItemSelectedEvent}
      * <li> {@link ViewTypeChangedEvent}
-     * <li> {@link SearchEvent}
      * </ul>
      */
     private void registerSubAppEventsHandlers(final EventBus subAppEventBus) {
@@ -416,20 +413,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                     location.updateQuery("");
                 }
                 location.updateViewType(event.getViewType());
-                getAppContext().updateSubAppLocation(getSubAppContext(), location);
-                updateActionbar(actionbar);
-            }
-        });
-
-        subAppEventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
-
-            @Override
-            public void onSearch(SearchEvent event) {
-                BrowserLocation location = getCurrentLocation();
-                if (StringUtils.isNotBlank(event.getSearchExpression())) {
-                    location.updateViewType(SearchPresenterDefinition.VIEW_TYPE);
-                }
-                location.updateQuery(event.getSearchExpression());
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }

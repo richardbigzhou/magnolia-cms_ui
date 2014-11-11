@@ -39,7 +39,6 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -89,13 +88,6 @@ public class WorkbenchField extends CustomField<Object> {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
                 setValue(event.getFirstItemId(), false);
-            }
-        });
-
-        workbenchEventbus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
-            @Override
-            public void onSearch(SearchEvent event) {
-                presenter.doSearch(event.getSearchExpression());
             }
         });
 

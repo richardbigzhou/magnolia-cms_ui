@@ -47,6 +47,7 @@ public class SearchPresenterDefinition extends ConfiguredContentPresenterDefinit
         setViewType(VIEW_TYPE);
         setActive(false);
         setIcon("icon-view-list");
+        setShowButton(false);
     }
 
 }

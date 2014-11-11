@@ -56,7 +56,6 @@ import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
-import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
@@ -198,14 +197,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             @Override
             public void onItemDoubleClicked(ItemDoubleClickedEvent event) {
                 executeDefaultAction();
-            }
-        });
-
-        subAppEventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
-
-            @Override
-            public void onSearch(SearchEvent event) {
-                workbenchPresenter.doSearch(event.getSearchExpression());
             }
         });
 

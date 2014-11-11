@@ -36,6 +36,8 @@ package info.magnolia.ui.workbench;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
+import java.util.Map;
+
 /**
  * WorkbenchView.
  */
@@ -45,22 +47,17 @@ public interface WorkbenchView extends View {
      */
     interface Listener {
 
-        void onSearch(String searchExpression);
-
         void onViewTypeChanged(String viewType);
     }
 
     void setListener(Listener listener);
 
     /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(String type, ContentView view, ContentPresenterDefinition contentViewDefintion);
+    void addContentView(String type, ContentView view, ContentPresenterDefinition contentViewDefinition);
+
+    Map<String, ContentView> getContentViews();
 
     void setViewType(String type);
 
@@ -75,5 +72,7 @@ public interface WorkbenchView extends View {
      * Whether the user can select more items.
      */
     void setMultiselect(boolean multiselect);
+
+    public void addContentTool(View view);
 
 }

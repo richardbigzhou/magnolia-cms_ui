@@ -52,6 +52,8 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
 
     private boolean active;
 
+    private boolean showButton = true;
+
     private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     @Override
@@ -88,6 +90,15 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public boolean isShowButton() {
+        return showButton;
+    }
+
+    public void setShowButton(boolean showButton) {
+        this.showButton = showButton;
     }
 
     @Override

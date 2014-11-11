@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Definition for a workbench generic content view.
+ * Definition that describes content tool used in a workbench.
  */
-@I18nable
-public interface ContentPresenterDefinition {
+public interface ContentToolDefinition {
 
-    String getViewType();
+    public Class<? extends ContentToolPresenter> getPresenterClass();
 
-    List<ColumnDefinition> getColumns();
+    public Class<? extends View> getViewClass();
 
-    Class<? extends ContentPresenter> getImplementationClass();
-
-    String getIcon();
-
-    boolean isActive();
-
-    boolean isShowButton();
+    public boolean isEnabled();
 }

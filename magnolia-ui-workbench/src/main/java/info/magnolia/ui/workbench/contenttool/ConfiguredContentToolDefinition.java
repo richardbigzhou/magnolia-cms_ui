@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Definition for a workbench generic content view.
+ * Configured definition of {@link ContentToolDefinition}.
  */
-@I18nable
-public interface ContentPresenterDefinition {
+public class ConfiguredContentToolDefinition implements ContentToolDefinition {
 
-    String getViewType();
+    private Class<? extends ContentToolPresenter> presenterClass;
+    private Class<? extends View> viewClass;
+    private boolean enabled = true;
 
-    List<ColumnDefinition> getColumns();
+    public void setPresenterClass(Class<? extends ContentToolPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
 
-    Class<? extends ContentPresenter> getImplementationClass();
+    @Override
+    public Class<? extends ContentToolPresenter> getPresenterClass() {
+        return presenterClass;
+    }
 
-    String getIcon();
+    public void setViewClass(Class<? extends View> viewClass) {
+        this.viewClass = viewClass;
+    }
 
-    boolean isActive();
+    @Override
+    public Class<? extends View> getViewClass() {
+        return viewClass;
+    }
 
-    boolean isShowButton();
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

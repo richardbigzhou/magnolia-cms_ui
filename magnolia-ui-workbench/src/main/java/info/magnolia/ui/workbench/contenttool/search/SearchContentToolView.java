@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.contenttool.search;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Definition for a workbench generic content view.
+ * Search content tool view.
  */
-@I18nable
-public interface ContentPresenterDefinition {
+public interface SearchContentToolView extends View {
 
-    String getViewType();
+    void setListener(Listener listener);
 
-    List<ColumnDefinition> getColumns();
+    void clearSearchQuery();
 
-    Class<? extends ContentPresenter> getImplementationClass();
+    /**
+     * Listener.
+     */
+    interface Listener {
 
-    String getIcon();
+        void onSearch(String searchQuery);
+    }
 
-    boolean isActive();
-
-    boolean isShowButton();
 }
