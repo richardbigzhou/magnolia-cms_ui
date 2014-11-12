@@ -29,7 +29,7 @@
 }
 
 .fullscreen .v-shell-notification.error{
-	top:0px;
+  top:0px;
 }
 
 .v-shell-notification .header {
@@ -105,6 +105,35 @@
   position: absolute;
   top: 32px;
   left: 36px;
+}
+
+.composite-icon {
+  font-size: 24px;
+
+  .icon:not(:first-child) {
+     margin-left: -1em;
+  }
+
+  &.help-icon {
+    .icon-shape-circle-plus { color: $c80; }
+    .icon-shape-circle { color: $c20; }
+    .icon-help-mark { color: $c80; }
+  }
+  &.info-icon {
+    .icon-shape-circle-plus { color: $c80; }
+    .icon-shape-circle { color: $c20; }
+    .icon-info_mark { color: $c80; }
+  }
+  &.warning-icon {
+    .icon-shape-circle-plus { color: $c10; }
+    .icon-shape-circle { color: $c60; }
+    .icon-warning-mark { color: $c10; }
+  }
+  &.error-icon {
+    .icon-shape-triangle-plus { color: $c80; }
+    .icon-shape-triangle { color: $c70; }
+    .icon-error-mark { color: $c80; }
+  }
 }
 
 }

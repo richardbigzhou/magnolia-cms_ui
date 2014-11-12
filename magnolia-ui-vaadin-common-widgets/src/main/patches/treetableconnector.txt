@@ -1,5 +1,5 @@
---- k1/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-03-22 16:23:56.000000000 +0100
-+++ k2/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-03-26 15:29:14.000000000 +0100
+--- k1/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-09-03 22:38:14.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2014-11-14 16:33:39.000000000 +0100
 @@ -21,27 +21,27 @@
  import com.vaadin.client.UIDL;
  import com.vaadin.client.Util;
@@ -18,12 +18,12 @@
  import com.vaadin.shared.ui.treetable.TreeTableConstants;
  import com.vaadin.shared.ui.treetable.TreeTableState;
 -import com.vaadin.ui.TreeTable;
-
+ 
 -@Connect(TreeTable.class)
 -public class TreeTableConnector extends TableConnector {
 +//@Connect(TreeTable.class)
 +public class TreeTableConnectorPatched extends TableConnectorPatched {
-
+ 
      @Override
      public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
          FocusableScrollPanel widget = null;
@@ -42,14 +42,14 @@
 @@ -60,6 +60,8 @@
                  }
              }
-
+ 
 +            // MGNLUI-961 Without lazy loading, we need to restore scrollTop not only for collapseRequests (part. 2)
 +        }
              int scrollPosition2 = widget.getScrollPosition();
              if (scrollPosition != scrollPosition2) {
                  widget.setScrollPosition(scrollPosition);
 @@ -67,8 +69,8 @@
-
+ 
              // check which rows are needed from the server and initiate a
              // deferred fetch
 -            getWidget().onScroll(null);
@@ -65,17 +65,26 @@
               */
 -            getWidget().triggerLazyColumnAdjustment(true);
 +            getWidget().triggerLazyColumnAdjustment(false);
-
+ 
              getWidget().collapseRequest = false;
          }
 @@ -108,8 +110,8 @@
      }
-
+ 
      @Override
 -    public VTreeTable getWidget() {
 -        return (VTreeTable) super.getWidget();
 +    public VTreeTablePatched getWidget() {
 +        return (VTreeTablePatched) super.getWidget();
      }
-
+ 
      @Override
+@@ -125,7 +127,7 @@
+         if (element != getWidget().getElement()) {
+             Object node = Util.findWidget(
+                     (com.google.gwt.user.client.Element) element,
+-                    VTreeTableRow.class);
++                    getWidget().scrollBody.iterator().next().getClass());
+ 
+             if (node != null) {
+                 VTreeTableRow row = (VTreeTableRow) node;

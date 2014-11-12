@@ -173,6 +173,8 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
             count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, type);
             view.updateCategoryBadgeCount(PulseItemCategory.INFO, count);
             break;
+        default:
+            break;
         }
     }
 
