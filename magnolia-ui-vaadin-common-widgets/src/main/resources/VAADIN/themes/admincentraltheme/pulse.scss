@@ -34,8 +34,8 @@
   color: $c40;
   font-size:32px;
   position: relative;
-    top:-12px;
-    float:left;
+  top:-12px;
+  float:left;
 }
 
 .v-dashboard-entry .content {
@@ -120,7 +120,7 @@
 }
 
 .v-pulse .v-table-cell-wrapper > .icon{
-	padding-top:3px;
+  padding-top:3px;
 }
 
 .v-pulse .navigator {
@@ -388,9 +388,8 @@
   color: $c60;
 }
 
-.message-subject-text div{
-  position: absolute;
-  top: 22px;
+.message-subject-text {
+  line-height: 14px !important;
 }
 
 .v-pulse .footer {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.EmptyMessages;
-import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
@@ -45,37 +45,33 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListViewImpl.TaskSubjectColumnGenerator;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
-import java.util.Locale;
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
 /**
- * PulseMessagesViewImplTest.
+ * Tests for the Pulse {@link TasksListViewImpl}.
  */
-public class PulseMessagesViewImplTest {
+public class TasksListViewImplTest {
+
     @Before
     public void setUp() {
-        WebContext ctx = new MockWebContext();
+        MockWebContext ctx = new MockWebContext();
+        User user = mock(User.class);
+        when(user.getAllRoles()).thenReturn(Collections.EMPTY_LIST);
+        ctx.setUser(user);
         MgnlContext.setInstance(ctx);
         ComponentsTestUtil.setInstance(WebContext.class, ctx);
         ComponentsTestUtil.setImplementation(SystemContext.class, MockContext.class);
-
-        MessagesManager messagesManager = mock(MessagesManager.class);
-        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
-
-        when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
-
-        ComponentsTestUtil.setImplementation(PulseItemCategory.class, PulseItemCategory.class);
     }
 
     @After
@@ -85,20 +81,20 @@ public class PulseMessagesViewImplTest {
     }
 
     @Test
-    public void testEnsureMessageIsEscaped() throws Exception {
+    public void testEnsureTaskCommentIsEscaped() throws Exception {
         // GIVEN
-        MessagesListViewImpl view = new MessagesListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
+        TasksListViewImpl view = new TasksListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
-        when(container.getContainerProperty(itemId, MessagesContainer.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
-        when(container.getContainerProperty(itemId, MessagesContainer.SUBJECT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "subject"));
+        when(container.getContainerProperty(itemId, TasksContainer.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));
         Table source = new Table();
         source.setContainerDataSource(container);
+        TaskSubjectColumnGenerator taskColumnGenerator = view.new TaskSubjectColumnGenerator();
 
         // WHEN
-        Label label = (Label) view.textColumnGenerator.generateCell(source, itemId, MessagesContainer.TEXT_PROPERTY_ID);
+        String cell = (String) taskColumnGenerator.generateCell(source, itemId, TasksContainer.TASK_PROPERTY_ID);
 
-        // THEN
-        assertEquals("<strong>subject</strong><div>&lt;span onmouseover=&quot;alert(&apos;xss&apos;)&quot;&gt;bug&lt;/...</div>", label.getValue());
+        // THEN comment is abbreviated
+        assertThat(cell, containsString("<span class=\"comment\">&lt;span onmouseover=&"));
     }
 }
