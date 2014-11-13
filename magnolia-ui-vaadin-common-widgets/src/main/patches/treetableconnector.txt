@@ -1,5 +1,5 @@
---- k1/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-09-03 22:38:14.000000000 +0200
-+++ k2/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2014-11-14 16:33:39.000000000 +0100
+--- k1/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2014-08-28 18:17:28.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2014-11-21 18:58:44.000000000 +0100
 @@ -21,27 +21,27 @@
  import com.vaadin.client.UIDL;
  import com.vaadin.client.Util;
@@ -39,7 +39,7 @@
          getWidget().animationsEnabled = uidl.getBooleanAttribute("animate");
          getWidget().colIndexOfHierarchy = uidl
                  .hasAttribute(TreeTableConstants.ATTRIBUTE_HIERARCHY_COLUMN_INDEX) ? uidl
-@@ -60,6 +60,8 @@
+@@ -65,6 +65,8 @@
                  }
              }
  
@@ -48,7 +48,7 @@
              int scrollPosition2 = widget.getScrollPosition();
              if (scrollPosition != scrollPosition2) {
                  widget.setScrollPosition(scrollPosition);
-@@ -67,8 +69,8 @@
+@@ -72,8 +74,8 @@
  
              // check which rows are needed from the server and initiate a
              // deferred fetch
@@ -59,7 +59,7 @@
          // Recalculate table size if collapse request, or if page length is zero
          // (not sent by server) and row count changes (#7908).
          if (getWidget().collapseRequest
-@@ -80,7 +82,7 @@
+@@ -85,7 +87,7 @@
               * cleans up state. Be careful if touching this, you will break
               * pageLength=0 if you remove this.
               */
@@ -68,7 +68,7 @@
  
              getWidget().collapseRequest = false;
          }
-@@ -108,8 +110,8 @@
+@@ -114,8 +116,8 @@
      }
  
      @Override
@@ -79,12 +79,12 @@
      }
  
      @Override
-@@ -125,7 +127,7 @@
+@@ -129,7 +131,7 @@
+         TooltipInfo info = null;
+ 
          if (element != getWidget().getElement()) {
-             Object node = Util.findWidget(
-                     (com.google.gwt.user.client.Element) element,
--                    VTreeTableRow.class);
-+                    getWidget().scrollBody.iterator().next().getClass());
+-            Object node = Util.findWidget(element, VTreeTableRow.class);
++            Object node = Util.findWidget(element, getWidget().scrollBody.iterator().next().getClass());
  
              if (node != null) {
                  VTreeTableRow row = (VTreeTableRow) node;
