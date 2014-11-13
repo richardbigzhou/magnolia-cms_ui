@@ -1,0 +1,27 @@
+--- k1/src/main/java/com/vaadin/client/ui/VUpload.java	2014-11-11 21:23:43.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/VUpload.java	2014-11-11 21:25:13.000000000 +0200
+@@ -172,15 +172,13 @@
+         setStyleName(getElement(), CLASSNAME + "-immediate", immediate);
+     }
+
+-    private static native void fireNativeClick(Element element)
+-    /*-{
+-        element.click();
+-    }-*/;
++    private void fireNativeClick(Element element) {
++       element.dispatchEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false));
++    };
+
+-    private static native void fireNativeBlur(Element element)
+-    /*-{
+-        element.blur();
+-    }-*/;
++    private void fireNativeBlur(Element element) {
++        element.dispatchEvent(Document.get().createBlurEvent());
++    };
+
+     /** For internal use only. May be removed or replaced in the future. */
+     public void disableUpload() {
+
+
+
