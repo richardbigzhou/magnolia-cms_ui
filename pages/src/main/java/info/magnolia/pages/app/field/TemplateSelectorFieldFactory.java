@@ -49,7 +49,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -92,7 +91,7 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
         if (item instanceof JcrNodeAdapter) {
             Node associatedNode = ((JcrNodeAdapter) item).getJcrItem();
 
-            Collection<TemplateDefinition> templates = Collections.EMPTY_SET;
+            Collection<TemplateDefinition> templates = Collections.emptySet();
 
             if (item instanceof JcrNewNodeAdapter) {
                 // creates a temporary node underneath the parent to overcome a restriction in template availability,
