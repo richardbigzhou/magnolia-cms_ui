@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.grid;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class MagnoliaTreeTable extends TreeTable {
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
         String result = super.formatPropertyValue(rowId, colId, property);
-        return StringEscapeUtils.escapeHtml(result);
+        return StringEscapeUtils.escapeHtml4(result);
     }
 
     @Override

@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.grid;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -60,7 +60,7 @@ public class MagnoliaTable extends Table {
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
         String result = super.formatPropertyValue(rowId, colId, property);
-        return StringEscapeUtils.escapeHtml(result);
+        return StringEscapeUtils.escapeHtml4(result);
     }
 
     @Override
