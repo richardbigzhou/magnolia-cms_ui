@@ -201,7 +201,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         if (!getState().isCollapsed) {
             stretchControl.replaceClassName("icon-open-fullscreen-2", "icon-close-fullscreen-2");
             stretchControl.replaceClassName(COLLAPSED, STRETCHED);
-            form.asWidget().addStyleName("textarea-stretched");
+            form.asWidget().addStyleName(TEXTAREA_STRETCHED);
 
             Style style = textWidget.getElement().getStyle();
             style.setPosition(Style.Position.ABSOLUTE);
