@@ -65,7 +65,17 @@ import com.vaadin.shared.ui.Connect;
 @Connect(TextAreaStretcher.class)
 public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
+    public static final String STRETCHER_BASE = "textarea-stretcher";
+    public static final String STRETCHED = "stretched";
+    public static final String COLLAPSED = "collapsed";
+    public static final String CKEDITOR_TOOLBOX = ".cke_top";
+    public static final String TEXTAREA_STRETCHED = "textarea-stretched";
+
+    public static final String RICH_TEXT_STYLE_NAME = "rich-text";
+    public static final String SIMPLE_STYLE_NAME = "simple";
+
     public static final int DELAY_MS = 500;
+
     private Widget form;
     private Widget dialog;
     private Widget textWidget;
@@ -119,7 +129,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     protected void extend(ServerConnector target) {
         this.textWidget = ((ComponentConnector)target).getWidget();
         this.isRichTextEditor = target instanceof RichTextConnector;
-        this.stretchControl.setClassName("textarea-stretcher");
+        this.stretchControl.setClassName(STRETCHER_BASE);
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
@@ -128,7 +138,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                 checkOverlay();
                 if (!isRichTextEditor) {
                     appendStretcher(textWidget.getElement());
-                    stretchControl.addClassName("simple");
+                    stretchControl.addClassName(SIMPLE_STYLE_NAME);
                 } else {
                     Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
                         private int repeats = 0;
@@ -137,10 +147,10 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                         public boolean execute() {
                             repeats++;
                             isRichTextEditor = true;
-                            final Element toolbox = JQueryWrapper.select(textWidget).find(".cke_top").get(0);
+                            final Element toolbox = JQueryWrapper.select(textWidget).find(CKEDITOR_TOOLBOX).get(0);
                             if (toolbox != null) {
                                 appendStretcher(toolbox);
-                                stretchControl.addClassName("rich-text");
+                                stretchControl.addClassName(RICH_TEXT_STYLE_NAME);
                             }
                             return toolbox == null && repeats < 5;
                         }
@@ -190,7 +200,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private void updateSize() {
         if (!getState().isCollapsed) {
             stretchControl.replaceClassName("icon-open-fullscreen-2", "icon-close-fullscreen-2");
-            stretchControl.replaceClassName("collapsed", "stretched");
+            stretchControl.replaceClassName(COLLAPSED, STRETCHED);
             form.asWidget().addStyleName("textarea-stretched");
 
             Style style = textWidget.getElement().getStyle();
@@ -217,9 +227,9 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
             hideOtherStretchers();
         } else {
-            stretchControl.replaceClassName("stretched", "collapsed");
+            stretchControl.replaceClassName(STRETCHED, COLLAPSED);
             stretchControl.replaceClassName("icon-close-fullscreen-2", "icon-open-fullscreen-2");
-            form.asWidget().removeStyleName("textarea-stretched");
+            form.asWidget().removeStyleName(TEXTAREA_STRETCHED);
             clearTraces();
         }
     }
@@ -231,7 +241,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     }
 
     private void hideOtherStretchers() {
-        JQueryWrapper.select(".textarea-stretcher").setCss("display", "none");
+        JQueryWrapper.select("." + STRETCHER_BASE).setCss("display", "none");
         this.stretchControl.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
@@ -245,7 +255,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         stretchControl.getStyle().clearTop();
         stretchControl.getStyle().clearLeft();
 
-        JQueryWrapper.select(".textarea-stretcher").setCss("display", "");
+        JQueryWrapper.select("." + STRETCHER_BASE).setCss("display", "");
     }
 
     private void stretchTextArea(Style style) {
