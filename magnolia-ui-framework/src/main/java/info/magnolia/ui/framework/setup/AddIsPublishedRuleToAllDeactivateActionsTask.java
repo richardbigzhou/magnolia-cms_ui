@@ -52,6 +52,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
 
     private static String actions = "actions";
     private static String deactivate = "deactivate";
+    private static String extend = "extends";
     private static String availability = "availability";
     private static String rules = "rules";
     private static String rule = "IsPublishedRule";
@@ -63,7 +64,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
         @Override
         public void visit(Node node) throws RepositoryException {
             if (node.getName().equals(actions)) {
-                if (node.hasNode(deactivate)) {
+                if (node.hasNode(deactivate)  && !node.getNode(deactivate).hasProperty(extend)) {
                     Node action = node.getNode(deactivate);
                     if (!action.hasNode(availability)) {
                         action.addNode(availability, NodeTypes.ContentNode.NAME);
