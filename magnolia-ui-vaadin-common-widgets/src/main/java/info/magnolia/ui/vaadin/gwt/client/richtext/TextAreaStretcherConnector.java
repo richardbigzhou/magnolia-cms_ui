@@ -128,6 +128,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                 checkOverlay();
                 if (!isRichTextEditor) {
                     appendStretcher(textWidget.getElement());
+                    stretchControl.addClassName("simple");
                 } else {
                     Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
                         private int repeats = 0;
@@ -136,12 +137,12 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                         public boolean execute() {
                             repeats++;
                             isRichTextEditor = true;
-                            Element iframe = JQueryWrapper.select(textWidget).find("iframe").get(0);
-                            if (iframe != null) {
-                                appendStretcher(iframe);
+                            final Element toolbox = JQueryWrapper.select(textWidget).find(".cke_top").get(0);
+                            if (toolbox != null) {
+                                appendStretcher(toolbox);
                                 stretchControl.addClassName("rich-text");
                             }
-                            return iframe == null && repeats < 5;
+                            return toolbox == null && repeats < 5;
                         }
                     }, DELAY_MS);
                 }
@@ -155,6 +156,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     }
 
     private void appendStretcher(Element rootElement) {
+        rootElement.getStyle().setPosition(Style.Position.RELATIVE);
         rootElement.getParentElement().insertAfter(stretchControl, rootElement);
         Widget parent = textWidget.getParent();
         TouchDelegate touchDelegate = new TouchDelegate(parent);
@@ -213,12 +215,24 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
             }
 
+            hideOtherStretchers();
         } else {
             stretchControl.replaceClassName("stretched", "collapsed");
             stretchControl.replaceClassName("icon-close-fullscreen-2", "icon-open-fullscreen-2");
             form.asWidget().removeStyleName("textarea-stretched");
             clearTraces();
         }
+    }
+
+    @Override
+    public void onUnregister() {
+        super.onUnregister();
+        clearTraces();
+    }
+
+    private void hideOtherStretchers() {
+        JQueryWrapper.select(".textarea-stretcher").setCss("display", "none");
+        this.stretchControl.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
     private void clearTraces() {
@@ -230,6 +244,8 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
         stretchControl.getStyle().clearTop();
         stretchControl.getStyle().clearLeft();
+
+        JQueryWrapper.select(".textarea-stretcher").setCss("display", "");
     }
 
     private void stretchTextArea(Style style) {

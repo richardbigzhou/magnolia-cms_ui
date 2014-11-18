@@ -382,24 +382,34 @@ fieldset {
   opacity: 0.6;
 }
 
-.textarea-stretcher.stretched {
-  position: absolute;
-  right: 10px;
-  top: 45px;
-}
-
-.textarea-stretcher.stretched.rich-text {
-  right: 5px;
-  top: 47px;
+.textarea-stretcher.rich-text {
+  right: 1px;
+  float: right;
 }
 
 .textarea-stretcher.collapsed {
   position: relative;
   vertical-align: top;
-  margin-right: -15px;
-  right: 16px;
-  top: 2px;
+  top: 1px;
 }
+
+.textarea-stretcher.simple.collapsed {
+  right: 15px;
+  margin-right: -15px;
+}
+
+
+.textarea-stretcher.simple.stretched {
+  position: absolute;
+  right: 1px;
+  top: 40px;
+}
+
+.textarea-stretcher.rich-text.stretched {
+  position: relative;
+  top: 1px;
+}
+
 
 .v-magnolia-form.textarea-stretched .v-shell-tabsheet-tab-wrapper {
   position: static;
