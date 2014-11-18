@@ -64,7 +64,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
         @Override
         public void visit(Node node) throws RepositoryException {
             if (node.getName().equals(actions)) {
-                if (node.hasNode(deactivate)  && !node.getNode(deactivate).hasNode(extend)) {
+                if (node.hasNode(deactivate)  && !node.getNode(deactivate).hasProperty(extend)) {
                     Node action = node.getNode(deactivate);
                     if (!action.hasNode(availability)) {
                         action.addNode(availability, NodeTypes.ContentNode.NAME);
