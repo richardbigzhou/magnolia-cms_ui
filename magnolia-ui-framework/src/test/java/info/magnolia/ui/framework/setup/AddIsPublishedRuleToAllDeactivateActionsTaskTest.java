@@ -119,4 +119,17 @@ public class AddIsPublishedRuleToAllDeactivateActionsTaskTest extends Repository
         // THEN
         assertTrue(node.getNode("availability").getNode("rules").getNode("IsPublishedRule").getProperty("implementationClass").getValue().getString().equals("info.magnolia.ui.framework.availability.IsPublishedRule"));
     }
+
+    @Test
+    public void testDeactivateNodeExtendingAnotherDeactivate() throws TaskExecutionException, RepositoryException {
+        // GIVEN
+        Node node = appRootNode.addNode("actions").addNode("deactivate");
+        node.setProperty("extends", "../deactivate");
+
+        // WHEN
+        queryTask.execute(installContext);
+
+        // THEN
+        assertFalse(node.hasNode("availability"));
+    }
 }
