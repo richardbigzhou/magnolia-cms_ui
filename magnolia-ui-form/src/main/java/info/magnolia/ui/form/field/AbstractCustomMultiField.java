@@ -252,14 +252,18 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
      */
     @Override
     public boolean isValid() {
-        boolean isValid = true;
-        List<AbstractField<T>> fields = getFields(this, false);
-        for (AbstractField<T> field : fields) {
-            isValid = field.isValid();
-            if (!isValid) {
-                return isValid;
+        boolean isValid = super.isValid();
+
+        if (isValid) {
+            List<AbstractField<T>> fields = getFields(this, false);
+            for (AbstractField<T> field : fields) {
+                isValid = field.isValid();
+                if (!isValid) {
+                    return isValid;
+                }
             }
         }
+
         return isValid;
     }
 
