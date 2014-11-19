@@ -64,7 +64,7 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
         @Override
         public void visit(Node node) throws RepositoryException {
             if (node.getName().equals(ACTIONS)) {
-                if (node.hasNode(DEACTIVATE)  && !(node.getNode(DEACTIVATE).hasProperty(EXTENDS) && node.getNode(DEACTIVATE).getProperty(EXTENDS).getString().endsWith(DEACTIVATE))) {
+                if (node.hasNode(DEACTIVATE) && !(node.getNode(DEACTIVATE).hasProperty(EXTENDS) && node.getNode(DEACTIVATE).getProperty(EXTENDS).getString().endsWith(DEACTIVATE))) {
                     Node action = node.getNode(DEACTIVATE);
                     if (!action.hasNode(AVAILABILITY)) {
                         action.addNode(AVAILABILITY, NodeTypes.ContentNode.NAME);
@@ -95,8 +95,10 @@ public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
     public void execute(InstallContext ctx) throws TaskExecutionException {
         try {
             Session session = ctx.getJCRSession(RepositoryConstants.CONFIG);
-            Node rootNode = session.getNode(appRootNode);
-            NodeUtil.visit(rootNode, nodeVisitor);
+            if (session.nodeExists(appRootNode)) {
+                Node rootNode = session.getNode(appRootNode);
+                NodeUtil.visit(rootNode, nodeVisitor);
+            }
         } catch (RepositoryException e) {
             throw new TaskExecutionException(e.getMessage(), e);
         }
