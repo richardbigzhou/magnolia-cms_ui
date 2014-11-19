@@ -50,36 +50,36 @@ import javax.jcr.Session;
  */
 public class AddIsPublishedRuleToAllDeactivateActionsTask extends AbstractTask {
 
-    private static String actions = "actions";
-    private static String deactivate = "deactivate";
-    private static String extend = "extends";
-    private static String availability = "availability";
-    private static String rules = "rules";
-    private static String rule = "IsPublishedRule";
-    private static String propertyName = "implementationClass";
-    private static String propertyValue = "info.magnolia.ui.framework.availability.IsPublishedRule";
+    private static final String ACTIONS = "actions";
+    private static final String DEACTIVATE = "deactivate";
+    private static final String EXTENDS = "extends";
+    private static final String AVAILABILITY = "availability";
+    private static final String RULES = "rules";
+    private static final String RULE = "IsPublishedRule";
+    private static final String PROPERTY_NAME = "implementationClass";
+    private static final String PROPERTY_VALUE = "info.magnolia.ui.framework.availability.IsPublishedRule";
     private String appRootNode;
 
     private NodeVisitor nodeVisitor = new NodeVisitor() {
         @Override
         public void visit(Node node) throws RepositoryException {
-            if (node.getName().equals(actions)) {
-                if (node.hasNode(deactivate)  && !node.getNode(deactivate).hasProperty(extend)) {
-                    Node action = node.getNode(deactivate);
-                    if (!action.hasNode(availability)) {
-                        action.addNode(availability, NodeTypes.ContentNode.NAME);
+            if (node.getName().equals(ACTIONS)) {
+                if (node.hasNode(DEACTIVATE)  && !(node.getNode(DEACTIVATE).hasProperty(EXTENDS) && node.getNode(DEACTIVATE).getProperty(EXTENDS).getString().endsWith(DEACTIVATE))) {
+                    Node action = node.getNode(DEACTIVATE);
+                    if (!action.hasNode(AVAILABILITY)) {
+                        action.addNode(AVAILABILITY, NodeTypes.ContentNode.NAME);
                     }
-                    Node actionAvailability = action.getNode(availability);
-                    if (!actionAvailability.hasNode(rules)) {
-                        actionAvailability.addNode(rules, NodeTypes.ContentNode.NAME);
+                    Node actionAvailability = action.getNode(AVAILABILITY);
+                    if (!actionAvailability.hasNode(RULES)) {
+                        actionAvailability.addNode(RULES, NodeTypes.ContentNode.NAME);
                     }
-                    Node availabilityRules = actionAvailability.getNode(rules);
-                    if (!availabilityRules.hasNode(rule)) {
-                        availabilityRules.addNode(rule, NodeTypes.ContentNode.NAME);
+                    Node availabilityRules = actionAvailability.getNode(RULES);
+                    if (!availabilityRules.hasNode(RULE)) {
+                        availabilityRules.addNode(RULE, NodeTypes.ContentNode.NAME);
                     }
-                    Node newRule = availabilityRules.getNode(rule);
-                    if (!newRule.hasProperty(propertyName)) {
-                        newRule.setProperty(propertyName, propertyValue);
+                    Node newRule = availabilityRules.getNode(RULE);
+                    if (!newRule.hasProperty(PROPERTY_NAME)) {
+                        newRule.setProperty(PROPERTY_NAME, PROPERTY_VALUE);
                     }
                 }
             }
