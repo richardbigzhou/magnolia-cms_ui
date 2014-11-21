@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.framework.action;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.WebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -50,7 +52,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
 import com.vaadin.ui.UI;
 
 /**
@@ -62,6 +63,9 @@ public class DownloadBinaryActionTest {
     private DownloadBinaryActionDefinition definition = new DownloadBinaryActionDefinition();
     private JcrItemAdapter item;
     private Page page;
+    private String downloadUri;
+    private WebContext webContext;
+    private static final String contextPath = "/magnoliaAuthor";
 
     @Before
     public void setUp() throws Exception {
@@ -78,21 +82,27 @@ public class DownloadBinaryActionTest {
         when(ui.getPage()).thenReturn(page);
         UI.setCurrent(ui);
 
+        webContext = mock(WebContext.class);
+        when(webContext.getContextPath()).thenReturn(contextPath);
+
         item = mock(JcrNodeAdapter.class);
         when(item.getJcrItem()).thenReturn(root);
 
-        action = new DownloadBinaryAction<DownloadBinaryActionDefinition>(definition, item);
+        action = new DownloadBinaryAction<DownloadBinaryActionDefinition>(definition, item, webContext);
     }
 
     @Test
     public void testBinaryDownload() throws Exception {
         // GIVEN
+        downloadUri = action.getDownloadUri("/root", ".png");
 
         // WHEN
         action.execute();
 
         // THEN
-        verify(page).open(any(StreamResource.class), (String) isNull(), eq(false));
+        verify(page).open(any(String.class), (String) isNull(), eq(false));
+        assertTrue(downloadUri.startsWith(contextPath + "/dam"));
+        assertTrue(downloadUri.contains("?" + DownloadBinaryAction.FOR_DOWNLOAD));
     }
 
 }

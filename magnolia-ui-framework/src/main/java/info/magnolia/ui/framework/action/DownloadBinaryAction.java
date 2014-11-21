@@ -33,20 +33,17 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.context.WebContext;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.io.InputStream;
-
 import javax.inject.Inject;
-import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
 
 /**
  * Action for downloading a binary.
@@ -55,69 +52,47 @@ import com.vaadin.server.StreamResource;
  */
 public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> extends AbstractAction<D> {
 
-    private static final String CONTENT_TYPE = "application/octet-stream";
     private final DownloadBinaryActionDefinition definition;
     private final JcrItemAdapter item;
+    private WebContext webContext;
+
+    public static final String FOR_DOWNLOAD = "forDownload";
 
     @Inject
-    public DownloadBinaryAction(D definition, JcrItemAdapter item) {
+    public DownloadBinaryAction(D definition, JcrItemAdapter item, WebContext webContext) {
         super(definition);
         this.definition = definition;
         this.item = item;
+        this.webContext = webContext;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         if (item instanceof JcrNodeAdapter) {
             final Node node = (Node) item.getJcrItem();
-            final InputStream inputStream;
             Node binaryNode;
-            String fileName;
-            StreamResource streamResource;
             try {
+                String nodePath = node.getPath();
                 binaryNode = getBinaryNode(node);
-                fileName = getFileName(binaryNode);
-                inputStream = getInputStream(binaryNode);
-                streamResource = getStreamResource(inputStream, fileName);
-
-                Page.getCurrent().open(streamResource, null, false);
+                String downloadUri = getDownloadUri(nodePath, getFileExtension(binaryNode));
+                Page.getCurrent().open(downloadUri, null, false);
             } catch (RepositoryException e) {
-                throw new ActionExecutionException(String.format("Error getting binary data from node [%s] to download.", node), e);
+                throw new ActionExecutionException(String.format("Error getting data for node [%s] to download.", node), e);
             }
         }
     }
 
-    /**
-     * Returns a downloadable {@link StreamResource} created from the supplied {@link InputStream}.
-     *
-     * @see com.vaadin.server.DownloadStream#DEFAULT_CACHETIME
-     * @see StreamResource
-     */
-    private StreamResource getStreamResource(final InputStream inputStream, String fileName) {
-        final StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
-            @Override
-            public InputStream getStream() {
-                return inputStream;
-            }
-        }, fileName);
-        // Accessing the DownloadStream via getStream() will set its cacheTime to whatever is set in the parent
-        // StreamResource. By default it is set to 1000 * 60 * 60 * 24, thus we have to override it beforehand.
-        // A negative value or zero will disable caching of this stream.
-        resource.setCacheTime(-1);
-        resource.getStream().setParameter("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
-        resource.setMIMEType(CONTENT_TYPE);
-        return resource;
+    protected String getDownloadUri(String nodePath, String fileExtension) {
+        StringBuilder uri = new StringBuilder(webContext.getContextPath());
+        uri.append("/dam");
+        uri.append(nodePath);
+        uri.append(fileExtension);
+        uri.append("?").append(FOR_DOWNLOAD).append("=1");
+        return uri.toString();
     }
 
-    protected InputStream getInputStream(Node binaryNode) throws RepositoryException {
-        Binary binary = binaryNode.getProperty(definition.getDataProperty()).getBinary();
-        return binary.getStream();
-    }
-
-    protected String getFileName(Node binaryNode) throws RepositoryException {
-        String fileName = binaryNode.getProperty(definition.getFileNameProperty()).getString();
-        String extension = "." + binaryNode.getProperty(definition.getExtensionProperty()).getString();
-        return fileName.endsWith(extension) ? fileName : fileName + extension;
+    protected String getFileExtension(Node binaryNode) throws RepositoryException {
+        return "." + binaryNode.getProperty(definition.getExtensionProperty()).getString();
     }
 
     protected Node getBinaryNode(Node node) throws RepositoryException {
