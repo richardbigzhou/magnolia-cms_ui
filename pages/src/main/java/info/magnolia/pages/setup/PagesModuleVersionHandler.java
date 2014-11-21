@@ -231,7 +231,10 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         );
         register(DeltaBuilder.update("5.3.6", "")
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/pages/apps/"))
-        );
+                .addTask(new ArrayDelegateTask("Bootstrap IsPublishableRule",
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/activate/availability/rules/IsPublishableRule"),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/activateRecursive/availability/rules/IsPublishableRule"))
+                ));
     }
 
     @Override

@@ -79,7 +79,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
     @Override
     protected String getModuleDescriptorPath() {
-        return "/META-INF/magnolia/ui-admincentral.xml";
+        return "/META-INF/magnolia/pages.xml";
     }
 
     @Override
@@ -573,6 +573,30 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isPageElement"));
         assertThat(actionbar.getNode(pagePreviewActions), hasNode("availability/rules/isNotDeleted"));
         assertThat(actionbar.getNode(pageActions), hasNode("availability/rules/isNotDeleted"));
+    }
+
+    @Test
+    public void testUpdateTo536() throws Exception {
+        // GIVEN
+        Node availability = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activate/availability", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.5"));
+
+        // THEN
+        Node rule = availability.getNode("rules/IsPublishableRule");
+        assertThat(rule, hasProperty("implementationClass", "info.magnolia.ui.framework.availability.IsPublishableRule"));
+
+        // GIVEN
+        availability = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive/availability", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.5"));
+
+        // THEN
+        rule = availability.getNode("rules/IsPublishableRule");
+        assertThat(rule, hasProperty("implementationClass", "info.magnolia.ui.framework.availability.IsPublishableRule"));
+
     }
 
 }
