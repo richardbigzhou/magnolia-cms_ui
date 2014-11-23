@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * LocalTaskDispatcherManager.
@@ -67,7 +68,8 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(LocalTaskDispatcherManager.class);
 
-    private final ListMultimap<String, TaskEventDispatcher> listeners = ArrayListMultimap.create();
+    private final ListMultimap<String, TaskEventDispatcher> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, TaskEventDispatcher>create());
+
     private Provider<SecuritySupport> securitySupport;
 
     @Inject
@@ -157,28 +159,22 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
     private void sendTaskEvent(TaskEvent taskEvent, Set<String> users) {
 
         log.debug("Sending a task event to the following users {}", users);
-        synchronized (listeners) {
-            for (String userId : users) {
-                final List<TaskEventDispatcher> listenerList = listeners.get(userId);
-                if (listenerList != null) {
-                    for (final TaskEventDispatcher listener : listenerList) {
-                        listener.onTaskEvent(taskEvent);
-                    }
+        for (String userId : users) {
+            final List<TaskEventDispatcher> listenerList = listeners.get(userId);
+            if (listenerList != null) {
+                for (final TaskEventDispatcher listener : listenerList) {
+                    listener.onTaskEvent(taskEvent);
                 }
             }
         }
     }
 
     public void registerLocalTasksListener(String userName, TaskEventDispatcher listener) {
-        synchronized (listeners) {
-            listeners.put(userName, listener);
-        }
+        listeners.put(userName, listener);
     }
 
     public void unregisterLocalTasksListener(String userName, TaskEventDispatcher listener) {
-        synchronized (listeners) {
-            listeners.remove(userName, listener);
-        }
+        listeners.remove(userName, listener);
     }
 
 }
