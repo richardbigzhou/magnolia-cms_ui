@@ -182,21 +182,21 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     private void sendMessageClearedEvent(String userName, Message message) {
-        final List<MessageListener> userListener = new LinkedList<>(listeners.get(userName));
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
         for (final MessageListener listener : userListener) {
             listener.messageCleared(message);
         }
     }
 
     private void sendMessageRemovedEvent(String userName, String id) {
-        final List<MessageListener> userListener = new LinkedList<>(listeners.get(userName));
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
         for (final MessageListener listener : userListener) {
             listener.messageRemoved(id);
         }
     }
 
     private void sendMessageSentEvent(String userName, Message message) {
-        final List<MessageListener> userListener = new LinkedList<>(listeners.get(userName));
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
         for (final MessageListener listener : userListener) {
             try {
                 listener.messageSent(cloneMessage(message));
