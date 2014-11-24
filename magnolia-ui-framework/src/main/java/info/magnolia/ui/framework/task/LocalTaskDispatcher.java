@@ -75,21 +75,23 @@ public class LocalTaskDispatcher implements TaskEventDispatcher {
         vaadinSession.access(new Runnable() {
             @Override
             public void run() {
-                MgnlContext.setInstance(new SimpleContext(componentProvider.getComponent(SystemContext.class)) {
-                    @Override
-                    public User getUser() {
-                        return user;
-                    }
+                boolean hasContext = MgnlContext.hasInstance();
+                if (!hasContext) {
+                    MgnlContext.setInstance(new SimpleContext(componentProvider.getComponent(SystemContext.class)) {
+                        @Override
+                        public User getUser() {
+                            return LocalTaskDispatcher.this.user;
+                        }
 
-                    @Override
-                    public Locale getLocale() {
-                        return locale;
-                    }
-                });
+                        @Override
+                        public Locale getLocale() {
+                            return LocalTaskDispatcher.this.locale;
+                        }
+                    });
+                }
                 try {
                     eventBus.fireEvent(taskEvent);
                 } catch (Exception ignore) {
-
                 } finally {
                     MgnlContext.setInstance(null);
                 }
