@@ -93,7 +93,9 @@ public class LocalTaskDispatcher implements TaskEventDispatcher {
                     eventBus.fireEvent(taskEvent);
                 } catch (Exception ignore) {
                 } finally {
-                    MgnlContext.setInstance(null);
+                    if (!hasContext) {
+                        MgnlContext.setInstance(null);
+                    }
                 }
             }
         });
