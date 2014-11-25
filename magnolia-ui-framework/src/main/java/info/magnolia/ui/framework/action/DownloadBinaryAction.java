@@ -45,6 +45,7 @@ import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.vaadin.server.DownloadStream;
 import com.vaadin.server.Page;
 import com.vaadin.server.StreamResource;
 
@@ -99,7 +100,20 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
             public InputStream getStream() {
                 return inputStream;
             }
-        }, fileName);
+        }, fileName) {
+            private DownloadStream ds = null;
+
+            // MGNLUI-3274: Override #getStream() to make sure an already created DownloadStream is reused
+            // in order to not to lose parameters which might have been set onto DownloadStream
+            @Override
+            public DownloadStream getStream() {
+                if (ds == null) {
+                    ds = super.getStream();
+                }
+                return ds;
+            }
+        };
+
         // Accessing the DownloadStream via getStream() will set its cacheTime to whatever is set in the parent
         // StreamResource. By default it is set to 1000 * 60 * 60 * 24, thus we have to override it beforehand.
         // A negative value or zero will disable caching of this stream.
