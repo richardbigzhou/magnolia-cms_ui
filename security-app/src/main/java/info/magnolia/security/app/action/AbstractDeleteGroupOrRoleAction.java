@@ -142,16 +142,19 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         List<String> assignedTo = new ArrayList<String>();
 
         String groupName = getCurrentItem().getJcrItem().getName();
+        final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
+
         // users
         for (User user : Security.getUserManager().getAllUsers()) {
             if (getGroupsOrRoles(user).contains(groupName)) {
-                assignedTo.add(getI18n().translate("security.delete.userIdentifier", user.getName()));
+                assignedTo.add(translatedUserString + ":" + user.getName());
             }
         }
         // groups
+        final String translatedGroupString = getI18n().translate("security.delete.groupIdentifier");
         for (Group group : Security.getGroupManager().getAllGroups()) {
             if (getGroupsOrRoles(group).contains(groupName)) {
-                assignedTo.add(getI18n().translate("security.delete.groupIdentifier", group.getName()));
+                assignedTo.add(translatedGroupString + ":" + group.getName());
             }
         }
 
