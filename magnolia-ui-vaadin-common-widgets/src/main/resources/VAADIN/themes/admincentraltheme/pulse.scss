@@ -215,13 +215,8 @@
   font-weight: bold;
   margin: 25px 0 30px 150px;
   text-align: left;
-  text-overflow: ellipsis;
+  white-space: normal;
   width: 430px;
-}
-
-.v-pulse .message-detail  .message-title {
-  text-overflow:auto;
-  white-space:auto;
 }
 
 .v-pulse .message-detail {

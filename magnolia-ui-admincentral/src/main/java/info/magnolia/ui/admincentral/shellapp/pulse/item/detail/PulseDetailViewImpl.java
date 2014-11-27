@@ -85,8 +85,6 @@ public final class PulseDetailViewImpl extends HorizontalLayout implements Pulse
     @Override
     public void setTitle(String subject) {
         title.setValue(subject);
-        // tooltip
-        title.setDescription(subject);
     }
 
     @Override
