@@ -83,7 +83,7 @@ public class PulseItemCategoryNavigatorTest {
 
         i18n = mock(SimpleTranslator.class);
         when(i18n.translate("pulse.messages.problems")).thenReturn("Problems");
-        categoryNavigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n);
+        categoryNavigator = new PulseItemCategoryNavigator(i18n, false, false);
     }
 
     @After
