@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.form.field;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doReturn;
 
 import info.magnolia.cms.i18n.EmptyMessages;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -78,6 +75,7 @@ public class CompositeFieldTest extends MgnlTestCase {
 
     private CompositeFieldFactory compositeFieldFactory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
