@@ -221,7 +221,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
-        navigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n, categories);
+        navigator = new PulseItemCategoryNavigator(i18n, true, false, categories);
         root.setSizeFull();
         construct(emptyMessage);
     }

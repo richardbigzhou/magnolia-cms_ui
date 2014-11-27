@@ -129,7 +129,8 @@
 }
 .v-pulse .navigator.top-row {
   padding-top:0px;
-  height:25px;
+  height:24px;
+  border-bottom: 1px solid $c12;
   background-color: $c15;
 }
 
@@ -152,13 +153,6 @@
   height: 25px;
   padding-top: 4px;
   border-bottom: 1px solid $c12;
-}
-.v-pulse .top-row .hidden {
-  position: absolute;
-  width: 100%;
-  border-bottom: 1px solid $c12;
-  height: 25px;
-  display:inline;
 }
 
 .v-pulse .navigator-tab * {
