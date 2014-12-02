@@ -113,22 +113,22 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     protected abstract String getVerificationErrorMessage();
 
     /**
-     * Gets a collection of group or role names (according to where it is implemented) assigned to the user.
+     * @return group or role names (according to where it is implemented) assigned to the user.
      */
     protected abstract Collection<String> getGroupsOrRoles(User user);
 
     /**
-     * Gets a collection of group or role names (according to where it is implemented) assigned to the group.
+     * @return group or role names (according to where it is implemented) assigned to the group.
      */
     protected abstract Collection<String> getGroupsOrRoles(Group group);
 
     /**
-     * @return Collection of users that have the group or role to delete assigned to
+     * @return users that have the group or role to delete assigned to
      */
     protected abstract Collection<String> getUsersWithGroupOrRoleToDelete(String groupOrRoleName);
 
     /**
-     * @return Collection of groups that have the group or role to delete assigned to
+     * @return groups that have the group or role to delete assigned to
      */
     protected abstract Collection<String> getGroupsWithGroupOrRoleToDelete(String groupOrRoleName);
 
