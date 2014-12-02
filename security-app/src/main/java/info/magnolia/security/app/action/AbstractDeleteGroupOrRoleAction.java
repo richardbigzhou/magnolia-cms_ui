@@ -34,6 +34,8 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
@@ -67,19 +69,29 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
     private final JcrItemAdapter item;
+    private final SecuritySupport securitySupport;
 
     @Inject
-    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, SecuritySupport securitySupport) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
         this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     /**
-     * @deprecated since 5.2.2 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator)}
+     * @deprecated since 5.3.6 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.cms.security.SecuritySupport)}
+     */
+    @Deprecated
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        this(definition, item, commandsManager, eventBus, uiContext, i18n, Security.getSecuritySupport());
+    }
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.cms.security.SecuritySupport)}
      */
     @Deprecated
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
+        this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n, Security.getSecuritySupport());
     }
 
     /**
@@ -172,5 +184,9 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         }
         message.append("</ul>");
         return message.toString();
+    }
+
+    protected SecuritySupport getSecuritySupport() {
+        return securitySupport;
     }
 }

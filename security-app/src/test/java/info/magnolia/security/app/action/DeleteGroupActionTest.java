@@ -39,7 +39,6 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.GroupManager;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
@@ -76,6 +75,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
     private static final String GROUPNAME = "testGroup";
 
     private DeleteGroupAction action;
+    private SecuritySupport securitySupport;
     private Session session;
 
     @Before
@@ -106,7 +106,9 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         exportModuleDef.getSession().save();
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
 
-        action = new DeleteGroupAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class));
+        securitySupport = mock(SecuritySupport.class);
+
+        action = new DeleteGroupAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class), securitySupport);
     }
 
     @Test
@@ -114,13 +116,12 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         UserManager um = mock(UserManager.class);
         when(um.getUsersWithGroup(GROUPNAME)).thenReturn(Collections.EMPTY_LIST);
-        Map<String, UserManager> userManagers = new HashMap<>(1);
-        userManagers.put("test", um);
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(userManagers);
+
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -134,14 +135,14 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         User user = mock(User.class);
         when(user.getGroups()).thenReturn(Collections.singleton(GROUPNAME));
 
         UserManager um = mock(UserManager.class);
         when(um.getUsersWithGroup(GROUPNAME)).thenReturn(Arrays.asList("userThatHasThatGroupAssigned"));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(Collections.singletonMap("test", um));
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -158,9 +159,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
 
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(Collections.singleton(grp));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         // WHEN
         action.execute();
