@@ -58,7 +58,6 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -115,7 +114,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
     public void testGroupIsDeletedWhenThereIsNoUserNorGroup() throws Exception {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
-        when(gm.getAllGroups()).thenReturn(new ArrayList(0));
+        when(gm.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
         when(securitySupport.getGroupManager()).thenReturn(gm);
 
         UserManager um = mock(UserManager.class);
@@ -134,7 +133,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
     public void testGroupIsNotDeletedWhenItIsAssignedToUser() throws Exception {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
-        when(gm.getAllGroups()).thenReturn(new ArrayList(0));
+        when(gm.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
         when(securitySupport.getGroupManager()).thenReturn(gm);
 
         User user = mock(User.class);

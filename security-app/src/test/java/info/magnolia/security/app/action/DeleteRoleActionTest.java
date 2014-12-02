@@ -130,7 +130,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
     public void testRoleIsNotDeletedWhenItIsAssignedToUser() throws Exception {
         // GIVEN
         UserManager um = mock(UserManager.class);
-        when(um.getUsersWithRole(ROLENAME)).thenReturn(Arrays.asList("testUserHavingAssignedThatRole"));
+        when(um.getUsersWithRole(ROLENAME)).thenReturn(Arrays.asList("userHavingAssignedThatRole"));
         when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
@@ -144,7 +144,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
     public void testRoleIsNotDeletedWhenItIsAssignedToGroup() throws Exception {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
-        when(gm.getGroupsWithRole(ROLENAME)).thenReturn(Arrays.asList("groupThatHasThatRoleAssignedTo"));
+        when(gm.getGroupsWithRole(ROLENAME)).thenReturn(Arrays.asList("groupHavingAssignedThatRole"));
         when(securitySupport.getGroupManager()).thenReturn(gm);
 
         // WHEN
