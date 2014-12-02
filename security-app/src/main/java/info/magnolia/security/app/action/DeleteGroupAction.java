@@ -34,6 +34,7 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
@@ -45,15 +46,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Deletes a group after performing a check that the group is not assignet to any user or another group.
+ * Deletes a group after performing a check that the group is not assigned to any user or another group.
  */
 public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGroupActionDefinition> {
 
-    @Inject
     public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
     }
@@ -73,6 +72,16 @@ public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGro
     @Override
     protected Collection<String> getGroupsOrRoles(Group group) {
         return group.getGroups();
+    }
+
+    @Override
+    protected Collection<String> getUsersWithGroupOrRoleToDelete(final String groupOrRole) {
+        return Security.getUserManager().getUsersWithGroup(groupOrRole);
+    }
+
+    @Override
+    protected Collection<String> getGroupsWithGroupOrRoleToDelete(final String groupOrRole) {
+        return Security.getGroupManager().getGroupsWithGroup(groupOrRole);
     }
 
     @Override
