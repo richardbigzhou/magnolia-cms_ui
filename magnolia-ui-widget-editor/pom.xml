@@ -7,95 +7,12 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-widget-editor</artifactId>
-  <packaging>jar</packaging>
   <name>magnolia-ui-widget-editor</name>
-  <properties>
-    <cloverCoverageThreshold>6</cloverCoverageThreshold>
-  </properties>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
-            <manifestEntries>
-              <Vaadin-Package-Version>1</Vaadin-Package-Version>
-              <Vaadin-Widgetsets>
-                info.magnolia.ui.vaadin.editor.gwt.PageEditorWidgetSet
-              </Vaadin-Widgetsets>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-              <resources>
-                  <resource>
-                    <directory>src/main/java</directory>
-                    <includes>
-                      <!-- include sources -->
-                      <include>**/*.java</include>
-                      <!-- include widgetset -->
-                      <include>**/*.gwt.xml</include>
-                    </includes>
-                  </resource>
-             </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  <dependencies>
-     <dependency>
-       <groupId>info.magnolia.ui</groupId>
-       <artifactId>magnolia-ui-vaadin-integration</artifactId>
-     </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
-    </dependency>
-     <dependency>
-       <groupId>info.magnolia</groupId>
-       <artifactId>magnolia-rendering</artifactId>
-     </dependency>
-     <dependency>
-       <groupId>com.vaadin</groupId>
-       <artifactId>vaadin-client</artifactId>
-     </dependency>
-     <dependency>
-       <groupId>com.vaadin</groupId>
-       <artifactId>vaadin-server</artifactId>
-     </dependency>
 
-    <!-- For tests -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-</dependencies>
+  <distributionManagement>
+    <relocation>
+      <groupId>info.magnolia.pages</groupId>
+      <artifactId>magnolia-pages-editor-widget</artifactId>
+    </relocation>
+  </distributionManagement>
 </project>
