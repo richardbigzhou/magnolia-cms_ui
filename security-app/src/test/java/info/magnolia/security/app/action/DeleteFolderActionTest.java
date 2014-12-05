@@ -226,7 +226,10 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
 
         ((SecuritySupportImpl) securitySupport).setGroupManager(mgnlGroupManager);
 
-        ((SecuritySupportImpl) securitySupport).setUserManagers(new HashMap<String, UserManager>());
+        Map<String, UserManager> userManagerMap = new HashMap<String, UserManager>();
+        userManagerMap.put("test", mock(UserManager.class));
+
+        ((SecuritySupportImpl) securitySupport).setUserManagers(userManagerMap);
 
         actionGroups = new DeleteFolderAction(definition, itemGroups, commandsManager, eventBus, uiContext, i18n, securitySupport);
 
