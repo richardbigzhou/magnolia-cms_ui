@@ -1,0 +1,44 @@
+package info.magnolia.ui.form.groovy
+/**
+ * dsl_script.
+ * TODO: Add proper JavaDoc.
+ */
+
+
+def ctx = context(ctype: "java.lang.Integer")
+
+contributor(ctx) {
+    property name: "daysFromNow", type: "Calendar"
+    method name: 'sdfsf',
+    params: [s: "java.lang.String"],
+    types: "int"
+
+}
+
+
+def ctx1 = context(scope: closureScope())
+
+contributor(ctx1, {
+    def call = enclosingCall("expand")
+    if (call) {
+        println "before bind: " + call
+        println "eval: " + call.eval()
+
+        def method = call.bind()
+        println "after bind: " + method
+
+        def clazz = method?.containingClass
+        //if ("Runner".equals(clazz?.qualName)) {
+        def qualName = clazz?.qualName
+        println  "Delegates to $qualName"
+        def fields  = classType?.fields
+
+        def methodMethods  = method.asList()
+
+        //println  "Classtype $fields"
+        println  "Methods $methodMethods"
+
+        delegatesTo(clazz)
+        //}
+    }
+})
