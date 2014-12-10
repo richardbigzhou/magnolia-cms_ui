@@ -38,7 +38,9 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
+import info.magnolia.ui.dialog.registry.GroovyDialogDefinitionManager;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
+import info.magnolia.ui.framework.config.UiConfig;
 
 import javax.inject.Inject;
 
@@ -51,12 +53,17 @@ public class UiFrameworkModule implements ModuleLifecycle {
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
     private ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager;
+    private GroovyDialogDefinitionManager groovyDialogDefinitionManager;
 
     @Inject
-    public UiFrameworkModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
+    public UiFrameworkModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager, GroovyDialogDefinitionManager groovyDialogDefinitionManager) {
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
         this.configuredFieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
+        this.groovyDialogDefinitionManager = groovyDialogDefinitionManager;
+
+        this.groovyDialogDefinitionManager.registerBuilderProvider("cfg", new UiConfig());
+
     }
 
     @Override
@@ -65,6 +72,7 @@ public class UiFrameworkModule implements ModuleLifecycle {
             configuredAppDescriptorManager.start();
             configuredDialogDefinitionManager.start();
             configuredFieldTypeDefinitionManager.start();
+            groovyDialogDefinitionManager.start();
         }
     }
 

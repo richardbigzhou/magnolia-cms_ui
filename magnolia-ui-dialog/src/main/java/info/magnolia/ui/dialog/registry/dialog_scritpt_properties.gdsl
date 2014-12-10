@@ -1,0 +1,8 @@
+package info.magnolia.ui.dialog.registry
+
+def ctx = context(scope: scriptScope())
+
+contributor(ctx) {
+    property name: "dialog",type: "info.magnolia.ui.dialog.config.DialogBuilder"
+    property name: "field", type: "info.magnolia.ui.form.config.FieldConfig"
+}

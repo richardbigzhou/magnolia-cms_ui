@@ -31,7 +31,7 @@ def <T> T create(Class<? extends T> clazz) {
     clazz.newInstance()
 }
 
-def <T> T build(Class<? extends T> clazz, Closure<?> cls) {
+def <T> T build(Class<? extends T> clazz, Closure cls) {
     def instance = (clazz.newInstance())
     cls.setDelegate(instance)
     cls.setResolveStrategy(Closure.DELEGATE_FIRST)
@@ -50,7 +50,7 @@ Object.metaClass.with = { Closure closure -> instance(delegate, closure) }
 
 Object.metaClass.expand = {  }
 
-static def <T> T instance(T obj, Closure<?> cls) {
+static def <T> T instance(T obj, Closure cls) {
     Closure clsClone = cls.clone()
     clsClone.resolveStrategy = Closure.DELEGATE_FIRST
     clsClone.delegate = obj
@@ -72,12 +72,6 @@ def builder = new FormBuilder().with {
 
     description 'desc'
 
-
-    tab("").build(2) {
-        test
-
-        test
-    }
 
     tab("tab").with {
 

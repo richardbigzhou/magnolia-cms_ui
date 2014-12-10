@@ -138,6 +138,11 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>1.7.8</version>
+      </dependency>
+      <dependency>
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-framework</artifactId>
         <version>${project.version}</version>
@@ -320,7 +325,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>groovy-maven-plugin</artifactId>
-          <version>1.4</version>
+          <version>1.5</version>
         </plugin>
         <plugin>
           <groupId>com.vaadin</groupId>

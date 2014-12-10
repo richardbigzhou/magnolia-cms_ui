@@ -31,46 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.registry;
+package info.magnolia.config;
 
-import info.magnolia.cms.util.ClasspathResourcesUtil;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.registry.GroovyDialogDefinitionProvider;
+import info.magnolia.ui.framework.config.UiConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Singleton;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.google.inject.Inject;
+public class ConfigTest {
 
-/**
- * Registers Groovy definition
- */
-@Singleton
-public class GroovyDialogDefinitionManager {
+    public static final String TEST_DIALOG_SCRIPT = "info/magnolia/config/modules/ui-framework/dialogs/samples/testDialog.groovy";
 
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
+    private GroovyDialogDefinitionProvider provider;
 
-    private Map<String, Object> builderProviders = new HashMap<String, Object>();
-
-    @Inject
-    public GroovyDialogDefinitionManager(DialogDefinitionRegistry dialogDefinitionRegistry) {
-        this.dialogDefinitionRegistry = dialogDefinitionRegistry;
+    @Before
+    public void setUp() throws Exception {
+        final Map<String, Object> configProviders = new HashMap<String, Object>();
+        configProviders.put("cfg", new UiConfig());
+        provider = new GroovyDialogDefinitionProvider(TEST_DIALOG_SCRIPT, configProviders);
     }
 
-    public void registerBuilderProvider(String id, Object configProvider) {
-        builderProviders.put(id, configProvider);
-    }
+    @Test
+    public void testResourceResolution() throws Exception {
+        // WHEN
+        DialogDefinition def = provider.getDialogDefinition();
 
-    public void start() {
-        final String[] resources = ClasspathResourcesUtil.findResources(new ClasspathResourcesUtil.Filter() {
-            @Override
-            public boolean accept(String name) {
-                return name.contains("/modules/") && name.contains("/dialogs/") && name.endsWith("groovy");
-            }
-        });
-
-        for (final String resourceName : resources) {
-            dialogDefinitionRegistry.register(new GroovyDialogDefinitionProvider(resourceName, builderProviders));
-        }
+        // THEN
+        assertNotNull(def);
+        assertEquals(provider.getId(), "ui-framework:samples/testDialog");
     }
 }

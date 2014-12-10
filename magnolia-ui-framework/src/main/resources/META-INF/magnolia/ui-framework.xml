@@ -20,6 +20,14 @@
       <scope>singleton</scope>
     </component>
 
+    <component>
+      <type>info.magnolia.ui.dialog.registry.GroovyDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.dialog.registry.GroovyDialogDefinitionManager</implementation>
+      <observed>false</observed>
+      <scope>singleton</scope>
+      <lazy>false</lazy>
+    </component>
+
     <!-- i18n -->
     <component>
       <type>info.magnolia.i18nsystem.LocaleProvider</type>

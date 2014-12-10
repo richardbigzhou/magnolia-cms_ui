@@ -15,12 +15,12 @@ class Builder extends BuildExtension {
 
     }
 
-    static def <T> T instance(T obj, Closure<?> cls) {
+    static def <T> T instance(T obj, Closure cls) {
         obj.with cls
         obj
     }
 
-    def <T> T build(Class<? extends T> clazz, Closure<?> cls) {
+    def <T> T build(Class<? extends T> clazz, Closure cls) {
 
         build();
 
