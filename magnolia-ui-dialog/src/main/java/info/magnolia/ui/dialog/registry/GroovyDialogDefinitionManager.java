@@ -43,7 +43,7 @@ import javax.inject.Singleton;
 import com.google.inject.Inject;
 
 /**
- * Registers Groovy definition
+ * Binds dialog groovy scripts with {@link info.magnolia.ui.dialog.registry.GroovyDialogDefinitionProvider}.
  */
 @Singleton
 public class GroovyDialogDefinitionManager {
