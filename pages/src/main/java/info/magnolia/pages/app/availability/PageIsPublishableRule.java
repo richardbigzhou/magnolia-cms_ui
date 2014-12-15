@@ -49,7 +49,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Returns true if all ancestors of this page are activated, false otherwise.
+ * 
+ * @deprecated introduced by mistake in 5.3.6, will be removed in 5.4. Please use {@link info.magnolia.ui.framework.availability.IsPublishableRule} instead.
  */
+@Deprecated
 public class PageIsPublishableRule extends AbstractAvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(PageIsPublishableRule.class);
