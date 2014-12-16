@@ -1,34 +1,78 @@
-dialog.with {
+import groovy.transform.Field
+import info.magnolia.config.BuildExtensions
+import info.magnolia.ui.dialog.DialogAnnotation
+import info.magnolia.ui.dialog.config.DialogBuilder
+import info.magnolia.ui.form.config.FieldConfig
+import info.magnolia.ui.form.config.categories.fields.FieldCategory
+import info.magnolia.ui.framework.action.AddNodeAction
+import info.magnolia.ui.framework.action.DeleteAction
+import info.magnolia.ui.framework.config.UiConfig
 
-    cfg.actions.with {
-        actions(
-            action("commit").with {
-                implementation null
-            },
-        )
-    }
+@Field UiConfig uiConfig = new UiConfig()
 
-    form().with {
+@DialogAnnotation("testDialog")
+def dottedDialog(DialogBuilder dialog, UiConfig cfg, FieldConfig field) {
+    // Variables
+    def cancelActionDescription = "description"
 
-        description 'desc'
+// Breaking down the parts of the builder
+    def commitAction = cfg.actions.action("commit");
 
-        tab("tab2").with {
-            i18nBasename("test")
-        }
+    dialog
+     .actions(
+       commitAction,
+       cfg.actions.action("cancel").description(cancelActionDescription)
+    ).form()
+       .description('desc')
+       .tab("tab")
+         .i18nBasename('test')
+         .label('label')
+         .fields(
+            field.text("test").defaultValue("text").label("l1").i18n(),
+            field.select("select").options([1, 2, 3, 4, 5]))
+}
 
-        tab("tab").with {
 
-            i18nBasename 'test'
+@DialogAnnotation("testDialog")
+def testDialog(DialogBuilder dialog, UiConfig cfg) {
+    use(FieldCategory) {
+        use(BuildExtensions) {
 
-            label('label')
+            dialog.with {
 
-            cfg.fields.with {
-                fields text("test"), select("select")
+                cfg.actions.buildWith() {
+
+                    actions(
+
+                            action("commit").with {
+                                implementation AddNodeAction.class
+                                description "save and add"
+                            },
+
+                            action("cancel").with {
+                                implementation DeleteAction.class
+                                description "save and delete"
+                            }
+                    )
+                }
+
+                form().with {
+
+                    description 'desc'
+
+                    tab("tab2").with {
+                        i18nBasename("test")
+                    }
+
+                    tab("tab").with {
+                        text("text")
+                        date("dateText")
+                        i18nBasename 'test'
+                        label('label')
+                    }
+
+                }
             }
         }
     }
 }
-
-
-
-

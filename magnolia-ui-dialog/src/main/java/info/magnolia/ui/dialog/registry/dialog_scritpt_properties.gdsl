@@ -6,3 +6,4 @@ contributor(ctx) {
     property name: "dialog",type: "info.magnolia.ui.dialog.config.DialogBuilder"
     property name: "field", type: "info.magnolia.ui.form.config.FieldConfig"
 }
+
