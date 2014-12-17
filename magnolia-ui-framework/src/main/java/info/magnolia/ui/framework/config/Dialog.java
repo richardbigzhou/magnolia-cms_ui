@@ -31,46 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.registry;
+package info.magnolia.ui.framework.config;
 
-import info.magnolia.cms.util.ClasspathResourcesUtil;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Singleton;
-
-import com.google.inject.Inject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Binds dialog groovy scripts with {@link info.magnolia.ui.dialog.registry.GroovyDialogDefinitionProvider}.
+ * Dialog.
  */
-@Singleton
-public class GroovyDialogDefinitionManager {
-
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
-
-    private Map<String, Object> builderProviders = new HashMap<String, Object>();
-
-    @Inject
-    public GroovyDialogDefinitionManager(DialogDefinitionRegistry dialogDefinitionRegistry) {
-        this.dialogDefinitionRegistry = dialogDefinitionRegistry;
-    }
-
-    public void registerBuilderProvider(String id, Object configProvider) {
-        builderProviders.put(id, configProvider);
-    }
-
-    public void start() {
-        final String[] resources = ClasspathResourcesUtil.findResources(new ClasspathResourcesUtil.Filter() {
-            @Override
-            public boolean accept(String name) {
-                return name.contains("/modules/") && name.contains("/dialogs/") && name.endsWith("groovy");
-            }
-        });
-
-        for (final String resourceName : resources) {
-            dialogDefinitionRegistry.register(new GroovyDialogDefinitionProvider(resourceName, builderProviders));
-        }
-    }
+@Target(ElementType.METHOD)
+@Retention(RUNTIME)
+@Definition(type = DialogDefinitionProviderRegistration.class)
+public @interface Dialog {
+    String value();
 }

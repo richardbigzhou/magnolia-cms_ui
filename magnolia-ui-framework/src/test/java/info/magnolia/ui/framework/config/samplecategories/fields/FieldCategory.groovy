@@ -31,13 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.config.categories.fields
+package info.magnolia.ui.framework.config.samplecategories.fields
 import info.magnolia.repository.RepositoryConstants
 import info.magnolia.ui.form.config.*
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter
 
 /**
- * FieldCategory.
+ * Field category that demonstrates how a {@link TabBuilder} can be extended with new
+ * methods without modifying itself.
  */
 @Category(value = TabBuilder.class)
 public class FieldCategory {

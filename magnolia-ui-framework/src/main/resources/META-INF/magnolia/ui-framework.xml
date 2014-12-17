@@ -11,6 +11,12 @@
   <components>
     <id>main</id>
 
+    <component>
+      <type>info.magnolia.ui.framework.config.GroovyScriptDefinitionManager</type>
+      <observed>false</observed>
+      <scope>singleton</scope>
+    </component>
+
     <!-- Ui Api-->
     <component>
       <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>

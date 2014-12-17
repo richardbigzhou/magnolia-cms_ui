@@ -31,41 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.config;
+package info.magnolia.ui.framework.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.dialog.registry.GroovyDialogDefinitionProvider;
-import info.magnolia.ui.framework.config.UiConfig;
+/**
+ * Indicates that the annotated annotation marks a definition creation code block.
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Definition {
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-
-public class ConfigTest {
-
-    public static final String TEST_DIALOG_SCRIPT = "info/magnolia/config/modules/ui-framework/dialogs/samples/testDialog.groovy";
-
-    private GroovyDialogDefinitionProvider provider;
-
-    @Before
-    public void setUp() throws Exception {
-        final Map<String, Object> configProviders = new HashMap<String, Object>();
-        configProviders.put("cfg", new UiConfig());
-        provider = new GroovyDialogDefinitionProvider(TEST_DIALOG_SCRIPT, configProviders);
-    }
-
-    @Test
-    public void testResourceResolution() throws Exception {
-        // WHEN
-        DialogDefinition def = provider.getDialogDefinition();
-
-        // THEN
-        assertNotNull(def);
-        assertEquals(provider.getId(), "ui-framework:samples/testDialog");
-    }
+    Class<? extends DefinitionProviderRegistration> type();
 }

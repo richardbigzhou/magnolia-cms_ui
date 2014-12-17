@@ -31,19 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.config;
+package info.magnolia.ui.framework.config;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import java.io.Reader;
 
-import groovy.lang.Closure;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 
 /**
- * BuildExtensions.
- * TODO: Add proper JavaDoc.
+ * Provides a dialog definition out of a groovy script.
  */
-public class BuildExtensions {
+public class GroovyScriptExecutor {
 
-    public static Object buildWith(Object self, Closure closure) {
-        return DefaultGroovyMethods.with(self, closure);
+    private static Logger log = LoggerFactory.getLogger(GroovyScriptExecutor.class);
+
+    public void executeScript(Reader in, String idBase) {
+        final Binding binding = new Binding();
+        final CompilerConfiguration c = new CompilerConfiguration();
+        c.setScriptBaseClass(DefinitionBuilderGroovyScript.class.getName());
+        GroovyShell shell = new GroovyShell(binding, c);
+
+        DefinitionBuilderGroovyScript script = (DefinitionBuilderGroovyScript) shell.parse(in);
+
+        try {
+            script.executeScript(idBase);
+        } catch (Exception e) {
+            log.error("Failed to execute script: {}", e.getMessage(), e);
+        }
     }
 }

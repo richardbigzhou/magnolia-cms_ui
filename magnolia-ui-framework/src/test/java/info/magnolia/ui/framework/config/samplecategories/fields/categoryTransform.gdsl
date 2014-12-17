@@ -1,4 +1,4 @@
-package info.magnolia.ui.form.config.categories.fields
+package info.magnolia.ui.framework.config.samplecategories.fields
 
 def ctx = context()
 
