@@ -254,6 +254,16 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.3.6", "")
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/security-app/apps/"))
         );
+        register(DeltaBuilder.update("5.3.7", "")
+                .addTask(
+                        new NodeExistsDelegateTask("Reconfigure duplicate user action in Users", "/modules/security-app/apps/security/subApps/users/actions/duplicateUser",
+                                new CheckAndModifyPropertyValueTask(
+                                        "/modules/security-app/apps/security/subApps/users/actions/duplicateUser",
+                                        "class",
+                                        "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition",
+                                        "info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition")
+                        ))
+        );
     }
 
     @Override
