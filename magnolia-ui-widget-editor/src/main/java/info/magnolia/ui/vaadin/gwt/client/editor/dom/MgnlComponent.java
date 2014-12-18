@@ -77,7 +77,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         boolean isEditable = isEditable() && isWritable;
         component.setEditable(isEditable);
 
-        boolean deletable = isDeletable() && !inherited && isEditable;
+        boolean deletable = isDeletable() && !inherited;
         component.setDeletable(deletable);
 
         boolean moveable = isMovable() && isEditable;
