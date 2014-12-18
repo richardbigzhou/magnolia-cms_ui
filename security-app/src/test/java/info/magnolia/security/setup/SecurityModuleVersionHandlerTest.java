@@ -524,4 +524,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(contentViewsRoles.hasNode("list"));
         assertTrue(contentViewsRoles.hasNode("search"));
     }
+
+    @Test
+    public void updateFrom535ReconfigureDuplicateUserAction() throws Exception {
+        // GIVEN
+        NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/duplicateUser",
+                NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.6"));
+
+        // THEN
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/users/actions/duplicateUser/class").getString(), "info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition");
+    }
 }
