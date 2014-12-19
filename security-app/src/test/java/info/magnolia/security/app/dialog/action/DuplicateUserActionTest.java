@@ -55,7 +55,7 @@ import org.junit.Test;
 /**
  * Tests for {@link DuplicateUserAction}.
  */
-public class DuplicateUserActionTest extends RepositoryTestCase{
+public class DuplicateUserActionTest extends RepositoryTestCase {
 
     private SecuritySupport securitySupport;
     private Session session;
@@ -77,7 +77,7 @@ public class DuplicateUserActionTest extends RepositoryTestCase{
     public void testUserALCPropertyPathChangeWhileDuplicateNode() throws Exception {
         // GIVEN
         Node adminNode = session.getRootNode().addNode("admin");
-        User user = userManager.createUser(adminNode.getPath(),"testUser","testPw");
+        User user = userManager.createUser(adminNode.getPath(), "testUser", "testPw");
 
         // WHEN
         final JcrNodeAdapter userItem = new JcrNodeAdapter(adminNode.getNode(user.getName()));
@@ -86,6 +86,6 @@ public class DuplicateUserActionTest extends RepositoryTestCase{
         action.execute();
 
         // THEN
-        assertEquals(adminNode.getNode(user.getName()+"0"+"/acl_users/0").getProperty("path").getString(), adminNode.getNode(user.getName()+"0").getPath());
+        assertEquals(adminNode.getNode(user.getName() + "0" + "/acl_users/0").getProperty("path").getString(), adminNode.getNode(user.getName() + "0").getPath());
     }
 }
