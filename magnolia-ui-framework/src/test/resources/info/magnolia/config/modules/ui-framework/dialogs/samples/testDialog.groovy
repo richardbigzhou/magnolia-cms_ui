@@ -12,7 +12,9 @@ import info.magnolia.ui.framework.config.Dialog
 UiConfig uiConfig = new UiConfig()
 
 @Field
-def cancelActionDescription = "description"
+def cancelActionDescription = "testDescription"
+
+
 
 @Field
 def commitAction = uiConfig.actions.action("commit")
@@ -35,6 +37,8 @@ def dottedDialog(DialogBuilder dialog, FieldConfig field) {
 
     dialog.definition()
 }
+
+
 
 
 @Dialog("testDialog")

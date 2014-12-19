@@ -13,8 +13,10 @@
 
     <component>
       <type>info.magnolia.ui.framework.config.GroovyScriptDefinitionManager</type>
+      <implementation>info.magnolia.ui.framework.config.GroovyScriptDefinitionManager</implementation>
       <observed>false</observed>
       <scope>singleton</scope>
+      <lazy>false</lazy>
     </component>
 
     <!-- Ui Api-->
@@ -24,14 +26,6 @@
       <path>/server/i18n/authoring</path>
       <observed>true</observed>
       <scope>singleton</scope>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.dialog.registry.GroovyDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.dialog.registry.GroovyDialogDefinitionManager</implementation>
-      <observed>false</observed>
-      <scope>singleton</scope>
-      <lazy>false</lazy>
     </component>
 
     <!-- i18n -->
