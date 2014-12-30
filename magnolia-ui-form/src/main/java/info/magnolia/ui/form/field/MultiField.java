@@ -117,7 +117,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 if (transformer instanceof MultiTransformer) {
                     // create property and find its propertyId
                     property = ((MultiTransformer) transformer).createProperty();
-                    newPropertyId = (Integer) findPropertyId(item, property);
+                    newPropertyId = findPropertyId(item, property);
                 } else {
                     // get next propertyId based on property count
                     newPropertyId = item.getItemPropertyIds().size();
@@ -198,6 +198,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 } else {
                     if (propertyId != null && propertyId.getClass().isAssignableFrom(Integer.class)) {
                         removeValueProperty((Integer) propertyId);
+                    } else {
+                        log.error("Property id {} is not an integer and as such property can't be removed", propertyId);
                     }
                     getPropertyDataSource().setValue(getValue());
                 }

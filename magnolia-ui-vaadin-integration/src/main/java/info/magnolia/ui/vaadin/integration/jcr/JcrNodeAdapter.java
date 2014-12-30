@@ -99,6 +99,8 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
      */
     @Override
     public Property getItemProperty(Object propertyId) {
+        // since we add props as strings, we need to look for them in same fashion
+        propertyId = propertyId.toString();
         return getChangedProperties().containsKey(propertyId) ? getChangedProperties().get(propertyId) : super.getItemProperty(propertyId);
     }
 
