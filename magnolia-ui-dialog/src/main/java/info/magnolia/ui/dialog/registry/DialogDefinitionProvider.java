@@ -48,5 +48,9 @@ public interface DialogDefinitionProvider {
 
     FormDialogDefinition getDialogDefinition() throws RegistrationException;
 
+    /**
+     * @deprecated since 5.4, get the {@link info.magnolia.ui.dialog.definition.DialogDefinition} first, and get the presenter class from it.
+     */
+    @Deprecated
     Class<? extends FormDialogPresenter> getPresenterClass() throws RegistrationException;
 }

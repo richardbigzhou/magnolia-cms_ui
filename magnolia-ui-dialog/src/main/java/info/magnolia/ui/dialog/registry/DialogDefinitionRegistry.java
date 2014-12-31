@@ -38,9 +38,10 @@ import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Singleton;
 
 /**
  * Maintains a registry of dialog providers registered by id.
@@ -60,8 +61,12 @@ public class DialogDefinitionRegistry {
         return getProvider(id).getDialogDefinition();
     }
 
+    /**
+     * @deprecated since 5.4, get the {@link info.magnolia.ui.dialog.definition.DialogDefinition} first, and get the presenter class from it.
+     */
+    @Deprecated
     public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
-        return getProvider(id).getPresenterClass();
+        return getProvider(id).getDialogDefinition().getPresenterClass();
     }
 
     private DialogDefinitionProvider getProvider(String id) throws RegistrationException {
