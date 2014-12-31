@@ -33,42 +33,79 @@
  */
 package info.magnolia.ui.framework;
 
+import info.magnolia.config.source.ConfigurationSourceFactory;
+import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.jcr.predicate.AbstractPredicate;
+import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager;
-import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
 
+import java.nio.file.Paths;
+
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Module class for UI framework.
  */
 public class UiFrameworkModule implements ModuleLifecycle {
 
-    private AppLauncherLayoutDefinition appLauncherLayout;
-    private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
-    private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
-    private ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager;
+    private final ConfiguredAppDescriptorManager appDescriptorManager;
+    private final ConfiguredFieldTypeDefinitionManager fieldTypeDefinitionManager;
+
+    private final ConfigurationSourceFactory configSourceFactory;
+    private final DialogDefinitionRegistry dialogRegistry;
+    private final String magnoliaHome;
 
     @Inject
-    public UiFrameworkModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
-        this.configuredAppDescriptorManager = configuredAppDescriptorManager;
-        this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
-        this.configuredFieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
+    public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory, MagnoliaConfigurationProperties mcp, DialogDefinitionRegistry dialogRegistry,
+            ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
+
+        this.appDescriptorManager = configuredAppDescriptorManager;
+        this.fieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
+
+        this.configSourceFactory = configSourceFactory;
+        this.dialogRegistry = dialogRegistry;
+        this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-            configuredAppDescriptorManager.start();
-            configuredDialogDefinitionManager.start();
-            configuredFieldTypeDefinitionManager.start();
+
+            appDescriptorManager.start();
+            fieldTypeDefinitionManager.start();
+
+            configSourceFactory.jcr().withFilter(new IsDialogNode()).bindWithDefaults(dialogRegistry);
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
     }
 
     @Override
     public void stop(ModuleLifecycleContext context) {
+    }
+
+
+    /**
+     * Check if this node can be handle as a ConfiguredDialogDefinition.
+     * Prior to 5.4, this was in ConfiguredDialogDefinitionManager.
+     */
+    private static class IsDialogNode extends AbstractPredicate<Node> {
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+                    node = new ExtendingNodeWrapper(node);
+                }
+                return node.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME) || node.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME);
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e); // TODO
+            }
+        }
     }
 }

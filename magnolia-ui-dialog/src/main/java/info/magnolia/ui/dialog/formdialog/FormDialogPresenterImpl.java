@@ -88,6 +88,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     /**
      * Constructor backwards compatible with pre-5.3 versions.
+     *
      * @deprecated since version 5.3.1, use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, FormBuilder, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector)} instead.
      */
     @Deprecated

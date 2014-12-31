@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,21 +33,24 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 
 /**
- * ObservedManager for {@link info.magnolia.ui.dialog.definition.DialogDefinition DialogDefinition} configured in repository.
- *
- * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
- * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
+ * Basic {@link DefinitionType}s in Magnolia UI framework.
  */
-@Deprecated
-public class ConfiguredDialogDefinitionManager {
+public enum DefinitionTypes implements DefinitionType {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfiguredDialogDefinitionManager.class);
+    DIALOG(FormDialogDefinition.class);
 
-    public void start() {
-        log.warn("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
+    private final Class baseClass;
+
+    private DefinitionTypes(Class baseClass) {
+        this.baseClass = baseClass;
+    }
+
+    @Override
+    public Class baseClass() {
+        return baseClass;
     }
 }
