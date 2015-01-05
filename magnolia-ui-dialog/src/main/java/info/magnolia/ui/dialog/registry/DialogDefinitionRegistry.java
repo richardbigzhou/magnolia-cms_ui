@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.dialog.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderWrapper;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
-
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
@@ -47,18 +49,48 @@ import javax.inject.Singleton;
  * Maintains a registry of dialog providers registered by id.
  */
 @Singleton
-public class DialogDefinitionRegistry {
+public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition> {
 
-    private final RegistryMap<String, DialogDefinitionProvider> registry = new RegistryMap<String, DialogDefinitionProvider>() {
+    @Override
+    public DefinitionType type() {
+        return DefinitionTypes.DIALOG;
+    }
 
-        @Override
-        protected String keyFromValue(DialogDefinitionProvider value) {
-            return value.getId();
-        }
-    };
+    @Override
+    protected String asReferenceString(DefinitionProvider<DialogDefinition> provider) {
+        return provider.getMetadata().getModule() + ":" + provider.getMetadata().getRelativeLocation();
+    }
 
+    @Override
+    protected DefinitionProvider<DialogDefinition> onRegister(DefinitionProvider<DialogDefinition> provider) {
+        // This was in ConfiguredDialogDefinitionProvider
+        // dialogDefinition.setId(id);
+        return new DefinitionProviderWrapper<DialogDefinition>(provider) {
+            @Override
+            public DialogDefinition get() {
+                DialogDefinition dd = super.get();
+                if (dd instanceof ConfiguredDialogDefinition && dd.getId() == null) {
+                    String referenceString = asReferenceString(getDelegate());
+                    ((ConfiguredDialogDefinition) dd).setId(referenceString);
+                }
+                return dd;
+            }
+        };
+    }
+
+    /**
+     * @deprecated since 5.4 use {@link #getProvider(String)}
+     */
+    @Deprecated
     public FormDialogDefinition getDialogDefinition(String id) throws RegistrationException {
-        return getProvider(id).getDialogDefinition();
+        try {
+            DefinitionProvider<DialogDefinition> dialogDefinitionProvider = getProvider(id);
+            DialogDefinition dialogDefinition = dialogDefinitionProvider.get();
+            return (FormDialogDefinition) dialogDefinition;
+            // TODO: } catch (RegistrationException e) {
+        } catch (IllegalArgumentException e) {
+            throw new RegistrationException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -66,22 +98,7 @@ public class DialogDefinitionRegistry {
      */
     @Deprecated
     public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
-        return getProvider(id).getDialogDefinition().getPresenterClass();
+        return (Class<? extends FormDialogPresenter>) getProvider(id).get().getPresenterClass();
     }
 
-    private DialogDefinitionProvider getProvider(String id) throws RegistrationException {
-        try {
-            return registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No dialog definition registered for id: " + id, e);
-        }
-    }
-
-    public void register(DialogDefinitionProvider provider) {
-        registry.put(provider);
-    }
-
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
-    }
 }

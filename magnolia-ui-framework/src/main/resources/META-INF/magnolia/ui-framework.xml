@@ -72,10 +72,6 @@
 
     <!-- Dialog -->
     <component>
-      <type>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>

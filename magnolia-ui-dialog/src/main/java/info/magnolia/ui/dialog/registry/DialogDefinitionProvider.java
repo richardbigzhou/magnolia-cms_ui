@@ -41,7 +41,9 @@ import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
  * Provides a dialog definition.
  *
  * @see DialogDefinitionRegistry
+ * @deprecated since 5.4 use DefinitionProvider<FormDialogDefinition>.
  */
+@Deprecated
 public interface DialogDefinitionProvider {
 
     String getId();
