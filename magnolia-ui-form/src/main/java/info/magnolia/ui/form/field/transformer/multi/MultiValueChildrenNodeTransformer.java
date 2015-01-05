@@ -130,6 +130,10 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
     public void writeToItem(PropertysetItem newValue) {
         // Get root Item
         JcrNodeAdapter rootItem = getRootItem();
+        if (rootItem == null) {
+            // nothing to write yet, someone just clicked add and then clicked away to other field
+            return;
+        }
         rootItem.getChildren().clear();
         // Add childItems to the rootItem
         setNewChildItem(rootItem, newValue);
