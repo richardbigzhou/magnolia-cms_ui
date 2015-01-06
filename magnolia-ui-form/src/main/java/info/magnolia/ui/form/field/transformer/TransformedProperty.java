@@ -84,7 +84,10 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
      * In case of i18n change, Reload the Value returned by the Handler.
      */
     public void fireI18NValueChange() {
-        setValue(transformer.readFromItem());
+        boolean readOnlyValue = isReadOnly();
+        setReadOnly(false);
+        super.setValue(transformer.readFromItem());
+        setReadOnly(readOnlyValue);
         super.fireValueChange();
     }
 
