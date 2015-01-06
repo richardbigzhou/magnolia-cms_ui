@@ -191,7 +191,26 @@ public class TransformedPropertyTest extends RepositoryTestCase {
         assertEquals("dePropertyName", property.getValue());
         assertNotNull(relatedFormItem.getItemProperty(propertyName));
         assertEquals("enPropertyName", relatedFormItem.getItemProperty(propertyName).getValue());
-
     }
 
+    @Test
+    public void testFireI18NValueChangeWithReadOnlyTrue() throws RepositoryException {
+        // GIVEN
+        relatedFormNode.setProperty(propertyName, "enPropertyName");
+        relatedFormNode.setProperty(propertyName + "_de", "dePropertyName");
+        relatedFormItem = new JcrNodeAdapter(relatedFormNode);
+        definition.setI18n(true);
+        definition.setReadOnly(true);
+        transformer = new BasicTransformer(relatedFormItem, definition, UndefinedPropertyType.class);
+        property = new TransformedProperty(transformer);
+        property.getTransformer().setI18NPropertyName(propertyName + "_de");
+        property.getTransformer().setLocale(new Locale("de"));
+        property.setReadOnly(true);
+
+        // WHEN
+        property.fireI18NValueChange();
+
+        // THEN
+        assertEquals("dePropertyName", property.getValue());
+    }
 }

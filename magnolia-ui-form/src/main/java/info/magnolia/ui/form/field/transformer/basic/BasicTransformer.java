@@ -88,6 +88,19 @@ public class BasicTransformer<T> implements Transformer<T> {
         p.setValue(newValue);
     }
 
+    public void forceWriteToItem(T newValue) {
+        Property<T> p = getOrCreateProperty(type);
+        boolean readOnlyValue = p.isReadOnly();
+        if (readOnlyValue) {
+            p.setReadOnly(false);
+            p.setValue(newValue);
+            p.setReadOnly(readOnlyValue);
+        } else {
+            p.setValue(newValue);
+        }
+
+    }
+
     @Override
     public T readFromItem() {
         Property<T> p = getOrCreateProperty(type);
