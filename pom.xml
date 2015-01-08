@@ -18,7 +18,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.4-SNAPSHOT</magnoliaVersion>
     <magnoliaTasksVersion>1.0.1</magnoliaTasksVersion>
-    <magnoliaPagesVersion>5.4-SNAPSHOT</magnoliaPagesVersion>
     <imagingVersion>3.0.1</imagingVersion>
     <vaadinVersion>7.3.4</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
@@ -101,11 +100,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>info.magnolia.pages</groupId>
-        <artifactId>magnolia-pages-app</artifactId>
-        <version>${magnoliaPagesVersion}</version>
-      </dependency>
-      <dependency>
         <groupId>info.magnolia.sample</groupId>
         <artifactId>magnolia-sample-app</artifactId>
         <version>${project.version}</version>
@@ -173,11 +167,6 @@
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-vaadin-theme</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.pages</groupId>
-        <artifactId>magnolia-pages-editor-widget</artifactId>
-        <version>${magnoliaPagesVersion}</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia.ui</groupId>
