@@ -108,7 +108,7 @@
                 var href = '${link:{uuid:{'+link.identifier+
                     '},repository:{'+link.repository+
                     '},path:{'+link.path+
-                    '},nodeData:{},extension:{html}}}';
+                    '}}}';
 
                 if (isLink(selectedElement)) {
                     selectedElement.setAttribute('href', href);
