@@ -128,7 +128,7 @@
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
-      <version>${project.version}</version>
+      <version>${project.version}/*</version>
     </dependency>
   </dependencies>
 </module>
