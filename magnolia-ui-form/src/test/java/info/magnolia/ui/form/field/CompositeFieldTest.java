@@ -92,7 +92,7 @@ public class CompositeFieldTest extends MgnlTestCase {
 
     @Test
     public void testIsRequired() throws Exception {
-        // WHEN
+        // GIVEN
         this.relatedItem = new PropertysetItem();
 
         // Child field definitions
@@ -128,8 +128,9 @@ public class CompositeFieldTest extends MgnlTestCase {
         final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, fieldDefinition, PropertysetItem.class, Arrays.asList("f1", "f2"));
         doReturn(compositeTransformer).when(componentProvider).newInstance(eq(CompositeTransformer.class), anyVararg());
 
-        // WHEN
         this.compositeFieldFactory = new CompositeFieldFactory(fieldDefinition, relatedItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
+
+        // WHEN
         this.multiField = (CompositeField) compositeFieldFactory.createField();
         // Forces the getContent() call internally which initializes Vaadin layout.
         multiField.iterator().next();
