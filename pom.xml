@@ -49,6 +49,8 @@
     <module>magnolia-ui-mediaeditor</module>
     <module>magnolia-ui-vaadin-theme</module>
     <module>magnolia-ui-vaadin-widgetset-maven-relocate</module>
+    <module>magnolia-ui-widget-editor-maven-relocate</module>
+    <module>pages-maven-relocate</module>
   </modules>
 
   <dependencyManagement>
