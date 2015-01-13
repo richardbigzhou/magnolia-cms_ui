@@ -34,8 +34,6 @@
 package info.magnolia.ui.form.field.transformer;
 
 
-import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
-
 import com.vaadin.data.util.ObjectProperty;
 
 /**
@@ -88,15 +86,7 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
     public void fireI18NValueChange() {
         boolean readOnlyValue = isReadOnly();
         setReadOnly(false);
-        T newValue = transformer.readFromItem();
-        super.setValue(newValue);
-        if (transformer != null) {
-            if (transformer instanceof BasicTransformer) {
-                ((BasicTransformer) transformer).forceWriteToItem(newValue);
-            } else {
-                transformer.writeToItem(newValue);
-            }
-        }
+        super.setValue(transformer.readFromItem());
         setReadOnly(readOnlyValue);
         super.fireValueChange();
     }
