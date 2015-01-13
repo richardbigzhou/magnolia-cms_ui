@@ -130,7 +130,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         if (errorSection == null) {
             errorSection = InlineMessageWidget.createErrorMessage();
         }
-        errorSection.addMessage(errorDescription);
+        errorSection.setMessage(errorDescription);
         add(errorSection, root);
     }
 
