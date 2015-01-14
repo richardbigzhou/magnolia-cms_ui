@@ -48,6 +48,9 @@ public interface ItemViewDefinition {
 
     String getId();
 
+    // TODO To be removed!
+    void setId(String id);
+
     String getI18nBasename();
 
     Map<String, ActionDefinition> getActions();
