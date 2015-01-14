@@ -67,6 +67,9 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
     private Set<String> registeredIds = new HashSet<String>();
     private final ItemViewDefinitionRegistry itemViewDefinitionRegistry;
 
+//    @Inject
+//    private RegistryOfRegistries regOreg;
+
     @Inject
     public ConfiguredMessageViewDefinitionManager(ModuleRegistry moduleRegistry, ItemViewDefinitionRegistry itemViewDefinitionRegistry) {
         super(MESSAGE_VIEW_CONFIG_NODE_NAME, moduleRegistry);
@@ -75,6 +78,7 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
 
     @Override
     protected void reload(List<Node> nodes) throws RepositoryException {
+//        regOreg.addRegistry(MESSAGE_VIEW_CONFIG_NODE_NAME, itemViewDefinitionRegistry);
 
         final List<ItemViewDefinitionProvider> providers = new ArrayList<ItemViewDefinitionProvider>();
 
@@ -97,7 +101,7 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
         }
 
-        this.registeredIds = itemViewDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
+      // TODO ...  this.registeredIds = itemViewDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
     }
 
     protected ItemViewDefinitionProvider createProvider(Node messageViewNode) throws RepositoryException {
