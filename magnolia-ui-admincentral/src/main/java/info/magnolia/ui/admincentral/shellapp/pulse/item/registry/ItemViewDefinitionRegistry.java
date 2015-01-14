@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
-
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
@@ -46,31 +45,29 @@ import javax.inject.Singleton;
  * Maintains a registry of item view providers registered by id.
  */
 @Singleton
-public class ItemViewDefinitionRegistry {
+public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinition> {
 
-    private final RegistryMap<String, ItemViewDefinitionProvider> registry = new RegistryMap<String, ItemViewDefinitionProvider>() {
+    @Override
+    public DefinitionType type() {
+        return new DefinitionType() {
+            @Override
+            public String name() {
+                return "ITEM VIEW";
+            }
 
-        @Override
-        protected String keyFromValue(ItemViewDefinitionProvider value) {
-            return value.getId();
-        }
-    };
+            @Override
+            public Class baseClass() {
+                return ItemViewDefinition.class;
+            }
+        };
+    }
+
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
+    }
 
     public ItemViewDefinition get(String id) throws RegistrationException {
-        ItemViewDefinitionProvider provider;
-        try {
-            provider = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No item view definition registered for id: " + id, e);
-        }
-        return provider.getItemViewDefinition();
-    }
-
-    public void register(ItemViewDefinitionProvider provider) {
-        registry.put(provider);
-    }
-
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<ItemViewDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
+        return getProvider(id).get();
     }
 }

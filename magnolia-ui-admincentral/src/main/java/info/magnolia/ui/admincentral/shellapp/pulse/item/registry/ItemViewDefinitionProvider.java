@@ -38,10 +38,13 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefi
 
 /**
  * Provides an item view definition.
- * 
+ *
  * @see ItemViewDefinitionRegistry
+ * @deprecated since 5.4 just use DefinitionProvider<ItemViewDefinition>
  */
+@Deprecated
 public interface ItemViewDefinitionProvider {
+
     String getId();
 
     ItemViewDefinition getItemViewDefinition() throws RegistrationException;

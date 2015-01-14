@@ -33,37 +33,55 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.config.source.ConfigurationSourceFactory;
+import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.jcr.predicate.AbstractPredicate;
+import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+
+import java.nio.file.Paths;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Registers the observed managers: {@link ConfiguredMessageViewDefinitionManager}.
+ * Binds the {@link ItemViewDefinitionRegistry} to the configuration sources (JCR and YAML).
+ * Initializes app launcher layout.
  */
 public class AdmincentralModule implements ModuleLifecycle {
 
-    private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
     private UserMenuDefinition userControl;
 
+    private ItemViewDefinitionRegistry itemViewDefinitionRegistry;
+
     private AppLauncherLayoutManager appLauncherLayoutManager;
+    private ConfigurationSourceFactory configurationSourceFactory;
     private AppLauncherLayoutDefinition appLauncherLayout;
+
+    private final String magnoliaHome;
 
 
     @Inject
-    public AdmincentralModule(ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager, AppLauncherLayoutManager appLauncherLayoutManager) {
-        this.configuredMessageViewDefinitionManager = configuredMessageViewDefinitionManager;
+    public AdmincentralModule(ItemViewDefinitionRegistry itemViewDefinitionRegistry, AppLauncherLayoutManager appLauncherLayoutManager,
+                              ConfigurationSourceFactory configurationSourceFactory, MagnoliaConfigurationProperties mcp) {
+        this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.configurationSourceFactory = configurationSourceFactory;
+        this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-            configuredMessageViewDefinitionManager.start();
+            configurationSourceFactory.jcr().withFilter(new IsViewType()).bindWithDefaults(itemViewDefinitionRegistry);
+            configurationSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(itemViewDefinitionRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
         appLauncherLayoutManager.setLayout(getAppLauncherLayout());
     }
@@ -89,4 +107,23 @@ public class AdmincentralModule implements ModuleLifecycle {
         this.appLauncherLayout = appLauncherLayout;
     }
 
+    /**
+     * Evaluates if the considered node can be treated as a {@link info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition}.
+     */
+    private class IsViewType extends AbstractPredicate<Node> {
+
+        public static final String MESSAGE_VIEW_CONFIG_NODE_NAME = "messageViews";
+
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+                    node = new ExtendingNodeWrapper(node);
+                }
+                return MESSAGE_VIEW_CONFIG_NODE_NAME.equals(node.getParent().getName());
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e); // TODO
+            }
+        }
+    }
 }
