@@ -17,6 +17,18 @@
 
   <stylesheet src="jcrop/jquery.Jcrop.css" />
 
+  <!--
+    This is a workaround for MGNLUI-3289 and should be removed as soon as MGNLUI-3318 is implemented.
+  -->
+  <replace-with class='org.vaadin.gwtgraphics.client.impl.SVGImpl'>
+    <when-type-is class='org.vaadin.gwtgraphics.client.impl.SVGImpl'/>
+    <any>
+      <when-property-is name='user.agent' value='ie9'/>
+      <when-property-is name='user.agent' value='ie10'/>
+      <when-property-is name='user.agent' value='ie11'/>
+    </any>
+  </replace-with>
+
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
     <when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
     <all>
