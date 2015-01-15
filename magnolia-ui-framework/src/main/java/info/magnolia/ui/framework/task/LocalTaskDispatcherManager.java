@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.task;
 
 import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.task.Task;
@@ -42,7 +41,6 @@ import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,32 +122,16 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
         }
 
         if (task.getActorIds() != null) {
-
             log.debug("Found actorIds {}", task.getActorIds());
-            for (String actor : task.getActorIds()) {
-                users.add(actor);
-            }
+            users.addAll(task.getActorIds());
         }
 
 
         log.debug("Found groups {}", task.getGroupIds());
         if (task.getGroupIds() != null) {
-
-
-            Collection<User> allUsers = Collections.emptyList();
-            try {
-                allUsers = securitySupport.get().getUserManager().getAllUsers();
-            } catch (UnsupportedOperationException e) {
-                log.error("Unable to send message to groups {} because UserManager does not support enumerating their users", task.getGroupIds(), e);
-            }
-
             for (String group : task.getGroupIds()) {
-                for (User user : allUsers) {
-                    Collection<String> groups = user.getAllGroups();
-                    if (groups.contains(group)) {
-                        users.add(user.getName());
-                    }
-                }
+                Collection<String> usersOfGroupTransitive = securitySupport.get().getUserManager().getUsersWithGroup(group, true);
+                users.addAll(usersOfGroupTransitive);
             }
         }
 
