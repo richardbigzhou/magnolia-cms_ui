@@ -108,21 +108,10 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void sendGroupMessage(final String groupName, final Message message) {
-        Collection<User> users;
-        try {
-            users = securitySupportProvider.get().getUserManager().getAllUsers();
-        } catch (UnsupportedOperationException e) {
-            logger.error("Unable to send message to group because UserManager does not support enumerating its users", e);
-            return;
+        Collection<String> userNames = securitySupportProvider.get().getUserManager().getUsersWithGroup(groupName, true);
+        for (String userName : userNames) {
+            sendMessage(userName, message);
         }
-
-        for (User user : users) {
-            Collection<String> groups = user.getAllGroups();
-            if (groups.contains(groupName)) {
-                sendMessage(user.getName(), message);
-            }
-        }
-
         // Reset it to null simply to avoid assumptions about the id in calling code
         message.setId(null);
     }
