@@ -168,7 +168,14 @@ public class ImportZipCommand extends BaseRepositoryCommand {
             if (folderPath.startsWith("/")) {
                 folderPath = folderPath.substring(1);
             }
-            Node folder = StringUtils.isBlank(folderPath) ? getJCRNode(context) : getJCRNode(context).getNode(folderPath);
+            Node folder = getJCRNode(context);
+            if (StringUtils.isNotBlank(folderPath)) {
+                if (folder.hasNode(folderPath)) {
+                    folder = folder.getNode(folderPath);
+                } else {
+                    folder = NodeUtil.createPath(folder, folderPath, NodeTypes.Folder.NAME, true);
+                }
+            }
             receiver.setFieldType(UploadField.FieldType.BYTE_ARRAY);
             receiver.receiveUpload(fileName, StringUtils.defaultIfEmpty(MIMEMapping.getMIMEType(extension), DEFAULT_MIME_TYPE));
             receiver.setValue(IOUtils.toByteArray(stream));
