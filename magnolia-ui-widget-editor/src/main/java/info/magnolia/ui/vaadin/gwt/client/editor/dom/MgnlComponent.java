@@ -80,7 +80,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         boolean deletable = isDeletable() && !inherited;
         component.setDeletable(deletable);
 
-        boolean moveable = isMovable() && isEditable;
+        boolean moveable = isMovable();
         component.setMoveable(moveable);
         return component;
     }
