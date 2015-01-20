@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -98,19 +97,6 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void testSelectedRadioFieldOnPreexistingNodeWithNullValue() throws Exception {
         // GIVEN
         // we keep baseItem as a regular JcrNodeAdapter here
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
-
-        // WHEN
-        Field field = dialogSelect.createField();
-
-        // THEN
-        assertNull(field.getValue());
-    }
-
-    @Test
-    public void testSelectedRadioFieldOnPreexistingNodeWithPreselectedValue() throws Exception {
-        // GIVEN
-        // we keep baseItem as a regular JcrNodeAdapter here and preselect of items
         definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
 
@@ -118,7 +104,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals(definition.getOptions().get(2).getValue(),field.getValue().toString());
+        assertNull(field.getValue());
     }
 
     @Test
