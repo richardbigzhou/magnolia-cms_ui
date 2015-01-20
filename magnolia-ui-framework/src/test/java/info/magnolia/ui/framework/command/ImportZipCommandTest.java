@@ -4,7 +4,6 @@ import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.context.Context;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
@@ -44,12 +43,11 @@ public class ImportZipCommandTest extends MgnlTestCase {
         session = new MockSession("assets");
         MockUtil.getSystemMockContext().addSession("assets", session);
         translator = mock(SimpleTranslator.class);
-        importZipCommand = new ImportZipCommandForHadleFileEntry(translator, mockContext);
+        importZipCommand = new ImportZipCommandForHandleFileEntry(translator, mockContext);
         importZipCommand.setRepository("assets");
         zipFile = mock(ZipFile.class);
         zipArchiveEntry = mock(ZipArchiveEntry.class);
 
-        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, System.getProperty("java.io.tmpdir"));
     }
 
     @Test
@@ -67,9 +65,9 @@ public class ImportZipCommandTest extends MgnlTestCase {
         assertThat(mockContext.getJCRSession("assets").getRootNode(), hasNode("folderName", NodeTypes.Folder.NAME));
     }
 
-    private class ImportZipCommandForHadleFileEntry extends ImportZipCommand {
+    private class ImportZipCommandForHandleFileEntry extends ImportZipCommand {
 
-        public ImportZipCommandForHadleFileEntry(SimpleTranslator translator, Context context) {
+        public ImportZipCommandForHandleFileEntry(SimpleTranslator translator, Context context) {
             super(translator);
             this.context = context;
         }
