@@ -43,6 +43,7 @@ import java.util.HashSet;
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.OptionGroup;
 
@@ -94,6 +95,17 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
             return getFieldType();
         } else {
             return HashSet.class;
+        }
+    }
+
+    /**
+     * Make sure to set defaultValue whenever value is null. For setNullSelectionAllowed(true) @createDefaultValue returns null if no value is preselected.
+     */
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        super.setPropertyDataSourceAndDefaultValue(property);
+        if (property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
         }
     }
 
