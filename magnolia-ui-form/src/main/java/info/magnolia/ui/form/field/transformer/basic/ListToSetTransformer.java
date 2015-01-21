@@ -65,9 +65,9 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
         if (isCollectionConversionNeeded(newValue, p.getType())) {
             newValue = (T) new LinkedList((Set) newValue);
-            if (((List<?>) newValue).isEmpty()) {
-                newValue = null;
-            }
+        }
+        if (((List<?>) newValue).isEmpty()) {
+            newValue = null;
         }
         p.setValue(newValue);
     }
