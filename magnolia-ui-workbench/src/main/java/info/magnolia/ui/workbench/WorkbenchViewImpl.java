@@ -52,7 +52,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -332,15 +331,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
         field.setImmediate(true);
         field.addValueChangeListener(searchFieldListener);
-
-        field.addFocusListener(new FieldEvents.FocusListener() {
-            @Override
-            public void focus(FieldEvents.FocusEvent event) {
-                // put the cursor at the end of the field
-                TextField tf = (TextField) event.getSource();
-                tf.setCursorPosition(tf.getValue().length());
-            }
-        });
 
         // No blur handler.
 
