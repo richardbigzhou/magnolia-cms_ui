@@ -394,6 +394,15 @@
          }
 
          private void addRowBeforeFirstRendered(VScrollTableRow row) {
+@@ -5150,7 +5204,7 @@
+             if (tBodyMeasurementsDone && !forceUpdate) {
+                 return rowHeight;
+             } else {
+-                if (tBodyElement.getRows().getLength() > 0) {
++                if (tBodyElement.getRows().getLength() > 0 && getTableHeight() > 0) {
+                     int tableHeight = getTableHeight();
+                     int rowCount = tBodyElement.getRows().getLength();
+                     rowHeight = tableHeight / (double) rowCount;
 @@ -5172,7 +5226,7 @@
                          rowHeight = lastKnownRowHeight;
                      } else if (isAttached()) {
