@@ -177,12 +177,12 @@ public class AbstractCommandActionTest {
         assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
         assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
         assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
-        assertTrue(params.containsKey(AbstractCommandAction.ATTRIBUTE_REQUESTOR));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
 
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(AbstractCommandAction.ATTRIBUTE_REQUESTOR));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test
@@ -206,13 +206,13 @@ public class AbstractCommandActionTest {
         assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
         assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
         assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
-        assertTrue(params.containsKey(AbstractCommandAction.ATTRIBUTE_REQUESTOR));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
 
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals(jcrProperty.getPath(), params.get(Context.ATTRIBUTE_PATH));
         // In case of property, the Identifier is the parent Node ID
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(AbstractCommandAction.ATTRIBUTE_REQUESTOR));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test
@@ -246,7 +246,7 @@ public class AbstractCommandActionTest {
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(AbstractCommandAction.ATTRIBUTE_REQUESTOR));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test

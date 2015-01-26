@@ -82,11 +82,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     public static final String COMMAND_RESULT = "command_result";
 
-    /**
-     * Name of the attribute keeping the user that has launched the command.
-     */
-    static final String ATTRIBUTE_REQUESTOR = "requestor";
-
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandAction.class);
 
     private static AtomicInteger idx = new AtomicInteger();
@@ -171,7 +166,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             // really only the identifier should be used to identify a piece of content and nothing else
             params.put(Context.ATTRIBUTE_UUID, identifier);
             params.put(Context.ATTRIBUTE_PATH, path);
-            params.put(ATTRIBUTE_REQUESTOR, MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName());
+            params.put(Context.ATTRIBUTE_REQUESTOR, MgnlContext.getUser().getName());
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
