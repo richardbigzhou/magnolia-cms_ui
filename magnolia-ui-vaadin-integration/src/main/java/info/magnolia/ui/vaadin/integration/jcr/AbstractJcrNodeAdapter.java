@@ -267,7 +267,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                 try {
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
-                    log.error("Could not set JCR Property", e);
+                    log.error("Could not set JCR Property {}", propertyId, e);
                 }
             } else {
                 removeItemProperty(propertyId);
