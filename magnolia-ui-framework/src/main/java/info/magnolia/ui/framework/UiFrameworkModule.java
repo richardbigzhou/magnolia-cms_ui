@@ -39,7 +39,7 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
@@ -55,22 +55,22 @@ import javax.jcr.RepositoryException;
  */
 public class UiFrameworkModule implements ModuleLifecycle {
 
-    private final ConfiguredAppDescriptorManager appDescriptorManager;
     private final ConfiguredFieldTypeDefinitionManager fieldTypeDefinitionManager;
 
     private final ConfigurationSourceFactory configSourceFactory;
     private final DialogDefinitionRegistry dialogRegistry;
+    private AppDescriptorRegistry appDescriptorRegistry;
     private final String magnoliaHome;
 
     @Inject
-    public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory, MagnoliaConfigurationProperties mcp, DialogDefinitionRegistry dialogRegistry,
-            ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
-
-        this.appDescriptorManager = configuredAppDescriptorManager;
+    public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory, MagnoliaConfigurationProperties mcp,
+                             DialogDefinitionRegistry dialogRegistry, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager,
+                             AppDescriptorRegistry appDescriptorRegistry) {
         this.fieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
 
         this.configSourceFactory = configSourceFactory;
         this.dialogRegistry = dialogRegistry;
+        this.appDescriptorRegistry = appDescriptorRegistry;
         this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
@@ -78,11 +78,12 @@ public class UiFrameworkModule implements ModuleLifecycle {
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
 
-            appDescriptorManager.start();
             fieldTypeDefinitionManager.start();
-
+            configSourceFactory.jcr().withFilter(new IsAppDescriptor()).bindWithDefaults(appDescriptorRegistry);
             configSourceFactory.jcr().withFilter(new IsDialogNode()).bindWithDefaults(dialogRegistry);
+
             configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(appDescriptorRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
     }
 
@@ -103,6 +104,24 @@ public class UiFrameworkModule implements ModuleLifecycle {
                     node = new ExtendingNodeWrapper(node);
                 }
                 return node.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME) || node.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME);
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e); // TODO
+            }
+        }
+    }
+
+    /**
+     * Check if this node can be handle as a ConfiguredDialogDefinition.
+     * Prior to 5.4, this was in ConfiguredDialogDefinitionManager.
+     */
+    private static class IsAppDescriptor extends AbstractPredicate<Node> {
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+                    node = new ExtendingNodeWrapper(node);
+                }
+                return "apps".equalsIgnoreCase(node.getParent().getName());
             } catch (RepositoryException e) {
                 throw new RuntimeException(e); // TODO
             }
