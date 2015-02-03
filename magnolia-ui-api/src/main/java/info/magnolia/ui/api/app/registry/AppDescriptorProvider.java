@@ -38,7 +38,10 @@ import info.magnolia.ui.api.app.AppDescriptor;
 
 /**
  * Provides an {@link AppDescriptor}.
+ *
+ * @deprecated since 5.4 use DefinitionProvider<AppDescriptor> and configuration sources.
  */
+@Deprecated
 public interface AppDescriptorProvider {
 
     String getName();
