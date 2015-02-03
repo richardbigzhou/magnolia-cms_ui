@@ -1,41 +1,46 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
- * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
- *
- *
- * This file is dual-licensed under both the Magnolia
- * Network Agreement and the GNU General Public License.
- * You may elect to use one or the other of these licenses.
- *
- * This file is distributed in the hope that it will be
- * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
- * Redistribution, except as permitted by whichever of the GPL
- * or MNA you select, is prohibited.
- *
- * 1. For the GPL license (GPL), you can redistribute and/or
- * modify this file under the terms of the GNU General
- * Public License, Version 3, as published by the Free Software
- * Foundation.  You should have received a copy of the GNU
- * General Public License, Version 3 along with this program;
- * if not, write to the Free Software Foundation, Inc., 51
- * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * 2. For the Magnolia Network Agreement (MNA), this file
- * and the accompanying materials are made available under the
- * terms of the MNA which accompanies this distribution, and
- * is available at http://www.magnolia-cms.com/mna.html
- *
- * Any modifications to this file must keep this entire header
- * intact.
- *
- */
+* This file Copyright (c) 2012-2015 Magnolia International
+* Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+*
+*
+* This file is dual-licensed under both the Magnolia
+* Network Agreement and the GNU General Public License.
+* You may elect to use one or the other of these licenses.
+*
+* This file is distributed in the hope that it will be
+* useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+* implied warranty of MERCHANTABILITY or FITNESS FOR A
+* PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+* Redistribution, except as permitted by whichever of the GPL
+* or MNA you select, is prohibited.
+*
+* 1. For the GPL license (GPL), you can redistribute and/or
+* modify this file under the terms of the GNU General
+* Public License, Version 3, as published by the Free Software
+* Foundation.  You should have received a copy of the GNU
+* General Public License, Version 3 along with this program;
+* if not, write to the Free Software Foundation, Inc., 51
+* Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+*
+* 2. For the Magnolia Network Agreement (MNA), this file
+* and the accompanying materials are made available under the
+* terms of the MNA which accompanies this distribution, and
+* is available at http://www.magnolia-cms.com/mna.html
+*
+* Any modifications to this file must keep this entire header
+* intact.
+*
+*/
 package info.magnolia.ui.framework.app;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionQuery;
+import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -50,7 +55,6 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppController;
@@ -65,6 +69,7 @@ import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -77,6 +82,7 @@ import info.magnolia.ui.framework.message.MessagesManagerImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +95,8 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * Test case for {@link info.magnolia.ui.api.app.AppController}.
- */
+* Test case for {@link info.magnolia.ui.api.app.AppController}.
+*/
 public class AppControllerImplTest {
 
     private static final String APP_NAME_1 = "app1";
@@ -513,24 +519,31 @@ public class AppControllerImplTest {
         this.appRegistry = mock(AppDescriptorRegistry.class);
 
         // create subapps
-        Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
+        Map<String, SubAppDescriptor> subApps = new LinkedHashMap<>();
         subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
         subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, false));
 
-        AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
-        AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
-        AppDescriptor app3 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>());
+        final Map<String,AppDescriptor> apps = new HashMap<>();
         ConfiguredAppDescriptor appThemed = (ConfiguredAppDescriptor) AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, AppTestImpl.class, subApps);
         appThemed.setTheme("testtheme");
 
-        try {
-            when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);
-            when(appRegistry.getAppDescriptor(APP_NAME_2 + "_name")).thenReturn(app2);
-            when(appRegistry.getAppDescriptor(APP_NAME_3 + "_name")).thenReturn(app3);
-            when(appRegistry.getAppDescriptor(APP_NAME_THEMED + "_name")).thenReturn(appThemed);
-        } catch (RegistrationException e) {
-            // won't happen
+        apps.put(APP_NAME_1 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps));
+        apps.put(APP_NAME_2 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps));
+        apps.put(APP_NAME_3 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>()));
+        apps.put(APP_NAME_THEMED + "_name", appThemed);
+
+        DefinitionQuery namedQuery = mock(DefinitionQuery.class);
+        final Iterator<Map.Entry<String,AppDescriptor>> it = apps.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<String,AppDescriptor> entry = it.next();
+            DefinitionQuery findsConcreteAppQuery = mock(DefinitionQuery.class);
+            String appName = entry.getKey();
+            AppDescriptor appDescriptor = entry.getValue();
+            doReturn(findsConcreteAppQuery).when(namedQuery).named(appName);
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(findsConcreteAppQuery).findSingle();
         }
+
+        doReturn(namedQuery).when(appRegistry).query();
     }
 
     public GuiceComponentProvider initComponentProvider() {
@@ -611,6 +624,48 @@ public class AppControllerImplTest {
         @Override
         public void onAppStarted(AppLifecycleEvent event) {
             appLifecycleEvent.add(event);
+        }
+    }
+
+    class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
+
+        private final DefinitionMetadata metadata;
+        private final AppDescriptor appDescriptor;
+        private final boolean valid;
+
+        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor) {
+            this(appName, moduleName, relativeLocation, appDescriptor, true);
+        }
+
+        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor, boolean valid) {
+            this.metadata = DefinitionMetadataBuilder.newBuilder().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
+            this.appDescriptor = appDescriptor;
+            this.valid = valid;
+        }
+
+        @Override
+        public DefinitionMetadata getMetadata() {
+            return metadata;
+        }
+
+        @Override
+        public AppDescriptor get() {
+            return appDescriptor;
+        }
+
+        @Override
+        public DefinitionRawView getRaw() {
+            throw new IllegalStateException("not implemented yet"); // TODO
+        }
+
+        @Override
+        public boolean isValid() {
+            return valid;
+        }
+
+        @Override
+        public List<String> getErrorMessages() {
+            throw new IllegalStateException("not implemented yet"); // TODO
         }
     }
 
