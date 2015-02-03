@@ -51,7 +51,6 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -100,9 +99,8 @@ public class AppEventTest {
 
     @Before
     public void setUp() throws Exception {
-        initAppRegistry();
-
         this.eventBus = new SimpleEventBus();
+        initAppRegistry();
         componentProvider = initComponentProvider();
 
         eventCollector = new AppEventCollector();
@@ -182,20 +180,14 @@ public class AppEventTest {
      */
     private void initAppRegistry() {
 
-        this.appRegistry = mock(AppDescriptorRegistry.class);
+        this.appRegistry = new AppDescriptorRegistry(eventBus);
 
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
-        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
-                subAppName_1, AppTestSubApp.class, true));
+        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
 
-        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
-                AppEventTestImpl.class, subApps);
-        try {
-            when(appRegistry.getAppDescriptor(name + "_name")).thenReturn(app);
-        } catch (RegistrationException e) {
-            // won't happen
-        }
+        final AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
+        appRegistry.register(new DummyAppDescriptorProvider(name + "_name", "", "", app));
     }
 
     public GuiceComponentProvider initComponentProvider() {

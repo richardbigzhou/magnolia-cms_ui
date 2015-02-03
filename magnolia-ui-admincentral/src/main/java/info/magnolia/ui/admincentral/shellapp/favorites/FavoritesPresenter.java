@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.location.DefaultLocation;
@@ -194,12 +195,15 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         if (Location.LOCATION_TYPE_SHELL_APP.equals(appType)) {
             favoriteLocation = createNewFavoriteSuggestion("", "", "");
         } else {
-            AppDescriptor appDescriptor;
+            final AppDescriptor appDescriptor;
+
             try {
-                appDescriptor = i18nizer.decorate(appDescriptorRegistry.getAppDescriptor(appName));
-            } catch (RegistrationException e) {
+                DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.query().named(appName).findSingle();
+                appDescriptor = i18nizer.decorate(definitionProvider.get());
+            } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
                 throw new RuntimeException(e);
             }
+
             final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
             final String title = appDescriptor.getLabel() + " " + (path == null ? "/" : path);
             final String urlFragment = getUrlFragmentFromURI(previousLocation);
