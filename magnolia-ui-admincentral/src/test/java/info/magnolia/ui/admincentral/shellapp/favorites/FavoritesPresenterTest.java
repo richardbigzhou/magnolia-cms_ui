@@ -141,7 +141,6 @@ public class FavoritesPresenterTest {
     /**
      * Test that when we determine favorite location from a previous fragment,
      * we do not put the "null" string in the beginning (see http://jira.magnolia-cms.com/browse/MGNLUI-2175).
-     * @throws RepositoryException
      */
     @Test
     public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException, URISyntaxException {
@@ -158,7 +157,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetWebAppRootURI() throws Exception{
+    public void testGetWebAppRootURI() throws Exception {
         // GIVEN
         initializeVaadinUI();
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,21 +33,24 @@
  */
 package info.magnolia.ui.api.app.registry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.ui.api.app.AppDescriptor;
 
 /**
- * ObservedManager for {@link info.magnolia.ui.api.app.AppDescriptor} configured in repository.
- *
- * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
- * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
+ * {@link DefinitionType} types used in UI API module.
  */
-@Deprecated
-public class ConfiguredAppDescriptorManager {
+public enum DefinitionTypes implements DefinitionType {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfiguredAppDescriptorManager.class);
+    APP(AppDescriptor.class);
 
-    public void start() {
-        log.warn("ConfiguredAppDescriptorManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
+    private final Class baseClass;
+
+    DefinitionTypes(Class baseClass) {
+        this.baseClass = baseClass;
+    }
+
+    @Override
+    public Class baseClass() {
+        return baseClass;
     }
 }
