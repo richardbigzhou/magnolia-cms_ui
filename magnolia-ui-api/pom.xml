@@ -29,6 +29,10 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>info.magnolia.config</groupId>
+      <artifactId>magnolia-configuration</artifactId>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
     </dependency>
