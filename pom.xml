@@ -164,6 +164,13 @@
       </dependency>
       <dependency>
         <groupId>info.magnolia.ui</groupId>
+        <artifactId>magnolia-ui-api</artifactId>
+        <type>test-jar</type>
+        <scope>test</scope>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-vaadin-theme</artifactId>
         <version>${project.version}</version>
       </dependency>

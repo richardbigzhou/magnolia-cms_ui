@@ -31,27 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.registry;
+package info.magnolia.ui.api.app.registry;
 
 import info.magnolia.config.registry.DefinitionType;
-import info.magnolia.ui.dialog.definition.FormDialogDefinition;
-import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
+import info.magnolia.ui.api.app.AppDescriptor;
 
 /**
- * Basic {@link DefinitionType}s in Magnolia UI framework.
+ * {@link DefinitionType} types used in UI API module.
  */
 public enum DefinitionTypes implements DefinitionType {
-    /*
-     * TODO mge consolidate: All dialogs configured under 'dialogs' are FormDialogDefs anyway but we might want to leave the door open.
-     * Would be nice if we would wrap the provider instead (similarly as we set the "id")
-     * Dependencies: enum name is used for folder observation lookup
-     */
-    DIALOG(FormDialogDefinition.class),
-    FIELD_TYPE(FieldTypeDefinition.class);
+
+    APP(AppDescriptor.class);
 
     private final Class baseClass;
 
-    private DefinitionTypes(Class baseClass) {
+    DefinitionTypes(Class baseClass) {
         this.baseClass = baseClass;
     }
 

@@ -148,15 +148,4 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     public void setI18nBasename(String i18nBasename) {
         this.i18nBasename = i18nBasename;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof ConfiguredAppDescriptor && this.getName().equals(((ConfiguredAppDescriptor) o).getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return (this.getName() == null) ? 0 : this.getName().hashCode();
-    }
-
 }

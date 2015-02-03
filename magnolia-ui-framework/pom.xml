@@ -122,6 +122,12 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-form</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
