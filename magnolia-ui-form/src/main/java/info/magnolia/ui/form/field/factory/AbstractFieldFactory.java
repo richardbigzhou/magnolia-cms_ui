@@ -317,4 +317,8 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.componentProvider = componentProvider;
     }
 
+    protected ComponentProvider getComponentProvider() {
+        return componentProvider;
+    }
+
 }
