@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,22 +33,24 @@
  */
 package info.magnolia.ui.form.fieldtype.registry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 
 /**
- * ConfiguredFieldTypeDefinitionManager.
- *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * {@link info.magnolia.config.registry.DefinitionType} types used in UI Form module.
  */
-@Deprecated
-public class ConfiguredFieldTypeDefinitionManager { // extends ModuleConfigurationObservingManager {
+public enum DefinitionTypes implements DefinitionType {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfiguredFieldTypeDefinitionManager.class);
+    FIELD_TYPE(FieldTypeDefinition.class);
 
-    public static final String FIELD_CONFIG_NODE_NAME = "fieldTypes";
+    private final Class baseClass;
 
-    public void start() {
-        log.warn("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
+    DefinitionTypes(Class baseClass) {
+        this.baseClass = baseClass;
+    }
+
+    @Override
+    public Class baseClass() {
+        return baseClass;
     }
 }
