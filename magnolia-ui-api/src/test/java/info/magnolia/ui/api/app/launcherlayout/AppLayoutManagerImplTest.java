@@ -34,11 +34,15 @@
 package info.magnolia.ui.api.app.launcherlayout;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionQuery;
+import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -50,10 +54,15 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventType;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.registry.DefinitionTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +96,7 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("app1");
         appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("app2");
         appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("app3");
+
         appGroup1 = createAppGroup("appGroup1", "app1", "app2");
         appGroup2 = createAppGroup("appGroup2", "app3");
 
@@ -94,21 +104,26 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         layoutDefinition.addGroup(appGroup1);
         layoutDefinition.addGroup(appGroup2);
 
-        ArrayList<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
-        descriptors.add(appDescriptor1);
-        descriptors.add(appDescriptor2);
-        descriptors.add(appDescriptor3);
+        Map<String, AppDescriptor> descriptors = new HashMap<>();
+        descriptors.put("app1", appDescriptor1);
+        descriptors.put("app2", appDescriptor2);
+        descriptors.put("app3", appDescriptor3);
 
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
-        when(registry.getAllDefinitions()).thenReturn(descriptors);
+        when(registry.getAllDefinitions()).thenReturn(new LinkedList<>(descriptors.values()));
 
-        when(registry.isAppDescriptorRegistered(eq("app1"))).thenReturn(true);
-        when(registry.isAppDescriptorRegistered(eq("app2"))).thenReturn(true);
-        when(registry.isAppDescriptorRegistered(eq("app3"))).thenReturn(true);
+        DefinitionQuery namedQuery = mock(DefinitionQuery.class);
+        final Iterator<Map.Entry<String, AppDescriptor>> it = descriptors.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<String, AppDescriptor> entry = it.next();
+            DefinitionQuery findsConcreteAppQuery = mock(DefinitionQuery.class);
+            String appName = entry.getKey();
+            AppDescriptor appDescriptor = entry.getValue();
+            doReturn(findsConcreteAppQuery).when(namedQuery).named(appName);
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(findsConcreteAppQuery).findSingle();
+        }
 
-        when(registry.getAppDescriptor(eq("app1"))).thenReturn(appDescriptor1);
-        when(registry.getAppDescriptor(eq("app2"))).thenReturn(appDescriptor2);
-        when(registry.getAppDescriptor(eq("app3"))).thenReturn(appDescriptor3);
+        doReturn(namedQuery).when(registry).query();
 
         systemEventBus = new SimpleEventBus();
 
@@ -287,4 +302,45 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         return group;
     }
 
+    class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
+
+        private final DefinitionMetadata metadata;
+        private final AppDescriptor appDescriptor;
+        private final boolean valid;
+
+        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor) {
+            this(appName, moduleName, relativeLocation, appDescriptor, true);
+        }
+
+        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor, boolean valid) {
+            this.metadata = DefinitionMetadataBuilder.newBuilder().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
+            this.appDescriptor = appDescriptor;
+            this.valid = valid;
+        }
+
+        @Override
+        public DefinitionMetadata getMetadata() {
+            return metadata;
+        }
+
+        @Override
+        public AppDescriptor get() {
+            return appDescriptor;
+        }
+
+        @Override
+        public DefinitionRawView getRaw() {
+            throw new IllegalStateException("not implemented yet"); // TODO
+        }
+
+        @Override
+        public boolean isValid() {
+            return valid;
+        }
+
+        @Override
+        public List<String> getErrorMessages() {
+            throw new IllegalStateException("not implemented yet"); // TODO
+        }
+    }
 }
