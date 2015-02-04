@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
  */
+@Deprecated
 public class ConfiguredFieldTypeDefinitionManager { // extends ModuleConfigurationObservingManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConfiguredFieldTypeDefinitionManager.class);
@@ -48,8 +49,6 @@ public class ConfiguredFieldTypeDefinitionManager { // extends ModuleConfigurati
     public static final String FIELD_CONFIG_NODE_NAME = "fieldTypes";
 
     public void start() {
-        log.warn("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
+        log.warn("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
     }
-
-
 }
