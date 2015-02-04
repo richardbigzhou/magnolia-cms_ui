@@ -37,9 +37,10 @@ import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.ui.api.app.AppDescriptor;
 
 /**
- * .
+ * {@link DefinitionType} types used in UI API module.
  */
 public enum DefinitionTypes implements DefinitionType {
+
     APP(AppDescriptor.class);
 
     private final Class baseClass;

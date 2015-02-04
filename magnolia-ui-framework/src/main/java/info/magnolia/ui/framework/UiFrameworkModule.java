@@ -93,8 +93,8 @@ public class UiFrameworkModule implements ModuleLifecycle {
 
 
     /**
-     * Check if this node can be handle as a ConfiguredDialogDefinition.
-     * Prior to 5.4, this was in ConfiguredDialogDefinitionManager.
+     * Check if this node can be handled as a ConfiguredDialogDefinition.
+     * Prior to 5.4, this was in {@link info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager}.
      */
     private static class IsDialogNode extends AbstractPredicate<Node> {
         @Override
@@ -111,8 +111,8 @@ public class UiFrameworkModule implements ModuleLifecycle {
     }
 
     /**
-     * Check if this node can be handle as a ConfiguredDialogDefinition.
-     * Prior to 5.4, this was in ConfiguredDialogDefinitionManager.
+     * Check if this node can be handled as an {@link info.magnolia.ui.api.app.AppDescriptor}.
+     * Prior to 5.4, this was in {@link info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager}.
      */
     private static class IsAppDescriptor extends AbstractPredicate<Node> {
         @Override
