@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -129,7 +130,13 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (sortOptions) {
-            Collections.sort(options);
+            if (definition.getComparatorClass() != null) {
+                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
+                Collections.sort(options, comparator);
+            }
+            else {
+                Collections.sort(options);
+            }
         }
         if (!options.isEmpty()) {
             Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
@@ -149,6 +156,10 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             }
         }
         return optionContainer;
+    }
+
+    protected Comparator<SelectFieldOptionDefinition> initializeComparator(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
+        return getComponentProvider().newInstance(comparatorClass, item, definition, getFieldType());
     }
 
     /**
