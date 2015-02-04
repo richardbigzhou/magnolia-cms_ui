@@ -326,6 +326,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.componentProvider = componentProvider;
     }
 
+    protected ComponentProvider getComponentProvider() {
+        return componentProvider;
+    }
+
     /**
      * The StringToLongConverter.<br>
      * MGNLUI-1855 This should be handled by vaadin, but StringToNumberConverter throws conversion exception when used
