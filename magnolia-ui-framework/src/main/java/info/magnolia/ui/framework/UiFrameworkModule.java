@@ -42,7 +42,7 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
+import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 
 import java.nio.file.Paths;
 
@@ -55,21 +55,20 @@ import javax.jcr.RepositoryException;
  */
 public class UiFrameworkModule implements ModuleLifecycle {
 
-    private final ConfiguredFieldTypeDefinitionManager fieldTypeDefinitionManager;
-
     private final ConfigurationSourceFactory configSourceFactory;
     private final DialogDefinitionRegistry dialogRegistry;
+    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
     private AppDescriptorRegistry appDescriptorRegistry;
     private final String magnoliaHome;
 
     @Inject
     public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory, MagnoliaConfigurationProperties mcp,
-                             DialogDefinitionRegistry dialogRegistry, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager,
+                             DialogDefinitionRegistry dialogRegistry, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry,
                              AppDescriptorRegistry appDescriptorRegistry) {
-        this.fieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
 
         this.configSourceFactory = configSourceFactory;
         this.dialogRegistry = dialogRegistry;
+        this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
@@ -78,12 +77,13 @@ public class UiFrameworkModule implements ModuleLifecycle {
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
 
-            fieldTypeDefinitionManager.start();
             configSourceFactory.jcr().withFilter(new IsAppDescriptor()).bindWithDefaults(appDescriptorRegistry);
             configSourceFactory.jcr().withFilter(new IsDialogNode()).bindWithDefaults(dialogRegistry);
+            configSourceFactory.jcr().withFilter(new IsFieldType()).bindWithDefaults(fieldTypeDefinitionRegistry);
 
             configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
             configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(appDescriptorRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(fieldTypeDefinitionRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
     }
 
@@ -122,6 +122,26 @@ public class UiFrameworkModule implements ModuleLifecycle {
                     node = new ExtendingNodeWrapper(node);
                 }
                 return "apps".equalsIgnoreCase(node.getParent().getName());
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e); // TODO
+            }
+        }
+    }
+
+    /**
+     * Check if this node can be handled as an {@link info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition}.
+     * Prior to 5.4, this was in {@link info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager}.
+     */
+    private static class IsFieldType extends AbstractPredicate<Node> {
+
+        public static final String DEFINITION_CLASS = "definitionClass";
+
+        public static final String FACTORY_CLASS = "factoryClass";
+
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                return node.hasProperty(DEFINITION_CLASS) && node.hasProperty(FACTORY_CLASS);
             } catch (RepositoryException e) {
                 throw new RuntimeException(e); // TODO
             }
