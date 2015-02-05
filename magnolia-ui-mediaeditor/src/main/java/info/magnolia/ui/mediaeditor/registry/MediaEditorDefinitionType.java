@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,21 +33,25 @@
  */
 package info.magnolia.ui.mediaeditor.registry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
 /**
- * Populates {@link MediaEditorRegistry} by scanning the nodes in the config workspace.
- *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * Media editor-specific {@link DefinitionType}.
  */
-//@Singleton
-@Deprecated
-public class ConfiguredMediaEditorDefinitionManager {//  extends ModuleConfigurationObservingManager {
+public class MediaEditorDefinitionType implements DefinitionType {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    public static MediaEditorDefinitionType TYPE = new MediaEditorDefinitionType();
 
-    public void start() {
-        log.warn("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
+    private MediaEditorDefinitionType() {}
+
+    @Override
+    public String name() {
+        return "media editor";
+    }
+
+    @Override
+    public Class baseClass() {
+        return MediaEditorDefinition.class;
     }
 }
