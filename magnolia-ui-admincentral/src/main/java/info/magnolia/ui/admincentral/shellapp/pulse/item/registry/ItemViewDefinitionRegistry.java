@@ -46,6 +46,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinition> {
+
     @Override
     public DefinitionType type() {
         return new DefinitionType() {
@@ -56,7 +57,7 @@ public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinit
 
             @Override
             public Class baseClass() {
-                throw new IllegalStateException("not implemented yet"); // TODO
+                return ItemViewDefinition.class;
             }
         };
     }
@@ -67,7 +68,6 @@ public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinit
 
     @Override
     protected String asReferenceString(DefinitionProvider<ItemViewDefinition> provider) {
-        // TODO not implemented
-        throw new UnsupportedOperationException("not implemented");
+        return provider.getMetadata().getModule() + ":" + provider.getMetadata().getRelativeLocation();
     }
 }
