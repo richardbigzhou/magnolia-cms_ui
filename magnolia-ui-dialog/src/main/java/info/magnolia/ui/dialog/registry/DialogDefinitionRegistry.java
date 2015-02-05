@@ -88,7 +88,7 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
             DialogDefinition dialogDefinition = dialogDefinitionProvider.get();
             return (FormDialogDefinition) dialogDefinition;
             // TODO: } catch (RegistrationException e) {
-        } catch (IllegalArgumentException e) {
+        } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
             throw new RegistrationException(e.getMessage(), e);
         }
     }
