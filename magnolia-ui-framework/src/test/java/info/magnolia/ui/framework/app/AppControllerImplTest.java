@@ -36,11 +36,7 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.config.registry.DefinitionMetadata;
-import info.magnolia.config.registry.DefinitionMetadataBuilder;
-import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionQuery;
-import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -69,7 +65,6 @@ import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -624,48 +619,6 @@ public class AppControllerImplTest {
         @Override
         public void onAppStarted(AppLifecycleEvent event) {
             appLifecycleEvent.add(event);
-        }
-    }
-
-    class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
-
-        private final DefinitionMetadata metadata;
-        private final AppDescriptor appDescriptor;
-        private final boolean valid;
-
-        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor) {
-            this(appName, moduleName, relativeLocation, appDescriptor, true);
-        }
-
-        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor, boolean valid) {
-            this.metadata = DefinitionMetadataBuilder.newBuilder().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
-            this.appDescriptor = appDescriptor;
-            this.valid = valid;
-        }
-
-        @Override
-        public DefinitionMetadata getMetadata() {
-            return metadata;
-        }
-
-        @Override
-        public AppDescriptor get() {
-            return appDescriptor;
-        }
-
-        @Override
-        public DefinitionRawView getRaw() {
-            throw new IllegalStateException("not implemented yet"); // TODO
-        }
-
-        @Override
-        public boolean isValid() {
-            return valid;
-        }
-
-        @Override
-        public List<String> getErrorMessages() {
-            throw new IllegalStateException("not implemented yet"); // TODO
         }
     }
 

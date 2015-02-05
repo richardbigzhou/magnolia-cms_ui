@@ -99,9 +99,8 @@ public class AppEventTest {
 
     @Before
     public void setUp() throws Exception {
-        initAppRegistry();
-
         this.eventBus = new SimpleEventBus();
+        initAppRegistry();
         componentProvider = initComponentProvider();
 
         eventCollector = new AppEventCollector();
@@ -185,12 +184,10 @@ public class AppEventTest {
 
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
-        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
-                subAppName_1, AppTestSubApp.class, true));
+        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
 
-        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
-                AppEventTestImpl.class, subApps);
-        when(appRegistry.getAppDescriptor(name + "_name")).thenReturn(app);
+        final AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
+        appRegistry.register(new DummyAppDescriptorProvider(name + "_name", "", "", app));
     }
 
     public GuiceComponentProvider initComponentProvider() {
