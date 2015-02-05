@@ -33,42 +33,37 @@
  */
 package info.magnolia.ui.mediaeditor.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
 /**
- * Contains a mapping of the availble media editors.
+ * {@link info.magnolia.config.registry.Registry} implementation for {@link MediaEditorDefinition} types.
  */
 @Singleton
-public class MediaEditorRegistry implements Serializable {
+public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition> {
 
-    private final RegistryMap<String, MediaEditorDefinition> registry = new RegistryMap<String, MediaEditorDefinition>() {
-
-        @Override
-        protected String keyFromValue(MediaEditorDefinition value) {
-            return value.getId();
-        }
-    };
-
-    public MediaEditorDefinition get(String id) throws RegistrationException {
-        MediaEditorDefinition def;
-        try {
-            def = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No media editor definition registered for id: " + id, e);  //TODO-TRANSLATE-EXCEPTION
-        }
-        return def;
+    /**
+     * @deprecated since 5.4 - use the {@link #query()} API instead.
+     */
+    @Deprecated
+    public MediaEditorDefinition get(String mediaEditorId) throws RegistrationException {
+        return query().named(mediaEditorId).findSingle().get();
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<MediaEditorDefinition> definitions) {
-        return registry.removeAndPutAll(registeredIds, definitions);
+    @Override
+    protected String asReferenceString(DefinitionProvider<MediaEditorDefinition> provider) {
+        final DefinitionMetadata md = provider.getMetadata();
+        return md.getModule() + ":" + md.getRelativeLocation();
     }
 
+    @Override
+    public DefinitionType type() {
+        return MediaEditorDefinitionType.TYPE;
+    }
 }
