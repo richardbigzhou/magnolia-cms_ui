@@ -290,7 +290,7 @@ public class AppDescriptorRegistryTest {
         eventHandler.clear();
 
         // WHEN
-        // first app gets reregistered du to change in in active state
+        // first app gets reregistered due to change in in active state
         appDescriptorProvider1 = createAppDescriptorProvider(appName1, false);
         // second app gets registered
         DefinitionProvider<AppDescriptor> appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);

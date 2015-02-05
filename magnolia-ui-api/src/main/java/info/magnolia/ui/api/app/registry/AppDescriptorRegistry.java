@@ -171,10 +171,10 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
         return changed;
     }
 
-    private DefinitionProvider<AppDescriptor> getAppDescriptor(DefinitionMetadata metadata, Collection<DefinitionProvider<AppDescriptor>> providers) {
+    private AppDescriptor getAppDescriptor(DefinitionMetadata metadata, Collection<DefinitionProvider<AppDescriptor>> providers) {
         for (DefinitionProvider<AppDescriptor> provider : providers) {
             if (provider.getMetadata().equals(metadata)) {
-                return provider;
+                return provider.get();
             }
         }
         return null;
