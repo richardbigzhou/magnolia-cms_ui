@@ -40,7 +40,6 @@ import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
-import info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
 
 import java.nio.file.Paths;
@@ -50,7 +49,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Registers the observed managers: {@link ConfiguredMediaEditorDefinitionManager}.
+ * Binds {@link MediaEditorRegistry} to JCR and Yaml config sources.
  */
 public class MediaEditorModule implements ModuleLifecycle {
 

@@ -49,11 +49,11 @@ import javax.inject.Singleton;
 public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition> {
 
     /**
-     * @deprecated since 5.4 - use the {@link #query()} API instead.
+     * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from the result.
      */
     @Deprecated
     public MediaEditorDefinition get(String mediaEditorId) throws RegistrationException {
-        return query().named(mediaEditorId).findSingle().get();
+        return getProvider(mediaEditorId).get();
     }
 
     @Override
