@@ -73,11 +73,17 @@ public class FieldTypeDefinitionRegistry extends AbstractRegistry<FieldTypeDefin
     }
 
     /**
-     * @deprecated since 5.4 - use the {@link #query()} API instead.
+     * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from its result.
      */
     @Deprecated
-    public FieldTypeDefinition get(String id) {
-        return query().named(id).findSingle().get();
+    public FieldTypeDefinition get(String id) throws RegistrationException {
+        final FieldTypeDefinition fieldTypeDefinition;
+        try {
+            fieldTypeDefinition = getProvider(id).get();
+        } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
+            throw new RegistrationException(e.getMessage(), e);
+        }
+        return fieldTypeDefinition;
     }
 
     @Override

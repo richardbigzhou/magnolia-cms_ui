@@ -218,8 +218,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
 
             @Override
             public void evaluate() {
+                try {
                     fieldTypeRegistry.get(id);
+                } catch (RegistrationException e) {
                     fail();
+                }
             }
         });
     }
