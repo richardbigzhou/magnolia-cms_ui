@@ -44,7 +44,7 @@ import java.util.List;
 /**
 * .
 */
-class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
+public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
 
     private final DefinitionMetadata metadata;
     private final AppDescriptor appDescriptor;

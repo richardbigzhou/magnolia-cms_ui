@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.config.registry.DefinitionQuery;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -65,6 +64,7 @@ import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.registry.DummyAppDescriptorProvider;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -527,18 +527,13 @@ public class AppControllerImplTest {
         apps.put(APP_NAME_3 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>()));
         apps.put(APP_NAME_THEMED + "_name", appThemed);
 
-        DefinitionQuery namedQuery = mock(DefinitionQuery.class);
         final Iterator<Map.Entry<String, AppDescriptor>> it = apps.entrySet().iterator();
         while (it.hasNext()) {
             final Map.Entry<String, AppDescriptor> entry = it.next();
-            DefinitionQuery findsConcreteAppQuery = mock(DefinitionQuery.class);
             String appName = entry.getKey();
             AppDescriptor appDescriptor = entry.getValue();
-            doReturn(findsConcreteAppQuery).when(namedQuery).named(appName);
-            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(findsConcreteAppQuery).findSingle();
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(appRegistry).getProvider(entry.getKey());
         }
-
-        doReturn(namedQuery).when(appRegistry).query();
     }
 
     public GuiceComponentProvider initComponentProvider() {

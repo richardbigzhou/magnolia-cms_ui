@@ -62,6 +62,7 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.DummyAppDescriptorProvider;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;

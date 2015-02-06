@@ -120,7 +120,7 @@ public class AppDescriptorRegistryTest {
         appDescriptorRegistry.unregisterAndRegister(Arrays.<DefinitionMetadata>asList(), Arrays.asList(appDescriptorProvider1));
 
         // WHEN
-        AppDescriptor appDescriptor = appDescriptorRegistry.query().named(addId).findSingle().get();
+        AppDescriptor appDescriptor = appDescriptorRegistry.getProvider(addId).get();
 
         // THEN
         assertNotNull(appDescriptor);
@@ -136,7 +136,7 @@ public class AppDescriptorRegistryTest {
         appDescriptorRegistry.unregisterAndRegister(Arrays.<DefinitionMetadata>asList(), Arrays.asList(appDescriptorProvider1));
 
         // WHEN
-        appDescriptorRegistry.query().named("xx").findSingle();
+        appDescriptorRegistry.getProvider("xx");
     }
 
     @Test
@@ -170,7 +170,7 @@ public class AppDescriptorRegistryTest {
         // Add app1
         Set<DefinitionMetadata> registeredMetadata = appDescriptorRegistry.unregisterAndRegister(Arrays.<DefinitionMetadata>asList(), Arrays.asList(appDescriptorProvider1));
         assertEquals(1, registeredMetadata.size());
-        assertNotNull(appDescriptorRegistry.query().named(appName1).findSingle());
+        assertNotNull(appDescriptorRegistry.getProvider(appName1));
 
         eventHandler.clear();
 
@@ -241,7 +241,7 @@ public class AppDescriptorRegistryTest {
         assertEquals(appName, registeredNames2.iterator().next().getName());
         assertEquals(1, eventHandler.events.size());
         assertEquals(AppRegistryEventType.REREGISTERED, eventHandler.events.get(0).getEventType());
-        assertEquals(appDescriptorRegistry.query().named(appName).findSingle().get(), eventHandler.events.get(0).getAppDescriptor());
+        assertEquals(appDescriptorRegistry.getProvider(appName).get(), eventHandler.events.get(0).getAppDescriptor());
     }
 
     @Test

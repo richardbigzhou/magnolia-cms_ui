@@ -38,11 +38,6 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
-import info.magnolia.config.registry.DefinitionMetadata;
-import info.magnolia.config.registry.DefinitionMetadataBuilder;
-import info.magnolia.config.registry.DefinitionProvider;
-import info.magnolia.config.registry.DefinitionQuery;
-import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -54,14 +49,13 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventType;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.api.app.registry.DefinitionTypes;
+import info.magnolia.ui.api.app.registry.DummyAppDescriptorProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -112,18 +106,14 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
         when(registry.getAllDefinitions()).thenReturn(new LinkedList<>(descriptors.values()));
 
-        DefinitionQuery namedQuery = mock(DefinitionQuery.class);
         final Iterator<Map.Entry<String, AppDescriptor>> it = descriptors.entrySet().iterator();
         while (it.hasNext()) {
             final Map.Entry<String, AppDescriptor> entry = it.next();
-            DefinitionQuery findsConcreteAppQuery = mock(DefinitionQuery.class);
             String appName = entry.getKey();
             AppDescriptor appDescriptor = entry.getValue();
-            doReturn(findsConcreteAppQuery).when(namedQuery).named(appName);
-            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(findsConcreteAppQuery).findSingle();
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).
+                    when(registry).getProvider(appName);
         }
-
-        doReturn(namedQuery).when(registry).query();
 
         systemEventBus = new SimpleEventBus();
 
@@ -300,47 +290,5 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
             group.addApp(entry);
         }
         return group;
-    }
-
-    class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
-
-        private final DefinitionMetadata metadata;
-        private final AppDescriptor appDescriptor;
-        private final boolean valid;
-
-        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor) {
-            this(appName, moduleName, relativeLocation, appDescriptor, true);
-        }
-
-        public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor, boolean valid) {
-            this.metadata = DefinitionMetadataBuilder.newBuilder().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
-            this.appDescriptor = appDescriptor;
-            this.valid = valid;
-        }
-
-        @Override
-        public DefinitionMetadata getMetadata() {
-            return metadata;
-        }
-
-        @Override
-        public AppDescriptor get() {
-            return appDescriptor;
-        }
-
-        @Override
-        public DefinitionRawView getRaw() {
-            throw new IllegalStateException("not implemented yet"); // TODO
-        }
-
-        @Override
-        public boolean isValid() {
-            return valid;
-        }
-
-        @Override
-        public List<String> getErrorMessages() {
-            throw new IllegalStateException("not implemented yet"); // TODO
-        }
     }
 }
