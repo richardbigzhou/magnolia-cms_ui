@@ -69,6 +69,7 @@ public class ImportZipCommandTest extends MgnlTestCase {
     private ZipFile zipFile;
     private SimpleTranslator translator;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
