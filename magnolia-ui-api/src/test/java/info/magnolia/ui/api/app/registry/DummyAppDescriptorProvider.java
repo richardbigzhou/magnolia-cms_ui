@@ -55,7 +55,7 @@ public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescrip
     }
 
     public DummyAppDescriptorProvider(String appName, String moduleName, String relativeLocation, AppDescriptor appDescriptor, boolean valid) {
-        this.metadata = DefinitionMetadataBuilder.newBuilder().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
+        this.metadata = DefinitionMetadataBuilder.usingNameAsId().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
         this.appDescriptor = appDescriptor;
         this.valid = valid;
     }

@@ -35,6 +35,7 @@ package info.magnolia.ui.api.app.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
 import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.event.EventBus;
@@ -108,11 +109,6 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
         return true;
     }
 
-    @Override
-    protected String asReferenceString(DefinitionProvider<AppDescriptor> provider) {
-        return provider.getMetadata().getName();
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public Set<DefinitionMetadata> unregisterAndRegister(Collection<DefinitionMetadata> metaDataToUnregister, Collection<DefinitionProvider<AppDescriptor>> providersToRegister) {
@@ -139,6 +135,11 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
     @Override
     public DefinitionType type() {
         return DefinitionTypes.APP;
+    }
+
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingNameAsId();
     }
 
     private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<DefinitionMetadata> metadata, final Collection<DefinitionProvider<AppDescriptor>> providerSet) {
