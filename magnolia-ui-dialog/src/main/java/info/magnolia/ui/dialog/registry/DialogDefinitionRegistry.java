@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionType;
@@ -57,8 +58,8 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
     }
 
     @Override
-    protected String asReferenceString(DefinitionProvider<DialogDefinition> provider) {
-        return provider.getMetadata().getModule() + ":" + provider.getMetadata().getRelativeLocation();
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
     }
 
     @Override
@@ -70,8 +71,8 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
             public DialogDefinition get() {
                 DialogDefinition dd = super.get();
                 if (dd instanceof ConfiguredDialogDefinition && dd.getId() == null) {
-                    String referenceString = asReferenceString(getDelegate());
-                    ((ConfiguredDialogDefinition) dd).setId(referenceString);
+                    String referenceId = getDelegate().getMetadata().getReferenceId();
+                    ((ConfiguredDialogDefinition) dd).setId(referenceId);
                 }
                 return dd;
             }
