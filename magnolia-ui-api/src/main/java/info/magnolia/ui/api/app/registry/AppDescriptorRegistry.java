@@ -82,26 +82,26 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
 
     //TODO implement unregister method properly once it is present in the parent class.
     public void unregister(String name) {
-        DefinitionProvider<AppDescriptor> toRemove = query().named(name).findSingle();
+        DefinitionProvider<AppDescriptor> toRemove = getProvider(name);
         getRegistryMap().remove(toRemove.getMetadata());
         sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.get()));
     }
 
     /**
-     * @deprecated since 5.4 - use {@link AbstractRegistry#query()} API instead.
+     * @deprecated since 5.4 - use {@link AbstractRegistry#getProvider(String)} method instead.
      */
     @Deprecated
     public AppDescriptor getAppDescriptor(String name) {
-        return query().named(name).findSingle().get();
+        return getProvider(name).get();
     }
 
     /**
-     * @deprecated since 5.4 - use {@link AbstractRegistry#query()} API instead.
+     * @deprecated since 5.4 - use {@link AbstractRegistry#getProvider(String)} method instead.
      */
     @Deprecated
     public boolean isAppDescriptorRegistered(String name) {
         try {
-            query().named(name).findSingle();
+            getProvider(name);
         } catch (NoSuchDefinitionException | IllegalStateException e) {
             return false;
         }
@@ -110,7 +110,7 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
 
     @Override
     protected String asReferenceString(DefinitionProvider<AppDescriptor> provider) {
-        return provider.getMetadata().getModule() + ":" + provider.getMetadata().getRelativeLocation();
+        return provider.getMetadata().getName();
     }
 
     @SuppressWarnings("unchecked")
@@ -136,6 +136,11 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
         return registeredMetaData;
     }
 
+    @Override
+    public DefinitionType type() {
+        return DefinitionTypes.APP;
+    }
+
     private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<DefinitionMetadata> metadata, final Collection<DefinitionProvider<AppDescriptor>> providerSet) {
         final List<AppDescriptor> result = new LinkedList<>();
         for (DefinitionProvider<AppDescriptor> provider : providerSet) {
@@ -154,11 +159,6 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
                 return getProvider(input).get();
             }
         });
-    }
-
-    @Override
-    public DefinitionType type() {
-        return DefinitionTypes.APP;
     }
 
     private Collection<DefinitionMetadata> getAppsThatHaveChanged(Collection<DefinitionMetadata> kept, Collection<DefinitionProvider<AppDescriptor>> providersBefore, Collection<DefinitionProvider<AppDescriptor>> providersToRegister) {

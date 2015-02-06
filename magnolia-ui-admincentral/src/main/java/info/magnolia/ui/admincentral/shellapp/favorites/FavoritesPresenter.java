@@ -198,7 +198,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
             final AppDescriptor appDescriptor;
 
             try {
-                DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.query().named(appName).findSingle();
+                DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.getProvider(appName);
                 appDescriptor = i18nizer.decorate(definitionProvider.get());
             } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
                 throw new RuntimeException(e);

@@ -127,7 +127,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
             for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
                 AppDescriptor appDescriptor;
                 try {
-                    final DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.query().named(entryDefinition.getName()).findSingle();
+                    final DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.getProvider(entryDefinition.getName());
                     appDescriptor = i18nizer.decorate(definitionProvider.get());
                 } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
                     logger.warn(e.getMessage());

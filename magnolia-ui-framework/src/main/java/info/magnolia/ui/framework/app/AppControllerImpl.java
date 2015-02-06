@@ -423,7 +423,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppDescriptor getAppDescriptor(String name) throws RuntimeException {
         final DefinitionProvider<AppDescriptor> definitionProvider;
         try {
-            definitionProvider = appDescriptorRegistry.query().named(name).findSingle();
+            definitionProvider = appDescriptorRegistry.getProvider(name);
         } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
             Message errorMessage = new Message();
             errorMessage.setType(MessageType.ERROR);
