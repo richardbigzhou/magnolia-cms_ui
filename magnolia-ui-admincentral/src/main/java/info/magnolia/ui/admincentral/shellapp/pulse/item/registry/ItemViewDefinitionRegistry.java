@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
-import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
@@ -62,12 +62,12 @@ public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinit
         };
     }
 
-    public ItemViewDefinition get(String id) throws RegistrationException {
-        return getProvider(id).get();
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
     }
 
-    @Override
-    protected String asReferenceString(DefinitionProvider<ItemViewDefinition> provider) {
-        return provider.getMetadata().getModule() + ":" + provider.getMetadata().getRelativeLocation();
+    public ItemViewDefinition get(String id) throws RegistrationException {
+        return getProvider(id).get();
     }
 }
