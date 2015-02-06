@@ -153,7 +153,7 @@ public class FieldTypeDefinitionRegistryTest {
 
         public TestFieldTypeDefinitionProvider(String fieldId, FieldTypeDefinition definition) {
             this.definition = definition;
-            this.metadata = DefinitionMetadataBuilder.newBuilder().
+            this.metadata = DefinitionMetadataBuilder.usingNameAsId().
                     type(DefinitionTypes.FIELD_TYPE).
                     name(fieldId).module("module").
                     relativeLocation("/").

@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.fieldtype.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
@@ -87,12 +88,12 @@ public class FieldTypeDefinitionRegistry extends AbstractRegistry<FieldTypeDefin
     }
 
     @Override
-    protected String asReferenceString(DefinitionProvider<FieldTypeDefinition> provider) {
-        return provider.getMetadata().getName();
+    public DefinitionType type() {
+        return DefinitionTypes.FIELD_TYPE;
     }
 
     @Override
-    public DefinitionType type() {
-        return DefinitionTypes.FIELD_TYPE;
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingNameAsId();
     }
 }
