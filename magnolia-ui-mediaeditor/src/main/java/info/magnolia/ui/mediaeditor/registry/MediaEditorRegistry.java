@@ -34,8 +34,7 @@
 package info.magnolia.ui.mediaeditor.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
-import info.magnolia.config.registry.DefinitionMetadata;
-import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -57,13 +56,12 @@ public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition>
     }
 
     @Override
-    protected String asReferenceString(DefinitionProvider<MediaEditorDefinition> provider) {
-        final DefinitionMetadata md = provider.getMetadata();
-        return md.getModule() + ":" + md.getRelativeLocation();
+    public DefinitionType type() {
+        return MediaEditorDefinitionType.TYPE;
     }
 
     @Override
-    public DefinitionType type() {
-        return MediaEditorDefinitionType.TYPE;
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
     }
 }
