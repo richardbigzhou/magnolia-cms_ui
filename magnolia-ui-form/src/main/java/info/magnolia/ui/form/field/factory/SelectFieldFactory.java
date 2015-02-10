@@ -258,11 +258,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 return new HashSet(initialSelectedKey);
             }
             selectedValue = initialSelectedKey.get(0);
-        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
+        } else if (!select.isNullSelectionAllowed() && select.getItemIds() != null && !select.getItemIds().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
-        // Type the selected value
 
+        // Type the selected value
         selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
