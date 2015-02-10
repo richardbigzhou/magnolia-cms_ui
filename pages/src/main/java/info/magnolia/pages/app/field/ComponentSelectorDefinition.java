@@ -40,4 +40,7 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
  */
 public class ComponentSelectorDefinition extends SelectFieldDefinition {
 
+    public ComponentSelectorDefinition() {
+        setFilteringMode(2);
+    }
 }

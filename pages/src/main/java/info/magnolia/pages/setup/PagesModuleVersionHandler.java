@@ -42,6 +42,7 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapConditionally;
+import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
@@ -235,6 +236,12 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/activate/availability/rules/IsPublishableRule"),
                         new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/activateRecursive/availability/rules/IsPublishableRule"))
                 ));
+
+        register(DeltaBuilder.update("5.3.8", "")
+                .addTask(new NodeExistsDelegateTask("Bootstrap newComponent dialog", "newComponent dialog is no longer hard-coded within CreateComponentAction, bootstrap it if it doesn't exist already.",
+                        RepositoryConstants.CONFIG, "/modules/pages/dialogs/newComponent",
+                        null, new BootstrapSingleModuleResource("", "", "dialogs/config.modules.pages.dialogs.newComponent.xml")))
+        );
     }
 
     @Override

@@ -38,27 +38,18 @@ import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.pages.app.field.TemplateSelectorFieldFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
-import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -83,6 +74,8 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
     private static final Logger log = LoggerFactory.getLogger(CreateComponentAction.class);
 
+    private static final String NEW_COMPONENT_DIALOG = "pages:newComponent";
+
     private AreaElement area;
     private EventBus eventBus;
     private TemplateDefinitionRegistry templateDefinitionRegistry;
@@ -90,11 +83,10 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private ComponentProvider componentProvider;
     private DialogView dialogView;
     private FormDialogPresenterFactory formDialogPresenterFactory;
-    private final SimpleTranslator i18n;
 
     @Inject
     public CreateComponentAction(CreateComponentActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-                                 SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory, SimpleTranslator i18n) {
+            SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory) {
         super(definition);
         this.area = area;
         this.eventBus = eventBus;
@@ -102,13 +94,20 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
-        this.i18n = i18n;
+    }
+
+    /**
+     * @deprecated since 5.3.8 no need of i18n {@link SimpleTranslator} here, options are now built in {@link info.magnolia.pages.app.field.ComponentSelectorFieldFactory ComponentSelectorFieldFactory}.
+     * Use other constructor {@link #CreateComponentAction(CreateComponentActionDefinition, AreaElement, EventBus, TemplateDefinitionRegistry, SubAppContext, ComponentProvider, FormDialogPresenterFactory)} instead.
+     */
+    @Deprecated
+    public CreateComponentAction(CreateComponentActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
+            SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory, SimpleTranslator i18n) {
+        this(definition, area, eventBus, templateDefinitionRegistry, subAppContext, componentProvider, formDialogPresenterFactory);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        final FormDialogDefinition dialogDefinition = buildNewComponentDialog(area.getAvailableComponents());
-
         final FormDialogPresenter formDialogPresenter = componentProvider.newInstance(FormDialogPresenter.class);
         try {
             String workspace = area.getWorkspace();
@@ -126,7 +125,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            this.dialogView = formDialogPresenter.start(item, dialogDefinition, subAppContext, new ComponentCreationCallback(item, formDialogPresenter));
+            this.dialogView = formDialogPresenter.start(item, NEW_COMPONENT_DIALOG, subAppContext, new ComponentCreationCallback(item, formDialogPresenter));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
@@ -148,55 +147,6 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                 dialogPresenter.closeDialog();
             }
         });
-    }
-
-    /**
-     * Builds a new {@link info.magnolia.ui.dialog.definition.FormDialogDefinition} containing actions and {@link info.magnolia.ui.form.definition.FormDefinition}.
-     * The definition will hold a {@link info.magnolia.ui.form.field.definition.SelectFieldDefinition} with the available components as options.
-     */
-    private FormDialogDefinition buildNewComponentDialog(String availableComponents) {
-
-        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-
-        ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
-        tab.setName("components");
-
-        SelectFieldDefinition select = new SelectFieldDefinition();
-        select.setName("mgnl:template");
-
-        tab.addField(select);
-
-        form.addTab(tab);
-
-        String[] tokens = availableComponents.split(",");
-
-        for (String token : tokens) {
-            try {
-                TemplateDefinition templateDefinition = templateDefinitionRegistry.getTemplateDefinition(token);
-
-                SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-                option.setValue(templateDefinition.getId());
-                option.setLabel(TemplateSelectorFieldFactory.getI18nTitle(templateDefinition));
-                select.addOption(option);
-
-            } catch (RegistrationException e) {
-                log.error("Exception caught: {}", e.getMessage(), e);
-            }
-        }
-
-        ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
-        dialog.setId("pages:newComponent");
-        dialog.setForm(form);
-
-        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
-        callbackAction.setName("commit");
-        dialog.getActions().put(callbackAction.getName(), callbackAction);
-
-        CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
-        cancelAction.setName("cancel");
-        dialog.getActions().put(cancelAction.getName(), cancelAction);
-
-        return dialog;
     }
 
     private class ComponentCreationCallback implements EditorCallback {

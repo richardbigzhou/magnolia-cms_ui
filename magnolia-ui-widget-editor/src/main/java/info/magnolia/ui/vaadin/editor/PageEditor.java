@@ -75,6 +75,8 @@ public class PageEditor extends AbstractComponent {
 
             @Override
             public void newComponent(AreaElement areaElement) {
+                // make sure pageEditorPresenter's selection is in sync for further use
+                listener.onElementSelect(areaElement);
                 listener.onAction(PageEditorListener.ACTION_ADD_COMPONENT, areaElement);
             }
 

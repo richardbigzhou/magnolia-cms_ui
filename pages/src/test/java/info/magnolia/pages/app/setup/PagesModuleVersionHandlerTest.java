@@ -35,6 +35,7 @@ package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.*;
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
@@ -597,6 +598,27 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         rule = availability.getNode("rules/IsPublishableRule");
         assertThat(rule, hasProperty("implementationClass", "info.magnolia.ui.framework.availability.IsPublishableRule"));
 
+    }
+
+    @Test
+    public void updateFrom537BootstrapsNewComponentDialog() throws Exception {
+        // GIVEN
+        Node dialogs = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs", NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.7"));
+
+        // THEN
+        assertThat(dialogs, hasNode("newComponent"));
+
+        // GIVEN — since this upgrade task will also be added to pages 5.4 delta-builder, it should not override potential changes
+        dialogs.getNode("newComponent").setProperty("modalityLevel", "light");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.7"));
+
+        // THEN
+        assertThat(dialogs, hasNode(allOf(nodeName("newComponent"), hasProperty("modalityLevel", "light"))));
     }
 
 }

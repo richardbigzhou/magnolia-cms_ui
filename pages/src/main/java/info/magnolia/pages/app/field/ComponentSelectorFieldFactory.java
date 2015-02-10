@@ -33,31 +33,82 @@
  */
 package info.magnolia.pages.app.field;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.pages.app.editor.PageEditorPresenter;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.rendering.template.TemplateDefinition;
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
 /**
- * Define a Component selector field.
- * The values displayed in the field are initialized based on the
- * related Item (Image of a JCR node) and {@link info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment}.
+ * Builds the {@linkplain info.magnolia.ui.form.field.definition.SelectFieldDefinition select field} for selecting component templates.
+ * <p>
+ * Available {@linkplain SelectFieldOptionDefinition options} are created according to the currently selected area in {@link PageEditorPresenter}.
  */
 public class ComponentSelectorFieldFactory extends SelectFieldFactory<ComponentSelectorDefinition> {
 
-    public ComponentSelectorFieldFactory(ComponentSelectorDefinition definition, Item relatedFieldItem) {
+    private static final Logger log = LoggerFactory.getLogger(ComponentSelectorFieldFactory.class);
+
+    private final TemplateDefinitionRegistry templateRegistry;
+    private final PageEditorPresenter pageEditorPresenter;
+
+    @Inject
+    public ComponentSelectorFieldFactory(ComponentSelectorDefinition definition, Item relatedFieldItem, TemplateDefinitionRegistry templateRegistry, PageEditorPresenter pageEditorPresenter) {
         super(definition, relatedFieldItem);
-        definition.setFilteringMode(2);
+        this.templateRegistry = templateRegistry;
+        this.pageEditorPresenter = pageEditorPresenter;
     }
 
     /**
-     * Get the available templates based on the current Node.
+     * @deprecated since 5.3.8, use {@link #ComponentSelectorFieldFactory(ComponentSelectorDefinition, Item, TemplateDefinitionRegistry, PageEditorPresenter)} instead.
+     */
+    @Deprecated
+    public ComponentSelectorFieldFactory(ComponentSelectorDefinition definition, Item relatedFieldItem) {
+        this(definition, relatedFieldItem, Components.getComponent(TemplateDefinitionRegistry.class), Components.getComponent(PageEditorPresenter.class));
+    }
+
+    /**
+     * Returns the available templates based on the current area.
      */
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
-        return definition.getOptions();
+        List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
+
+        if (!(pageEditorPresenter.getSelectedElement() instanceof AreaElement)) {
+            log.warn("Cannot get available components, selected element {} is not an area.", pageEditorPresenter.getSelectedElement());
+            return res;
+        }
+
+        AreaElement area = (AreaElement) pageEditorPresenter.getSelectedElement();
+        String availableComponents = area.getAvailableComponents();
+
+        String[] tokens = availableComponents.split(",");
+        for (String token : tokens) {
+            try {
+                TemplateDefinition templateDefinition = templateRegistry.getTemplateDefinition(token);
+
+                SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+                option.setValue(templateDefinition.getId());
+                option.setLabel(TemplateSelectorFieldFactory.getI18nTitle(templateDefinition));
+                res.add(option);
+            } catch (RegistrationException e) {
+                log.error("Could not get TemplateDefinition for id '{}'.", token, e);
+            }
+        }
+
+        return res;
     }
 
     @Override
