@@ -130,7 +130,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         viewModes.setStyleName("view-modes");
 
         clearSearchBoxButton = new Button();
-        clearSearchBoxButton.setStyleName("m-closebutton");
         clearSearchBoxButton.addStyleName("icon-delete-search");
         clearSearchBoxButton.addStyleName("searchbox-clearbutton");
         clearSearchBoxButton.addClickListener(new Button.ClickListener() {

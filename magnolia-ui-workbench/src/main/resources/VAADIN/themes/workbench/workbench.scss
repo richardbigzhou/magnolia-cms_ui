@@ -70,7 +70,7 @@
       }
     }
 
-	.searchbox {
+  .searchbox {
       float: right;
       position:relative;
       overflow:visible;
@@ -90,7 +90,7 @@
       background-color: $c80;
 
       &.v-textfield-prompt {
-		background-color: $c16;
+    background-color: $c16;
         color: $c11;
       }
     }
@@ -100,7 +100,7 @@
       right: -1px;
       top: 2px;
       background: none !important;
-      color: $c90;
+      color: $c10;
       padding: 0px;
       margin: 0px;
       width: 25px;
@@ -108,10 +108,14 @@
       line-height: 25px;
       font-size: 21px;
       display: block;
+      outline: none !important;
+
+      &:hover { color: $c10 !important; }
+      &:active { color: $c12 !important; }
     }
     .v-textfield-prompt ~ .searchbox-clearbutton
     {
-    	display:none;
+      display:none;
     }
 
 
@@ -129,7 +133,7 @@
     }
     .v-textfield-prompt ~ .searchbox-icon
     {
-    	color: $c11;
+      color: $c11;
     }
 
     .searchbox-arrow {
@@ -141,7 +145,7 @@
     }
     .searchbox.has-content .searchbox-arrow
     {
-    	display:block;
+      display:block;
     }
 
     .v-horizontallayout-statusbar {
