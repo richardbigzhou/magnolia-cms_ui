@@ -40,7 +40,6 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +74,8 @@ public abstract class AbstractTaskAction<D extends ActionDefinition> extends Abs
         try {
             canExecuteTask(task);
             executeTask(tasksManager, task);
-        } catch (IllegalStateException ex) {
-            shell.openNotification(MessageStyleTypeEnum.WARNING, true, ex.getMessage());
         } catch (Exception ex) {
-            log.error("An error occurred while trying to execute workflow human task [{}]", task, ex);
+            log.error("An error occurred while trying to execute task [{}]", task, ex);
             shell.showError("Error: " + ex.getMessage(), ex);
         }
     }
@@ -95,7 +92,11 @@ public abstract class AbstractTaskAction<D extends ActionDefinition> extends Abs
      * @throws IllegalStateException if a task status doesn't allow this action to be executed (e.g. trying to complete a task which is not in progress). In general, subclasses can throw this exception for any reason
      * they deem should cause the current task execution to be aborted.
      * @See {@link Task.Status}
+     *
+     * @deprecated since 5.4, use availability rules to check the allowed statuses.
+     * @see {@link info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability.TaskAvailabilityRule}
      */
+    @Deprecated
     protected void canExecuteTask(Task task) throws IllegalStateException {
         // no-op
     }

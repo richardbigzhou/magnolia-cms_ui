@@ -33,33 +33,22 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.task.Task;
-import info.magnolia.task.TasksManager;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+import static org.mockito.Mockito.mock;
 
-import javax.inject.Inject;
+import info.magnolia.task.TasksManager;
+import info.magnolia.ui.api.shell.Shell;
 
 /**
- * Action for retrying e.g. a failed task.
+ * Tests for {@link ArchiveTaskAction}.
  */
-public class RetryTaskAction extends AbstractTaskAction<RetryTaskActionDefinition> {
-
-    @Inject
-    public RetryTaskAction(RetryTaskActionDefinition definition, Task task, TasksManager tasksManager, DefaultTaskDetailPresenter taskPresenter, Shell shell) {
-        super(definition, task, tasksManager, taskPresenter, shell);
-    }
+public class ArchiveTaskActionTest extends BaseHumanTaskActionTest {
+    private ArchiveTaskAction action;
 
     @Override
-    protected void executeTask(TasksManager tasksManager, Task task) {
-        log.debug("About to retry completion of human task named [{}]", task.getName());
-
-        String taskId = task.getId();
-
-        tasksManager.resolve(taskId, task.getResults());
-        getTaskPresenter().onNavigateToList();
-
-        getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
+    public void setUp() {
+        super.setUp();
+        action = new ArchiveTaskAction(mock(ArchiveTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
     }
+
+
 }

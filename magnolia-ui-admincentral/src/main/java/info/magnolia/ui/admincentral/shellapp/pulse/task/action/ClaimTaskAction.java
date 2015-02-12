@@ -50,13 +50,6 @@ public class ClaimTaskAction extends AbstractTaskAction<ClaimTaskActionDefinitio
     }
 
     @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        if (task.getStatus() != Task.Status.Created) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only unclaimed tasks can be claimed.");
-        }
-    }
-
-    @Override
     protected void executeTask(TasksManager taskManager, Task task) {
         final String userId = MgnlContext.getUser().getName();
         log.debug("User [{}] is claiming workflow human task named [{}]", userId, task.getName());

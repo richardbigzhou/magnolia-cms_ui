@@ -33,60 +33,66 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
 import info.magnolia.ui.api.shell.Shell;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 
 /**
- * ClaimHumanTaskActionTest.
+ * Tests for {@link RetryTaskAction}.
  */
-public class ClaimHumanTaskActionTest extends BaseHumanTaskActionTest {
+public class RetryTaskActionTest extends BaseHumanTaskActionTest {
 
-    private ClaimTaskAction action;
+    private RetryTaskAction action;
 
+    private Task task;
+    private TasksManager tasksManager;
+    private RetryTaskActionDefinition definition;
+
+    @Before
     @Override
     public void setUp() {
         super.setUp();
-        action = new ClaimTaskAction(mock(ClaimTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        task = new Task();
+        tasksManager = mock(TasksManager.class);
+        definition = new RetryTaskActionDefinition();
+        action = new RetryTaskAction(definition, task, tasksManager, mock(DefaultTaskDetailPresenter.class), mock(Shell.class));
     }
 
     @Test
-    public void claimActionExecutesIfTaskStatusIsCreated() throws Exception {
+    public void testRetryTaskWithPreviousDecision() throws Exception {
         // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Created);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN no exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void claimActionFailsIfTaskStatusIsNotCreated() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Resolved);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
+        task.setId("123");
         task.setStatus(Status.Failed);
 
-        // WHEN
-        action.canExecuteTask(task);
+        Map<String, Object> results = new HashMap<String, Object>() {{
+            put(RetryTaskAction.DECISION, "approve");
+        }};
+        task.setResults(results);
 
-        // GIVEN
-        task.setStatus(Status.InProgress);
-
         // WHEN
-        action.canExecuteTask(task);
+        action.execute();
+
+        // THEN
+        verify(tasksManager, times(1)).resolve(eq(task.getId()), argThat(new DecisionMatcher()));
     }
 
+    private class DecisionMatcher extends ArgumentMatcher<Map> {
+
+        @Override
+        public boolean matches(Object o) {
+            Map<String, Object> results = (Map<String, Object>) o;
+            return "approve".equals(results.get(ResolveTaskAction.DECISION));
+        }
+    }
 }

@@ -33,74 +33,46 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
 import info.magnolia.ui.api.shell.Shell;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
- * DeleteHumanTaskActionTest.
+ * Tests for {@link ClaimTaskAction}.
  */
-public class DeleteHumanTaskActionTest extends BaseHumanTaskActionTest {
-    private ArchiveTaskAction action;
+public class ClaimTaskActionTest extends BaseHumanTaskActionTest {
 
+    private ClaimTaskAction action;
+    private Task task;
+    private TasksManager tasksManager;
+
+    @Before
     @Override
     public void setUp() {
         super.setUp();
-        action = new ArchiveTaskAction(mock(ArchiveTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        task = new Task();
+        tasksManager = mock(TasksManager.class);
+        action = new ClaimTaskAction(mock(ClaimTaskActionDefinition.class), task, tasksManager, mock(DefaultTaskDetailPresenter.class), mock(Shell.class));
     }
 
     @Test
-    public void deleteActionExecutesIfTaskStatusIsCompletedAndAssignedToCurrentUser() throws Exception {
+    public void testClaimActionCallsTasksManager() throws Exception {
         // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Resolved);
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN no exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void deleteActionFailsIfTaskStatusIsCompletedButIsNotAssignedToCurrentUser() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Resolved);
-        task.setActorId("anotherUser");
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN throw exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void deleteActionFailsIfTaskStatusIsNotCompleted() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
+        task.setId("123");
         task.setStatus(Status.Created);
 
         // WHEN
-        action.canExecuteTask(task);
+        action.execute();
 
-        // GIVEN
-        task.setStatus(Status.Failed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.InProgress);
-
-        // WHEN
-        action.canExecuteTask(task);
+        // THEN
+        verify(tasksManager, times(1)).claim(task.getId(), CURRENT_USER);
     }
 
 }
