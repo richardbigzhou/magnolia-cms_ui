@@ -36,22 +36,35 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 import info.magnolia.task.Task.Status;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Configured definition of {@link TaskAvailabilityRule}.
  */
 public class TaskAvailabilityRuleDefinition extends ConfiguredAvailabilityRuleDefinition {
 
-    private Status status;
+    private List<Status> status = new ArrayList<Status>();
+
+    private boolean isAssignee = true;
 
     public TaskAvailabilityRuleDefinition() {
         setImplementationClass(TaskAvailabilityRule.class);
     }
 
-    public Status getStatus() {
+    public List<Status> getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(List<Status> status) {
         this.status = status;
+    }
+
+    public boolean isAssignee() {
+        return isAssignee;
+    }
+
+    public void setAssignee(boolean isAssignee) {
+        this.isAssignee = isAssignee;
     }
 }

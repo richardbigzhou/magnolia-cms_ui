@@ -42,12 +42,16 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TaskAvailabilityRuleTest.
+ * Tests for {@link TaskAvailabilityRule}.
  */
 public class TaskAvailabilityRuleTest {
 
@@ -72,7 +76,10 @@ public class TaskAvailabilityRuleTest {
     public void taskIsAvailableWhenRuleDefinitionStatusIsSameAsTaskStatus() throws Exception {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        definition.setStatus(Status.Created);
+        List<Status> status = new LinkedList<Status>();
+        status.add(Status.Created);
+        definition.setStatus(status);
+        definition.setAssignee(false);
 
         Task task = new Task();
         task.setStatus(Status.Created);
@@ -90,7 +97,9 @@ public class TaskAvailabilityRuleTest {
     public void taskIsNotAvailableWhenRuleDefinitionStatusIsNotSameAsTaskStatus() throws Exception {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        definition.setStatus(Status.InProgress);
+        List<Status> status = new LinkedList<Status>();
+        status.add(Status.InProgress);
+        definition.setStatus(status);
 
         Task task = new Task();
         task.setStatus(Status.Created);
@@ -108,7 +117,9 @@ public class TaskAvailabilityRuleTest {
     public void taskIsNotAvailableWhenAssigneeIsNotCurrentUser() throws Exception {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        definition.setStatus(Status.InProgress);
+        List<Status> status = new LinkedList<Status>();
+        status.add(Status.InProgress);
+        definition.setStatus(status);
 
         Task task = new Task();
         task.setStatus(Status.InProgress);
@@ -127,12 +138,53 @@ public class TaskAvailabilityRuleTest {
     public void taskIsNotAvailableIfNull() throws Exception {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        definition.setStatus(Status.InProgress);
-
+        List<Status> status = new LinkedList<Status>();
+        status.add(Status.InProgress);
+        definition.setStatus(status);
         TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
 
         // WHEN
         boolean available = rule.isAvailableForItem(null);
+
+        // THEN
+        assertFalse(available);
+    }
+
+    @Test
+    public void testMultipleStatusesMatch() throws Exception {
+        // GIVEN
+        TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
+        List<Status> status = new LinkedList<Status>();
+        Collections.addAll(status, Status.InProgress, Status.Created);
+        definition.setStatus(status);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+
+        Task task = new Task();
+        task.setStatus(Status.InProgress);
+        task.setActorId("foo");
+
+        // WHEN
+        boolean available = rule.isAvailableForItem(task);
+
+        // THEN
+        assertTrue(available);
+    }
+
+    @Test
+    public void testMultipleStatusesMisMatch() throws Exception {
+        // GIVEN
+        TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
+        List<Status> status = new LinkedList<Status>();
+        Collections.addAll(status, Status.InProgress, Status.Created);
+        definition.setStatus(status);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+
+        Task task = new Task();
+        task.setStatus(Status.Removed);
+        task.setActorId("foo");
+
+        // WHEN
+        boolean available = rule.isAvailableForItem(task);
 
         // THEN
         assertFalse(available);
