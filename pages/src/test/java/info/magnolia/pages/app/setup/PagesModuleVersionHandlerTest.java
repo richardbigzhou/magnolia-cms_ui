@@ -35,7 +35,6 @@ package info.magnolia.pages.app.setup;
 
 import static info.magnolia.jcr.nodebuilder.Ops.*;
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
-import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
@@ -62,6 +61,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.hamcrest.core.AllOf;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -618,7 +618,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.7"));
 
         // THEN
-        assertThat(dialogs, hasNode(allOf(nodeName("newComponent"), hasProperty("modalityLevel", "light"))));
+        assertThat(dialogs, hasNode(AllOf.<Node> allOf(nodeName("newComponent"), hasProperty("modalityLevel", "light"))));
     }
 
 }
