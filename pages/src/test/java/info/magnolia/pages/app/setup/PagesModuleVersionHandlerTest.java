@@ -47,7 +47,6 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
-import info.magnolia.pages.app.action.DeleteComponentAction;
 import info.magnolia.pages.app.action.DeletePageItemAction;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
@@ -430,7 +429,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
                 addNode(editComponent, NodeTypes.ContentNode.NAME),
                 addNode(addComponent, NodeTypes.ContentNode.NAME),
                 addNode(deleteComponent, NodeTypes.ContentNode.NAME).then(
-                        addProperty("implementationClass", DeleteComponentAction.class.getName())
+                        addProperty("implementationClass", "info.magnolia.pages.app.action.DeleteComponentAction")
                 ),
                 addNode(startMoveComponent, NodeTypes.ContentNode.NAME),
                 addNode(copyComponent, NodeTypes.ContentNode.NAME),
