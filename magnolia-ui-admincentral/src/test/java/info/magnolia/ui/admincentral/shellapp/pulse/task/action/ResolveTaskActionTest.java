@@ -33,75 +33,62 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
 import info.magnolia.ui.api.shell.Shell;
 
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 
 /**
- * CompleteHumanTaskActionTest.
+ * Tests for {@link ResolveTaskAction}.
  */
-public class RetryHumanTaskActionTest extends BaseHumanTaskActionTest {
+public class ResolveTaskActionTest extends BaseHumanTaskActionTest {
 
-    private RetryTaskAction action;
+    private ResolveTaskAction action;
 
+    private Task task;
+    private TasksManager tasksManager;
+    private ResolveTaskActionDefinition definition;
+
+    @Before
     @Override
     public void setUp() {
         super.setUp();
-        action = new RetryTaskAction(mock(RetryTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        task = new Task();
+        tasksManager = mock(TasksManager.class);
+        definition = new ResolveTaskActionDefinition();
+        action = new ResolveTaskAction(definition, task, tasksManager, mock(DefaultTaskDetailPresenter.class), mock(Shell.class));
     }
 
     @Test
-    public void retryActionExecutesIfTaskStatusIsFailedAndAssignedToCurrentUser() throws Exception {
+    public void testResolvingTaskWithDecision() throws Exception {
         // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Failed);
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN no exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void retryActionFailsIfTaskStatusIsFailedButIsNotAssignedToCurrentUser() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.Failed);
-        task.setActorId("anotherUser");
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN throw exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void retryActionFailsIfTaskStatusIsNotFailed() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-        task.setStatus(Status.Resolved);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.InProgress);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
+        task.setId("123");
         task.setStatus(Status.Created);
 
+        definition.setDecision("approve");
+
         // WHEN
-        action.canExecuteTask(task);
+        action.execute();
+
+        // THEN
+        verify(tasksManager, times(1)).resolve(eq(task.getId()), argThat(new DecisionMatcher()));
     }
 
+    private class DecisionMatcher extends ArgumentMatcher<Map> {
+
+        @Override
+        public boolean matches(Object o) {
+            Map<String, Object> results = (Map<String, Object>) o;
+            return "approve".equals(results.get(ResolveTaskAction.DECISION));
+        }
+    }
 }

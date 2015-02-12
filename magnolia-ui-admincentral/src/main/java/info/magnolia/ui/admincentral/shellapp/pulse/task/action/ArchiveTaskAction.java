@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
@@ -55,14 +54,5 @@ public class ArchiveTaskAction extends AbstractTaskAction<ArchiveTaskActionDefin
         taskManager.archiveTask(task.getId());
         getTaskPresenter().onNavigateToList();
         getShell().openNotification(MessageStyleTypeEnum.INFO, true, getDefinition().getSuccessMessage());
-    }
-
-    @Override
-    protected void canExecuteTask(Task task) throws IllegalStateException {
-        final String currentUser = MgnlContext.getUser().getName();
-
-        if (task.getStatus() != Task.Status.Resolved || !currentUser.equals(task.getActorId())) {
-            throw new IllegalStateException("Task status is [" + task.getStatus() + "] and is assigned to user [" + task.getActorId() + "]. Only resolved tasks assigned to yourself can be deleted.");
-        }
     }
 }

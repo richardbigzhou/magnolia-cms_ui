@@ -33,75 +33,56 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.task.Task;
-import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Item;
+
 /**
- * CompleteHumanTaskActionTest.
+ * Tests for {@link RejectTaskAction}.
  */
-public class CompleteHumanTaskActionTest extends BaseHumanTaskActionTest {
+public class RejectTaskActionTest extends BaseHumanTaskActionTest {
 
-    private ResolveTaskAction action;
+    private RejectTaskAction action;
 
+    private Task task;
+    private TasksManager tasksManager;
+    private FormDialogPresenter formDialogPresenter;
+    private UiContext uiContext;
+    private RejectTaskActionDefinition definition;
+
+    @Before
     @Override
     public void setUp() {
         super.setUp();
-        action = new ResolveTaskAction(mock(ResolveTaskActionDefinition.class), null, mock(TasksManager.class), null, mock(Shell.class));
+        task = new Task();
+        tasksManager = mock(TasksManager.class);
+        formDialogPresenter = mock(FormDialogPresenter.class);
+        uiContext = mock(UiContext.class);
+        definition = new RejectTaskActionDefinition();
+        action = new RejectTaskAction(definition, task, tasksManager, mock(DefaultTaskDetailPresenter.class), formDialogPresenter, uiContext, mock(Shell.class));
     }
 
     @Test
-    public void completeActionExecutesIfTaskStatusIsInProgressAndAssignedToCurrentUser() throws Exception {
+    public void testRejectActionOpensDialog() throws Exception {
         // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.InProgress);
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
+        definition.setDialogName("bla");
 
         // WHEN
-        action.canExecuteTask(task);
+        action.execute();
 
-        // THEN no exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void completeActionFailsIfTaskStatusIsInProgressButIsNotAssignedToCurrentUser() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setStatus(Status.InProgress);
-        task.setActorId("anotherUser");
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // THEN no exception
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void completeActionFailsIfTaskStatusIsNotInProgress() throws Exception {
-        // GIVEN
-        Task task = new Task();
-        task.setActorId(BaseHumanTaskActionTest.CURRENT_USER);
-        task.setStatus(Status.Resolved);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.Failed);
-
-        // WHEN
-        action.canExecuteTask(task);
-
-        // GIVEN
-        task.setStatus(Status.Created);
-
-        // WHEN
-        action.canExecuteTask(task);
+        // THEN
+        verify(formDialogPresenter, times(1)).start(any(Item.class), eq(definition.getDialogName()), eq(uiContext), any(EditorCallback.class));
     }
 
 }
