@@ -80,7 +80,7 @@ public class AdmincentralModule implements ModuleLifecycle {
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-            configurationSourceFactory.jcr().withFilter(new IsViewType()).bindWithDefaults(itemViewDefinitionRegistry);
+            configurationSourceFactory.jcr().withFilter(new IsViewType()).withModulePath("messageViews").bindTo(itemViewDefinitionRegistry);
             configurationSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(itemViewDefinitionRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
         appLauncherLayoutManager.setLayout(getAppLauncherLayout());
