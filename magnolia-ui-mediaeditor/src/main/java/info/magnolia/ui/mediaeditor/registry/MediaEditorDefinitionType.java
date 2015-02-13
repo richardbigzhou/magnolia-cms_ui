@@ -47,7 +47,7 @@ public class MediaEditorDefinitionType implements DefinitionType {
 
     @Override
     public String name() {
-        return "media editor";
+        return "mediaEditor";
     }
 
     @Override

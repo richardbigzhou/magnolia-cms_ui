@@ -35,6 +35,8 @@ package info.magnolia.ui.mediaeditor.registry;
 
 import info.magnolia.config.registry.AbstractRegistry;
 import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -63,5 +65,22 @@ public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition>
     @Override
     public DefinitionMetadataBuilder newMetadataBuilder() {
         return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
+    }
+
+    @Override
+    protected DefinitionProvider<MediaEditorDefinition> onRegister(final DefinitionProvider<MediaEditorDefinition> provider) {
+        // This was in ConfiguredTemplateDefinitionProvider: templateDefinition.setId(id);
+
+        // TODO -- we should maybe just remove RenderableDefinition.setId() and implement getMetadata() to delegate to provider instead
+        final DefinitionProvider<MediaEditorDefinition> wrappedProvider = super.onRegister(provider);
+        return new DefinitionProviderWrapper<MediaEditorDefinition>(wrappedProvider) {
+            @Override
+            public MediaEditorDefinition get() {
+                final MediaEditorDefinition td = super.get();
+                final String referenceString = wrappedProvider.getMetadata().getReferenceId();
+                td.setId(referenceString);
+                return td;
+            }
+        };
     }
 }

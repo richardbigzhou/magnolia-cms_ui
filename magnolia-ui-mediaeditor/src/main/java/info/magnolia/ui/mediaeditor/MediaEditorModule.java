@@ -70,7 +70,7 @@ public class MediaEditorModule implements ModuleLifecycle {
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
 
-            configSourceFactory.jcr().withFilter(new IsMediaEditor()).bindWithDefaults(registry);
+            configSourceFactory.jcr().withFilter(new IsMediaEditor()).withModulePath("mediaEditors").bindTo(registry);
             configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(registry); // TODO mge check if defaults can be implied as well for magnoliaHome
         }
     }

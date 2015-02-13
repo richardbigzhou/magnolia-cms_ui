@@ -49,6 +49,9 @@ public interface MediaEditorDefinition {
 
     String getId();
 
+    // TODO To be removed!
+    void setId(String id);
+
     String getDefaultAction();
 
     ActionbarDefinition getActionBar();
