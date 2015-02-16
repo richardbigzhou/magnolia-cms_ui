@@ -89,11 +89,11 @@ abstract public class AbstractFrameEventHandler {
         if (element != 'undefined') {
             var ref = this;
             var that = listener;
-            element.contentDocument.ontouchend = function(event) {
+            element.contentDocument.ontouchend = $entry(function (event) {
                 event = event || $wnd.__page_editor_iframe.contentWindow.event;
                 var target = event.target || event.srcElement;
                 that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(target);
-            }
+            })
         }
     }-*/;
 
@@ -104,11 +104,11 @@ abstract public class AbstractFrameEventHandler {
     public native void initNativeMouseSelectionListener(Element iframeElement, Element element, final PageEditorView.Listener listener) /*-{
         if (element != 'undefined') {
             var that = listener;
-            element.onmouseup = function(event) {
+            element.onmouseup = $entry(function (event) {
                 event = event || iframeElement.contentWindow.event;
                 var target = event.target || event.srcElement;
                 that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(target);
-            }
+            })
         }
     }-*/;
 
@@ -122,14 +122,14 @@ abstract public class AbstractFrameEventHandler {
         if (element != 'undefined') {
             var that = this;
             var view = that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler::view;
-            element.onscroll = function(event) {
+            element.onscroll = $entry(function (event) {
                 event = event || iframeElement.contentWindow.event;
                 var target = event.target || event.srcElement;
                 var scrollTop = target.scrollTop;
                 if (scrollTop > 0) {
                     view.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView::setLastScrollPosition(I)(scrollTop);
                 }
-            }
+            })
         }
     }-*/;
 }

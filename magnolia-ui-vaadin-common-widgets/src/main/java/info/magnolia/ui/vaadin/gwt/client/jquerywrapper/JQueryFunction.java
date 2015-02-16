@@ -44,8 +44,8 @@ final class JQueryFunction extends JavaScriptObject {
     }
 
     public final static native JQueryFunction create(final JQueryCallback command) /*-{
-        return function(jQueryWrapper) {
+        return $entry(function (jQueryWrapper) {
             command.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback::execute(Linfo/magnolia/ui/vaadin/gwt/client/jquerywrapper/JQueryWrapper;)(jQueryWrapper);
-        }
+        })
     }-*/;
 };
