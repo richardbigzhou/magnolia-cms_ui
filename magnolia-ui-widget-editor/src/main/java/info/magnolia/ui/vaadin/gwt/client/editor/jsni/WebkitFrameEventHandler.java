@@ -103,12 +103,10 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      */
     public native void registerUnloadHandler(Element element, Timer timer) /*-{
         var that = timer;
-        var poll = function(){
+        var poll = $entry(function() {
             that.@com.google.gwt.user.client.Timer::scheduleRepeating(I)(100);
-        };
-
+        });
         element.contentWindow.addEventListener('unload', poll, false);
-
     }-*/;
 
     /**
@@ -120,17 +118,17 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             var ref = this;
             var that = listener;
             var wndRef = $wnd;
-            element.ontouchend = function(event) {
+            element.ontouchend = $entry(function (event) {
                 var touchEndY = event.changedTouches[0].pageY;
                 var touchStartY = ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchStartY;
                 if (Math.abs(touchEndY - touchStartY) < 5) {
                     that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
                 }
-            }
+            })
 
-            element.ontouchstart = function(event) {
+            element.ontouchstart = $entry(function (event) {
                 ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchStartY = event.targetTouches[0].pageY;
-            }
+            })
 
         }
     }-*/;

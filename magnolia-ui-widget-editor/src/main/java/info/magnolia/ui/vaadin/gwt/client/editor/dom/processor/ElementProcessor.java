@@ -137,10 +137,10 @@ public class ElementProcessor {
         var that = this;
         var path = element.href;
         if (element.onclick == null) {
-            element.onclick = function() {
+            element.onclick = $entry(function () {
                 that.@info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor::navigate(Ljava/lang/String;)(path);
                 return false;
-            };
+            });
         }
     }-*/;
 

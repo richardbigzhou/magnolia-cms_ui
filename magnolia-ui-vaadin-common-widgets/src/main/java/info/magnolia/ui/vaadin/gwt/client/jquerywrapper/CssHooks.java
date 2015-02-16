@@ -49,12 +49,12 @@ public class CssHooks extends JavaScriptObject {
 
     public final native void addHook(final String property, CssHookHandler handler) /*-{
         this.property = {
-            get: function(elem, computed, extra) {
+            get: $entry(function (elem, computed, extra) {
                 handler.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.CssHookHandler::get(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, computed);
-            },
-            set: function(elem, value) {
-                handler.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value);
-            }
+            }),
+            set: $entry(function (elem, value) {
+                handler.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value)
+            })
         }
     }-*/;
 }

@@ -91,36 +91,35 @@ public class JQueryWrapper extends JavaScriptObject {
     public final native void on(String eventId, String selector, Callbacks callbacks) /*-{
         this.on(
               eventId, selector,
-                  function(event) {
+            $entry(function (event) {
                       var jq = @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::select(Lcom/google/gwt/user/client/Element;)(event.target);
                       if (callbacks != null) {
                           callbacks.fire(jq);
                       }
-               });
+            }));
     }-*/;
 
     public final native void animate(int duration, AnimationSettings settings) /*-{
           var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
           var jq = this;
           this.animate(json, duration,
-               function() {
+              $entry(function () {
                     if (settings != null) {
-                         settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
+                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
                                    .fire(jq);
                     }
-               });
+              }));
     }-*/;
 
     public final native void animate(int duration, double delay, AnimationSettings settings) /*-{
         var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
         var jq = this;
         this.delay(delay).animate(json, duration,
-                function() {
+            $entry(function () {
                     if (settings != null) {
-                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
-                                .fire(jq);
+                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()().fire(jq);
                     }
-                });
+            }));
     }-*/;
 
     public final native JQueryWrapper stop() /*-{

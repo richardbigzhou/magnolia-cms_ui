@@ -117,10 +117,10 @@ public class ControlBarEventManagerIE8 implements ControlBarEventManager {
     }
 
     protected native void addEventListener(String mouseEvent, Element element, ControlBarEventHandler controlBarEventHandler) /*-{
-        element[mouseEvent] = function() {
-            $entry(controlBarEventHandler.@info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler::handle(Lcom/google/gwt/dom/client/NativeEvent;)($wnd.__page_editor_iframe.contentWindow.event));
+        element[mouseEvent] = $entry(function () {
+            controlBarEventHandler.@info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler::handle(Lcom/google/gwt/dom/client/NativeEvent;)($wnd.__page_editor_iframe.contentWindow.event);
             return false;
-        }
+        })
     }-*/;
 
     protected native void unregisterEventHandler(String eventId, Element element) /*-{
