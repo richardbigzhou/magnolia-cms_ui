@@ -109,11 +109,6 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     }
 
     @Override
-    public final void execute() throws ActionExecutionException {
-        super.execute();
-    }
-
-    @Override
     protected void onPostExecute() throws Exception {
         // Propagate event
         eventBus.fireEvent(new ContentChangedEvent(changedItemId));
