@@ -45,6 +45,8 @@ public interface WorkbenchView extends View {
      */
     interface Listener {
 
+        void onSetSearchQuery(String searchExpression);
+
         void onSearch(String searchExpression);
 
         void onViewTypeChanged(String viewType);
@@ -61,6 +63,11 @@ public interface WorkbenchView extends View {
      * Use this method to add sub views hosted by this view.
      */
     void addContentView(String type, ContentView view, ContentPresenterDefinition contentViewDefintion);
+
+    /**
+     * Use this method to add content tools.
+     */
+    public void addContentTool(View view);
 
     void setViewType(String type);
 

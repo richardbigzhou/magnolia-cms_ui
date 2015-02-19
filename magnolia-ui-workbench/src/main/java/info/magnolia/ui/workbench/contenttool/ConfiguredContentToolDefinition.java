@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-
-import java.io.Serializable;
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Defines a workbench. Contains all elements which define a workbench configuration.
+ * Configured definition of {@link ContentToolDefinition}.
  */
-@I18nable
-public interface WorkbenchDefinition extends Serializable {
+public class ConfiguredContentToolDefinition implements ContentToolDefinition {
 
-    String getName();
+    private Class<? extends ContentToolPresenter> presenterClass;
+    private Class<? extends View> viewClass;
+    private boolean enabled = true;
 
-    /**
-     * Define if this workbench is used for Dialog.
-     */
-    boolean isDialogWorkbench();
+    public void setPresenterClass(Class<? extends ContentToolPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
 
-    /**
-     * Checks if workbench can edit tree view inplace.
-     *
-     * @return true, if workbench is editable
-     */
-    boolean isEditable();
+    @Override
+    public Class<? extends ContentToolPresenter> getPresenterClass() {
+        return presenterClass;
+    }
 
-    /**
-     * @return the DropConstraint class used to handle drag&drop.
-     */
-    Class<? extends DropConstraint> getDropConstraintClass();
+    public void setViewClass(Class<? extends View> viewClass) {
+        this.viewClass = viewClass;
+    }
 
-    /**
-     * @return the list of configured views.<br>
-     */
-    List<ContentPresenterDefinition> getContentViews();
+    @Override
+    public Class<? extends View> getViewClass() {
+        return viewClass;
+    }
 
-    /**
-     * @return the list of configured content tools
-     */
-    List<ContentToolDefinition> getContentTools();
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

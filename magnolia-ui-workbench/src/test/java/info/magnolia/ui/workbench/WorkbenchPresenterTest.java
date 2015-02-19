@@ -48,8 +48,12 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolView;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
@@ -107,8 +111,15 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
                 return new CssLayout();
             }
         }).when(statusBarPresenter).start(any(EventBus.class), any(ContentPresenter.class));
+        
+        SimpleTranslator translator = mock(SimpleTranslator.class);
 
-        doReturn(treePresenter).when(componentProvider).newInstance(any(Class.class), anyVararg());
+        doReturn(treePresenter).when(componentProvider).newInstance(any(Class.class));
+        SearchContentToolView searchView = new SearchContentToolViewImpl(translator);
+        SearchContentToolPresenter searchPresenter = mock(SearchContentToolPresenter.class);
+        when(componentProvider.newInstance(any(Class.class), any())).thenReturn(searchView).thenReturn(searchPresenter);
+        when(searchPresenter.start(any(WorkbenchPresenter.class), any(ContentPresenter.class), any(ContentConnector.class), any(EventBus.class))).thenReturn(searchView);
+        
 
         JcrContentConnector contentConnector = mock(JcrContentConnector.class);
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();

@@ -35,17 +35,24 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
+import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
+import info.magnolia.ui.workbench.event.SetSearchQueryEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenter;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
+import info.magnolia.ui.vaadin.integration.contentconnector.AbstractContentConnector;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -97,6 +104,22 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         sanityCheck(workbenchDefinition);
 
+        // always include search component in the toolbar search component
+        addSearchContentTool();
+
+        // add content tools
+        List<ContentToolDefinition> contentTools = this.workbenchDefinition.getContentTools();
+        for (ContentToolDefinition entry : contentTools) {
+            Class<? extends View> viewClass = entry.getViewClass();
+            Class<? extends ContentToolPresenter> presenterClass = entry.getPresenterClass();
+            if (viewClass != null) {
+                View contentToolView = componentProvider.newInstance(viewClass, ((AbstractContentConnector) contentConnector).getContentConnectorDefinition());
+                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, contentToolView, this);
+                contentToolPresenter.start(this, getActivePresenter(), contentConnector, eventBus);
+                view.addContentTool(contentToolView);
+            }
+        }
+
         // add content views
         for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
             ContentPresenter presenter;
@@ -143,6 +166,13 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
     }
 
+    protected void addSearchContentTool() {
+        View view = componentProvider.newInstance(SearchContentToolViewImpl.class, ((AbstractContentConnector) contentConnector).getContentConnectorDefinition());
+        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, view);
+        searchPresenter.start(this, getActivePresenter(), contentConnector, eventBus);
+        this.view.addContentTool(view);
+    }
+
     @Override
     public void onSearch(final String searchExpression) {
         if (hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
@@ -161,6 +191,11 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     public void onViewTypeChanged(final String viewType) {
         setViewType(viewType);
         eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+    }
+
+    @Override
+    public void onSetSearchQuery(String searchQuery) {
+        eventBus.fireEvent(new SetSearchQueryEvent(searchQuery));
     }
 
     private void setViewType(String viewType) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.event;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-
-import java.io.Serializable;
-import java.util.List;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Defines a workbench. Contains all elements which define a workbench configuration.
+ * Event.
  */
-@I18nable
-public interface WorkbenchDefinition extends Serializable {
-
-    String getName();
+public class SetSearchQueryEvent implements Event<SetSearchQueryEvent.Handler> {
 
     /**
-     * Define if this workbench is used for Dialog.
+     * Handler.
      */
-    boolean isDialogWorkbench();
+    public interface Handler extends EventHandler {
 
-    /**
-     * Checks if workbench can edit tree view inplace.
-     *
-     * @return true, if workbench is editable
-     */
-    boolean isEditable();
+        void onSetSearchQueryEvent(SetSearchQueryEvent event);
+    }
 
-    /**
-     * @return the DropConstraint class used to handle drag&drop.
-     */
-    Class<? extends DropConstraint> getDropConstraintClass();
+    private String query;
 
-    /**
-     * @return the list of configured views.<br>
-     */
-    List<ContentPresenterDefinition> getContentViews();
+    public SetSearchQueryEvent(String query) {
+        this.query = query;
+    }
 
-    /**
-     * @return the list of configured content tools
-     */
-    List<ContentToolDefinition> getContentTools();
+    public String getQuery() {
+        return query;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onSetSearchQueryEvent(this);
+    }
 }

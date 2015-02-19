@@ -34,8 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.vaadin.extension.ShortcutProtector;
-import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
@@ -43,26 +42,20 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreeView;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.vaadin.data.Property;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -75,17 +68,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private final CssLayout viewModes = new CssLayout();
 
-    private final CssLayout searchBox = new CssLayout();
-
     protected final Panel keyboardEventPanel;
-
-    private TextField searchField;
-
-    private Button clearSearchBoxButton;
-
-    private Icon searchIcon;
-
-    private Icon searchArrow;
 
     private StatusBarView statusBar;
 
@@ -100,23 +83,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
      */
     private String previousViewType = currentViewType;
 
-    private final Property.ValueChangeListener searchFieldListener = new Property.ValueChangeListener() {
-
-        @Override
-        public void valueChange(Property.ValueChangeEvent event) {
-            listener.onSearch(searchField.getValue().toString());
-
-            boolean hasSearchContent = !searchField.getValue().isEmpty();
-            if (hasSearchContent) {
-                searchBox.addStyleName("has-content");
-            } else {
-                searchBox.removeStyleName("has-content");
-            }
-            searchField.focus();
-        }
-    };
-
     private WorkbenchView.Listener listener;
+
     private final SimpleTranslator i18n;
 
     @Inject
@@ -129,45 +97,18 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         viewModes.setStyleName("view-modes");
 
-        clearSearchBoxButton = new Button();
-        clearSearchBoxButton.addStyleName("icon-delete-search");
-        clearSearchBoxButton.addStyleName("searchbox-clearbutton");
-        clearSearchBoxButton.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                searchField.setValue("");
-            }
-        });
-
-        searchIcon = new Icon("search");
-        searchIcon.addStyleName("searchbox-icon");
-
-        searchArrow = new Icon("arrow2_s");
-        searchArrow.addStyleName("searchbox-arrow");
-
-        searchField = buildSearchField();
-
-        searchBox.setVisible(false);
-        searchBox.addComponent(searchField);
-        searchBox.addComponent(clearSearchBoxButton);
-        searchBox.addComponent(searchIcon);
-        searchBox.addComponent(searchArrow);
-        searchBox.setStyleName("searchbox");
-
         toolBar.addStyleName("toolbar");
-        toolBar.setWidth(100, Unit.PERCENTAGE);
+        toolBar.setWidth(100.0F, Sizeable.Unit.PERCENTAGE);
         toolBar.addComponent(viewModes);
-        toolBar.addComponent(searchBox);
 
         addComponent(toolBar);
-        setExpandRatio(toolBar, 0);
+        setExpandRatio(toolBar, 0.0F);
 
-        keyboardEventPanel = new Panel();
-        keyboardEventPanel.setSizeFull();
-        keyboardEventPanel.addStyleName("keyboard-panel");
-        addComponent(keyboardEventPanel, 1); // between tool bar and status bar
-        setExpandRatio(keyboardEventPanel, 1);
+        this.keyboardEventPanel = new Panel();
+        this.keyboardEventPanel.setSizeFull();
+        this.keyboardEventPanel.addStyleName("keyboard-panel");
+        addComponent(keyboardEventPanel, 1);
+        setExpandRatio(keyboardEventPanel, 1.0F);
 
         bindKeyboardHandlers();
     }
@@ -190,25 +131,11 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         };
         // MGNLUI-2106 disable the delete shortcut until we apply it without disrupting inplace-editing
         // keyboardEventPanel.addShortcutListener(deleteShortcut);
-
     }
 
     @Override
     public void setSearchQuery(String query) {
-        if (searchField == null) {
-            return;
-        }
-        // turn off value change listener, so that presenter does not think there was user input and searches again
-        searchField.removeValueChangeListener(searchFieldListener);
-        if (StringUtils.isNotBlank(query)) {
-            searchField.setValue(query);
-            searchField.focus();
-        } else {
-            searchField.setValue("");
-            searchBox.removeStyleName("has-content");
-        }
-        searchField.addValueChangeListener(searchFieldListener);
-
+        ((WorkbenchView.Listener) listener).onSetSearchQuery(query);
     }
 
     @Override
@@ -221,7 +148,9 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // display search-box only if both list and search content presenters are configured
         if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {
-            searchBox.setVisible(true);
+            if (toolBar.getComponentCount() > 1) { // components > 1 because first component in the toolbar is switcher between tree/list view
+                toolBar.getComponent(1).setVisible(true);
+            }
         }
 
         if (contentViewDefintion instanceof SearchPresenterDefinition) {
@@ -241,13 +170,11 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     @Override
     public void setViewType(String type) {
-        // removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
-        // addComponent(c, 1); // between tool bar and status bar
-        // setExpandRatio(c, 1);
+
         keyboardEventPanel.setContent(c);
 
-        if (type != SearchPresenterDefinition.VIEW_TYPE) {
+        if (!type.equals(SearchPresenterDefinition.VIEW_TYPE)) {
             previousViewType = type;
             setSearchQuery(null);
         }
@@ -318,28 +245,15 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         }
     }
 
-    private TextField buildSearchField() {
-        final TextField field = new TextField();
-        ShortcutProtector.extend(field, Arrays.asList(KeyCode.ENTER));
-        final String inputPrompt = i18n.translate("toolbar.search.prompt");
-
-        field.setInputPrompt(inputPrompt);
-        field.setSizeUndefined();
-        field.addStyleName("searchfield");
-
-        // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
-        field.setImmediate(true);
-        field.addValueChangeListener(searchFieldListener);
-
-        // No blur handler.
-
-        return field;
-    }
-
     @Override
     public void setMultiselect(boolean multiselect) {
         for (String type : contentViews.keySet()) {
             contentViews.get(type).setMultiselect(multiselect);
         }
+    }
+
+    @Override
+    public void addContentTool(View view) {
+        toolBar.addComponent(view.asVaadinComponent(), toolBar.getComponentCount());
     }
 }
