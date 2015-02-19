@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -52,6 +53,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private Class<? extends DropConstraint> dropConstraintClass;
     private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
+    private List<ContentToolDefinition> contentTools = new LinkedList<ContentToolDefinition>();
 
     @Override
     public String getName() {
@@ -104,5 +106,18 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void addContentView(ContentPresenterDefinition contentView) {
         this.contentViews.add(contentView);
+    }
+
+    @Override
+    public List<ContentToolDefinition> getContentTools() {
+        return this.contentTools;
+    }
+
+    public void setContentTools(List<ContentToolDefinition> contentTools) {
+        this.contentTools = contentTools;
+    }
+
+    public void addContentTool(String contentToolName, ContentToolDefinition contentTool) {
+        this.contentTools.add(contentTool);
     }
 }

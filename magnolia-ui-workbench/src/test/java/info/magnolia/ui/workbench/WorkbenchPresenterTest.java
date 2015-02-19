@@ -50,6 +50,9 @@ import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolView;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
@@ -108,7 +111,14 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
             }
         }).when(statusBarPresenter).start(any(EventBus.class), any(ContentPresenter.class));
 
-        doReturn(treePresenter).when(componentProvider).newInstance(any(Class.class), anyVararg());
+        SimpleTranslator translator = mock(SimpleTranslator.class);
+        SearchContentToolView searchView = new SearchContentToolViewImpl(translator);
+        SearchContentToolPresenter searchPresenter = mock(SearchContentToolPresenter.class);
+
+        when(searchPresenter.start()).thenReturn(searchView);
+
+        when(componentProvider.newInstance(any(Class.class), anyVararg())).thenReturn(treePresenter);
+        when(componentProvider.newInstance(eq(SearchContentToolPresenter.class), anyVararg())).thenReturn(searchPresenter);
 
         JcrContentConnector contentConnector = mock(JcrContentConnector.class);
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
@@ -129,7 +139,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
-        presenter.start(workbenchDefinition, null, null);
+        presenter.start(workbenchDefinition, mock(ImageProviderDefinition.class), mock(EventBus.class));
 
         // WHEN
         String viewType = presenter.getDefaultViewType();
@@ -211,7 +221,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         workbenchDefinition.getContentViews().add(treePresenterDefinition);
 
         // WHEN
-        final WorkbenchView view = (WorkbenchViewImpl) presenter.start(workbenchDefinition, mock(ImageProviderDefinition.class), mock(EventBus.class));
+        final WorkbenchView view = presenter.start(workbenchDefinition, mock(ImageProviderDefinition.class), mock(EventBus.class));
         presenter.onViewTypeChanged("tree");
 
         // THEN

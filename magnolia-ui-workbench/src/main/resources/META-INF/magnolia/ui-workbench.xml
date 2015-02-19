@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+  <name>ui-workbench</name>
+  <displayName>${project.name}</displayName>
+  <description>${project.description}</description>
+  <version>${project.version}</version>
+
+  <components>
+    <id>main</id>
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.contenttool.ContentToolDefinition</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.ConfiguredContentToolDefinition</implementation>
+    </type-mapping>
+  </components>
+
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.contenttool.search.SearchContentToolView</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl</implementation>
+    </component>
+  </components>
+
+</module>

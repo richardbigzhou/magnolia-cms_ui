@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
- * Defines a workbench. Contains all elements which define a workbench configuration.
+ * Definition that describes content tool used in a workbench.
  */
-@I18nable
-public interface WorkbenchDefinition extends Serializable {
+public interface ContentToolDefinition {
 
-    String getName();
+    public Class<? extends ContentToolPresenter> getPresenterClass();
 
-    /**
-     * Define if this workbench is used for Dialog.
-     */
-    boolean isDialogWorkbench();
-
-    /**
-     * Checks if workbench can edit tree view inplace.
-     *
-     * @return true, if workbench is editable
-     */
-    boolean isEditable();
-
-    /**
-     * @return the DropConstraint class used to handle drag&drop.
-     */
-    Class<? extends DropConstraint> getDropConstraintClass();
-
-    /**
-     * @return the list of configured views.<br>
-     */
-    List<ContentPresenterDefinition> getContentViews();
-
-    /**
-     * @return the list of configured content tools
-     */
-    List<ContentToolDefinition> getContentTools();
+    public boolean isEnabled();
 }
