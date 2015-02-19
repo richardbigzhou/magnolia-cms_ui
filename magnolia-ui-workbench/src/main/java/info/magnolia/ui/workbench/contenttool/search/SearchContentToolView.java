@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,60 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.contenttool.search;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 /**
- * WorkbenchView.
+ * Search content tool view.
  */
-public interface WorkbenchView extends View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
-
-        void onSearchQueryChange(String searchExpression);
-
-        /**
-         * @deprecated since 5.4 - the functionality provided by this method is now a responsibility of {@link info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter}.
-         */
-        @Deprecated
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(String viewType);
-    }
+public interface SearchContentToolView extends View {
 
     void setListener(Listener listener);
 
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
+    void setSearchQuery(String searchQuery);
 
     /**
-     * Use this method to add sub views hosted by this view.
+     * Listener interface.
      */
-    void addContentView(String type, ContentView view, ContentPresenterDefinition contentViewDefintion);
+    interface Listener {
 
-    /**
-     * Use this method to add content tools.
-     */
-    public void addContentTool(View view);
-
-    void setViewType(String type);
-
-    /**
-     * Use this method to add a status bar to this sub app view.
-     */
-    void setStatusBarView(StatusBarView statusBar);
-
-    ContentView getSelectedView();
-
-    /**
-     * Whether the user can select more items.
-     */
-    void setMultiselect(boolean multiselect);
+        void onSearch(String searchQuery);
+    }
 
 }

@@ -35,11 +35,15 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
+import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
+import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.SearchEvent;
+import info.magnolia.ui.workbench.event.QueryStatementChangedEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -124,6 +128,23 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         }
 
+
+        if (hasViewType(ListPresenterDefinition.VIEW_TYPE) && hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
+            // always include search component in the toolbar search component
+            addSearchContentTool();
+        }
+
+        // add content tools
+        final List<ContentToolDefinition> contentTools = this.workbenchDefinition.getContentTools();
+        for (ContentToolDefinition entry : contentTools) {
+            Class<? extends ContentToolPresenter> presenterClass = entry.getPresenterClass();
+            if (presenterClass != null) {
+                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, entry, this);
+                View contentToolView = contentToolPresenter.start();
+                view.addContentTool(contentToolView);
+            }
+        }
+
         // add status bar
         view.setStatusBarView(statusBarPresenter.start(eventBus, activePresenter));
 
@@ -143,24 +164,32 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
     }
 
+    protected void addSearchContentTool() {
+        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, this);
+        View searchView = searchPresenter.start();
+        this.view.addContentTool(searchView);
+    }
+
+
+    /**
+     * Search logic is now implemented in a corresponding tool presenter.
+     *
+     * @see SearchContentToolPresenter
+     */
     @Override
     public void onSearch(final String searchExpression) {
-        if (hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
-            if (StringUtils.isNotBlank(searchExpression)) {
-                eventBus.fireEvent(new SearchEvent(searchExpression));
-            } else {
-                // if search expression is empty switch to list view
-                onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
-            }
-        } else {
-            log.warn("Workbench view triggered search although the search view type is not configured in this workbench {}", this);
-        }
+        // deprecated, does nothing
     }
 
     @Override
     public void onViewTypeChanged(final String viewType) {
         setViewType(viewType);
         eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+    }
+
+    @Override
+    public void onSearchQueryChange(String searchQuery) {
+        eventBus.fireEvent(new QueryStatementChangedEvent(searchQuery));
     }
 
     private void setViewType(String viewType) {
