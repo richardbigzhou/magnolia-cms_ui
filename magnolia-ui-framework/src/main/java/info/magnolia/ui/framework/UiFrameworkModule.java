@@ -81,9 +81,9 @@ public class UiFrameworkModule implements ModuleLifecycle {
             configSourceFactory.jcr().withFilter(new IsDialogNode()).bindWithDefaults(dialogRegistry);
             configSourceFactory.jcr().withFilter(new IsFieldType()).bindWithDefaults(fieldTypeDefinitionRegistry);
 
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(appDescriptorRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(fieldTypeDefinitionRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry);
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(appDescriptorRegistry);
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(fieldTypeDefinitionRegistry);
         }
     }
 
@@ -105,7 +105,7 @@ public class UiFrameworkModule implements ModuleLifecycle {
                 }
                 return node.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME) || node.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME);
             } catch (RepositoryException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e);
             }
         }
     }
@@ -123,7 +123,7 @@ public class UiFrameworkModule implements ModuleLifecycle {
                 }
                 return "apps".equalsIgnoreCase(node.getParent().getName());
             } catch (RepositoryException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e);
             }
         }
     }
@@ -143,7 +143,7 @@ public class UiFrameworkModule implements ModuleLifecycle {
             try {
                 return node.hasProperty(DEFINITION_CLASS) && node.hasProperty(FACTORY_CLASS);
             } catch (RepositoryException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e);
             }
         }
     }
