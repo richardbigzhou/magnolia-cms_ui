@@ -43,11 +43,13 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.nodebuilder.NodeBuilderUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.pages.app.action.DeletePageItemAction;
+import info.magnolia.pages.app.editor.availability.IsPageEditableRule;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
@@ -618,6 +620,20 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // THEN
         assertThat(dialogs, hasNode(AllOf.<Node> allOf(nodeName("newComponent"), hasProperty("modalityLevel", "light"))));
+    }
+
+    @Test
+    public void updateFrom537NewAvailabilityRule() throws Exception {
+        // GIVEN
+        String actionPath = "/modules/pages/apps/pages/subApps/detail/actions/editProperties";
+        Node actionNode = NodeUtil.createPath(session.getRootNode(), actionPath, NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.7"));
+
+        // THEN
+        assertTrue(session.nodeExists(actionPath + "/availability/rules/isPageEditable"));
+        assertEquals(PropertyUtil.getString(actionNode.getNode("availability/rules/isPageEditable"), "implementationClass"), IsPageEditableRule.class.getName());
     }
 
 }

@@ -33,10 +33,13 @@
  */
 package info.magnolia.pages.setup;
 
-import static info.magnolia.nodebuilder.Ops.*;
+
+import static info.magnolia.jcr.nodebuilder.Ops.*;
 
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
+import info.magnolia.jcr.nodebuilder.task.ErrorHandling;
+import info.magnolia.jcr.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
@@ -55,8 +58,6 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
-import info.magnolia.nodebuilder.task.ErrorHandling;
-import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.pages.app.action.PreviewPreviousVersionActionDefinition;
 import info.magnolia.pages.app.action.RestorePreviousVersionActionDefinition;
 import info.magnolia.repository.RepositoryConstants;
@@ -70,6 +71,7 @@ import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Version handler for the pages app module.
@@ -238,9 +240,21 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 ));
 
         register(DeltaBuilder.update("5.3.8", "")
-                .addTask(new NodeExistsDelegateTask("Bootstrap newComponent dialog", "newComponent dialog is no longer hard-coded within CreateComponentAction, bootstrap it if it doesn't exist already.",
-                        RepositoryConstants.CONFIG, "/modules/pages/dialogs/newComponent",
-                        null, new BootstrapSingleModuleResource("", "", "dialogs/config.modules.pages.dialogs.newComponent.xml")))
+                        .addTask(new NodeExistsDelegateTask("Bootstrap newComponent dialog", "newComponent dialog is no longer hard-coded within CreateComponentAction, bootstrap it if it doesn't exist already.",
+                                RepositoryConstants.CONFIG, "/modules/pages/dialogs/newComponent",
+                                null, new BootstrapSingleModuleResource("", "", "dialogs/config.modules.pages.dialogs.newComponent.xml")))
+                        .addTask(new NodeExistsDelegateTask("Add IsPageEditableRule to apps/pages/subApps/detail/actions/editProperties", "/modules/pages/apps/pages/subApps/detail/actions/editProperties",
+                                new ArrayDelegateTask("", "",
+                                        new NodeExistsDelegateTask("", "/modules/pages/apps/pages/subApps/detail/actions/editProperties/availability", null,
+                                                new NodeBuilderTask("", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/editProperties",
+                                                        addNode("availability", NodeTypes.ContentNode.NAME))
+                                        ),
+                                        new NodeExistsDelegateTask("", "/modules/pages/apps/pages/subApps/detail/actions/editProperties/availability/rules", null,
+                                                new NodeBuilderTask("", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/editProperties/availability",
+                                                        addNode("rules", NodeTypes.ContentNode.NAME))
+                                        ),
+                                        new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/actions/editProperties/availability/rules/isPageEditable")
+                                )))
         );
     }
 
