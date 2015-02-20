@@ -81,7 +81,7 @@ public class AdmincentralModule implements ModuleLifecycle {
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             configurationSourceFactory.jcr().withFilter(new IsViewType()).withModulePath("messageViews").bindTo(itemViewDefinitionRegistry);
-            configurationSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(itemViewDefinitionRegistry); // TODO mge check if defaults can be implied as well for magnoliaHome
+            configurationSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(itemViewDefinitionRegistry);
         }
         appLauncherLayoutManager.setLayout(getAppLauncherLayout());
     }
@@ -122,7 +122,7 @@ public class AdmincentralModule implements ModuleLifecycle {
                 }
                 return MESSAGE_VIEW_CONFIG_NODE_NAME.equals(node.getParent().getName());
             } catch (RepositoryException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e);
             }
         }
     }
