@@ -39,11 +39,10 @@ import org.slf4j.LoggerFactory;
 /**
  * ObservedManager for {@link info.magnolia.ui.api.app.AppDescriptor} configured in repository.
  *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * @deprecated since 5.4
  */
-//@Singleton
 @Deprecated
-public class ConfiguredAppDescriptorManager { // extends ModuleConfigurationObservingManager {
+public class ConfiguredAppDescriptorManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConfiguredAppDescriptorManager.class);
 

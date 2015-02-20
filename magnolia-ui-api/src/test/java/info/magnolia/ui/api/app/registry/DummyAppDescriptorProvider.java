@@ -41,9 +41,6 @@ import info.magnolia.ui.api.app.AppDescriptor;
 
 import java.util.List;
 
-/**
-* .
-*/
 public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
 
     private final DefinitionMetadata metadata;
@@ -72,7 +69,7 @@ public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescrip
 
     @Override
     public DefinitionRawView getRaw() {
-        throw new IllegalStateException("not implemented yet"); // TODO
+        throw new IllegalStateException("not implemented yet");
     }
 
     @Override
@@ -82,6 +79,6 @@ public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescrip
 
     @Override
     public List<String> getErrorMessages() {
-        throw new IllegalStateException("not implemented yet"); // TODO
+        throw new IllegalStateException("not implemented yet");
     }
 }
