@@ -39,10 +39,10 @@ import org.slf4j.LoggerFactory;
 /**
  * ConfiguredFieldTypeDefinitionManager.
  *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * @deprecated since 5.4
  */
 @Deprecated
-public class ConfiguredFieldTypeDefinitionManager { // extends ModuleConfigurationObservingManager {
+public class ConfiguredFieldTypeDefinitionManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConfiguredFieldTypeDefinitionManager.class);
 
