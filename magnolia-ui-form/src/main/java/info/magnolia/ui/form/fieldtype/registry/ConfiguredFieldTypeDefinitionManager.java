@@ -39,7 +39,8 @@ import org.slf4j.LoggerFactory;
 /**
  * ConfiguredFieldTypeDefinitionManager.
  *
- * @deprecated since 5.4
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
 @Deprecated
 public class ConfiguredFieldTypeDefinitionManager {

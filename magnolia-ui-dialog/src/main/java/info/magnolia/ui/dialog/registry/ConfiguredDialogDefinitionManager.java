@@ -39,7 +39,8 @@ import org.slf4j.LoggerFactory;
 /**
  * ObservedManager for {@link info.magnolia.ui.dialog.definition.DialogDefinition DialogDefinition} configured in repository.
  *
- * @deprecated since 5.4
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
 @Deprecated
 public class ConfiguredDialogDefinitionManager {

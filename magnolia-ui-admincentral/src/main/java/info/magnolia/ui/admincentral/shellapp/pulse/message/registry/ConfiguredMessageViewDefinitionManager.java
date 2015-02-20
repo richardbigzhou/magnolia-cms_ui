@@ -39,10 +39,11 @@ import org.slf4j.LoggerFactory;
 /**
  * ObservedManager for message views configured in repository.
  *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
 @Deprecated
-public class ConfiguredMessageViewDefinitionManager { //extends ModuleConfigurationObservingManager {
+public class ConfiguredMessageViewDefinitionManager {
 
     public static final String MESSAGE_VIEW_CONFIG_NODE_NAME = "messageViews";
 
