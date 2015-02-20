@@ -116,8 +116,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public DialogView start(Item item, String dialogId, final UiContext uiContext, EditorCallback callback) {
         try {
-            // TODO mge deprecate #start by dialogId: definition should be injected (by the factory), then we don't need the registry here anymore.
-            FormDialogDefinition dialogDefinition = (FormDialogDefinition) dialogDefinitionRegistry.getDialogDefinition(dialogId);
+            FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.getDialogDefinition(dialogId);
             return start(item, dialogDefinition, uiContext, callback);
         } catch (RegistrationException e) {
             throw new RuntimeException("No dialogDefinition found for " + dialogId, e);

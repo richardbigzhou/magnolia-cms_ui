@@ -64,8 +64,6 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
 
     @Override
     protected DefinitionProvider<DialogDefinition> onRegister(DefinitionProvider<DialogDefinition> provider) {
-        // This was in ConfiguredDialogDefinitionProvider
-        // dialogDefinition.setId(id);
         return new DefinitionProviderWrapper<DialogDefinition>(provider) {
             @Override
             public DialogDefinition get() {
@@ -88,7 +86,6 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
             DefinitionProvider<DialogDefinition> dialogDefinitionProvider = getProvider(id);
             DialogDefinition dialogDefinition = dialogDefinitionProvider.get();
             return (FormDialogDefinition) dialogDefinition;
-            // TODO: } catch (RegistrationException e) {
         } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
             throw new RegistrationException(e.getMessage(), e);
         }

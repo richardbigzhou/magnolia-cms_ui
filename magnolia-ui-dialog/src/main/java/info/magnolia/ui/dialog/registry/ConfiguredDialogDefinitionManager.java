@@ -39,11 +39,10 @@ import org.slf4j.LoggerFactory;
 /**
  * ObservedManager for {@link info.magnolia.ui.dialog.definition.DialogDefinition DialogDefinition} configured in repository.
  *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * @deprecated since 5.4
  */
-// @Singleton
 @Deprecated
-public class ConfiguredDialogDefinitionManager { // extends RegistryBasedObservingManager {
+public class ConfiguredDialogDefinitionManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConfiguredDialogDefinitionManager.class);
 
