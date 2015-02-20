@@ -71,7 +71,7 @@ public class MediaEditorModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
 
             configSourceFactory.jcr().withFilter(new IsMediaEditor()).withModulePath("mediaEditors").bindTo(registry);
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(registry); // TODO mge check if defaults can be implied as well for magnoliaHome
+            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(registry);
         }
     }
 
@@ -93,7 +93,7 @@ public class MediaEditorModule implements ModuleLifecycle {
                 }
                 return "mediaEditors".equalsIgnoreCase(node.getParent().getName());
             } catch (RepositoryException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e);
             }
         }
     }
