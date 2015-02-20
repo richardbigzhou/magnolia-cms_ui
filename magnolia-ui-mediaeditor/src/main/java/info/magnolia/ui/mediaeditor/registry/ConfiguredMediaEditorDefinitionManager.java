@@ -39,11 +39,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Populates {@link MediaEditorRegistry} by scanning the nodes in the config workspace.
  *
- * @deprecated since 5.4 // TODO revive compatibilty, but don't start observation
+ * @deprecated since 5.4
  */
-//@Singleton
 @Deprecated
-public class ConfiguredMediaEditorDefinitionManager {//  extends ModuleConfigurationObservingManager {
+public class ConfiguredMediaEditorDefinitionManager {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
