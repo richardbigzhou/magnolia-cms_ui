@@ -75,9 +75,6 @@ public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinit
 
     @Override
     protected DefinitionProvider<ItemViewDefinition> onRegister(final DefinitionProvider<ItemViewDefinition> provider) {
-        // This was in ConfiguredTemplateDefinitionProvider: templateDefinition.setId(id);
-
-        // TODO -- we should maybe just remove RenderableDefinition.setId() and implement getMetadata() to delegate to provider instead
         final DefinitionProvider<ItemViewDefinition> wrappedProvider = super.onRegister(provider);
         return new DefinitionProviderWrapper<ItemViewDefinition>(wrappedProvider) {
             @Override
