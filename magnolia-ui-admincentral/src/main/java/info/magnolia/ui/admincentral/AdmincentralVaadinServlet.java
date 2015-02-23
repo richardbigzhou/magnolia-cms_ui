@@ -48,6 +48,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +105,10 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
                     @Override
                     public void modifyBootstrapPage(BootstrapPageResponse response) {
+                        Element ieMode = response.getDocument().head().getElementsByAttributeValue("http-equiv", "X-UA-Compatible").first();
+                        if (ieMode != null) {
+                            ieMode.attr("content", "IE=9;chrome=1");
+                        }
                         response.getDocument().head().append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
                     }
 
