@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -437,10 +438,15 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     private void handleSelectionChange(Set<Object> selectionIds, ActionbarPresenter actionbar) {
-        BrowserLocation location = getCurrentLocation();
-        applySelectionToLocation(location, selectionIds.isEmpty() ? contentConnector.getDefaultItemId() : selectionIds.iterator().next());
-        getAppContext().updateSubAppLocation(getSubAppContext(), location);
-        updateActionbar(actionbar);
+        // handling selection change there doesn't make sense if an action completed asynchronously, i.e. out of a web context.
+        if (MgnlContext.isWebContext()) {
+            BrowserLocation location = getCurrentLocation();
+            applySelectionToLocation(location, selectionIds.isEmpty() ? contentConnector.getDefaultItemId() : selectionIds.iterator().next());
+            getAppContext().updateSubAppLocation(getSubAppContext(), location);
+            updateActionbar(actionbar);
+        } else {
+            log.warn("Trying to update location for browser subapp in a non-WebContext. This should be exceptional (e.g. from async actions)");
+        }
 
     }
 
