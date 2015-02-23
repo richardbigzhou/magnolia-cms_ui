@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,19 +62,22 @@ import com.google.common.collect.Ordering;
  */
 public abstract class AbstractMultiItemAction<D extends ActionDefinition> extends AbstractAction<D> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(AbstractMultiItemAction.class);
 
     private final List<JcrItemAdapter> items;
-    private Map<JcrItemAdapter, Exception> failedItems;
     private final UiContext uiContext;
-    // the item that is currently BEING processed
+    private final Map<JcrItemAdapter, Exception> failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
+
+    // the item that is currently being processed
     private JcrItemAdapter currentItem;
 
+    /**
+     * @deprecated since 5.3.8, multi-item capable actions must support a list parameter
+     * — otherwise multiple-selection might not be honored when dependency injection decides to resolve single-item constructor.
+     */
+    @Deprecated
     protected AbstractMultiItemAction(D definition, JcrItemAdapter item, UiContext uiContext) {
-        super(definition);
-        this.items = new ArrayList<JcrItemAdapter>(1);
-        this.items.add(item);
-        this.uiContext = uiContext;
+        this(definition, Arrays.asList(item), uiContext);
     }
 
     protected AbstractMultiItemAction(D definition, List<JcrItemAdapter> items, UiContext uiContext) {
@@ -102,18 +105,21 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
 
     @Override
     public void execute() throws ActionExecutionException {
-        failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
-
         for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
             this.currentItem = item;
             try {
+                log.debug("Executing action {} on item {}", getDefinition().getName(), currentItem);
                 executeOnItem(item);
-            } catch (Exception ex) {
-                failedItems.put(item, ex);
+            } catch (Exception e) {
+                log.error("Execution of action '{}' on item '{}' failed with an exception.", getDefinition().getName(), currentItem, e);
+                failedItems.put(item, e);
             }
         }
         this.currentItem = null;
+        actionComplete();
+    }
 
+    protected void actionComplete() {
         if (failedItems.isEmpty()) {
             String message = getSuccessMessage();
             if (StringUtils.isNotBlank(message)) {

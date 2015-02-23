@@ -50,11 +50,13 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -62,7 +64,6 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 /**
@@ -76,39 +77,39 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandAction.class);
 
-    private CommandsManager commandsManager;
-
-    private Command command;
-
-    private Map<String, Object> params;
-
+    private final CommandsManager commandsManager;
+    private final UiContext uiContext;
+    private final MessagesManager messagesManager;
     private SimpleTranslator i18n;
 
-    private String commandName;
+    private Command command;
+    private Map<String, Object> params;
 
-    private String catalogName;
+    private boolean isCompletingAsync;
 
-    private String failureMessage;
-
-    public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, uiContext);
-        init(commandsManager, i18n);
-    }
-
-    public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
+    @Inject
+    public AbstractCommandAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, UiContext uiContext, MessagesManager messagesManager, SimpleTranslator i18n) {
         super(definition, items, uiContext);
-        init(commandsManager, i18n);
-    }
 
-    private void init(final CommandsManager commandsManager, final SimpleTranslator i18n) {
         this.commandsManager = commandsManager;
+        this.uiContext = uiContext;
+        this.messagesManager = messagesManager;
         this.i18n = i18n;
-        // Init Command.
-        commandName = getDefinition().getCommand();
-        catalogName = getDefinition().getCatalog();
+
+        String commandName = getDefinition().getCommand();
+        String catalogName = getDefinition().getCatalog();
         this.command = getCommandsManager().getCommand(catalogName, commandName);
     }
 
+    @Deprecated
+    public AbstractCommandAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
+        this(definition, Arrays.asList(item), commandsManager, uiContext, i18n);
+    }
+
+    @Deprecated
+    public AbstractCommandAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
+        this(definition, items, commandsManager, uiContext, Components.getComponent(MessagesManager.class), i18n);
+    }
 
     /**
      * Builds a map of parameters which will be passed to the current command
@@ -166,6 +167,126 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     }
 
     /**
+     * Wraps the whole execution of the action in a separate thread, if it is configured to run async.
+     */
+    @Override
+    public void execute() throws ActionExecutionException {
+
+        if (!getDefinition().isAsynchronous()) {
+            super.execute();
+            return;
+        }
+
+        long start = System.currentTimeMillis();
+        final Context ctx = new SimpleContext();
+
+        // TODO reimplement or deprecate parallel
+        final Thread thread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    MgnlContext.setInstance(ctx);
+
+                    // artificially taking time to force async
+                    if (getDefinition().getDelay() == 99) {
+                        try { Thread.sleep(5000); } catch (InterruptedException e) {}
+                    }
+
+                    AbstractCommandAction.super.execute();
+
+                } catch (ActionExecutionException e) {
+                    // super implementation swallows exceptions to keep track of failedItems
+                    // so this exception should never occur, but if it does occur then we want to know
+                    log.error("An exception occurred while executing async Thread for action {}.", getDefinition().getName(), e);
+                } finally {
+                    MgnlContext.release();
+                    MgnlContext.setInstance(null);
+                }
+            }
+        };
+        thread.start();
+
+        // Check every half a second whether async task is still ongoing, until timeout
+        try {
+            while (thread.isAlive() && System.currentTimeMillis() - start < getDefinition().getTimeToWait()) {
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+        }
+
+        if (thread.isAlive()) {
+            isCompletingAsync = true;
+
+            // notify user that this action will take some time and when finished he will by notified via pulse
+            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, i18n.translate("ui-framework.abstractcommand.asyncaction.long"));
+
+            // Enable polling and set frequency to 1 second
+            log.debug("Action will complete async, turning polling on to be notified when it completes");
+            UI.getCurrent().setPollInterval(1000);
+
+        } else {
+            log.debug("CommandAction executed successfully in {} ms ", System.currentTimeMillis() - start);
+        }
+
+        // TODO decide what to do for multi-item actions, set command result only upon end, right?
+        // MgnlContext.getInstance().setAttribute(COMMAND_RESULT, result, Context.LOCAL_SCOPE);
+
+    }
+
+    @Override
+    protected void actionComplete() {
+
+        if (getDefinition().isAsynchronous() && isCompletingAsync) {
+
+            // 1. Notify the UI through the Pulse
+            if (getDefinition().isNotifyUser()) {
+
+                if (getFailedItems().isEmpty()) {
+                    // String message = getSuccessMessage();
+                    String successTitle = i18n.translate("ui-framework.abstractcommand.asyncaction.successTitle", getDefinition().getLabel());
+                    String successMessage = i18n.translate("ui-framework.abstractcommand.asyncaction.successMessage", getDefinition().getLabel(), "appName", "item.getJcrItem().getPath()");
+                    messagesManager.sendLocalMessage(new Message(MessageType.INFO, successTitle, successMessage));
+
+                } else {
+                    String errorTitle = i18n.translate("ui-framework.abstractcommand.asyncaction.errorTitle", getDefinition().getLabel());
+                    String errorMessage = i18n.translate("ui-framework.abstractcommand.asyncaction.errorMessage", getDefinition().getLabel(), "appName", "item.getJcrItem().getPath()");
+                    String errorDetail = getErrorNotification();
+                    Message msg = new Message(MessageType.WARNING, errorTitle, errorMessage);
+                    msg.setView("ui-admincentral:longRunning");
+                    msg.addProperty("comment", i18n.translate("ui-framework.abstractcommand.asyncaction.errorComment") + " " + errorDetail);
+                    messagesManager.sendLocalMessage(msg);
+                }
+            }
+
+            // 2. Stop polling
+            // Update the UI thread-safely
+            UI.getCurrent().access(new Runnable() {
+
+                @Override
+                public void run() {
+                    log.debug("Action has completed, turning polling off.");
+                    UI.getCurrent().setPollInterval(-1);
+                }
+            });
+
+        } else {
+            // Notify the UI normally through notifications
+            super.actionComplete();
+        }
+    }
+
+    @Override
+    protected String getSuccessMessage() {
+        return getDefinition().getSuccessMessage();
+    }
+
+    @Override
+    protected String getFailureMessage() {
+        return getDefinition().getFailureMessage();
+    }
+
+    /**
      * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
      * performs the actual command execution.
      *
@@ -173,7 +294,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     @Override
     protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
-        failureMessage = null;
+
         try {
             onPreExecute();
         } catch (Exception e) {
@@ -187,44 +308,16 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
         long start = System.currentTimeMillis();
         try {
-            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", getDefinition().getCommand(), getDefinition().getCatalog(), getParams());
+            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { getDefinition().getCommand(), getDefinition().getCatalog(), getParams() });
 
-            boolean result = false;
-            if (getDefinition().isAsynchronous()) {
-
-                final Context ctx = new SimpleContext();
-
-                // TODO reimplement non-parallel
-                final AsyncCommandThread thread = new AsyncCommandThread(ctx, command, getParams());
-                thread.start();
-
-                // give configured time for async command execution to occur
-                // TODO: move at multi-execution level, setup polling only at start, stop it only at end
-                // Thread.sleep(getDefinition().getTimeToWait());
-
-                while (thread.isAlive() && System.currentTimeMillis() - start < getDefinition().getTimeToWait()) {
-                    Thread.sleep(500);
-                }
-
-                if (thread.isAlive()) {
-                    // notify user that this action will take some time and when finished he will by notified via pulse
-                    getDefinition().setSuccessMessage("ui-framework.abstractcommand.asyncaction.long");
-
-                    // Enable polling and set frequency to 0.5 seconds
-                    UI.getCurrent().setPollInterval(1000);
-                    log.debug("setting polling to 1s");
-                }
-
-            } else {
-                result = commandsManager.executeCommand(command, getParams());
-                MgnlContext.getInstance().setAttribute(COMMAND_RESULT, result, Context.LOCAL_SCOPE);
-                onPostExecute();
-                log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
-            }
-
+            boolean result = commandsManager.executeCommand(command, getParams());
+            MgnlContext.getInstance().setAttribute(COMMAND_RESULT, result, Context.LOCAL_SCOPE);
+            onPostExecute();
+            log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
-            onError(e);
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start, e);
+            getFailedItems().put(item, e);
+            onError(e);
         }
     }
 
@@ -264,105 +357,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     protected Command getCommand() {
         return this.command;
-    }
-
-    @Override
-    protected String getSuccessMessage() {
-        // by default, we expect the command-based actions to be limited to single-item
-        return null;
-    }
-
-    @Override
-    protected String getFailureMessage() {
-        // by default, we expect the command-based actions to be limited to single-item
-        return failureMessage;
-    }
-
-    private void triggerComplete(final boolean success) {
-        if (!getDefinition().isNotifyUser()) {
-            return;
-        }
-        MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
-            @Override
-            public void doExec() {
-                // User should be notified always when the long running action has finished. Otherwise he gets NO feedback.
-                MessagesManager messagesManager = Components.getComponent(MessagesManager.class);
-                // result 1 stands for success, 0 for error - see info.magnolia.module.scheduler.CommandJob
-                if (success) {
-                    messagesManager.sendLocalMessage(new Message(MessageType.INFO, "successMessageTitle", "successMessage"));
-                } else {
-                    Message msg = new Message(MessageType.WARNING, "errorMessageTitle", "errorMessage");
-                    msg.setView("ui-admincentral:longRunning");
-                    msg.addProperty("comment", i18n.translate("ui-framework.abstractcommand.asyncaction.errorComment"));
-                    messagesManager.sendLocalMessage(msg);
-                }
-            }
-        });
-    }
-
-    /**
-     * Own thread for executing commands asynchronously.
-     */
-    private class AsyncCommandThread extends Thread {
-
-        private final Command command;
-        private final Map<String, Object> params;
-
-        // Volatile because read in another thread in access()
-        volatile Context ctx;
-        volatile boolean success = false;
-
-        AsyncCommandThread(Context ctx, Command command, Map<String, Object> params) {
-            this.command = command;
-            this.params = params;
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void run() {
-
-            try {
-                // init context
-                MgnlContext.setInstance(ctx);
-                // MgnlContext.setInstance(new SimpleContext(Components.getComponent(SystemContext.class)));
-                // MgnlContext.setInstance(new SimpleContext());
-
-                try {
-                    Thread.sleep(7000);
-                } catch (InterruptedException e) {
-                }
-
-                try {
-                    success = true;
-                    success = commandsManager.executeCommand(command, params);
-                } catch (Exception e) {
-                    // TODO add to failed items
-                    // getFailedItems().put(new JcrNodeAdapter(null), e);
-                }
-
-                // Update the UI thread-safely
-                UI.getCurrent().access(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // Stop polling
-                        UI.getCurrent().setPollInterval(-1);
-
-                        Notification.show("This is the caption",
-                                "This is the description",
-                                Notification.Type.WARNING_MESSAGE);
-
-                        // TODO Give the action a callback
-                        // getErrorNotification();
-                        // triggerComplete(success);
-                    }
-                });
-
-            } finally {
-                MgnlContext.release();
-                MgnlContext.setInstance(null);
-            }
-        }
     }
 
 }
