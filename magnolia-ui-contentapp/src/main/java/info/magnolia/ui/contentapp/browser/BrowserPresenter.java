@@ -368,8 +368,14 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             selectedItems.add(contentConnector.getItem(idIt.next()));
         }
 
-        argList.add(selectedItems);
-        argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
+        if (selectedItems.size() <= 1) {
+            // we have a simple selection; action implementation may expect either an item, either a list parameter, so we have to support both.
+            argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
+            argList.add(selectedItems);
+        } else {
+            // we have a multiple selection; action implementation must support a list parameter, no way around that.
+            argList.add(selectedItems);
+        }
         return argList.toArray(new Object[argList.size()]);
     }
 }
