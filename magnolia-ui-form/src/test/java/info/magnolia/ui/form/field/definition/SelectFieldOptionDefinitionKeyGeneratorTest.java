@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.junit.Assert.assertThat;
 
 import info.magnolia.i18nsystem.I18nizer;
@@ -44,7 +45,6 @@ import info.magnolia.ui.form.definition.TestDialogDef;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,7 +99,7 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         String[] keys = generator.keysFor("undecorated", ((SelectFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
                 "testTab.mgnl-testField.options.testOption",
@@ -133,7 +133,7 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         String[] keys = generator.keysFor("undecorated", ((SwitchableFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
                 "testTab.mgnl-testField.options.testOption",

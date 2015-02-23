@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.junit.Assert.assertThat;
 
 import info.magnolia.i18nsystem.I18nable;
@@ -41,7 +42,6 @@ import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 
@@ -77,7 +77,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
                 section.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-app.test-subapp.actionbar.sections.test-section.label",
                 "test-app.test-subapp.actionbar.sections.test-section"));
@@ -106,7 +106,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
                 section.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-module.testMessageView.actionbar.sections.test-section.label",
                 "test-module.testMessageView.actionbar.sections.test-section",
