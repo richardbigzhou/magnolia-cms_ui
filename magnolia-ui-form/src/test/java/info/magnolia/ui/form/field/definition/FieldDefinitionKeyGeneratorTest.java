@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.junit.Assert.*;
 
 import info.magnolia.i18nsystem.I18nable;
@@ -46,7 +47,6 @@ import info.magnolia.ui.form.definition.TestDialogDef;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -77,7 +77,7 @@ public class FieldDefinitionKeyGeneratorTest {
 
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-app.chooseDialog.fields.mgnl-testField.label",
                 "test-app.chooseDialog.fields.mgnl-testField"));
@@ -107,7 +107,7 @@ public class FieldDefinitionKeyGeneratorTest {
         String[] keys = generator.keysFor("undecorated", dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.label",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField",
@@ -153,7 +153,7 @@ public class FieldDefinitionKeyGeneratorTest {
                 field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys, Matchers.arrayContaining(
+        assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label",
                 "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField",

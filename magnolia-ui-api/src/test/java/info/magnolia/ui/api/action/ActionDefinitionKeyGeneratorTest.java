@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.api.action;
 
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -53,7 +54,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -105,7 +105,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", contentApp.getChooseDialog().getActions().get("chooseDialogAction"));
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "contentApp.chooseDialog.actions.chooseDialogAction.label",
                 "contentApp.chooseDialog.actions.chooseDialogAction",
@@ -121,7 +121,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", appDescriptor.getSubApps().get("1").getActions().get("1"));
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "myapp.browser.actions.myaction.label",
                 "myapp.browser.actions.myaction",
@@ -141,7 +141,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "parent-keygen.actions.myaction.label",
                 "parent-keygen.actions.myaction",
@@ -161,7 +161,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "actions.myaction.label",
                 "actions.myaction"
@@ -180,7 +180,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "foo.actions.myaction.label",
                 "foo.actions.myaction",
@@ -201,7 +201,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "foo.bar.actions.myaction.label",
                 "foo.bar.actions.myaction",
@@ -224,7 +224,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
         // THEN
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
-        assertThat(generatedKeys, Matchers.arrayContaining(
+        assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "baz.qux.actions.myaction.label",
                 "baz.qux.actions.myaction",
