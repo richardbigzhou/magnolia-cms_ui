@@ -33,15 +33,12 @@
  */
 package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.ui.api.view.View;
-
 /**
  * Configured definition of {@link ContentToolDefinition}.
  */
 public class ConfiguredContentToolDefinition implements ContentToolDefinition {
 
     private Class<? extends ContentToolPresenter> presenterClass;
-    private Class<? extends View> viewClass;
     private boolean enabled = true;
 
     public void setPresenterClass(Class<? extends ContentToolPresenter> presenterClass) {
@@ -51,15 +48,6 @@ public class ConfiguredContentToolDefinition implements ContentToolDefinition {
     @Override
     public Class<? extends ContentToolPresenter> getPresenterClass() {
         return presenterClass;
-    }
-
-    public void setViewClass(Class<? extends View> viewClass) {
-        this.viewClass = viewClass;
-    }
-
-    @Override
-    public Class<? extends View> getViewClass() {
-        return viewClass;
     }
 
     @Override

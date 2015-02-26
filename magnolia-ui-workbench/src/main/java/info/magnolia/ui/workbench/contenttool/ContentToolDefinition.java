@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.ui.api.view.View;
 
 /**
  * Definition that describes content tool used in a workbench.
@@ -41,8 +40,6 @@ import info.magnolia.ui.api.view.View;
 public interface ContentToolDefinition {
 
     public Class<? extends ContentToolPresenter> getPresenterClass();
-
-    public Class<? extends View> getViewClass();
 
     public boolean isEnabled();
 }

@@ -116,7 +116,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         SearchContentToolPresenter searchPresenter = mock(SearchContentToolPresenter.class);
 
         when(searchPresenter.start()).thenReturn(searchView);
-        when(componentProvider.newInstance(any(Class.class))).thenReturn(searchPresenter).thenReturn(treePresenter);
+        when(componentProvider.newInstance(any(Class.class), anyVararg())).thenReturn(searchPresenter).thenReturn(treePresenter);
 
         JcrContentConnector contentConnector = mock(JcrContentConnector.class);
         ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
