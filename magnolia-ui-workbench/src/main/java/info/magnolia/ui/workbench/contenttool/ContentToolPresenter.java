@@ -33,17 +33,12 @@
  */
 package info.magnolia.ui.workbench.contenttool;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.WorkbenchPresenter;
 
 /**
- * Content tool presenter base interface.
+ * Interface for extensions displayed in the page- and status-bar.
  */
 public interface ContentToolPresenter {
 
-    public View start(WorkbenchPresenter workbenchPresenter, ContentPresenter contentPresenter, ContentConnector contentConnector, EventBus eventBus);
-
+    View start();
 }

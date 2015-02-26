@@ -14,4 +14,16 @@
     </type-mapping>
   </components>
 
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.contenttool.search.SearchContentToolView</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl</implementation>
+    </component>
+  </components>
+
 </module>

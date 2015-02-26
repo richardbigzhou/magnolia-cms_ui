@@ -35,16 +35,16 @@ package info.magnolia.ui.workbench.contenttool.search;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
-import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SetSearchQueryEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
+import info.magnolia.ui.api.app.SubAppEventBus;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,14 +62,17 @@ public class SearchContentToolPresenter implements ContentToolPresenter, SearchC
     private WorkbenchPresenter workbenchPresenter;
 
     @Inject
-    public SearchContentToolPresenter(SearchContentToolView view) {
+    public SearchContentToolPresenter(
+            WorkbenchPresenter workbenchPresenter,
+            SearchContentToolView view,
+            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         this.view = view;
+        this.eventBus = subAppEventBus;
+        this.workbenchPresenter = workbenchPresenter;
     }
 
     @Override
-    public View start(WorkbenchPresenter workbenchPresenter, ContentPresenter contentPresenter, ContentConnector contentConnector, EventBus eventBus) {
-        this.eventBus = eventBus;
-        this.workbenchPresenter = workbenchPresenter;
+    public View start() {
         view.setListener(this);
 
         eventBus.addHandler(SetSearchQueryEvent.class, new SetSearchQueryEvent.Handler() {

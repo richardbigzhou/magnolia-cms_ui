@@ -41,7 +41,6 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
 import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
 import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
-import info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
@@ -52,7 +51,6 @@ import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenter;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
-import info.magnolia.ui.vaadin.integration.contentconnector.AbstractContentConnector;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,9 +111,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             Class<? extends View> viewClass = entry.getViewClass();
             Class<? extends ContentToolPresenter> presenterClass = entry.getPresenterClass();
             if (viewClass != null) {
-                View contentToolView = componentProvider.newInstance(viewClass, ((AbstractContentConnector) contentConnector).getContentConnectorDefinition());
-                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, contentToolView, this);
-                contentToolPresenter.start(this, getActivePresenter(), contentConnector, eventBus);
+                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass);
+                View contentToolView = contentToolPresenter.start();
                 view.addContentTool(contentToolView);
             }
         }
@@ -167,10 +164,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     protected void addSearchContentTool() {
-        View view = componentProvider.newInstance(SearchContentToolViewImpl.class, ((AbstractContentConnector) contentConnector).getContentConnectorDefinition());
-        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, view);
-        searchPresenter.start(this, getActivePresenter(), contentConnector, eventBus);
-        this.view.addContentTool(view);
+        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class);
+        View searchView = searchPresenter.start();
+        this.view.addContentTool(searchView);
     }
 
     @Override
