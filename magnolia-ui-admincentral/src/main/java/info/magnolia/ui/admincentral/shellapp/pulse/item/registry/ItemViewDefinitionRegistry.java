@@ -48,20 +48,21 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinition> {
+    public static final DefinitionType TYPE = new DefinitionType() {
+        @Override
+        public String name() {
+            return "messageView";
+        }
+
+        @Override
+        public Class baseClass() {
+            return ItemViewDefinition.class;
+        }
+    };
 
     @Override
     public DefinitionType type() {
-        return new DefinitionType() {
-            @Override
-            public String name() {
-                return "messageView";
-            }
-
-            @Override
-            public Class baseClass() {
-                return ItemViewDefinition.class;
-            }
-        };
+        return TYPE;
     }
 
     @Override

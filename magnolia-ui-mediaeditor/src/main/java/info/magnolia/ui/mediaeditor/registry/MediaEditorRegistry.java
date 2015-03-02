@@ -48,6 +48,17 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition> {
+    public static final DefinitionType TYPE = new DefinitionType() {
+        @Override
+        public String name() {
+            return "mediaEditor";
+        }
+
+        @Override
+        public Class baseClass() {
+            return MediaEditorDefinition.class;
+        }
+    };
 
     /**
      * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from the result.
@@ -59,7 +70,7 @@ public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition>
 
     @Override
     public DefinitionType type() {
-        return MediaEditorDefinitionType.TYPE;
+        return TYPE;
     }
 
     @Override
