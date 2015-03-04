@@ -141,6 +141,9 @@ public class UiFrameworkModule implements ModuleLifecycle {
         @Override
         public boolean evaluateTyped(Node node) {
             try {
+                if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+                    node = new ExtendingNodeWrapper(node);
+                }
                 return node.hasProperty(DEFINITION_CLASS) && node.hasProperty(FACTORY_CLASS);
             } catch (RepositoryException e) {
                 throw new RuntimeException(e);
