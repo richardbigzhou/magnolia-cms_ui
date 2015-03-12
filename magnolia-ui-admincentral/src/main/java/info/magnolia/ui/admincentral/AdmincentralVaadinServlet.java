@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.cms.util.ServletUtil;
-import info.magnolia.util.EscapeUtil;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -174,13 +173,8 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                     .append("<a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to attempt to recover from this</span>]</a></div>")
 
                     .append("<p>We apologize for any inconvenience caused.</p>")
-
-                    .append("<p>If you keep experiencing difficulties, please contact your system administrator.<br/>")
-                    .append("Make sure you send along the stack trace below.</p>")
-
-                    .append("<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">")
-                    .append("[<span class=\"v-button-caption\">Click here to show the error's stack trace</span>]</div>")
-                    .append(getStackTrace(e));
+                    .append("<p>If you keep experiencing difficulties, please contact your system administrator.</p>")
+                    .append("<p>Please check your log files for the complete stack trace.</p>");
 
             output.append("</div></div>");
 
@@ -213,20 +207,6 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
         output.append("\";");
 
         writeResponse(response, "text/javascript; charset=UTF-8", output.toString());
-    }
-
-    private String getStackTrace(Throwable e) {
-        final StringBuilder result = new StringBuilder("<p id=\"stacktrace\">");
-        result.append(EscapeUtil.escapeXss(e.toString()));
-
-        // add each element of the stack trace
-        for (StackTraceElement element : e.getStackTrace()) {
-            result.append("<br/>");
-            result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at ");
-            result.append(element);
-        }
-        result.append("</p>");
-        return result.toString();
     }
 
     /**
