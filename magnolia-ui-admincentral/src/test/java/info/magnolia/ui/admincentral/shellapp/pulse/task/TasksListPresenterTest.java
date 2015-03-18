@@ -35,9 +35,11 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
+import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -46,6 +48,7 @@ import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.ConfiguredTaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.test.mock.MockContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
@@ -59,9 +62,11 @@ public class TasksListPresenterTest {
 
     private TasksListPresenter presenter;
     private TaskDefinitionRegistry definitionRegistry;
+    private ConfiguredPulseListDefinition presenterDefinition;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
     private Task task;
+    private EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
@@ -72,10 +77,12 @@ public class TasksListPresenterTest {
 
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
+        this.presenterDefinition = mock(ConfiguredPulseListDefinition.class);
         this.tasksManager = mock(TasksManager.class);
+        this.eventBus = mock(EventBus.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),
-                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context);
+                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, eventBus, presenterDefinition);
 
         task.setName("testTask");
     }

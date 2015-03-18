@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.AdmincentralModule;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.api.location.Location;
@@ -52,13 +54,19 @@ public final class PulseShellApp implements ShellApp {
 
     private PulsePresenter presenter;
 
+    private AdmincentralModule admincentralModule;
+
+    private ComponentProvider componentProvider;
+
     @Inject
-    public PulseShellApp(PulsePresenter presenter) {
-        this.presenter = presenter;
+    public PulseShellApp(AdmincentralModule admincentralModule, ComponentProvider componentProvider) {
+        this.admincentralModule = admincentralModule;
+        this.componentProvider = componentProvider;
     }
 
     @Override
     public View start(ShellAppContext context) {
+        this.presenter = componentProvider.newInstance(PulsePresenter.class, admincentralModule.getPulse());
         return presenter.start();
     }
 
@@ -73,7 +81,7 @@ public final class PulseShellApp implements ShellApp {
             String[] params = location.getParameter().split("/");
             if (params.length == 2) {
                 String messageId = params[1];
-                presenter.openMessage(messageId);
+                presenter.openItem("messages", messageId);
             } else {
                 log.warn("Got a request to open a message detail but found no message id in the location parameters. Location was [{}]", location);
             }

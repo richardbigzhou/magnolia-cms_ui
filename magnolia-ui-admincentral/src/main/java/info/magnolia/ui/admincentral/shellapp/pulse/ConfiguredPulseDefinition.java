@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,29 +33,31 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Main view for pulse.
+ * Configured {@link PulseDefinition}.
  */
-public interface PulseView extends View {
+public class ConfiguredPulseDefinition implements PulseDefinition {
 
-    void setPulseSubView(View view);
+    private List<PulseListDefinition> presenters;
 
-    void setListener(Listener listener);
+    @Override
+    public List<PulseListDefinition> getPresenters() {
+        return presenters;
+    }
 
-    void updateCategoryBadgeCount(PulseItemCategory category, int count);
+    public void setPresenters(List<PulseListDefinition> presenters) {
+        this.presenters = presenters;
+    }
 
-    void setTabActive(PulseItemCategory category);
-
-    void initNavigator(PulseItemCategory... categories);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void onCategoryChange(PulseItemCategory category);
+    public void addPresenters(PulseListDefinition presenter) {
+        if (presenters == null) {
+            presenters = new ArrayList<>();
+        }
+        this.presenters.add(presenter);
     }
 }
