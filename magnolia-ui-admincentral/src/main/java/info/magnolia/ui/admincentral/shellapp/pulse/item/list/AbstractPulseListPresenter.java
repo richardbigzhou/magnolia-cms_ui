@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.api.view.View;
 
 import java.util.Collection;
 
@@ -42,19 +44,18 @@ import java.util.Collection;
  * Abstract presenter for items displayed in pulse.
  *
  * @param <T> typed parameter for the items.
- * @param <L> typed listener used to call back to the parent presenter.
  */
-public abstract class AbstractPulseListPresenter<T, L extends PulseListPresenter.Listener> implements PulseListPresenter<L>, PulseDetailPresenter.Listener, PulseListView.Listener {
+public abstract class AbstractPulseListPresenter<T> implements PulseListPresenter, PulseDetailPresenter.Listener, PulseListView.Listener {
 
     protected AbstractPulseListContainer<T> container;
-    protected L listener;
+    protected Listener listener;
 
     protected AbstractPulseListPresenter(AbstractPulseListContainer<T> container) {
         this.container = container;
     }
 
     @Override
-    public void setListener(L listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -89,4 +90,12 @@ public abstract class AbstractPulseListPresenter<T, L extends PulseListPresenter
         container.filterByItemCategory(category);
     }
 
+    @Override
+    public abstract PulseItemCategory getCategory();
+
+    @Override
+    public abstract View openItem(String itemId) throws RegistrationException;
+
+    @Override
+    public abstract int getPendingItemCount();
 }

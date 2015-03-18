@@ -38,6 +38,7 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
@@ -61,6 +62,7 @@ public class AdmincentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfigurationSourceFactory configurationSourceFactory;
     private AppLauncherLayoutDefinition appLauncherLayout;
+    private PulseDefinition pulse;
 
     @Inject
     public AdmincentralModule(ItemViewDefinitionRegistry itemViewDefinitionRegistry, AppLauncherLayoutManager appLauncherLayoutManager,
@@ -91,13 +93,20 @@ public class AdmincentralModule implements ModuleLifecycle {
         this.userControl = userControl;
     }
 
-
     public AppLauncherLayoutDefinition getAppLauncherLayout() {
         return appLauncherLayout;
     }
 
     public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
         this.appLauncherLayout = appLauncherLayout;
+    }
+
+    public PulseDefinition getPulse() {
+        return pulse;
+    }
+
+    public void setPulse(PulseDefinition pulse) {
+        this.pulse = pulse;
     }
 
     /**

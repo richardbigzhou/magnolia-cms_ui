@@ -34,25 +34,35 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.api.view.View;
 
 /**
  * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
- *
- * @param <L> listener for calling back to parent.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+public interface PulseListPresenter {
 
     View start();
 
     View openItem(String itemId) throws RegistrationException;
 
-    void setListener(L listener);
+    void setListener(Listener listener);
+
+    int getPendingItemCount();
+
+    PulseItemCategory getCategory();
 
     /**
      * Listener interface used to call parent presenter.
      */
     interface Listener {
+
         void showList();
+
+        void openItem(String identifier, String itemId);
+
+        void updatePulseCounter();
+
+        void updateView(PulseItemCategory cate);
     }
 }

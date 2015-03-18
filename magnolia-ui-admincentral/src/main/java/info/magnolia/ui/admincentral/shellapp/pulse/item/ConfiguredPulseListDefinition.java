@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 
 /**
- * Main view for pulse.
+ * Configured {@link PulseListDefinition}.
  */
-public interface PulseView extends View {
+public class ConfiguredPulseListDefinition implements PulseListDefinition {
 
-    void setPulseSubView(View view);
+    private String name;
+    private Class<? extends PulseListPresenter> presenterClass;
 
-    void setListener(Listener listener);
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void updateCategoryBadgeCount(PulseItemCategory category, int count);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void setTabActive(PulseItemCategory category);
+    @Override
+    public Class<? extends PulseListPresenter> getPresenterClass() {
+        return presenterClass;
+    }
 
-    void initNavigator(PulseItemCategory... categories);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void onCategoryChange(PulseItemCategory category);
+    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
     }
 }
