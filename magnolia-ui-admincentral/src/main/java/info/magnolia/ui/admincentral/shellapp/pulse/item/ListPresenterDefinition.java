@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.i18nsystem.I18nable;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+
+import java.io.Serializable;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
- *
- * @param <L> listener for calling back to parent.
+ * Configured presenteres definition.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+@I18nable
+public interface ListPresenterDefinition extends Serializable {
 
-    View start();
+    String getName();
 
-    View openItem(String itemId) throws RegistrationException;
+    boolean isEnabled();
 
-    void setListener(L listener);
-
-    /**
-     * Listener interface used to call parent presenter.
-     */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String itemName, String itemId);
-
-        void updatePendingMessagesAndTasksCount();
-
-        void updateView(PulseItemCategory cate);
-    }
-
-    /**
-     * @return
-     */
-    PulseItemCategory getCategory();
-
-    /**
-     * @return
-     */
-    int getNumberOfPendingItemForCurrentUser();
+    Class<? extends PulseListPresenter> getImplementationClass();
 }

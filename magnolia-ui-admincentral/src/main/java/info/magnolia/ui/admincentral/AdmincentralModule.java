@@ -39,6 +39,7 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenterDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
@@ -64,13 +65,13 @@ public class AdmincentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfigurationSourceFactory configurationSourceFactory;
     private AppLauncherLayoutDefinition appLauncherLayout;
+    private PulsePresenterDefinition pulse;
 
     private final String magnoliaHome;
 
-
     @Inject
     public AdmincentralModule(ItemViewDefinitionRegistry itemViewDefinitionRegistry, AppLauncherLayoutManager appLauncherLayoutManager,
-                              ConfigurationSourceFactory configurationSourceFactory, MagnoliaConfigurationProperties mcp) {
+            ConfigurationSourceFactory configurationSourceFactory, MagnoliaConfigurationProperties mcp) {
         this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configurationSourceFactory = configurationSourceFactory;
@@ -98,13 +99,26 @@ public class AdmincentralModule implements ModuleLifecycle {
         this.userControl = userControl;
     }
 
-
     public AppLauncherLayoutDefinition getAppLauncherLayout() {
         return appLauncherLayout;
     }
 
     public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
         this.appLauncherLayout = appLauncherLayout;
+    }
+
+    /**
+     * @return the pulse
+     */
+    public PulsePresenterDefinition getPulse() {
+        return pulse;
+    }
+
+    /**
+     * @param pulse the pulse to set
+     */
+    public void setPulse(PulsePresenterDefinition pulse) {
+        this.pulse = pulse;
     }
 
     /**

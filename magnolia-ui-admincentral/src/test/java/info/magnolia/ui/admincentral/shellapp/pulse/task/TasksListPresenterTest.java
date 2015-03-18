@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -59,6 +60,7 @@ public class TasksListPresenterTest {
 
     private TasksListPresenter presenter;
     private TaskDefinitionRegistry definitionRegistry;
+    private TasksListPresenterDefinition presenterDefinition;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
     private Task task;
@@ -72,10 +74,11 @@ public class TasksListPresenterTest {
 
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
+        this.presenterDefinition = mock(TasksListPresenterDefinition.class);
         this.tasksManager = mock(TasksManager.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),
-                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context);
+                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, null, presenterDefinition); // TODO: inject EventBus
 
         task.setName("testTask");
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredListPresenterDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ListPresenterDefinition;
+
+import java.util.List;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  *
- * @param <L> listener for calling back to parent.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+public class PulsePresenterDefinition extends ConfiguredListPresenterDefinition {
 
-    View start();
-
-    View openItem(String itemId) throws RegistrationException;
-
-    void setListener(L listener);
+    private List<ListPresenterDefinition> presenters;
 
     /**
-     * Listener interface used to call parent presenter.
+     * @return the presenters
      */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String itemName, String itemId);
-
-        void updatePendingMessagesAndTasksCount();
-
-        void updateView(PulseItemCategory cate);
+    public List<ListPresenterDefinition> getPresenters() {
+        return presenters;
     }
 
     /**
-     * @return
+     * @param presenters the presenters to set
      */
-    PulseItemCategory getCategory();
+    public void setPresenters(List<ListPresenterDefinition> presenters) {
+        this.presenters = presenters;
+    }
 
-    /**
-     * @return
-     */
-    int getNumberOfPendingItemForCurrentUser();
+    public void addPresenters(ListPresenterDefinition presenter) {
+        this.presenters.add(presenter);
+    }
 }

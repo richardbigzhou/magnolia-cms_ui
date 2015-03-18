@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredListPresenterDefinition;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  *
- * @param <L> listener for calling back to parent.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+public class MessagesListPresenterDefinition extends ConfiguredListPresenterDefinition {
 
-    View start();
-
-    View openItem(String itemId) throws RegistrationException;
-
-    void setListener(L listener);
-
-    /**
-     * Listener interface used to call parent presenter.
-     */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String itemName, String itemId);
-
-        void updatePendingMessagesAndTasksCount();
-
-        void updateView(PulseItemCategory cate);
+    public MessagesListPresenterDefinition() {
+        setImplementationClass(MessagesListPresenter.class);
     }
-
-    /**
-     * @return
-     */
-    PulseItemCategory getCategory();
-
-    /**
-     * @return
-     */
-    int getNumberOfPendingItemForCurrentUser();
 }

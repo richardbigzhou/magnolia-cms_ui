@@ -58,23 +58,25 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link MessagesListView}.
  */
-public final class MessagesListPresenter extends AbstractPulseListPresenter<Message, MessagesListPresenter.Listener> implements MessagesListView.Listener, MessageEventHandler {
+public final class MessagesListPresenter extends AbstractPulseListPresenter<Message, PulseListPresenter.Listener> implements MessagesListView.Listener, MessageEventHandler {
 
     private final EventBus admincentralEventBus;
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
     private final String userId;
+    private MessagesListPresenterDefinition presenterDefinition;
 
     @Inject
     public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context) {
+            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, MessagesListPresenterDefinition presenterDefinition) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;
         this.userId = context.getUser().getName();
+        this.presenterDefinition = presenterDefinition;
     }
 
     @Override
@@ -115,6 +117,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
         }
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
+        listener.updatePendingMessagesAndTasksCount();
     }
 
     @Override
@@ -124,6 +127,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
+        listener.updatePendingMessagesAndTasksCount();
     }
 
     @Override
@@ -142,13 +146,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Override
     public void onItemClicked(String messageId) {
-        listener.openMessage(messageId);
+        listener.openItem(this.presenterDefinition.getName(), messageId);
         messagesManager.clearMessage(userId, messageId);
     }
 
     @Override
     public void updateDetailView(String itemId) {
-        listener.openMessage(itemId);
+        listener.openItem(this.presenterDefinition.getName(), itemId);
     }
 
     @Override
@@ -157,6 +161,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
          * Refreshes the view to display the updated underlying data.
          */
         initView();
+        listener.updatePendingMessagesAndTasksCount();
     }
 
     private void doUnreadMessagesUpdate(final MessageType type) {
@@ -178,14 +183,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
         }
     }
 
-    public int getNumberOfUnclearedMessagesForCurrentUser() {
-        return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
+    @Override
+    public PulseItemCategory getCategory() {
+        return PulseItemCategory.MESSAGES;
     }
 
-    /**
-     * Listener interface used to call back to parent presenter.
-     */
-    public interface Listener extends PulseListPresenter.Listener {
-        public void openMessage(String messageId);
+    @Override
+    public int getNumberOfPendingItemForCurrentUser() {
+        return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
     }
 }

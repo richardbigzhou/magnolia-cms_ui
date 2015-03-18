@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
- *
- * @param <L> listener for calling back to parent.
+ * Default implementation of {@link ListPresenterDefinition} used for configuration in the repository.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+public abstract class ConfiguredListPresenterDefinition implements ListPresenterDefinition {
 
-    View start();
+    public static final String PROPERTY_NAME_IMPLEMENTATION_CLASS = "implementationClass";
 
-    View openItem(String itemId) throws RegistrationException;
+    private String name;
+    private boolean enabled = true;
+    private Class<? extends PulseListPresenter> implementationClass;
 
-    void setListener(L listener);
-
-    /**
-     * Listener interface used to call parent presenter.
-     */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String itemName, String itemId);
-
-        void updatePendingMessagesAndTasksCount();
-
-        void updateView(PulseItemCategory cate);
+    @Override
+    public String getName() {
+        return name;
     }
 
-    /**
-     * @return
-     */
-    PulseItemCategory getCategory();
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-    /**
-     * @return
-     */
-    int getNumberOfPendingItemForCurrentUser();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Class<? extends PulseListPresenter> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<? extends PulseListPresenter> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
+
 }

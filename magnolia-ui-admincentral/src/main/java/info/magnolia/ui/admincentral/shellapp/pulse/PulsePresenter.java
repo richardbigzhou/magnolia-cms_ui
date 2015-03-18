@@ -34,19 +34,20 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventHandler;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.task.event.TaskEvent;
-import info.magnolia.task.event.TaskEventHandler;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ListPresenterDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.message.MessageEvent;
-import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,36 +58,40 @@ import org.slf4j.LoggerFactory;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, MessagesListPresenter.Listener, TasksListPresenter.Listener, MessageEventHandler, TaskEventHandler {
+public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, EventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 
     private PulseView view;
-    private MessagesListPresenter messagesPresenter;
-    private TasksListPresenter tasksPresenter;
     private ShellImpl shell;
     private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
     private boolean isDisplayingDetailView;
+    private PulseListPresenter defaultPresenter; // use as default.
+    private Map<String, PulseListPresenter> presenters = new HashMap<>();
+    private PulsePresenterDefinition pulsePresenterDefinition;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
-            final MessagesListPresenter messagesPresenter, final TasksListPresenter tasksPresenter) {
+    public PulsePresenter(PulsePresenterDefinition pulsePresenterDefinition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
         this.view = view;
-        this.messagesPresenter = messagesPresenter;
-        this.tasksPresenter = tasksPresenter;
         this.shell = shell;
-        admincentralEventBus.addHandler(MessageEvent.class, this);
-        admincentralEventBus.addHandler(TaskEvent.class, this);
-
-        updatePendingMessagesAndTasksCount();
+        this.componentProvider = componentProvider;
+        this.pulsePresenterDefinition = pulsePresenterDefinition;
     }
 
     public View start() {
         view.setListener(this);
-        messagesPresenter.setListener(this);
-        tasksPresenter.setListener(this);
 
-        view.setPulseSubView(tasksPresenter.start());
+        for (ListPresenterDefinition defPresenter : pulsePresenterDefinition.getPresenters()) {
+            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getImplementationClass(), defPresenter.getName());
+            presenter.setListener(this);
+            presenters.put(defPresenter.getName(), presenter);
+        }
+
+        if (presenters.size() > 0) {
+            defaultPresenter = presenters.values().iterator().next();
+            view.setPulseSubView(defaultPresenter.start());
+        }
 
         return view;
     }
@@ -98,104 +103,58 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     }
 
     @Override
-    public void openMessage(String messageId) {
-        view.setPulseSubView(messagesPresenter.openItem(messageId));
-        isDisplayingDetailView = true;
-    }
-
-    @Override
     public void showList() {
-        if (selectedCategory == PulseItemCategory.TASKS) {
-            view.setPulseSubView(tasksPresenter.start());
-        } else {
-            view.setPulseSubView(messagesPresenter.start());
+
+        // TODO: Can change List to Map w/ key = category here.
+        for (PulseListPresenter presenter : presenters.values()) {
+            if (selectedCategory == presenter.getCategory()) {
+                view.setPulseSubView(presenter.start());
+                break;
+            }
         }
         isDisplayingDetailView = false;
-    }
-
-    @Override
-    public void messageSent(MessageEvent event) {
-        updatePendingMessagesAndTasksCount();
-    }
-
-    @Override
-    public void messageCleared(MessageEvent event) {
-        updatePendingMessagesAndTasksCount();
-    }
-
-    @Override
-    public void messageRemoved(MessageEvent messageEvent) {
-        updatePendingMessagesAndTasksCount();
-    }
-
-    @Override
-    public void openTask(String taskId) {
-        try {
-            view.setPulseSubView(tasksPresenter.openItem(taskId));
-            isDisplayingDetailView = true;
-        } catch (RegistrationException e) {
-            log.error("Could not open detail view for task.", e);
-        }
-    }
-
-    @Override
-    public void taskClaimed(TaskEvent taskEvent) {
-        updatePendingMessagesAndTasksCount();
-    }
-
-    @Override
-    public void taskAdded(TaskEvent taskEvent) {
-        updatePendingMessagesAndTasksCount();
-        updateView(PulseItemCategory.UNCLAIMED);
-    }
-
-    @Override
-    public void taskResolved(TaskEvent taskEvent) {
-        updatePendingMessagesAndTasksCount();
-        updateView(PulseItemCategory.UNCLAIMED);
-    }
-
-    @Override
-    public void taskFailed(TaskEvent taskEvent) {
-        updatePendingMessagesAndTasksCount();
-        updateView(PulseItemCategory.FAILED);
-    }
-
-    @Override
-    public void taskArchived(TaskEvent taskEvent) {
-        // nothing to do here
-    }
-
-    @Override
-    public void taskRemoved(TaskEvent taskEvent) {
-        // nothing to do here
     }
 
     public boolean isDisplayingDetailView() {
         return isDisplayingDetailView;
     }
 
-    private void updatePendingMessagesAndTasksCount() {
-        int unclearedMessages = messagesPresenter.getNumberOfUnclearedMessagesForCurrentUser();
-        int pendingTasks = tasksPresenter.getNumberOfPendingTasksForCurrentUser();
+    @Override
+    public void openItem(String itemName, String itemId) {
+        try {
+            view.setPulseSubView(presenters.get(itemName).openItem(itemId));
+            isDisplayingDetailView = true;
 
-        shell.setIndication(ShellAppType.PULSE, unclearedMessages + pendingTasks);
-
-        view.updateCategoryBadgeCount(PulseItemCategory.MESSAGES, unclearedMessages);
-        view.updateCategoryBadgeCount(PulseItemCategory.TASKS, pendingTasks);
+        } catch (RegistrationException e) {
+            log.error(e.getMessage());
+        }
     }
 
-    /*
-     * This method won't show the tasks in the active tab straight away but will do it when clicking on the pulse icon.
+    @Override
+    public void updatePendingMessagesAndTasksCount() {
+        int totalItem = 0;
+        for (PulseListPresenter presenter : presenters.values()) {
+            int pendingItem = presenter.getNumberOfPendingItemForCurrentUser();
+            view.updateCategoryBadgeCount(presenter.getCategory(), pendingItem);
+            totalItem += pendingItem;
+
+        }
+
+        shell.setIndication(ShellAppType.PULSE, totalItem);
+    }
+
+    /**
+     * This method is only use in TaskListPresetner now.
      */
-    private void updateView(final PulseItemCategory activeTab) {
+    @Override
+    public void updateView(PulseItemCategory activeTab) {
         // update top navigation and load new tasks
         selectedCategory = PulseItemCategory.TASKS;
         view.setTabActive(PulseItemCategory.TASKS);
-        if (isDisplayingDetailView) {
-            showList();
-        }
+
         // update sub navigation and filter out everything but what is in the active tab
-        tasksPresenter.setTabActive(activeTab);
+        if (defaultPresenter.getCategory() == PulseItemCategory.TASKS) {
+            ((TasksListPresenter) defaultPresenter).setTabActive(activeTab);
+        }
     }
 }
