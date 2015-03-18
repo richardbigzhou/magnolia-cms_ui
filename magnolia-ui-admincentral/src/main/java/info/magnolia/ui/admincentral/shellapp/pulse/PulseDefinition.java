@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+
+import java.util.List;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
+ * Definition for the pulse used by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  */
-public interface PulseListPresenter {
+public interface PulseDefinition {
 
-    View start();
-
-    View openItem(String itemId) throws RegistrationException;
-
-    void setListener(Listener listener);
-
-    int getPendingItemCount();
-
-    PulseItemCategory getCategory();
-
-    /**
-     * Listener interface used to call parent presenter.
-     */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String identifier, String itemId);
-
-        void updatePulseCounter();
-
-        void updateView(PulseItemCategory category);
-    }
+    List<PulseListDefinition> getPresenters();
 }

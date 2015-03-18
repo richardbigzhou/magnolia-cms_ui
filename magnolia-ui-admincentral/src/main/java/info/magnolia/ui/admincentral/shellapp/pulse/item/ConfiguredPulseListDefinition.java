@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 
 /**
- * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
+ * Configured {@link PulseListDefinition}.
  */
-public interface PulseListPresenter {
+public class ConfiguredPulseListDefinition implements PulseListDefinition {
 
-    View start();
+    private String name;
+    private Class<? extends PulseListPresenter> presenterClass;
 
-    View openItem(String itemId) throws RegistrationException;
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void setListener(Listener listener);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    int getPendingItemCount();
+    @Override
+    public Class<? extends PulseListPresenter> getPresenterClass() {
+        return presenterClass;
+    }
 
-    PulseItemCategory getCategory();
-
-    /**
-     * Listener interface used to call parent presenter.
-     */
-    interface Listener {
-
-        void showList();
-
-        void openItem(String identifier, String itemId);
-
-        void updatePulseCounter();
-
-        void updateView(PulseItemCategory category);
+    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
     }
 }

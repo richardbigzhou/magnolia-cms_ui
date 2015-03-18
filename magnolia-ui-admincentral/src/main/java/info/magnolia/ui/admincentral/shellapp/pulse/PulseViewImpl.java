@@ -53,26 +53,19 @@ public final class PulseViewImpl implements PulseView {
 
     private final VerticalLayout layout = new VerticalLayout();
 
-    private final PulseItemCategoryNavigator navigator;
+    private PulseItemCategoryNavigator navigator;
 
     private Listener listener;
 
+    private final SimpleTranslator i18n;
+
     @Inject
-    public PulseViewImpl(final SimpleTranslator i18n) {
+    public PulseViewImpl(SimpleTranslator i18n) {
         layout.addStyleName("v-pulse");
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
-        navigator = new PulseItemCategoryNavigator(i18n, false, true, PulseItemCategory.TASKS, PulseItemCategory.MESSAGES);
-        navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
-            @Override
-            public void itemCategoryChanged(CategoryChangedEvent event) {
-                final PulseItemCategory category = event.getCategory();
-                listener.onCategoryChange(category);
-            }
-        });
-        navigator.setHeight("25px");
-        layout.addComponentAsFirst(navigator);
+        this.i18n = i18n;
     }
 
     @Override
@@ -103,6 +96,22 @@ public final class PulseViewImpl implements PulseView {
     @Override
     public void setTabActive(PulseItemCategory category) {
         navigator.setActive(category);
+    }
+
+    @Override
+    public void initNavigator(PulseItemCategory... categories) {
+        navigator = new PulseItemCategoryNavigator(i18n, false, true, categories);
+        navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
+
+            @Override
+            public void itemCategoryChanged(CategoryChangedEvent event) {
+                final PulseItemCategory category = event.getCategory();
+                listener.onCategoryChange(category);
+            }
+        });
+        navigator.setHeight("25px");
+        layout.addComponentAsFirst(navigator);
+
     }
 
 }

@@ -573,4 +573,19 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
     }
 
+    @Test
+    public void testUpdateTo54BootstrapsNewPulseConfig() throws Exception {
+        // GIVEN
+        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config", NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.7"));
+
+        // THEN
+
+        assertThat(config, hasNode("pulse"));
+        assertThat(config.getNode("pulse"), hasNode("presenters"));
+
+    }
+
 }

@@ -49,6 +49,8 @@ public interface PulseView extends View {
 
     void setTabActive(PulseItemCategory category);
 
+    void initNavigator(PulseItemCategory... categories);
+
     /**
      * Listener.
      */
@@ -56,5 +58,4 @@ public interface PulseView extends View {
 
         void onCategoryChange(PulseItemCategory category);
     }
-
 }
