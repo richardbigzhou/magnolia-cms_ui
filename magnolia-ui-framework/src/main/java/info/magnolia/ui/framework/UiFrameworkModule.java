@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework;
 
 import info.magnolia.config.source.ConfigurationSourceFactory;
-import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
@@ -43,8 +42,6 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
-
-import java.nio.file.Paths;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -59,10 +56,9 @@ public class UiFrameworkModule implements ModuleLifecycle {
     private final DialogDefinitionRegistry dialogRegistry;
     private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
     private AppDescriptorRegistry appDescriptorRegistry;
-    private final String magnoliaHome;
 
     @Inject
-    public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory, MagnoliaConfigurationProperties mcp,
+    public UiFrameworkModule(ConfigurationSourceFactory configSourceFactory,
                              DialogDefinitionRegistry dialogRegistry, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry,
                              AppDescriptorRegistry appDescriptorRegistry) {
 
@@ -70,7 +66,6 @@ public class UiFrameworkModule implements ModuleLifecycle {
         this.dialogRegistry = dialogRegistry;
         this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.appDescriptorRegistry = appDescriptorRegistry;
-        this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
     @Override
@@ -81,9 +76,9 @@ public class UiFrameworkModule implements ModuleLifecycle {
             configSourceFactory.jcr().withFilter(new IsDialogNode()).bindWithDefaults(dialogRegistry);
             configSourceFactory.jcr().withFilter(new IsFieldType()).bindWithDefaults(fieldTypeDefinitionRegistry);
 
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(dialogRegistry);
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(appDescriptorRegistry);
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(fieldTypeDefinitionRegistry);
+            configSourceFactory.yaml().bindWithDefaults(dialogRegistry);
+            configSourceFactory.yaml().bindWithDefaults(appDescriptorRegistry);
+            configSourceFactory.yaml().bindWithDefaults(fieldTypeDefinitionRegistry);
         }
     }
 

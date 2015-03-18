@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.config.source.ConfigurationSourceFactory;
-import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
@@ -44,8 +43,6 @@ import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
-
-import java.nio.file.Paths;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -65,23 +62,19 @@ public class AdmincentralModule implements ModuleLifecycle {
     private ConfigurationSourceFactory configurationSourceFactory;
     private AppLauncherLayoutDefinition appLauncherLayout;
 
-    private final String magnoliaHome;
-
-
     @Inject
     public AdmincentralModule(ItemViewDefinitionRegistry itemViewDefinitionRegistry, AppLauncherLayoutManager appLauncherLayoutManager,
-                              ConfigurationSourceFactory configurationSourceFactory, MagnoliaConfigurationProperties mcp) {
+            ConfigurationSourceFactory configurationSourceFactory) {
         this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configurationSourceFactory = configurationSourceFactory;
-        this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             configurationSourceFactory.jcr().withFilter(new IsViewType()).withModulePath("messageViews").bindTo(itemViewDefinitionRegistry);
-            configurationSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(itemViewDefinitionRegistry);
+            configurationSourceFactory.yaml().bindWithDefaults(itemViewDefinitionRegistry);
         }
         appLauncherLayoutManager.setLayout(getAppLauncherLayout());
     }

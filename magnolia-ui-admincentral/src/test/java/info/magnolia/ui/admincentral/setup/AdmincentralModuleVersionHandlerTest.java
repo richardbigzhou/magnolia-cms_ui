@@ -98,8 +98,10 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     @Override
     protected List<String> getModuleDescriptorPathsForTests() {
         return Arrays.asList(
-                "/META-INF/magnolia/core.xml",
-                "/META-INF/magnolia/ui-framework.xml"
+                "/META-INF/magnolia/ui-framework.xml",
+                "/META-INF/magnolia/config.xml", // ui-framework and admincentral depend upon config...
+                "/META-INF/magnolia/resource-loader.xml", // ... and config depends upon resource-loader
+                "/META-INF/magnolia/core.xml"
                 );
     }
 

@@ -34,15 +34,12 @@
 package info.magnolia.ui.mediaeditor;
 
 import info.magnolia.config.source.ConfigurationSourceFactory;
-import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
-
-import java.nio.file.Paths;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -53,17 +50,14 @@ import javax.jcr.RepositoryException;
  */
 public class MediaEditorModule implements ModuleLifecycle {
 
-    private final String magnoliaHome;
-
     private ConfigurationSourceFactory configSourceFactory;
 
     private MediaEditorRegistry registry;
 
     @Inject
-    public MediaEditorModule(ConfigurationSourceFactory configSourceFactory, MediaEditorRegistry registry, MagnoliaConfigurationProperties mcp) {
+    public MediaEditorModule(ConfigurationSourceFactory configSourceFactory, MediaEditorRegistry registry) {
         this.configSourceFactory = configSourceFactory;
         this.registry = registry;
-        this.magnoliaHome = mcp.getProperty("magnolia.home");
     }
 
     @Override
@@ -71,7 +65,7 @@ public class MediaEditorModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
 
             configSourceFactory.jcr().withFilter(new IsMediaEditor()).withModulePath("mediaEditors").bindTo(registry);
-            configSourceFactory.yaml().from(Paths.get(magnoliaHome)).bindWithDefaults(registry);
+            configSourceFactory.yaml().bindWithDefaults(registry);
         }
     }
 
