@@ -82,12 +82,6 @@
       <implementation>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</implementation>
     </component>
 
-    <!-- Task Event Dispatcher -->
-    <component>
-      <type>info.magnolia.ui.framework.task.LocalTaskDispatcherManager</type>
-      <implementation>info.magnolia.ui.framework.task.LocalTaskDispatcherManager</implementation>
-    </component>
-
     <!-- Ui Api -->
     <type-mapping>
       <type>info.magnolia.ui.api.action.ActionDefinition</type>

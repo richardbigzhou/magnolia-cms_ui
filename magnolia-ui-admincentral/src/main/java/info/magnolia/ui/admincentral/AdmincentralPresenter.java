@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SystemEventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
@@ -48,6 +51,8 @@ import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.location.LocationHistoryHandler;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.DefaultLocationHistoryMapper;
+import info.magnolia.ui.framework.event.LoginEvent;
+import info.magnolia.ui.framework.event.LogoutEvent;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
@@ -62,10 +67,17 @@ import com.vaadin.ui.UI;
 public class AdmincentralPresenter {
 
     private final ShellImpl shell;
+    private final EventBus systemEventBus;
+    private final ComponentProvider componentProvider;
 
     @Inject
-    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager, UserMenuPresenter userMenu) {
+    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, @Named(SystemEventBus.NAME) final EventBus systemEventBus,
+            final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController,
+            final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager,
+            UserMenuPresenter userMenu, ComponentProvider componentProvider) {
         this.shell = shell;
+        this.systemEventBus = systemEventBus;
+        this.componentProvider = componentProvider;
 
         shell.setUserMenu(userMenu.start());
 
@@ -82,10 +94,19 @@ public class AdmincentralPresenter {
 
         // We handle application errors at UI level in our own way, but we can't handle 'internal errors' at UI level — e.g. those that occur during paint phase and corrupt the UIDL response;
         // for these, in order to get a trace of the error in the server logs, we rely on VaadinSession's DefaultErrorHandler — should never be null, see com.vaadin.server.ErrorEvent#findErrorHandler(ClientConnector).
-        UI.getCurrent().setErrorHandler(new AdmincentralErrorHandler(messagesManager));
+        if (UI.getCurrent() != null) {
+            UI.getCurrent().setErrorHandler(new AdmincentralErrorHandler(messagesManager));
+        }
     }
 
     public View start() {
+        LoginEvent event = componentProvider.newInstance(LoginEvent.class, MgnlContext.getUser().getName(), UI.getCurrent().getSession(), componentProvider);
+        systemEventBus.fireEvent(event);
         return shell.getMagnoliaShell();
+    }
+
+    public void stop() {
+        LogoutEvent event = new LogoutEvent(MgnlContext.getUser().getName(), UI.getCurrent().getSession());
+        systemEventBus.fireEvent(event);
     }
 }

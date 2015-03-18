@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.task;
+package info.magnolia.ui.framework.event;
 
-import info.magnolia.task.event.TaskEvent;
+import info.magnolia.event.Event;
+import info.magnolia.objectfactory.ComponentProvider;
+
+import com.vaadin.server.VaadinSession;
 
 /**
- * TaskEventDispatcher.
+ * LoginEvent fired by {@link AdmincentralPresenter}.
  */
-public interface TaskEventDispatcher {
+public class LoginEvent implements Event<LoginEventHandler> {
 
-    void onTaskEvent(TaskEvent task);
+    private final String userName;
+
+    private final VaadinSession session;
+    private ComponentProvider componentProvider;
+
+    public LoginEvent(String userName, VaadinSession session, ComponentProvider componentProvider) {
+        this.userName = userName;
+        this.session = session;
+        this.componentProvider = componentProvider;
+    }
+
+    @Override
+    public void dispatch(LoginEventHandler loginEventHandler) {
+        loginEventHandler.onLogin(this);
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public VaadinSession getSession() {
+        return session;
+    }
+
+    public ComponentProvider getComponentProvider() {
+        return componentProvider;
+    }
 }

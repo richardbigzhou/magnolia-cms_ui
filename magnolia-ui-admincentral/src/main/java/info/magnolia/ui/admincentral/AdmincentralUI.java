@@ -53,8 +53,6 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.task.LocalTaskDispatcher;
-import info.magnolia.ui.framework.task.LocalTaskDispatcherManager;
 
 import java.util.List;
 
@@ -82,8 +80,7 @@ public class AdmincentralUI extends UI {
     private LocalMessageDispatcher messageDispatcher;
     private String userName;
 
-    private LocalTaskDispatcherManager taskDispatcherManager;
-    private LocalTaskDispatcher taskDispatcher;
+    private AdmincentralPresenter presenter;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -117,7 +114,7 @@ public class AdmincentralUI extends UI {
 
         getPage().setTitle("Magnolia 5");
 
-        AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
+        this.presenter = componentProvider.newInstance(AdmincentralPresenter.class);
         View view = presenter.start();
         setContent(view.asVaadinComponent());
 
@@ -126,15 +123,13 @@ public class AdmincentralUI extends UI {
         userName = MgnlContext.getUser().getName();
         messagesManager.registerMessagesListener(userName, messageDispatcher);
 
-        taskDispatcher = componentProvider.newInstance(LocalTaskDispatcher.class, getSession());
-        taskDispatcherManager = Components.getComponent(LocalTaskDispatcherManager.class);
-        taskDispatcherManager.registerLocalTasksListener(userName, taskDispatcher);
     }
 
     @Override
     public void detach() {
         messagesManager.unregisterMessagesListener(userName, messageDispatcher);
-        taskDispatcherManager.unregisterLocalTasksListener(userName, taskDispatcher);
+
+        presenter.stop();
         try {
             // make sure the error handler covers the detach phase (it does not happen in service phase).
             super.detach();
