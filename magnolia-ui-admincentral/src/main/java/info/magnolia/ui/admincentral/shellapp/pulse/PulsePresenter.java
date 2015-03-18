@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandler;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ListPresenterDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter;
@@ -68,22 +68,22 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     private boolean isDisplayingDetailView;
     private PulseListPresenter defaultPresenter; // use as default.
     private Map<String, PulseListPresenter> presenters = new HashMap<>();
-    private PulsePresenterDefinition pulsePresenterDefinition;
+    private PulseDefinition definition;
     private ComponentProvider componentProvider;
 
     @Inject
-    public PulsePresenter(PulsePresenterDefinition pulsePresenterDefinition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
+    public PulsePresenter(PulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
         this.view = view;
         this.shell = shell;
         this.componentProvider = componentProvider;
-        this.pulsePresenterDefinition = pulsePresenterDefinition;
+        this.definition = definition;
     }
 
     public View start() {
         view.setListener(this);
 
-        for (ListPresenterDefinition defPresenter : pulsePresenterDefinition.getPresenters()) {
-            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getImplementationClass(), defPresenter.getName());
+        for (PulseListDefinition defPresenter : definition.getPresenters()) {
+            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getPresenterClass(), defPresenter.getName());
             presenter.setListener(this);
             presenters.put(defPresenter.getName(), presenter);
         }
@@ -120,9 +120,9 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     }
 
     @Override
-    public void openItem(String itemName, String itemId) {
+    public void openItem(String identifier, String itemId) {
         try {
-            view.setPulseSubView(presenters.get(itemName).openItem(itemId));
+            view.setPulseSubView(presenters.get(identifier).openItem(itemId));
             isDisplayingDetailView = true;
 
         } catch (RegistrationException e) {
@@ -131,10 +131,10 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     }
 
     @Override
-    public void updatePendingMessagesAndTasksCount() {
+    public void updatePulseCounter() {
         int totalItem = 0;
         for (PulseListPresenter presenter : presenters.values()) {
-            int pendingItem = presenter.getNumberOfPendingItemForCurrentUser();
+            int pendingItem = presenter.getPendingItemCount();
             view.updateCategoryBadgeCount(presenter.getCategory(), pendingItem);
             totalItem += pendingItem;
 
@@ -144,7 +144,7 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     }
 
     /**
-     * This method is only use in TaskListPresetner now.
+     * This method is only use in TaskListPresenter now.
      */
     @Override
     public void updateView(PulseItemCategory activeTab) {

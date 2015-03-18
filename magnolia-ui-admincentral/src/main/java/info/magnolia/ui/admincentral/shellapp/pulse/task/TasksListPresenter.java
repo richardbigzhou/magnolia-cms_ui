@@ -45,10 +45,10 @@ import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
@@ -71,7 +71,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link TasksListView}.
  */
-public final class TasksListPresenter extends AbstractPulseListPresenter<Task, PulseListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener<Task>, TaskEventHandler {
+public final class TasksListPresenter extends AbstractPulseListPresenter<Task> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener<Task>, TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
@@ -82,13 +82,13 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, P
     private final ComponentProvider componentProvider;
     private final SimpleTranslator i18n;
     private final String userId;
-    private TasksListPresenterDefinition presenterDefinition;
-    private EventBus admincentralEventBus;
+    private final PulseListDefinition definition;
+    private final EventBus admincentralEventBus;
 
     @Inject
     public TasksListPresenter(final TasksListView view, final TasksContainer container, final ShellImpl shellImpl, final TasksManager tasksManager,
             final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
-            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, TasksListPresenterDefinition presenterDefinition) {
+            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, PulseListDefinition definition) {
         super(container);
         this.view = view;
         this.shell = shellImpl;
@@ -98,7 +98,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, P
         this.i18n = i18n;
         this.userId = context.getUser().getName();
         this.admincentralEventBus = admincentralEventBus;
-        this.presenterDefinition = presenterDefinition;
+        this.definition = definition;
     }
 
     @Override
@@ -176,12 +176,12 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, P
 
     @Override
     public void onItemClicked(String itemId) {
-        listener.openItem(this.presenterDefinition.getName(), itemId);
+        listener.openItem(definition.getName(), itemId);
     }
 
     @Override
     public void updateDetailView(String itemId) {
-        listener.openItem(this.presenterDefinition.getName(), itemId);
+        listener.openItem(definition.getName(), itemId);
     }
 
     @Override
@@ -238,24 +238,24 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, P
 
     @Override
     public void taskClaimed(TaskEvent taskEvent) {
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
     }
 
     @Override
     public void taskAdded(TaskEvent taskEvent) {
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
         listener.updateView(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
     public void taskResolved(TaskEvent taskEvent) {
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
         listener.updateView(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
     public void taskFailed(TaskEvent taskEvent) {
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
         listener.updateView(PulseItemCategory.FAILED);
     }
 
@@ -270,7 +270,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, P
     }
 
     @Override
-    public int getNumberOfPendingItemForCurrentUser() {
+    public int getPendingItemCount() {
         return tasksManager.findPendingTasksByUser(userId).size();
     }
 }

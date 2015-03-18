@@ -31,17 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredListPresenterDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 
 /**
- *
+ * Configured {@link PulseListDefinition}.
  */
-public class TasksListPresenterDefinition extends ConfiguredListPresenterDefinition {
+public abstract class ConfiguredPulseListDefinition implements PulseListDefinition {
 
-    public TasksListPresenterDefinition() {
-        setImplementationClass(TasksListPresenter.class);
+    private String name;
+    private Class<? extends PulseListPresenter> presenterClass;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public Class<? extends PulseListPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
+    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
     }
 
 }

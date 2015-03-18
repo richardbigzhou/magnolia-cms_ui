@@ -47,6 +47,7 @@ import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.ConfiguredTaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.test.mock.MockContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
@@ -60,7 +61,7 @@ public class TasksListPresenterTest {
 
     private TasksListPresenter presenter;
     private TaskDefinitionRegistry definitionRegistry;
-    private TasksListPresenterDefinition presenterDefinition;
+    private PulseListDefinition presenterDefinition;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
     private Task task;
@@ -74,7 +75,7 @@ public class TasksListPresenterTest {
 
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
-        this.presenterDefinition = mock(TasksListPresenterDefinition.class);
+        this.presenterDefinition = mock(PulseListDefinition.class);
         this.tasksManager = mock(TasksManager.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksListView.class), mock(TasksContainer.class), mock(ShellImpl.class),

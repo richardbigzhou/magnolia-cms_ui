@@ -31,35 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredListPresenterDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ListPresenterDefinition;
-
-import java.util.List;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 
 /**
- *
+ * Definition for list-presenters in the pulse.
  */
-public class PulsePresenterDefinition extends ConfiguredListPresenterDefinition {
+public interface PulseListDefinition {
 
-    private List<ListPresenterDefinition> presenters;
+    String getName();
 
-    /**
-     * @return the presenters
-     */
-    public List<ListPresenterDefinition> getPresenters() {
-        return presenters;
-    }
-
-    /**
-     * @param presenters the presenters to set
-     */
-    public void setPresenters(List<ListPresenterDefinition> presenters) {
-        this.presenters = presenters;
-    }
-
-    public void addPresenters(ListPresenterDefinition presenter) {
-        this.presenters.add(presenter);
-    }
+    Class<? extends PulseListPresenter> getPresenterClass();
 }

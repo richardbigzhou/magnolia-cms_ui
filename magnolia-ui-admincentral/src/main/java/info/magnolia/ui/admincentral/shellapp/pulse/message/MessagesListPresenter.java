@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
@@ -58,25 +58,25 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link MessagesListView}.
  */
-public final class MessagesListPresenter extends AbstractPulseListPresenter<Message, PulseListPresenter.Listener> implements MessagesListView.Listener, MessageEventHandler {
+public final class MessagesListPresenter extends AbstractPulseListPresenter<Message> implements MessagesListView.Listener, MessageEventHandler {
 
     private final EventBus admincentralEventBus;
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
     private final String userId;
-    private MessagesListPresenterDefinition presenterDefinition;
+    private final PulseListDefinition definition;
 
     @Inject
     public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, MessagesListPresenterDefinition presenterDefinition) {
+            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, PulseListDefinition definition) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;
         this.userId = context.getUser().getName();
-        this.presenterDefinition = presenterDefinition;
+        this.definition = definition;
     }
 
     @Override
@@ -117,7 +117,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
         }
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
     }
 
     @Override
@@ -127,7 +127,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
     }
 
     @Override
@@ -146,13 +146,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Override
     public void onItemClicked(String messageId) {
-        listener.openItem(this.presenterDefinition.getName(), messageId);
+        listener.openItem(this.definition.getName(), messageId);
         messagesManager.clearMessage(userId, messageId);
     }
 
     @Override
     public void updateDetailView(String itemId) {
-        listener.openItem(this.presenterDefinition.getName(), itemId);
+        listener.openItem(this.definition.getName(), itemId);
     }
 
     @Override
@@ -161,7 +161,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
          * Refreshes the view to display the updated underlying data.
          */
         initView();
-        listener.updatePendingMessagesAndTasksCount();
+        listener.updatePulseCounter();
     }
 
     private void doUnreadMessagesUpdate(final MessageType type) {
@@ -189,7 +189,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     @Override
-    public int getNumberOfPendingItemForCurrentUser() {
+    public int getPendingItemCount() {
         return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
     }
 }

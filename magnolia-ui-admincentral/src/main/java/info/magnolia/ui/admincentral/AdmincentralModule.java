@@ -39,7 +39,7 @@ import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenterDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.ConfiguredPulseDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
@@ -65,7 +65,7 @@ public class AdmincentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfigurationSourceFactory configurationSourceFactory;
     private AppLauncherLayoutDefinition appLauncherLayout;
-    private PulsePresenterDefinition pulse;
+    private ConfiguredPulseDefinition pulse;
 
     private final String magnoliaHome;
 
@@ -110,14 +110,14 @@ public class AdmincentralModule implements ModuleLifecycle {
     /**
      * @return the pulse
      */
-    public PulsePresenterDefinition getPulse() {
+    public ConfiguredPulseDefinition getPulse() {
         return pulse;
     }
 
     /**
      * @param pulse the pulse to set
      */
-    public void setPulse(PulsePresenterDefinition pulse) {
+    public void setPulse(ConfiguredPulseDefinition pulse) {
         this.pulse = pulse;
     }
 

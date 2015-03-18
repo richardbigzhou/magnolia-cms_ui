@@ -42,13 +42,17 @@ import info.magnolia.ui.api.view.View;
  *
  * @param <L> listener for calling back to parent.
  */
-public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
+public interface PulseListPresenter {
 
     View start();
 
     View openItem(String itemId) throws RegistrationException;
 
-    void setListener(L listener);
+    void setListener(Listener listener);
+
+    int getPendingItemCount();
+
+    PulseItemCategory getCategory();
 
     /**
      * Listener interface used to call parent presenter.
@@ -57,20 +61,10 @@ public interface PulseListPresenter<L extends PulseListPresenter.Listener> {
 
         void showList();
 
-        void openItem(String itemName, String itemId);
+        void openItem(String identifier, String itemId);
 
-        void updatePendingMessagesAndTasksCount();
+        void updatePulseCounter();
 
         void updateView(PulseItemCategory cate);
     }
-
-    /**
-     * @return
-     */
-    PulseItemCategory getCategory();
-
-    /**
-     * @return
-     */
-    int getNumberOfPendingItemForCurrentUser();
 }

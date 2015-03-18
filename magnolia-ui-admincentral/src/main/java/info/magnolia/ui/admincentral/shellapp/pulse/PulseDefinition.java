@@ -31,16 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredListPresenterDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+
+import java.util.List;
 
 /**
- *
+ * Definition for the pulse used by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  */
-public class MessagesListPresenterDefinition extends ConfiguredListPresenterDefinition {
-
-    public MessagesListPresenterDefinition() {
-        setImplementationClass(MessagesListPresenter.class);
-    }
+public interface PulseDefinition {
+    List<PulseListDefinition> getPresenters();
 }

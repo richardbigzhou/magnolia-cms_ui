@@ -31,45 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+
+import java.util.List;
 
 /**
- * Default implementation of {@link ListPresenterDefinition} used for configuration in the repository.
+ * Configured {@link PulseDefinition}.
  */
-public abstract class ConfiguredListPresenterDefinition implements ListPresenterDefinition {
+public class ConfiguredPulseDefinition implements PulseDefinition {
 
-    public static final String PROPERTY_NAME_IMPLEMENTATION_CLASS = "implementationClass";
-
-    private String name;
-    private boolean enabled = true;
-    private Class<? extends PulseListPresenter> implementationClass;
+    private List<PulseListDefinition> presenters;
 
     @Override
-    public String getName() {
-        return name;
+    public List<PulseListDefinition> getPresenters() {
+        return presenters;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return enabled;
+    public void setPresenters(List<PulseListDefinition> presenters) {
+        this.presenters = presenters;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addPresenters(PulseListDefinition presenter) {
+        this.presenters.add(presenter);
     }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Class<? extends PulseListPresenter> getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(Class<? extends PulseListPresenter> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
 }
