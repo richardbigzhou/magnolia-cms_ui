@@ -4,19 +4,19 @@
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>fc87b2fb-3ca2-4223-b44d-6b532311bcb1</sv:value>
+    <sv:value>3157ea1e-7865-4c8b-8533-50ab3c42fab9</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:created" sv:type="Date">
-    <sv:value>2015-03-18T10:30:56.004+07:00</sv:value>
+    <sv:value>2015-03-19T09:48:48.019+01:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:createdBy" sv:type="String">
     <sv:value>superuser</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-    <sv:value>2015-03-18T13:38:00.239+07:00</sv:value>
+    <sv:value>2015-03-19T09:50:10.779+01:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
     <sv:value>superuser</sv:value>
@@ -26,85 +26,79 @@
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>7ec8081d-ef90-47b5-bc02-9f5677c60cf4</sv:value>
+      <sv:value>21eaeb30-f23c-4eaa-ab80-d14d3389e89c</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:created" sv:type="Date">
-      <sv:value>2015-03-18T10:50:26.235+07:00</sv:value>
+      <sv:value>2015-03-19T09:50:10.779+01:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:createdBy" sv:type="String">
       <sv:value>superuser</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2015-03-18T10:50:33.468+07:00</sv:value>
+      <sv:value>2015-03-19T09:50:21.490+01:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
     </sv:property>
-    <sv:node sv:name="messages">
-      <sv:property sv:name="jcr:primaryType" sv:type="Name">
-        <sv:value>mgnl:contentNode</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>27861f2e-d3d0-41d8-b754-6e0539fccf7d</sv:value>
-      </sv:property>
-      <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition</sv:value>
-      </sv:property>
-      <sv:property sv:name="enabled" sv:type="String">
-        <sv:value>true</sv:value>
-      </sv:property>
-      <sv:property sv:name="presenterClass" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListPresenter</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:createdBy" sv:type="String">
-        <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:created" sv:type="Date">
-        <sv:value>2015-03-18T10:31:38.807+07:00</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:createdBy" sv:type="String">
-        <sv:value>superuser</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2015-03-18T15:43:05.446+07:00</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-        <sv:value>superuser</sv:value>
-      </sv:property>
-    </sv:node>
     <sv:node sv:name="tasks">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:contentNode</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>3d4ce3af-14db-4c68-9372-0941a8c1be13</sv:value>
+        <sv:value>89c7fade-22a8-4ff9-a9a6-49c7ed1f37b3</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition</sv:value>
-      </sv:property>
-      <sv:property sv:name="enabled" sv:type="String">
-        <sv:value>true</sv:value>
-      </sv:property>
-      <sv:property sv:name="presenterClass" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter</sv:value>
+        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
-        <sv:value>2015-03-18T10:31:05.850+07:00</sv:value>
+        <sv:value>2015-03-19T09:49:04.524+01:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:createdBy" sv:type="String">
         <sv:value>superuser</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2015-03-18T15:42:36.136+07:00</sv:value>
+        <sv:value>2015-03-19T09:53:43.145+01:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="presenterClass" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter</sv:value>
+      </sv:property>
+    </sv:node>
+    <sv:node sv:name="messages">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:uuid" sv:type="String">
+        <sv:value>0179b276-7287-4c4b-8907-778e3457ed77</sv:value>
+      </sv:property>
+      <sv:property sv:name="class" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:created" sv:type="Date">
+        <sv:value>2015-03-19T09:49:05.994+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:createdBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+        <sv:value>2015-03-19T09:53:03.540+01:00</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="presenterClass" sv:type="String">
+        <sv:value>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListPresenter</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>

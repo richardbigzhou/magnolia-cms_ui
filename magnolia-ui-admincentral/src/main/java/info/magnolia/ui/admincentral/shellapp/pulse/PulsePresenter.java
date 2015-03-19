@@ -57,41 +57,44 @@ import org.slf4j.LoggerFactory;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, EventHandler {
+public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, EventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 
     private PulseView view;
     private ShellImpl shell;
-    private PulseItemCategory selectedCategory;
+    private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
     private boolean isDisplayingDetailView;
     private Map<String, PulseListPresenter> presenters = new HashMap<>();
     private PulseDefinition definition;
     private ComponentProvider componentProvider;
 
     @Inject
-    public PulsePresenter(ConfiguredPulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
+    public PulsePresenter(PulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
         this.view = view;
         this.shell = shell;
         this.componentProvider = componentProvider;
         this.definition = definition;
-
-        updatePulseCounter();
     }
 
     public View start() {
         view.setListener(this);
 
-        for (PulseListDefinition defPresenter : definition.getPresenters()) {
-            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getPresenterClass(), definition);
-            presenter.setListener(this);
-            presenters.put(defPresenter.getName(), presenter);
+        for (PulseListDefinition pulseListDefinition : definition.getPresenters()) {
+            if (pulseListDefinition.getPresenterClass() == null) {
+                log.error("There is no presenterClass defined for pulse list '{}'.", pulseListDefinition.getName());
+            }
+            else {
+                PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition);
+                presenter.setListener(this);
+                presenters.put(pulseListDefinition.getName(), presenter);
+            }
         }
 
         if (presenters.size() > 0) {
-            selectedCategory = presenters.values().iterator().next().getCategory();
             view.setPulseSubView(presenters.values().iterator().next().start());
         }
+
         return view;
     }
 
