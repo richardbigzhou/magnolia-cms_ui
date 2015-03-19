@@ -40,7 +40,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
@@ -66,7 +65,6 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     private ShellImpl shell;
     private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
     private boolean isDisplayingDetailView;
-    private PulseListPresenter defaultPresenter; // use as default.
     private Map<String, PulseListPresenter> presenters = new HashMap<>();
     private PulseDefinition definition;
     private ComponentProvider componentProvider;
@@ -89,8 +87,7 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
         }
 
         if (presenters.size() > 0) {
-            defaultPresenter = presenters.values().iterator().next();
-            view.setPulseSubView(defaultPresenter.start());
+            view.setPulseSubView(presenters.values().iterator().next().start());
         }
 
         return view;
@@ -104,8 +101,6 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
 
     @Override
     public void showList() {
-
-        // TODO: Can change List to Map w/ key = category here.
         for (PulseListPresenter presenter : presenters.values()) {
             if (selectedCategory == presenter.getCategory()) {
                 view.setPulseSubView(presenter.start());
@@ -143,18 +138,13 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
         shell.setIndication(ShellAppType.PULSE, totalItem);
     }
 
-    /**
-     * This method is only use in TaskListPresenter now.
-     */
     @Override
     public void updateView(PulseItemCategory activeTab) {
         // update top navigation and load new tasks
         selectedCategory = PulseItemCategory.TASKS;
         view.setTabActive(PulseItemCategory.TASKS);
-
-        // update sub navigation and filter out everything but what is in the active tab
-        if (defaultPresenter.getCategory() == PulseItemCategory.TASKS) {
-            ((TasksListPresenter) defaultPresenter).setTabActive(activeTab);
+        if (isDisplayingDetailView) {
+            showList();
         }
     }
 }

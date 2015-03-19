@@ -41,5 +41,6 @@ import java.util.List;
  * Definition for the pulse used by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  */
 public interface PulseDefinition {
+
     List<PulseListDefinition> getPresenters();
 }

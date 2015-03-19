@@ -273,4 +273,11 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     public int getPendingItemCount() {
         return tasksManager.findPendingTasksByUser(userId).size();
     }
+
+    private void updateView(PulseItemCategory activeTab) {
+        view.setTabActive(PulseItemCategory.TASKS);
+
+        // update sub navigation and filter out everything but what is in the active tab
+        setTabActive(activeTab);
+    }
 }

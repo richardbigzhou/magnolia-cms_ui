@@ -44,7 +44,6 @@ import java.util.Collection;
  * Abstract presenter for items displayed in pulse.
  *
  * @param <T> typed parameter for the items.
- * @param <L> typed listener used to call back to the parent presenter.
  */
 public abstract class AbstractPulseListPresenter<T> implements PulseListPresenter, PulseDetailPresenter.Listener, PulseListView.Listener {
 

@@ -39,8 +39,6 @@ import info.magnolia.ui.api.view.View;
 
 /**
  * Presenter interface for items accessed by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
- *
- * @param <L> listener for calling back to parent.
  */
 public interface PulseListPresenter {
 

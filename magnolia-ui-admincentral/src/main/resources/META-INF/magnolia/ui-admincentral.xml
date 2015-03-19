@@ -33,6 +33,14 @@
       <type>info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition</type>
       <implementation>info.magnolia.ui.admincentral.usermenu.definition.ConfiguredUserMenuDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.ConfiguredPulseDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition</implementation>
+    </type-mapping>
 
   </components>
 
