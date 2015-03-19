@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
@@ -69,7 +70,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Inject
     public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, PulseListDefinition definition) {
+            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, ConfiguredPulseListDefinition definition) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;

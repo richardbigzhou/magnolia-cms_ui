@@ -45,6 +45,7 @@ import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
@@ -88,7 +89,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     @Inject
     public TasksListPresenter(final TasksListView view, final TasksContainer container, final ShellImpl shellImpl, final TasksManager tasksManager,
             final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
-            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, PulseListDefinition definition) {
+            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition) {
         super(container);
         this.view = view;
         this.shell = shellImpl;
@@ -99,6 +100,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
         this.userId = context.getUser().getName();
         this.admincentralEventBus = admincentralEventBus;
         this.definition = definition;
+
     }
 
     @Override

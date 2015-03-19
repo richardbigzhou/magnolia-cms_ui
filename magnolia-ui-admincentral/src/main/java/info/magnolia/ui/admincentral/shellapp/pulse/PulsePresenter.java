@@ -63,33 +63,35 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
 
     private PulseView view;
     private ShellImpl shell;
-    private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
+    private PulseItemCategory selectedCategory;
     private boolean isDisplayingDetailView;
     private Map<String, PulseListPresenter> presenters = new HashMap<>();
     private PulseDefinition definition;
     private ComponentProvider componentProvider;
 
     @Inject
-    public PulsePresenter(PulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
+    public PulsePresenter(ConfiguredPulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
         this.view = view;
         this.shell = shell;
         this.componentProvider = componentProvider;
         this.definition = definition;
+
+        updatePulseCounter();
     }
 
     public View start() {
         view.setListener(this);
 
         for (PulseListDefinition defPresenter : definition.getPresenters()) {
-            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getPresenterClass(), defPresenter.getName());
+            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getPresenterClass(), definition);
             presenter.setListener(this);
             presenters.put(defPresenter.getName(), presenter);
         }
 
         if (presenters.size() > 0) {
+            selectedCategory = presenters.values().iterator().next().getCategory();
             view.setPulseSubView(presenters.values().iterator().next().start());
         }
-
         return view;
     }
 
