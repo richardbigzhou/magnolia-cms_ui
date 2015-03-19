@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Presenter of {@link PulseView}.
  */
-public final class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, EventHandler {
+public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Listener, EventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PulsePresenter.class);
 
@@ -80,10 +80,15 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     public View start() {
         view.setListener(this);
 
-        for (PulseListDefinition defPresenter : definition.getPresenters()) {
-            PulseListPresenter presenter = componentProvider.newInstance(defPresenter.getPresenterClass(), defPresenter.getName());
-            presenter.setListener(this);
-            presenters.put(defPresenter.getName(), presenter);
+        for (PulseListDefinition pulseListDefinition : definition.getPresenters()) {
+            if (pulseListDefinition.getPresenterClass() == null) {
+                log.error("There is no presenterClass defined for pulse list '{}'.", pulseListDefinition.getName());
+            }
+            else {
+                PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition);
+                presenter.setListener(this);
+                presenters.put(pulseListDefinition.getName(), presenter);
+            }
         }
 
         if (presenters.size() > 0) {

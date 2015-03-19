@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter
 /**
  * Configured {@link PulseListDefinition}.
  */
-public abstract class ConfiguredPulseListDefinition implements PulseListDefinition {
+public class ConfiguredPulseListDefinition implements PulseListDefinition {
 
     private String name;
     private Class<? extends PulseListPresenter> presenterClass;
