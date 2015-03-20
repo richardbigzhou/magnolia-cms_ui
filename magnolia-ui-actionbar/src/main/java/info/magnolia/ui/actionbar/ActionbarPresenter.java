@@ -101,11 +101,11 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
-                    log.debug("Group actions: " + group.getItems());
+                    log.debug("Group actions: {}", group.getItems());
 
                     for (ActionbarItemDefinition action : group.getItems()) {
                         if (actionNames.contains(action.getName())) {
-                            log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
+                            log.warn("Action was not added: an action with name '{}' was already added to the section '{}'.", action.getName(), section.getName());
                             continue;
                         }
                         actionNames.add(action.getName());
