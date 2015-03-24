@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,28 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.definition;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
+import info.magnolia.task.definition.TaskDefinition;
 
-import java.io.Serializable;
-import java.util.Map;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Definition used for building a view for pulse items.
+ * i18n Key generator for {@link TaskDefinition}.
  */
-@I18nable
-public interface ItemViewDefinition extends Serializable {
+public class CategoryDefinitionKeyGenerator extends AbstractI18nKeyGenerator<CategoryDefinition> {
 
-    String getId();
+    @Override
+    protected void keysFor(List<String> keys, CategoryDefinition definition, AnnotatedElement el) {
+        addKey(keys, createId(definition), fieldOrGetterName(el));
+    }
 
-    // TODO To be removed!
-    void setId(String id);
-
-    String getI18nBasename();
-
-    Map<String, ActionDefinition> getActions();
-
-    FormDefinition getForm();
-
-    ActionbarDefinition getActionbar();
+    protected String createId(CategoryDefinition definition) {
+        String parentName = ".";
+        Object parent = getParentViaCast(definition);
+        if (parent instanceof PulseListDefinition) {
+            parentName += ((PulseListDefinition) parent).getName() + ".";
+        }
+        return CategoryDefinition.PULSE_CONFIG_NODE_NAME + parentName + definition.getName();
+    }
 }

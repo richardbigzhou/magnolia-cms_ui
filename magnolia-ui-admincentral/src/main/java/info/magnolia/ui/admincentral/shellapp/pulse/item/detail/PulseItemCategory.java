@@ -35,7 +35,10 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
 
 /**
  * Enumeration for the category types.
+ * @deprecated: Changed to use configuration.
  */
+
+@Deprecated
 public enum PulseItemCategory {
     ALL_MESSAGES("pulse.messages.all"),
     MESSAGES("pulse.items.messages"),

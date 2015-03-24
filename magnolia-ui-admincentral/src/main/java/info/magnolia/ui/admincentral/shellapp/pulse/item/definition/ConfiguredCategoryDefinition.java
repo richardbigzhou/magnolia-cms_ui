@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,39 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.definition;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-
-import java.io.Serializable;
-import java.util.Map;
-
 /**
- * Definition used for building a view for pulse items.
+ * A definition of a configured category.
  */
-@I18nable
-public interface ItemViewDefinition extends Serializable {
+public class ConfiguredCategoryDefinition implements CategoryDefinition {
+    private String name;
+    private String label;
+    private String mappedStatus;
 
-    String getId();
+    @Override
+    public String getLabel() {
+        return this.label;
+    }
 
-    // TODO To be removed!
-    void setId(String id);
+    @Override
+    public String getMappedStatus() {
+        return this.mappedStatus;
+    }
 
-    String getI18nBasename();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    Map<String, ActionDefinition> getActions();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    FormDefinition getForm();
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-    ActionbarDefinition getActionbar();
+    public void setMappedStatus(String mappedStatus) {
+        this.mappedStatus = mappedStatus;
+    }
+
 }
