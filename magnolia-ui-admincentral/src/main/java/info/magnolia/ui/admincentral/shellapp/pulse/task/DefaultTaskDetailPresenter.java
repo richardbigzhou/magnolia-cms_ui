@@ -68,7 +68,7 @@ public class DefaultTaskDetailPresenter<D extends TaskDefinition, T extends Task
             ItemViewDefinitionRegistry itemViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter,
             I18nizer i18nizer) {
         super(task, view, itemActionExecutor, checker, itemViewDefinitionRegistry, formbuilder, actionbarPresenter, i18nizer);
-        this.definition = definition;
+        this.definition = i18nizer.decorate(definition);
     }
 
     public D getDefinition() {

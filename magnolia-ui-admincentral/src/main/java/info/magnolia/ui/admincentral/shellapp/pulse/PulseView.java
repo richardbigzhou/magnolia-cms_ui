@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.api.view.View;
 
 /**
@@ -45,16 +45,17 @@ public interface PulseView extends View {
 
     void setListener(Listener listener);
 
-    void updateCategoryBadgeCount(PulseItemCategory category, int count);
+    void updateCategoryBadgeCount(CategoryItem category, int count);
 
-    void setTabActive(PulseItemCategory category);
+    void setTabActive(CategoryItem category);
+
+    void initNavigator(CategoryItem... categories);
 
     /**
      * Listener.
      */
     public interface Listener {
 
-        void onCategoryChange(PulseItemCategory category);
+        void onCategoryChange(CategoryItem category);
     }
-
 }

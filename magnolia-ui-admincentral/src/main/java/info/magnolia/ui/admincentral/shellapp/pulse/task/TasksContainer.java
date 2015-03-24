@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
 
 import info.magnolia.task.Task;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
 
 import java.util.Collection;
@@ -64,7 +64,6 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     public static final String LAST_CHANGE_PROPERTY_ID = "date";
     public static final String SENT_TO_PROPERTY_ID = "sentTo";
     public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
-
 
     /*
      * This filter hides grouping titles when
@@ -189,32 +188,28 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     }
 
     /*
-    * Default visibility for testing purposes only.
-    */
+     * Default visibility for testing purposes only.
+     */
     private String getItemTitle(final Task task) {
         return listener.getItemTitle(task);
     }
 
     @Override
-    protected void applyCategoryFilter(final PulseItemCategory category) {
+    protected void applyCategoryFilter(final CategoryItem category) {
         final Container.Filter filter = new Container.Filter() {
 
             @Override
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
                 final Task.Status type = (Task.Status) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
-
-                switch (category) {
-                case UNCLAIMED:
-                    return type == Task.Status.Created;
-                case ONGOING:
-                    return type == Task.Status.InProgress;
-                case DONE:
-                    return type == Task.Status.Resolved;
-                case FAILED:
-                    return type == Task.Status.Failed;
-                default:
+                if (category.isShowAll()) {
                     return true;
                 }
+
+                if (!(category.getStatuses() != null && category.hasStatus(type.toString()))) {
+                    return false;
+                }
+
+                return true;
             }
 
             @Override
@@ -225,7 +220,6 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
         };
         container.addContainerFilter(filter);
     }
-
 
     @Override
     protected Container.Filter getSectionFilter() {

@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
@@ -83,6 +83,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     @Override
     public View start() {
         view.setListener(this);
+        view.initNavigator(getCategories());
         initView();
         admincentralEventBus.addHandler(MessageEvent.class, this);
         return view;
@@ -166,31 +167,38 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     private void doUnreadMessagesUpdate(final MessageType type) {
+        CategoryItem categoryItem = findCategoryByMappedStatus(type.name());
 
-        int count;
-        switch (type) {
-        case ERROR:
-        case WARNING:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.ERROR);
-            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.WARNING);
-            view.updateCategoryBadgeCount(PulseItemCategory.PROBLEM, count);
-            break;
-        case INFO:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, type);
-            view.updateCategoryBadgeCount(PulseItemCategory.INFO, count);
-            break;
-        default:
-            break;
+        if (categoryItem != null) {
+            int count = 0;
+            switch (type) {
+            case ERROR:
+            case WARNING:
+                count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.ERROR);
+                count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, MessageType.WARNING);
+                break;
+            case INFO:
+                count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, type);
+                break;
+            default:
+                break;
+            }
+            view.updateCategoryBadgeCount(categoryItem, count);
         }
     }
 
     @Override
-    public PulseItemCategory getCategory() {
-        return PulseItemCategory.MESSAGES;
+    public CategoryItem getCategory() {
+        return new CategoryItem(definition.getName(), definition.getLabel());
     }
 
     @Override
     public int getPendingItemCount() {
         return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
+    }
+
+    @Override
+    protected PulseListDefinition getDefinition() {
+        return definition;
     }
 }

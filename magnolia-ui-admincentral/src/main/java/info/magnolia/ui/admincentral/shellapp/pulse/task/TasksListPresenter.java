@@ -45,10 +45,10 @@ import info.magnolia.task.definition.TaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -150,6 +150,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
         Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
         HierarchicalContainer dataSource = container.createDataSource(tasks);
         view.setDataSource(dataSource);
+        view.initNavigator(getCategories());
         view.refresh();
         for (Status status : Status.values()) {
             doTasksStatusUpdate(status);
@@ -206,36 +207,21 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     }
 
     private void doTasksStatusUpdate(final Task.Status status) {
-
-        int count;
-
-        switch (status) {
-
-        case Created:
-            count = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Status.Created)).size();
-            view.updateCategoryBadgeCount(PulseItemCategory.UNCLAIMED, count);
-            break;
-        case InProgress:
-            count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.InProgress)).size();
-            view.updateCategoryBadgeCount(PulseItemCategory.ONGOING, count);
-            break;
-        case Failed:
-            count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.Failed)).size();
-            view.updateCategoryBadgeCount(PulseItemCategory.FAILED, count);
-            break;
-        default:
-            break;
+        CategoryItem cat = findCategoryByMappedStatus(status.toString());
+        if (cat != null) {
+            int count = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(status)).size();
+            view.updateCategoryBadgeCount(cat, count);
         }
     }
 
-    public void setTabActive(PulseItemCategory category) {
+    public void setTabActive(CategoryItem category) {
         initView();
         view.setTabActive(category);
     }
 
     @Override
-    public PulseItemCategory getCategory() {
-        return PulseItemCategory.TASKS;
+    public CategoryItem getCategory() {
+        return new CategoryItem(definition.getName(), definition.getLabel());
     }
 
     @Override
@@ -246,19 +232,19 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     @Override
     public void taskAdded(TaskEvent taskEvent) {
         listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.UNCLAIMED);
+        listener.updateView(findCategoryByMappedStatus(Status.Created.toString()));
     }
 
     @Override
     public void taskResolved(TaskEvent taskEvent) {
         listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.UNCLAIMED);
+        listener.updateView(findCategoryByMappedStatus(Status.Resolved.toString()));
     }
 
     @Override
     public void taskFailed(TaskEvent taskEvent) {
         listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.FAILED);
+        listener.updateView(findCategoryByMappedStatus(Status.Failed.toString()));
     }
 
     @Override
@@ -276,10 +262,8 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
         return tasksManager.findPendingTasksByUser(userId).size();
     }
 
-    private void updateView(PulseItemCategory activeTab) {
-        view.setTabActive(PulseItemCategory.TASKS);
-
-        // update sub navigation and filter out everything but what is in the active tab
-        setTabActive(activeTab);
+    @Override
+    protected PulseListDefinition getDefinition() {
+        return this.definition;
     }
 }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 
 import java.util.Collection;
 
@@ -66,7 +66,7 @@ public abstract class AbstractPulseListContainer<T> {
 
     protected abstract Container.Filter getSectionFilter();
 
-    protected abstract void applyCategoryFilter(final PulseItemCategory category);
+    protected abstract void applyCategoryFilter(final CategoryItem category);
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -96,7 +96,7 @@ public abstract class AbstractPulseListContainer<T> {
         return grouping;
     }
 
-    public void filterByItemCategory(PulseItemCategory category) {
+    public void filterByItemCategory(CategoryItem category) {
         if (container != null) {
             container.removeAllContainerFilters();
             container.addContainerFilter(getSectionFilter());

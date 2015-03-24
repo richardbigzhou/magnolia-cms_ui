@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
@@ -85,6 +85,7 @@ public class MessagesContainer extends AbstractPulseListContainer<Message> {
         }
 
     };
+
     @Override
     public HierarchicalContainer createDataSource(Collection<Message> messages) {
         container = new HierarchicalContainer();
@@ -153,7 +154,7 @@ public class MessagesContainer extends AbstractPulseListContainer<Message> {
     /*
      * Assign messages under correct parents so that
      * grouping works.
-    */
+     */
     @Override
     public void buildTree() {
 
@@ -177,22 +178,21 @@ public class MessagesContainer extends AbstractPulseListContainer<Message> {
     }
 
     @Override
-    protected void applyCategoryFilter(final PulseItemCategory category) {
+    protected void applyCategoryFilter(final CategoryItem category) {
 
         final Container.Filter filter = new Container.Filter() {
 
             @Override
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
                 final MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
-
-                switch (category) {
-                case PROBLEM:
-                    return type == MessageType.ERROR || type == MessageType.WARNING;
-                case INFO:
-                    return type == MessageType.INFO;
-                default:
+                if (category.isShowAll()) {
                     return true;
                 }
+
+                if (!(category.getStatuses() != null && category.hasStatus(type.toString())))
+                    return false;
+
+                return true;
             }
 
             @Override

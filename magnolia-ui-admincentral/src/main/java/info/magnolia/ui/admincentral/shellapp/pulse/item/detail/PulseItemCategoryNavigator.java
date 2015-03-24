@@ -35,8 +35,10 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +59,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
     private CheckBox groupByCheckBox;
 
-    private Map<PulseItemCategory, ItemCategoryTab> itemCategoryTabs = new HashMap<PulseItemCategory, ItemCategoryTab>();
+    private Map<CategoryItem, ItemCategoryTab> itemCategoryTabs = new HashMap<CategoryItem, ItemCategoryTab>();
 
     private final SimpleTranslator i18n;
 
@@ -81,7 +83,28 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         return new PulseItemCategoryNavigator(i18n, true, false, categories);
     }
 
+    private static CategoryItem[] getCategories(PulseItemCategory... categories) {
+
+        List<CategoryItem> items = new ArrayList<CategoryItem>();
+        if (categories != null) {
+            for (PulseItemCategory categoryItem : categories) {
+                items.add(new CategoryItem(categoryItem.toString(), categoryItem.getKey()));
+            }
+        }
+
+        return items.toArray(new CategoryItem[0]);
+
+    }
+
+    /**
+     * @deprecated Change to use {@link #PulseItemCategoryNavigator(SimpleTranslator, boolean, boolean, CategoryItem...)}
+     */
+    @Deprecated
     public PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupBy, boolean isTopRow, PulseItemCategory... categories) {
+        this(i18n, showGroupBy, isTopRow, getCategories(categories));
+    }
+
+    public PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupBy, boolean isTopRow, CategoryItem... categories) {
         super();
         this.i18n = i18n;
         setStyleName("navigator");
@@ -90,17 +113,26 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         construct(categories);
     }
 
-    private void construct(PulseItemCategory... categories) {
+    private void construct(CategoryItem... categories) {
         setSizeUndefined();
 
-        for (final PulseItemCategory category : categories) {
-            ItemCategoryTab tab = new ItemCategoryTab(category);
-            if (category == PulseItemCategory.ALL_MESSAGES || category == PulseItemCategory.UNCLAIMED || category == PulseItemCategory.TASKS) {
-                tab.setActive(true);
+        if (categories != null && categories.length != 0) {
+            boolean isSetActivate = false;
+            for (final CategoryItem category : categories) {
+                ItemCategoryTab tab = new ItemCategoryTab(category);
+                if (category.isActivate()) {
+                    isSetActivate = true;
+                    tab.setActive(true);
+                }
+                itemCategoryTabs.put(category, tab);
+                addComponent(tab);
             }
-            itemCategoryTabs.put(category, tab);
-            addComponent(tab);
+
+            if (!isSetActivate) {
+                itemCategoryTabs.get(categories[0]).setActive(true);
+            }
         }
+
         if (isTopRow) {
             addStyleName("top-row");
         }
@@ -108,7 +140,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         initCheckbox(categories);
     }
 
-    private void initCheckbox(PulseItemCategory... categories) {
+    private void initCheckbox(CategoryItem... categories) {
         final String caption = i18n.translate("pulse.items.groupby");
         groupByCheckBox = new CheckBox(StringUtils.abbreviate(caption, 15));
         groupByCheckBox.addStyleName("navigator-grouping");
@@ -119,10 +151,8 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
         if (showGroupBy) {
             addComponent(groupByCheckBox);
-            for (final PulseItemCategory category : categories) {
-                if (category == PulseItemCategory.ALL_MESSAGES) {
-                    enableGroupBy(true);
-                }
+            for (CategoryItem category : categories) {
+                enableGroupBy(category.isShowAll());
             }
         }
     }
@@ -150,14 +180,14 @@ public final class PulseItemCategoryNavigator extends CssLayout {
             }
         }
 
-        private final PulseItemCategory category;
+        private final CategoryItem category;
 
-        public CategoryChangedEvent(Component source, PulseItemCategory category) {
+        public CategoryChangedEvent(Component source, CategoryItem category) {
             super(source);
             this.category = category;
         }
 
-        public PulseItemCategory getCategory() {
+        public CategoryItem getCategory() {
             return category;
         }
     }
@@ -174,13 +204,13 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         addListener("category_changed", CategoryChangedEvent.class, listener, CategoryChangedEvent.ITEM_CATEGORY_CHANGED);
     }
 
-    private void fireCategoryChangedEvent(PulseItemCategory category) {
+    private void fireCategoryChangedEvent(CategoryItem category) {
         Iterator<Component> iterator = iterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
             if (component instanceof ItemCategoryTab) {
                 ItemCategoryTab button = (ItemCategoryTab) component;
-                button.setActive(button.category == category);
+                button.setActive(button.category.equals(category));
             }
         }
         fireEvent(new CategoryChangedEvent(this, category));
@@ -191,24 +221,24 @@ public final class PulseItemCategoryNavigator extends CssLayout {
      */
     public class ItemCategoryTab extends HorizontalLayout {
 
-        private final PulseItemCategory category;
+        private final CategoryItem category;
         private final Label categoryLabel;
         private final Label badge;
 
-        public ItemCategoryTab(PulseItemCategory category) {
+        public ItemCategoryTab(CategoryItem category) {
             super();
             this.category = category;
             this.addStyleName("navigator-tab");
             this.setSizeUndefined();
 
-            categoryLabel = new Label(i18n.translate(category.getKey()));
+            categoryLabel = new Label(category.getLabel());
             categoryLabel.addStyleName("category");
 
             badge = new Label();
             badge.addStyleName("badge");
-            if (category == PulseItemCategory.ONGOING) {
-                badge.addStyleName("empty-circle-gray");
-            }
+            // if (category == PulseItemCategory.ONGOING) {//TODO: Think about this status
+            // badge.addStyleName("empty-circle-gray");
+            // }
             badge.setVisible(false);
 
             this.addComponent(categoryLabel);
@@ -248,14 +278,14 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         }
     }
 
-    public void updateCategoryBadgeCount(PulseItemCategory category, int count) {
+    public void updateCategoryBadgeCount(CategoryItem category, int count) {
         itemCategoryTabs.get(category).updateItemsCount(count);
     }
 
     /**
      * Sets the passed category as selected and un-select all the others.
      */
-    public void setActive(PulseItemCategory category) {
+    public void setActive(CategoryItem category) {
         for (ItemCategoryTab tab : itemCategoryTabs.values()) {
             tab.setActive(false);
         }

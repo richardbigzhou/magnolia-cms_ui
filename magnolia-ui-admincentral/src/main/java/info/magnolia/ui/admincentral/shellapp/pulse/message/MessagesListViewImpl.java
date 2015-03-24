@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import static info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.api.message.MessageType;
@@ -65,8 +64,7 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
     public MessagesListViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date") },
-                i18n.translate("pulse.messages.empty"),
-                PulseItemCategory.ALL_MESSAGES, PulseItemCategory.INFO, PulseItemCategory.PROBLEM);
+                i18n.translate("pulse.messages.empty"));
         constructTable(getItemTable());
         setFooter(new PulseListFooter(getItemTable(), i18n, false));
     }

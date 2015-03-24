@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.api.view.View;
 
 /**
@@ -50,7 +50,7 @@ public interface PulseListPresenter {
 
     int getPendingItemCount();
 
-    PulseItemCategory getCategory();
+    CategoryItem getCategory();
 
     /**
      * Listener interface used to call parent presenter.
@@ -63,6 +63,6 @@ public interface PulseListPresenter {
 
         void updatePulseCounter();
 
-        void updateView(PulseItemCategory cate);
+        void updateView(CategoryItem cate);
     }
 }

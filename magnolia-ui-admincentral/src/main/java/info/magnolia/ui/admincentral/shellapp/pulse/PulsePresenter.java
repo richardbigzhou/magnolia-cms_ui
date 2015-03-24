@@ -35,17 +35,20 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandler;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -63,22 +66,23 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
 
     private PulseView view;
     private ShellImpl shell;
-    private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
+    private CategoryItem selectedCategory;
     private boolean isDisplayingDetailView;
     private Map<String, PulseListPresenter> presenters = new HashMap<>();
     private PulseDefinition definition;
     private ComponentProvider componentProvider;
 
     @Inject
-    public PulsePresenter(PulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider) {
+    public PulsePresenter(PulseDefinition definition, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell, ComponentProvider componentProvider, I18nizer i18nizer) {
         this.view = view;
         this.shell = shell;
         this.componentProvider = componentProvider;
-        this.definition = definition;
+        this.definition = i18nizer.decorate(definition);
     }
 
     public View start() {
         view.setListener(this);
+        List<CategoryItem> categories = new ArrayList<CategoryItem>();
 
         for (PulseListDefinition pulseListDefinition : definition.getPresenters()) {
             if (pulseListDefinition.getPresenterClass() == null) {
@@ -88,10 +92,17 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
                 PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition);
                 presenter.setListener(this);
                 presenters.put(pulseListDefinition.getName(), presenter);
+                CategoryItem category = new CategoryItem(pulseListDefinition.getName(), pulseListDefinition.getLabel(), pulseListDefinition.isActivate());
+                categories.add(category);
+                //Set activated category
+                if(pulseListDefinition.isActivate() && selectedCategory == null){
+                    selectedCategory = category;
+                }
             }
         }
 
         if (presenters.size() > 0) {
+            view.initNavigator(categories.toArray(new CategoryItem[0]));
             view.setPulseSubView(presenters.values().iterator().next().start());
         }
 
@@ -99,7 +110,7 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
     }
 
     @Override
-    public void onCategoryChange(PulseItemCategory category) {
+    public void onCategoryChange(CategoryItem category) {
         selectedCategory = category;
         showList();
     }
@@ -107,7 +118,7 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
     @Override
     public void showList() {
         for (PulseListPresenter presenter : presenters.values()) {
-            if (selectedCategory == presenter.getCategory()) {
+            if (selectedCategory == null || presenter.getCategory().equals(selectedCategory)) {
                 view.setPulseSubView(presenter.start());
                 break;
             }
@@ -144,10 +155,9 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
     }
 
     @Override
-    public void updateView(PulseItemCategory activeTab) {
+    public void updateView(CategoryItem activeTab) {
         // update top navigation and load new tasks
-        selectedCategory = PulseItemCategory.TASKS;
-        view.setTabActive(PulseItemCategory.TASKS);
+        view.setTabActive(selectedCategory);
         if (isDisplayingDetailView) {
             showList();
         }

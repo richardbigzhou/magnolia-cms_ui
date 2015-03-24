@@ -37,7 +37,6 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer.*
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task.Status;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.api.shell.Shell;
@@ -65,8 +64,7 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
     public TasksListViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
-                i18n.translate("pulse.tasks.empty"),
-                PulseItemCategory.UNCLAIMED, PulseItemCategory.ONGOING, PulseItemCategory.DONE, PulseItemCategory.FAILED, PulseItemCategory.ALL_TASKS);
+                i18n.translate("pulse.tasks.empty"));
         constructTable(getItemTable());
         setFooter(new PulseListFooter(getItemTable(), i18n, true));
     }

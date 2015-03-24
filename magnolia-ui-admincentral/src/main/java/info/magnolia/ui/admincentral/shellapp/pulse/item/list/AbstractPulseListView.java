@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
@@ -76,9 +76,9 @@ public abstract class AbstractPulseListView implements PulseListView {
 
     private final VerticalLayout root = new VerticalLayout();
 
-    private final PulseItemCategoryNavigator navigator;
-
     private final SimpleTranslator i18n;
+
+    private PulseItemCategoryNavigator navigator;
 
     private PulseListView.Listener listener;
 
@@ -86,7 +86,7 @@ public abstract class AbstractPulseListView implements PulseListView {
 
     private PulseListFooter footer;
 
-    private PulseItemCategory currentlySelectedCategory = PulseItemCategory.UNCLAIMED;
+    protected CategoryItem currentlySelectedCategory;
 
     private boolean categoryFilterAlreadyApplied;
 
@@ -217,19 +217,45 @@ public abstract class AbstractPulseListView implements PulseListView {
     };
 
     @Inject
-    public AbstractPulseListView(Shell shell, SimpleTranslator i18n, String[] order, String[] headers, String emptyMessage, PulseItemCategory... categories) {
+    public AbstractPulseListView(Shell shell, SimpleTranslator i18n, String[] order, String[] headers, String emptyMessage) {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
-        navigator = new PulseItemCategoryNavigator(i18n, true, false, categories);
         root.setSizeFull();
         construct(emptyMessage);
     }
 
     @Override
+    public void initNavigator(CategoryItem... categories) {
+        if (categories != null && categories.length != 0 && currentlySelectedCategory == null) {
+            navigator = new PulseItemCategoryNavigator(i18n, true, false, categories);
+            navigator.addCategoryChangeListener(new PulseItemCategoryNavigator.ItemCategoryChangedListener() {
+
+                @Override
+                public void itemCategoryChanged(PulseItemCategoryNavigator.CategoryChangedEvent event) {
+                    final CategoryItem category = event.getCategory();
+                    onItemCategoryChanged(category);
+                }
+            });
+
+            navigator.addGroupingListener(groupingListener);
+            root.addComponentAsFirst(navigator);
+
+            // Get default category
+            currentlySelectedCategory = categories[0];
+            for (CategoryItem categoryItem : categories) {
+                if (categoryItem.isActivate()) {
+                    currentlySelectedCategory = categoryItem;
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
     public void refresh() {
         // skip this if we're displaying all messages or if the category filter has just been applied (i.e. after clicking on a different tab)
-        if ((currentlySelectedCategory != PulseItemCategory.ALL_MESSAGES || currentlySelectedCategory != PulseItemCategory.ALL_TASKS) && !categoryFilterAlreadyApplied) {
+        if (currentlySelectedCategory == null || (!currentlySelectedCategory.isShowAll() && !categoryFilterAlreadyApplied)) {
             listener.filterByItemCategory(currentlySelectedCategory);
         }
         // now this can be reset to its initial value
@@ -255,7 +281,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     @Override
-    public void updateCategoryBadgeCount(PulseItemCategory category, int count) {
+    public void updateCategoryBadgeCount(CategoryItem category, int count) {
         navigator.updateCategoryBadgeCount(category, count);
     }
 
@@ -271,16 +297,6 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     private void construct(String emptyMessage) {
-        root.addComponent(navigator);
-        navigator.addCategoryChangeListener(new PulseItemCategoryNavigator.ItemCategoryChangedListener() {
-
-            @Override
-            public void itemCategoryChanged(PulseItemCategoryNavigator.CategoryChangedEvent event) {
-                final PulseItemCategory category = event.getCategory();
-                onItemCategoryChanged(category);
-            }
-        });
-
         constructTable();
 
         emptyPlaceHolder = new Label();
@@ -305,8 +321,6 @@ public abstract class AbstractPulseListView implements PulseListView {
         itemTable.setSelectable(true);
         itemTable.setMultiSelect(true);
         itemTable.setRowGenerator(groupingRowGenerator);
-
-        navigator.addGroupingListener(groupingListener);
 
         itemTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -361,7 +375,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     @Override
-    public void setTabActive(PulseItemCategory category) {
+    public void setTabActive(CategoryItem category) {
         navigator.setActive(category);
         onItemCategoryChanged(category);
     }
@@ -385,7 +399,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         }
     }
 
-    private void onItemCategoryChanged(final PulseItemCategory category) {
+    private void onItemCategoryChanged(final CategoryItem category) {
         currentlySelectedCategory = category;
         listener.filterByItemCategory(category);
         categoryFilterAlreadyApplied = true;
@@ -394,14 +408,7 @@ public abstract class AbstractPulseListView implements PulseListView {
             itemTable.unselect(id);
         }
 
-        switch (category) {
-        case ALL_TASKS:
-        case ALL_MESSAGES:
-            navigator.enableGroupBy(true);
-            break;
-        default:
-            navigator.enableGroupBy(false);
-        }
+        navigator.enableGroupBy(category.isShowAll());
 
         refresh();
     }

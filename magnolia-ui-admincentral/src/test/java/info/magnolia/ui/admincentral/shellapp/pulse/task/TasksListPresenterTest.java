@@ -47,7 +47,7 @@ import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.ConfiguredTaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.test.mock.MockContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredPulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
 import info.magnolia.ui.framework.shell.ShellImpl;
 

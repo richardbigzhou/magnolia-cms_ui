@@ -34,11 +34,15 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.CategoryDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.CategoryItem;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.api.view.View;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Abstract presenter for items displayed in pulse.
@@ -86,16 +90,38 @@ public abstract class AbstractPulseListPresenter<T> implements PulseListPresente
     }
 
     @Override
-    public void filterByItemCategory(PulseItemCategory category) {
+    public void filterByItemCategory(CategoryItem category) {
         container.filterByItemCategory(category);
     }
 
     @Override
-    public abstract PulseItemCategory getCategory();
+    public abstract CategoryItem getCategory();
 
     @Override
     public abstract View openItem(String itemId) throws RegistrationException;
 
     @Override
     public abstract int getPendingItemCount();
+
+    protected CategoryItem findCategoryByMappedStatus(String mappedStatus) {
+        for (CategoryDefinition definition : getDefinition().getTabs()) {
+            if (definition.getMappedStatus() != null && definition.getMappedStatus().contains(mappedStatus)) {
+                return new CategoryItem(definition.getName(), definition.getLabel());
+            }
+        }
+        return null;
+    }
+
+    protected abstract PulseListDefinition getDefinition();
+
+    protected CategoryItem[] getCategories() {
+        List<CategoryItem> categoryItems = new ArrayList<CategoryItem>();
+        for (CategoryDefinition cd : getDefinition().getTabs()) {
+            CategoryItem categoryItem = new CategoryItem(cd.getName(), cd.getLabel());
+            categoryItem.setStatuses(cd.getMappedStatus());
+            categoryItem.setActivate(getDefinition().getDefaultTab() != null && getDefinition().getDefaultTab().equals(cd.getName()));
+            categoryItems.add(categoryItem);
+        }
+        return categoryItems.toArray(new CategoryItem[0]);
+    }
 }
