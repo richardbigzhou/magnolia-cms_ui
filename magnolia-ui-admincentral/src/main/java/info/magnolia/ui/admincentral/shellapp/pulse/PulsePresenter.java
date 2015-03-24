@@ -171,6 +171,12 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
         // nothing to do here
     }
 
+    @Override
+    public void taskScheduled(TaskEvent taskEvent) {
+        updatePendingMessagesAndTasksCount();
+        updateView(PulseItemCategory.SCHEDULED);
+    }
+
     public boolean isDisplayingDetailView() {
         return isDisplayingDetailView;
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.detail;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
+
+import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
+import info.magnolia.task.schedule.TaskSchedulerService;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.DefaultTaskDetailPresenter;
+import info.magnolia.ui.api.shell.Shell;
+
+import javax.inject.Inject;
 
 /**
- * Enumeration for the category types.
+ * This action is used to abort a task. It extends the {@link ResolveTaskAction} to check whether the task has been scheduled
+ * and if so, it will use the {@link TaskSchedulerService} to un-schedule it.
  */
-public enum PulseItemCategory {
-    ALL_MESSAGES("pulse.messages.all"),
-    MESSAGES("pulse.items.messages"),
-    TASKS("pulse.items.tasks"),
-    PROBLEM("pulse.messages.problems"),
-    INFO("pulse.messages.info"),
-    ALL_TASKS("pulse.tasks.all"),
-    UNCLAIMED("pulse.tasks.unclaimed"),
-    ONGOING("pulse.tasks.ongoing"),
-    DONE("pulse.tasks.done"),
-    FAILED("pulse.tasks.failed"),
-    SCHEDULED("pulse.tasks.scheduled");
+public class AbortTaskAction extends ResolveTaskAction {
 
-    private String key;
+    private final TaskSchedulerService schedulerService;
 
-    private PulseItemCategory(final String key) {
-        this.key = key;
+    @Inject
+    public AbortTaskAction(ResolveTaskActionDefinition definition, Task task, TasksManager taskManager, DefaultTaskDetailPresenter taskPresenter, Shell shell, TaskSchedulerService schedulerService) {
+        super(definition, task, taskManager, taskPresenter, shell);
+        this.schedulerService = schedulerService;
     }
 
-    public String getKey() {
-        return key;
+    @Override
+    protected void executeTask(TasksManager taskManager, Task task) {
+
+        if (task.getStatus() == Task.Status.Scheduled) {
+            schedulerService.unSchedule(task);
+        }
+        super.executeTask(taskManager, task);
     }
 }

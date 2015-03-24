@@ -134,7 +134,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     private void initView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
+        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed, Status.Scheduled));
         HierarchicalContainer dataSource = container.createDataSource(tasks);
         view.setDataSource(dataSource);
         view.refresh();
@@ -209,6 +209,10 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         case Failed:
             count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.Failed)).size();
             view.updateCategoryBadgeCount(PulseItemCategory.FAILED, count);
+            break;
+        case Scheduled:
+            count = tasksManager.findTasksByAssigneeAndStatus(userId, Arrays.asList(Status.Scheduled)).size();
+            view.updateCategoryBadgeCount(PulseItemCategory.SCHEDULED, count);
             break;
         default:
             break;
