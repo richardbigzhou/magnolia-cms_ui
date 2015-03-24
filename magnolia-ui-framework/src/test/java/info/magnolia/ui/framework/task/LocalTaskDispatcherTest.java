@@ -226,6 +226,11 @@ public class LocalTaskDispatcherTest {
         }
 
         @Override
+        public void taskScheduled(TaskEvent taskEvent) {
+            events.add(taskEvent);
+        }
+
+        @Override
         public void taskFailed(TaskEvent taskEvent) {
             events.add(taskEvent);
         }

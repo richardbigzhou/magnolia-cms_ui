@@ -65,7 +65,6 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     public static final String SENT_TO_PROPERTY_ID = "sentTo";
     public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
 
-
     /*
      * This filter hides grouping titles when
      * grouping is not on or group would be empty
@@ -189,8 +188,8 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
     }
 
     /*
-    * Default visibility for testing purposes only.
-    */
+     * Default visibility for testing purposes only.
+     */
     private String getItemTitle(final Task task) {
         return listener.getItemTitle(task);
     }
@@ -212,6 +211,8 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
                     return type == Task.Status.Resolved;
                 case FAILED:
                     return type == Task.Status.Failed;
+                case SCHEDULED:
+                    return type == Task.Status.Scheduled;
                 default:
                     return true;
                 }
@@ -225,7 +226,6 @@ public class TasksContainer extends AbstractPulseListContainer<Task> {
         };
         container.addContainerFilter(filter);
     }
-
 
     @Override
     protected Container.Filter getSectionFilter() {

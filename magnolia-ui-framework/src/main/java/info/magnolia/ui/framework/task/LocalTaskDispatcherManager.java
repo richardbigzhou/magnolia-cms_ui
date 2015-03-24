@@ -112,6 +112,12 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
         sendTaskEvent(taskEvent, users);
     }
 
+    @Override
+    public void taskScheduled(TaskEvent taskEvent) {
+        Set<String> users = getAllRecipients(taskEvent.getTask());
+        sendTaskEvent(taskEvent, users);
+    }
+
     private Set<String> getAllRecipients(final Task task) {
 
         HashSet<String> users = new HashSet<String>();
