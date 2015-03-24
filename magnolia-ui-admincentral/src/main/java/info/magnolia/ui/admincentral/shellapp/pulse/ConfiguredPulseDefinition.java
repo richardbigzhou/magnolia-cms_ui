@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
 
 import java.util.List;
 

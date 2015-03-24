@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
+import info.magnolia.i18nsystem.I18nable;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.PulseListDefinition;
 
 import java.util.List;
 
 /**
  * Definition for the pulse used by {@link info.magnolia.ui.admincentral.shellapp.pulse.PulsePresenter}.
  */
+@I18nable
 public interface PulseDefinition {
 
     List<PulseListDefinition> getPresenters();
