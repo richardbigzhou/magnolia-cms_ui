@@ -247,7 +247,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // setExpandRatio(c, 1);
         keyboardEventPanel.setContent(c);
 
-        if (type != SearchPresenterDefinition.VIEW_TYPE) {
+        if (!StringUtils.equals(type, SearchPresenterDefinition.VIEW_TYPE)) {
             previousViewType = type;
             setSearchQuery(null);
         }
