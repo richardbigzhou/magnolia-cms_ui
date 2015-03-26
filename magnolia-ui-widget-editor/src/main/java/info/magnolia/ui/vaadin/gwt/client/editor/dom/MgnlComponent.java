@@ -133,7 +133,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     @Override
     public boolean hasEditButton() {
         boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
-        boolean hasDialog = getAttribute("dialog") != null && getAttribute("dialog") != "";
+        boolean hasDialog = getAttribute("dialog") != null && !"".equals(getAttribute("dialog"));
         boolean writable = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
             writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
@@ -156,7 +156,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     /**
      * Callback for {@link ComponentBar} when starting a drag or move event. Depending on whether it is a drag or a move
      * it will either notify the server by firing a {@link ComponentStartMoveEvent} or register the handlers in {@link #doStartMove(boolean)}.
-     * 
+     *
      * @param isDrag whether we are dragging the component or moving it
      */
     @Override
@@ -170,7 +170,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     /**
      * Registers the sibling components as move targets and registers a handler for {@link ComponentStopMoveEvent} on the source component which will call {@link #sortComponent(MgnlComponent)}.
-     * 
+     *
      * @param isDrag whether we are dragging the component or moving it
      */
     public void doStartMove(boolean isDrag) {
@@ -213,7 +213,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
      * Callback for {@link ComponentBar} source when a drag is stopped.
      * Fires {@link ComponentStopMoveEvent} to notify the system about the cancel. Will cause target components to
      * unregister themselves as targets.
-     * 
+     *
      * @see #unregisterMoveTarget(boolean)
      */
     @Override
