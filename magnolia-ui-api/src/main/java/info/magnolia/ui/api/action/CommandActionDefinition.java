@@ -50,7 +50,7 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
     private boolean asynchronous = false;
     private int delay = 1;
     private boolean isParallel = true;
-    private int timeToWait = 5000; // milliseconds
+    private int timeToWait = 5000;
     private boolean notifyUser = true;
 
     private Map<String, Object> params = new HashMap<String, Object>();
@@ -87,6 +87,9 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    /**
+     * Defines whether this action should try to run asynchronously, e.g. to avoid blocking the UI.
+     */
     public boolean isAsynchronous() {
         return asynchronous;
     }
@@ -95,6 +98,11 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         this.asynchronous = asynchronous;
     }
 
+    /**
+     * Defines the delay (in seconds) after which the command should start, if asynchronous. Default is 1s.
+     * 
+     * @see #isAsynchronous()
+     */
     public int getDelay() {
         return delay;
     }
@@ -103,6 +111,11 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         this.delay = delay;
     }
 
+    /**
+     * Defines whether the command may be executed in parallel for multiple items, if asynchronous. Default is <code>true</code>.
+     * 
+     * @see #isAsynchronous()
+     */
     public boolean isParallel() {
         return isParallel;
     }
@@ -111,6 +124,11 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         this.isParallel = isParallel;
     }
 
+    /**
+     * Defines how long (in milliseconds) the UI should remain blocked until notifying user that the action will complete in the background, if asynchronous. Default is 5000ms.
+     * 
+     * @see #isAsynchronous()
+     */
     public int getTimeToWait() {
         return timeToWait;
     }
@@ -119,6 +137,11 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         this.timeToWait = timeToWait;
     }
 
+    /**
+     * Defines whether the action should notify the user in the Pulse, if asynchronous and if it completes in the background. Default is <code>true</code>.
+     * 
+     * @see #isAsynchronous()
+     */
     public boolean isNotifyUser() {
         return notifyUser;
     }
