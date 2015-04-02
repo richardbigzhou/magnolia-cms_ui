@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -29,48 +29,24 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- *
  */
-package info.magnolia.ui.form.field.factory;
+package info.magnolia.ui.vaadin.extension;
 
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.vaadin.extension.MaxLengthIndicator;
-
-import com.vaadin.data.Item;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
 
 /**
- * Creates and initializes an edit field based on a field definition.
+ * An {@link AbstractTextField}-compatible extension which adds an indicator of maximum possible vs currently entered amount of characters in an input.<br/>
+ * This extension is only meant for the text fields with the <i>maxLength</i> property defined.
+ *
+ * @see com.vaadin.ui.TextField
+ * @see com.vaadin.ui.TextArea
  */
-public class TextFieldFactory extends AbstractFieldFactory<TextFieldDefinition, String> {
+public class MaxLengthIndicator extends AbstractExtension {
 
-    private AbstractTextField field;
-
-    public TextFieldFactory(TextFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    public static void extend(AbstractTextField field) {
+        new MaxLengthIndicator().extend((AbstractClientConnector)field);
     }
-
-    @Override
-    protected Field<String> createFieldComponent() {
-        // Create a TextArea if the rows > 1
-        if (definition.getRows() > 1) {
-            TextArea textArea = new TextArea();
-            textArea.setRows(definition.getRows());
-            field = textArea;
-        } else {
-            field = new TextField();
-        }
-        field.setNullRepresentation("");
-        field.setNullSettingAllowed(true);
-        if (definition.getMaxLength() != -1) {
-            field.setMaxLength(definition.getMaxLength());
-            MaxLengthIndicator.extend(field);
-        }
-        return field;
-    }
-
 
 }
