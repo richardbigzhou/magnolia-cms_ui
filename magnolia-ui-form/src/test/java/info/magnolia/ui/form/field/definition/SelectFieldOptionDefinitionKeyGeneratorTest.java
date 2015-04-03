@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2014 Magnolia International
+ * This file Copyright (c) 2011-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
@@ -41,10 +41,10 @@ import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.TestDialogDef;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -96,14 +96,17 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, ((SelectFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
+        String[] keys = generator.keysFor("undecorated", ((SelectFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(3, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption", keys.get(0));
-        assertEquals("testTab.mgnl-testField.options.testOption", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(2));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
+                "testTab.mgnl-testField.options.testOption",
+                "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
+                "testDialog.mgnl-testField.options.testOption",
+                "testDialog.testTab.mgnl-testField.options.testOption"
+                ));
     }
 
     @Test
@@ -127,13 +130,16 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, ((SwitchableFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
+        String[] keys = generator.keysFor("undecorated", ((SwitchableFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(3, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption", keys.get(0));
-        assertEquals("testTab.mgnl-testField.options.testOption", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(2));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
+                "testTab.mgnl-testField.options.testOption",
+                "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
+                "testDialog.mgnl-testField.options.testOption",
+                "testDialog.testTab.mgnl-testField.options.testOption"
+                ));
     }
 }

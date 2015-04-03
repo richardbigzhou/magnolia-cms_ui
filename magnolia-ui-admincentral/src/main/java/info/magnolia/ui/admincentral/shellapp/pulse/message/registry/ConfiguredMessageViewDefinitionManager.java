@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,91 +33,23 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.predicate.NodeTypePredicate;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionRegistry;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * ObservedManager for message views configured in repository.
+ *
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
-public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationObservingManager {
+@Deprecated
+public class ConfiguredMessageViewDefinitionManager {
 
     public static final String MESSAGE_VIEW_CONFIG_NODE_NAME = "messageViews";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private Set<String> registeredIds = new HashSet<String>();
-    private final ItemViewDefinitionRegistry itemViewDefinitionRegistry;
-
-    @Inject
-    public ConfiguredMessageViewDefinitionManager(ModuleRegistry moduleRegistry, ItemViewDefinitionRegistry itemViewDefinitionRegistry) {
-        super(MESSAGE_VIEW_CONFIG_NODE_NAME, moduleRegistry);
-        this.itemViewDefinitionRegistry = itemViewDefinitionRegistry;
-    }
-
-    @Override
-    protected void reload(List<Node> nodes) throws RepositoryException {
-
-        final List<ItemViewDefinitionProvider> providers = new ArrayList<ItemViewDefinitionProvider>();
-
-        for (Node node : nodes) {
-
-            NodeUtil.visit(node, new NodeVisitor() {
-
-                @Override
-                public void visit(Node current) throws RepositoryException {
-                    for (Node messageViewNode : NodeUtil.getNodes(current, NodeTypes.ContentNode.NAME)) {
-                        // Handle as messageView only if it has sub nodes indicating that it is actually representing a messageView.
-                        // This will filter the fields in messageViews used by the extends mechanism.
-                        ItemViewDefinitionProvider provider = createProvider(messageViewNode);
-                        if (provider != null) {
-                            providers.add(provider);
-                        }
-                    }
-
-                }
-            }, new NodeTypePredicate(NodeTypes.Content.NAME));
-        }
-
-        this.registeredIds = itemViewDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
-    }
-
-    protected ItemViewDefinitionProvider createProvider(Node messageViewNode) throws RepositoryException {
-
-        final String id = createId(messageViewNode);
-
-        try {
-            return new ConfiguredMessageViewDefinitionProvider(id, messageViewNode);
-        } catch (IllegalArgumentException e) {
-            log.error("Unable to create provider for messageView [" + id + "]: " + e);
-        } catch (Exception e) {
-            log.error("Unable to create provider for messageView [" + id + "]", e);
-        }
-        return null;
-    }
-
-    protected String createId(Node configNode) throws RepositoryException {
-        final String path = configNode.getPath();
-        final String[] pathElements = path.split("/");
-        final String moduleName = pathElements[2];
-        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + MESSAGE_VIEW_CONFIG_NODE_NAME + "/");
+    public void start() {
+        log.warn("ConfiguredMessageViewDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
     }
 }

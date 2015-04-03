@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.task;
 
 import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.task.Task;
@@ -42,7 +41,6 @@ import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * LocalTaskDispatcherManager.
@@ -67,7 +66,8 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(LocalTaskDispatcherManager.class);
 
-    private final ListMultimap<String, TaskEventDispatcher> listeners = ArrayListMultimap.create();
+    private final ListMultimap<String, TaskEventDispatcher> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, TaskEventDispatcher>create());
+
     private Provider<SecuritySupport> securitySupport;
 
     @Inject
@@ -122,32 +122,16 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
         }
 
         if (task.getActorIds() != null) {
-
             log.debug("Found actorIds {}", task.getActorIds());
-            for (String actor : task.getActorIds()) {
-                users.add(actor);
-            }
+            users.addAll(task.getActorIds());
         }
 
 
         log.debug("Found groups {}", task.getGroupIds());
         if (task.getGroupIds() != null) {
-
-
-            Collection<User> allUsers = Collections.emptyList();
-            try {
-                allUsers = securitySupport.get().getUserManager().getAllUsers();
-            } catch (UnsupportedOperationException e) {
-                log.error("Unable to send message to groups {} because UserManager does not support enumerating their users", task.getGroupIds(), e);
-            }
-
             for (String group : task.getGroupIds()) {
-                for (User user : allUsers) {
-                    Collection<String> groups = user.getAllGroups();
-                    if (groups.contains(group)) {
-                        users.add(user.getName());
-                    }
-                }
+                Collection<String> usersOfGroupTransitive = securitySupport.get().getUserManager().getUsersWithGroup(group, true);
+                users.addAll(usersOfGroupTransitive);
             }
         }
 
@@ -157,28 +141,22 @@ public class LocalTaskDispatcherManager implements TaskEventHandler {
     private void sendTaskEvent(TaskEvent taskEvent, Set<String> users) {
 
         log.debug("Sending a task event to the following users {}", users);
-        synchronized (listeners) {
-            for (String userId : users) {
-                final List<TaskEventDispatcher> listenerList = listeners.get(userId);
-                if (listenerList != null) {
-                    for (final TaskEventDispatcher listener : listenerList) {
-                        listener.onTaskEvent(taskEvent);
-                    }
+        for (String userId : users) {
+            final List<TaskEventDispatcher> listenerList = listeners.get(userId);
+            if (listenerList != null) {
+                for (final TaskEventDispatcher listener : listenerList) {
+                    listener.onTaskEvent(taskEvent);
                 }
             }
         }
     }
 
     public void registerLocalTasksListener(String userName, TaskEventDispatcher listener) {
-        synchronized (listeners) {
-            listeners.put(userName, listener);
-        }
+        listeners.put(userName, listener);
     }
 
     public void unregisterLocalTasksListener(String userName, TaskEventDispatcher listener) {
-        synchronized (listeners) {
-            listeners.remove(userName, listener);
-        }
+        listeners.remove(userName, listener);
     }
 
 }

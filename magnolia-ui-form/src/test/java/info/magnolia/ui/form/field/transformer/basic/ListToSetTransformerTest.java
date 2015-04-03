@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -188,6 +188,25 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         ((HashSet) value).remove("a");
         ((HashSet) value).remove("b");
         ((HashSet) value).remove("c");
+
+        // WHEN
+        handler.writeToItem(value);
+        rootItem.applyChanges();
+
+        // THEN
+        assertNull(rootItem.getItemProperty(propertyName).getValue());
+        assertFalse(rootNode.hasProperty(propertyName));
+    }
+
+    @Test
+    public void testWriteRemovesPropertyIfEmptyEvenIfTranformationIsNotNeeded() throws RepositoryException {
+        // GIVEN
+        definition.setMultiselect(true);
+        rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        LinkedList value = new LinkedList();
 
         // WHEN
         handler.writeToItem(value);

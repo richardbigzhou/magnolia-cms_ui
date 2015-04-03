@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,7 +37,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.GroupManager;
 import info.magnolia.cms.security.MgnlGroup;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.SecuritySupport;
@@ -63,7 +62,6 @@ public class LocalTaskDispatcherManagerTest extends MgnlTestCase {
 
     private SecuritySupport securitySupport;
 
-    private GroupManager groupManager;
     private UserManager userManager;
 
     private User alice;
@@ -81,29 +79,23 @@ public class LocalTaskDispatcherManagerTest extends MgnlTestCase {
 
         this.securitySupport = mock(SecuritySupport.class);
 
-        this.groupManager = mock(GroupManager.class);
-
         this.userManager = mock(UserManager.class);
 
         ComponentsTestUtil.setInstance(SecuritySupport.class, securitySupport);
 
         doReturn(userManager).when(securitySupport).getUserManager();
 
-        doReturn(groupManager).when(securitySupport).getGroupManager();
-
         this.group = new MgnlGroup("1", "group", Arrays.asList("subGroup1"), Collections.EMPTY_LIST);
         this.subGroup1 = new MgnlGroup("2", "subGroup1", Collections.EMPTY_LIST, Collections.EMPTY_LIST);
         this.subGroup2 = new MgnlGroup("3", "subGroup2", Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-
-        doReturn(group).when(groupManager).getGroup("group");
-        doReturn(subGroup1).when(groupManager).getGroup("subGroup1");
-        doReturn(subGroup2).when(groupManager).getGroup("subGroup2");
 
         this.alice = new MgnlUser("alice", "admin", Arrays.<String>asList("group"), Collections.EMPTY_LIST, Collections.EMPTY_MAP);
         this.bob = new MgnlUser("bob", "admin", Arrays.<String>asList("subGroup1"), Collections.EMPTY_LIST, Collections.EMPTY_MAP);
         this.charlie = new MgnlUser("charlie", "admin", Arrays.<String>asList("subGroup2"), Collections.EMPTY_LIST, Collections.EMPTY_MAP);
 
-        doReturn(Arrays.asList(alice, bob, charlie)).when(userManager).getAllUsers();
+        when(userManager.getUsersWithGroup("group", true)).thenReturn(Arrays.asList("alice"));
+        when(userManager.getUsersWithGroup("subGroup1", true)).thenReturn(Arrays.asList(new String[]{"alice", "bob"}));
+        when(userManager.getUsersWithGroup("subGroup2", true)).thenReturn(Arrays.asList("charlie"));
     }
 
     @Test

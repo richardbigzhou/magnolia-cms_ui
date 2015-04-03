@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,20 +33,33 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
+import info.magnolia.jcr.iterator.FilteringPropertyIterator;
+import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,8 +91,11 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
 
     private static final Logger log = LoggerFactory.getLogger(MultiValueSubChildrenNodeTransformer.class);
 
-    public MultiValueSubChildrenNodePropertiesTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+    private final MultiValueFieldDefinition definition;
+
+    public MultiValueSubChildrenNodePropertiesTransformer(Item relatedFormItem, MultiValueFieldDefinition definition, Class<PropertysetItem> type) {
         super(relatedFormItem, definition, type);
+        this.definition = definition;
     }
 
     @Override
@@ -107,14 +123,31 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
     protected PropertysetItem getValueFromChildNode(Node child) {
         PropertysetItem newValues = new PropertysetItem();
         try {
-
+            // read values from properties
             PropertyIterator iterator = new JCRMgnlPropertiesFilteringNodeWrapper(child).getProperties();
             while (iterator.hasNext()) {
-                Property jcrPorperty = iterator.nextProperty();
-                Object propertyObject = PropertyUtil.getPropertyValueObject(child, jcrPorperty.getName());
+                Property jcrProperty = iterator.nextProperty();
+                Object propertyObject = PropertyUtil.getPropertyValueObject(child, jcrProperty.getName());
                 DefaultProperty newProperty = new DefaultProperty(propertyObject);
 
-                newValues.addItemProperty(jcrPorperty.getName(), newProperty);
+                newValues.addItemProperty(NumberUtils.isNumber(jcrProperty.getName()) ? Integer.valueOf(jcrProperty.getName()) : jcrProperty.getName(), newProperty);
+            }
+            // and read values from subnodes (recursively)
+            NodeIterator iter = child.getNodes();
+            while (iter.hasNext()) {
+                Node childNode = iter.nextNode();
+                PropertysetItem vals = getValueFromChildNode(childNode);
+                MultiValueFieldDefinition subChildDefinition = null;
+                for (ConfiguredFieldDefinition field : ((CompositeFieldDefinition) definition.getField()).getFields()) {
+                    if (field.getName().equals(childNode.getName())) {
+                        subChildDefinition = (MultiValueFieldDefinition) field;
+                        break;
+                    }
+                }
+                Transformer<PropertysetItem> subChildTransformer = (Transformer<PropertysetItem>) Components.newInstance(subChildDefinition.getTransformerClass(), new JcrNodeAdapter(childNode), subChildDefinition, PropertysetItem.class);
+                TransformedProperty<PropertysetItem> prop = new TransformedProperty<PropertysetItem>(subChildTransformer);
+                prop.setValue(vals);
+                newValues.addItemProperty(childNode.getName(), prop);
             }
         } catch (RepositoryException re) {
             log.warn("Not able to read property from the following child node {}", NodeUtil.getName(child), re.getLocalizedMessage());
@@ -124,19 +157,62 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
 
     @Override
     protected void setChildItemValue(JcrNodeAdapter childItem, Object newValues) {
+        if (!(newValues instanceof PropertysetItem)) {
+            super.setChildItemValue(childItem, newValues);
+            return;
+        }
+        PropertysetItem newPropertySetValues = (PropertysetItem) newValues;
 
-        Iterator<?> propertyNames = ((PropertysetItem) newValues).getItemPropertyIds().iterator();
+        // stored property will always be of type string since we don't store names of jcr props in any other format so we need them as strings when checking for removed ones
+        List<String> propertyNamesAsString = new ArrayList<String>();
+        Iterator<?> propertyNames = newPropertySetValues.getItemPropertyIds().iterator();
         while (propertyNames.hasNext()) {
-            String propertyName = (String) propertyNames.next();
+            // could be string, but could be also number
+            Object propertyName = propertyNames.next();
+            String propertyNameString = propertyName.toString();
+            propertyNamesAsString.add(propertyNameString);
             com.vaadin.data.Property<Object> storedProperty = childItem.getItemProperty(propertyName);
-
-            if (((PropertysetItem) newValues).getItemProperty(propertyName) != null) {
+            com.vaadin.data.Property<Object> newProperty = newPropertySetValues.getItemProperty(propertyName);
+            if (newProperty != null) {
                 if (storedProperty != null) {
-                    storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
+                    storedProperty.setValue(newProperty.getValue());
                 } else {
-                    childItem.addItemProperty(propertyName, ((PropertysetItem) newValues).getItemProperty(propertyName));
+                    Object value = newProperty.getValue();
+                    if (value instanceof PropertysetItem) {
+                        // if this is another set, create subnode for it and recursively call itself to set its properties (or subnodes)
+                        JcrNodeAdapter child;
+                        try {
+                            if (childItem.getJcrItem().hasNode(propertyNameString)) {
+                                Node node = childItem.getJcrItem().getNode(propertyNameString);
+                                child = new JcrNodeAdapter(node);
+                            } else {
+                                child = new JcrNewNodeAdapter(childItem.getJcrItem(), NodeTypes.ContentNode.NAME);
+                                child.setNodeName(propertyNameString);
+                            }
+                            childItem.addChild(child);
+                            setChildItemValue(child, value);
+                        } catch (RepositoryException e) {
+                            log.error("Failed to persist property " + propertyName + " (" + propertyName.getClass().getName() + ") with " + e.getMessage(), e);
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        childItem.addItemProperty(propertyName, newProperty);
+                    }
                 }
             }
+        }
+        // mark no longer existing properties as removed to be cleaned up when saving dialog
+        try {
+            FilteringPropertyIterator iter = new FilteringPropertyIterator(childItem.getJcrItem().getProperties(), new JCRMgnlPropertyHidingPredicate());
+            while (iter.hasNext()) {
+                Property prop = iter.nextProperty();
+                if (!propertyNamesAsString.contains(prop.getName())) {
+                    childItem.removeItemProperty(prop.getName());
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to remove old property from " + childItem + " with " + e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 }

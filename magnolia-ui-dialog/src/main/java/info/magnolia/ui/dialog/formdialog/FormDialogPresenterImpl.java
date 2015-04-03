@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -88,6 +88,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     /**
      * Constructor backwards compatible with pre-5.3 versions.
+     *
      * @deprecated since version 5.3.1, use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, FormBuilder, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector)} instead.
      */
     @Deprecated

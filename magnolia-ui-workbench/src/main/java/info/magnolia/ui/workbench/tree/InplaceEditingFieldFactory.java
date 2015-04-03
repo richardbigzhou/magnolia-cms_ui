@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import java.util.Locale;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.converter.AbstractStringToNumberConverter;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
@@ -156,33 +153,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
             return null;
         }
         Field<?> field = new TextField();
-        // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used. Currently we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
-        if (Long.class.equals(type)) {
-            ((AbstractTextField) field).setConverter(new StringToLongConverter());
-        }
         return field;
-    }
-
-    /**
-     * The StringToLongConverter.<br>
-     * MGNLUI-1855 This should be handled by vaadin, but StringToNumberConverter throws conversion exception when used
-     * with a Long property in Vaadin 7.1. This should be fixed, unfortunately not before 7.2, so we need that converter
-     * for the time being.<br>
-     * As a result, this class will have a short life span, this is why it is kept private and deprecated.
-     */
-    @Deprecated
-    static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
-        // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used.
-        @Override
-        public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale) throws ConversionException {
-            Number n = convertToNumber(value, targetType, locale);
-            return n == null ? null : n.longValue();
-        }
-
-        @Override
-        public Class<Long> getModelType() {
-            return Long.class;
-        }
     }
 
 }

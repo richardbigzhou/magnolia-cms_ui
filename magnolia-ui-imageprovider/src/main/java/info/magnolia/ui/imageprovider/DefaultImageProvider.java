@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2003-2014 Magnolia International
+ * This file Copyright (c) 2003-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,10 +37,13 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeTypes.LastModified;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.io.InputStream;
 import java.util.Calendar;
 
 import javax.inject.Inject;
@@ -48,11 +51,15 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.net.MediaType;
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 
 /**
  * This implementation of image provider, is able to provide portrait or thumbnail images only for objects of mime
@@ -106,12 +113,11 @@ public class DefaultImageProvider implements ImageProvider {
                 Node imageNode = node.getNode(definition.getOriginalImageNodeName());
 
                 String imageName;
-                if (imageNode.hasProperty("fileName")) {
-                    imageName = imageNode.getProperty("fileName").getString();
+                if (imageNode.hasProperty(FileProperties.PROPERTY_FILENAME)) {
+                    imageName = imageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString();
                 } else {
                     imageName = node.getName();
                 }
-
                 imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
 
                 // Add cache fingerprint so that browser caches asset only until asset is modified.
@@ -135,7 +141,7 @@ public class DefaultImageProvider implements ImageProvider {
 
             Object resource = null;
             if (node != null) {
-                resource = getThumbnailResource(node,jcrAdapter.getWorkspace(), generator);
+                resource = getThumbnailResource(node, jcrAdapter.getWorkspace(), generator);
             }
             return resource;
         }
@@ -145,12 +151,22 @@ public class DefaultImageProvider implements ImageProvider {
     private Object getThumbnailResource(Node node, String workspace, String generator) {
         Object resource = null;
         try {
-            Node imageNode = node.getNode(definition.getOriginalImageNodeName());
+            final Node imageNode = node.getNode(definition.getOriginalImageNodeName());
             String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
+
             if (isImage(mimeType)) {
-                String path = getGeneratorImagePath(workspace, node, generator);
-                if (StringUtils.isNotBlank(path)) {
-                    resource = new ExternalResource(path, "image/png");
+                if(MediaType.SVG_UTF_8.is(MediaType.parse(mimeType))) {
+                    ImageStreamSource iss = new ImageStreamSource(imageNode.getIdentifier(), workspace);
+                    // By default a StreamResource is cached for one year - filename contains the last modified date so that image is cached by the browser until changed.
+                    String filename = imageNode.getIdentifier() + LastModified.getLastModified(imageNode).getTimeInMillis();
+                    StreamResource streamResource = new StreamResource(iss, filename);
+                    streamResource.setMIMEType(mimeType);
+                    resource = streamResource;
+                } else {
+                    String path = getGeneratorImagePath(workspace, node, generator);
+                    if (StringUtils.isNotBlank(path)) {
+                        resource = new ExternalResource(path, MediaType.PNG.toString());
+                    }
                 }
             } else {
                 resource = createIconFontResource(mimeType);
@@ -223,5 +239,28 @@ public class DefaultImageProvider implements ImageProvider {
 
     protected boolean isImage(String mimeType) {
         return mimeType != null && mimeType.matches("image.*");
+    }
+
+    private static class ImageStreamSource implements StreamSource {
+        private String id;
+        private String workspace;
+
+        public ImageStreamSource(String id, String workspace) {
+            this.id = id;
+            this.workspace = workspace;
+        }
+
+        @Override
+        public InputStream getStream() {
+            try {
+                Node node = NodeUtil.getNodeByIdentifier(workspace, id);
+                if(node != null && node.hasProperty(JcrConstants.JCR_DATA)) {
+                    return node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

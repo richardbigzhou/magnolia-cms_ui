@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -495,14 +495,14 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void updateFrom533ReconfigureDuplicateRoleAction() throws Exception {
         // GIVEN
-        NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole",
-                NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
+        Node duplicateRole = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/duplicateRole", NodeTypes.ContentNode.NAME);
+        duplicateRole.setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.3"));
 
         // THEN
-        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole/class").getString(), "info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition");
+        assertEquals("info.magnolia.security.app.dialog.action.DuplicateRoleActionDefinition", duplicateRole.getProperty("class").getString());
     }
 
     @Test
@@ -523,5 +523,18 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(contentViewsGroups.hasNode("search"));
         assertTrue(contentViewsRoles.hasNode("list"));
         assertTrue(contentViewsRoles.hasNode("search"));
+    }
+
+    @Test
+    public void updateFrom535ReconfigureDuplicateUserAction() throws Exception {
+        // GIVEN
+        Node duplicateUser = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/duplicateUser", NodeTypes.ContentNode.NAME);
+        duplicateUser.setProperty("class", "info.magnolia.ui.framework.action.DuplicateNodeActionDefinition");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.6"));
+
+        // THEN
+        assertEquals("info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition", duplicateUser.getProperty("class").getString());
     }
 }

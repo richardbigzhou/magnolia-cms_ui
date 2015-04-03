@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,7 +50,10 @@ import org.slf4j.LoggerFactory;
  * Overrides equals in order to define the uniqueness of a ConfiguredAppDescriptorProvider.
  * In our case, ConfiguredAppDescriptorProvider is equal if:
  * AppDescriptor.getName(), isEnabled(), getIcon(), getAppClass() and getLabel() are equal.
+ *
+ * @deprecated since 5.4 use DefinitionProvider<AppDescriptor> and configuration sources.
  */
+@Deprecated
 public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());

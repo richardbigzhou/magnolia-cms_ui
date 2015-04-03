@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.transformer.basic;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,9 +66,9 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
         if (isCollectionConversionNeeded(newValue, p.getType())) {
             newValue = (T) new LinkedList((Set) newValue);
-            if (((List<?>) newValue).isEmpty()) {
-                newValue = null;
-            }
+        }
+        if (newValue instanceof Collection && ((Collection) newValue).isEmpty()) {
+            newValue = null;
         }
         p.setValue(newValue);
     }

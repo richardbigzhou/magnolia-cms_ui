@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,11 @@ package info.magnolia.ui.form.fieldType.registry;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionRawView;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -44,8 +49,10 @@ import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
-import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionProvider;
+import info.magnolia.ui.form.fieldtype.registry.DefinitionTypes;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,20 +62,20 @@ import org.junit.Test;
  */
 public class FieldTypeDefinitionRegistryTest {
 
-    private FieldTypeDefinitionRegistry registery;
+    private FieldTypeDefinitionRegistry registry;
 
     @Before
     public void setUp() throws Exception {
-        registery = new FieldTypeDefinitionRegistry();
+        registry = new FieldTypeDefinitionRegistry();
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
     }
 
@@ -77,7 +84,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registery.get("text");
+        FieldTypeDefinition res = registry.get("text");
 
         // THEN
         assertNotNull(res);
@@ -90,7 +97,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registery.get("tutu");
+        FieldTypeDefinition res = registry.get("tutu");
 
         // THEN
     }
@@ -100,7 +107,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registery.getByDefinition(TextFieldDefinition.class);
+        FieldTypeDefinition res = registry.getByDefinition(TextFieldDefinition.class);
 
         // THEN
         assertNotNull(res);
@@ -113,7 +120,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registery.getByDefinition(BasicUploadFieldDefinition.class);
+        FieldTypeDefinition res = registry.getByDefinition(BasicUploadFieldDefinition.class);
 
         // THEN
     }
@@ -127,9 +134,9 @@ public class FieldTypeDefinitionRegistryTest {
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(ConfiguredFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("extend", codeFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("extend", codeFieldDefinition));
         // WHEN
-        FieldTypeDefinition res = registery.getByDefinition(ConfiguredFieldDefinition.class);
+        FieldTypeDefinition res = registry.getByDefinition(ConfiguredFieldDefinition.class);
 
         // THEN
         assertNull(res);
@@ -138,25 +145,44 @@ public class FieldTypeDefinitionRegistryTest {
     /**
      * .
      */
-    public static class TestFieldTypeDefinitionProvider implements FieldTypeDefinitionProvider {
+    public static class TestFieldTypeDefinitionProvider implements DefinitionProvider<FieldTypeDefinition> {
 
-        private String id;
+        private final DefinitionMetadata metadata;
+
         private FieldTypeDefinition definition;
 
-        public TestFieldTypeDefinitionProvider(String id, FieldTypeDefinition definition) {
-            this.id = id;
+        public TestFieldTypeDefinitionProvider(String fieldId, FieldTypeDefinition definition) {
             this.definition = definition;
+            this.metadata = DefinitionMetadataBuilder.usingNameAsId().
+                    type(DefinitionTypes.FIELD_TYPE).
+                    name(fieldId).module("module").
+                    relativeLocation("/").
+                    build();
         }
 
         @Override
-        public String getId() {
-            return id;
+        public DefinitionMetadata getMetadata() {
+            return metadata;
         }
 
         @Override
-        public FieldTypeDefinition getFieldTypeDefinition() throws RegistrationException {
+        public FieldTypeDefinition get() throws Registry.InvalidDefinitionException {
             return definition;
         }
 
+        @Override
+        public DefinitionRawView getRaw() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public List<String> getErrorMessages() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

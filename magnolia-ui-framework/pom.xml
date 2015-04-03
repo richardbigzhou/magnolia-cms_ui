@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>63</cloverCoverageThreshold>
+    <cloverCoverageThreshold>65</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -31,6 +31,10 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.config</groupId>
+      <artifactId>magnolia-configuration</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -113,6 +117,12 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

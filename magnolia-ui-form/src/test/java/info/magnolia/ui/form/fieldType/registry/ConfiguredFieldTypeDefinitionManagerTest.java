@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -68,6 +68,7 @@ import javax.jcr.Session;
 import javax.jcr.observation.Event;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -114,9 +115,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testGetFieldTypeById() throws RegistrationException {
         // GIVEN
-        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
+        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager();
 
         // WHEN
         fieldTypeManager.start();
@@ -130,9 +132,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testGetFieldTypeByDefinition() throws RegistrationException {
         // GIVEN
-        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
+        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager();
 
         // WHEN
         fieldTypeManager.start();
@@ -145,9 +148,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     }
 
     @Test(expected = RegistrationException.class)
+    @Ignore("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testNonExistentFieldTypeDefinition() throws RegistrationException {
         // GIVEN
-        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
+        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager();
 
         // WHEN
         fieldTypeManager.start();
@@ -157,10 +161,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testFieldTypeDefinitionReloadsOnAddition() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
+        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager();
 
         // WHEN
         fieldTypeManager.start();
@@ -183,10 +188,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testFieldTypeDefinitionReloadsOnRemoval() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
+        ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager();
 
         // WHEN
         fieldTypeManager.start();
@@ -214,9 +220,8 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
             public void evaluate() {
                 try {
                     fieldTypeRegistry.get(id);
-                    fail();
                 } catch (RegistrationException e) {
-                    // expected
+                    fail();
                 }
             }
         });

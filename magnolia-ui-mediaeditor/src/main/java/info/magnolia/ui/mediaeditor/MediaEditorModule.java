@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,32 +33,62 @@
  */
 package info.magnolia.ui.mediaeditor;
 
+import info.magnolia.config.source.ConfigurationSourceFactory;
+import info.magnolia.jcr.predicate.AbstractPredicate;
+import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Registers the observed managers: {@link ConfiguredMediaEditorDefinitionManager}.
+ * Binds {@link MediaEditorRegistry} to JCR and Yaml config sources.
  */
 public class MediaEditorModule implements ModuleLifecycle {
-    private ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager;
+
+    private ConfigurationSourceFactory configSourceFactory;
+
+    private MediaEditorRegistry registry;
 
     @Inject
-    public MediaEditorModule(ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager) {
-        this.configuredMediaEditorDefinitionManager = configuredMediaEditorDefinitionManager;
+    public MediaEditorModule(ConfigurationSourceFactory configSourceFactory, MediaEditorRegistry registry) {
+        this.configSourceFactory = configSourceFactory;
+        this.registry = registry;
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-            this.configuredMediaEditorDefinitionManager.start();
+
+            configSourceFactory.jcr().withFilter(new IsMediaEditor()).withModulePath("mediaEditors").bindTo(registry);
+            configSourceFactory.yaml().bindWithDefaults(registry);
         }
     }
 
     @Override
     public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+    }
 
+    /**
+     * Check if this node can be handled as an {@link info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition}.
+     * Prior to 5.4, this was in {@link info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager}.
+     */
+    private static class IsMediaEditor extends AbstractPredicate<Node> {
+
+        @Override
+        public boolean evaluateTyped(Node node) {
+            try {
+                if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
+                    node = new ExtendingNodeWrapper(node);
+                }
+                return "mediaEditors".equalsIgnoreCase(node.getParent().getName());
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -267,7 +267,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                 try {
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
-                    log.error("Could not set JCR Property", e);
+                    log.error("Could not set JCR Property {}", propertyId, e);
                 }
             } else {
                 removeItemProperty(propertyId);

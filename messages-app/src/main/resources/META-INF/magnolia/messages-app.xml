@@ -9,7 +9,7 @@
 
   <!-- Components App definition. -->
   <!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
-	   in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
+     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-messages</id>
   </components>
@@ -29,7 +29,7 @@
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
-      <version>${project.version}</version>
+      <version>5.4/*</version>
     </dependency>
   </dependencies>
 </module>

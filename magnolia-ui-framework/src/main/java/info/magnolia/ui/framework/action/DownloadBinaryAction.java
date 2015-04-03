@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,6 +37,7 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.server.DownloadStreamResource;
 
 import java.io.InputStream;
 
@@ -88,13 +89,13 @@ public class DownloadBinaryAction<D extends DownloadBinaryActionDefinition> exte
     }
 
     /**
-     * Returns a downloadable {@link StreamResource} created from the supplied {@link InputStream}.
+     * Returns a downloadable {@link DownloadStreamResource} created from the supplied {@link InputStream}.
      *
      * @see com.vaadin.server.DownloadStream#DEFAULT_CACHETIME
      * @see StreamResource
      */
-    private StreamResource getStreamResource(final InputStream inputStream, String fileName) {
-        final StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+    protected DownloadStreamResource getStreamResource(final InputStream inputStream, String fileName) {
+        final DownloadStreamResource resource = new DownloadStreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
                 return inputStream;

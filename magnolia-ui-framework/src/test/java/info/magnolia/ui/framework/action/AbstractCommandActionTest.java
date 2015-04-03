@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,6 +38,9 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SecuritySupportImpl;
+import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
@@ -102,6 +105,8 @@ public class AbstractCommandActionTest {
     private Scheduler scheduler;
     private SimpleTranslator i18n;
 
+    public static final String TEST_USER = "phantomas";
+
     @Before
     public void setUp() throws Exception {
         session = SessionTestUtil.createSession("website", website);
@@ -127,11 +132,18 @@ public class AbstractCommandActionTest {
         MockWebContext webContext = new MockWebContext();
         webContext.setContextPath("/foo");
         webContext.addSession("website", session);
+        final User user = mock(User.class);
+        when(user.getName()).thenReturn(TEST_USER);
+        final SecuritySupportImpl sec = new info.magnolia.cms.security.SecuritySupportImpl();
+        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
+        webContext.setUser(user);
         MgnlContext.setInstance(webContext);
 
         SystemContext systemContext = mock(SystemContext.class);
         when(systemContext.getJCRSession("website")).thenReturn(session);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
+
+
 
         commandsManager = mock(CommandsManager.class);
         i18n = mock(SimpleTranslator.class);
@@ -165,10 +177,12 @@ public class AbstractCommandActionTest {
         assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
         assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
         assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
 
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test
@@ -192,11 +206,13 @@ public class AbstractCommandActionTest {
         assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
         assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
         assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
 
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals(jcrProperty.getPath(), params.get(Context.ATTRIBUTE_PATH));
         // In case of property, the Identifier is the parent Node ID
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test
@@ -230,6 +246,7 @@ public class AbstractCommandActionTest {
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
+        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
     }
 
     @Test
@@ -342,7 +359,7 @@ public class AbstractCommandActionTest {
         // GIVEN
         JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
         JobDetail jobDetail = new JobDetail();
-        jobDetail.setName("UI Action triggered execution of [default:asynchronous] by user []. (0)");
+        jobDetail.setName("UI Action triggered execution of [default:asynchronous] by user ["+TEST_USER+"]. (0)");
         when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
         CommandActionDefinition definition = new CommandActionDefinition();
         definition.setCommand("asynchronous");

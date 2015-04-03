@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,6 @@
 package info.magnolia.ui.api.app.launcherlayout;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUser;
@@ -50,10 +49,14 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventType;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.registry.DummyAppDescriptorProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +90,7 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("app1");
         appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("app2");
         appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("app3");
+
         appGroup1 = createAppGroup("appGroup1", "app1", "app2");
         appGroup2 = createAppGroup("appGroup2", "app3");
 
@@ -94,21 +98,22 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         layoutDefinition.addGroup(appGroup1);
         layoutDefinition.addGroup(appGroup2);
 
-        ArrayList<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
-        descriptors.add(appDescriptor1);
-        descriptors.add(appDescriptor2);
-        descriptors.add(appDescriptor3);
+        Map<String, AppDescriptor> descriptors = new HashMap<>();
+        descriptors.put("app1", appDescriptor1);
+        descriptors.put("app2", appDescriptor2);
+        descriptors.put("app3", appDescriptor3);
 
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
-        when(registry.getAppDescriptors()).thenReturn(descriptors);
+        when(registry.getAllDefinitions()).thenReturn(new LinkedList<>(descriptors.values()));
 
-        when(registry.isAppDescriptorRegistered(eq("app1"))).thenReturn(true);
-        when(registry.isAppDescriptorRegistered(eq("app2"))).thenReturn(true);
-        when(registry.isAppDescriptorRegistered(eq("app3"))).thenReturn(true);
-
-        when(registry.getAppDescriptor(eq("app1"))).thenReturn(appDescriptor1);
-        when(registry.getAppDescriptor(eq("app2"))).thenReturn(appDescriptor2);
-        when(registry.getAppDescriptor(eq("app3"))).thenReturn(appDescriptor3);
+        final Iterator<Map.Entry<String, AppDescriptor>> it = descriptors.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<String, AppDescriptor> entry = it.next();
+            String appName = entry.getKey();
+            AppDescriptor appDescriptor = entry.getValue();
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).
+                    when(registry).getProvider(appName);
+        }
 
         systemEventBus = new SimpleEventBus();
 
@@ -286,5 +291,4 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         }
         return group;
     }
-
 }

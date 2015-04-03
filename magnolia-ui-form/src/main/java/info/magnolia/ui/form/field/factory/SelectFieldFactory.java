@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -102,6 +103,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (select instanceof ComboBox) {
             ((ComboBox) select).setFilteringMode(definition.getFilteringMode());
             ((ComboBox) select).setTextInputAllowed(false);
+            ((ComboBox) select).setPageLength(0);
         }
         select.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         select.setItemCaptionPropertyId(optionLabelName);
@@ -129,7 +131,12 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (sortOptions) {
-            Collections.sort(options);
+            if (definition.getComparatorClass() != null) {
+                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
+                Collections.sort(options, comparator);
+            } else {
+                Collections.sort(options);
+            }
         }
         if (!options.isEmpty()) {
             Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
@@ -149,6 +156,10 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             }
         }
         return optionContainer;
+    }
+
+    protected Comparator<SelectFieldOptionDefinition> initializeComparator(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
+        return getComponentProvider().newInstance(comparatorClass, item, definition, getFieldType());
     }
 
     /**
@@ -248,11 +259,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 return new HashSet(initialSelectedKey);
             }
             selectedValue = initialSelectedKey.get(0);
-        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
+        } else if (!select.isNullSelectionAllowed() && select.getItemIds() != null && !select.getItemIds().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
-        // Type the selected value
 
+        // Type the selected value
         selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {

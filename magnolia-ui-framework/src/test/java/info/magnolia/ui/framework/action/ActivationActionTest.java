@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,6 +39,9 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.exchange.ExchangeException;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SecuritySupportImpl;
+import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
@@ -95,6 +98,7 @@ public class ActivationActionTest extends RepositoryTestCase {
     private Command activationCommand;
     private ActivationActionDefinition definition;
     private Map<String, Object> params = new HashMap<String, Object>();
+    public static final String TEST_USER = "phantomas";
 
     @Override
     @Before
@@ -117,6 +121,11 @@ public class ActivationActionTest extends RepositoryTestCase {
         ctx.addSession("website", session);
         ctx.setLocale(new Locale("en"));
         MgnlContext.setInstance(ctx);
+        final User user = mock(User.class);
+        when(user.getName()).thenReturn(TEST_USER);
+        final SecuritySupportImpl sec = new info.magnolia.cms.security.SecuritySupportImpl();
+        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
+        ctx.setUser(user);
 
         commandsManager = mock(CommandsManager.class);
 

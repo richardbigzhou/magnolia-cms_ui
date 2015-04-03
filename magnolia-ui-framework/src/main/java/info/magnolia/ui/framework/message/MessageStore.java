@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -81,7 +81,7 @@ public class MessageStore {
      * @param message message to save
      * @return true if saving was successful or false if it failed
      */
-    public boolean saveMessage(final String userName, final Message message) {
+    public synchronized boolean saveMessage(final String userName, final Message message) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Boolean, RuntimeException>() {
 
@@ -108,7 +108,7 @@ public class MessageStore {
         });
     }
 
-    public int getNumberOfUnclearedMessagesForUser(final String userName) {
+    public synchronized int getNumberOfUnclearedMessagesForUser(final String userName) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Integer, RuntimeException>() {
 
@@ -133,7 +133,7 @@ public class MessageStore {
         });
     }
 
-    public List<Message> findAllMessagesForUser(final String userName) {
+    public synchronized List<Message> findAllMessagesForUser(final String userName) {
         return MgnlContext.doInSystemContext(new MgnlContext.Op<List<Message>, RuntimeException>() {
 
             @Override
@@ -162,7 +162,7 @@ public class MessageStore {
         });
     }
 
-    public Message findMessageById(final String userName, final String messageId) {
+    public synchronized Message findMessageById(final String userName, final String messageId) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Message, RuntimeException>() {
 
@@ -190,7 +190,7 @@ public class MessageStore {
         });
     }
 
-    public void removeMessageById(final String userName, final String messageId) {
+    public synchronized void removeMessageById(final String userName, final String messageId) {
         MgnlContext.doInSystemContext(new MgnlContext.Op<Void, RuntimeException>() {
 
             @Override
@@ -217,7 +217,7 @@ public class MessageStore {
 
     }
 
-    public int getNumberOfUnclearedMessagesForUserAndByType(final String userName, final MessageType type) {
+    public synchronized int getNumberOfUnclearedMessagesForUserAndByType(final String userName, final MessageType type) {
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Integer, RuntimeException>() {
 
             @Override

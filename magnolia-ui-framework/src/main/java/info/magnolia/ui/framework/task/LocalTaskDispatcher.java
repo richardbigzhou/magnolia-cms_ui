@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -71,31 +71,33 @@ public class LocalTaskDispatcher implements TaskEventDispatcher {
     }
 
     @Override
-    public void onTaskEvent(TaskEvent taskEvent) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        boolean hasContext = MgnlContext.hasInstance();
-        if (!hasContext) {
-            MgnlContext.setInstance(new SimpleContext(componentProvider.getComponent(SystemContext.class)) {
-                @Override
-                public User getUser() {
-                    return LocalTaskDispatcher.this.user;
-                }
+    public void onTaskEvent(final TaskEvent taskEvent) {
+        vaadinSession.access(new Runnable() {
+            @Override
+            public void run() {
+                boolean hasContext = MgnlContext.hasInstance();
+                if (!hasContext) {
+                    MgnlContext.setInstance(new SimpleContext(componentProvider.getComponent(SystemContext.class)) {
+                        @Override
+                        public User getUser() {
+                            return LocalTaskDispatcher.this.user;
+                        }
 
-                @Override
-                public Locale getLocale() {
-                    return LocalTaskDispatcher.this.locale;
+                        @Override
+                        public Locale getLocale() {
+                            return LocalTaskDispatcher.this.locale;
+                        }
+                    });
                 }
-            });
-        }
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(taskEvent);
-        } finally {
-            VaadinSession.setCurrent(previous);
-            if (!hasContext) {
-                MgnlContext.setInstance(null);
+                try {
+                    eventBus.fireEvent(taskEvent);
+                } catch (Exception ignore) {
+                } finally {
+                    if (!hasContext) {
+                        MgnlContext.setInstance(null);
+                    }
+                }
             }
-        }
+        });
     }
-
 }

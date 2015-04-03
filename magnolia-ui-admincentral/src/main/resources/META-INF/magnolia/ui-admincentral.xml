@@ -174,7 +174,11 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.3.2/*</version>
+      <version>5.4/*</version>
+    </dependency>
+    <dependency>
+      <name>config</name>
+      <version>5.4/*</version>
     </dependency>
     <dependency>
       <name>imaging</name>
@@ -182,7 +186,7 @@
     </dependency>
     <dependency>
       <name>ui-framework</name>
-      <version>${project.version}</version>
+      <version>${project.version}/*</version>
     </dependency>
   </dependencies>
 

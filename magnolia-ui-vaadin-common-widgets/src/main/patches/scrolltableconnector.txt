@@ -1,6 +1,6 @@
---- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-03-06 04:00:32.000000000 +0100
-+++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-04-30 14:50:07.000000000 +0100
-@@ -35,15 +35,15 @@
+--- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-10-16 02:00:54.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-11-21 18:58:00.000000000 +0100
+@@ -34,15 +34,15 @@
  import com.vaadin.client.Util;
  import com.vaadin.client.ui.AbstractHasComponentsConnector;
  import com.vaadin.client.ui.PostLayoutListener;
@@ -13,37 +13,37 @@
  import com.vaadin.shared.ui.Connect;
  import com.vaadin.shared.ui.table.TableConstants;
  import com.vaadin.shared.ui.table.TableState;
-
+ 
 -@Connect(com.vaadin.ui.Table.class)
 -public class TableConnector extends AbstractHasComponentsConnector implements
 +//@Connect(com.vaadin.ui.Table.class)
 +public class TableConnectorPatched extends AbstractHasComponentsConnector implements
          Paintable, DirectionalManagedLayout, PostLayoutListener {
-
+ 
      @Override
-@@ -135,7 +135,8 @@
-
+@@ -145,7 +145,8 @@
+ 
          getWidget().updatePageLength(uidl);
-
+ 
 -        getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
 +        // MGNLUI-960 Avoid TreeTable jump for the time it repaints
 +        // getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
-
+ 
          getWidget().showRowHeaders = uidl.getBooleanAttribute("rowheaders");
          getWidget().showColHeaders = uidl.getBooleanAttribute("colheaders");
-@@ -300,8 +301,8 @@
+@@ -314,8 +315,8 @@
      }
-
+ 
      @Override
 -    public VScrollTable getWidget() {
 -        return (VScrollTable) super.getWidget();
 +    public VScrollTablePatched getWidget() {
 +        return (VScrollTablePatched) super.getWidget();
      }
-
+ 
      @Override
-@@ -321,20 +322,20 @@
-
+@@ -335,8 +336,8 @@
+ 
      @Override
      public void postLayout() {
 -        VScrollTable table = getWidget();
@@ -53,7 +53,10 @@
              table.sizeInit();
              Scheduler.get().scheduleFinally(new ScheduledCommand() {
                  @Override
-                 public void execute() {
+@@ -344,14 +345,14 @@
+                     // IE8 needs some hacks to measure sizes correctly
+                     Util.forceIE8Redraw(getWidget().getElement());
+ 
 -                    getLayoutManager().setNeedsMeasure(TableConnector.this);
 +                    getLayoutManager().setNeedsMeasure(TableConnectorPatched.this);
                      ServerConnector parent = getParent();
@@ -67,3 +70,12 @@
                      getLayoutManager().layoutNow();
                  }
              });
+@@ -394,7 +395,7 @@
+         TooltipInfo info = null;
+ 
+         if (element != getWidget().getElement()) {
+-            Object node = Util.findWidget(element, VScrollTableRow.class);
++            Object node = Util.findWidget(element, getWidget().scrollBody.iterator().next().getClass());
+ 
+             if (node != null) {
+                 VScrollTableRow row = (VScrollTableRow) node;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -55,7 +55,6 @@ import java.util.List;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.Page;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
@@ -136,39 +135,19 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void showInfo(String id, String subject, String message) {
-        VaadinSession.getCurrent().lock();
-        try {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
     }
 
     public void showError(String id, String subject, String message) {
-        VaadinSession.getCurrent().lock();
-        try {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
     }
 
     public void showWarning(String id, String subject, String message) {
-        VaadinSession.getCurrent().lock();
-        try {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
     }
 
     public void hideAllMessages() {
-        VaadinSession.getCurrent().lock();
-        try {
-            getRpcProxy(ShellClientRpc.class).hideAllMessages();
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
+        getRpcProxy(ShellClientRpc.class).hideAllMessages();
     }
 
     public void setFullScreen(boolean isFullScreen) {

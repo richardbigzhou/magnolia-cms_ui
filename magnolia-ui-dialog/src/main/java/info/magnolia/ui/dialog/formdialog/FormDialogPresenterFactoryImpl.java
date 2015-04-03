@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,14 +34,15 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link FormDialogPresenterFactory}. Uses {@link DialogDefinitionRegistry} to fetch dialog definition.
@@ -63,16 +64,19 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
 
     @Override
     public FormDialogPresenter createFormDialogPresenter(String dialogId) {
-        try {
-            return componentProvider.newInstance(registry.getPresenterClass(dialogId));
-        } catch (RegistrationException e) {
-            log.error("Failed to retrieve form dialog definition from registry:", e);
+        DialogDefinition dialogDefinition = registry.getProvider(dialogId).get();
+        if (dialogDefinition instanceof FormDialogDefinition) {
+            return createFormDialogPresenter((FormDialogDefinition) dialogDefinition);
+        } else if (dialogDefinition == null) {
+            log.error("Could not create FormDialogPresenter: dialogId {{}} was not found in registry.", dialogId);
+        } else {
+            log.error("Could not create FormDialogPresenter: dialog's presenterClass was not a FormDialogPresenter.");
         }
         return null;
     }
 
     @Override
     public FormDialogPresenter createFormDialogPresenter(FormDialogDefinition definition) {
-        return componentProvider.newInstance(definition.getPresenterClass());
+        return componentProvider.newInstance(definition.getPresenterClass(), definition);
     }
 }

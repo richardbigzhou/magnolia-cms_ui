@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,7 +39,6 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.GroupManager;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
@@ -60,6 +59,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,14 +70,12 @@ import javax.jcr.Session;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Test class for {@link DeleteGroupAction}.
- */
 public class DeleteGroupActionTest extends RepositoryTestCase {
 
     private static final String GROUPNAME = "testGroup";
 
     private DeleteGroupAction action;
+    private SecuritySupport securitySupport;
     private Session session;
 
     @Before
@@ -99,13 +97,18 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
 
         CommandsManager commandsManager = Components.getComponent(CommandsManager.class);
         Session configSession = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node exportModuleDef = configSession.getRootNode().addNode("modules", NodeTypes.ContentNode.NAME).addNode("commands", NodeTypes.ContentNode.NAME)
-                .addNode("default", NodeTypes.ContentNode.NAME).addNode("delete", NodeTypes.ContentNode.NAME);
+        Node exportModuleDef = configSession.getRootNode()
+                .addNode("modules", NodeTypes.ContentNode.NAME)
+                .addNode("commands", NodeTypes.ContentNode.NAME)
+                .addNode("default", NodeTypes.ContentNode.NAME)
+                .addNode("delete", NodeTypes.ContentNode.NAME);
         exportModuleDef.setProperty("class", DeleteCommand.class.getName());
         exportModuleDef.getSession().save();
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
 
-        action = new DeleteGroupAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class));
+        securitySupport = mock(SecuritySupport.class);
+
+        action = new DeleteGroupAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class), securitySupport);
     }
 
     @Test
@@ -113,8 +116,12 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        when(securitySupport.getGroupManager()).thenReturn(gm);
+
+        UserManager um = mock(UserManager.class);
+        when(um.getUsersWithGroup(GROUPNAME)).thenReturn(Collections.EMPTY_LIST);
+
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -128,14 +135,14 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         User user = mock(User.class);
         when(user.getGroups()).thenReturn(Collections.singleton(GROUPNAME));
 
         UserManager um = mock(UserManager.class);
-        when(um.getAllUsers()).thenReturn(Collections.singleton(user));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(Collections.singletonMap("test", um));
+        when(um.getUsersWithGroup(GROUPNAME)).thenReturn(Arrays.asList("userThatHasThatGroupAssigned"));
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -152,9 +159,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
 
         GroupManager gm = mock(GroupManager.class);
         when(gm.getAllGroups()).thenReturn(Collections.singleton(grp));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         // WHEN
         action.execute();

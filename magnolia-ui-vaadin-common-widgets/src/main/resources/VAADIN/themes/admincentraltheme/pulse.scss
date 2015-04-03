@@ -34,8 +34,8 @@
   color: $c40;
   font-size:32px;
   position: relative;
-    top:-12px;
-    float:left;
+  top:-12px;
+  float:left;
 }
 
 .v-dashboard-entry .content {
@@ -120,7 +120,7 @@
 }
 
 .v-pulse .v-table-cell-wrapper > .icon{
-	padding-top:3px;
+  padding-top:3px;
 }
 
 .v-pulse .navigator {
@@ -129,7 +129,8 @@
 }
 .v-pulse .navigator.top-row {
   padding-top:0px;
-  height:25px;
+  height:24px;
+  border-bottom: 1px solid $c12;
   background-color: $c15;
 }
 
@@ -152,13 +153,6 @@
   height: 25px;
   padding-top: 4px;
   border-bottom: 1px solid $c12;
-}
-.v-pulse .top-row .hidden {
-  position: absolute;
-  width: 100%;
-  border-bottom: 1px solid $c12;
-  height: 25px;
-  display:inline;
 }
 
 .v-pulse .navigator-tab * {
@@ -221,13 +215,8 @@
   font-weight: bold;
   margin: 25px 0 30px 150px;
   text-align: left;
-  text-overflow: ellipsis;
+  white-space: normal;
   width: 430px;
-}
-
-.v-pulse .message-detail  .message-title {
-  text-overflow:auto;
-  white-space:auto;
 }
 
 .v-pulse .message-detail {
@@ -388,9 +377,8 @@
   color: $c60;
 }
 
-.message-subject-text div{
-  position: absolute;
-  top: 22px;
+.message-subject-text {
+  line-height: 14px !important;
 }
 
 .v-pulse .footer {

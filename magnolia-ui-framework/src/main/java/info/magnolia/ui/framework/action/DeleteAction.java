@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -106,11 +106,6 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         if (getCurrentItem().getJcrItem().isNode() && getCurrentItem().getJcrItem().getDepth() == 0) {
             throw new ActionExecutionException("Root node can't be deleted.");
         }
-    }
-
-    @Override
-    public final void execute() throws ActionExecutionException {
-        super.execute();
     }
 
     @Override

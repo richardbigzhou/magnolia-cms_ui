@@ -27,13 +27,21 @@
     .v-slot .v-slot-statusbar {
       padding-top: 3px;
     }
-
-    .statusbar .activationstatus {
-      font-size: 13px;
+	
+	.statusbar {
+	  font-size: 13px;
       color: #666;
       vertical-align: middle;
-      text-align: center;
+      text-align: center; /*center extensions in statusbar*/
+	}
+	
+    .statusbar .activationstatus { 
       padding-top: 2px;
+    }
+    
+    .v-slot-statusbar-extension {
+	  width: auto !important;
+	  margin-left:5px;
     }
   }
 

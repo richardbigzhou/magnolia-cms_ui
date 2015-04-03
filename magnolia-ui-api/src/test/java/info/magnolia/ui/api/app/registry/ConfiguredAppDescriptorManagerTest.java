@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -64,6 +64,7 @@ import javax.jcr.observation.Event;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -107,9 +108,10 @@ public class ConfiguredAppDescriptorManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredAppDescriptorManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testAppDescriptorOnStart() throws RegistrationException {
         // GIVEN
-        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);
+        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager();
 
         // WHEN
         addDescriptorManager.start();
@@ -126,10 +128,11 @@ public class ConfiguredAppDescriptorManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredAppDescriptorManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testAppDescriptorReloadsOnChange() throws RepositoryException, RegistrationException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager(moduleRegistry, appRegistry);
+        ConfiguredAppDescriptorManager addDescriptorManager = new ConfiguredAppDescriptorManager();
 
         // WHEN
         addDescriptorManager.start();
@@ -184,12 +187,8 @@ public class ConfiguredAppDescriptorManagerTest {
         TestUtil.delayedAssert(new Assertion() {
             @Override
             public void evaluate() {
-                try {
-                    appRegistry.getAppDescriptor(name);
-                    fail();
-                } catch (RegistrationException expected) {
-                    // expected
-                }
+                appRegistry.getAppDescriptor(name);
+                fail();
             }
         });
     }

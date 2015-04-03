@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,8 +45,11 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * DialogProvider that instantiates a dialog from a configuration node.
+ * {@link DialogDefinitionProvider} that instantiates a dialog definition from a configuration node.
+ *
+ * @deprecated since 5.4 use DefinitionProvider<FormDialogDefinition> and configuration sources.
  */
+@Deprecated
 public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvider {
 
     private final String id;
@@ -55,7 +58,7 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
 
     public ConfiguredDialogDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
         this.id = id;
-        this.dialogDefinition = (ConfiguredFormDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, FormDialogDefinition.class);
+        this.dialogDefinition = fromNode(configNode);
         if (this.dialogDefinition != null) {
             this.dialogDefinition.setId(id);
         }
@@ -74,5 +77,9 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
     @Override
     public Class<? extends FormDialogPresenter> getPresenterClass() throws RegistrationException {
         return dialogDefinition.getPresenterClass();
+    }
+
+    protected ConfiguredFormDialogDefinition fromNode(Node configNode) throws Node2BeanException, RepositoryException {
+        return (ConfiguredFormDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, ConfiguredFormDialogDefinition.class);
     }
 }

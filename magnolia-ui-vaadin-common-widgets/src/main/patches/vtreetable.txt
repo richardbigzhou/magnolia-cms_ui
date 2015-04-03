@@ -12,12 +12,12 @@
 @@ -26,7 +28,6 @@
  import com.google.gwt.core.client.Scheduler.ScheduledCommand;
  import com.google.gwt.dom.client.Document;
- import com.google.gwt.dom.client.ImageElement;
+ import com.google.gwt.dom.client.Element;
 -import com.google.gwt.dom.client.SpanElement;
  import com.google.gwt.dom.client.Style.Display;
  import com.google.gwt.dom.client.Style.Unit;
  import com.google.gwt.dom.client.Style.Visibility;
-@@ -39,9 +40,9 @@
+@@ -38,9 +39,9 @@
  import com.vaadin.client.ComputedStyle;
  import com.vaadin.client.UIDL;
  import com.vaadin.client.Util;
@@ -29,7 +29,7 @@
 
      /** For internal use only. May be removed or replaced in the future. */
      public static class PendingNavigationEvent {
-@@ -86,7 +87,7 @@
+@@ -85,7 +86,7 @@
      public boolean animationsEnabled;
 
      /** For internal use only. May be removed or replaced in the future. */
@@ -38,7 +38,7 @@
 
      /** For internal use only. May be removed or replaced in the future. */
      public boolean focusParentResponsePending;
-@@ -127,11 +128,11 @@
+@@ -126,7 +127,7 @@
          return colIndexOfHierarchy + (showRowHeaders ? 1 : 0);
      }
 
@@ -47,12 +47,7 @@
          private int indentWidth = -1;
          private int maxIndent = 0;
 
--        VTreeTableScrollBody() {
-+        protected VTreeTableScrollBody() {
-             super();
-         }
-
-@@ -145,13 +146,13 @@
+@@ -144,13 +145,13 @@
          }
 
          public class VTreeTableRow extends
@@ -72,7 +67,7 @@
              protected Widget widgetInHierarchyColumn;
 
              public VTreeTableRow(UIDL uidl, char[] aligns2) {
-@@ -204,7 +205,7 @@
+@@ -200,7 +201,7 @@
                  return false;
              }
 
@@ -81,7 +76,7 @@
                  if (isTreeCellAdded) {
                      return false;
                  }
-@@ -233,14 +234,14 @@
+@@ -229,14 +230,14 @@
 
              }
 
@@ -98,7 +93,7 @@
                                  getIndent(), false);
                      }
                  }
-@@ -294,7 +295,7 @@
+@@ -290,7 +291,7 @@
                  super.setCellWidth(cellIx, width);
              }
 
@@ -107,7 +102,7 @@
                  return (depth + 1) * getIndentWidth();
              }
          }
-@@ -425,7 +426,7 @@
+@@ -421,7 +422,7 @@
              }
          }
 
@@ -116,7 +111,7 @@
              return indentWidth;
          }
 
-@@ -442,7 +443,8 @@
+@@ -438,7 +439,8 @@
                  VTreeTableRow next = (VTreeTableRow) iterator.next();
                  maxIndent = Math.max(maxIndent, next.getIndent());
              }
@@ -126,7 +121,7 @@
          }
 
          private void detectIndent(VTreeTableRow vTreeTableRow) {
-@@ -862,7 +864,7 @@
+@@ -857,7 +859,7 @@
          return super.handleNavigation(keycode, ctrl, shift);
      }
 

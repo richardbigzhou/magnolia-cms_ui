@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,7 +50,6 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppController;
@@ -65,6 +64,7 @@ import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.registry.DummyAppDescriptorProvider;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -77,6 +77,7 @@ import info.magnolia.ui.framework.message.MessagesManagerImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -513,23 +514,25 @@ public class AppControllerImplTest {
         this.appRegistry = mock(AppDescriptorRegistry.class);
 
         // create subapps
-        Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
+        Map<String, SubAppDescriptor> subApps = new LinkedHashMap<>();
         subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
         subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, false));
 
-        AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
-        AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
-        AppDescriptor app3 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>());
+        final Map<String, AppDescriptor> apps = new HashMap<>();
         ConfiguredAppDescriptor appThemed = (ConfiguredAppDescriptor) AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, AppTestImpl.class, subApps);
         appThemed.setTheme("testtheme");
 
-        try {
-            when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);
-            when(appRegistry.getAppDescriptor(APP_NAME_2 + "_name")).thenReturn(app2);
-            when(appRegistry.getAppDescriptor(APP_NAME_3 + "_name")).thenReturn(app3);
-            when(appRegistry.getAppDescriptor(APP_NAME_THEMED + "_name")).thenReturn(appThemed);
-        } catch (RegistrationException e) {
-            // won't happen
+        apps.put(APP_NAME_1 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps));
+        apps.put(APP_NAME_2 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps));
+        apps.put(APP_NAME_3 + "_name", AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>()));
+        apps.put(APP_NAME_THEMED + "_name", appThemed);
+
+        final Iterator<Map.Entry<String, AppDescriptor>> it = apps.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<String, AppDescriptor> entry = it.next();
+            String appName = entry.getKey();
+            AppDescriptor appDescriptor = entry.getValue();
+            doReturn(new DummyAppDescriptorProvider(appName, "module", "/apps", appDescriptor)).when(appRegistry).getProvider(entry.getKey());
         }
     }
 

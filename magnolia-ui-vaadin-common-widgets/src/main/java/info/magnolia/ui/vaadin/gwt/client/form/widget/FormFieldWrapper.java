@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -130,7 +130,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         if (errorSection == null) {
             errorSection = InlineMessageWidget.createErrorMessage();
         }
-        errorSection.addMessage(errorDescription);
+        errorSection.setMessage(errorDescription);
         add(errorSection, root);
     }
 

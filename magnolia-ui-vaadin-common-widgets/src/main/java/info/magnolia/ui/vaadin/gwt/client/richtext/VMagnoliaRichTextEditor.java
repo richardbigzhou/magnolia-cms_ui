@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -52,9 +52,9 @@ public class VMagnoliaRichTextEditor extends CKEditor {
     }
 
     public final native void addPluginListener(String eventName, Listener listener) /*-{
-        this.on(eventName, function (ev) {
+        this.on(eventName, $entry(function (ev) {
             ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
-        }, null, listener);
+        }), null, listener);
     }-*/;
 
     public final native void fire(String eventName, String value) /*-{

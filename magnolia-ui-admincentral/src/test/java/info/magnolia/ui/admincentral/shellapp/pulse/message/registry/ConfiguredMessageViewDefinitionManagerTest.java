@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -74,6 +74,7 @@ import javax.jcr.Session;
 import javax.jcr.observation.Event;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -128,9 +129,10 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     }
 
     @Test
+    @Ignore("ConfiguredMessageViewDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testMessageViewDefinitionOnStart() throws RegistrationException {
         // GIVEN
-        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
+        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager();
 
         // WHEN
         messageViewManager.start();
@@ -147,9 +149,10 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     }
 
     @Test(expected = RegistrationException.class)
+    @Ignore("ConfiguredMessageViewDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testNonExistentMessageViewDefinition() throws RegistrationException {
         // GIVEN
-        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
+        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager();
 
         // WHEN
         messageViewManager.start();
@@ -159,10 +162,11 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     }
 
     @Test
+    @Ignore("ConfiguredMessageViewDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testMessageViewDefinitionReloadsOnAddition() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
+        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager();
 
         // WHEN
         messageViewManager.start();
@@ -185,10 +189,11 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     }
 
     @Test
+    @Ignore("ConfiguredMessageViewDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testMessageViewDefinitionReloadsOnRemoval() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
+        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager();
 
         // WHEN
         messageViewManager.start();

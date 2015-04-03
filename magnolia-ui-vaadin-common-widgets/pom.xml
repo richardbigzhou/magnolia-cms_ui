@@ -211,7 +211,6 @@
                 com/vaadin/client/ui/panel/PanelConnector.java,
                 com/vaadin/client/ui/table/TableConnector.java,
                 com/vaadin/client/ui/treetable/TreeTableConnector.java,
-                com/vaadin/client/ui/upload/UploadConnector.java,
                 com/vaadin/ui/DragAndDropWrapper.java,
                 org/vaadin/openesignforms/ckeditor/widgetset/client/ui/VCKEditorTextField.java
               </includes>
@@ -230,7 +229,6 @@
             <patch>panelconnector.txt</patch>
             <patch>scrolltableconnector.txt</patch>
             <patch>treetableconnector.txt</patch>
-            <patch>uploadconnector.txt</patch>
             <patch>draganddropwrapper.txt</patch>
             <patch>vckeditortextfield.txt</patch>
           </patches>

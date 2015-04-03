@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -98,6 +98,14 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
                 // <dialogId>.<fieldName>.<property>
                 // <dialogId>.<fieldName> (in case property==label)
                 addKey(list, dialogID, fieldName, property);
+
+                String[] parts = StringUtils.split(dialogID, ".");
+                if (parts.length > 1) {
+                    String dialogIDNoModuleName = parts[parts.length - 1];
+                    addKey(list, dialogIDNoModuleName, fieldName, property);
+                    addKey(list, dialogIDNoModuleName, tabName, fieldName, property);
+                }
+
             } else {
                 // In case we didn't encounter parent tab definition - we simply generated a key based on dot-separated parent names
                 addKey(list, parentKeyPart, fieldName, property);

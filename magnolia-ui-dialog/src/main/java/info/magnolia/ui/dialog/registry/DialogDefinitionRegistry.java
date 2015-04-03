@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,50 +33,70 @@
  */
 package info.magnolia.ui.dialog.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderWrapper;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
 import javax.inject.Singleton;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Maintains a registry of dialog providers registered by id.
  */
 @Singleton
-public class DialogDefinitionRegistry {
+public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition> {
 
-    private final RegistryMap<String, DialogDefinitionProvider> registry = new RegistryMap<String, DialogDefinitionProvider>() {
+    @Override
+    public DefinitionType type() {
+        return DefinitionTypes.DIALOG;
+    }
 
-        @Override
-        protected String keyFromValue(DialogDefinitionProvider value) {
-            return value.getId();
-        }
-    };
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
+    }
 
+    @Override
+    protected DefinitionProvider<DialogDefinition> onRegister(DefinitionProvider<DialogDefinition> provider) {
+        return new DefinitionProviderWrapper<DialogDefinition>(provider) {
+            @Override
+            public DialogDefinition get() {
+                DialogDefinition dd = super.get();
+                if (dd instanceof ConfiguredDialogDefinition && dd.getId() == null) {
+                    String referenceId = getDelegate().getMetadata().getReferenceId();
+                    ((ConfiguredDialogDefinition) dd).setId(referenceId);
+                }
+                return dd;
+            }
+        };
+    }
+
+    /**
+     * @deprecated since 5.4 use {@link #getProvider(String)}
+     */
+    @Deprecated
     public FormDialogDefinition getDialogDefinition(String id) throws RegistrationException {
-        return getProvider(id).getDialogDefinition();
-    }
-
-    public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
-        return getProvider(id).getPresenterClass();
-    }
-
-    private DialogDefinitionProvider getProvider(String id) throws RegistrationException {
         try {
-            return registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No dialog definition registered for id: " + id, e);
+            DefinitionProvider<DialogDefinition> dialogDefinitionProvider = getProvider(id);
+            DialogDefinition dialogDefinition = dialogDefinitionProvider.get();
+            return (FormDialogDefinition) dialogDefinition;
+        } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
+            throw new RegistrationException(e.getMessage(), e);
         }
     }
 
-    public void register(DialogDefinitionProvider provider) {
-        registry.put(provider);
+    /**
+     * @deprecated since 5.4, get the {@link info.magnolia.ui.dialog.definition.DialogDefinition} first, and get the presenter class from it.
+     */
+    @Deprecated
+    public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
+        return (Class<? extends FormDialogPresenter>) getProvider(id).get().getPresenterClass();
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
-    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
@@ -113,7 +112,6 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    @I18nText
     public String getSuccessMessage() {
         return successMessage;
     }
@@ -123,7 +121,6 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    @I18nText
     public String getFailureMessage() {
         return failureMessage;
     }
@@ -133,7 +130,6 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    @I18nText
     public String getErrorMessage() {
         return errorMessage;
     }

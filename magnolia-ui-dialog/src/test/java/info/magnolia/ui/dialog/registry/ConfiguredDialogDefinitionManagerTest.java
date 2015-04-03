@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.dialog.registry;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -51,6 +55,7 @@ import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
@@ -58,33 +63,32 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests for the dialog definition manager.
  */
 public class ConfiguredDialogDefinitionManagerTest {
 
-    private static final String A_DIALOG_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/aDialog";
-    private static final String B_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/bDialog";
-    private static final String C_DIALOG_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/cDialog";
-    private static final String GENERIC_FIELD_PATH = "/modules/aModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/field";
-    private static final String EXTENDING_FIELD_PATH = "/modules/bModule/" + ConfiguredDialogDefinitionManager.DIALOG_CONFIG_NODE_NAME + "/field";
+    private static final String A_DIALOG_PATH = "/modules/aModule/dialogs/aDialog";
+    private static final String B_DIALOG_PATH = "/modules/bModule/dialogs/bDialog";
+    private static final String C_DIALOG_PATH = "/modules/bModule/dialogs/cDialog";
+    private static final String GENERIC_FIELD_PATH = "/modules/aModule/dialogs/field";
+    private static final String EXTENDING_FIELD_PATH = "/modules/bModule/dialogs/field";
 
     private ModuleRegistry moduleRegistry;
-
     private DialogDefinitionRegistry dialogRegistry;
+    private Node2BeanProcessor node2BeanProcessor;
 
     private Session session;
 
@@ -118,14 +122,15 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl();
-        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
+        node2BeanProcessor = new Node2BeanProcessorImpl(typeMapping, transformer);
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
     }
 
     @Test
+    @Ignore("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testDialogDefinitionOnStart() throws RegistrationException {
         // GIVEN
-        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry);
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager();
 
         // WHEN
         dialogManager.start();
@@ -141,10 +146,11 @@ public class ConfiguredDialogDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testDialogDefinitionReloadsOnChange() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
-        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry);
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager();
 
         // WHEN
         dialogManager.start();
@@ -196,11 +202,12 @@ public class ConfiguredDialogDefinitionManagerTest {
     }
 
     @Test
+    @Ignore("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.")
     public void testOnlyDialogsAreRegisteredWhenExtendingFeatureIsUsed() throws Exception {
         // GIVEN
-        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry) {
-            @Override
-            protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {
+        ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager() {
+
+            protected DefinitionProvider<DialogDefinition> newProvider(Node dialogNode) throws RepositoryException {
                 if (dialogNode.getName().equals("field")) {
                     fail("should not happen");
                 }

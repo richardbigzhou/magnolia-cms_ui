@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-form</artifactId>
   <name>magnolia-ui-form</name>
   <properties>
-    <cloverCoverageThreshold>62</cloverCoverageThreshold>
+    <cloverCoverageThreshold>64</cloverCoverageThreshold>
   </properties>
 
   <build>

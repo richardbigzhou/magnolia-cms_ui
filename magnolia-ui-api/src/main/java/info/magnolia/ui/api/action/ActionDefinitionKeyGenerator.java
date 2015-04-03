@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -62,6 +62,9 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
      */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {
+        final String fieldOrGetterName = fieldOrGetterName(el);
+        final String actionName = actionDefinition.getName();
+
         final Object root = getRoot(actionDefinition);
 
         if (root instanceof AppDescriptor) {
@@ -70,25 +73,29 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
             Object parent = getParentViaCast(actionDefinition);
             if (parent instanceof SubAppDescriptor) {
                 final SubAppDescriptor subAppDescriptor = (SubAppDescriptor) parent;
-                addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+                addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionName, fieldOrGetterName);
             } else {
-                addKey(keys, appDescriptor.getName(), "chooseDialog", "actions", actionDefinition.getName(), fieldOrGetterName(el));
+                addKey(keys, appDescriptor.getName(), "chooseDialog", "actions", actionName, fieldOrGetterName);
             }
         } else {
             final List<String> ancestorKeys = getKeysfromAncestors(actionDefinition, el, root);
             if (ancestorKeys.isEmpty()) {
                 String idOrName = getIdOrNameForUnknownRoot(actionDefinition);
                 if (idOrName != null) {
-                    addKey(keys, idOrName, "actions", actionDefinition.getName(), fieldOrGetterName(el));
+                    addKey(keys, idOrName, "actions", actionName, fieldOrGetterName);
+
+                    String[] parts = StringUtils.split(idOrName, ".");
+                    if (parts.length > 1) {
+                        String idOrNameNoModuleName = parts[parts.length - 1];
+                        addKey(keys, idOrNameNoModuleName, "actions", actionName, fieldOrGetterName);
+                    }
                 }
             } else {
-                addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+                addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionName, fieldOrGetterName);
             }
         }
-
         // add a fallback key for all actions
-        final String actionName = actionDefinition.getName();
-        addKey(keys, "actions", actionName, fieldOrGetterName(el));
+        addKey(keys, "actions", actionName, fieldOrGetterName);
     }
 
     private List<String> getKeysfromAncestors(final ActionDefinition actionDefinition, final AnnotatedElement el, final Object root) {

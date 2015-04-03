@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -221,7 +221,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
-        navigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n, categories);
+        navigator = new PulseItemCategoryNavigator(i18n, true, false, categories);
         root.setSizeFull();
         construct(emptyMessage);
     }
@@ -350,9 +350,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     /**
      * A row generator draws grouping headers if such are present in the container. Default implementation returns null.
      */
-    protected GeneratedRow generateGroupingRow(Item item) {
-        return null;
-    }
+    abstract protected GeneratedRow generateGroupingRow(Item item);
 
     protected SimpleTranslator getI18n() {
         return i18n;
@@ -406,5 +404,25 @@ public abstract class AbstractPulseListView implements PulseListView {
         }
 
         refresh();
+    }
+
+    /**
+     * The Vaadin {@link Table.ColumnGenerator ColumnGenerator} for denoting new messages or tasks in the Pulse list views.
+     */
+    protected class PulseNewItemColumnGenerator implements Table.ColumnGenerator {
+
+        // void public constructor to instantiate from subclasses in different packages
+        public PulseNewItemColumnGenerator() {
+        }
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
+            boolean isNew = newProperty != null && newProperty.getValue();
+            if (isNew) {
+                return "<span class=\"icon icon-tick new-message\"></span>";
+            }
+            return null;
+        }
     }
 }

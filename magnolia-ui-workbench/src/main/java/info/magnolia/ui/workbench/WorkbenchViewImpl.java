@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -52,7 +52,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -131,7 +130,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         viewModes.setStyleName("view-modes");
 
         clearSearchBoxButton = new Button();
-        clearSearchBoxButton.setStyleName("m-closebutton");
         clearSearchBoxButton.addStyleName("icon-delete-search");
         clearSearchBoxButton.addStyleName("searchbox-clearbutton");
         clearSearchBoxButton.addClickListener(new Button.ClickListener() {
@@ -249,7 +247,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // setExpandRatio(c, 1);
         keyboardEventPanel.setContent(c);
 
-        if (type != SearchPresenterDefinition.VIEW_TYPE) {
+        if (!StringUtils.equals(type, SearchPresenterDefinition.VIEW_TYPE)) {
             previousViewType = type;
             setSearchQuery(null);
         }
@@ -332,15 +330,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
         field.setImmediate(true);
         field.addValueChangeListener(searchFieldListener);
-
-        field.addFocusListener(new FieldEvents.FocusListener() {
-            @Override
-            public void focus(FieldEvents.FocusEvent event) {
-                // put the cursor at the end of the field
-                TextField tf = (TextField) event.getSource();
-                tf.setCursorPosition(tf.getValue().length());
-            }
-        });
 
         // No blur handler.
 

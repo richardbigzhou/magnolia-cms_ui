@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,44 +33,40 @@
  */
 package info.magnolia.ui.api.app.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.api.app.AppDescriptor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 /**
  * The central registry for {@link AppDescriptor}s. Fires {@link AppRegistryEvent} when the registry changes.
  *
  * @see AppDescriptor
- * @see AppDescriptorProvider
  * @see AppRegistryEvent
  */
 @Singleton
-public class AppDescriptorRegistry {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final RegistryMap<String, AppDescriptorProvider> registry = new RegistryMap<String, AppDescriptorProvider>() {
-
-        @Override
-        protected String keyFromValue(AppDescriptorProvider provider) {
-            return provider.getName();
-        }
-    };
+public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
 
     private EventBus systemEventBus;
 
@@ -79,111 +75,110 @@ public class AppDescriptorRegistry {
         this.systemEventBus = systemEventBus;
     }
 
-    public AppDescriptor getAppDescriptor(String name) throws RegistrationException {
-        AppDescriptorProvider provider;
-        try {
-            provider = registry.getRequired(name);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No app registered for name: " + name, e);
-        }
-        return provider.getAppDescriptor();
+    @Override
+    public void register(DefinitionProvider<AppDescriptor> provider) {
+        super.register(provider);
+        sendEvent(AppRegistryEventType.REGISTERED, Collections.singleton(provider.get()));
     }
 
-    public boolean isAppDescriptorRegistered(String name) {
-        return registry.get(name) != null;
+    //TODO implement unregister method properly once it is present in the parent class.
+    public void unregister(String name) {
+        DefinitionProvider<AppDescriptor> toRemove = getProvider(name);
+        getRegistryMap().remove(toRemove.getMetadata());
+        sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.get()));
     }
 
     /**
-     * @return all AppDescriptors - in case of errors it'll just deliver the ones that are properly
-     *         registered and logs error's for the others.
+     * @deprecated since 5.4 - use {@link AbstractRegistry#getProvider(String)} method instead.
      */
-    public Collection<AppDescriptor> getAppDescriptors() {
-        final Collection<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
-        for (AppDescriptorProvider provider : registry.values()) {
-            try {
-                final AppDescriptor appDescriptor = provider.getAppDescriptor();
-                if (appDescriptor == null) {
-                    logger.error("Provider's AppDescriptor is null: " + provider);
-                } else {
-                    descriptors.add(appDescriptor);
-                }
-            } catch (RegistrationException e) {
-                logger.error("Failed to read AppDescriptor definition from " + provider + ".", e);
-            }
-        }
-        return descriptors;
+    @Deprecated
+    public AppDescriptor getAppDescriptor(String name) {
+        return getProvider(name).get();
     }
 
-    public void register(AppDescriptorProvider provider) throws RegistrationException {
-        registry.put(provider);
-        sendEvent(AppRegistryEventType.REGISTERED, Collections.singleton(provider.getAppDescriptor()));
-    }
-
-    public void unregister(String name) throws RegistrationException {
-        AppDescriptorProvider toRemove;
-        // synchronized to make sure we don't remove one added after the get() call
-        synchronized (registry) {
-            toRemove = registry.get(name);
-            registry.remove(name);
+    /**
+     * @deprecated since 5.4 - use {@link AbstractRegistry#getProvider(String)} method instead.
+     */
+    @Deprecated
+    public boolean isAppDescriptorRegistered(String name) {
+        try {
+            getProvider(name);
+        } catch (NoSuchDefinitionException | IllegalStateException e) {
+            return false;
         }
-        sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.getAppDescriptor()));
+        return true;
     }
 
     @SuppressWarnings("unchecked")
-    public Set<String> unregisterAndRegister(Collection<String> namesToUnregister, Collection<AppDescriptorProvider> providersToRegister) throws RegistrationException {
+    @Override
+    public Set<DefinitionMetadata> unregisterAndRegister(Collection<DefinitionMetadata> metaDataToUnregister, Collection<DefinitionProvider<AppDescriptor>> providersToRegister) {
 
-        Collection<String> namesBefore;
-        Collection<String> namesAfter;
-        Collection<AppDescriptorProvider> providersBefore;
-        Set<String> registeredNames;
+        Collection<DefinitionMetadata> metadataBefore = getRegistryMap().keySet();
+        Collection<DefinitionProvider<AppDescriptor>> providersBefore = getRegistryMap().values();
 
-        // synchronized to make sure concurrent puts don't interfere
-        synchronized (registry) {
-            namesBefore = registry.keySet();
-            providersBefore = registry.values();
-            registeredNames = registry.removeAndPutAll(namesToUnregister, providersToRegister);
-            namesAfter = registry.keySet();
-        }
+        Set<DefinitionMetadata> registeredMetaData = super.unregisterAndRegister(metaDataToUnregister, providersToRegister);
 
-        Collection<String> added = CollectionUtils.subtract(namesAfter, namesBefore);
-        Collection<String> removed = CollectionUtils.subtract(namesBefore, namesAfter);
-        Collection<String> kept = CollectionUtils.subtract(namesBefore, removed);
-        Collection<String> changed = getAppsThatHaveChanged(kept, providersBefore, providersToRegister);
+        Collection<DefinitionMetadata> metadataAfter = getRegistryMap().keySet();
 
-        sendEvent(AppRegistryEventType.REGISTERED, getAppDescriptorsFromAppDescriptorProviders(added, providersToRegister));
+        Collection<DefinitionMetadata> added = CollectionUtils.subtract(metadataAfter, metadataBefore);
+        Collection<DefinitionMetadata> removed = CollectionUtils.subtract(metadataBefore, metadataAfter);
+        Collection<DefinitionMetadata> kept = CollectionUtils.subtract(metadataBefore, removed);
+        Collection<DefinitionMetadata> changed = getAppsThatHaveChanged(kept, providersBefore, providersToRegister);
+
+        sendEvent(AppRegistryEventType.REGISTERED, getAppDescriptorsByMetadata(added));
         sendEvent(AppRegistryEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, providersBefore));
-        sendEvent(AppRegistryEventType.REREGISTERED, getAppDescriptorsFromAppDescriptorProviders(changed, providersToRegister));
+        sendEvent(AppRegistryEventType.REREGISTERED, getAppDescriptorsByMetadata(changed));
 
-        return registeredNames;
+        return registeredMetaData;
     }
 
-    private Collection<String> getAppsThatHaveChanged(Collection<String> names, Collection<AppDescriptorProvider> before, Collection<AppDescriptorProvider> after) {
-        ArrayList<String> changed = new ArrayList<String>();
-        for (String name : names) {
-            if (!getAppDescriptor(name, before).equals(getAppDescriptor(name, after))) {
-                changed.add(name);
+    @Override
+    public DefinitionType type() {
+        return DefinitionTypes.APP;
+    }
+
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingNameAsId();
+    }
+
+    private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<DefinitionMetadata> metadata, final Collection<DefinitionProvider<AppDescriptor>> providerSet) {
+        final List<AppDescriptor> result = new LinkedList<>();
+        for (DefinitionProvider<AppDescriptor> provider : providerSet) {
+            if (metadata.contains(provider.getMetadata())) {
+                result.add(provider.get());
+            }
+        }
+        return result;
+    }
+
+    private Collection<AppDescriptor> getAppDescriptorsByMetadata(Collection<DefinitionMetadata> metadata) {
+        return Collections2.transform(metadata, new Function<DefinitionMetadata, AppDescriptor>() {
+            @Nullable
+            @Override
+            public AppDescriptor apply(DefinitionMetadata input) {
+                return getProvider(input).get();
+            }
+        });
+    }
+
+    private Collection<DefinitionMetadata> getAppsThatHaveChanged(Collection<DefinitionMetadata> kept, Collection<DefinitionProvider<AppDescriptor>> providersBefore, Collection<DefinitionProvider<AppDescriptor>> providersToRegister) {
+        final List<DefinitionMetadata> changed = new ArrayList<>();
+        for (DefinitionMetadata metadata : kept) {
+            if (!getAppDescriptor(metadata, providersBefore).equals(getAppDescriptor(metadata, providersToRegister))) {
+                changed.add(metadata);
             }
         }
         return changed;
     }
 
-    private AppDescriptorProvider getAppDescriptor(String name, Collection<AppDescriptorProvider> providers) {
-        for (AppDescriptorProvider provider : providers) {
-            if (provider.getName().equals(name)) {
-                return provider;
+    private AppDescriptor getAppDescriptor(DefinitionMetadata metadata, Collection<DefinitionProvider<AppDescriptor>> providers) {
+        for (DefinitionProvider<AppDescriptor> provider : providers) {
+            if (provider.getMetadata().equals(metadata)) {
+                return provider.get();
             }
         }
         return null;
-    }
-
-    private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<String> names, Collection<AppDescriptorProvider> providers) throws RegistrationException {
-        ArrayList<AppDescriptor> descriptors = new ArrayList<AppDescriptor>();
-        for (AppDescriptorProvider provider : providers) {
-            if (names.contains(provider.getName())) {
-                descriptors.add(provider.getAppDescriptor());
-            }
-        }
-        return descriptors;
     }
 
     /**

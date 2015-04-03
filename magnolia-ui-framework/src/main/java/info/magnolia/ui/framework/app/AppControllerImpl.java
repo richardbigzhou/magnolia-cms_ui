@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
@@ -46,7 +48,6 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppController;
@@ -420,10 +421,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppDescriptor getAppDescriptor(String name) throws RuntimeException {
+        final DefinitionProvider<AppDescriptor> definitionProvider;
         try {
-            return appDescriptorRegistry.getAppDescriptor(name);
-        } catch (RegistrationException e) {
-
+            definitionProvider = appDescriptorRegistry.getProvider(name);
+        } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
             Message errorMessage = new Message();
             errorMessage.setType(MessageType.ERROR);
             errorMessage.setSubject(i18n.translate("ui-framework.app.appdescriptorReadError.subject"));
@@ -431,6 +432,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             messagesManager.sendLocalMessage(errorMessage);
             throw new RuntimeException(e);
         }
+        return definitionProvider.get();
     }
 
     /**

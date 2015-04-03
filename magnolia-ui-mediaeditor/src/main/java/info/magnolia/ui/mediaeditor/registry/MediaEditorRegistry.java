@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,42 +33,65 @@
  */
 package info.magnolia.ui.mediaeditor.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderWrapper;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
 /**
- * Contains a mapping of the availble media editors.
+ * {@link info.magnolia.config.registry.Registry} implementation for {@link MediaEditorDefinition} types.
  */
 @Singleton
-public class MediaEditorRegistry implements Serializable {
-
-    private final RegistryMap<String, MediaEditorDefinition> registry = new RegistryMap<String, MediaEditorDefinition>() {
+public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition> {
+    public static final DefinitionType TYPE = new DefinitionType() {
+        @Override
+        public String name() {
+            return "mediaEditor";
+        }
 
         @Override
-        protected String keyFromValue(MediaEditorDefinition value) {
-            return value.getId();
+        public Class baseClass() {
+            return MediaEditorDefinition.class;
         }
     };
 
-    public MediaEditorDefinition get(String id) throws RegistrationException {
-        MediaEditorDefinition def;
-        try {
-            def = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No media editor definition registered for id: " + id, e);  //TODO-TRANSLATE-EXCEPTION
-        }
-        return def;
+    /**
+     * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from the result.
+     */
+    @Deprecated
+    public MediaEditorDefinition get(String mediaEditorId) throws RegistrationException {
+        return getProvider(mediaEditorId).get();
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<MediaEditorDefinition> definitions) {
-        return registry.removeAndPutAll(registeredIds, definitions);
+    @Override
+    public DefinitionType type() {
+        return TYPE;
     }
 
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
+    }
+
+    @Override
+    protected DefinitionProvider<MediaEditorDefinition> onRegister(final DefinitionProvider<MediaEditorDefinition> provider) {
+        // This was in ConfiguredTemplateDefinitionProvider: templateDefinition.setId(id);
+
+        // TODO -- we should maybe just remove RenderableDefinition.setId() and implement getMetadata() to delegate to provider instead
+        final DefinitionProvider<MediaEditorDefinition> wrappedProvider = super.onRegister(provider);
+        return new DefinitionProviderWrapper<MediaEditorDefinition>(wrappedProvider) {
+            @Override
+            public MediaEditorDefinition get() {
+                final MediaEditorDefinition td = super.get();
+                final String referenceString = wrappedProvider.getMetadata().getReferenceId();
+                td.setId(referenceString);
+                return td;
+            }
+        };
+    }
 }

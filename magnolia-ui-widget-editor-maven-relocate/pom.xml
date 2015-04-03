@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>info.magnolia.ui</groupId>
+    <artifactId>magnolia-ui-project</artifactId>
+    <version>5.4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>magnolia-ui-widget-editor</artifactId>
+  <name>Magnolia Page-editor Maven Relocation</name>
+  <description>
+    Relocates info.magnolia.ui:magnolia-ui-widget-editor to the pages module.
+    See http://maven.apache.org/guides/mini/guide-relocation.html
+  </description>
+  <distributionManagement>
+    <relocation>
+      <groupId>info.magnolia.pages</groupId>
+      <artifactId>magnolia-pages-editor-widget</artifactId>
+      <version>${project.version}</version>
+      <!-- The 2 space indentation below is due to how Maven seems to present this message. Probably trim() it then
+           prepend the complete string with 2 spaces, so to keep it aligned we added 2 spaces on every line. -->
+      <message>
+  #################################################################################################
+  #
+  #  WARNING: Magnolia's Page-editor has been moved to the pages module.
+  #
+  #  Your project has a dependency on
+  #        ${project.groupId}:${project.artifactId}:${project.version}
+  #  and this relocation is redirecting it to
+  #        info.magnolia.pages:magnolia-pages-editor-widget:${project.version}
+  #
+  #  We encourage you to update your dependencies and use the newer artifacts
+  #  for your specific purposes.
+  #
+  #  Use mvn dependency:tree to find out how dependencies are resolved.
+  #
+  #################################################################################################
+      </message>
+    </relocation>
+  </distributionManagement>
+</project>

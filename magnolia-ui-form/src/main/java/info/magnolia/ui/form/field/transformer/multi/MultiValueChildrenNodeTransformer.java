@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -129,6 +130,10 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
     public void writeToItem(PropertysetItem newValue) {
         // Get root Item
         JcrNodeAdapter rootItem = getRootItem();
+        if (rootItem == null) {
+            // nothing to write yet, someone just clicked add and then clicked away to other field
+            return;
+        }
         rootItem.getChildren().clear();
         // Add childItems to the rootItem
         setNewChildItem(rootItem, newValue);
@@ -152,7 +157,7 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
     protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
         List<Node> res = new ArrayList<Node>();
         try {
-            if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
+            if (parent != null && !(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
                 Predicate predicate = createPredicateToEvaluateChildNode();
                 if (predicate != null) {
                     res = NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), predicate));
@@ -260,6 +265,8 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
                 if (rootItem.getChild(child.getName()) == null) {
                     JcrNodeAdapter toRemove = new JcrNodeAdapter(child);
                     rootItem.removeChild(toRemove);
+                } else {
+                    detachNoMoreExistingChildren((JcrNodeAdapter) rootItem.getChild(child.getName()));
                 }
             }
         } catch (RepositoryException e) {
@@ -298,12 +305,15 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
     }
 
     /**
-     * Retrieve or create a child node as {@link JcrNodeAdapter}.
+     * Retrieve or create a child node as {@link JcrNodeAdapter}. Method will return null for any none JcrNodeAdapter releated form items.
      */
     protected JcrNodeAdapter getOrCreateChildNode(String childNodeName, String childNodeType) throws RepositoryException {
         JcrNodeAdapter child = null;
+        if (relatedFormItem instanceof NullItem) {
+            return null;
+        }
         if (!(relatedFormItem instanceof JcrNodeAdapter)) {
-            log.warn("Try to retrieve a Jcr Item from a Non Jcr Item Adapter. Will retrun null");
+            log.warn("Detected attempt to retrieve a Jcr Item from a Non Jcr Item Adapter. Will return null.");
             return null;
         }
         Node node = ((JcrNodeAdapter) relatedFormItem).getJcrItem();
@@ -316,5 +326,4 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
         }
         return child;
     }
-
 }

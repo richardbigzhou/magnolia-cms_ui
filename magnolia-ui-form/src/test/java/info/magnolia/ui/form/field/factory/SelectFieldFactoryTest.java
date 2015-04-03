@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -42,8 +42,10 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -354,4 +356,81 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         this.definition = fieldDefinition;
     }
 
+
+    @Test
+    public void createFieldSortsOptionsByComparator() throws Exception {
+        // GIVEN
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+
+        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
+        option1.setLabel("aa");
+        option1.setValue("1");
+        options.add(option1);
+
+        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
+        option2.setLabel("bb");
+        option2.setValue("2");
+        options.add(option2);
+
+        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
+        option3.setLabel("cc");
+        option3.setValue("3");
+        options.add(option3);
+
+        SelectFieldOptionDefinition option4 = new SelectFieldOptionDefinition();
+        option4.setLabel("CC");
+        option4.setValue("4");
+        options.add(option4);
+
+        SelectFieldOptionDefinition option5 = new SelectFieldOptionDefinition();
+        option5.setLabel("BB");
+        option5.setValue("5");
+        options.add(option5);
+
+        SelectFieldOptionDefinition option6 = new SelectFieldOptionDefinition();
+        option6.setLabel("AA");
+        option6.setValue("6");
+        options.add(option6);
+
+        definition.setOptions(options);
+        definition.setComparatorClass(TestComparator.class);
+
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        MockComponentProvider componentProvider = new MockComponentProvider();
+        componentProvider.setImplementation(TestComparator.class, TestComparator.class.getName());
+        dialogSelect.setComponentProvider(componentProvider);
+
+
+
+        // WHEN
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+
+        // THEN
+        String[] items = field.getItemIds().toArray(new String[] {});
+
+        // we need to use the values here to ensure the options are sorted as expected
+        assertEquals("1", items[0]);
+        assertEquals("6", items[1]);
+        assertEquals("2", items[2]);
+        assertEquals("5", items[3]);
+        assertEquals("3", items[4]);
+        assertEquals("4", items[5]);
+        assertEquals("1", field.getValue().toString());
+    }
+
+
+    public static class TestComparator implements Comparator<SelectFieldOptionDefinition> {
+
+        private final Collator col;
+
+        public TestComparator() {
+            col = Collator.getInstance();
+            col.setStrength(Collator.PRIMARY);
+        }
+
+        @Override
+            public int compare(SelectFieldOptionDefinition o1, SelectFieldOptionDefinition o2) {
+                return col.compare(o1.getLabel(), o2.getLabel());
+            }
+        }
 }

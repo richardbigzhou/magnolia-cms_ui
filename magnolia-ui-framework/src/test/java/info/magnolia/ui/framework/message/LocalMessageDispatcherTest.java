@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,15 +46,26 @@ import info.magnolia.ui.api.message.MessageType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.internal.stubbing.answers.CallsRealMethods;
+
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinSession;
 
 /**
  * Test case for {@link LocalMessageDispatcher}.
  */
 public class LocalMessageDispatcherTest {
+
+    private VaadinSession vaadinSession;
+    private VaadinService vaadinService;
+
     @Before
     public void setUp() {
         Context ctx = mock(Context.class);
@@ -62,6 +73,15 @@ public class LocalMessageDispatcherTest {
         when(ctx.getUser()).thenReturn(usr);
         when(usr.getName()).thenReturn("peter");
         MgnlContext.setInstance(ctx);
+
+        vaadinService = mock(VaadinService.class);
+        doAnswer(new CallsRealMethods()).when(vaadinService).runPendingAccessTasks(Matchers.any(VaadinSession.class));
+        doAnswer(new CallsRealMethods()).when(vaadinService).accessSession(Matchers.any(VaadinSession.class), Matchers.any(Runnable.class));
+
+
+        vaadinSession = spy(new VaadinSession(vaadinService));
+        Lock lock = new ReentrantLock();
+        doReturn(lock).when(vaadinSession).getLockInstance();
     }
 
     @After
@@ -74,7 +94,7 @@ public class LocalMessageDispatcherTest {
 
         // GIVEN
         EventBus eventBus = new SimpleEventBus();
-        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, null);
+        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, vaadinSession);
         ArrayList<MessageEvent> events = new ArrayList<MessageEvent>();
         eventBus.addHandler(MessageEvent.class, new CollectingMessageEventHandler(events));
 
@@ -85,7 +105,6 @@ public class LocalMessageDispatcherTest {
         message.setMessage("message");
 
         dispatcher.messageSent(message);
-        Thread.sleep(100);
 
         Message clearedMessage = new Message();
         clearedMessage.setType(MessageType.ERROR);
@@ -93,10 +112,12 @@ public class LocalMessageDispatcherTest {
         clearedMessage.setMessage("cleared message");
 
         dispatcher.messageCleared(clearedMessage);
-        Thread.sleep(100);
 
         dispatcher.messageRemoved("1");
-        Thread.sleep(100);
+
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
 
         // THEN
         assertEquals(3, events.size());
@@ -111,7 +132,7 @@ public class LocalMessageDispatcherTest {
 
         // GIVEN
         EventBus eventBus = new SimpleEventBus();
-        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, null);
+        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, vaadinSession);
         ArrayList<MessageEvent> events = new ArrayList<MessageEvent>();
         eventBus.addHandler(MessageEvent.class, new ThrowingMessageEventHandler(events));
         eventBus.addHandler(MessageEvent.class, new ThrowingMessageEventHandler(events));
@@ -123,6 +144,9 @@ public class LocalMessageDispatcherTest {
         message.setMessage("message");
 
         dispatcher.messageSent(message);
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
         Thread.sleep(100);
 
         Message clearedMessage = new Message();
@@ -131,6 +155,9 @@ public class LocalMessageDispatcherTest {
         clearedMessage.setMessage("cleared message");
 
         dispatcher.messageCleared(clearedMessage);
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
         Thread.sleep(100);
 
         // THEN

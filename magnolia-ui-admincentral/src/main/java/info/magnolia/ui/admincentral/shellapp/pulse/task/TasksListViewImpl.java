@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,13 +49,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.GeneratedRow;
 
@@ -72,24 +67,55 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
                 PulseItemCategory.UNCLAIMED, PulseItemCategory.ONGOING, PulseItemCategory.DONE, PulseItemCategory.FAILED, PulseItemCategory.ALL_TASKS);
-        constructTable();
+        constructTable(getItemTable());
         setFooter(new PulseListFooter(getItemTable(), i18n, true));
     }
 
-    private void constructTable() {
-        getItemTable().addGeneratedColumn(NEW_PROPERTY_ID, newTaskColumnGenerator);
-        getItemTable().setColumnWidth(NEW_PROPERTY_ID, 100);
-        getItemTable().addGeneratedColumn(TASK_PROPERTY_ID, taskColumnGenerator);
-        getItemTable().setColumnWidth(TASK_PROPERTY_ID, 220);
-        getItemTable().addGeneratedColumn(STATUS_PROPERTY_ID, taskStatusColumnGenerator);
-        getItemTable().setColumnWidth(STATUS_PROPERTY_ID, 80);
-        getItemTable().addGeneratedColumn(SENT_TO_PROPERTY_ID, sentToColumnGenerator);
-        getItemTable().setColumnWidth(SENT_TO_PROPERTY_ID, 100);
-        getItemTable().addGeneratedColumn(LAST_CHANGE_PROPERTY_ID, new DateColumnFormatter(null));
-        getItemTable().setColumnWidth(LAST_CHANGE_PROPERTY_ID, 140);
+    private void constructTable(Table table) {
+        table.addGeneratedColumn(NEW_PROPERTY_ID, new PulseNewItemColumnGenerator());
+        table.setColumnWidth(NEW_PROPERTY_ID, 100);
+        table.addGeneratedColumn(TASK_PROPERTY_ID, new TaskSubjectColumnGenerator());
+        table.setColumnWidth(TASK_PROPERTY_ID, 220);
+        table.addGeneratedColumn(STATUS_PROPERTY_ID, new TaskStatusColumnGenerator());
+        table.setColumnWidth(STATUS_PROPERTY_ID, 80);
+        table.addGeneratedColumn(SENT_TO_PROPERTY_ID, new SentToColumnGenerator());
+        table.setColumnWidth(SENT_TO_PROPERTY_ID, 100);
+        table.addGeneratedColumn(LAST_CHANGE_PROPERTY_ID, new DateColumnFormatter(null));
+        table.setColumnWidth(LAST_CHANGE_PROPERTY_ID, 140);
 
-        getItemTable().setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
-        getItemTable().setSortAscending(false);
+        // tooltips
+        table.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
+
+            @Override
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                if (TASK_PROPERTY_ID.equals(propertyId)) {
+                    String task = (String) ((AbstractSelect) source).getContainerProperty(itemId, TASK_PROPERTY_ID).getValue();
+                    if (StringUtils.isNotBlank(task)) {
+                        // title only
+                        String title = task.split("\\|")[0];
+                        return StringEscapeUtils.escapeXml(title);
+                    }
+
+                } else if (SENT_TO_PROPERTY_ID.equals(propertyId)) {
+                    String sentTo = (String) ((AbstractSelect) source).getContainerProperty(itemId, SENT_TO_PROPERTY_ID).getValue();
+                    if (StringUtils.isNotBlank(sentTo)) {
+                        // prepare group/user labels
+                        String[] parts = sentTo.split("\\|");
+                        String groups = parts[0];
+                        String users = "";
+                        if (parts.length == 2) {
+                            users = parts[1];
+                        }
+                        return groups + " " + users;
+                    }
+                }
+                return null;
+            }
+        });
+
+        table.setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
+        table.setSortAscending(false);
     }
 
     @Override
@@ -99,206 +125,119 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
          * acts as a placeholder for grouping sub section. This row
          * generator must render those special items.
          */
-        Property<Status> property = item.getItemProperty(STATUS_PROPERTY_ID);
-        GeneratedRow generated = new GeneratedRow();
+        Status status = (Status) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
+        GeneratedRow row = new GeneratedRow();
+        String key = getI18nKeyForStatus(status);
+        if (StringUtils.isNotBlank(key)) {
+            row.setText("", "", getI18n().translate(key));
+        }
+        return row;
+    }
 
-        switch (property.getValue()) {
+    private String getI18nKeyForStatus(Status status) {
+        switch (status) {
         case Created:
-            generated.setText("", "", getI18n().translate("pulse.tasks.unclaimed"));
-            break;
+            return "pulse.tasks.unclaimed";
         case InProgress:
-            generated.setText("", "", getI18n().translate("pulse.tasks.ongoing"));
-            break;
+            return "pulse.tasks.ongoing";
         case Resolved:
-            generated.setText("", "", getI18n().translate("pulse.tasks.done"));
-            break;
+            return "pulse.tasks.done";
         case Failed:
-            generated.setText("", "", getI18n().translate("pulse.tasks.failed"));
+            return "pulse.tasks.failed";
+        default:
             break;
         }
-        return generated;
-    }
-
-    private Table.ColumnGenerator newTaskColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (NEW_PROPERTY_ID.equals(columnId)) {
-                final Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
-                final Boolean isNew = newProperty != null && newProperty.getValue();
-                if (isNew) {
-                    final Label newTask = new Label();
-                    newTask.setSizeUndefined();
-                    newTask.addStyleName("icon-tick");
-                    newTask.addStyleName("new-message");
-                    return newTask;
-                }
-            }
-            return null;
-        }
-    };
-
-    private Table.ColumnGenerator taskStatusColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (STATUS_PROPERTY_ID.equals(columnId)) {
-                final Property<Status> status = source.getContainerProperty(itemId, columnId);
-                Label label = new Label();
-                switch (status.getValue()) {
-                case Created:
-                    label.setValue(getI18n().translate("pulse.tasks.unclaimed"));
-                    break;
-                case InProgress:
-                    label.setValue(getI18n().translate("pulse.tasks.ongoing"));
-                    break;
-                case Resolved:
-                    label.setValue(getI18n().translate("pulse.tasks.done"));
-                    break;
-                case Failed:
-                    label.setValue(getI18n().translate("pulse.tasks.failed"));
-                    break;
-                default:
-                    break;
-                }
-                return label;
-            }
-            return null;
-        }
-    };
-
-    /**
-     * default visibility for test purposes only.
-     */
-    Table.ColumnGenerator taskColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (TASK_PROPERTY_ID.equals(columnId)) {
-                final Property<String> text = source.getContainerProperty(itemId, columnId);
-                return new TaskCellComponent(itemId, text.getValue());
-            }
-            return null;
-        }
-    };
-
-    private Table.ColumnGenerator sentToColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (SENT_TO_PROPERTY_ID.equals(columnId)) {
-                final Property<String> sendTo = source.getContainerProperty(itemId, columnId);
-                return new SentToCellComponent(itemId, sendTo.getValue());
-            }
-            return null;
-        }
-    };
-
-    /**
-     * TaskCellComponent. Default visibility is for testing purposes only.
-     */
-    final class TaskCellComponent extends CustomComponent {
-        private CssLayout root = new CssLayout();
-        private final Label label = new Label();
-
-        public TaskCellComponent(final Object itemId, final String text) {
-            final Label icon = new Label();
-            icon.setSizeUndefined();
-            icon.addStyleName("icon");
-            icon.addStyleName("message-type");
-            icon.addStyleName("icon-work-item");
-
-            String[] parts = text.split("\\|");
-            String title = StringEscapeUtils.escapeXml(parts[0]);
-            String comment = getI18n().translate("pulse.tasks.nocomment");
-            if (parts.length == 2) {
-                comment = StringEscapeUtils.escapeXml(parts[1]);
-            }
-
-            label.setContentMode(ContentMode.HTML);
-            label.addStyleName("title");
-            label.setValue("<strong>" + StringUtils.abbreviate(title, 28) + "</strong><div class=\"comment\">" + StringUtils.abbreviate(comment, 28) + "</div>");
-
-            root.addComponent(icon);
-            root.addComponent(label);
-
-            addStyleName("task");
-
-            setCompositionRoot(root);
-
-            // tooltip
-            setDescription(title);
-
-            root.addLayoutClickListener(new LayoutClickListener() {
-
-                @Override
-                public void layoutClick(LayoutClickEvent event) {
-                    onItemClicked(event, itemId);
-                }
-            });
-        }
-
-        public String getValue() {
-            return label.getValue();
-        }
-    }
-
-    /**
-     * SentToCellComponent.
-     */
-    private final class SentToCellComponent extends CustomComponent {
-        private CssLayout root = new CssLayout();
-
-        public SentToCellComponent(final Object itemId, final String text) {
-            final Label icon = new Label();
-            icon.setSizeUndefined();
-            icon.addStyleName("icon");
-            icon.addStyleName("icon-user-group");
-            icon.addStyleName("sentToIcon");
-
-            String[] parts = text.split("\\|");
-            String groups = parts[0];
-            String users = "";
-            if (parts.length == 2) {
-                users = parts[1];
-            }
-
-            final Label groupLabel = new Label();
-            groupLabel.addStyleName("sentTo");
-            groupLabel.addStyleName("groups");
-            groupLabel.setValue(StringUtils.abbreviate(groups, 12));
-
-            final Label userLabel = new Label();
-            userLabel.addStyleName("sentTo");
-            userLabel.setValue(StringUtils.abbreviate(users, 12));
-
-            root.addComponent(groupLabel);
-            root.addComponent(icon);
-            root.addComponent(userLabel);
-
-            addStyleName("task");
-
-            setCompositionRoot(root);
-
-            // tooltip
-            setDescription(groups + " " + users);
-
-            root.addLayoutClickListener(new LayoutClickListener() {
-
-                @Override
-                public void layoutClick(LayoutClickEvent event) {
-                    onItemClicked(event, itemId);
-                }
-            });
-        }
+        return null;
     }
 
     @Override
     public void setTaskListener(TasksListView.Listener listener) {
         getFooter().setTasksListener(listener);
     }
+
+    /**
+     * The task subject {@link Table.ColumnGenerator ColumnGenerator} resolves the task title and comment in an abbreviated and escaped form.
+     */
+    // default visibility for tests.
+    class TaskSubjectColumnGenerator implements Table.ColumnGenerator {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            String text = (String) source.getContainerProperty(itemId, TASK_PROPERTY_ID).getValue();
+            if (StringUtils.isNotBlank(text)) {
+
+                // prepare title and comment texts
+                String[] parts = text.split("\\|");
+                String title = StringEscapeUtils.escapeXml(parts[0]);
+                String comment = getI18n().translate("pulse.tasks.nocomment");
+                if (parts.length == 2) {
+                    comment = StringEscapeUtils.escapeXml(parts[1]);
+                }
+
+                return String.format("<div class=\"task\"><span class=\"icon %s message-type\"></span>"
+                        + "<span class=\"title\"><strong>%s</strong>"
+                        + "<span class=\"comment\">%s</span></span></div>",
+                        "icon-work-item",
+                        StringUtils.abbreviate(title, 28),
+                        StringUtils.abbreviate(comment, 28));
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The task status {@link Table.ColumnGenerator ColumnGenerator} resolves the i18n key for the given status and returns its translation.
+     */
+    private class TaskStatusColumnGenerator implements Table.ColumnGenerator {
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            Status status = (Status) source.getContainerProperty(itemId, STATUS_PROPERTY_ID).getValue();
+            String key = getI18nKeyForStatus(status);
+            if (key != null) {
+                return getI18n().translate(key);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The "sent-to" {@link Table.ColumnGenerator ColumnGenerator} resolves task recipients (groups, users) in an abbreviated form.
+     */
+    private class SentToColumnGenerator implements Table.ColumnGenerator {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            String sentTo = (String) source.getContainerProperty(itemId, SENT_TO_PROPERTY_ID).getValue();
+            if (StringUtils.isNotBlank(sentTo)) {
+
+                // prepare group/user labels
+                String[] parts = sentTo.split("\\|");
+                String groups = parts[0];
+                String users = "";
+                if (parts.length == 2) {
+                    users = parts[1];
+                }
+
+                StringBuilder cell = new StringBuilder();
+                cell.append("<div class=\"task\">");
+
+                if (StringUtils.isNotBlank(groups)) {
+                    cell.append("<span class=\"sentTo groups\">")
+                            .append(StringUtils.abbreviate(groups, 12))
+                            .append("</span>")
+                            .append("<span class=\"icon icon-user-group sentToIcon\">");
+                }
+                if (StringUtils.isNotBlank(users)) {
+                    cell.append("<span class=\"sentTo\">")
+                            .append(StringUtils.abbreviate(users, 12))
+                            .append("</span>");
+                }
+
+                cell.append("</div>");
+                return cell.toString();
+            }
+            return null;
+        }
+    };
+
 }

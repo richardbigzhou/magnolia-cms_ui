@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -83,7 +83,7 @@ public class PulseItemCategoryNavigatorTest {
 
         i18n = mock(SimpleTranslator.class);
         when(i18n.translate("pulse.messages.problems")).thenReturn("Problems");
-        categoryNavigator = PulseItemCategoryNavigator.createSubRowNavigator(i18n);
+        categoryNavigator = new PulseItemCategoryNavigator(i18n, false, false);
     }
 
     @After

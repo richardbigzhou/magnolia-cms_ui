@@ -110,7 +110,7 @@
   width: auto;
   position: absolute;
   top: 46px;
-  left: 210px;
+  left: 240px;
   color: $c12
 }
 
@@ -181,6 +181,10 @@
 .direct-upload-progress-indicator {
   height: 600px;
   width: 500px;
+}
+
+.v-upload-immediate .v-button {
+  width: inherit;
 }
 
 }

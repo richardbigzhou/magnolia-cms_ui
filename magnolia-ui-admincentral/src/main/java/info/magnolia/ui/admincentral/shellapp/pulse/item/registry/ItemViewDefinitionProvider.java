@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,10 +38,13 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefi
 
 /**
  * Provides an item view definition.
- * 
+ *
  * @see ItemViewDefinitionRegistry
+ * @deprecated since 5.4 just use DefinitionProvider<ItemViewDefinition>
  */
+@Deprecated
 public interface ItemViewDefinitionProvider {
+
     String getId();
 
     ItemViewDefinition getItemViewDefinition() throws RegistrationException;

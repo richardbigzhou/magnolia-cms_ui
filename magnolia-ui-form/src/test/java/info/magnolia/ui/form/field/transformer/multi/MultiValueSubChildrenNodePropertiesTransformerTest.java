@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
@@ -132,7 +133,7 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
     public void testUpdateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueSubChildrenNodePropertiesTransformer delegate = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
         // Set the same values
         PropertysetItem mainProperties = new PropertysetItem();
         PropertysetItem values1 = new PropertysetItem();
@@ -144,7 +145,7 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
         values2.addItemProperty("property2", new ObjectProperty<String>("value22Modified"));
         mainProperties.addItemProperty("11", new ObjectProperty<PropertysetItem>(values2));
 
-        delegate.writeToItem(mainProperties);
+        transformer.writeToItem(mainProperties);
 
         // WHEN
         Node res = parent.applyChanges();
@@ -164,5 +165,42 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
         assertEquals("value22Modified", res.getNode("property/01").getProperty("property2").getString());
     }
 
+    @Test
+    public void testUpdateMultiPropertyWMultiProperty() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        // Set the same values
+        PropertysetItem mainProperties = new PropertysetItem();
+        PropertysetItem values1 = new PropertysetItem();
+        values1.addItemProperty("property1", new ObjectProperty<String>("value11Modified"));
+        values1.addItemProperty("property2", new ObjectProperty<String>(""));
+
+        PropertysetItem values2 = new PropertysetItem();
+        values2.addItemProperty("subproperty1", new ObjectProperty<String>("value21Modified"));
+        values2.addItemProperty("subproperty2", new ObjectProperty<String>("value22Modified"));
+        values1.addItemProperty("foo", new ObjectProperty<PropertysetItem>(values2));
+
+        mainProperties.addItemProperty("00", new ObjectProperty<PropertysetItem>(values1));
+
+        transformer.writeToItem(mainProperties);
+
+        // WHEN
+        Node res = parent.applyChanges();
+
+        // THEN
+        assertTrue(res.hasNode("property"));
+        assertTrue(res.hasNode("property/00"));
+        assertTrue(res.getNode("property/00").hasProperty("property1"));
+        assertEquals("value11Modified", res.getNode("property/00").getProperty("property1").getString());
+        assertTrue(res.getNode("property/00").hasProperty("property2"));
+        assertEquals("", res.getNode("property/00").getProperty("property2").getString());
+
+        assertTrue(res.hasNode("property/00/foo"));
+        assertTrue(res.getNode("property/00/foo").hasProperty("subproperty1"));
+        assertEquals("value21Modified", res.getNode("property/00/foo").getProperty("subproperty1").getString());
+        assertTrue(res.getNode("property/00/foo").hasProperty("subproperty2"));
+        assertEquals("value22Modified", res.getNode("property/00/foo").getProperty("subproperty2").getString());
+    }
 
 }

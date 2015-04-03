@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,6 +40,7 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,6 +52,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Implementation of {@link MessagesManager}.
@@ -60,9 +62,10 @@ public class MessagesManagerImpl implements MessagesManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ListMultimap<String, MessageListener> listeners = ArrayListMultimap.create();
+    private final ListMultimap<String, MessageListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, MessageListener>create());
 
     private Provider<SecuritySupport> securitySupportProvider;
+
     private MessageStore messageStore;
 
     @Inject
@@ -82,10 +85,8 @@ public class MessagesManagerImpl implements MessagesManager {
             return;
         }
 
-        synchronized (listeners) {
-            for (User user : users) {
-                sendMessage(user.getName(), message);
-            }
+        for (User user : users) {
+            sendMessage(user.getName(), message);
         }
 
         // Reset it to null simply to avoid assumptions about the id in calling code
@@ -99,27 +100,18 @@ public class MessagesManagerImpl implements MessagesManager {
         // suitable for a first user gets generated and is then used for everyone, possible overwriting
         // already existing messages for some users.
         message.setId(null);
+
         messageStore.saveMessage(userName, message);
+
         sendMessageSentEvent(userName, message);
     }
 
     @Override
     public void sendGroupMessage(final String groupName, final Message message) {
-        Collection<User> users;
-        try {
-            users = securitySupportProvider.get().getUserManager().getAllUsers();
-        } catch (UnsupportedOperationException e) {
-            logger.error("Unable to send message to group because UserManager does not support enumerating its users", e);
-            return;
+        Collection<String> userNames = securitySupportProvider.get().getUserManager().getUsersWithGroup(groupName, true);
+        for (String userName : userNames) {
+            sendMessage(userName, message);
         }
-
-        for (User user : users) {
-            Collection<String> groups = user.getAllGroups();
-            if (groups.contains(groupName)) {
-                sendMessage(user.getName(), message);
-            }
-        }
-
         // Reset it to null simply to avoid assumptions about the id in calling code
         message.setId(null);
     }
@@ -159,16 +151,12 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void registerMessagesListener(String userName, MessageListener listener) {
-        synchronized (listeners) {
-            listeners.put(userName, listener);
-        }
+        listeners.put(userName, listener);
     }
 
     @Override
     public void unregisterMessagesListener(String userName, MessageListener listener) {
-        synchronized (listeners) {
-            listeners.remove(userName, listener);
-        }
+        listeners.remove(userName, listener);
     }
 
     @Override
@@ -183,37 +171,26 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     private void sendMessageClearedEvent(String userName, Message message) {
-        synchronized (listeners) {
-            final List<MessageListener> listenerList = listeners.get(userName);
-            if (listenerList != null) {
-                for (final MessageListener listener : listenerList) {
-                    listener.messageCleared(message);
-                }
-            }
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
+        for (final MessageListener listener : userListener) {
+            listener.messageCleared(message);
         }
     }
 
     private void sendMessageRemovedEvent(String userName, String id) {
-        synchronized (listeners) {
-            final List<MessageListener> listenerList = listeners.get(userName);
-            if (listenerList != null) {
-                for (final MessageListener listener : listenerList) {
-                    listener.messageRemoved(id);
-                }
-            }
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
+        for (final MessageListener listener : userListener) {
+            listener.messageRemoved(id);
         }
     }
 
     private void sendMessageSentEvent(String userName, Message message) {
-        synchronized (listeners) {
-            for (final MessageListener listener : listeners.get(userName)) {
-                if (listener != null) {
-                    try {
-                        listener.messageSent(cloneMessage(message));
-                    } catch (CloneNotSupportedException e) {
-                        logger.warn("Exception caught when dispatching event: " + e.getMessage(), e);
-                    }
-                }
+        final List<MessageListener> userListener = new LinkedList<MessageListener>(listeners.get(userName));
+        for (final MessageListener listener : userListener) {
+            try {
+                listener.messageSent(cloneMessage(message));
+            } catch (CloneNotSupportedException e) {
+                logger.warn("Exception caught when dispatching event: " + e.getMessage(), e);
             }
         }
     }

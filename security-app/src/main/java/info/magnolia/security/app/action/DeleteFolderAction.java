@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -117,18 +117,26 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     private List<String> getUsersAndGroupsThisItemIsAssignedTo(Node node) throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
-        String groupOrRoleName = node.getName();
+        final String groupOrRoleName = node.getName();
+
+        final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
         // users
-        for (User user : securitySupport.getUserManager().getAllUsers()) {
-            if (getGroupsOrRoles(user).contains(groupOrRoleName)) {
-                assignedTo.add(getI18n().translate("security.delete.userIdentifier", user.getName()) + " " + getI18n().translate("security.delete.folder.uses") + " " + groupOrRoleName);
-            }
+        // TODO MGNLUI-3286: depending on being in GROUPS or ROLES subapp we only have to check those dependencies
+        for (String user : securitySupport.getUserManager().getUsersWithGroup(groupOrRoleName)) {
+            assignedTo.add(translatedUserString + ":" + user);
         }
+        for (String user : securitySupport.getUserManager().getUsersWithRole(groupOrRoleName)) {
+            assignedTo.add(translatedUserString + ":" + user);
+        }
+
         // groups
-        for (Group group : securitySupport.getGroupManager().getAllGroups()) {
-            if (getGroupsOrRoles(group).contains(groupOrRoleName)) {
-                assignedTo.add(getI18n().translate("security.delete.groupIdentifier", group.getName()) + " " + getI18n().translate("security.delete.folder.uses") + " " + groupOrRoleName);
-            }
+        final String translatedGroupString = getI18n().translate("security.delete.groupIdentifier");
+        // TODO MGNLUI-3286: depending on being in GROUPS or ROLES subapp we only have to check those dependencies
+        for (String group : securitySupport.getGroupManager().getGroupsWithGroup(groupOrRoleName)) {
+            assignedTo.add(translatedGroupString + ":" + group);
+        }
+        for (String group : securitySupport.getGroupManager().getGroupsWithRole(groupOrRoleName)) {
+            assignedTo.add(translatedGroupString + ":" + group);
         }
 
         return assignedTo;
@@ -138,6 +146,10 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         return getI18n().translate("security.delete.folder.cannotVerifyError");
     }
 
+    /**
+     * @deprecated since 5.3.6 - will be removed without replacement
+     */
+    @Deprecated
     protected Collection<String> getGroupsOrRoles(User user) {
         List<String> groupsAndRoles = new ArrayList<String>();
         groupsAndRoles.addAll(user.getGroups());
@@ -145,6 +157,10 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         return groupsAndRoles;
     }
 
+    /**
+     * @deprecated since 5.3.6 - will be removed without replacement
+     */
+    @Deprecated
     protected Collection<String> getGroupsOrRoles(Group group) {
         List<String> groupsAndRoles = new ArrayList<String>();
         groupsAndRoles.addAll(group.getGroups());

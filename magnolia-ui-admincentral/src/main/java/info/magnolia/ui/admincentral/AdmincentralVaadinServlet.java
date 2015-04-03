@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.cms.util.ServletUtil;
-import info.magnolia.util.EscapeUtil;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -48,6 +47,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +104,10 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
                     @Override
                     public void modifyBootstrapPage(BootstrapPageResponse response) {
+                        Element ieMode = response.getDocument().head().getElementsByAttributeValue("http-equiv", "X-UA-Compatible").first();
+                        if (ieMode != null) {
+                            ieMode.attr("content", "IE=9;chrome=1");
+                        }
                         response.getDocument().head().append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
                     }
 
@@ -169,13 +173,8 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                     .append("<a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to attempt to recover from this</span>]</a></div>")
 
                     .append("<p>We apologize for any inconvenience caused.</p>")
-
-                    .append("<p>If you keep experiencing difficulties, please contact your system administrator.<br/>")
-                    .append("Make sure you send along the stack trace below.</p>")
-
-                    .append("<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">")
-                    .append("[<span class=\"v-button-caption\">Click here to show the error's stack trace</span>]</div>")
-                    .append(getStackTrace(e));
+                    .append("<p>If you keep experiencing difficulties, please contact your system administrator.</p>")
+                    .append("<p>Please check your log files for the complete stack trace.</p>");
 
             output.append("</div></div>");
 
@@ -208,20 +207,6 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
         output.append("\";");
 
         writeResponse(response, "text/javascript; charset=UTF-8", output.toString());
-    }
-
-    private String getStackTrace(Throwable e) {
-        final StringBuilder result = new StringBuilder("<p id=\"stacktrace\">");
-        result.append(EscapeUtil.escapeXss(e.toString()));
-
-        // add each element of the stack trace
-        for (StackTraceElement element : e.getStackTrace()) {
-            result.append("<br/>");
-            result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at ");
-            result.append(element);
-        }
-        result.append("</p>");
-        return result.toString();
     }
 
     /**

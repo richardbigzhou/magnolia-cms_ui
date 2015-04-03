@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,92 +33,23 @@
  */
 package info.magnolia.ui.form.fieldtype.registry;
 
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.predicate.NodeTypePredicate;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.module.ModuleRegistry;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * ConfiguredFieldTypeDefinitionManager.
+ *
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
-public class ConfiguredFieldTypeDefinitionManager extends ModuleConfigurationObservingManager {
+@Deprecated
+public class ConfiguredFieldTypeDefinitionManager {
+
+    private static final Logger log = LoggerFactory.getLogger(ConfiguredFieldTypeDefinitionManager.class);
 
     public static final String FIELD_CONFIG_NODE_NAME = "fieldTypes";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private Set<String> registeredIds = new HashSet<String>();
-    private final FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
-
-    @Inject
-    public ConfiguredFieldTypeDefinitionManager(ModuleRegistry moduleRegistry, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry) {
-        super(FIELD_CONFIG_NODE_NAME, moduleRegistry);
-        this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
+    public void start() {
+        log.warn("ConfiguredFieldTypeDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
     }
-
-    @Override
-    protected void reload(List<Node> nodes) throws RepositoryException {
-
-        final List<FieldTypeDefinitionProvider> providers = new ArrayList<FieldTypeDefinitionProvider>();
-
-        for (Node node : nodes) {
-
-            NodeUtil.visit(node, new NodeVisitor() {
-
-                @Override
-                public void visit(Node current) throws RepositoryException {
-                    for (Node fieldTypeNode : NodeUtil.getNodes(current, NodeTypes.ContentNode.NAME)) {
-                        if (isFieldType(fieldTypeNode)) {
-                            // Handle as fieldType only if it has sub nodes indicating that it is actually representing a fieldType.
-                            // This will filter the fields in fieldTypes used by the extends mechanism.
-                            FieldTypeDefinitionProvider provider = createProvider(fieldTypeNode);
-                            if (provider != null) {
-                                providers.add(provider);
-                            }
-                        } else {
-                            log.warn("node " + fieldTypeNode.getName() + " will not be handled as Field.");
-                        }
-                    }
-                }
-            }, new NodeTypePredicate(NodeTypes.Content.NAME));
-        }
-
-        this.registeredIds = fieldTypeDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
-    }
-
-    /**
-     * Check if this node can be handle as a ConfiguredFieldDefinition.
-     */
-    private boolean isFieldType(Node fieldTypeNode) throws RepositoryException {
-        return true;
-    }
-
-    protected FieldTypeDefinitionProvider createProvider(Node fieldTypeNode) throws RepositoryException {
-
-        final String id = fieldTypeNode.getName();
-
-        try {
-            return new ConfiguredFieldTypeDefinitionProvider(id, fieldTypeNode);
-        } catch (IllegalArgumentException e) {
-            log.error("Unable to create provider for fieldType [" + id + "]: " + e);
-        } catch (Exception e) {
-            log.error("Unable to create provider for fieldType [" + id + "]", e);
-        }
-        return null;
-    }
-
 }

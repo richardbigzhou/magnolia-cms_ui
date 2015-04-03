@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -119,7 +119,7 @@ public final class PulseListFooter extends CustomComponent {
 
         final ExternalResource iconAssignResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-user-public");
 
-        final ContextMenuItem claim = contextMenu.addItem(i18n.translate("pages.publish.actions.claim"), iconAssignResource);
+        final ContextMenuItem claim = contextMenu.addItem(i18n.translate("publish.actions.claim"), iconAssignResource);
 
         claim.addItemClickListener(new ContextMenuItemClickListener() {
 
@@ -141,7 +141,7 @@ public final class PulseListFooter extends CustomComponent {
         // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
         // but as this is not straightforward, for the time being we hack it like this
         if (user.getAllRoles().contains("superuser")) {
-            addRemoveMenuItem(i18n, itemsTable, contextMenu, "pages.publish.actions.archive");
+            addRemoveMenuItem(i18n, itemsTable, contextMenu, "publish.actions.archive");
         }
 
         return contextMenu;
@@ -151,7 +151,7 @@ public final class PulseListFooter extends CustomComponent {
         final ActionPopup contextMenu = new ActionPopup();
         contextMenu.setOpenAutomatically(false);
 
-        addRemoveMenuItem(i18n, itemsTable, contextMenu, "pages.publish.actions.delete");
+        addRemoveMenuItem(i18n, itemsTable, contextMenu, "publish.actions.delete");
 
         return contextMenu;
     }

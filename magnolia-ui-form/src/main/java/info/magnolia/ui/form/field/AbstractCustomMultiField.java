@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -73,6 +75,8 @@ import com.vaadin.ui.HasComponents;
  * @param <D> FieldDefinition Implementation used by the implemented Field.
  */
 public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> extends CustomField<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractCustomMultiField.class);
 
     protected final FieldFactoryFactory fieldFactoryFactory;
 
@@ -149,6 +153,8 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
             Object pos = it.next();
             if (pos.getClass().isAssignableFrom(Integer.class) && property == item.getItemProperty(pos)) {
                 return (Integer) pos;
+            } else {
+                log.debug("Property id {} is not an integer and as such property can't be located", pos);
             }
         }
         return -1;

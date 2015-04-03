@@ -1,72 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-    <name>ui-mediaeditor</name>
-    <displayName>Magnolia Media Editor</displayName>
-    <description>Editor for media files.</description>
-    <class>info.magnolia.ui.mediaeditor.MediaEditorModule</class>
-    <versionHandler>info.magnolia.ui.mediaeditor.setup.MediaEditorModuleVersionHandler</versionHandler>
-    <version>${project.version}</version>
-    <components>
-        <id>main</id>
-        <component>
-            <type>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
-            <implementation>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
-            <scope>singleton</scope>
-        </component>
+  <name>ui-mediaeditor</name>
+  <displayName>Magnolia Media Editor</displayName>
+  <description>Editor for media files.</description>
+  <class>info.magnolia.ui.mediaeditor.MediaEditorModule</class>
+  <versionHandler>info.magnolia.ui.mediaeditor.setup.MediaEditorModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+  <components>
+    <id>main</id>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
+      <implementation>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
+      <scope>singleton</scope>
+    </component>
 
-        <component>
-            <type>info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry</type>
-            <implementation>info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry</implementation>
-            <scope>singleton</scope>
-        </component>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry</type>
+      <implementation>info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry</implementation>
+      <scope>singleton</scope>
+    </component>
 
-        <type-mapping>
-            <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
-            <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
-        </type-mapping>
-    </components>
+    <type-mapping>
+      <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
+      <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
+    </type-mapping>
+  </components>
 
-    <components>
-        <id>app</id>
-        <component>
-            <type>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory</type>
-            <implementation>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
-        </component>
-    </components>
+  <components>
+    <id>app</id>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory</type>
+      <implementation>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
+    </component>
+  </components>
 
-    <components>
-        <id>subapp</id>
-        <component>
-            <type>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory</type>
-            <implementation>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
-        </component>
-    </components>
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory</type>
+      <implementation>info.magnolia.ui.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
+    </component>
+  </components>
 
-    <components>
-        <id>mediaeditor</id>
+  <components>
+    <id>mediaeditor</id>
 
-        <component>
-            <type>info.magnolia.ui.mediaeditor.MediaEditorView</type>
-            <implementation>info.magnolia.ui.mediaeditor.MediaEditorViewImpl</implementation>
-        </component>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.MediaEditorView</type>
+      <implementation>info.magnolia.ui.mediaeditor.MediaEditorViewImpl</implementation>
+    </component>
 
-        <component>
-            <type>info.magnolia.ui.api.action.ActionExecutor</type>
-            <implementation>info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor</implementation>
-        </component>
+    <component>
+      <type>info.magnolia.ui.api.action.ActionExecutor</type>
+      <implementation>info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor</implementation>
+    </component>
 
-        <component>
-            <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
-            <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
-        </component>
+    <component>
+      <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
+      <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
+    </component>
 
-    </components>
+  </components>
 
-    <dependencies>
-        <dependency>
-            <name>ui-framework</name>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <name>config</name>
+      <version>5.4/*</version>
+    </dependency>
+    <dependency>
+      <name>ui-framework</name>
+      <version>${project.version}/*</version>
+    </dependency>
+  </dependencies>
 </module>

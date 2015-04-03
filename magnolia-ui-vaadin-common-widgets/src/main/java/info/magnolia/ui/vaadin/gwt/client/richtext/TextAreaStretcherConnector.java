@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -65,7 +65,17 @@ import com.vaadin.shared.ui.Connect;
 @Connect(TextAreaStretcher.class)
 public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
+    public static final String STRETCHER_BASE = "textarea-stretcher";
+    public static final String STRETCHED = "stretched";
+    public static final String COLLAPSED = "collapsed";
+    public static final String CKEDITOR_TOOLBOX = ".cke_top";
+    public static final String TEXTAREA_STRETCHED = "textarea-stretched";
+
+    public static final String RICH_TEXT_STYLE_NAME = "rich-text";
+    public static final String SIMPLE_STYLE_NAME = "simple";
+
     public static final int DELAY_MS = 500;
+
     private Widget form;
     private Widget dialog;
     private Widget textWidget;
@@ -119,7 +129,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     protected void extend(ServerConnector target) {
         this.textWidget = ((ComponentConnector)target).getWidget();
         this.isRichTextEditor = target instanceof RichTextConnector;
-        this.stretchControl.setClassName("textarea-stretcher");
+        this.stretchControl.setClassName(STRETCHER_BASE);
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
@@ -128,6 +138,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                 checkOverlay();
                 if (!isRichTextEditor) {
                     appendStretcher(textWidget.getElement());
+                    stretchControl.addClassName(SIMPLE_STYLE_NAME);
                 } else {
                     Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
                         private int repeats = 0;
@@ -136,12 +147,12 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                         public boolean execute() {
                             repeats++;
                             isRichTextEditor = true;
-                            Element iframe = JQueryWrapper.select(textWidget).find("iframe").get(0);
-                            if (iframe != null) {
-                                appendStretcher(iframe);
-                                stretchControl.addClassName("rich-text");
+                            final Element toolbox = JQueryWrapper.select(textWidget).find(CKEDITOR_TOOLBOX).get(0);
+                            if (toolbox != null) {
+                                appendStretcher(toolbox);
+                                stretchControl.addClassName(RICH_TEXT_STYLE_NAME);
                             }
-                            return iframe == null && repeats < 5;
+                            return toolbox == null && repeats < 5;
                         }
                     }, DELAY_MS);
                 }
@@ -155,6 +166,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     }
 
     private void appendStretcher(Element rootElement) {
+        rootElement.getStyle().setPosition(Style.Position.RELATIVE);
         rootElement.getParentElement().insertAfter(stretchControl, rootElement);
         Widget parent = textWidget.getParent();
         TouchDelegate touchDelegate = new TouchDelegate(parent);
@@ -188,7 +200,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private void updateSize() {
         if (!getState().isCollapsed) {
             stretchControl.replaceClassName("icon-open-fullscreen-2", "icon-close-fullscreen-2");
-            stretchControl.replaceClassName("collapsed", "stretched");
+            stretchControl.replaceClassName(COLLAPSED, STRETCHED);
             form.asWidget().addStyleName("textarea-stretched");
 
             Style style = textWidget.getElement().getStyle();
@@ -213,12 +225,24 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
             }
 
+            hideOtherStretchers();
         } else {
-            stretchControl.replaceClassName("stretched", "collapsed");
+            stretchControl.replaceClassName(STRETCHED, COLLAPSED);
             stretchControl.replaceClassName("icon-close-fullscreen-2", "icon-open-fullscreen-2");
-            form.asWidget().removeStyleName("textarea-stretched");
+            form.asWidget().removeStyleName(TEXTAREA_STRETCHED);
             clearTraces();
         }
+    }
+
+    @Override
+    public void onUnregister() {
+        super.onUnregister();
+        clearTraces();
+    }
+
+    private void hideOtherStretchers() {
+        JQueryWrapper.select("." + STRETCHER_BASE).setCss("display", "none");
+        this.stretchControl.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
     private void clearTraces() {
@@ -230,6 +254,8 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
         stretchControl.getStyle().clearTop();
         stretchControl.getStyle().clearLeft();
+
+        JQueryWrapper.select("." + STRETCHER_BASE).setCss("display", "");
     }
 
     private void stretchTextArea(Style style) {

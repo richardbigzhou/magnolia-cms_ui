@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,8 +44,8 @@ final class JQueryFunction extends JavaScriptObject {
     }
 
     public final static native JQueryFunction create(final JQueryCallback command) /*-{
-        return function(jQueryWrapper) {
+        return $entry(function (jQueryWrapper) {
             command.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback::execute(Linfo/magnolia/ui/vaadin/gwt/client/jquerywrapper/JQueryWrapper;)(jQueryWrapper);
-        }
+        })
     }-*/;
 };

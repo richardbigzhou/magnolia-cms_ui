@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,6 +46,7 @@ import info.magnolia.ui.form.definition.TestDialogDef;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -72,13 +73,14 @@ public class FieldDefinitionKeyGeneratorTest {
         app = i18nizer.decorate(app);
 
         // WHEN
-        List<String> keys = Arrays.asList(generator.keysFor((String)null, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel")));
+        String[] keys = generator.keysFor("undecorated", app.getChooseDialog().getField(), field.getClass().getMethod("getLabel"));
 
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals("test-app.chooseDialog.fields.mgnl-testField.label", keys.get(0));
-        assertEquals("test-app.chooseDialog.fields.mgnl-testField", keys.get(1));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-app.chooseDialog.fields.mgnl-testField.label",
+                "test-app.chooseDialog.fields.mgnl-testField"));
     }
 
     @Test
@@ -102,16 +104,21 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = Arrays.asList(generator.keysFor((String)null, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel")));
+        String[] keys = generator.keysFor("undecorated", dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(6, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(1));
-        assertEquals("testTab.mgnl-testField.label", keys.get(2));
-        assertEquals("testTab.mgnl-testField", keys.get(3));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(4));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(5));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField.label",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField",
+                "testTab.mgnl-testField.label",
+                "testTab.mgnl-testField",
+                "test-module.testFolder.testDialog.mgnl-testField.label",
+                "test-module.testFolder.testDialog.mgnl-testField",
+                "testDialog.mgnl-testField.label",
+                "testDialog.mgnl-testField",
+                "testDialog.testTab.mgnl-testField.label",
+                "testDialog.testTab.mgnl-testField"));
     }
 
     @Test
@@ -141,21 +148,26 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        List<String> keys = Arrays.asList(generator.keysFor(
-                (String)null,
+       String[] keys = generator.keysFor("undecorated",
                 ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
-                field.getClass().getMethod("getLabel")));
+                field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(8, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(2));
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(3));
-        assertEquals("testTab.mgnl-testField.label", keys.get(4));
-        assertEquals("testTab.mgnl-testField", keys.get(5));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(6));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(7));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label",
+                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField.label",
+                "test-module.testFolder.testDialog.testTab.mgnl-testField",
+                "testTab.mgnl-testField.label",
+                "testTab.mgnl-testField",
+                "test-module.testFolder.testDialog.mgnl-testField.label",
+                "test-module.testFolder.testDialog.mgnl-testField",
+                "testDialog.mgnl-testField.label",
+                "testDialog.mgnl-testField",
+                "testDialog.testTab.mgnl-testField.label",
+                "testDialog.testTab.mgnl-testField"
+                ));
     }
 
     @Test

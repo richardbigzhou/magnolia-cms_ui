@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
@@ -68,19 +69,29 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
     private final JcrItemAdapter item;
+    private final SecuritySupport securitySupport;
 
     @Inject
-    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, SecuritySupport securitySupport) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
         this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     /**
-     * @deprecated since 5.2.2 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator)}
+     * @deprecated since 5.3.6 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.cms.security.SecuritySupport)}
+     */
+    @Deprecated
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        this(definition, item, commandsManager, eventBus, uiContext, i18n, Security.getSecuritySupport());
+    }
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.cms.security.SecuritySupport)}
      */
     @Deprecated
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-       this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
+        this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n, Security.getSecuritySupport());
     }
 
     /**
@@ -112,6 +123,16 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     protected abstract Collection<String> getGroupsOrRoles(Group group);
 
     /**
+     * @return Collection of users that have the group or role to delete assigned to
+     */
+    protected abstract Collection<String> getUsersWithGroupOrRoleToDelete(String groupOrRoleName);
+
+    /**
+     * @return Collection of groups that have the group or role to delete assigned to
+     */
+    protected abstract Collection<String> getGroupsWithGroupOrRoleToDelete(String groupOrRoleName);
+
+    /**
      * @deprecated since 5.2.2 instead of use {@link #onPreExecute()}
      */
     @Deprecated
@@ -141,24 +162,22 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     private List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
-        String groupName = getCurrentItem().getJcrItem().getName();
+        final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
+        final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
         // users
-        for (User user : Security.getUserManager().getAllUsers()) {
-            if (getGroupsOrRoles(user).contains(groupName)) {
-                assignedTo.add(getI18n().translate("security.delete.userIdentifier", user.getName()));
-            }
+        for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+            assignedTo.add(translatedUserString + ":" + user);
         }
         // groups
-        for (Group group : Security.getGroupManager().getAllGroups()) {
-            if (getGroupsOrRoles(group).contains(groupName)) {
-                assignedTo.add(getI18n().translate("security.delete.groupIdentifier", group.getName()));
-            }
+        final String translatedGroupString = getI18n().translate("security.delete.groupIdentifier");
+        for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
+            assignedTo.add(translatedGroupString + ":" + group);
         }
 
         return assignedTo;
     }
 
-    private static String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
+    private static String getUserAndGroupListForErrorMessage(Collection<String> usersAndGroups) {
         StringBuilder message = new StringBuilder("<ul>");
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
@@ -167,4 +186,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         return message.toString();
     }
 
+    protected SecuritySupport getSecuritySupport() {
+        return securitySupport;
+    }
 }

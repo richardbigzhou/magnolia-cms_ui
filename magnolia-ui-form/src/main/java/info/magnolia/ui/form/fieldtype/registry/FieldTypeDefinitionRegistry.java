@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,41 +33,24 @@
  */
 package info.magnolia.ui.form.fieldtype.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
-import net.sf.cglib.proxy.Enhancer;
-
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
+
+import net.sf.cglib.proxy.Enhancer;
 
 /**
  * FieldTypeDefinitionRegistry.
  */
 @Singleton
-public class FieldTypeDefinitionRegistry {
-
-    private final RegistryMap<String, FieldTypeDefinitionProvider> registry = new RegistryMap<String, FieldTypeDefinitionProvider>() {
-
-        @Override
-        protected String keyFromValue(FieldTypeDefinitionProvider value) {
-            return value.getId();
-        }
-    };
-
-    public FieldTypeDefinition get(String id) throws RegistrationException {
-        FieldTypeDefinitionProvider provider;
-        try {
-            provider = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No fieldTypeProvider registered for id: " + id, e);
-        }
-        return provider.getFieldTypeDefinition();
-    }
+public class FieldTypeDefinitionRegistry extends AbstractRegistry<FieldTypeDefinition> {
 
     public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
         // TODO hack: i18nizer proxies definition classes, so we have to unwrap them.
@@ -80,19 +63,37 @@ public class FieldTypeDefinitionRegistry {
         }
         // TODO end hack.
 
-        for (FieldTypeDefinitionProvider provider : registry.values()) {
-            if (definitionClass.equals(provider.getFieldTypeDefinition().getDefinitionClass())) {
-                return provider.getFieldTypeDefinition();
+        for (DefinitionProvider<FieldTypeDefinition> provider : getRegistryMap().values()) {
+            final FieldTypeDefinition fieldTypeDefinition = provider.get();
+            if (definitionClass.equals(fieldTypeDefinition.getDefinitionClass())) {
+                return fieldTypeDefinition;
             }
         }
+
         throw new RegistrationException("Could not find fieldType for definition " + definitionClass.getName());
     }
 
-    public void register(FieldTypeDefinitionProvider provider) {
-        registry.put(provider);
+    /**
+     * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from its result.
+     */
+    @Deprecated
+    public FieldTypeDefinition get(String id) throws RegistrationException {
+        final FieldTypeDefinition fieldTypeDefinition;
+        try {
+            fieldTypeDefinition = getProvider(id).get();
+        } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
+            throw new RegistrationException(e.getMessage(), e);
+        }
+        return fieldTypeDefinition;
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<FieldTypeDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
+    @Override
+    public DefinitionType type() {
+        return DefinitionTypes.FIELD_TYPE;
+    }
+
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingNameAsId();
     }
 }

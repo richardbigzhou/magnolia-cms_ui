@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,9 +38,9 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An I18n key generator for the actionbar section labels.
@@ -53,18 +53,16 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
     @Override
     protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {
         Object root = getRoot(sectionDefinition);
+        final String fieldOrGetterName = fieldOrGetterName(el);
+
         if (!(root instanceof AppDescriptor)) {
             // not an app descriptor, but can be MessageView with an ID
-            try {
-                final Method getId = root.getClass().getMethod("getId");
-                String messageViewId = (String) getId.invoke(root);
-                addKey(keys, messageViewId.replace(':', '.').replace('/', '.'), "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName(el));
-            } catch (NoSuchMethodException e) {
-                // not a MessageView - log this?
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e); // TODO MGNLUI-2031
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e); // TODO MGNLUI-2031
+            String idOrName = getIdOrNameForUnknownRoot(sectionDefinition);
+            addKey(keys, idOrName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
+            String[] parts = StringUtils.split(idOrName, ".");
+            if (parts.length > 1) {
+                String noModuleName = parts[parts.length - 1];
+                addKey(keys, noModuleName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
             }
 
             return;
@@ -81,8 +79,6 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
         final String appName = appDescriptor.getName();
         final String sectionName = sectionDefinition.getName();
         final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
-        addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName(el));
+        addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName);
     }
-
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,15 +41,17 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ConfiguredIt
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.registry.ItemViewDefinitionProvider;
 
-import javax.inject.Singleton;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * ConfiguredMessageViewDefinitionProvider.
+ * {@link ItemViewDefinitionProvider} that instantiates a message-view definition from a configuration node.
+ *
+ * @deprecated since 5.4 use DefinitionProvider<ItemViewDefinition> and configuration sources.
  */
-@Singleton
+@Deprecated
 public class ConfiguredMessageViewDefinitionProvider implements ItemViewDefinitionProvider {
+
     private final String id;
 
     private final ConfiguredItemViewDefinition itemViewDefinition;

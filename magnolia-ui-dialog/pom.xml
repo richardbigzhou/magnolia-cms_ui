@@ -10,12 +10,16 @@
   <artifactId>magnolia-ui-dialog</artifactId>
   <name>magnolia-ui-dialog</name>
   <properties>
-    <cloverCoverageThreshold>53</cloverCoverageThreshold>
+    <cloverCoverageThreshold>50</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.config</groupId>
+      <artifactId>magnolia-configuration</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>

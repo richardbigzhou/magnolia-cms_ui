@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,19 +38,24 @@ import static org.mockito.Mockito.*;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.server.DownloadStreamResource;
 
 import java.io.InputStream;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryImpl;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.server.Page;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinResponse;
 import com.vaadin.ui.UI;
 
 /**
@@ -58,17 +63,19 @@ import com.vaadin.ui.UI;
  */
 public class DownloadBinaryActionTest {
 
+    private static String fileName = "char_blume.png";
     private DownloadBinaryAction<DownloadBinaryActionDefinition> action;
     private DownloadBinaryActionDefinition definition = new DownloadBinaryActionDefinition();
     private JcrItemAdapter item;
     private Page page;
+    private InputStream inputStream;
 
     @Before
     public void setUp() throws Exception {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("char_blume.png");
+        inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
         Node root = new MockNode("root");
         Node node = root.addNode(JcrConstants.JCR_CONTENT);
-        node.setProperty("fileName", "char_blume.png");
+        node.setProperty("fileName", fileName);
         node.setProperty("extension", "png");
         Binary binary = new BinaryImpl(inputStream);
         node.setProperty(JcrConstants.JCR_DATA, binary);
@@ -80,19 +87,40 @@ public class DownloadBinaryActionTest {
 
         item = mock(JcrNodeAdapter.class);
         when(item.getJcrItem()).thenReturn(root);
+    }
 
-        action = new DownloadBinaryAction<DownloadBinaryActionDefinition>(definition, item);
+    @After
+    public void tearDown() {
+        IOUtils.closeQuietly(inputStream);
     }
 
     @Test
     public void testBinaryDownload() throws Exception {
         // GIVEN
+        action = new DownloadBinaryAction<DownloadBinaryActionDefinition>(definition, item);
 
         // WHEN
         action.execute();
 
         // THEN
         verify(page).open(any(StreamResource.class), (String) isNull(), eq(false));
+    }
+
+    @Test
+    public void testContentDispositionHeaderIsSetCorrectly() throws Exception {
+        // GIVEN
+        action = new DownloadBinaryAction<DownloadBinaryActionDefinition>(definition, item);
+        DownloadStreamResource downloadStreamResource = action.getStreamResource(inputStream, fileName);
+        String expectedContentDispositionHeaderValue = String.format("attachment; filename=\"%s\"", fileName);
+
+        VaadinRequest vaadinRequest = mock(VaadinRequest.class);
+        VaadinResponse vaadinResponse = mock(VaadinResponse.class);
+
+        // WHEN
+        downloadStreamResource.getStream().writeResponse(vaadinRequest, vaadinResponse);
+
+        // THEN
+        verify(vaadinResponse).setHeader("Content-Disposition", expectedContentDispositionHeaderValue);
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.framework.message;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-import info.magnolia.cms.security.GroupManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -51,9 +50,7 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -72,6 +69,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
     private MessagesManagerImpl messagesManager;
     private User alice;
     private User bob;
+    private UserManager userManager = mock(UserManager.class);
 
     @Override
     @Before
@@ -93,14 +91,10 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         users.add(alice);
         users.add(bob);
 
-        UserManager userManager = mock(UserManager.class);
         when(userManager.getAllUsers()).thenReturn(users);
-
-        GroupManager groupManager = mock(GroupManager.class);
 
         SecuritySupport securitySupport = mock(SecuritySupport.class);
         when(securitySupport.getUserManager()).thenReturn(userManager);
-        when(securitySupport.getGroupManager()).thenReturn(groupManager);
 
         messagesManager = new MessagesManagerImpl(Providers.of(securitySupport), messageStore);
     }
@@ -190,12 +184,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         messagesManager.registerMessagesListener("bob", listenerB);
         final String testGroup = "bobOnlyGroup";
 
-        List<String> bobGroups = new LinkedList<String>() {{
-            add(testGroup);
-        }};
-
-        when(bob.getAllGroups()).thenReturn(bobGroups);
-        when(alice.getAllGroups()).thenReturn(Collections.EMPTY_LIST);
+        when(userManager.getUsersWithGroup(testGroup, true)).thenReturn(Arrays.asList(new String[]{"bob"}));
 
         Message message = new Message();
         message.setType(MessageType.ERROR);
@@ -220,18 +209,13 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         // GIVEN
         MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("bob", listenerB);
-        final String directGroup = "group1";
         final String transitiveGroup = "group2";
 
-        when(bob.inGroup(directGroup)).thenReturn(true);
-        when(bob.inGroup(transitiveGroup)).thenReturn(false);
-        when(bob.getGroups()).thenReturn(new LinkedList<String>() {{
-            add(directGroup);
-        }});
-        when(bob.getAllGroups()).thenReturn(new LinkedList<String>() {{
-            add(directGroup);
-            add(transitiveGroup);
-        }});
+        // bob is in the transitive but not in the direct group ... however,
+        // since we use only UserManager.getUsersWithGroup(String groupName, boolean includeUsersFromTransitiveGroups) in MessagesManagerImpl, there is not so much to mock here
+        // Testing returning the correct users (including users from transitive groups) is tested in MgnlUserManagerRepositoryTest now.
+        // Hence, this test here might be removed.
+        when(userManager.getUsersWithGroup(transitiveGroup, true)).thenReturn(Arrays.asList(new String[]{"bob"}));
 
         Message message = new Message();
         message.setType(MessageType.ERROR);

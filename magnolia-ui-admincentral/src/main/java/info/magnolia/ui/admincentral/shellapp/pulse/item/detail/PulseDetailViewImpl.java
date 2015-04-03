@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -85,8 +85,6 @@ public final class PulseDetailViewImpl extends HorizontalLayout implements Pulse
     @Override
     public void setTitle(String subject) {
         title.setValue(subject);
-        // tooltip
-        title.setDescription(subject);
     }
 
     @Override

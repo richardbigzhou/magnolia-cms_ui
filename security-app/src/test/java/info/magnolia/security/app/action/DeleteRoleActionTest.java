@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,18 +33,13 @@
  */
 package info.magnolia.security.app.action;
 
-import static org.junit.Assert.assertTrue;
-
 import static org.junit.Assert.*;
 
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.GroupManager;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
-import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
@@ -61,7 +56,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,15 +67,13 @@ import javax.jcr.Session;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Test class for {@link DeleteRoleAction}.
- */
 public class DeleteRoleActionTest extends RepositoryTestCase {
 
     private static final String ROLENAME = "testRole";
 
     private DeleteRoleAction action;
     private Session session;
+    private SecuritySupport securitySupport;
 
     @Before
     @Override
@@ -101,22 +94,30 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
 
         CommandsManager commandsManager = Components.getComponent(CommandsManager.class);
         Session configSession = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node exportModuleDef = configSession.getRootNode().addNode("modules", NodeTypes.ContentNode.NAME).addNode("commands", NodeTypes.ContentNode.NAME)
-                .addNode("default", NodeTypes.ContentNode.NAME).addNode("delete", NodeTypes.ContentNode.NAME);
+        Node exportModuleDef = configSession.getRootNode()
+                .addNode("modules", NodeTypes.ContentNode.NAME)
+                .addNode("commands", NodeTypes.ContentNode.NAME)
+                .addNode("default", NodeTypes.ContentNode.NAME)
+                .addNode("delete", NodeTypes.ContentNode.NAME);
         exportModuleDef.setProperty("class", DeleteCommand.class.getName());
         exportModuleDef.getSession().save();
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
 
-        action = new DeleteRoleAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class));
+        securitySupport = mock(SecuritySupport.class);
+
+        action = new DeleteRoleAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class), securitySupport);
     }
 
     @Test
     public void testRoleIsDeletedWhenThereIsNoUserNorGroup() throws Exception {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
-        when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        when(gm.getGroupsWithRole(ROLENAME)).thenReturn(Collections.EMPTY_LIST);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
+
+        UserManager um = mock(UserManager.class);
+        when(um.getUsersWithRole(ROLENAME)).thenReturn(Collections.EMPTY_LIST);
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -128,16 +129,9 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
     @Test
     public void testRoleIsNotDeletedWhenItIsAssignedToUser() throws Exception {
         // GIVEN
-        GroupManager gm = mock(GroupManager.class);
-        when(gm.getAllGroups()).thenReturn(new ArrayList(0));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-
-        User user = mock(User.class);
-        when(user.getRoles()).thenReturn(Collections.singleton(ROLENAME));
-
         UserManager um = mock(UserManager.class);
-        when(um.getAllUsers()).thenReturn(Collections.singleton(user));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(Collections.singletonMap("test", um));
+        when(um.getUsersWithRole(ROLENAME)).thenReturn(Arrays.asList("testUserHavingAssignedThatRole"));
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         // WHEN
         action.execute();
@@ -149,14 +143,9 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
     @Test
     public void testRoleIsNotDeletedWhenItIsAssignedToGroup() throws Exception {
         // GIVEN
-        Group grp = mock(Group.class);
-        when(grp.getRoles()).thenReturn(Collections.singleton(ROLENAME));
-
         GroupManager gm = mock(GroupManager.class);
-        when(gm.getAllGroups()).thenReturn(Collections.singleton(grp));
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setGroupManager(gm);
-
-        ((SecuritySupportImpl) Security.getSecuritySupport()).setUserManagers(new HashMap<String, UserManager>());
+        when(gm.getGroupsWithRole(ROLENAME)).thenReturn(Arrays.asList("groupThatHasThatRoleAssignedTo"));
+        when(securitySupport.getGroupManager()).thenReturn(gm);
 
         // WHEN
         action.execute();

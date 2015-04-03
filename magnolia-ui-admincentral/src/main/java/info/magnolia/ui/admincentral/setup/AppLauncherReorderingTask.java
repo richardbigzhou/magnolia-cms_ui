@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -72,7 +72,7 @@ public class AppLauncherReorderingTask extends AbstractRepositoryTask {
         Session session = ctx.getConfigJCRSession();
 
         if (!session.nodeExists(String.format("/modules/ui-admincentral/config/appLauncherLayout/groups/%s/apps/%s", groupName, appName))) {
-            log.warn("Not reordering the %s app in the %s group because either the group or the app doesn't exist.", appName, groupName);
+            log.warn("Not reordering the {} app in the {} group because either the group or the app doesn't exist.", appName, groupName);
             return;
         }
 
@@ -88,7 +88,7 @@ public class AppLauncherReorderingTask extends AbstractRepositoryTask {
             if (apps.hasNode(relativeAppName)) {
                 NodeUtil.orderBefore(app, relativeAppName);
             } else {
-                log.warn("Not reordering the %s app in the %s group because the relative app %s does not exist.", appName, groupName, relativeAppName);
+                log.warn("Not reordering the {} app in the {} group because the relative app {} does not exist.", appName, groupName, relativeAppName);
             }
             break;
 
@@ -96,7 +96,7 @@ public class AppLauncherReorderingTask extends AbstractRepositoryTask {
             if (apps.hasNode(relativeAppName)) {
                 NodeUtil.orderAfter(app, relativeAppName);
             } else {
-                log.warn("Not reordering the %s app in the %s group because the relative app %s does not exist.", appName, groupName, relativeAppName);
+                log.warn("Not reordering the {} app in the {} group because the relative app {} does not exist.", appName, groupName, relativeAppName);
             }
             break;
 

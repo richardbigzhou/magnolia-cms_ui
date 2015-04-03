@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,11 +34,12 @@
 package info.magnolia.ui.api.app.launcherlayout;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
@@ -124,11 +125,11 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
             List<AppLauncherGroupEntry> entries = new ArrayList<AppLauncherGroupEntry>();
             for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
-
                 AppDescriptor appDescriptor;
                 try {
-                    appDescriptor = i18nizer.decorate(appDescriptorRegistry.getAppDescriptor(entryDefinition.getName()));
-                } catch (RegistrationException e) {
+                    final DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.getProvider(entryDefinition.getName());
+                    appDescriptor = i18nizer.decorate(definitionProvider.get());
+                } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
                     logger.warn(e.getMessage());
                     continue;
                 }

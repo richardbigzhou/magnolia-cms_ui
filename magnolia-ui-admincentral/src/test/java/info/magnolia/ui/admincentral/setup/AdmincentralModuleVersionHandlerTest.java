@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -97,9 +97,11 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
     @Override
     protected List<String> getModuleDescriptorPathsForTests() {
+        // Super implementation returns this module's descriptor.
+        // We override this because version-handler logic doesn't depend on the whole module dependency cascade
+        // (only needs to be a non-empty list of existing module descriptors, so we pick the most basic one).
         return Arrays.asList(
-                "/META-INF/magnolia/core.xml",
-                "/META-INF/magnolia/ui-framework.xml"
+                "/META-INF/magnolia/core.xml"
                 );
     }
 

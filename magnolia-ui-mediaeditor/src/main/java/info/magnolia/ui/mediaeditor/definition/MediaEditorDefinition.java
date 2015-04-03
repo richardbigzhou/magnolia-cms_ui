@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,6 +48,9 @@ import java.util.Map;
 public interface MediaEditorDefinition {
 
     String getId();
+
+    // TODO To be removed!
+    void setId(String id);
 
     String getDefaultAction();
 

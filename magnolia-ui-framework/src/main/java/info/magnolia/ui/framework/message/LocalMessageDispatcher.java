@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -58,36 +58,32 @@ public class LocalMessageDispatcher implements MessageListener {
     }
 
     @Override
-    public void messageSent(Message message) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new MessageEvent(message, false));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
+    public void messageSent(final Message message) {
+        vaadinSession.access(new Runnable() {
+            @Override
+            public void run() {
+                eventBus.fireEvent(new MessageEvent(message, false));
+            }
+        });
     }
 
     @Override
-    public void messageCleared(Message message) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new MessageEvent(message, true));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
+    public void messageCleared(final Message message) {
+        vaadinSession.access(new Runnable() {
+            @Override
+            public void run() {
+                eventBus.fireEvent(new MessageEvent(message, true));
+            }
+        });
     }
 
     @Override
-    public void messageRemoved(String id) {
-        VaadinSession previous = VaadinSession.getCurrent();
-        try {
-            VaadinSession.setCurrent(vaadinSession);
-            eventBus.fireEvent(new MessageEvent(id, true));
-        } finally {
-            VaadinSession.setCurrent(previous);
-        }
-
+    public void messageRemoved(final String id) {
+        vaadinSession.access(new Runnable() {
+            @Override
+            public void run() {
+                eventBus.fireEvent(new MessageEvent(id, true));
+            }
+        });
     }
 }

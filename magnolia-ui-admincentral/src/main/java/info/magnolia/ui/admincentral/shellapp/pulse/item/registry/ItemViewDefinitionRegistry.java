@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.registry;
 
+import info.magnolia.config.registry.AbstractRegistry;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
+import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderWrapper;
+import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
-
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
@@ -46,31 +47,44 @@ import javax.inject.Singleton;
  * Maintains a registry of item view providers registered by id.
  */
 @Singleton
-public class ItemViewDefinitionRegistry {
-
-    private final RegistryMap<String, ItemViewDefinitionProvider> registry = new RegistryMap<String, ItemViewDefinitionProvider>() {
+public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinition> {
+    public static final DefinitionType TYPE = new DefinitionType() {
+        @Override
+        public String name() {
+            return "messageView";
+        }
 
         @Override
-        protected String keyFromValue(ItemViewDefinitionProvider value) {
-            return value.getId();
+        public Class baseClass() {
+            return ItemViewDefinition.class;
         }
     };
 
+    @Override
+    public DefinitionType type() {
+        return TYPE;
+    }
+
+    @Override
+    public DefinitionMetadataBuilder newMetadataBuilder() {
+        return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
+    }
+
     public ItemViewDefinition get(String id) throws RegistrationException {
-        ItemViewDefinitionProvider provider;
-        try {
-            provider = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No item view definition registered for id: " + id, e);
-        }
-        return provider.getItemViewDefinition();
+        return getProvider(id).get();
     }
 
-    public void register(ItemViewDefinitionProvider provider) {
-        registry.put(provider);
-    }
-
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<ItemViewDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
+    @Override
+    protected DefinitionProvider<ItemViewDefinition> onRegister(final DefinitionProvider<ItemViewDefinition> provider) {
+        final DefinitionProvider<ItemViewDefinition> wrappedProvider = super.onRegister(provider);
+        return new DefinitionProviderWrapper<ItemViewDefinition>(wrappedProvider) {
+            @Override
+            public ItemViewDefinition get() {
+                final ItemViewDefinition td = super.get();
+                final String referenceString = wrappedProvider.getMetadata().getReferenceId();
+                td.setId(referenceString);
+                return td;
+            }
+        };
     }
 }

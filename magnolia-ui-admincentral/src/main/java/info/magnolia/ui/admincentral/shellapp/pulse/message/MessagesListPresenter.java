@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -172,6 +172,8 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
         case INFO:
             count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userId, type);
             view.updateCategoryBadgeCount(PulseItemCategory.INFO, count);
+            break;
+        default:
             break;
         }
     }

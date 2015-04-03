@@ -1190,7 +1190,7 @@
             <sv:value>1f3f329d-a112-4444-9f74-6d57e561a255</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.DuplicateNodeActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-duplicate</sv:value>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,9 +41,6 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListV
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.InfoIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
@@ -52,12 +49,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.GeneratedRow;
-import com.vaadin.ui.TreeTable;
 
 /**
  * Implementation of {@link MessagesListView}.
@@ -66,120 +61,130 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
 
     private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID };
 
-    private static Table.ColumnGenerator newMessageColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (NEW_PROPERTY_ID.equals(columnId)) {
-                final Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
-                final Boolean isNew = newProperty != null && newProperty.getValue();
-                if (isNew) {
-                    final Label newMessage = new Label();
-                    newMessage.setSizeUndefined();
-                    newMessage.addStyleName("icon-tick");
-                    newMessage.addStyleName("new-message");
-                    return newMessage;
-                }
-            }
-            return null;
-        }
-    };
-
-    /**
-     * default visibility is for testing purposes.
-     */
-    static Table.ColumnGenerator textColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (TEXT_PROPERTY_ID.equals(columnId)) {
-                final Property<String> textProperty = source.getContainerProperty(itemId, columnId);
-                final Property<String> subjectProperty = source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID);
-
-                final Label textLabel = new Label();
-                textLabel.setSizeUndefined();
-                textLabel.addStyleName("message-subject-text");
-                textLabel.setContentMode(ContentMode.HTML);
-
-                final String subject = StringEscapeUtils.escapeXml(subjectProperty.getValue());
-                final String text = StringEscapeUtils.escapeXml(textProperty.getValue());
-                textLabel.setValue("<strong>" + StringUtils.abbreviate(subject, 70) + "</strong><div>" + StringUtils.abbreviate(text, 70) + "</div>");
-
-                // tooltip
-                textLabel.setDescription(subject);
-                return textLabel;
-
-            }
-            return null;
-        }
-    };
-
-    private static Table.ColumnGenerator typeColumnGenerator = new Table.ColumnGenerator() {
-
-        @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
-
-            if (TYPE_PROPERTY_ID.equals(columnId)) {
-                final Property<MessageType> typeProperty = source.getContainerProperty(itemId, columnId);
-                final MessageType messageType = typeProperty.getValue();
-
-                switch (messageType) {
-                case INFO:
-                    return new InfoIcon();
-
-                case WARNING:
-                    return new WarningIcon();
-
-                case ERROR:
-                    return new ErrorIcon();
-
-                }
-            }
-            return null;
-        }
-    };
-
     @Inject
     public MessagesListViewImpl(Shell shell, SimpleTranslator i18n) {
         super(shell, i18n, order,
                 new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date") },
                 i18n.translate("pulse.messages.empty"),
                 PulseItemCategory.ALL_MESSAGES, PulseItemCategory.INFO, PulseItemCategory.PROBLEM);
-        buildTable(getItemTable());
+        constructTable(getItemTable());
         setFooter(new PulseListFooter(getItemTable(), i18n, false));
     }
 
-    private void buildTable(TreeTable itemTable) {
-        itemTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
-        itemTable.setColumnWidth(NEW_PROPERTY_ID, 100);
-        itemTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
-        itemTable.setColumnWidth(TYPE_PROPERTY_ID, 50);
-        itemTable.addGeneratedColumn(TEXT_PROPERTY_ID, textColumnGenerator);
-        itemTable.setColumnWidth(TEXT_PROPERTY_ID, 450);
-        itemTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
-        itemTable.setColumnWidth(DATE_PROPERTY_ID, 150);
-        itemTable.setSortContainerPropertyId(DATE_PROPERTY_ID);
-        itemTable.setSortAscending(false);
+    private void constructTable(Table table) {
+        table.addGeneratedColumn(NEW_PROPERTY_ID, new PulseNewItemColumnGenerator());
+        table.setColumnWidth(NEW_PROPERTY_ID, 100);
+        table.addGeneratedColumn(TYPE_PROPERTY_ID, new MessageTypeColumnGenerator());
+        table.setColumnWidth(TYPE_PROPERTY_ID, 50);
+        table.addGeneratedColumn(TEXT_PROPERTY_ID, new MessageSubjectColumnGenerator());
+        table.setColumnWidth(TEXT_PROPERTY_ID, 450);
+        table.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
+        table.setColumnWidth(DATE_PROPERTY_ID, 150);
+
+        // tooltips
+        table.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
+
+            @Override
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+                if (TEXT_PROPERTY_ID.equals(propertyId)) {
+                    String subject = (String) ((AbstractSelect) source).getContainerProperty(itemId, SUBJECT_PROPERTY_ID).getValue();
+                    return StringEscapeUtils.escapeXml(subject);
+                }
+                return null;
+            }
+        });
+
+        table.setSortContainerPropertyId(DATE_PROPERTY_ID);
+        table.setSortAscending(false);
     }
 
     @Override
     protected GeneratedRow generateGroupingRow(Item item) {
-        GeneratedRow generated = new GeneratedRow();
-        Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
-        switch (property.getValue()) {
+        GeneratedRow row = new GeneratedRow();
+        MessageType messageType = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
+
+        String key = null;
+        switch (messageType) {
         case ERROR:
-            generated.setText("", "", getI18n().translate("pulse.messages.errors"));
+            key = "pulse.messages.errors";
             break;
         case WARNING:
-            generated.setText("", "", getI18n().translate("pulse.messages.warnings"));
+            key = "pulse.messages.warnings";
             break;
         case INFO:
-            generated.setText("", "", getI18n().translate("pulse.messages.info"));
+            key = "pulse.messages.info";
             break;
+        default:
+            return null;
         }
-        return generated;
+
+        row.setText("", "", getI18n().translate(key));
+        return row;
+    }
+
+    /**
+     * The Vaadin {@link Table.ColumnGenerator ColumnGenerator} for the subject cells in the messages list view.
+     */
+    // default visibility for tests.
+    class MessageSubjectColumnGenerator implements Table.ColumnGenerator {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            String subject = (String) source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID).getValue();
+            String text = (String) source.getContainerProperty(itemId, TEXT_PROPERTY_ID).getValue();
+
+            if (StringUtils.isNotBlank(subject) && StringUtils.isNotBlank(text)) {
+
+                // prepare title and comment texts
+                subject = StringEscapeUtils.escapeXml(subject);
+                text = StringEscapeUtils.escapeXml(text);
+
+                return String.format("<div class=\"message-subject-text\">"
+                        + "<strong>%s</strong><br/>"
+                        + "%s</div>",
+                        StringUtils.abbreviate(subject, 70),
+                        StringUtils.abbreviate(text, 70));
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The Vaadin {@link Table.ColumnGenerator ColumnGenerator} for the type cells in the messages list view.
+     */
+    private class MessageTypeColumnGenerator implements Table.ColumnGenerator {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            MessageType messageType = (MessageType) source.getContainerProperty(itemId, TYPE_PROPERTY_ID).getValue();
+
+            String level, shape = "circle", mark;
+            switch (messageType) {
+            case INFO:
+                level = "info-icon";
+                mark = "icon-info_mark";
+                break;
+            case WARNING:
+                level = "warning-icon";
+                mark = "icon-warning-mark";
+                break;
+            case ERROR:
+                level = "error-icon";
+                shape = "triangle";
+                mark = "icon-error-mark";
+                break;
+            default:
+                return null;
+            }
+
+            return String.format("<span class=\"composite-icon %1$s\">"
+                    + "<span class=\"icon icon-shape-%2$s-plus\"></span>"
+                    + "<span class=\"icon icon-shape-%2$s\"></span>"
+                    + "<span class=\"icon %3$s\"></span>"
+                    + "</span>",
+                    level, shape, mark);
+        }
     }
 
 }

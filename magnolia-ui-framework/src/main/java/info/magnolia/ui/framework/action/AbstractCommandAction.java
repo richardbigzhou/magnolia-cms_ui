@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -166,6 +166,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             // really only the identifier should be used to identify a piece of content and nothing else
             params.put(Context.ATTRIBUTE_UUID, identifier);
             params.put(Context.ATTRIBUTE_PATH, path);
+            params.put(Context.ATTRIBUTE_REQUESTOR, MgnlContext.getUser().getName());
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -388,10 +389,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
                 @Override
                 public void doExec() {
-                    // notify user only if action took longer than xx seconds
+                    // User should be notified always when the long running action has finished. Otherwise he gets NO feedback.
                     MessagesManager messagesManager = Components.getComponent(MessagesManager.class);
                     // result 1 stands for success, 0 for error - see info.magnolia.module.scheduler.CommandJob
-                    if (timeToWait == 0 && (Integer) jobExecutionContext.getResult() == 1) {
+                    if ((Integer) jobExecutionContext.getResult() == 1) {
                         messagesManager.sendLocalMessage(new Message(MessageType.INFO, successMessageTitle, successMessage));
                     } else if ((Integer) jobExecutionContext.getResult() == 0) {
                         Message msg = new Message(MessageType.WARNING, errorMessageTitle, errorMessage);

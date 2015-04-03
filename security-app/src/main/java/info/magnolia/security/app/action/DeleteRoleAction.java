@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,8 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
@@ -49,18 +51,27 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Deletes a role after performing a check that the role is not assignet to any user or group.
+ * Deletes a role after performing a check that the role is not assigned to any user or group.
  */
 public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRoleActionDefinition> {
 
     @Inject
+    public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, SecuritySupport securitySupport) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n, securitySupport);
+    }
+
+    /**
+     * @deprecated since 5.3.6 instead of use {@link #DeleteRoleAction(DeleteRoleActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.cms.security.SecuritySupport)}
+     */
+    @Deprecated
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, commandsManager, eventBus, uiContext, i18n);
+        super(definition, item, commandsManager, eventBus, uiContext, i18n, Security.getSecuritySupport());
     }
 
     /**
      * @deprecated since 5.2.2 instead of use {@link #DeleteRoleAction(DeleteRoleActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator)}
      */
+    @Deprecated
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
     }
@@ -76,6 +87,16 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     }
 
     @Override
+    protected Collection<String> getUsersWithGroupOrRoleToDelete(final String groupOrRole) {
+        return getSecuritySupport().getUserManager().getUsersWithRole(groupOrRole);
+    }
+
+    @Override
+    protected Collection<String> getGroupsWithGroupOrRoleToDelete(final String groupOrRole) {
+        return getSecuritySupport().getGroupManager().getGroupsWithRole(groupOrRole);
+    }
+
+    @Override
     protected String getBaseErrorMessage() {
         return getI18n().translate("security.delete.role.isAssignedError");
     }
@@ -84,5 +105,4 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     protected String getVerificationErrorMessage() {
         return getI18n().translate("security.delete.role.cannotVerifyError");
     }
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
@@ -41,9 +41,7 @@ import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 
@@ -74,15 +72,15 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         app = i18nizer.decorate(app);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(2);
-        generator.keysFor(keys,
+        String[] keys = generator.keysFor("undecorated",
                 ((TestSubApp) app.getSubApps().get("test-subapp")).getActionbar().getSections().get(0),
                 section.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals("test-app.test-subapp.actionbar.sections.test-section.label", keys.get(0));
-        assertEquals("test-app.test-subapp.actionbar.sections.test-section", keys.get(1));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-app.test-subapp.actionbar.sections.test-section.label",
+                "test-app.test-subapp.actionbar.sections.test-section"));
     }
 
     @Test
@@ -103,15 +101,19 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         messageView = i18nizer.decorate(messageView);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(2);
-        generator.keysFor(keys,
+        String[] keys = generator.keysFor("undecorated",
                 messageView.getActionbar().getSections().get(0),
                 section.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals("test-module.testMessageView.actionbar.sections.test-section.label", keys.get(0));
-        assertEquals("test-module.testMessageView.actionbar.sections.test-section", keys.get(1));
+        assertThat(keys, Matchers.arrayContaining(
+                "undecorated",
+                "test-module.testMessageView.actionbar.sections.test-section.label",
+                "test-module.testMessageView.actionbar.sections.test-section",
+                "testMessageView.actionbar.sections.test-section.label",
+                "testMessageView.actionbar.sections.test-section"
+                ));
+
     }
 
     /**

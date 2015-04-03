@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -62,7 +62,7 @@ public final class PulseViewImpl implements PulseView {
         layout.addStyleName("v-pulse");
         layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
-        navigator = PulseItemCategoryNavigator.createTopRowNavigator(i18n, PulseItemCategory.TASKS, PulseItemCategory.MESSAGES);
+        navigator = new PulseItemCategoryNavigator(i18n, false, true, PulseItemCategory.TASKS, PulseItemCategory.MESSAGES);
         navigator.addCategoryChangeListener(new ItemCategoryChangedListener() {
 
             @Override

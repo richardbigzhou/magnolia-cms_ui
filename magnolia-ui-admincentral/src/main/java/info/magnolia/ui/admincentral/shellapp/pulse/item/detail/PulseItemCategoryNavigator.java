@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2014 Magnolia International
+ * This file Copyright (c) 2012-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -65,15 +65,23 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
     private boolean showGroupBy;
 
+    /**
+     * @deprecated since 5.4 use the plain constructor {@link #PulseItemCategoryNavigator(SimpleTranslator, boolean, boolean, PulseItemCategory...)} instead.
+     */
+    @Deprecated
     public static PulseItemCategoryNavigator createTopRowNavigator(SimpleTranslator i18n, PulseItemCategory... categories) {
         return new PulseItemCategoryNavigator(i18n, false, true, categories);
     }
 
+    /**
+     * @deprecated since 5.4 use the plain constructor {@link #PulseItemCategoryNavigator(SimpleTranslator, boolean, boolean, PulseItemCategory...)} instead.
+     */
+    @Deprecated
     public static PulseItemCategoryNavigator createSubRowNavigator(SimpleTranslator i18n, PulseItemCategory... categories) {
         return new PulseItemCategoryNavigator(i18n, true, false, categories);
     }
 
-    private PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupBy, boolean isTopRow, PulseItemCategory... categories) {
+    public PulseItemCategoryNavigator(SimpleTranslator i18n, boolean showGroupBy, boolean isTopRow, PulseItemCategory... categories) {
         super();
         this.i18n = i18n;
         setStyleName("navigator");
@@ -95,9 +103,6 @@ public final class PulseItemCategoryNavigator extends CssLayout {
         }
         if (isTopRow) {
             addStyleName("top-row");
-            CssLayout hiddenTab = new CssLayout();
-            hiddenTab.addStyleName("hidden");
-            addComponent(hiddenTab);
         }
 
         initCheckbox(categories);

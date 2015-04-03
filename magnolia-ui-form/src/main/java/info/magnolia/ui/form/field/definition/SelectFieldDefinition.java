@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.repository.RepositoryConstants;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -64,6 +65,8 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     private int filteringMode = 0;
 
     private boolean sortOptions = true;
+
+    private Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass;
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -135,5 +138,13 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public boolean isSortOptions() {
         return sortOptions;
+    }
+
+    public Class<? extends Comparator<SelectFieldOptionDefinition>> getComparatorClass() {
+        return comparatorClass;
+    }
+
+    public void setComparatorClass(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
+        this.comparatorClass = comparatorClass;
     }
 }

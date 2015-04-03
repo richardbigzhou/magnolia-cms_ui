@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2014 Magnolia International
+ * This file Copyright (c) 2010-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,107 +33,21 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.predicate.NodeTypePredicate;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ObservedManager for dialogs configured in repository.
+ * ObservedManager for {@link info.magnolia.ui.dialog.definition.DialogDefinition DialogDefinition} configured in repository.
+ *
+ * @deprecated since 5.4, replaced by {@link info.magnolia.config.source.jcr.RegistryBasedObservingManager RegistryBasedObservingManager},
+ * within {@link info.magnolia.config.source.jcr.JcrConfigurationSource JcrConfigurationSource}
  */
-@Singleton
-public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObservingManager {
+@Deprecated
+public class ConfiguredDialogDefinitionManager {
 
-    public static final String DIALOG_CONFIG_NODE_NAME = "dialogs";
+    private static final Logger log = LoggerFactory.getLogger(ConfiguredDialogDefinitionManager.class);
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private Set<String> registeredIds = new HashSet<String>();
-    private final DialogDefinitionRegistry dialogDefinitionRegistry;
-
-    @Inject
-    public ConfiguredDialogDefinitionManager(ModuleRegistry moduleRegistry, DialogDefinitionRegistry dialogDefinitionRegistry) {
-        super(DIALOG_CONFIG_NODE_NAME, moduleRegistry);
-        this.dialogDefinitionRegistry = dialogDefinitionRegistry;
-    }
-
-    @Override
-    protected void reload(List<Node> nodes) throws RepositoryException {
-
-        final List<DialogDefinitionProvider> providers = new ArrayList<DialogDefinitionProvider>();
-
-        for (Node node : nodes) {
-
-            NodeUtil.visit(node, new NodeVisitor() {
-
-                @Override
-                public void visit(Node current) throws RepositoryException {
-                    for (Node dialogNode : NodeUtil.getNodes(current, NodeTypes.ContentNode.NAME)) {
-                        if (isDialog(dialogNode)) {
-                            // Handle as dialog only if it has sub nodes indicating that it is actually representing a dialog.
-                            // This will filter the fields in dialogs used by the extends mechanism.
-                            DialogDefinitionProvider provider = createProvider(dialogNode);
-                            if (provider != null) {
-                                providers.add(provider);
-                            }
-                        }
-                    }
-                }
-            }, new NodeTypePredicate(NodeTypes.Content.NAME));
-        }
-
-        this.registeredIds = dialogDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
-    }
-
-    /**
-     * Check if this node can be handle as a ConfiguredDialogDefinition.
-     */
-    private boolean isDialog(Node dialogNode) throws RepositoryException {
-        Node node = dialogNode;
-        if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
-            node = new ExtendingNodeWrapper(dialogNode);
-        }
-        return node.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME)
-                || node.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME);
-    }
-
-    protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {
-
-        final String id = createId(dialogNode);
-
-        try {
-            return new ConfiguredDialogDefinitionProvider(id, dialogNode);
-        } catch (IllegalArgumentException e) {
-            // TODO dlipp - suppress stacktrace as long as SCRUM-1749 is not fixed
-            log.error("Unable to create provider for dialog [" + id + "]: " + e);
-        } catch (Exception e) {
-            log.error("Unable to create provider for dialog [" + id + "]", e);
-        }
-        return null;
-    }
-
-    protected String createId(Node configNode) throws RepositoryException {
-        final String path = configNode.getPath();
-        final String[] pathElements = path.split("/");
-        final String moduleName = pathElements[2];
-        return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + DIALOG_CONFIG_NODE_NAME + "/");
+    public void start() {
+        log.warn("ConfiguredDialogDefinitionManager is deprecated. It will be revived to provide backwards compatibility, but should not be used anymore.");
     }
 }

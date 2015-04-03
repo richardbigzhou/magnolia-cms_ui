@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2014 Magnolia International
+ * This file Copyright (c) 2013-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -205,6 +205,8 @@ public class ActionDefinitionKeyGeneratorTest {
                 "some configured value",
                 "foo.bar.actions.myaction.label",
                 "foo.bar.actions.myaction",
+                "bar.actions.myaction.label",
+                "bar.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
                 ));
@@ -226,6 +228,8 @@ public class ActionDefinitionKeyGeneratorTest {
                 "some configured value",
                 "baz.qux.actions.myaction.label",
                 "baz.qux.actions.myaction",
+                "qux.actions.myaction.label",
+                "qux.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
                 ));

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2014-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -51,10 +51,17 @@ import info.magnolia.test.mock.MockContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.internal.stubbing.answers.CallsRealMethods;
+
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinSession;
 
 /**
  * Test case for {@link LocalTaskDispatcher}.
@@ -66,6 +73,8 @@ public class LocalTaskDispatcherTest {
     private ArrayList<TaskEvent> events;
     private EventBus eventBus;
     private ComponentProvider componentProvider;
+    private VaadinSession vaadinSession;
+    private VaadinService vaadinService;
 
     @Before
     public void setUp() {
@@ -78,7 +87,15 @@ public class LocalTaskDispatcherTest {
 
         this.eventBus = new SimpleEventBus();
         this.events = new ArrayList<TaskEvent>();
-        this.dispatcher = new LocalTaskDispatcher(eventBus, null, context, componentProvider);
+        vaadinService = mock(VaadinService.class);
+        doAnswer(new CallsRealMethods()).when(vaadinService).runPendingAccessTasks(Matchers.any(VaadinSession.class));
+        doAnswer(new CallsRealMethods()).when(vaadinService).accessSession(Matchers.any(VaadinSession.class), Matchers.any(Runnable.class));
+
+
+        vaadinSession = spy(new VaadinSession(vaadinService));
+        Lock lock = new ReentrantLock();
+        doReturn(lock).when(vaadinSession).getLockInstance();
+        this.dispatcher = new LocalTaskDispatcher(eventBus, vaadinSession, context, componentProvider);
 
         eventBus.addHandler(TaskEvent.class, new CollectingTaskEventHandler(events));
 
@@ -102,7 +119,6 @@ public class LocalTaskDispatcherTest {
         task.setStatus(Task.Status.Created);
 
         dispatcher.onTaskEvent(new TaskEvent(task));
-        Thread.sleep(100);
 
         Task claimed = new Task();
         claimed.setId(String.valueOf(1));
@@ -110,10 +126,15 @@ public class LocalTaskDispatcherTest {
         claimed.setStatus(Task.Status.InProgress);
         claimed.setActorId("peter");
         dispatcher.onTaskEvent(new TaskEvent(claimed));
-        Thread.sleep(100);
 
         claimed.setStatus(Task.Status.Removed);
         dispatcher.onTaskEvent(new TaskEvent(claimed));
+
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
+
+
         Thread.sleep(100);
 
         // THEN
@@ -137,7 +158,6 @@ public class LocalTaskDispatcherTest {
         task.setStatus(Task.Status.Created);
 
         dispatcher.onTaskEvent(new TaskEvent(task));
-        Thread.sleep(100);
 
         Task claimed = new Task();
         claimed.setId("1");
@@ -146,7 +166,10 @@ public class LocalTaskDispatcherTest {
         claimed.setStatus(Task.Status.InProgress);
 
         dispatcher.onTaskEvent(new TaskEvent(claimed));
-        Thread.sleep(100);
+
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
 
         // THEN
         assertEquals(4, events.size());
@@ -168,6 +191,10 @@ public class LocalTaskDispatcherTest {
         task.setStatus(Task.Status.Created);
 
         dispatcher.onTaskEvent(new TaskEvent(task));
+
+        vaadinSession.lock();
+        vaadinService.runPendingAccessTasks(vaadinSession);
+        vaadinSession.unlock();
 
         // THEN
         verify(componentProvider, times(1)).getComponent(eq(SystemContext.class));
