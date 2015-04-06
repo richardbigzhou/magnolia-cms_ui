@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp;
 
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
@@ -42,6 +41,9 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogComponentProviderUtil;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
+import info.magnolia.ui.contentapp.renderer.SelectionSensitiveActionRenderer;
+import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionRendererDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
@@ -51,6 +53,8 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContent
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -67,7 +71,6 @@ public class ContentApp extends BaseApp {
 
     private static final Logger log = LoggerFactory.getLogger(ContentApp.class);
 
-
     private ComponentProvider componentProvider;
     private Cloner cloner = new Cloner();
     private ChooseDialogPresenter presenter;
@@ -83,6 +86,8 @@ public class ContentApp extends BaseApp {
         openChooseDialog(overlayLayer, null, selectedId, callback);
     }
 
+    public static final String COMMIT_CHOOSE_DIALOG_ACTION = "commit";
+
     @Override
     public void openChooseDialog(UiContext overlayLayer, String targetTreeRootPath, String selectedId, final ChooseDialogCallback callback) {
 
@@ -94,6 +99,7 @@ public class ContentApp extends BaseApp {
             chooseDialogDefinition = new ConfiguredChooseDialogDefinition();
         }
         chooseDialogDefinition = ensureChooseDialogField(chooseDialogDefinition, targetTreeRootPath);
+        chooseDialogDefinition = addAvailabilityActionRenderer(chooseDialogDefinition);
 
         // create chooseDialogComponentProvider and get new instance of presenter from there
         ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(overlayLayer, chooseDialogDefinition, componentProvider);
@@ -104,6 +110,16 @@ public class ContentApp extends BaseApp {
         }
 
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId);
+    }
+
+    private ChooseDialogDefinition addAvailabilityActionRenderer(ChooseDialogDefinition chooseDialogDefinition) {
+        Map<String, ActionRendererDefinition> actionRenderers = chooseDialogDefinition.getActionArea().getActionRenderers();
+        if (!actionRenderers.containsKey(COMMIT_CHOOSE_DIALOG_ACTION)) {
+            ConfiguredActionRendererDefinition actionRendererDef = new ConfiguredActionRendererDefinition();
+            actionRendererDef.setRendererClass(SelectionSensitiveActionRenderer.class);
+            actionRenderers.put(COMMIT_CHOOSE_DIALOG_ACTION, actionRendererDef);
+        }
+        return chooseDialogDefinition;
     }
 
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition, String targetTreeRootPath) {
