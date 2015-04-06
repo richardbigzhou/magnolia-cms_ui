@@ -50,8 +50,11 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.renderer.SelectionSensitiveActionRenderer;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
@@ -64,6 +67,10 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -122,6 +129,27 @@ public class ContentAppTest {
         // THEN
         assertNotNull(chooseDialogPresenter);
         assertTrue(chooseDialogPresenter.eventBus instanceof SimpleEventBus);
+    }
+
+    @Test
+    public void testAddAvailabilityActionRenderer() throws Exception {
+        // GIVEN
+        ConfiguredChooseDialogDefinition definition = mock(ConfiguredChooseDialogDefinition.class);
+        Map<String, ActionRendererDefinition> rendereres = new HashMap<String, ActionRendererDefinition>();
+
+        ContentApp app = new ContentApp(appContext, mock(AppView.class), componentProvider);
+        Method privateMethod = ContentApp.class.getDeclaredMethod("addAvailabilityActionRenderer", ChooseDialogDefinition.class);
+        privateMethod.setAccessible(true);
+
+        // WHEN
+        when(definition.getActionArea()).thenReturn(mock(EditorActionAreaDefinition.class));
+        when(definition.getActionArea().getActionRenderers()).thenReturn(rendereres);
+        definition = (ConfiguredChooseDialogDefinition) privateMethod.invoke(app, definition);
+
+        // THEN
+        assertTrue(rendereres.size() > 0);
+        assertTrue(definition.getActionArea().getActionRenderers().containsKey("commit"));
+        assertEquals(SelectionSensitiveActionRenderer.class, definition.getActionArea().getActionRenderers().get("commit").getRendererClass());
     }
 
     @Test
