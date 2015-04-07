@@ -44,4 +44,6 @@
 
   <set-configuration-property name="mgwt.css" value="pretty" />
 
+  <source path="client"/>
+  <source path="shared"/>
 </module>

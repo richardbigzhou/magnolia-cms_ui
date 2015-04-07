@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc;
+package info.magnolia.ui.vaadin.layout.data;
 
-import com.vaadin.shared.communication.ServerRpc;
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 
 /**
- * ThumbnailLayoutServerRpc.
+ * Vaadin {@link Indexed} container interface extension required by thumbnails view.
+ * Defines methods for resolving the thumbnail property id and property itself.
+ *
+ * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout
  */
-public interface ThumbnailLayoutServerRpc extends ServerRpc {
+public interface ThumbnailContainer extends Container.Indexed {
 
-    void loadThumbnails(int startFrom, int length, int cachedFirst, int cachedLast);
+    Object getThumbnailPropertyId();
 
-    void onThumbnailSelected(int index, boolean isMetaKeyPressed, boolean isShiftKeyPressed);
-
-    void onThumbnailDoubleClicked(int index);
-
-    void onThumbnailRightClicked(int index, int clickY, int clickX);
-
-    void setScaleRatio(float ratio);
-
-    void updateOffset(int currentThumbnailOffset);
+    Property getThumbnailProperty(Object itemId);
 }

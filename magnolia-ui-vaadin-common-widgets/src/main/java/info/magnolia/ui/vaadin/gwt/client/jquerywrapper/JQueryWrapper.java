@@ -255,6 +255,10 @@ public class JQueryWrapper extends JavaScriptObject {
         return this.scrollTop();
     }-*/;
 
+    public native final int size() /*-{
+        return this.size();
+    }-*/;
+
     public final boolean isAnimationInProgress() {
         return is(":animated");
     }
@@ -265,5 +269,9 @@ public class JQueryWrapper extends JavaScriptObject {
                return null;
           else
                return @java.lang.Integer::valueOf(I)(number);
+    }-*/;
+
+    public final native void removeClass(String className) /*-{
+        this.removeClass(className);
     }-*/;
 }

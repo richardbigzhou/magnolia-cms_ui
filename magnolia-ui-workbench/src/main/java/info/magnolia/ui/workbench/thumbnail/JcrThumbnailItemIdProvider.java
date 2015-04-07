@@ -57,8 +57,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@link ThumbnailContainer.IdProvider} which queries item ids from JCR workspace.
+ *
  * @see info.magnolia.ui.workbench.thumbnail.JcrThumbnailItemIdProvider#getQueryWhereClauseNodeTypes for details.
+ * @see info.magnolia.ui.workbench.thumbnail.JcrThumbnailContainer
+ * @deprecated since 5.3.10 should be avoided since it does not lazy load the items.
  */
+@Deprecated
 public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider {
 
     protected static final String WHERE_TEMPLATE_FOR_PATH = " WHERE (%s) %s ";
