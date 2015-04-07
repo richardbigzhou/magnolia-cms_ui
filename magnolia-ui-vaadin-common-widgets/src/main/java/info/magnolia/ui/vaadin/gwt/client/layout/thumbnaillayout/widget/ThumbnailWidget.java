@@ -43,7 +43,11 @@ import com.vaadin.client.ServerConnector;
 
 /**
  * Thumbnail widget.
+ *
+ * @deprecated since 5.3.9 - Not used any more in favor of mere dom elements in
+ *             order to avoid the widget usage overhead for the case of numerous thumbnails.
  */
+@Deprecated
 public class ThumbnailWidget extends Composite {
 
     private final SimplePanel panel = new SimplePanel();

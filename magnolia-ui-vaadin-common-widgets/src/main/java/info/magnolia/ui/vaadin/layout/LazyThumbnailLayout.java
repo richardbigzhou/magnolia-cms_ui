@@ -36,15 +36,25 @@ package info.magnolia.ui.vaadin.layout;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutState;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
+import info.magnolia.ui.vaadin.gwt.shared.Range;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
+import info.magnolia.ui.vaadin.layout.data.PagingThumbnailContainer;
+import info.magnolia.ui.vaadin.layout.data.ThumbnailContainer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashBiMap;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Ordered;
@@ -54,57 +64,212 @@ import com.vaadin.ui.AbstractComponent;
 /**
  * Lazy layout of asset thumbnails.
  */
-public class LazyThumbnailLayout extends AbstractComponent implements Container.Viewer {
+public class LazyThumbnailLayout extends AbstractComponent implements Container.Viewer, Container.ItemSetChangeListener {
 
-    private final List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
+    private static Logger log = LoggerFactory.getLogger(LazyThumbnailLayout.class);
 
-    private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
+    private final List<ThumbnailSelectionListener> selectionListeners = new ArrayList<>();
 
-    private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailRightClickListener>();
+    private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<>();
 
-    private Ordered container;
+    private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<>();
 
-    // Maps thumbnailId to itemId
-    private final BiMap<String, Object> mapper = HashBiMap.create();
-    private final AtomicInteger counter = new AtomicInteger();
+    private DataProviderKeyMapper mapper = new DataProviderKeyMapper();
 
-    private Object selectedItemId;
+    private ThumbnailContainer container;
+
+    /**
+     * Maps item ids, indices and client-side keys to each other.
+     *
+     * Highly inspired by Vaadin analogous class used in Grid component implementation
+     * (introduced in Vaadin 7.4).
+     */
+    public class DataProviderKeyMapper implements Serializable {
+
+        private final BiMap<Integer, Object> indexToItemId = HashBiMap.create();
+
+        private final BiMap<Object, String> itemIdToKey = HashBiMap.create();
+
+        private Range activeRange = Range.withLength(0, 0);
+
+        private long rollingIndex = 0;
+
+        private DataProviderKeyMapper() {
+        }
+
+        void setActiveRange(Range newActiveRange) {
+
+            /**
+             * First update container's page size if needed - in order to avoid multiple queries to
+             * the datasource.
+             */
+            if (container instanceof PagingThumbnailContainer) {
+                ((PagingThumbnailContainer) container).setPageSize(newActiveRange.length());
+            }
+
+            final Range[] removed = activeRange.partitionWith(newActiveRange);
+            final Range[] added = newActiveRange.partitionWith(activeRange);
+
+            removeActiveThumbnails(removed[0]);
+            removeActiveThumbnails(removed[2]);
+            addActiveThumbnails(added[0]);
+            addActiveThumbnails(added[2]);
+
+            log.debug("Former active: {}, New Active: {}, idx-id: {}, id-key: {}. Removed: {} and {}, Added: {} and {}",
+                    activeRange,
+                    newActiveRange,
+                    indexToItemId.size(),
+                    itemIdToKey.size(),
+                    removed[0],
+                    removed[2],
+                    added[0],
+                    added[2]);
+
+            activeRange = newActiveRange;
+
+
+        }
+
+        private void removeActiveThumbnails(final Range deprecated) {
+            for (int i = deprecated.getStart(); i < deprecated.getEnd(); i++) {
+                final Object itemId = indexToItemId.get(i);
+
+                itemIdToKey.remove(itemId);
+                indexToItemId.remove(i);
+            }
+        }
+
+        private void addActiveThumbnails(Range added) {
+            if (added.isEmpty()) {
+                return;
+            }
+
+            List<?> newItemIds = container.getItemIds(added.getStart(), added.length());
+            Integer index = added.getStart();
+            for (Object itemId : newItemIds) {
+                if (!indexToItemId.containsKey(index)) {
+                    if (!itemIdToKey.containsKey(itemId)) {
+                        itemIdToKey.put(itemId, nextKey());
+                    }
+
+                    indexToItemId.forcePut(index, itemId);
+                }
+                index++;
+            }
+        }
+
+        private String nextKey() {
+            return String.valueOf(rollingIndex++);
+        }
+
+        String getKey(Object itemId) {
+            String key = itemIdToKey.get(itemId);
+            if (key == null) {
+                key = nextKey();
+                itemIdToKey.put(itemId, key);
+            }
+            return key;
+        }
+
+        public Object getItemId(String key) throws IllegalStateException {
+            Object itemId = itemIdToKey.inverse().get(key);
+            if (itemId != null) {
+                return itemId;
+            } else {
+                throw new IllegalStateException("No item id for key " + key + " found.");
+            }
+        }
+
+        public Collection<Object> getItemIds(Collection<String> keys)
+                throws IllegalStateException {
+            if (keys == null) {
+                throw new IllegalArgumentException("keys may not be null");
+            }
+
+            final List<Object> itemIds = new ArrayList<>(keys.size());
+            for (String key : keys) {
+                itemIds.add(getItemId(key));
+            }
+            return itemIds;
+        }
+
+        Object itemIdAtIndex(int index) {
+            return indexToItemId.get(index);
+        }
+
+        int indexOf(Object itemId) {
+            return indexToItemId.inverse().get(itemId);
+        }
+
+        public void clearAll() {
+            indexToItemId.clear();
+            itemIdToKey.clear();
+            rollingIndex = 0;
+            activeRange = Range.withLength(0, 0);
+        }
+    }
+
+    private ThumbnailLayoutClientRpc clientRpc;
 
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
 
         @Override
-        public void onThumbnailSelected(String id) {
-            final Object itemId = mapper.get(id);
-            if (itemId != null) {
-                LazyThumbnailLayout.this.onThumbnailSelected(itemId);
+        public void loadThumbnails(int startFrom, int length, int cachedFirst, int cachedLast) {
+            final Range rangeToLoad = Range.withLength(startFrom, length);
+            final Range cachedRange = Range.between(cachedFirst, cachedLast);
+            final Range activeRange = cachedRange.isEmpty() ? rangeToLoad : rangeToLoad.combineWith(cachedRange);
+
+            mapper.setActiveRange(activeRange);
+            clientRpc.addThumbnails(fetchThumbnails(rangeToLoad), rangeToLoad.getStart());
+        }
+
+        @Override
+        public void onThumbnailSelected(int index, boolean isMetaKeyPressed, boolean isShiftKeyPressed) {
+            if (isMetaKeyPressed || isShiftKeyPressed) {
+                getState().selection.toggleSelection(index);
+            } else {
+                getState().selection.select(index);
+            }
+            markAsDirty();
+            final List<Integer> selectedIndices = getState(false).selection.selectedIndices;
+            if (selectedIndices.size() == 1) {
+                LazyThumbnailLayout.this.onThumbnailSelected(mapper.itemIdAtIndex(selectedIndices.get(0)));
+            } else {
+                final Set<Object> itemIds = FluentIterable.from(selectedIndices).transform(new Function<Integer, Object>() {
+                    @Nullable
+                    @Override
+                    public Object apply(@Nullable Integer input) {
+                        return mapper.itemIdAtIndex(input);
+                    }
+                }).toSet();
+                LazyThumbnailLayout.this.onThumbnailsSelected(itemIds);
             }
         }
 
         @Override
-        public void onThumbnailDoubleClicked(String id) {
-            final Object itemId = mapper.get(id);
+        public void onThumbnailDoubleClicked(int index) {
+            final Object itemId = mapper.itemIdAtIndex(index);
             if (itemId != null) {
                 LazyThumbnailLayout.this.onThumbnailDoubleClicked(itemId);
             }
         }
 
         @Override
-        public void onThumbnailRightClicked(String id, int clickX, int clickY) {
-            final Object itemId = mapper.get(id);
+        public void onThumbnailRightClicked(int index, int clickX, int clickY) {
+            final Object itemId = mapper.itemIdAtIndex(index);
             if (itemId != null) {
                 LazyThumbnailLayout.this.onThumbnailRightClicked(itemId, clickX, clickY);
             }
         }
 
         @Override
-        public void loadThumbnails(int amount) {
-            getRpcProxy(ThumbnailLayoutClientRpc.class).addThumbnails(fetchThumbnails(amount));
-            getRpcProxy(ThumbnailLayoutClientRpc.class).setSelected(mapper.inverse().get(selectedItemId));
+        public void updateOffset(int currentThumbnailOffset) {
+            getState(false).offset = currentThumbnailOffset;
         }
 
         @Override
-        public void clearThumbnails() {
-            LazyThumbnailLayout.this.clear();
+        public void setScaleRatio(float ratio) {
+            getState(false).scaleRatio = ratio;
         }
 
     };
@@ -112,6 +277,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     public LazyThumbnailLayout() {
         setImmediate(true);
         registerRpc(rpcHandler);
+        clientRpc = getRpcProxy(ThumbnailLayoutClientRpc.class);
     }
 
     private void onThumbnailDoubleClicked(Object itemId) {
@@ -126,49 +292,37 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
     }
 
+    private void onThumbnailsSelected(Set<Object> ids) {
+        for (final ThumbnailSelectionListener listener : selectionListeners) {
+            listener.onThumbnailsSelected(ids);
+        }
+    }
+
+    /**
+     * @deprecated since 5.3.9 - more generic {@link #onThumbnailsSelected(java.util.Set)} should be used instead.
+     */
+    @Deprecated
     private void onThumbnailSelected(Object itemId) {
         for (final ThumbnailSelectionListener listener : selectionListeners) {
             listener.onThumbnailSelected(itemId);
         }
     }
 
-    private List<ThumbnailData> fetchThumbnails(int amount) {
-        List<ThumbnailData> thumbnails = new ArrayList<ThumbnailData>();
-        Object id = mapper.get(getState().lastQueried);
-        if (id == null) {
-            id = container.firstItemId();
-        }
-        int i = 0;
-        while (id != null && i < amount) {
-            Object resource = container.getContainerProperty(id, "thumbnail").getValue();
+    private List<ThumbnailData> fetchThumbnails(Range range) {
+        final List<ThumbnailData> thumbnails = new ArrayList<>(range.length());
+        for (int i = range.getStart(); i < range.getEnd(); ++i) {
+            final Object id = mapper.itemIdAtIndex(i);
+            final Object resource = container.getThumbnailProperty(id).getValue();
+
             boolean isRealResource = resource instanceof Resource;
-            String thumbnailId = mapItemIdToThumbnailId(id);
+            String thumbnailId = mapper.getKey(id);
             String iconFontId = isRealResource ? null : String.valueOf(resource);
             if (isRealResource) {
                 setResource(thumbnailId, (Resource) resource);
             }
             thumbnails.add(new ThumbnailData(thumbnailId, iconFontId, isRealResource));
-            id = container.nextItemId(id);
-            ++i;
         }
-        getState().lastQueried = StringUtils.defaultString(mapItemIdToThumbnailId(id), "null");
         return thumbnails;
-    }
-
-    /**
-     * Adds the itemId to the internal mapping or if it's already mapped returns the existing key.
-     */
-    private String mapItemIdToThumbnailId(Object itemId) {
-        if (itemId == null) {
-            return null;
-        }
-        String thumbnailId = mapper.inverse().get(itemId);
-        if (thumbnailId != null) {
-            return thumbnailId;
-        }
-        thumbnailId = String.valueOf(counter.incrementAndGet());
-        mapper.put(thumbnailId, itemId);
-        return thumbnailId;
     }
 
     private void setThumbnailAmount(int thumbnailAmount) {
@@ -190,40 +344,58 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     public void clear() {
         getState().resources.clear();
-        getState().lastQueried = null;
-        counter.set(0);
-        mapper.clear();
+        mapper.clearAll();
     }
 
     public void refresh() {
         if (getState(false).thumbnailAmount > 0) {
             clear();
         }
+
         if (container != null) {
             setThumbnailAmount(container.size());
         }
     }
 
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("Selection listener cannot be null!");
+        }
         this.selectionListeners.add(listener);
     }
 
     public void addDoubleClickListener(final ThumbnailDblClickListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("Double click listener cannot be null!");
+        }
         this.dblClickListeners.add(listener);
     }
 
     public void addRightClickListener(final ThumbnailRightClickListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("Right click listener cannot be null!");
+        }
         this.rightClickListeners.add(listener);
     }
 
     @Override
     public void setContainerDataSource(Container newDataSource) {
-        if (newDataSource instanceof Ordered) {
-            this.container = (Ordered) newDataSource;
-            refresh();
-        } else {
-            throw new IllegalArgumentException("Container must be ordered.");
+        if (!(newDataSource instanceof ThumbnailContainer)) {
+            throw new IllegalArgumentException("Container must implement info.magnolia.ui.vaadin.layout.data.ThumbnailContainer...");
         }
+
+        this.container = (ThumbnailContainer) newDataSource;
+
+        if (this.container instanceof Container.ItemSetChangeNotifier) {
+            ((Container.ItemSetChangeNotifier) this.container).addItemSetChangeListener(this);
+        }
+
+        if (this.container instanceof Container.ItemSetChangeNotifier) {
+            ((Container.ItemSetChangeNotifier) this.container).removeItemSetChangeListener(this);
+        }
+
+        refresh();
+
     }
 
     @Override
@@ -242,14 +414,30 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     }
 
     public void setSelectedItemId(Object selectedItemId) {
-        this.selectedItemId = selectedItemId;
+        if (selectedItemId == null) {
+            this.getState().selection.selectedIndices.clear();
+        } else {
+            this.getState().selection.select(container.indexOfId(selectedItemId));
+        }
+    }
+
+    @Override
+    public void containerItemSetChange(Container.ItemSetChangeEvent event) {
+        refresh();
     }
 
     /**
      * Listener interface for thumbnail selection.
      */
     public interface ThumbnailSelectionListener {
+
+        /**
+         * @deprecated since 5.3.9 - more generic {@link #onThumbnailsSelected(java.util.Set)} should be used.
+         */
+        @Deprecated
         void onThumbnailSelected(Object itemId);
+
+        void onThumbnailsSelected(Set<Object> ids);
     }
 
     /**
@@ -265,18 +453,4 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     public interface ThumbnailRightClickListener {
         void onThumbnailRightClicked(Object itemId, int clickX, int clickY);
     }
-
-    /**
-     * Interface for the providers of the actual thumbnails.
-     */
-    public interface LazyThumbnailProvider {
-
-        void refresh();
-
-        int getThumbnailsAmount();
-
-        List<Resource> getThumbnails(int amount);
-
-    }
-
 }

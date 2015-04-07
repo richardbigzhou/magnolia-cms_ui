@@ -64,7 +64,10 @@ import com.vaadin.client.ServerConnector;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
+ *
+ * @deprecated since 5.3.9 {@link EscalatorThumbnailsPanel} is now used as an implementation of thumbnail view.
  */
+@Deprecated
 public class LazyThumbnailLayoutWidget extends FlowPanel {
 
     private static final int QUERY_TIMER_DELAY = 250;
@@ -214,7 +217,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         if (this.thumbnailAmount != thumbnailAmount) {
             this.thumbnailAmount = thumbnailAmount;
             int width = getOffsetWidth();
-            int totalThumbnailWidth = (thumbnailWidth + getHorizontalMargin());
+            int totalThumbnailWidth = (getThumbnailWidth());
             if (totalThumbnailWidth != 0) {
                 int thumbnailsInRow = (int) (width / totalThumbnailWidth * 1d);
                 if (thumbnailsInRow != 0) {
@@ -228,7 +231,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
 
     private void doQueryThumbnails(int amount) {
         if (amount > 0) {
-            thumbnailService.loadThumbnails(amount);
+            //thumbnailService.loadThumbnails(amount, );
         }
     }
 
@@ -246,10 +249,22 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
     private int calculateThumbnailsNeeded() {
         int totalHeight = scroller.getVerticalScrollPosition() + getOffsetHeight();
         int width = getOffsetWidth();
-        int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
-        int rows = (int) Math.ceil(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
+        int thumbnailsInRow = (int) (width / getThumbnailWidth() * 1d);
+        int rows = (int) Math.floor(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
         int totalThumbnailsPossible = Math.min(thumbnailAmount, thumbnailsInRow * rows);
         return Math.max(totalThumbnailsPossible - thumbnailStubs.size() - thumbnails.size(), 0);
+    }
+
+    private int getThumbnailWidth() {
+        if (imageContainer.iterator().hasNext()) {
+            return imageContainer.iterator().next().getOffsetWidth() + getHorizontalMargin();
+        }
+
+        ThumbnailWidget stub = new ThumbnailWidget();
+        imageContainer.add(stub);
+        int result = stub.getOffsetWidth() + getHorizontalMargin();
+        imageContainer.remove(stub);
+        return result;
     }
 
     public void generateStubs() {
@@ -275,7 +290,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
             }
         }
         // Either we we're passed null or there was no thumbnail with this id, so we make nothing selected
-        setSelectedThumbnail((ThumbnailWidget)null);
+        setSelectedThumbnail((ThumbnailWidget) null);
     }
 
     public void setSelectedThumbnail(ThumbnailWidget thumbnail) {
