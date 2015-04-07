@@ -38,7 +38,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * Utility class for fetching CSS properties from DOM StyleSheets JS object and
  * for creating new CSS rules dynamically.
+ *
+ * @deprecated since 5.3.10, not needed anymore.
  */
+@Deprecated
 public class CssRule {
 
     private final String selector;

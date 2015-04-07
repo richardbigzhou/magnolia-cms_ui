@@ -42,6 +42,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.vaadin.data.Container;
 import com.vaadin.ui.Component;
 
@@ -65,9 +66,13 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void onThumbnailSelected(final Object itemId) {
-                Set<Object> items = new LinkedHashSet<Object>();
-                items.add(itemId);
-                listener.onItemSelection(items);
+                Set<Object> items = Sets.newHashSet(itemId);
+                onThumbnailsSelected(items);
+            }
+
+            @Override
+            public void onThumbnailsSelected(Set<Object> ids) {
+                listener.onItemSelection(ids);
             }
         });
 

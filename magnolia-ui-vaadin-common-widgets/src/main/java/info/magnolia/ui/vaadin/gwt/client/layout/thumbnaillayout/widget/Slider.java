@@ -43,12 +43,13 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
 import com.googlecode.mgwt.ui.client.widget.MSlider;
 
 /**
  * Simple client-side slider widget, wraps mgwt's slider.
  */
-public class Slider extends Composite implements HasValueChangeHandlers<Integer> {
+public class Slider extends Composite implements HasValueChangeHandlers<Integer>, HasValue<Integer> {
 
     private final SliderClientBundle cssBundle = GWT.create(SliderClientBundle.class);
 
@@ -62,9 +63,10 @@ public class Slider extends Composite implements HasValueChangeHandlers<Integer>
         IconWidget iconSizeSmall = new IconWidget();
         iconSizeSmall.setIconName("search");
         iconSizeSmall.setSize(20);
-        iconSizeSmall.setColor("#aaaaaa");
+        iconSizeSmall.setColor("#aaa");
         iconSizeSmall.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
 
+        panel.addStyleName("slider-panel");
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
         panel.add(iconSizeSmall);
         panel.add(slider);
@@ -76,5 +78,20 @@ public class Slider extends Composite implements HasValueChangeHandlers<Integer>
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> integerValueChangeHandler) {
         return slider.addValueChangeHandler(integerValueChangeHandler);
+    }
+
+    @Override
+    public Integer getValue() {
+        return slider.getValue();
+    }
+
+    @Override
+    public void setValue(Integer value) {
+        slider.setValue(value);
+    }
+
+    @Override
+    public void setValue(Integer value, boolean fireEvents) {
+        slider.setValue(value, fireEvents);
     }
 }
