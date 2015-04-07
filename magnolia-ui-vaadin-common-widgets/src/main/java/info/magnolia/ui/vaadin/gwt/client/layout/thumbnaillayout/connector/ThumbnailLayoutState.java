@@ -33,7 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector;
 
+import info.magnolia.ui.vaadin.gwt.shared.Range;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.vaadin.shared.AbstractComponentState;
 
@@ -42,11 +47,15 @@ import com.vaadin.shared.AbstractComponentState;
  */
 public class ThumbnailLayoutState extends AbstractComponentState {
 
-    public String lastQueried = null;
-
     public int thumbnailAmount = 0;
 
+    public int offset = 0;
+
+    public float scaleRatio = -1;
+
     public ThumbnailSize size = new ThumbnailSize();
+
+    public SelectionModel selection = new SelectionModel();
 
     /**
      * ThumbnailSize.
@@ -58,4 +67,54 @@ public class ThumbnailLayoutState extends AbstractComponentState {
         public int height = 0;
     }
 
+    /**
+     * Selection model.
+     */
+    public static class SelectionModel implements Serializable {
+
+        public List<Integer> selectedIndices = new ArrayList<>();
+
+        public int min = -1;
+
+        public int max = -1;
+
+        public void select(int index) {
+            int indexToSelect = index;
+            if (selectedIndices.size() == 1 && selectedIndices.contains(index)) {
+                indexToSelect = -1;
+            }
+
+            selectedIndices.clear();
+
+            if (index >= 0) {
+                selectedIndices.add(indexToSelect);
+            }
+
+            this.min = indexToSelect;
+            this.max = indexToSelect;
+        }
+
+        public void toggleSelection(int index) {
+            if (index < 0) {
+                throw new IllegalArgumentException("Index must be non-negative");
+            }
+
+            if (!selectedIndices.contains(index)) {
+                selectedIndices.add(index);
+            } else {
+                selectedIndices.remove(Integer.valueOf(index));
+            }
+
+            this.min = Collections.min(selectedIndices);
+            this.max = Collections.max(selectedIndices);
+        }
+
+        public Range getSelectionBoundaries() {
+            if (selectedIndices.isEmpty()) {
+                // return empty
+                return Range.between(0, 0);
+            }
+            return Range.between(min, max + 1);
+        }
+    }
 }
