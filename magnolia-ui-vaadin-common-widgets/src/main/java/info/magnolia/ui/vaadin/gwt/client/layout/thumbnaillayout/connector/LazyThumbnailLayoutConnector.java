@@ -35,22 +35,20 @@ package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector;
 
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
+import info.magnolia.ui.vaadin.gwt.shared.Range;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
-import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.LazyThumbnailLayoutWidget;
-import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.ThumbnailWidget;
-import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.EscalatorThumbnailsPanel;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.user.client.Element;
-import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
-import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
-import com.vaadin.client.Util;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Timer;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
@@ -59,78 +57,96 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * ThumbnailLayoutConnector.
+ * Connector for {@link LazyThumbnailLayout}.
  */
 @Connect(LazyThumbnailLayout.class)
-public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
+public class LazyThumbnailLayoutConnector extends AbstractComponentConnector implements EscalatorThumbnailsPanel.Listener {
+
+    private static final Logger log = Logger.getLogger(LazyThumbnailLayoutConnector.class.getSimpleName());
+
+    private static final int THUMBNAIL_QUERY_RPC_DELAY = 200;
+
+    private Range cachedThumbnails = Range.between(0, 0);
+
+    private Map<Object, Integer> idToIndex = new HashMap<>();
+
+    private Map<Integer, ThumbnailData> indexToThumbnail = new HashMap<>();
+
+    private Map<String, String> idToUrl = new HashMap<>();
 
     private final ThumbnailLayoutServerRpc rpc = RpcProxy.create(ThumbnailLayoutServerRpc.class, this);
+
+    private boolean widgetInitialized = false;
+
+    private boolean waitingData = false;
+
+    @Override
+    public void onThumbnailClicked(int index, boolean isMetaKeyPressed, boolean isShiftKeyPressed) {
+        rpc.onThumbnailSelected(index, isMetaKeyPressed, isShiftKeyPressed);
+    }
+
+    @Override
+    public void onThumbnailRightClicked(int index, int xPos, int yPos) {
+        rpc.onThumbnailRightClicked(index, xPos, yPos);
+    }
+
+    @Override
+    public void onThumbnailDoubleClicked(int index) {
+        rpc.onThumbnailDoubleClicked(index);
+    }
+
 
     @Override
     protected void init() {
         super.init();
-        getWidget().addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                final Element element = event.getNativeEvent().getEventTarget().cast();
-                final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
-                if (thumbnail != null) {
-                    getWidget().setSelectedThumbnail(thumbnail);
-
-                    rpc.onThumbnailSelected(thumbnail.getId());
-                }
-            }
-        }, ClickEvent.getType());
-
-        getWidget().addDomHandler(new ContextMenuHandler() {
-
-            @Override
-            public void onContextMenu(ContextMenuEvent event) {
-                final Element element = event.getNativeEvent().getEventTarget().cast();
-                final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
-                if (thumbnail != null) {
-                    getWidget().setSelectedThumbnail(thumbnail);
-                    rpc.onThumbnailRightClicked(thumbnail.getId(), event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
-                }
-            }
-        }, ContextMenuEvent.getType());
-
-        getWidget().addHandler(new MultiTapHandler() {
-            @Override
-            public void onMultiTap(MultiTapEvent event) {
-                int x = event.getTouchStarts().get(0).get(0).getPageX();
-                int y = event.getTouchStarts().get(0).get(0).getPageY();
-                final Element element = Util.getElementFromPoint(x, y);
-                final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
-                rpc.onThumbnailDoubleClicked(thumbnail.getId());
-            }
-        }, MultiTapEvent.getType());
-
-        getWidget().addHandler(new MagnoliaPinchStartEvent.Handler() {
-            @Override
-            public void onPinchStart(MagnoliaPinchStartEvent event) {
-                getWidget().clear();
-                rpc.clearThumbnails();
-            }
-        }, MagnoliaPinchStartEvent.TYPE);
-
         registerRpc(ThumbnailLayoutClientRpc.class, new ThumbnailLayoutClientRpc() {
-
             @Override
-            public void addThumbnails(List<ThumbnailData> thumbnails) {
-                getWidget().addImages(thumbnails, LazyThumbnailLayoutConnector.this);
-            }
+            public void addThumbnails(List<ThumbnailData> data, int startingFrom) {
+                final Range received = Range.withLength(startingFrom, data.size());
+                final Range maxCacheRange = getMaxCacheRange();
+                final Range[] partition = received.partitionWith(maxCacheRange);
+                final Range newUsefulData = partition[1];
+                if (!newUsefulData.isEmpty()) {
+                    // Update the parts that are actually inside
+                    for (int i = newUsefulData.getStart(); i < newUsefulData.getEnd(); i++) {
+                        final ThumbnailData thumbnailData = data.get(i - startingFrom);
+                        if (thumbnailData.isRealResource()) {
+                            idToUrl.put(thumbnailData.getThumbnailId(), getResourceUrl(thumbnailData.getThumbnailId()));
+                        }
 
-            @Override
-            public void setSelected(String thumbnailId) {
-                getWidget().setSelectedThumbnail(thumbnailId);
+                        indexToThumbnail.put(i, thumbnailData);
+                        idToIndex.put(thumbnailData.getThumbnailId(), i);
+                    }
+
+                    final Range toPushToWidget = newUsefulData.restrictTo(getWidget().getDisplayedRange());
+                    for (int i = toPushToWidget.getStart(); i < toPushToWidget.getEnd(); ++i) {
+                        updateThumbnailContentAtIndex(i);
+                    }
+
+                    // Potentially extend the range
+                    if (cachedThumbnails.isEmpty()) {
+                        cachedThumbnails = newUsefulData;
+                    } else {
+                        purgeCache();
+                        if (!cachedThumbnails.isEmpty()) {
+                            cachedThumbnails = cachedThumbnails.combineWith(newUsefulData);
+                        } else {
+                            cachedThumbnails = newUsefulData;
+                        }
+                    }
+                }
+
+                waitingData = false;
+
+                // Eventually check whether all needed rows are now available
+                serveThumbnails();
             }
         });
 
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
             public void onElementResize(ElementResizeEvent e) {
-                getWidget().generateStubs();
+                getWidget().resize();
             }
         });
     }
@@ -138,16 +154,33 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
-        if (getState().lastQueried == null) {
-            getWidget().reset();
+
+        if (widgetInitialized && stateChangeEvent.hasPropertyChanged("size")) {
+            getWidget().setThumbnailSize(getState().size.width, getState().size.height);
         }
-        getWidget().setThumbnailSize(getState().size.width, getState().size.height);
-        getWidget().setThumbnailAmount(getState().thumbnailAmount);
+
+        if (widgetInitialized && stateChangeEvent.hasPropertyChanged("thumbnailAmount")) {
+            getWidget().setThumbnailAmount(getState().thumbnailAmount);
+        }
+
+        if (widgetInitialized && stateChangeEvent.hasPropertyChanged("selection")) {
+            updateSelection();
+        }
+
+        if (!widgetInitialized) {
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                @Override
+                public void execute() {
+                    widgetInitialized = true;
+                    getWidget().initialize(getState().thumbnailAmount, getState().offset, getState().size, getState().scaleRatio);
+                }
+            });
+        }
     }
 
     @Override
-    public LazyThumbnailLayoutWidget getWidget() {
-        return (LazyThumbnailLayoutWidget) super.getWidget();
+    public EscalatorThumbnailsPanel getWidget() {
+        return (EscalatorThumbnailsPanel) super.getWidget();
     }
 
     @Override
@@ -155,22 +188,149 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
         return (ThumbnailLayoutState) super.getState();
     }
 
+    private void serveThumbnails() {
+        rpc.updateOffset(getWidget().getCurrentThumbnailOffset());
+
+        if (waitingData) {
+            return;
+        }
+
+        final Range newMinimumCachedRange = getMinCacheRange();
+        if (!newMinimumCachedRange.intersects(cachedThumbnails) || cachedThumbnails.isEmpty()) {
+            indexToThumbnail.clear();
+            idToIndex.clear();
+            idToUrl.clear();
+
+            cachedThumbnails = Range.between(0, 0);
+
+            queryThumbnails(getMaxCacheRange());
+            log.log(Level.FINEST, "Querying: " + getMaxCacheRange());
+        } else {
+            final Range intersection = newMinimumCachedRange.restrictTo(cachedThumbnails).restrictTo(getWidget().getDisplayedRange());
+            for (int i = intersection.getStart(); i < intersection.getEnd(); ++i) {
+                updateThumbnailContentAtIndex(i);
+            }
+
+            purgeCache();
+
+            if (!newMinimumCachedRange.isSubsetOf(cachedThumbnails)) {
+                final Range[] missingCachePartition = getMaxCacheRange().partitionWith(cachedThumbnails);
+                queryThumbnails(missingCachePartition[0]);
+                queryThumbnails(missingCachePartition[2]);
+                log.log(Level.FINEST, "Querying: " + missingCachePartition[0] + " and " + missingCachePartition[2]);
+            }
+        }
+    }
+
+    private void purgeCache() {
+        final Range[] cachePartition = cachedThumbnails.partitionWith(getMaxCacheRange());
+        dropFromCache(cachePartition[0]);
+        cachedThumbnails = cachePartition[1];
+        dropFromCache(cachePartition[2]);
+    }
+
+    private void dropFromCache(Range range) {
+        for (int i = range.getStart(); i < range.getEnd(); i++) {
+            final ThumbnailData removed = indexToThumbnail.remove(i);
+
+            String thumbnailId = removed.getThumbnailId();
+            idToIndex.remove(thumbnailId);
+            idToUrl.remove(thumbnailId);
+        }
+    }
+
+    private void queryThumbnails(Range range) {
+        if (!range.isEmpty()) {
+            rpc.loadThumbnails(range.getStart(), range.length(), cachedThumbnails.getStart(), cachedThumbnails.getEnd());
+            waitingData = true;
+        }
+    }
+
+    /**
+     * @return how many thumbnails should be cached from both sides before we will have to ask server to
+     * load more (half of the page).
+     */
+    private Range getMinCacheRange() {
+        final Range displayedRange = getWidget().getDisplayedRange();
+        int cachePageSize = displayedRange.length();
+        return displayedRange.expand(cachePageSize / 2, cachePageSize / 2).restrictTo(getAvailableRange());
+    }
+
+    /**
+     * @return how many thumbnails can be cached on either of sides before we start evicting them from the
+     * cache (full page by). Also this is the amount of thumbnails to be queried from teh server.
+     */
+    private Range getMaxCacheRange() {
+        final Range displayedRange = getWidget().getDisplayedRange();
+        int cachePageSize = displayedRange.length();
+        return displayedRange.expand(cachePageSize, cachePageSize).restrictTo(getAvailableRange());
+    }
+
+    /**
+     * @return
+     */
+    private Range getAvailableRange() {
+        return Range.between(0, getState().thumbnailAmount);
+    }
+
+    private Timer timer = new Timer() {
+        @Override
+        public void run() {
+            serveThumbnails();
+        }
+    };
+
     @Override
-    protected LazyThumbnailLayoutWidget createWidget() {
-        final LazyThumbnailLayoutWidget layout = new LazyThumbnailLayoutWidget();
+    protected EscalatorThumbnailsPanel createWidget() {
+        final EscalatorThumbnailsPanel layout = new EscalatorThumbnailsPanel(this);
         layout.setThumbnailService(new ThumbnailService() {
             @Override
-            public void loadThumbnails(int amount) {
-                rpc.loadThumbnails(amount);
+            public void onViewportChanged(final Range requestedRange) {
+                timer.schedule(THUMBNAIL_QUERY_RPC_DELAY);
+                updateSelection();
+            }
+
+            @Override
+            public void onThumbnailsScaled(float ratio) {
+                rpc.setScaleRatio(ratio);
             }
         });
         return layout;
     }
 
+    private void updateSelection() {
+        final ThumbnailLayoutState.SelectionModel selection = getState().selection;
+
+        final Range displayedRange = getWidget().getDisplayedRange();
+        final Range selectionBoundaries = selection.getSelectionBoundaries();
+        final List<Integer> indices = new LinkedList<>();
+
+        if (selectionBoundaries.intersects(displayedRange)) {
+            for (int selectedIndex : selection.selectedIndices) {
+                if (displayedRange.contains(selectedIndex)) {
+                    indices.add(selectedIndex);
+                }
+            }
+        }
+        getWidget().setSelectedThumbnailsViaIndices(indices);
+    }
+
+    private void updateThumbnailContentAtIndex(int thumbnailAbsoluteIndex) {
+        final ThumbnailData thumbnailData = indexToThumbnail.get(thumbnailAbsoluteIndex);
+        if (thumbnailData.isRealResource()) {
+            getWidget().updateImageSource(idToUrl.get(thumbnailData.getThumbnailId()), thumbnailAbsoluteIndex);
+        } else {
+            getWidget().updateIconFontStyle("icon-" + thumbnailData.getIconFontId(), thumbnailAbsoluteIndex);
+        }
+    }
+
     /**
-     * Serves Thumbnails.
+     * Serves thumbnails.
      */
     public interface ThumbnailService {
-        void loadThumbnails(int amount);
+
+        void onViewportChanged(Range requestedRange);
+
+        void onThumbnailsScaled(float ratio);
     }
 }

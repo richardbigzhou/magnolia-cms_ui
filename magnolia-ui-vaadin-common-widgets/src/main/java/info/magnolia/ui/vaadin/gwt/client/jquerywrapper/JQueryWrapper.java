@@ -68,12 +68,12 @@ public class JQueryWrapper extends JavaScriptObject {
         var win = $wnd;
         win.alert('reg');
         this.on(eventId,
-            function(event) {
+            function (event) {
                 win.alert('Fire');
                 if (callbacks != null) {
                     callbacks.fire(null);
                 }
-        });
+            });
     }-*/;
 
     public final native boolean is(String selector) /*-{
@@ -90,25 +90,25 @@ public class JQueryWrapper extends JavaScriptObject {
 
     public final native void on(String eventId, String selector, Callbacks callbacks) /*-{
         this.on(
-              eventId, selector,
+            eventId, selector,
             $entry(function (event) {
-                      var jq = @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::select(Lcom/google/gwt/user/client/Element;)(event.target);
-                      if (callbacks != null) {
-                          callbacks.fire(jq);
-                      }
+                var jq = @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::select(Lcom/google/gwt/user/client/Element;)(event.target);
+                if (callbacks != null) {
+                    callbacks.fire(jq);
+                }
             }));
     }-*/;
 
     public final native void animate(int duration, AnimationSettings settings) /*-{
-          var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
-          var jq = this;
-          this.animate(json, duration,
-              $entry(function () {
-                    if (settings != null) {
-                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
-                                   .fire(jq);
-                    }
-              }));
+        var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
+        var jq = this;
+        this.animate(json, duration,
+            $entry(function () {
+                if (settings != null) {
+                    settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
+                        .fire(jq);
+                }
+            }));
     }-*/;
 
     public final native void animate(int duration, double delay, AnimationSettings settings) /*-{
@@ -116,104 +116,104 @@ public class JQueryWrapper extends JavaScriptObject {
         var jq = this;
         this.delay(delay).animate(json, duration,
             $entry(function () {
-                    if (settings != null) {
-                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()().fire(jq);
-                    }
+                if (settings != null) {
+                    settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()().fire(jq);
+                }
             }));
     }-*/;
 
     public final native JQueryWrapper stop() /*-{
-          this.stop();
-          return this;
+        this.stop();
+        return this;
     }-*/;
 
     public final native void fadeIn(int duration, Callbacks callbacks) /*-{
-          var jq = this;
-          this.fadeIn(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.fadeIn(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void fadeOut(int duration, Callbacks callbacks) /*-{
-          var el = this.get();
-          var jq = this;
-          this.fadeOut(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var el = this.get();
+        var jq = this;
+        this.fadeOut(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void slideUp(int duration, Callbacks callbacks) /*-{
-          var jq = this;
-          this.slideUp(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.slideUp(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void slideDown(int duration, Callbacks callbacks) /*-{
-          var jq = this;
-          this.slideDown(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.slideDown(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void show(int duration, Callbacks callbacks) /*-{
-          var jq = this;
-          this.show(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.show(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void hide(int duration, Callbacks callbacks) /*-{
-          var jq = this;
-          this.hide(duration, function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.hide(duration, function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void ready(final Callbacks callbacks) /*-{
-          var jq = this;
-          this.ready(function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.ready(function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native void unload(final Callbacks callbacks) /*-{
-          var jq = this;
-          this.unload(function() {
-               if (callbacks != null) {
-                    callbacks.fire(jq);
-               }
-          });
+        var jq = this;
+        this.unload(function () {
+            if (callbacks != null) {
+                callbacks.fire(jq);
+            }
+        });
     }-*/;
 
     public final native String attr(final String property) /*-{
-          return this.attr(property);
+        return this.attr(property);
     }-*/;
 
     public final native void setAttr(final String property, final String value) /*-{
-          this.attr(property, value);
+        this.attr(property, value);
     }-*/;
 
     public final native String css(final String property) /*-{
-          return this.css(property);
+        return this.css(property);
     }-*/;
 
     public final native void setCss(final String property, final String value) /*-{
-          this.css(property, value);
+        this.css(property, value);
     }-*/;
 
     public final void setCss(JSONObject value) {
@@ -222,17 +222,17 @@ public class JQueryWrapper extends JavaScriptObject {
     }
 
     public final native void setCss(JavaScriptObject value) /*-{
-          this.css(value);
+        this.css(value);
     }-*/;
 
     public final native void setCssPx(final String property, int pxVal) /*-{
-          var pxVal = pxVal + 'px';
-          this.css(property, pxVal);
+        var pxVal = pxVal + 'px';
+        this.css(property, pxVal);
     }-*/;
 
     public final native Integer cssInt(final String property) /*-{
-          var result = this.css(property);
-          return @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::parseInt(Ljava/lang/String;)(result);
+        var result = this.css(property);
+        return @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::parseInt(Ljava/lang/String;)(result);
     }-*/;
 
     public final native Position position() /*-{
@@ -240,11 +240,11 @@ public class JQueryWrapper extends JavaScriptObject {
     }-*/;
 
     public native final Element get(int index) /*-{
-          return this.get(index);
+        return this.get(index);
     }-*/;
 
     public native final JsArray<Element> get() /*-{
-          return this.get();
+        return this.get();
     }-*/;
 
     public native final void setScrollTop(int scrollTop)  /*-{
@@ -255,15 +255,23 @@ public class JQueryWrapper extends JavaScriptObject {
         return this.scrollTop();
     }-*/;
 
+    public native final int size() /*-{
+        return this.size();
+    }-*/;
+
     public final boolean isAnimationInProgress() {
         return is(":animated");
     }
 
     public static native Integer parseInt(final String value) /*-{
-          var number = parseInt(value, 10);
-          if (isNaN(number))
-               return null;
-          else
-               return @java.lang.Integer::valueOf(I)(number);
+        var number = parseInt(value, 10);
+        if (isNaN(number))
+            return null;
+        else
+            return @java.lang.Integer::valueOf(I)(number);
+    }-*/;
+
+    public final native void removeClass(String className) /*-{
+        this.removeClass(className);
     }-*/;
 }

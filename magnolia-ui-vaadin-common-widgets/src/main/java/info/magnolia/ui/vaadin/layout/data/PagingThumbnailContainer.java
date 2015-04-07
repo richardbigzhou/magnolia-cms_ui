@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc;
-
-import com.vaadin.shared.communication.ServerRpc;
+package info.magnolia.ui.vaadin.layout.data;
 
 /**
- * ThumbnailLayoutServerRpc.
+ * {@link ThumbnailContainer} interface extension which allows for setting a
+ * lazily loaded page size.
  */
-public interface ThumbnailLayoutServerRpc extends ServerRpc {
+public interface PagingThumbnailContainer extends ThumbnailContainer {
 
-    void loadThumbnails(int startFrom, int length, int cachedFirst, int cachedLast);
-
-    void onThumbnailSelected(int index, boolean isMetaKeyPressed, boolean isShiftKeyPressed);
-
-    void onThumbnailDoubleClicked(int index);
-
-    void onThumbnailRightClicked(int index, int clickY, int clickX);
-
-    void setScaleRatio(float ratio);
-
-    void updateOffset(int currentThumbnailOffset);
+    void setPageSize(int pageSize);
 }

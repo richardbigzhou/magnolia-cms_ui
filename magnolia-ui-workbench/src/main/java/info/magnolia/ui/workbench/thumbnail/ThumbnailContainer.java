@@ -48,6 +48,9 @@ import com.vaadin.data.util.AbstractProperty;
 
 /**
  * Container that provides thumbnails lazily.
+ *
+ * @deprecated since 5.3.9 in favor of {@link info.magnolia.ui.workbench.thumbnail.data.DelegatingThumbnailContainer}, this container
+ *             should be avoided as it loads the items eagerly.
  */
 public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object, ThumbnailItem> implements Refreshable {
 
@@ -91,10 +94,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object
 
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
-     * under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl#refresh()}. You can override it, if
-     * you need a different strategy than the default one to fetch the
-     * identifiers of the nodes for which thumbnails need to be
-     * displayed.
+     *         under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl#refresh()}. You can override it, if
+     *         you need a different strategy than the default one to fetch the
+     *         identifiers of the nodes for which thumbnails need to be
+     *         displayed.
      * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
      */
     protected List<?> getAllIdentifiers() {

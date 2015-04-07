@@ -43,13 +43,11 @@ import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.container.Refreshable;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.thumbnail.data.JcrDelegatingThumbnailContainer;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
 
@@ -57,8 +55,6 @@ import com.vaadin.data.Container;
  * The ThumbnailPresenter is responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
  */
 public class ThumbnailPresenter extends AbstractContentPresenter implements ThumbnailView.Listener {
-
-    private static final Logger log = LoggerFactory.getLogger(ThumbnailPresenter.class);
 
     private final ThumbnailView view;
 
@@ -93,18 +89,15 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     @Override
     public void refresh() {
         if (container instanceof Refreshable) {
-            ((Refreshable)container).refresh();
+            ((Refreshable) container).refresh();
         }
         view.refresh();
     }
 
     @Override
     protected Container initializeContainer() {
-        JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnector)contentConnector).getContentConnectorDefinition();
-        ThumbnailContainer c = new ThumbnailContainer(imageProvider, new JcrThumbnailItemIdProvider(connectorDefinition));
-        c.setThumbnailHeight(73);
-        c.setThumbnailWidth(73);
-        return c;
+        JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnector) contentConnector).getContentConnectorDefinition();
+        return new JcrDelegatingThumbnailContainer(imageProvider, connectorDefinition);
     }
 
     @Override
