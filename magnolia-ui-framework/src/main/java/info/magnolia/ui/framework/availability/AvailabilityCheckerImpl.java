@@ -65,18 +65,25 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     private final ContentConnector contentConnector;
 
-    private JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
-    private JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
-    private MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
-    private JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
-    private JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
-    private AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
-    private WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
+    private JcrNodesAllowedRule jcrNodesAllowedRule;
+    private JcrPropertiesAllowedRule jcrPropertiesAllowedRule;
+    private MultipleItemsAllowedRule multipleItemsAllowedRule;
+    private JcrRootAllowedRule jcrRootAllowedRule;
+    private JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule;
+    private AccessGrantedRule accessGrantedRule;
+    private WritePermissionRequiredRule writePermissionRequiredRule;
 
     @Inject
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
         this.componentProvider = componentProvider;
         this.contentConnector = contentConnector;
+        this.jcrNodesAllowedRule = createJcrNodesAllowedRule();
+        this.jcrPropertiesAllowedRule = createJcrPropertiesAllowedRule();
+        this.jcrRootAllowedRule = createJcrRootAllowedRule();
+        this.jcrNodeTypesAllowedRule = createJcrNodeTypesAllowedRule();
+        this.multipleItemsAllowedRule = createMultipleItemsAllowedRule();
+        this.accessGrantedRule = createAccessGrantedRule();
+        this.writePermissionRequiredRule = createWritePermissionRequiredRule();
     }
 
     @Override
@@ -139,5 +146,33 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
         shorthands.add(writePermissionRequiredRule);
 
         return shorthands;
+    }
+
+    protected JcrNodesAllowedRule createJcrNodesAllowedRule() {
+        return new JcrNodesAllowedRule();
+    }
+
+    protected JcrPropertiesAllowedRule createJcrPropertiesAllowedRule() {
+        return new JcrPropertiesAllowedRule();
+    }
+
+    protected MultipleItemsAllowedRule createMultipleItemsAllowedRule() {
+        return new MultipleItemsAllowedRule();
+    }
+
+    protected JcrRootAllowedRule createJcrRootAllowedRule() {
+        return new JcrRootAllowedRule();
+    }
+
+    protected JcrNodeTypesAllowedRule createJcrNodeTypesAllowedRule() {
+        return new JcrNodeTypesAllowedRule();
+    }
+
+    protected AccessGrantedRule createAccessGrantedRule() {
+        return new AccessGrantedRule();
+    }
+
+    protected WritePermissionRequiredRule createWritePermissionRequiredRule() {
+        return new WritePermissionRequiredRule();
     }
 }

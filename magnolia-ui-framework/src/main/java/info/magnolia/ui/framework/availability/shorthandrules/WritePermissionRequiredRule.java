@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.availability.shorthandrules;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionUtil;
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -68,7 +66,7 @@ public class WritePermissionRequiredRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (writePermissionRequired && !MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE) && (itemId instanceof JcrItemId)) {
+        if (writePermissionRequired && itemId instanceof JcrItemId) {
             Item jcrItem = null;
             try {
                 jcrItem = JcrItemUtil.getJcrItem((JcrItemId)itemId);
