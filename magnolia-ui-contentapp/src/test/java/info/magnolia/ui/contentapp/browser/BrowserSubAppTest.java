@@ -72,6 +72,13 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.availability.AvailabilityCheckerImpl;
 import info.magnolia.ui.framework.availability.IsDeletedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.AccessGrantedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrNodeTypesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrNodesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrPropertiesAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.JcrRootAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.MultipleItemsAllowedRule;
+import info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -171,7 +178,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         initBrowser();
 
         contentConnector = mock(ContentConnector.class);
-        availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector);
+        availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector, new JcrNodesAllowedRule(), new JcrPropertiesAllowedRule(), new MultipleItemsAllowedRule(), new JcrRootAllowedRule(), new JcrNodeTypesAllowedRule(), new AccessGrantedRule(), new WritePermissionRequiredRule());
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, mock(EventBus.class), contentConnector, availabilityChecker);
     }
 
