@@ -636,4 +636,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertEquals(PropertyUtil.getString(actionNode.getNode("availability/rules/isPageEditable"), "implementationClass"), IsPageEditableRule.class.getName());
     }
 
+    @Test
+    public void updateFrom538UpdateAvailabilityRule() throws Exception {
+        // GIVEN
+        String availabilityPath = "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability";
+        Node availabilityNode = NodeUtil.createPath(session.getRootNode(), availabilityPath, NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+
+        // THEN
+        assertThat(availabilityNode, hasProperty("multiple"));
+        assertThat(availabilityNode, hasProperty("multiple", true));
+    }
+
 }

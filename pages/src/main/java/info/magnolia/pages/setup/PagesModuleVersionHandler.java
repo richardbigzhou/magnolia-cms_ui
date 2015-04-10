@@ -256,6 +256,13 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                         new PartialBootstrapTask("", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/detail/actions/editProperties/availability/rules/isPageEditable")
                                 )))
         );
+        register(DeltaBuilder.update("5.3.9", "")
+                .addTask(new NodeExistsDelegateTask("Configure multiple", "Allow select multiple items for activateDeletion action.",
+                        RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability",
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability", "multiple", true))
+                        )
+        );
+
     }
 
     @Override
