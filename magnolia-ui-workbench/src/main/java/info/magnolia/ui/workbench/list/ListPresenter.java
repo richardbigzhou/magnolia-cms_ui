@@ -83,7 +83,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
                 continue;
             }
 
-            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            String propertyId = column.getPropertyName();
             String title = column.getLabel();
 
             if (column.getWidth() > 0) {
@@ -135,7 +135,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected void configureContainer(ContentPresenterDefinition presenterDefinition, Container container) {
         for (ColumnDefinition column : presenterDefinition.getColumns()) {
-            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            String propertyId = column.getPropertyName();
             container.addContainerProperty(propertyId, column.getType(), null);
             // TODO Rely on Container.Sortable instead.
             // Containers thus need to be created with their propertyIds and sortablePropertyIds (Container.Sortable only exposes #getSortableContainerPropertyIds())

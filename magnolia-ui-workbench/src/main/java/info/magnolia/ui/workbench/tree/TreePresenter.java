@@ -81,7 +81,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
             while (it.hasNext()) {
                 ColumnDefinition column = it.next();
 
-                String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+                String propertyId = column.getPropertyName();
                 if (column.isEditable()) {
                     editableColumns.add(propertyId);
                 }

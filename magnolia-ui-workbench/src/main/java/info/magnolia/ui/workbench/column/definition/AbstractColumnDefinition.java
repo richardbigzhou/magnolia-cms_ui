@@ -80,6 +80,10 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setName(String name) {
         this.name = name;
+        // propertyName falls back to name if not explicitly configured
+        if (getPropertyName() == null) {
+            setPropertyName(name);
+        }
     }
 
     /**
