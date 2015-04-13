@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
@@ -53,6 +52,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 
 /**
@@ -125,7 +125,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    protected AbstractJcrContainer createContainer() {
+    protected Container.Hierarchical createContainer() {
         return new HierarchicalJcrContainer(((JcrContentConnector)contentConnector).getContentConnectorDefinition());
     }
 }

@@ -124,20 +124,24 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     @Override
     protected Container initializeContainer() {
-        AbstractJcrContainer container = createContainer();
+        Container container = createContainer();
         configureContainer(getPresenterDefinition(), container);
         return container;
     }
 
-    protected AbstractJcrContainer createContainer() {
+    protected Container createContainer() {
         return new FlatJcrContainer(((JcrContentConnector) contentConnector).getContentConnectorDefinition());
     }
 
-    protected void configureContainer(ContentPresenterDefinition presenterDefinition, AbstractJcrContainer container) {
+    protected void configureContainer(ContentPresenterDefinition presenterDefinition, Container container) {
         for (ColumnDefinition column : presenterDefinition.getColumns()) {
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             container.addContainerProperty(propertyId, column.getType(), null);
-            container.addSortableProperty(propertyId);
+            // TODO Rely on Container.Sortable instead.
+            // Containers thus need to be created with their propertyIds and sortablePropertyIds (Container.Sortable only exposes #getSortableContainerPropertyIds())
+            if (container instanceof AbstractJcrContainer) {
+                ((AbstractJcrContainer) container).addSortableProperty(propertyId);
+            }
         }
     }
 }
