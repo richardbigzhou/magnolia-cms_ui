@@ -127,34 +127,38 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
     @Override
     protected void extend(ServerConnector target) {
-        this.textWidget = ((ComponentConnector)target).getWidget();
+        this.textWidget = ((ComponentConnector) target).getWidget();
         this.isRichTextEditor = target instanceof RichTextConnector;
         this.stretchControl.setClassName(STRETCHER_BASE);
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
-                initFormView();
-                initDialog();
-                checkOverlay();
-                if (!isRichTextEditor) {
-                    appendStretcher(textWidget.getElement());
-                    stretchControl.addClassName(SIMPLE_STYLE_NAME);
-                } else {
-                    Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
-                        private int repeats = 0;
+                if (attachEvent.isAttached()) {
+                    initFormView();
+                    initDialog();
+                    checkOverlay();
+                    if (!isRichTextEditor) {
+                        appendStretcher(textWidget.getElement());
+                        stretchControl.addClassName(SIMPLE_STYLE_NAME);
+                    } else {
+                        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+                            private int repeats = 0;
 
-                        @Override
-                        public boolean execute() {
-                            repeats++;
-                            isRichTextEditor = true;
-                            final Element toolbox = JQueryWrapper.select(textWidget).find(CKEDITOR_TOOLBOX).get(0);
-                            if (toolbox != null) {
-                                appendStretcher(toolbox);
-                                stretchControl.addClassName(RICH_TEXT_STYLE_NAME);
+                            @Override
+                            public boolean execute() {
+                                repeats++;
+                                isRichTextEditor = true;
+                                final Element toolbox = JQueryWrapper.select(textWidget).find(CKEDITOR_TOOLBOX).get(0);
+                                if (toolbox != null) {
+                                    appendStretcher(toolbox);
+                                    stretchControl.addClassName(RICH_TEXT_STYLE_NAME);
+                                }
+                                return toolbox == null && repeats < 5;
                             }
-                            return toolbox == null && repeats < 5;
-                        }
-                    }, DELAY_MS);
+                        }, DELAY_MS);
+                    }
+                } else {
+                    clearTraces();
                 }
             }
         });
