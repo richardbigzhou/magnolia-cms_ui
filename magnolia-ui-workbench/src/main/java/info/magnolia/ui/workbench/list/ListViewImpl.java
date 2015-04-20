@@ -205,6 +205,10 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void addColumn(String propertyId, String title) {
+        if (!table.getContainerPropertyIds().contains(propertyId)) {
+            log.warn("Ignoring column '{}', container does not support this propertyId.", propertyId);
+            return;
+        }
         table.setColumnHeader(propertyId, title);
         List<Object> visibleColumns = new ArrayList<Object>(Arrays.asList(table.getVisibleColumns()));
         if (!visibleColumns.contains(propertyId)) {
