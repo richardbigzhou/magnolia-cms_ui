@@ -40,8 +40,10 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -73,6 +75,8 @@ public class ListViewImpl implements ListView {
 
     private ListView.Listener listener;
 
+    private Map<String, String> columnStyleClasses = new HashMap<>();
+
     protected void initializeTable(Table table) {
         table.setSizeFull();
 
@@ -89,18 +93,23 @@ public class ListViewImpl implements ListView {
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
 
-
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
-                // icon style is expected on the whole table row, not on a column matching a specific propertyId
+
                 if (propertyId == null && itemId != null) {
+                    // ROW STYLES
+                    // icon style is expected on the whole table row, not on a column matching a specific propertyId
                     final Item item = source.getContainerDataSource().getItem(itemId);
                     if (item == null) {
                         return DELETED_ROW_STYLENAME;
                     } else {
                         return listener.getIcon(item);
                     }
+                } else if (columnStyleClasses.containsKey(propertyId)) {
+                    // COLUMN STYLES
+                    return columnStyleClasses.get(propertyId);
                 }
+
                 return null;
             }
         });
@@ -223,6 +232,11 @@ public class ListViewImpl implements ListView {
     @Override
     public void setColumnFormatter(String propertyId, ColumnFormatter formatter) {
         table.addGeneratedColumn(propertyId, formatter);
+    }
+
+    @Override
+    public void setColumnStyleClass(String propertyId, String styleClass) {
+        columnStyleClasses.put(propertyId, styleClass);
     }
 
     @Override

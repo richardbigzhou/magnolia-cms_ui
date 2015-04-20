@@ -52,6 +52,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private Class<? extends ColumnFormatter> formatterClass;
 
+    private String styleClass;
+
     private String propertyName;
 
     private boolean displayInChooseDialog = true;
@@ -125,6 +127,15 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setFormatterClass(Class<? extends ColumnFormatter> formatterClass) {
         this.formatterClass = formatterClass;
+    }
+
+    @Override
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
 
     /**

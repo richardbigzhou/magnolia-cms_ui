@@ -146,6 +146,9 @@
     font-size: 11px;
     content: '\2014';
   }
+  .v-table-cell-content-nodash .v-table-cell-wrapper:empty:after {
+    content: none;
+  }
 
   .v-selection-cb {
     margin-left: 5px;
