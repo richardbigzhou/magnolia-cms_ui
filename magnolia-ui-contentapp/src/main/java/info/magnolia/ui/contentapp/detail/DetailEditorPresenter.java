@@ -45,6 +45,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.framework.app.stub.StubView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
@@ -119,20 +120,26 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             }
         }
 
-        DetailView itemView = detailPresenter.start(editorDefinition, viewType, itemId);
+        // editor
+        if (editorDefinition != null && editorDefinition.getForm() != null) {
+            DetailView itemView = detailPresenter.start(editorDefinition, viewType, itemId);
+            view.setItemView(itemView);
+            detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE, itemView));
+            detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
+            if (editorDefinition.isWide()) {
+                itemView.setWide(true);
+            }
+        } else {
+            log.warn("DetailPresenter expected an editor and a form definition, but no such definitions are currently configured.");
+            view.setItemView(new StubView("icon-warning-l"));
+            return view;
+        }
 
-        view.setItemView(itemView);
+        // actionbar
         actionbarPresenter.setListener(this);
         ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
-
         view.setActionbarView(actionbar);
 
-        detailPresenter.addShortcut(new CloseEditorAfterConfirmationShortcutListener(KeyCode.ESCAPE, itemView));
-        detailPresenter.addShortcut(new CommitDialogShortcutListener(KeyCode.ENTER));
-
-        if (editorDefinition.isWide()){
-            itemView.setWide(true);
-        }
         return view;
     }
 

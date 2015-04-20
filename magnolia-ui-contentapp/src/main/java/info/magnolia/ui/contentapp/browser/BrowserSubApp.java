@@ -340,6 +340,8 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                         } else {
                             actionbar.disable(actionName);
                         }
+                    } else {
+                        log.warn("Action bar expected an action named {}, but no such action is currently configured.", actionName);
                     }
                 }
             }
