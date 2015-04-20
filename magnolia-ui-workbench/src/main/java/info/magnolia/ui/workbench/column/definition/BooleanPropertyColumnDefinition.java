@@ -60,6 +60,7 @@ public class BooleanPropertyColumnDefinition extends AbstractColumnDefinition {
         setFormatterClass(BooleanPropertyColumnFormatter.class);
         setDisplayInChooseDialog(false);
         setWidth(46);
+        setStyleClass("nodash");
     }
 
     @Override

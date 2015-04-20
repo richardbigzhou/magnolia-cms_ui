@@ -69,6 +69,8 @@ public interface ColumnDefinition {
 
     Class<? extends ColumnFormatter> getFormatterClass();
 
+    String getStyleClass();
+
     Class<?> getType();
 
     boolean isDisplayInChooseDialog();
