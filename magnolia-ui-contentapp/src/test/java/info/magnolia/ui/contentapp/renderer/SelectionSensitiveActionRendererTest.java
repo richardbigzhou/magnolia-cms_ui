@@ -94,7 +94,7 @@ public class SelectionSensitiveActionRendererTest extends MgnlTestCase {
         View view = renderer.start(actionDefinition, actionListener);
 
         // WHEN
-        // valid change event send, availability ok
+        // applicable item change event is sent, should pass availability check
         chooseDialogEventBus.fireEvent(event);
 
         // THEN
@@ -108,7 +108,7 @@ public class SelectionSensitiveActionRendererTest extends MgnlTestCase {
         View view = renderer.start(actionDefinition, actionListener);
 
         // WHEN
-        // valid change event send, availability ko
+        // applicable item change event is sent, shouldn't pass availability check
         chooseDialogEventBus.fireEvent(event);
 
         // THEN
