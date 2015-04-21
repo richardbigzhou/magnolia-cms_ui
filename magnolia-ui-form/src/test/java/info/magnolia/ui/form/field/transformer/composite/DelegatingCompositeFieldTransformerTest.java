@@ -86,7 +86,7 @@ public class DelegatingCompositeFieldTransformerTest {
     @Test
     public void readFromItemOnce() {
         // GIVEN
-        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames());
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -102,7 +102,7 @@ public class DelegatingCompositeFieldTransformerTest {
 
     public void readFromItemTwice() {
         // GIVEN
-        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldsName());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames());
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();

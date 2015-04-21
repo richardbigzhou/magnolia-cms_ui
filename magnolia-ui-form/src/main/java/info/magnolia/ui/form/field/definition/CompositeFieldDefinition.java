@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Definition used to configure a generic composite field.
@@ -48,7 +48,10 @@ import java.util.List;
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-    private List<String> fieldsName;
+    /**
+     * Stores additional field names that will be returned with {@link CompositeFieldDefinition#getFieldNames()}.
+     */
+    private Set<String> additionalFieldNames = new LinkedHashSet<>();
     private Layout layout = Layout.horizontal;
 
     /**
@@ -66,15 +69,28 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         return fields;
     }
 
-    public List<String> getFieldsName() {
-        if (this.fieldsName == null) {
-            initFieldsName();
+    /**
+     * Returns the union of the names of the fields and the additional names added with {@link CompositeFieldDefinition#addFieldName()}.
+     */
+    public List<String> getFieldNames() {
+        Set<String> fieldNames = new LinkedHashSet<>();
+        for (ConfiguredFieldDefinition definition : fields) {
+            fieldNames.add(definition.getName());
         }
-        return fieldsName;
+        fieldNames.addAll(additionalFieldNames);
+        return new ArrayList<String>(fieldNames);
+    }
+
+    /**
+     * Deprecated since 5.3.9, please use {@link CompositeFieldDefinition#getFieldNames()} instead.
+     */
+    @Deprecated
+    public List<String> getFieldsName() {
+        return getFieldNames();
     }
 
     public void addFieldName(String fieldName) {
-        getFieldsName().add(fieldName);
+        additionalFieldNames.add(fieldName);
     }
 
     /**
@@ -92,11 +108,4 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         this.fields = fields;
     }
 
-
-    private void initFieldsName() {
-        fieldsName = new LinkedList<String>();
-        for (ConfiguredFieldDefinition definition : fields) {
-            fieldsName.add(definition.getName());
-        }
-    }
 }

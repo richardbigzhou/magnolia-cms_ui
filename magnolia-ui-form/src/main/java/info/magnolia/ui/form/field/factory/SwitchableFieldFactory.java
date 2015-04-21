@@ -99,7 +99,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        if (!definition.getFieldsName().contains(definition.getName())) {
+        if (!definition.getFieldNames().contains(definition.getName())) {
             definition.addFieldName(definition.getName());
         }
         // create the select field definition
@@ -116,7 +116,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        List<String> propertyNames = definition.getFieldsName();
+        List<String> propertyNames = definition.getFieldNames();
         return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
     }
 

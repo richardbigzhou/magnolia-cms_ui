@@ -89,7 +89,7 @@ public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends A
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        List<String> propertyNames = definition.getFieldsName();
+        List<String> propertyNames = definition.getFieldNames();
         return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
     }
 }
