@@ -31,28 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.availability;
+package info.magnolia.ui.framework.availability.shorthandrules;
 
 import static info.magnolia.cms.security.SecurityConstants.NODE_ROLES;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.matches;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.Realm;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
@@ -65,9 +62,9 @@ import org.junit.Test;
 /**
  * Tests for {@link WritePermissionRequiredRule}.
  */
-public class HasWritePermissionRuleTest extends RepositoryTestCase {
+public class WritePermissionRequiredRuleTest extends RepositoryTestCase {
 
-    private TestRule rule;
+    private WritePermissionRequiredRule rule;
     private Session webSiteSession;
     private AccessManager accessManager;
     private UserManager userManager;
@@ -78,7 +75,7 @@ public class HasWritePermissionRuleTest extends RepositoryTestCase {
         super.setUp();
 
         webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
-        rule = new TestRule();
+        rule = new WritePermissionRequiredRule();
         rule.setWritePermissionRequired(true);
 
         SecuritySupportImpl security = new SecuritySupportImpl();
@@ -87,11 +84,13 @@ public class HasWritePermissionRuleTest extends RepositoryTestCase {
         security.addUserManager(Realm.REALM_ALL.getName(), userManager);
 
         accessManager = mock(AccessManager.class);
-        ((MockContext) MgnlContext.getInstance()).setAccessManager(accessManager);
+        Context ctx = spy(MgnlContext.getInstance());
+        doReturn(accessManager).when(ctx).getAccessManager(anyString());
+        MgnlContext.setInstance(ctx);
     }
 
     @Test
-    public void testIsAvailableForItemThatIsNotWritable() throws RepositoryException {
+    public void isAvailableForItemReturnsFalseIfNodeIsNotWritable() throws RepositoryException {
         // GIVEN
         Node node = webSiteSession.getRootNode().addNode("node1", NodeTypes.Page.NAME);
         when(accessManager.isGranted("/node1", Permission.WRITE)).thenReturn(false);
@@ -105,7 +104,7 @@ public class HasWritePermissionRuleTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testIsAvailableForItemWithSuperuserThatIsNotWritable() throws RepositoryException {
+    public void isAvailableForItemAlsoReturnsFalseForSuperuserIfNodeIsNotWritable() throws RepositoryException {
         // GIVEN
         Node node = webSiteSession.getRootNode().addNode("node2", NodeTypes.Page.NAME);
         node.addMixin(NodeTypes.Deleted.NAME);
@@ -121,7 +120,7 @@ public class HasWritePermissionRuleTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testIsAvailableForItemThatIsWritable() throws RepositoryException {
+    public void isAvailableForItemReturnsTrueIfNodeIsWritable() throws RepositoryException {
         // GIVEN
         Node node = webSiteSession.getRootNode().addNode("node3", NodeTypes.Page.NAME);
         webSiteSession.save();
@@ -135,13 +134,4 @@ public class HasWritePermissionRuleTest extends RepositoryTestCase {
         assertTrue(isAvailable);
     }
 
-    /**
-     * WritePermissionRequiredRule with increased visibility for methods to allow for testing.
-     */
-    public static class TestRule extends WritePermissionRequiredRule {
-        @Override
-        public boolean isAvailableForItem(Object itemId) {
-            return super.isAvailableForItem(itemId);
-        }
-    }
 }

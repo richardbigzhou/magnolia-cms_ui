@@ -66,7 +66,7 @@ public class WritePermissionRequiredRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
-        if (writePermissionRequired && (itemId instanceof JcrItemId)) {
+        if (writePermissionRequired && itemId instanceof JcrItemId) {
             Item jcrItem = null;
             try {
                 jcrItem = JcrItemUtil.getJcrItem((JcrItemId)itemId);
