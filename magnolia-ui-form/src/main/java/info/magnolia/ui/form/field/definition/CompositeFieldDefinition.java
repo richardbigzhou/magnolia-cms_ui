@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Definition used to configure a generic composite field.
@@ -48,7 +48,7 @@ import java.util.List;
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-    private List<String> fieldsName;
+    private Map<String, String> fieldsName = new LinkedHashMap<>();
     private Layout layout = Layout.horizontal;
 
     /**
@@ -60,6 +60,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void addField(ConfiguredFieldDefinition field) {
         this.fields.add(field);
+        updateFieldsName();
     }
 
     public List<ConfiguredFieldDefinition> getFields() {
@@ -67,14 +68,12 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     public List<String> getFieldsName() {
-        if (this.fieldsName == null) {
-            initFieldsName();
-        }
-        return fieldsName;
+        updateFieldsName();
+        return new ArrayList<String>(fieldsName.keySet());
     }
 
     public void addFieldName(String fieldName) {
-        getFieldsName().add(fieldName);
+        fieldsName.put(fieldName, "");
     }
 
     /**
@@ -90,13 +89,12 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setFields(List<ConfiguredFieldDefinition> fields) {
         this.fields = fields;
+        updateFieldsName();
     }
 
-
-    private void initFieldsName() {
-        fieldsName = new LinkedList<String>();
+    private void updateFieldsName() {
         for (ConfiguredFieldDefinition definition : fields) {
-            fieldsName.add(definition.getName());
+            fieldsName.put(definition.getName(), "");
         }
     }
 }
