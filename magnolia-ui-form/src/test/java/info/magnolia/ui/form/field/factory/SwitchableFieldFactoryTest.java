@@ -212,15 +212,15 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         factory.setComponentProvider(componentProvider);
         factory.createField();
         assertEquals(4, definition.getFields().size());
-        assertEquals(4, definition.getFieldsName().size());
-        assertTrue(definition.getFieldsName().contains(definition.getName()));
+        assertEquals(4, definition.getFieldNames().size());
+        assertTrue(definition.getFieldNames().contains(definition.getName()));
         // WHEN
         factory.createField();
 
         // THEN
         assertEquals(4, definition.getFields().size());
-        assertEquals(4, definition.getFieldsName().size());
-        assertTrue(definition.getFieldsName().contains(definition.getName()));
+        assertEquals(4, definition.getFieldNames().size());
+        assertTrue(definition.getFieldNames().contains(definition.getName()));
     }
 
     @Test

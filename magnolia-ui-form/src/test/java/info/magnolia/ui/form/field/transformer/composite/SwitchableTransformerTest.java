@@ -112,7 +112,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -135,7 +135,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -160,7 +160,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldsName());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
