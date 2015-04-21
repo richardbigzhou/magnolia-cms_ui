@@ -36,9 +36,9 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Definition used to configure a generic composite field.
@@ -48,7 +48,7 @@ import java.util.Map;
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-    private Map<String, String> fieldsName = new LinkedHashMap<>();
+    private Set<String> fieldNames = new LinkedHashSet<>();
     private Layout layout = Layout.horizontal;
 
     /**
@@ -60,20 +60,28 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void addField(ConfiguredFieldDefinition field) {
         this.fields.add(field);
-        updateFieldsName();
+        updateFieldNames();
     }
 
     public List<ConfiguredFieldDefinition> getFields() {
         return fields;
     }
 
+    public List<String> getFieldNames() {
+        updateFieldNames();
+        return new ArrayList<String>(fieldNames);
+    }
+
+    /**
+     * Deprecated since 5.4, please use {@link CompositeFieldDefinition#getFieldNames()} instead.
+     */
+    @Deprecated
     public List<String> getFieldsName() {
-        updateFieldsName();
-        return new ArrayList<String>(fieldsName.keySet());
+        return getFieldNames();
     }
 
     public void addFieldName(String fieldName) {
-        fieldsName.put(fieldName, "");
+        fieldNames.add(fieldName);
     }
 
     /**
@@ -89,12 +97,12 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setFields(List<ConfiguredFieldDefinition> fields) {
         this.fields = fields;
-        updateFieldsName();
+        updateFieldNames();
     }
 
-    private void updateFieldsName() {
+    private void updateFieldNames() {
         for (ConfiguredFieldDefinition definition : fields) {
-            fieldsName.put(definition.getName(), "");
+            fieldNames.add(definition.getName());
         }
     }
 }

@@ -48,13 +48,14 @@ import org.junit.Test;
  */
 public class CompositeFieldDefinitionTest {
 
-    CompositeFieldDefinition compositeFieldDefinition = new CompositeFieldDefinition();
+    private CompositeFieldDefinition compositeFieldDefinition = new CompositeFieldDefinition();
 
-    List<ConfiguredFieldDefinition> fields;
-    ConfiguredFieldDefinition field;
+    private List<ConfiguredFieldDefinition> fields;
 
     @Before
-    public void setup() {
+    public void setUp() {
+        ConfiguredFieldDefinition field;
+
         fields = new ArrayList<ConfiguredFieldDefinition>();
 
         field = new ConfiguredFieldDefinition();
@@ -66,48 +67,52 @@ public class CompositeFieldDefinitionTest {
     }
 
     /**
-     * Ensure that getFieldsName works.
+     * Ensure that getFieldNames works.
      */
     @Test
-    public void getFieldsNameWithSetFields() {
+    public void testGetFieldNamesWithSetFields() {
         // GIVEN
         compositeFieldDefinition.setFields(fields);
-        List<String> names = compositeFieldDefinition.getFieldsName();
 
         // WHEN
+        List<String> names = compositeFieldDefinition.getFieldNames();
+
         // THEN
         assertThat(names, is(Arrays.asList("a", "b")));
     }
 
     /**
-     * Ensure that calling getFields before setFields does not impact the result of getFieldsName()
+     * Ensure that calling getFields before setFields does not impact the result of getFieldNames()
+     * This was the key problem in MGNLUI-3402.
      */
     @Test
-    public void callGetFieldsNameBeforeSetFields() {
+    public void callGetFieldsNamesBeforeSetFields() {
         // GIVEN
-        List<String> names = compositeFieldDefinition.getFieldsName();
+        List<String> names = compositeFieldDefinition.getFieldNames();
         compositeFieldDefinition.setFields(fields);
-        names = compositeFieldDefinition.getFieldsName();
 
         // WHEN
+        names = compositeFieldDefinition.getFieldNames();
+
         // THEN
         assertThat(names, is(Arrays.asList("a", "b")));
     }
 
     /**
-     * Ensure that getFieldsName works with setFields, addField and addFieldName.
+     * Ensure that getFieldNames works with setFields, addField and addFieldName.
      */
     @Test
-    public void getFieldsNameWithSetFieldsAddFieldAndAddFieldName() {
+    public void testGetFieldNamesWithAllSetters() {
         // GIVEN
-        field = new ConfiguredFieldDefinition();
+        ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
         field.setName("added");
         compositeFieldDefinition.addField(field);
         compositeFieldDefinition.addFieldName("just-a-name");
         compositeFieldDefinition.setFields(fields);
-        List<String> names = compositeFieldDefinition.getFieldsName();
 
         // WHEN
+        List<String> names = compositeFieldDefinition.getFieldNames();
+
         // THEN
         assertThat(names, is(Arrays.asList("added", "just-a-name", "a", "b")));
     }
