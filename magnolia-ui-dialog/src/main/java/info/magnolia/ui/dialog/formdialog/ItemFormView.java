@@ -35,6 +35,8 @@ package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -64,14 +66,15 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     private Form form = new Form();
 
     private final SimpleTranslator i18n;
-
     private final I18NAuthoringSupport i18nAuthoringSupport;
+    private final UiContext uiContext;
 
     @Inject
-    public ItemFormView(SimpleTranslator i18n, I18NAuthoringSupport i18nAuthoringSupport) {
+    public ItemFormView(SimpleTranslator i18n, I18NAuthoringSupport i18nAuthoringSupport, UiContext uiContext) {
         super(new FormDialog());
         this.i18n = i18n;
         this.i18nAuthoringSupport = i18nAuthoringSupport;
+        this.uiContext = uiContext;
 
         form.setErrorLabels(i18n.translate("validation.message.errors"), i18n.translate("validation.message.nextError"));
 
@@ -85,6 +88,11 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         });
 
         createLocaleSelector();
+    }
+
+    @Deprecated
+    public ItemFormView(SimpleTranslator i18n, I18NAuthoringSupport i18nAuthoringSupport) {
+        this(i18n, i18nAuthoringSupport, null);
     }
 
     @Override
@@ -157,7 +165,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
             }
             getActionAreaView().setToolbarComponent(languageSelector);
         }
-
     }
 
     private void createLocaleSelector() {
@@ -169,10 +176,18 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                if (i18nAuthoringSupport != null) {
-                    i18nAuthoringSupport.i18nize(form, (Locale) event.getProperty().getValue());
-                }
+                updateLocale((Locale) event.getProperty().getValue());
             }
         });
+    }
+
+    protected void updateLocale(Locale locale) {
+        if (i18nAuthoringSupport != null) {
+            i18nAuthoringSupport.i18nize(form, (locale));
+            // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
+            if (uiContext instanceof SubAppContext && locale != null) {
+                ((SubAppContext) uiContext).setAuthoringLocale(locale);
+            }
+        }
     }
 }
