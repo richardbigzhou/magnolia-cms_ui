@@ -54,6 +54,11 @@ public interface I18NAuthoringSupport {
 
     String createI18NURI(Node node, Locale locale);
 
+    /**
+     * @deprecated I18nAuthoringSupport is an instance singleton, and should not be used to sync UI state of a specific user. Since 5.3.9, use {@link info.magnolia.ui.api.app.SubAppContext#getAuthoringLocale() SubAppContext#getAuthoringLocale()}.
+     * @see <a href="https://jira.magnolia-cms.com/browse/MGNLUI-3221">[MGNLUI-3221] All authors share the same authoring locale</a>
+     */
+    @Deprecated
     Locale getAuthorLocale();
 
 }

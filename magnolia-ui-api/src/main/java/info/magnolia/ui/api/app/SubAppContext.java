@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.location.Location;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.

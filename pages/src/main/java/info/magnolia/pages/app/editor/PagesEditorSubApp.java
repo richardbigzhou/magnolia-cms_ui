@@ -71,6 +71,7 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
@@ -109,6 +110,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     protected static final String PROPERTY_TITLE = "title";
 
     private final ActionExecutor actionExecutor;
+    private final SubAppContext subAppContext;
     private final PagesEditorSubAppView view;
     private final EventBus subAppEventBus;
     private final EventBus admincentralEventBus;
@@ -130,17 +132,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     private Locale currentLocale;
     private String caption;
 
-    /**
-     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
-     */
-    @Deprecated
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
-                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
-                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
-                             ContentConnector contentConnector) {
-        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
-    }
-
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
                              final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
@@ -148,6 +139,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
                              ContentConnector contentConnector, StatusBarView statusBarView) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
+        this.subAppContext = subAppContext;
         this.view = view;
         this.subAppEventBus = subAppEventBus;
         this.admincentralEventBus = admincentralEventBus;
@@ -164,6 +156,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         this.versionManager = versionManager;
         this.i18n = i18n;
         bindHandlers();
+    }
+
+    /**
+     * @deprecated since 5.2.4 - use info.magnolia.pages.app.editor.PagesEditorSubApp#PagesEditorSubApp(info.magnolia.ui.api.action.ActionExecutor, info.magnolia.ui.api.app.SubAppContext, info.magnolia.pages.app.editor.PagesEditorSubAppView, info.magnolia.event.EventBus, info.magnolia.event.EventBus, info.magnolia.pages.app.editor.PageEditorPresenter, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.vaadin.editor.pagebar.PageBarView, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.cms.i18n.I18nContentSupport, info.magnolia.cms.core.version.VersionManager, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.ui.api.availability.AvailabilityChecker, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector)
+     */
+    @Deprecated
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+                             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+                             I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n, AvailabilityChecker availabilityChecker,
+                             ContentConnector contentConnector) {
+        this(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport, versionManager, i18n, availabilityChecker, contentConnector, Components.getComponent(StatusBarView.class));
     }
 
     @Override
@@ -423,8 +426,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     public void languageSelected(Locale locale) {
         if (locale != null && !locale.equals(currentLocale)) {
             this.currentLocale = locale;
-            if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
-                ((DefaultI18NAuthoringSupport) i18NAuthoringSupport).setAuthorLocale(locale);
+            // Temporarily only in SubAppContextImpl, by the time method is generalized to {@link SubAppContext} interface in 5.4.
+            if (subAppContext instanceof SubAppContextImpl) {
+                ((SubAppContextImpl) subAppContext).setAuthoringLocale(locale);
             }
             doGoToLocation(getCurrentLocation());
         }

@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
@@ -56,17 +57,13 @@ import info.magnolia.ui.vaadin.form.FormSection;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.List;
 import java.util.Locale;
-
-import javax.jcr.Node;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 
 /**
  * FormBuilderTest.
@@ -74,7 +71,11 @@ import com.vaadin.ui.HasComponents;
 public class FormBuilderTest {
 
     private MockSession session;
-    private Locale locale;
+
+    private FieldFactoryFactory fieldFactoryFactory;
+    private I18NAuthoringSupport i18nAuthoringSupport;
+    private MockSubAppContextImpl subAppContext;
+    private FormView view = mock(FormView.class);
 
     @Before
     public void setUp() {
@@ -82,6 +83,11 @@ public class FormBuilderTest {
         MockContext ctx = new MockContext();
         ctx.addSession(RepositoryConstants.WEBSITE, session);
         MgnlContext.setInstance(ctx);
+
+        fieldFactoryFactory = mock(FieldFactoryFactory.class);
+        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        subAppContext = mock(MockSubAppContextImpl.class);
+        view = mock(FormView.class);
     }
 
     @Test
@@ -97,11 +103,9 @@ public class FormBuilderTest {
         JcrItemAdapter item = new JcrNodeAdapter(session.getRootNode());
         FormItem parent = null;
 
-        DummyI18NAuthoringSupport i18nAuthoringSupport = new DummyI18NAuthoringSupport();
-        i18nAuthoringSupport.setAuthorLocale(new Locale("de"));
-        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, null);
-        FormView view = mock(FormView.class);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
+        Locale locale = new Locale("de");
+        doReturn(locale).when(subAppContext).getAuthoringLocale();
 
         // WHEN
         builder.buildForm(view, formDefinition, item, parent);
@@ -123,10 +127,7 @@ public class FormBuilderTest {
         form.addTab(tab);
 
         JcrItemAdapter item = new JcrNodeAdapter(session.getRootNode());
-        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        I18NAuthoringSupport i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
-        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, null);
-        FormView view = mock(FormView.class);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
 
         // WHEN
         builder.buildForm(view, form, item, null);
@@ -152,11 +153,9 @@ public class FormBuilderTest {
         Field field = mock(Field.class);
         FieldFactory fieldFactory = mock(FieldFactory.class);
         when(fieldFactory.createField()).thenReturn(field);
-        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
         when(fieldFactoryFactory.createFieldFactory(any(FieldDefinition.class), anyObject())).thenReturn(fieldFactory);
 
-        FormBuilder builder = new FormBuilder(fieldFactoryFactory, null, null);
-        FormView view = mock(FormView.class);
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
 
         // WHEN
         builder.buildReducedForm(formDefinition, view, null, mock(FormItem.class));
@@ -166,44 +165,19 @@ public class FormBuilderTest {
         verify(view, times(0)).addFormSection(eq("emptyTab"), any(FormSection.class));
     }
 
-    private class DummyI18NAuthoringSupport implements I18NAuthoringSupport {
-
-        @Override
-        public List<Locale> getAvailableLocales(Node node) {
-            return null;
-        }
-
-        /**
-         * Returns the default locale for the given page, area or component node.
-         *
-         * TODO: create interface method in {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}
-         */
-        public Locale getDefaultLocale(Node node) {
-            return null;
-        }
-
-        @Override
-        public void i18nize(HasComponents fieldContainer, Locale locale) {
-        }
-
-        @Override
-        public String createI18NURI(Node node, Locale locale) {
-            return null;
-        }
-
-        @Override
-        public Locale getAuthorLocale() {
-            return locale;
-        }
-
-        public void setAuthorLocale(Locale loc) {
-            locale = loc;
-        }
-
-    }
-
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
+    }
+
+    /**
+     * Just here for the sake of testing authoringLocale, despite being implemented only in SubAppContextImpl (binary compatibility), which lives in a descendant module.
+     * 
+     * @deprecated since 5.4, not needed anymore.
+     */
+    @Deprecated
+    private static interface MockSubAppContextImpl extends SubAppContext {
+
+        Locale getAuthoringLocale();
     }
 }
