@@ -35,6 +35,8 @@ package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.Form;
@@ -81,21 +83,31 @@ public class FormBuilder {
 
     private final FieldFactoryFactory fieldFactoryFactory;
     private final I18NAuthoringSupport i18nAuthoringSupport;
+    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
     @Inject
-    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18NAuthoringSupport i18nAuthoringSupport, UiContext uiContext, ComponentProvider componentProvider) {
         this.fieldFactoryFactory = fieldFactoryFactory;
-        this.componentProvider = componentProvider;
         this.i18nAuthoringSupport = i18nAuthoringSupport;
+        this.uiContext = uiContext;
+        this.componentProvider = componentProvider;
     }
 
     /**
-     * @deprecated since 5.3.4 - use {@link FormBuilder(FieldFactoryFactory, I18NAuthoringSupport, ComponentProvider)} instead.
+     * @deprecated since 5.3.9 - use {@link #FormBuilder(FieldFactoryFactory, I18NAuthoringSupport, UiContext, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+        this(fieldFactoryFactory, i18nAuthoringSupport, componentProvider.getComponent(UiContext.class), componentProvider);
+    }
+
+    /**
+     * @deprecated since 5.3.4 - use {@link #FormBuilder(FieldFactoryFactory, I18NAuthoringSupport, UiContext, ComponentProvider)} instead.
      */
     @Deprecated
     public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
-        this(fieldFactoryFactory, i18nAuthoringSupport, componentProvider);
+        this(fieldFactoryFactory, i18nAuthoringSupport, componentProvider.getComponent(UiContext.class), componentProvider);
     }
 
     /**
@@ -126,8 +138,9 @@ public class FormBuilder {
                     Node node = (Node) jcrItem;
                     List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
                     view.setAvailableLocales(locales);
-                    if (i18nAuthoringSupport.getAuthorLocale() != null) {
-                        view.setCurrentLocale(i18nAuthoringSupport.getAuthorLocale());
+                    // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
+                    if (uiContext instanceof SubAppContext && ((SubAppContext) uiContext).getAuthoringLocale() != null) {
+                        view.setCurrentLocale(((SubAppContext) uiContext).getAuthoringLocale());
                     } else {
                         view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(node));
                     }

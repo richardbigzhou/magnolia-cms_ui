@@ -37,12 +37,14 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.context.AbstractUIContext;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.overlay.OverlayPresenter;
+
+import java.util.Locale;
 
 /**
  * Implementation of {@link info.magnolia.ui.api.app.SubAppContext}.
@@ -57,6 +59,8 @@ public class SubAppContextImpl extends AbstractUIContext implements SubAppContex
     private Location location;
 
     private SubAppDescriptor subAppDescriptor;
+
+    private Locale authoringLocale;
 
     private AppContext appContext;
 
@@ -115,6 +119,16 @@ public class SubAppContextImpl extends AbstractUIContext implements SubAppContex
     @Override
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
+    }
+
+    @Override
+    public Locale getAuthoringLocale() {
+        return authoringLocale;
+    }
+
+    @Override
+    public void setAuthoringLocale(Locale authoringLocale) {
+        this.authoringLocale = authoringLocale;
     }
 
     @Override
