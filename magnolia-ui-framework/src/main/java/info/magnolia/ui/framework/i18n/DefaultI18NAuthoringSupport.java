@@ -50,6 +50,8 @@ import java.util.Locale;
 import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractField;
@@ -62,11 +64,11 @@ import com.vaadin.ui.HasComponents;
  */
 public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
+    private static final Logger log = LoggerFactory.getLogger(DefaultI18NAuthoringSupport.class);
+
     private I18nContentSupport i18nContentSupport;
 
     private boolean enabled = true;
-
-    private Locale authorLocale;
 
     public DefaultI18NAuthoringSupport() {
         this.i18nContentSupport = Components.getComponent(I18nContentSupport.class);
@@ -190,12 +192,15 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     }
 
     @Override
+    @Deprecated
     public Locale getAuthorLocale() {
-        return authorLocale;
+        log.warn("I18NAuthoringSupport.getAuthorLocale() is deprecated, returning null. Use SubAppContext.getAuthoringLocale() instead.");
+        return null;
     }
 
+    @Deprecated
     public void setAuthorLocale(Locale locale) {
-        this.authorLocale = locale;
+        log.warn("I18NAuthoringSupport.setAuthorLocale(Locale) is deprecated, not doing anything. Use SubAppContext.setAuthoringLocale(Locale) instead.");
     }
 
 }
