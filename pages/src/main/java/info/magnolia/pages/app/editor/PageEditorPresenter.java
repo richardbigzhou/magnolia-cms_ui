@@ -41,7 +41,6 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
@@ -92,13 +91,6 @@ public class PageEditorPresenter implements PageEditorListener {
     }
 
     private void registerHandlers() {
-        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
-
-            @Override
-            public void onContentChanged(ContentChangedEvent event) {
-                view.refresh();
-            }
-        });
         subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
             @Override
             public void onMove(ComponentMoveEvent event) {
@@ -112,7 +104,6 @@ public class PageEditorPresenter implements PageEditorListener {
                 listener.onMove();
             }
         });
-
     }
 
     @Override
@@ -142,6 +133,10 @@ public class PageEditorPresenter implements PageEditorListener {
 
     public void updateParameters(PageEditorParameters parameters) {
         view.update(parameters);
+    }
+
+    public void refresh() {
+        view.refresh();
     }
 
     public boolean isMoving() {

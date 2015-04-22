@@ -96,6 +96,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -381,7 +382,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
+                updatePageEditor();
             }
         });
 
@@ -389,16 +390,35 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                view.setStatusBarView(statusBarView);
+                updatePageEditor();
             }
         });
 
         admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
             @Override
             public void onLocationChanged(LocationChangedEvent event) {
-                view.setStatusBarView(statusBarView);
+                updatePageEditor();
             }
         });
+    }
+
+    private void updatePageEditor() {
+        // Temporarily only in SubAppContextImpl, by the time method is generalized to {@link SubAppContext} interface in 5.4.
+        if (subAppContext instanceof SubAppContextImpl) {
+            Locale authoringLocale = ((SubAppContextImpl) subAppContext).getAuthoringLocale();
+            if (!ObjectUtils.equals(authoringLocale, currentLocale)) {
+                // authoring locale has changed, make sure to update page-editor
+                currentLocale = authoringLocale;
+                doGoToLocation(getCurrentLocation());
+            } else {
+                // authoring locale hasn't changed, simply refresh page-editor
+                pageEditorPresenter.refresh();
+            }
+        } else {
+            // authoring locale hasn't changed, simply refresh page-editor
+            pageEditorPresenter.refresh();
+        }
+        view.setStatusBarView(statusBarView);
     }
 
     @Override

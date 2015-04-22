@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.mock.MockWebContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 
@@ -71,7 +72,7 @@ public class ItemFormViewTest {
 
     @Before
     public void setUp() throws Exception {
-        formviewer = new ItemFormView(mock(SimpleTranslator.class),mock(I18NAuthoringSupport.class));
+        formviewer = new ItemFormView(mock(SimpleTranslator.class), mock(I18NAuthoringSupport.class), mock(UiContext.class));
         MockWebContext ctx = new MockWebContext();
         MgnlContext.setInstance(ctx);
     }
