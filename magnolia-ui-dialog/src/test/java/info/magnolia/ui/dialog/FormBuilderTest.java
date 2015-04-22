@@ -173,11 +173,7 @@ public class FormBuilderTest {
             return null;
         }
 
-        /**
-         * Returns the default locale for the given page, area or component node.
-         *
-         * TODO: create interface method in {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}
-         */
+        @Override
         public Locale getDefaultLocale(Node node) {
             return null;
         }

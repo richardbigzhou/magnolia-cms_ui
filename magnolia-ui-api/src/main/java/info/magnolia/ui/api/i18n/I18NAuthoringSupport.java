@@ -50,6 +50,11 @@ public interface I18NAuthoringSupport {
      */
     List<Locale> getAvailableLocales(Node node);
 
+    /**
+     * Returns the default locale for the given page, area or component node.
+     */
+    Locale getDefaultLocale(Node node);
+
     void i18nize(HasComponents fieldContainer, Locale locale);
 
     String createI18NURI(Node node, Locale locale);
