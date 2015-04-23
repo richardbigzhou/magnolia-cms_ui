@@ -51,7 +51,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     /**
      * Stores additional field names that will be returned with {@link CompositeFieldDefinition#getFieldNames()}.
      */
-    private Set<String> additionalFieldNames = new LinkedHashSet<>();
+    private Set<String> additionalFieldNames = new LinkedHashSet<String>();
     private Layout layout = Layout.horizontal;
 
     /**
@@ -73,7 +73,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
      * Returns the union of the names of the fields and the additional names added with {@link CompositeFieldDefinition#addFieldName()}.
      */
     public List<String> getFieldNames() {
-        Set<String> fieldNames = new LinkedHashSet<>();
+        Set<String> fieldNames = new LinkedHashSet<String>();
         for (ConfiguredFieldDefinition definition : fields) {
             fieldNames.add(definition.getName());
         }
