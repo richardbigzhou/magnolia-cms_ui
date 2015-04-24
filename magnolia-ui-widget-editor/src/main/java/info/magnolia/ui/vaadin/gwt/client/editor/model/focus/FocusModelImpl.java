@@ -183,13 +183,7 @@ public class FocusModelImpl implements FocusModel {
             area.setVisible(visible);
         }
 
-        if (!area.isRelated(model.getSelectedArea())) {
-
-            // toggle all direct child-areas visibility
-            for (MgnlArea childArea : area.getAreas()) {
-                childArea.setVisible(visible);
-            }
-        }
+        toggleNestedAreasVisibility(area, visible);
     }
 
     private void toggleChildComponentVisibility(MgnlArea area, boolean visible) {
@@ -214,7 +208,15 @@ public class FocusModelImpl implements FocusModel {
             // toggle all child-components-area visibility
             for (MgnlArea childArea : component.getAreas()) {
                 childArea.setVisible(visible);
+                toggleNestedAreasVisibility(childArea, visible);
             }
+        }
+    }
+
+    private void toggleNestedAreasVisibility(MgnlArea area, boolean visible) {
+        for (MgnlArea childArea : area.getAreas()) {
+            childArea.setVisible(visible);
+            toggleNestedAreasVisibility(childArea, visible);
         }
     }
 
