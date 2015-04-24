@@ -80,7 +80,13 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-app.test-subapp.actionbar.sections.test-section.label",
-                "test-app.test-subapp.actionbar.sections.test-section"));
+                "test-app.test-subapp.actionbar.sections.test-section",
+                "test-app.test-subapp.actionbar.test-section.label",
+                "test-app.test-subapp.actionbar.test-section",
+                "test-app.actionbar.sections.test-section.label",
+                "test-app.actionbar.sections.test-section",
+                "test-app.actionbar.test-section.label",
+                "test-app.actionbar.test-section"));
     }
 
     @Test
@@ -110,10 +116,13 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
                 "undecorated",
                 "test-module.testMessageView.actionbar.sections.test-section.label",
                 "test-module.testMessageView.actionbar.sections.test-section",
+                "test-module.testMessageView.actionbar.test-section.label",
+                "test-module.testMessageView.actionbar.test-section",
                 "testMessageView.actionbar.sections.test-section.label",
-                "testMessageView.actionbar.sections.test-section"
+                "testMessageView.actionbar.sections.test-section",
+                "testMessageView.actionbar.test-section.label",
+                "testMessageView.actionbar.test-section"
                 ));
-
     }
 
     /**
