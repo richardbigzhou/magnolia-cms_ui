@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2011-2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -29,6 +29,7 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
+ *
  */
 package info.magnolia.ui.vaadin.extension;
 
