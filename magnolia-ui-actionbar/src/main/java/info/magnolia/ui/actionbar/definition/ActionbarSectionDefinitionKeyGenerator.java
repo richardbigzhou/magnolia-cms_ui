@@ -80,5 +80,8 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
         final String sectionName = sectionDefinition.getName();
         final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
         addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName);
+        addKey(keys, appName, subappName, "actionbar", sectionName, fieldOrGetterName);
+        addKey(keys, appName, "actionbar", "sections", sectionName, fieldOrGetterName);
+        addKey(keys, appName, "actionbar", sectionName, fieldOrGetterName);
     }
 }
