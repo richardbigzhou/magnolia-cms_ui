@@ -48,11 +48,16 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Provides {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} to the sub-apps.
  */
 @Singleton
 public class ContentConnectorProvider implements Provider<ContentConnector> {
+
+    private static final Logger log = LoggerFactory.getLogger(ContentConnectorProvider.class);
 
     private ComponentProvider provider;
 
@@ -74,8 +79,12 @@ public class ContentConnectorProvider implements Provider<ContentConnector> {
         if (contentConnector == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
             if (subAppDescriptor instanceof ContentSubAppDescriptor) {
-                ContentConnectorDefinition contentConnectorDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getContentConnector();
-                contentConnector = provider.newInstance(contentConnectorDefinition.getImplementationClass(), ctx, subAppEventBus, contentConnectorDefinition);
+                ContentConnectorDefinition contentConnectorDefinition = ((ContentSubAppDescriptor) subAppDescriptor).getContentConnector();
+                if (contentConnectorDefinition != null) {
+                    contentConnector = provider.newInstance(contentConnectorDefinition.getImplementationClass(), ctx, subAppEventBus, contentConnectorDefinition);
+                } else {
+                    log.warn("Sub-app descriptor {} ({}) expected a ContentConnectorDefinition, but no contentConnector is currently configured.", subAppDescriptor.getName(), subAppDescriptor.getClass().getSimpleName());
+                }
             }
         }
         if (contentConnector == null) {
