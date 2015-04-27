@@ -33,11 +33,15 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -56,6 +60,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -72,6 +77,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
     private ConfiguredAppDescriptor appDescriptor2;
     private ConfiguredAppDescriptor appDescriptor3;
     private EventBus systemEventBus;
+    private AppDescriptorRegistry registry;
     private AppLauncherLayoutManagerImpl appLayoutManager;
 
     private I18nizer i18nizer = new I18nizer() {
@@ -103,7 +109,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         descriptors.put("app2", appDescriptor2);
         descriptors.put("app3", appDescriptor3);
 
-        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
+        registry = mock(AppDescriptorRegistry.class);
         when(registry.getAllDefinitions()).thenReturn(new LinkedList<>(descriptors.values()));
 
         final Iterator<Map.Entry<String, AppDescriptor>> it = descriptors.entrySet().iterator();
@@ -152,6 +158,10 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
     @Test
     public void testSendsLauncherLayoutChangedEvent() {
 
+        DefinitionMetadata appMetadata1 = getDefinitionMetadata(appDescriptor1);
+        DefinitionMetadata appMetadata2 = getDefinitionMetadata(appDescriptor2);
+        DefinitionMetadata appMetadata3 = getDefinitionMetadata(appDescriptor3);
+
         final ArrayList<AppLauncherLayoutChangedEvent> events = new ArrayList<AppLauncherLayoutChangedEvent>();
         systemEventBus.addHandler(AppLauncherLayoutChangedEvent.class, new AppLauncherLayoutChangedEventHandler() {
 
@@ -162,9 +172,9 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         });
 
         // WHEN
-        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor1, AppRegistryEventType.REGISTERED));
-        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor2, AppRegistryEventType.REREGISTERED));
-        systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor3, AppRegistryEventType.UNREGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appMetadata1, AppRegistryEventType.REGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appMetadata2, AppRegistryEventType.REREGISTERED));
+        systemEventBus.fireEvent(new AppRegistryEvent(appMetadata3, AppRegistryEventType.UNREGISTERED));
 
         // THEN
         assertEquals(3, events.size());
@@ -280,6 +290,25 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         assertFalse(layout.getGroups().get(0).getApps().get(0).getName().equals("app1"));
     }
 
+    @Test
+    public void getLayoutForCurrentUserDoesntIncludeInvalidAppDescriptors() {
+        // GIVEN appDescriptor2 is invalid
+        doReturn(new DummyAppDescriptorProvider("app2", "module", "/apps", appDescriptor2, false)).
+                when(registry).getProvider(eq("app2"));
+
+        // WHEN
+        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+
+        // THEN
+        List<AppLauncherGroup> groups = layout.getGroups();
+        assertThat(groups, hasSize(2));
+        assertThat(groups.get(0).getApps(), hasSize(1));
+        assertThat(groups.get(0).getApps().get(0).getName(), equalTo("app1"));
+        assertThat(groups.get(1).getApps(), hasSize(1));
+        assertThat(groups.get(1).getApps().get(0).getName(), equalTo("app3"));
+        // TODO create proper matchers e.g .assertThat(layout, hasGroup("appGroup1").withApps("app1", "app2"))
+    }
+
     public static AppLauncherGroupDefinition createAppGroup(String name, String... appNames) {
         ConfiguredAppLauncherGroupDefinition group = new ConfiguredAppLauncherGroupDefinition();
         group.setName(name);
@@ -290,5 +319,9 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
             group.addApp(entry);
         }
         return group;
+    }
+
+    private DefinitionMetadata getDefinitionMetadata(AppDescriptor appDescritor) {
+        return DefinitionMetadataBuilder.usingNameAsId().name(appDescritor.getName()).build();
     }
 }

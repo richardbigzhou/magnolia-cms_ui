@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.app.registry;
 
-import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.event.Event;
 
 /**
@@ -45,19 +45,19 @@ import info.magnolia.event.Event;
 public class AppRegistryEvent implements Event<AppRegistryEventHandler> {
 
     private final AppRegistryEventType eventType;
-    private final AppDescriptor appDescriptor;
+    private final DefinitionMetadata appMetadata;
 
-    public AppRegistryEvent(AppDescriptor appDescriptor, AppRegistryEventType eventType) {
+    public AppRegistryEvent(DefinitionMetadata appMetadata, AppRegistryEventType eventType) {
         this.eventType = eventType;
-        this.appDescriptor = appDescriptor;
+        this.appMetadata = appMetadata;
     }
 
     public AppRegistryEventType getEventType() {
         return eventType;
     }
 
-    public AppDescriptor getAppDescriptor() {
-        return appDescriptor;
+    public DefinitionMetadata getAppDescriptorMetadata() {
+        return appMetadata;
     }
 
     @Override

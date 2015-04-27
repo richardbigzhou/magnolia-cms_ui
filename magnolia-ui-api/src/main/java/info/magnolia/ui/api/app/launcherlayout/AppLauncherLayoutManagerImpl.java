@@ -87,22 +87,22 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
             @Override
             public void onAppRegistered(AppRegistryEvent event) {
-                String name = event.getAppDescriptor().getName();
-                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                String name = event.getAppDescriptorMetadata().getName();
+                log.debug("Got AppRegistryEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
 
             @Override
             public void onAppReregistered(AppRegistryEvent event) {
-                String name = event.getAppDescriptor().getName();
-                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                String name = event.getAppDescriptorMetadata().getName();
+                log.debug("Got AppRegistryEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
 
             @Override
             public void onAppUnregistered(AppRegistryEvent event) {
-                String name = event.getAppDescriptor().getName();
-                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                String name = event.getAppDescriptorMetadata().getName();
+                log.debug("Got AppRegistryEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
         });
@@ -128,6 +128,10 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                 AppDescriptor appDescriptor;
                 try {
                     final DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.getProvider(entryDefinition.getName());
+                    if (!definitionProvider.isValid()) {
+                        // app-descriptor is not valid, won't add it to the launcher
+                        continue;
+                    }
                     appDescriptor = i18nizer.decorate(definitionProvider.get());
                 } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
                     log.warn(e.getMessage());

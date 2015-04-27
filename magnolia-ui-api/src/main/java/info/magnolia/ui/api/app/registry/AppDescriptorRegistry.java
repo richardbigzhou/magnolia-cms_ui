@@ -45,19 +45,14 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 /**
  * The central registry for {@link AppDescriptor}s. Fires {@link AppRegistryEvent} when the registry changes.
@@ -78,14 +73,14 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
     @Override
     public void register(DefinitionProvider<AppDescriptor> provider) {
         super.register(provider);
-        sendEvent(AppRegistryEventType.REGISTERED, Collections.singleton(provider.get()));
+        sendEvent(AppRegistryEventType.REGISTERED, Collections.singleton(provider.getMetadata()));
     }
 
     //TODO implement unregister method properly once it is present in the parent class.
     public void unregister(String name) {
         DefinitionProvider<AppDescriptor> toRemove = getProvider(name);
         getRegistryMap().remove(toRemove.getMetadata());
-        sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.get()));
+        sendEvent(AppRegistryEventType.UNREGISTERED, Collections.singleton(toRemove.getMetadata()));
     }
 
     /**
@@ -125,9 +120,9 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
         Collection<DefinitionMetadata> kept = CollectionUtils.subtract(metadataBefore, removed);
         Collection<DefinitionMetadata> changed = getAppsThatHaveChanged(kept, providersBefore, providersToRegister);
 
-        sendEvent(AppRegistryEventType.REGISTERED, getAppDescriptorsByMetadata(added));
-        sendEvent(AppRegistryEventType.UNREGISTERED, getAppDescriptorsFromAppDescriptorProviders(removed, providersBefore));
-        sendEvent(AppRegistryEventType.REREGISTERED, getAppDescriptorsByMetadata(changed));
+        sendEvent(AppRegistryEventType.REGISTERED, added);
+        sendEvent(AppRegistryEventType.UNREGISTERED, removed);
+        sendEvent(AppRegistryEventType.REREGISTERED, changed);
 
         return registeredMetaData;
     }
@@ -140,26 +135,6 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
     @Override
     public DefinitionMetadataBuilder newMetadataBuilder() {
         return DefinitionMetadataBuilder.usingNameAsId();
-    }
-
-    private Collection<AppDescriptor> getAppDescriptorsFromAppDescriptorProviders(Collection<DefinitionMetadata> metadata, final Collection<DefinitionProvider<AppDescriptor>> providerSet) {
-        final List<AppDescriptor> result = new LinkedList<>();
-        for (DefinitionProvider<AppDescriptor> provider : providerSet) {
-            if (metadata.contains(provider.getMetadata())) {
-                result.add(provider.get());
-            }
-        }
-        return result;
-    }
-
-    private Collection<AppDescriptor> getAppDescriptorsByMetadata(Collection<DefinitionMetadata> metadata) {
-        return Collections2.transform(metadata, new Function<DefinitionMetadata, AppDescriptor>() {
-            @Nullable
-            @Override
-            public AppDescriptor apply(DefinitionMetadata input) {
-                return getProvider(input).get();
-            }
-        });
     }
 
     private Collection<DefinitionMetadata> getAppsThatHaveChanged(Collection<DefinitionMetadata> kept, Collection<DefinitionProvider<AppDescriptor>> providersBefore, Collection<DefinitionProvider<AppDescriptor>> providersToRegister) {
@@ -184,9 +159,9 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
     /**
      * Send an event to the system event bus.
      */
-    private void sendEvent(AppRegistryEventType eventType, Collection<AppDescriptor> appDescriptors) {
-        for (AppDescriptor appDescriptor : appDescriptors) {
-            systemEventBus.fireEvent(new AppRegistryEvent(appDescriptor, eventType));
+    private void sendEvent(AppRegistryEventType eventType, Collection<DefinitionMetadata> appDescriptors) {
+        for (DefinitionMetadata appMetadata : appDescriptors) {
+            systemEventBus.fireEvent(new AppRegistryEvent(appMetadata, eventType));
         }
     }
 }

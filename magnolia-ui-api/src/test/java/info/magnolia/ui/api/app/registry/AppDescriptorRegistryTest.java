@@ -241,7 +241,7 @@ public class AppDescriptorRegistryTest {
         assertEquals(appName, registeredNames2.iterator().next().getName());
         assertEquals(1, eventHandler.events.size());
         assertEquals(AppRegistryEventType.REREGISTERED, eventHandler.events.get(0).getEventType());
-        assertEquals(appDescriptorRegistry.getProvider(appName).get(), eventHandler.events.get(0).getAppDescriptor());
+        assertEquals(appDescriptorRegistry.getProvider(appName).getMetadata(), eventHandler.events.get(0).getAppDescriptorMetadata());
     }
 
     @Test
@@ -351,7 +351,7 @@ public class AppDescriptorRegistryTest {
 
     private void assertContainsEvent(AppRegistryEventType appEventType, String name) {
         for (AppRegistryEvent event : eventHandler.events) {
-            if (event.getEventType() == appEventType && event.getAppDescriptor().getName().equals(name)) {
+            if (event.getEventType() == appEventType && event.getAppDescriptorMetadata().getName().equals(name)) {
                 return;
             }
         }
