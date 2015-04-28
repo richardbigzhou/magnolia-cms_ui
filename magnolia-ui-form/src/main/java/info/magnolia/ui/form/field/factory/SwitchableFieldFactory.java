@@ -115,7 +115,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         // fieldNames list is unmodifiable, ensure safe usage in transformers (e.g. MailSecurityTransformer)
-        List<String> propertyNames = new ArrayList<>(definition.getFieldNames());
+        List<String> propertyNames = new ArrayList<String>(definition.getFieldNames());
         if (!propertyNames.contains(definition.getName())) {
             propertyNames.add(definition.getName());
         }
