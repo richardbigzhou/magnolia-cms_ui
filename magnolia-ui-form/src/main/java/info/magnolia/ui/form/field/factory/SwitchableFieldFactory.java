@@ -47,6 +47,7 @@ import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.composite.DelegatingCompositeFieldTransformer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -113,7 +114,8 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        List<String> propertyNames = definition.getFieldNames();
+        // fieldNames list is unmodifiable, ensure safe usage in transformers (e.g. MailSecurityTransformer)
+        List<String> propertyNames = new ArrayList<>(definition.getFieldNames());
         if (!propertyNames.contains(definition.getName())) {
             propertyNames.add(definition.getName());
         }

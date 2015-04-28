@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -75,15 +76,16 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * Returns the names of the fields.
+     * @return an unmodifiable list of the field names.
      */
     public List<String> getFieldNames() {
-        return Lists.transform(fields, new Function<ConfiguredFieldDefinition, String>() {
+        // List#transform gives a view on the original list; we don't want client usages to mess with it
+        return Collections.unmodifiableList(Lists.transform(fields, new Function<ConfiguredFieldDefinition, String>() {
             @Override
             public String apply(ConfiguredFieldDefinition fieldDefinition) {
                 return fieldDefinition.getName();
             }
-        });
+        }));
     }
 
     /**
