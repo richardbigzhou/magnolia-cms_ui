@@ -36,22 +36,23 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 /**
- * Definition used to configure a generic composite field.
- * This field is a composition of generic fields defined based on their {@ConfiguredFieldDefinition}.
+ * Configures a composite field, i.e. a composition of {@link info.magnolia.ui.form.field.definition.FieldDefinition fields},
+ * presented in a horizontal or vertical layout.
  */
-
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
+    private static final Logger log = LoggerFactory.getLogger(CompositeFieldDefinition.class);
+
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-    /**
-     * Stores additional field names that will be returned with {@link CompositeFieldDefinition#getFieldNames()}.
-     */
-    private Set<String> additionalFieldNames = new LinkedHashSet<>();
     private Layout layout = Layout.horizontal;
 
     /**
@@ -61,24 +62,28 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         setTransformerClass(CompositeTransformer.class);
     }
 
-    public void addField(ConfiguredFieldDefinition field) {
-        this.fields.add(field);
-    }
-
     public List<ConfiguredFieldDefinition> getFields() {
         return fields;
     }
 
+    public void setFields(List<ConfiguredFieldDefinition> fields) {
+        this.fields = fields;
+    }
+
+    public void addField(ConfiguredFieldDefinition field) {
+        this.fields.add(field);
+    }
+
     /**
-     * Returns the union of the names of the fields and the additional names added with {@link CompositeFieldDefinition#addFieldName()}.
+     * Returns the names of the fields.
      */
     public List<String> getFieldNames() {
-        Set<String> fieldNames = new LinkedHashSet<>();
-        for (ConfiguredFieldDefinition definition : fields) {
-            fieldNames.add(definition.getName());
-        }
-        fieldNames.addAll(additionalFieldNames);
-        return new ArrayList<String>(fieldNames);
+        return Lists.transform(fields, new Function<ConfiguredFieldDefinition, String>() {
+            @Override
+            public String apply(ConfiguredFieldDefinition fieldDefinition) {
+                return fieldDefinition.getName();
+            }
+        });
     }
 
     /**
@@ -89,8 +94,12 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         return getFieldNames();
     }
 
+    /**
+     * Deprecated since 5.3.9. It is not supported to add only a field name.
+     */
+    @Deprecated
     public void addFieldName(String fieldName) {
-        additionalFieldNames.add(fieldName);
+        log.warn("CompositeFieldDefinition#addFieldName is deprecated and has no effect. Please adjust your code accordingly.");
     }
 
     /**
@@ -102,10 +111,6 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setLayout(Layout layout) {
         this.layout = layout;
-    }
-
-    public void setFields(List<ConfiguredFieldDefinition> fields) {
-        this.fields = fields;
     }
 
 }
