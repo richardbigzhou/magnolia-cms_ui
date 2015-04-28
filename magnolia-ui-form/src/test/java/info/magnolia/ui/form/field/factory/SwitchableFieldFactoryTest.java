@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -53,7 +55,9 @@ import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -206,7 +210,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     @Test
-    public void fieldsNameAndFieldsHaveToStayInSynch() {
+    public void fieldNamesAndFieldsStayInSynch() {
         // GIVEN
         factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, null);
         factory.setComponentProvider(componentProvider);
@@ -221,6 +225,34 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertEquals(4, definition.getFields().size());
         assertEquals(4, definition.getFieldNames().size());
         assertTrue(definition.getFieldNames().contains(definition.getName()));
+    }
+
+    /**
+     * Ensure that calling CompositeFieldDefinition#getFields before CompositeFieldDefinition#setFields does not impact the result of getFieldNames()
+     * This was the key problem in MGNLUI-3402.
+     */
+    @Test
+    public void fieldNamesAndFieldsStayInSynchWhenGetFieldsIsCalledBeforeSetFields() {
+        CompositeFieldDefinition compositeFieldDefinition = new CompositeFieldDefinition();
+        ConfiguredFieldDefinition field;
+        List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
+
+        field = new ConfiguredFieldDefinition();
+        field.setName("a");
+        fields.add(field);
+        field = new ConfiguredFieldDefinition();
+        field.setName("b");
+        fields.add(field);
+
+        // GIVEN
+        List<String> names = compositeFieldDefinition.getFieldNames();
+        compositeFieldDefinition.setFields(fields);
+
+        // WHEN
+        names = compositeFieldDefinition.getFieldNames();
+
+        // THEN
+        assertThat(names, is(Arrays.asList("a", "b")));
     }
 
     @Test
