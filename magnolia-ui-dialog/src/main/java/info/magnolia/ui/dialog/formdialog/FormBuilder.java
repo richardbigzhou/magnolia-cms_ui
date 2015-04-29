@@ -52,8 +52,6 @@ import info.magnolia.ui.vaadin.form.FormViewReduced;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -131,32 +129,11 @@ public class FormBuilder {
                     if (i18nAuthoringSupport.getAuthorLocale() != null) {
                         view.setCurrentLocale(i18nAuthoringSupport.getAuthorLocale());
                     } else {
-                        view.setCurrentLocale(getDefaultLocale(node));
+                        view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(node));
                     }
                 }
             }
         }
-    }
-
-    /**
-     * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
-     */
-    private Locale getDefaultLocale(Node node) {
-        Method methodToFind;
-        try {
-            methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
-            if (methodToFind != null) {
-                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[] {node});
-            }
-        } catch (NoSuchMethodException e) {
-            log.error("Error getting method 'getDefaultLocale(Node)' from I18nAuthoringSupport", e);
-        } catch (InvocationTargetException e) {
-            log.error("Error invoking method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
-        } catch (IllegalAccessException e) {
-            log.error("Error accessing method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
-        }
-
-        return null;
     }
 
     public View buildView(FormDefinition formDefinition, Item item) {
