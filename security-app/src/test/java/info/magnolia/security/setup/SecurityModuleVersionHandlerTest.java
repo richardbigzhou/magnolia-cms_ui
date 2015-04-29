@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.setup;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -536,5 +537,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         // THEN
         assertEquals("info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition", duplicateUser.getProperty("class").getString());
+    }
+
+    @Test
+    public void updateFrom538AddEmailValidator() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/security-app/dialogs/user/form/tabs/user/fields/email");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+
+        // THEN
+        assertThat(session.getNode("/modules/security-app/dialogs/user/form/tabs/user/fields/email"), hasNode("validators"));
     }
 }
