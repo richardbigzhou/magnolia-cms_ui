@@ -264,6 +264,12 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                         "info.magnolia.security.app.dialog.action.DuplicateUserActionDefinition")
                         ))
         );
+        register(DeltaBuilder.update("5.3.9", "")
+                .addTask(
+                        new NodeExistsDelegateTask("Add validator for email field in user tab", "/modules/security-app/dialogs/user/form/tabs/user/fields/email/validators", null,
+                                new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.user.xml", "/user/form/tabs/user/fields/email/validators"))
+                )
+        );
     }
 
     @Override
