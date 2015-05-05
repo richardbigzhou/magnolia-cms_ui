@@ -44,11 +44,13 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 
@@ -61,8 +63,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ActivationAction<D extends ActivationActionDefinition> extends AbstractCommandAction<D> {
 
-    private final JcrItemAdapter jcrItemAdapter;
-
     private final EventBus admincentralEventBus;
     private final UiContext uiContext;
 
@@ -70,15 +70,20 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     final static public String ATTRIBUTE_MODIFIEDONLY = "modifiedOnly";
 
+    private JcrItemId changedItemId;
 
-    @Inject
     public ActivationAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, final SimpleTranslator i18n) {
-        super(definition, item, commandsManager, uiContext, i18n);
-        this.jcrItemAdapter = item;
+        this(definition, Arrays.asList(item), commandsManager, admincentralEventBus, uiContext, i18n);
+    }
+
+    public ActivationAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, final SimpleTranslator i18n) {
+        super(definition, items, commandsManager, uiContext, i18n);
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;
         this.i18n = i18n;
+        this.changedItemId = items.get(0).getItemId();
     }
 
     @Override
@@ -104,7 +109,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     @Override
     protected void onPostExecute() throws Exception {
-        admincentralEventBus.fireEvent(new ContentChangedEvent(jcrItemAdapter.getItemId()));
+        admincentralEventBus.fireEvent(new ContentChangedEvent(changedItemId));
 
         Context context = MgnlContext.getInstance();
         // yes, this is inverted, because a chain returns false when it is finished.
