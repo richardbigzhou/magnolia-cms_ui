@@ -34,8 +34,9 @@
 package info.magnolia.ui.api.app;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.i18nsystem.I18nable;
+import info.magnolia.config.NamedDefinition;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -44,8 +45,9 @@ import java.util.Map;
  * Describes an app.
  */
 @I18nable(keyGenerator = AppDescriptorKeyGenerator.class)
-public interface AppDescriptor extends Serializable {
+public interface AppDescriptor extends NamedDefinition, Serializable {
 
+    @Override
     String getName();
 
     @I18nText
