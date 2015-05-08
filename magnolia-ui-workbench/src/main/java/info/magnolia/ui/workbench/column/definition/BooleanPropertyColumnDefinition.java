@@ -93,13 +93,15 @@ public class BooleanPropertyColumnDefinition extends AbstractColumnDefinition {
         }
 
         @Override
-        public Object generateCell(Table source, Object itemId, Object columnId) {
+        public String generateCell(Table source, Object itemId, Object columnId) {
             StringBuilder sb = new StringBuilder();
 
             // get property value
             Property<?> property = source.getContainerProperty(itemId, columnId);
             boolean value = false;
-            if (Boolean.class.isAssignableFrom(property.getType())) {
+            if (property == null) {
+                // no property found or its value was null, i.e. keep it false here
+            } else if (Boolean.class.isAssignableFrom(property.getType())) {
                 value = ((Boolean) property.getValue()).booleanValue();
             } else if (String.class.isAssignableFrom(property.getType())) {
                 value = Boolean.parseBoolean((String) property.getValue());
