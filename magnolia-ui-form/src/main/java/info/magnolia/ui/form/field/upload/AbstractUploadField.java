@@ -344,11 +344,6 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
             return;
         }
         refreshInProgressLayout(readBytes, contentLength, getValue().getLastFileName());
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            log.error("", e);
-        }
     }
 
     /**
