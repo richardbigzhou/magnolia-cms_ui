@@ -13,37 +13,27 @@
  import com.vaadin.shared.ui.Connect;
  import com.vaadin.shared.ui.table.TableConstants;
  import com.vaadin.shared.ui.table.TableState;
- 
+
 -@Connect(com.vaadin.ui.Table.class)
 -public class TableConnector extends AbstractHasComponentsConnector implements
 +//@Connect(com.vaadin.ui.Table.class)
 +public class TableConnectorPatched extends AbstractHasComponentsConnector implements
          Paintable, DirectionalManagedLayout, PostLayoutListener {
- 
+
      @Override
-@@ -135,7 +135,8 @@
- 
-         getWidget().updatePageLength(uidl);
- 
--        getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
-+        // MGNLUI-960 Avoid TreeTable jump for the time it repaints
-+        // getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
- 
-         getWidget().showRowHeaders = uidl.getBooleanAttribute("rowheaders");
-         getWidget().showColHeaders = uidl.getBooleanAttribute("colheaders");
-@@ -316,8 +317,8 @@
+@@ -316,8 +316,8 @@
      }
- 
+
      @Override
 -    public VScrollTable getWidget() {
 -        return (VScrollTable) super.getWidget();
 +    public VScrollTablePatched getWidget() {
 +        return (VScrollTablePatched) super.getWidget();
      }
- 
+
      @Override
-@@ -337,20 +338,20 @@
- 
+@@ -337,20 +337,20 @@
+
      @Override
      public void postLayout() {
 -        VScrollTable table = getWidget();
@@ -67,7 +57,7 @@
                      getLayoutManager().layoutNow();
                  }
              });
-@@ -395,7 +396,7 @@
+@@ -395,7 +395,7 @@
          if (element != getWidget().getElement()) {
              Object node = Util.findWidget(
                      (com.google.gwt.user.client.Element) element,
