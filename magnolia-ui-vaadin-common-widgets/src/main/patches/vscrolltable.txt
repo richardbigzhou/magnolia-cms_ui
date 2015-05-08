@@ -541,6 +541,15 @@
                  transferable.setData("itemId", "" + rowKey);
                  NodeList<TableCellElement> cells = rowElement.getCells();
                  for (int i = 0; i < cells.getLength(); i++) {
+@@ -6373,7 +6428,7 @@
+      */
+     public void updatePageLength() {
+         // Only update if visible and enabled
+-        if (!isVisible() || !enabled) {
++        if (!isVisibleInHierarchy() || !enabled) {
+             return;
+         }
+
 @@ -6412,9 +6467,11 @@
  
      }
