@@ -65,13 +65,13 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     private final ContentConnector contentConnector;
 
-    private JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
-    private JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
-    private MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
-    private JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
-    private JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
-    private AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
-    private WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
+    protected JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
+    protected JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
+    protected MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
+    protected JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
+    protected JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
+    protected AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
+    protected WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
 
     @Inject
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
