@@ -64,7 +64,7 @@ import org.junit.Test;
 /**
  * Test case for {@link info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl}.
  */
-public class AppLayoutManagerImplTest extends MgnlTestCase {
+public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
 
     private AppLauncherGroupDefinition appGroup1;
     private AppLauncherGroupDefinition appGroup2;

@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(AppLauncherLayoutManagerImpl.class);
 
     private final AppDescriptorRegistry appDescriptorRegistry;
 
@@ -88,21 +88,21 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
             @Override
             public void onAppRegistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
 
             @Override
             public void onAppReregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
 
             @Override
             public void onAppUnregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                log.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
                 sendChangedEvent();
             }
         });
@@ -130,12 +130,12 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                     final DefinitionProvider<AppDescriptor> definitionProvider = appDescriptorRegistry.getProvider(entryDefinition.getName());
                     appDescriptor = i18nizer.decorate(definitionProvider.get());
                 } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
-                    logger.warn(e.getMessage());
+                    log.warn(e.getMessage());
                     continue;
                 }
 
                 if (StringUtils.isBlank(appDescriptor.getLabel()) || StringUtils.isBlank(appDescriptor.getIcon())) {
-                    logger.warn("Label and/or icon for app [{}] are blank. App won't be displayed in the app launcher. Please either define them in the configuration tree or in the app's i18n properties file.", entryDefinition.getName());
+                    log.warn("Label and/or icon for app [{}] are blank. App won't be displayed in the app launcher. Please either define them in the configuration tree or in the app's i18n properties file.", entryDefinition.getName());
                     continue;
                 }
 
@@ -182,7 +182,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
      * Sends an event on the system event bus.
      */
     private void sendChangedEvent() {
-        logger.debug("Sending AppLauncherLayoutChangedEvent on the system bus");
+        log.debug("Sending AppLauncherLayoutChangedEvent on the system bus");
         systemEventBus.fireEvent(new AppLauncherLayoutChangedEvent());
     }
 }
