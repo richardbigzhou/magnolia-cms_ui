@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'MagnoliaIcons';
-  src: url('fonts/MagnoliaIcons.eot?u4tjws');
-  src: url('fonts/MagnoliaIcons.eot?#iefixu4tjws') format('embedded-opentype'),
-    url('fonts/MagnoliaIcons.woff?u4tjws') format('woff'),
-    url('fonts/MagnoliaIcons.ttf?u4tjws') format('truetype'),
-    url('fonts/MagnoliaIcons.svg?u4tjws#MagnoliaIcons') format('svg');
+  src: url('fonts/MagnoliaIcons.eot?llcde5');
+  src: url('fonts/MagnoliaIcons.eot?#iefixllcde5') format('embedded-opentype'),
+    url('fonts/MagnoliaIcons.woff?llcde5') format('woff'),
+    url('fonts/MagnoliaIcons.ttf?llcde5') format('truetype'),
+    url('fonts/MagnoliaIcons.svg?llcde5#MagnoliaIcons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -826,6 +826,10 @@
 
 .icon-external-webpage:before {
   content: "\e60b";
+}
+
+.icon-arrow-link:before {
+  content: "\e60c";
 }
 
 .icon-link:before {
