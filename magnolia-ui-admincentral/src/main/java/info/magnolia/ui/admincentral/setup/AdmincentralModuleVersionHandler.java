@@ -92,6 +92,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
     protected static final String UI_ACTIONS_IMPORT = "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
     protected static final String UI_IMPORT_FIELD = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
+    private final Task exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy = new ExcludeWorkspacesFromFlushCachePolicy("profiles", "messages");
 
     /**
      * Check if the activation module is install and correctly configured.
@@ -272,7 +273,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/")));
         register(DeltaBuilder.update("5.4", "")
                 .addTask(new BootstrapSingleResource("Bootstrap Pulse Presenters", "Bootstrap the new configuration for tasks and messages in Pulse.",
-                        "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml")));
+                        "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml"))
+                .addTask(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy)
+        );
     }
 
     @Override
@@ -301,6 +304,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                 new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml"))));
+
+        list.add(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy);
         return list;
     }
 
