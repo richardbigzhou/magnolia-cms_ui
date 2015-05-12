@@ -144,6 +144,8 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
             return "pulse.tasks.done";
         case Failed:
             return "pulse.tasks.failed";
+        case Scheduled:
+            return "pulse.tasks.scheduled";
         default:
             break;
         }
