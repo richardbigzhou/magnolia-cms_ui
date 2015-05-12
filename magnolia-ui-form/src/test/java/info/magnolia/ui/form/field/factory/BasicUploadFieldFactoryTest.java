@@ -36,11 +36,8 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.i18nsystem.ContextLocaleProvider;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
@@ -73,14 +70,12 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
     public void setUp() throws Exception {
         super.setUp();
         // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
-        UiContext mockUiContext = mock(UiContext.class);
-        ImageProvider mockImageProvider = mock(ImageProvider.class);
-        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
-        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
-        TranslationService translationService = new TranslationServiceImpl();
-        MockComponentProvider componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(TranslationService.class, translationService);
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext, mock(SimpleTranslator.class), componentProvider);
+        UiContext uiContext = mock(UiContext.class);
+        ImageProvider imageProvider = mock(ImageProvider.class);
+        SimpleTranslator translator = mock(SimpleTranslator.class);
+        ComponentsTestUtil.setInstance(SimpleTranslator.class, translator);
+        ComponentProvider componentProvider = new MockComponentProvider();
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, imageProvider, uiContext, translator, componentProvider);
     }
 
     @Test

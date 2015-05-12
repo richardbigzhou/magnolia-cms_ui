@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.FixedLocaleProvider;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -94,12 +94,7 @@ public class BaseDialogPresenterTest {
 
     private ToggleableAction action2;
 
-    private I18nizer i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new ContextLocaleProvider() {
-        @Override
-        public Locale getLocale() {
-            return Locale.ENGLISH;
-        }
-    });
+    private I18nizer i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new FixedLocaleProvider(Locale.ENGLISH));
 
     private SimpleTranslator i18n = mock(SimpleTranslator.class);
 

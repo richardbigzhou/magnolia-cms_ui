@@ -114,6 +114,7 @@ public class FileTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(false);
         definition.setI18n(false);
 
+        ComponentsTestUtil.setInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
 
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
@@ -123,7 +124,6 @@ public class FileTransformerTest {
         ComponentsTestUtil.setInstance(TranslationService.class, new TranslationServiceImpl());
 
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
-        ComponentsTestUtil.setImplementation(SimpleTranslator.class, SimpleTranslator.class);
     }
 
     @After

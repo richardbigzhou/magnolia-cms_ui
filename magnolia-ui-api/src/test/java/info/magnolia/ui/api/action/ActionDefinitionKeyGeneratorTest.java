@@ -37,8 +37,8 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.i18nsystem.FixedLocaleProvider;
 import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.action.testmodel.TestI18nAbleActionDefinition;
@@ -233,22 +233,6 @@ public class ActionDefinitionKeyGeneratorTest {
                 "actions.myaction.label",
                 "actions.myaction"
                 ));
-    }
-
-    /**
-     * FixedLocaleProvider.
-     */
-    public static class FixedLocaleProvider implements LocaleProvider {
-        private final Locale locale;
-
-        public FixedLocaleProvider(Locale locale) {
-            this.locale = locale;
-        }
-
-        @Override
-        public Locale getLocale() {
-            return locale;
-        }
     }
 
     /**
