@@ -36,12 +36,10 @@ package info.magnolia.ui.framework.action;
 import static org.mockito.Mockito.*;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.junit.Before;
@@ -55,18 +53,19 @@ public class OpenCreateDialogActionTest {
     private FormDialogPresenterFactory formDialogPresenterFactory;
     private UiContext uiContext;
     private SimpleTranslator i18n;
+	private OpenCreateDialogActionDefinition actionDefinition;
 
     @Before
     public void setUp() throws Exception {
         formDialogPresenterFactory = mock(FormDialogPresenterFactory.class);
         uiContext = mock(UiContext.class);
         i18n = mock(SimpleTranslator.class);
+        actionDefinition =  new OpenCreateDialogActionDefinition();
     }
 
     @Test
-    public void testMissingDialogDefinition() throws ActionExecutionException {
+    public void missingDialogDefinition() throws Exception {
         // GIVEN
-        OpenCreateDialogActionDefinition actionDefinition = new OpenCreateDialogActionDefinition();
         actionDefinition.setName("testAction");
 
         when(i18n.translate("ui-framework.actions.no.dialog.definition", "testAction")).thenReturn("No dialog defined for action: testAction");
@@ -81,9 +80,8 @@ public class OpenCreateDialogActionTest {
     }
 
     @Test
-    public void testDialogIsNotRegistered() throws ActionExecutionException {
+    public void dialogIsNotRegistered() throws Exception {
         // GIVEN
-        OpenCreateDialogActionDefinition actionDefinition = new OpenCreateDialogActionDefinition();
         actionDefinition.setName("testAction");
         actionDefinition.setDialogName("testDialog");
 
@@ -104,7 +102,7 @@ public class OpenCreateDialogActionTest {
         // GIVEN
         ContentConnector contentConnector = mock(ContentConnector.class);
 
-        OpenCreateDialogAction action = new OpenCreateDialogAction(new OpenCreateDialogActionDefinition(), null, formDialogPresenterFactory, uiContext, mock(EventBus.class), contentConnector, i18n);
+        OpenCreateDialogAction action = new OpenCreateDialogAction(actionDefinition, null, formDialogPresenterFactory, uiContext, mock(EventBus.class), contentConnector, i18n);
 
         // WHEN
         action.execute();
