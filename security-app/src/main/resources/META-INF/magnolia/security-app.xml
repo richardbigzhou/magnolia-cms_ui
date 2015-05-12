@@ -26,6 +26,20 @@
     </component>
   </components>
   <components>
+    <id>app-security-users</id>
+    <component>
+      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
+      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-security-groups</id>
+    <component>
+      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
+      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
+    </component>
+  </components>
+  <components>
     <id>app-security-roles</id>
     <component>
       <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
