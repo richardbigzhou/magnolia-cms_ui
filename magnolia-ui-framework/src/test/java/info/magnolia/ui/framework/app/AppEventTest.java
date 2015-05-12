@@ -43,9 +43,7 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.event.TestEvent;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
@@ -118,6 +116,7 @@ public class AppEventTest {
     @After
     public void tearDown() throws Exception {
         componentProvider.destroy();
+
         // Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
@@ -223,9 +222,6 @@ public class AppEventTest {
         });
 
         components.registerInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
-        components.registerInstance(TranslationService.class, mock(TranslationService.class));
-        components.registerInstance(LocaleProvider.class, mock(LocaleProvider.class));
-        components.registerInstance(info.magnolia.cms.i18n.MessagesManager.class, mock(info.magnolia.cms.i18n.MessagesManager.class));
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);

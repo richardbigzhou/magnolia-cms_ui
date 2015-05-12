@@ -38,15 +38,9 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.core.SystemProperty;
-import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.Node2BeanTransformer;
 import info.magnolia.jcr.node2bean.TypeMapping;
@@ -119,11 +113,6 @@ public class FileTransformerTest {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-
-        ComponentsTestUtil.setInstance(TranslationService.class, new TranslationServiceImpl());
-
-        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
     }
 
     @After
