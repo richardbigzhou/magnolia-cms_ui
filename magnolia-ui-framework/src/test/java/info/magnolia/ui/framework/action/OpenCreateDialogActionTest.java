@@ -34,13 +34,14 @@
 package info.magnolia.ui.framework.action;
 
 import static org.mockito.Mockito.*;
-
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.SupportsCreation;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.junit.Before;
@@ -96,5 +97,19 @@ public class OpenCreateDialogActionTest {
 
         // THEN
         verify(uiContext).openNotification(MessageStyleTypeEnum.ERROR, false, "Dialog [testDialog] is not registered.");
+    }
+
+    @Test
+    public void setNullParentIdToDefaultItem() throws Exception {
+        // GIVEN
+        ContentConnector contentConnector = mock(ContentConnector.class);
+
+        OpenCreateDialogAction action = new OpenCreateDialogAction(new OpenCreateDialogActionDefinition(), null, formDialogPresenterFactory, uiContext, mock(EventBus.class), contentConnector, i18n);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        verify(contentConnector).getDefaultItemId();
     }
 }

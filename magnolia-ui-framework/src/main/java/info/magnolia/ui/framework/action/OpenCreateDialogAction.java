@@ -81,10 +81,14 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
 
     @Override
     public void execute() throws ActionExecutionException {
-
         Object parentId = contentConnector.getItemId(parentItem);
+        // parent can be null when no selection has be made yet
+        if(parentId == null) {
+            parentId = contentConnector.getDefaultItemId();
+        }
 
         if (contentConnector instanceof SupportsCreation) {
+
             final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(parentId, getDefinition().getNodeType());
 
             final String dialogName = getDefinition().getDialogName();
