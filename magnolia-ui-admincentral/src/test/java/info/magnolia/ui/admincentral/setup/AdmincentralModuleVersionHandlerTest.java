@@ -42,6 +42,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.module.InstallContext;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
@@ -102,7 +103,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // (only needs to be a non-empty list of existing module descriptors, so we pick the most basic one).
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-                );
+        );
     }
 
     @Override
@@ -597,6 +598,20 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         assertThat(config, hasNode("pulse"));
         assertThat(config.getNode("pulse"), hasNode("presenters"));
+    }
+
+    @Test
+    public void testUpdateFrom538ExcludeFromFlushCachePolicy() throws Exception {
+        // GIVEN
+        Node workspacesExcludedFromFlushCachePolicy = NodeUtil.createPath(session.getRootNode(), "/" + ExcludeWorkspacesFromFlushCachePolicy.CACHE_CONFIGURATION_PATH + "defaultPageCache/" + ExcludeWorkspacesFromFlushCachePolicy.EXCLUDED_WORKSPACES_CONFIG_PATH, NodeTypes.Content.NAME);
+
+        // WHEN
+       InstallContext ctx =  executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+
+        // THEN
+        assertThat(workspacesExcludedFromFlushCachePolicy, hasProperty("profiles"));
+        assertThat(workspacesExcludedFromFlushCachePolicy, hasProperty("messages"));
+        this.assertNoMessages(ctx);
     }
 
 }
