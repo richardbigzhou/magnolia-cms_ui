@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.workbench.column;
 
+import info.magnolia.jcr.wrapper.HTMLEscapingContentDecorator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.Property;
 
 import com.vaadin.ui.Table;
 
@@ -49,9 +52,11 @@ import com.vaadin.ui.Table;
 public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implements ColumnFormatter {
 
     protected D definition;
+    private HTMLEscapingContentDecorator decorator;
 
     public AbstractColumnFormatter(D definition) {
         this.definition = definition;
+        this.decorator = new HTMLEscapingContentDecorator(false);
     }
 
     /**
@@ -63,7 +68,11 @@ public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implem
         com.vaadin.data.Item vaadinItem = source.getItem(itemId);
         if (vaadinItem instanceof JcrItemAdapter) {
             final JcrItemAdapter item = (JcrItemAdapter) vaadinItem;
-            return item == null ? null : item.getJcrItem();
+            if (item.isNode()) {
+                return decorator.wrapNode((Node) item.getJcrItem());
+            } else {
+                return decorator.wrapProperty((Property) item.getJcrItem());
+            }
         }
         return null;
     }
