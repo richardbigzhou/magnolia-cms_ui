@@ -269,10 +269,15 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.3.4", "")
                 .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
         register(DeltaBuilder.update("5.3.6", "")
-                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/")));
+                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/ui-admincentral/apps/"))
+        );
+        register(DeltaBuilder.update("5.3.9", "")
+                .addTask(new PartialBootstrapTask("Add ConfigProtectedNodeRule rule to deactivation action.", "Add ConfigProtectedNodeRule rule to deactivation action.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/deactivate/availability/rules/ConfigProtectedNodeRule"))
+        );
         register(DeltaBuilder.update("5.4", "")
                 .addTask(new BootstrapSingleResource("Bootstrap Pulse Presenters", "Bootstrap the new configuration for tasks and messages in Pulse.",
-                        "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml")));
+                        "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml"))
+        );
     }
 
     @Override
