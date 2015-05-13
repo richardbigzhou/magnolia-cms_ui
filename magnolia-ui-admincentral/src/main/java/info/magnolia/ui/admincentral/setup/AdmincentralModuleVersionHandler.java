@@ -275,6 +275,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.3.6", "")
                 .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/ui-admincentral/apps/"))
         );
+        register(DeltaBuilder.update("5.3.9", "")
+                .addTask(new PartialBootstrapTask("Add ConfigProtectedNodeRule rule to deactivation action.", "Add ConfigProtectedNodeRule rule to deactivation action.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/deactivate/availability/rules/ConfigProtectedNodeRule"))
+        );
     }
 
     @Override

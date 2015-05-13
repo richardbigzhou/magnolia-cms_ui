@@ -571,4 +571,17 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
     }
 
+    @Test
+    public void testUpdateFrom538() throws Exception {
+        // GIVEN
+        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/deactivate/availability/rules", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+
+        // THEN
+        assertThat(config, hasNode("ConfigProtectedNodeRule"));
+
+    }
+
 }
