@@ -83,28 +83,27 @@
          setMultiSelectMode(MULTISELECT_MODE_DEFAULT);
 
          scrollBodyPanel.addFocusHandler(this);
-@@ -1107,10 +1128,20 @@
+@@ -1107,9 +1128,19 @@
          // Send the selected rows
          client.updateVariable(paintableId, "selected",
                  selectedRowKeys.toArray(new String[selectedRowKeys.size()]),
 -                immediately);
 +                false);
-
++
 +        if (immediately) {
 +            selectionSynchronizer.schedule(500);
 +        }
-     }
++    }
 
 +    private Timer selectionSynchronizer = new Timer() {
 +        @Override
 +        public void run() {
 +            client.sendPendingVariableChanges();
-+        }
+     }
 +    };
-+
+
      /**
       * Get the key that moves the selection head upwards. By default it is the
-      * up arrow key but by overriding this you can change the key to whatever
 @@ -1235,6 +1266,18 @@
          initialContentReceived = true;
          sizeNeedsInit = true;
@@ -215,7 +214,7 @@
                      if (event.getTypeInt() == Event.ONCONTEXTMENU
 -                            && !client.hasEventListeners(VScrollTable.this,
 +                            && !client.hasEventListeners(VScrollTablePatched.this,
-                                     TableConstants.HEADER_CLICK_EVENT_ID)) {
+                             TableConstants.HEADER_CLICK_EVENT_ID)) {
                          // Prevent showing the browser's context menu only when
                          // there is a header click listener.
 @@ -3057,9 +3104,9 @@
@@ -334,7 +333,7 @@
                  if (event.getTypeInt() == Event.ONCONTEXTMENU
 -                        && !client.hasEventListeners(VScrollTable.this,
 +                        && !client.hasEventListeners(VScrollTablePatched.this,
-                                 TableConstants.FOOTER_CLICK_EVENT_ID)) {
+                         TableConstants.FOOTER_CLICK_EVENT_ID)) {
                      // Show browser context menu if a footer click listener is
                      // not present
 @@ -4270,7 +4317,7 @@
@@ -483,8 +482,8 @@
                  }
              }
 @@ -5618,19 +5675,19 @@
-                     String style, boolean textIsHTML, boolean sorted,
-                     String description, final TableCellElement td) {
+                                             String style, boolean textIsHTML, boolean sorted,
+                                             String description, final TableCellElement td) {
                  final Element container = DOM.createDiv();
 -                container.setClassName(VScrollTable.this.getStylePrimaryName()
 +                container.setClassName(VScrollTablePatched.this.getStylePrimaryName()
@@ -508,7 +507,7 @@
 
 @@ -5695,18 +5752,18 @@
              protected void initCellWithWidget(Widget w, char align,
-                     String style, boolean sorted, final TableCellElement td) {
+                                               String style, boolean sorted, final TableCellElement td) {
                  final Element container = DOM.createDiv();
 -                String className = VScrollTable.this.getStylePrimaryName()
 +                String className = VScrollTablePatched.this.getStylePrimaryName()
@@ -532,7 +531,7 @@
 @@ -5749,7 +5806,7 @@
               */
              private boolean handleClickEvent(Event event, Element targetTdOrTr,
-                     boolean immediate) {
+                                              boolean immediate) {
 -                if (!client.hasEventListeners(VScrollTable.this,
 +                if (!client.hasEventListeners(VScrollTablePatched.this,
                          TableConstants.ITEM_CLICK_EVENT_ID)) {
@@ -541,14 +540,14 @@
 @@ -5944,7 +6001,7 @@
                          if (enabled
                                  && (actionKeys != null || client
-                                         .hasEventListeners(
--                                                VScrollTable.this,
+                                 .hasEventListeners(
+-                                        VScrollTable.this,
 +                                                VScrollTablePatched.this,
-                                                 TableConstants.ITEM_CLICK_EVENT_ID))) {
+                                         TableConstants.ITEM_CLICK_EVENT_ID))) {
                              /*
                               * Prevent browser context menu only if there are
 @@ -6290,7 +6347,7 @@
-                     Element targetTdOrTr) {
+                                         Element targetTdOrTr) {
                  VTransferable transferable = new VTransferable();
                  transferable.setDragSource(ConnectorMap.get(client)
 -                        .getConnector(VScrollTable.this));
@@ -556,6 +555,15 @@
                  transferable.setData("itemId", "" + rowKey);
                  NodeList<TableCellElement> cells = rowElement.getCells();
                  for (int i = 0; i < cells.getLength(); i++) {
+@@ -6711,7 +6768,7 @@
+      */
+     public void updatePageLength() {
+         // Only update if visible and enabled
+-        if (!isVisible() || !enabled) {
++        if (!isVisibleInHierarchy() || !enabled) {
+             return;
+         }
+
 @@ -6752,7 +6809,7 @@
 
      /** For internal use only. May be removed or replaced in the future. */
