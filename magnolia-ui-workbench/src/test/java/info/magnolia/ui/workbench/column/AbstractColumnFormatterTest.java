@@ -33,12 +33,24 @@
  */
 package info.magnolia.ui.workbench.column;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.jcr.decoration.ContentDecorator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.wrapper.HTMLEscapingContentDecorator;
+import info.magnolia.test.mock.jcr.MockNode;
+import info.magnolia.test.mock.jcr.MockProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
+import javax.jcr.Property;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
@@ -48,25 +60,92 @@ import com.vaadin.ui.Table;
  */
 public class AbstractColumnFormatterTest {
 
+    private MockNode node;
+    private MockProperty property;
+    private Table table;
+    private Item item;
+    private Object itemId;
+
+    private AbstractColumnFormatter<ColumnDefinition> abstractColumnFormatter;
+    private ColumnDefinition definition;
+
+    private final String PROPERTY = "name";
+
+    @Before
+    public void setUp() {
+        table = mock(Table.class);
+        item = mock(Item.class);
+        itemId = item;
+
+        abstractColumnFormatter = new TestAbstractColumnFormatter(definition);
+        definition = mock(ColumnDefinition.class);
+
+        final String unEscapedHTML = "<A onmouseover=alert('XSS_by_Vishal_V_Sonar_&_Akash_Chavan')> XSS </A>";
+        node = new MockNode(unEscapedHTML, NodeTypes.NodeData.NAME);
+        property = new MockProperty(PROPERTY, unEscapedHTML, node);
+    }
+
     @Test
     public void testGetJcrItem() {
         // GIVEN
-        AbstractColumnFormatter<ColumnDefinition> dummy = new AbstractColumnFormatter<ColumnDefinition>(null) {
-
-            @Override
-            public Object generateCell(Table source, Object itemId, Object columnId) {
-                return null;
-            }
-        };
-
-        Table table = mock(Table.class);
-        Item value = mock(Item.class);
-        when(table.getItem("someItemId")).thenReturn(value);
+        when(table.getItem("someItemId")).thenReturn(item);
 
         // WHEN
-        javax.jcr.Item item = dummy.getJcrItem(table, "someItemId");
+        javax.jcr.Item item = abstractColumnFormatter.getJcrItem(table, "someItemId");
         // THEN - don't fail w/ ClassCastException
         assertNull(item);
     }
 
+    @Test
+    public void testGetJcrItemIsEscaped() throws Exception {
+
+        // GIVEN
+        ContentDecorator decorator = new HTMLEscapingContentDecorator(false);
+        JcrNodeAdapter nodeAdapter = mock(JcrNodeAdapter.class);
+
+        Mockito.when(nodeAdapter.getJcrItem()).thenReturn(node);
+        Mockito.when(nodeAdapter.isNode()).thenReturn(true);
+        Mockito.when(table.getItem(itemId)).thenReturn(nodeAdapter);
+
+        // WHEN
+        javax.jcr.Item value = abstractColumnFormatter.getJcrItem(table, itemId);
+
+        // THEN
+        assertThat(decorator.wrapNode(node).getName(), is(value.getName()));
+    }
+
+    @Test
+    public void testGetJcrItemPropertyIsEscaped() throws Exception {
+
+        // GIVEN
+        ContentDecorator decorator = new HTMLEscapingContentDecorator(false);
+        JcrItemAdapter nodeAdapter = mock(JcrItemAdapter.class);
+
+        Mockito.when(nodeAdapter.getJcrItem()).thenReturn(property);
+        Mockito.when(nodeAdapter.isNode()).thenReturn(false);
+        Mockito.when(table.getItem(itemId)).thenReturn(nodeAdapter);
+
+        // WHEN
+        javax.jcr.Item value = abstractColumnFormatter.getJcrItem(table, itemId);
+
+        // THEN
+        assertThat(decorator.wrapProperty(property).getString(), is(((Property) value).getString()));
+    }
+
+    private class TestAbstractColumnFormatter extends AbstractColumnFormatter<ColumnDefinition> {
+
+        public TestAbstractColumnFormatter(ColumnDefinition definition) {
+            super(definition);
+        }
+
+        @Override
+        protected javax.jcr.Item getJcrItem(Table source, Object itemId) {
+            return super.getJcrItem(source, itemId);
+        }
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+            return null;
+        }
+    }
 }
