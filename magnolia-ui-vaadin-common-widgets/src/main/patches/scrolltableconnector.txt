@@ -21,29 +21,27 @@
          Paintable, DirectionalManagedLayout, PostLayoutListener {
  
      @Override
-@@ -145,7 +145,8 @@
- 
+@@ -145,6 +145,7 @@
+
          getWidget().updatePageLength(uidl);
- 
--        getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
+
 +        // MGNLUI-960 Avoid TreeTable jump for the time it repaints
-+        // getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
- 
+         getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
+
          getWidget().showRowHeaders = uidl.getBooleanAttribute("rowheaders");
-         getWidget().showColHeaders = uidl.getBooleanAttribute("colheaders");
 @@ -314,8 +315,8 @@
      }
- 
+
      @Override
 -    public VScrollTable getWidget() {
 -        return (VScrollTable) super.getWidget();
 +    public VScrollTablePatched getWidget() {
 +        return (VScrollTablePatched) super.getWidget();
      }
- 
+
      @Override
 @@ -335,8 +336,8 @@
- 
+
      @Override
      public void postLayout() {
 -        VScrollTable table = getWidget();
@@ -56,7 +54,7 @@
 @@ -344,14 +345,14 @@
                      // IE8 needs some hacks to measure sizes correctly
                      Util.forceIE8Redraw(getWidget().getElement());
- 
+
 -                    getLayoutManager().setNeedsMeasure(TableConnector.this);
 +                    getLayoutManager().setNeedsMeasure(TableConnectorPatched.this);
                      ServerConnector parent = getParent();
@@ -72,10 +70,10 @@
              });
 @@ -394,7 +395,7 @@
          TooltipInfo info = null;
- 
+
          if (element != getWidget().getElement()) {
 -            Object node = Util.findWidget(element, VScrollTableRow.class);
 +            Object node = Util.findWidget(element, getWidget().scrollBody.iterator().next().getClass());
- 
+
              if (node != null) {
                  VScrollTableRow row = (VScrollTableRow) node;
