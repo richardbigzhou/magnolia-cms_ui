@@ -67,9 +67,11 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerListener;
+import org.quartz.listeners.SchedulerListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +103,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     private String catalogName;
 
     private String failureMessage;
+    private String schedulerErrorMessage;
 
     private int timeToWait;
 
@@ -186,6 +189,50 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     }
 
     /**
+     * Override to add/remove the SchedulerErrorListener for this action.
+     */
+    @Override
+    public void execute() throws ActionExecutionException {
+        if (isInvokeAsynchronously()) {
+
+            // 1. Grab the scheduler
+            Scheduler scheduler = null;
+            try {
+                // get quartz scheduler (same instance as scheduler module)
+                // due to creation of circular dependency, we can't simply import mgnl scheduler, yet we want to use same factory initialized scheduler in case someone customized it and we want to have all jobs in same group for monitoring purposes
+                scheduler = (Scheduler) schedulerModule.getClass().getMethod("getScheduler").invoke(schedulerModule);
+            } catch (ReflectiveOperationException e) {
+
+            }
+
+            // 2. Add the scheduler error listener for this whole action
+            SchedulerErrorListener errorListener = new SchedulerErrorListener();
+            if (scheduler != null) {
+                try {
+                    scheduler.addSchedulerListener(errorListener);
+                } catch (SchedulerException e) {
+                    // TODO broken contract or non-exceptional failure?
+                }
+            }
+
+            // 3. Do execute the action
+            super.execute();
+
+            // 4. Remove the scheduler error listener for this action (so that it doesn't keep a reference to this action)
+            if (scheduler != null) {
+                try {
+                    scheduler.removeSchedulerListener(errorListener);
+                } catch (SchedulerException e) {
+                    // TODO broken contract or non-exceptional failure?
+                }
+            }
+
+        } else {
+            super.execute();
+        }
+    }
+
+    /**
      * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
      * performs the actual command execution.
      *
@@ -215,6 +262,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     // get quartz scheduler (same instance as scheduler module)
                     // due to creation of circular dependency, we can't simply import mgnl scheduler, yet we want to use same factory initialized scheduler in case someone customized it and we want to have all jobs in same group for monitoring purposes
                     Scheduler scheduler = (Scheduler) schedulerModule.getClass().getMethod("getScheduler").invoke(schedulerModule);
+
                     // create trigger
                     Calendar cal = Calendar.getInstance();
                     // wait for requested period of time before invocation
@@ -341,7 +389,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     @Override
     protected String getFailureMessage() {
         // by default, we expect the command-based actions to be limited to single-item
-        return failureMessage;
+        return failureMessage != null ? failureMessage : schedulerErrorMessage;
     }
 
     /**
@@ -370,6 +418,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
         @Override
         public void triggerFired(Trigger trigger, JobExecutionContext jobExecutionContext) {
+            System.out.println("Job fired");
         }
 
         @Override
@@ -379,6 +428,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
         @Override
         public void triggerMisfired(Trigger trigger) {
+            System.err.println("Job misfired");
         }
 
         @Override
@@ -402,6 +452,20 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * In case the scheduler fails e.g. to instantiate the jobs, the action needs to know, so that it shows the appropriate error message.
+     */
+    private class SchedulerErrorListener extends SchedulerListenerSupport {
+
+        @Override
+        public void schedulerError(String msg, SchedulerException cause) {
+            // putting any item in there (not necessarily the item where the failure happened)
+            // so that AbstractMultiItemAction sees there was a failure
+            getFailedItems().put(getCurrentItem(), cause);
+            schedulerErrorMessage = "ui-framework.abstractcommand.executionfailure";
         }
     }
 }

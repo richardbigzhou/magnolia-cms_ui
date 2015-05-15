@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.framework.action;
 
+import static info.magnolia.commands.CommandsManager.DEFAULT_CATALOG;
+import static info.magnolia.context.MgnlContext.getJCRSession;
+import static info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum.ERROR;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -90,22 +94,22 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 
 /**
  * Tests.
  */
 public class AbstractCommandActionTest {
-    private String website =
-            "/parent.uuid=1\n" +
-                    "/parent/sub.uuid=2";
 
+    private static final String ASYNC = "asynchronous";
+    private static final String TEST_USER = "phantomas";
+
+    private String website = "/parent.uuid=1\n" + "/parent/sub.uuid=2";
     private MockSession session;
-
     private CommandsManager commandsManager;
     private Scheduler scheduler;
+    private UiContext uiContext;
     private SimpleTranslator i18n;
-
-    public static final String TEST_USER = "phantomas";
 
     @Before
     public void setUp() throws Exception {
@@ -147,6 +151,7 @@ public class AbstractCommandActionTest {
 
         commandsManager = mock(CommandsManager.class);
         i18n = mock(SimpleTranslator.class);
+        uiContext = mock(UiContext.class);
     }
 
     @After
@@ -154,6 +159,39 @@ public class AbstractCommandActionTest {
         MgnlContext.setInstance(null);
         session = null;
         ComponentsTestUtil.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void asyncCommandExecutionThrowsExceptionWhenEncountered() throws RepositoryException, SchedulerException, ActionExecutionException {
+        // GIVEN
+        JcrNodeAdapter item = new JcrNodeAdapter(getJCRSession("website").getNode("/parent/sub"));
+        JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
+        JobDetail jobDetail = new JobDetail();
+        when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
+
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.setCommand(ASYNC);
+        definition.setAsynchronous(true);
+
+        QuxCommand quxCommand = new QuxCommand();
+
+        when(commandsManager.getCommand(DEFAULT_CATALOG, ASYNC)).thenReturn(quxCommand);
+        String errorMessage = "Execution Failed";
+        when(i18n.translate("ui-framework.abstractcommand.executionfailure")).thenReturn(errorMessage);
+        doThrow(RuntimeException.class).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
+
+        AbstractCommandAction<CommandActionDefinition> action = actionFor(item, definition, commandsManager, uiContext, i18n);
+
+        // WHEN
+        try {
+            action.executeOnItem(item);
+        } catch (ActionExecutionException expectedException) {
+        }
+
+        // THEN
+        assertThat(true, is(definition.isAsynchronous()));
+        verify(uiContext).openNotification(ERROR, true, errorMessage);
     }
 
     @Test
@@ -418,4 +456,16 @@ public class AbstractCommandActionTest {
         }
     }
 
+    private AbstractCommandAction<CommandActionDefinition> actionFor(JcrNodeAdapter item, CommandActionDefinition definition, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
+        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
+                definition,
+                item,
+                commandsManager,
+                uiContext,
+                i18n,
+                new HashMap<String, Object>());
+
+        action.setCurrentItem(item);
+        return action;
+    }
 }
