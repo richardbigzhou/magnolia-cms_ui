@@ -36,26 +36,25 @@ package info.magnolia.ui.vaadin.layout;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutState;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
-import info.magnolia.ui.vaadin.gwt.shared.Range;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
+import info.magnolia.ui.vaadin.gwt.shared.Range;
 import info.magnolia.ui.vaadin.layout.data.PagingThumbnailContainer;
 import info.magnolia.ui.vaadin.layout.data.ThumbnailContainer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Ordered;
 import com.vaadin.server.Resource;
@@ -73,6 +72,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<>();
 
     private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<>();
+
+    private final Set<Object> selectedIds = new HashSet<>();
 
     private DataProviderKeyMapper mapper = new DataProviderKeyMapper();
 
@@ -225,25 +226,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
         @Override
         public void onThumbnailSelected(int index, boolean isMetaKeyPressed, boolean isShiftKeyPressed) {
-            if (isMetaKeyPressed || isShiftKeyPressed) {
-                getState().selection.toggleSelection(index);
-            } else {
-                getState().selection.select(index);
-            }
-            markAsDirty();
-            final List<Integer> selectedIndices = getState(false).selection.selectedIndices;
-            if (selectedIndices.size() == 1) {
-                LazyThumbnailLayout.this.onThumbnailSelected(mapper.itemIdAtIndex(selectedIndices.get(0)));
-            } else {
-                final Set<Object> itemIds = FluentIterable.from(selectedIndices).transform(new Function<Integer, Object>() {
-                    @Nullable
-                    @Override
-                    public Object apply(@Nullable Integer input) {
-                        return mapper.itemIdAtIndex(input);
-                    }
-                }).toSet();
-                LazyThumbnailLayout.this.onThumbnailsSelected(itemIds);
-            }
+            handleSelectionAtIndex(index, isMetaKeyPressed || isShiftKeyPressed);
+            fireSelectionChange();
         }
 
         @Override
@@ -273,6 +257,34 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
 
     };
+
+    private void handleSelectionAtIndex(int index, boolean isMultiple) {
+        if (isMultiple) {
+            getState().selection.toggleMultiSelection(index);
+        } else {
+            getState().selection.toggleSelection(index);
+        }
+
+        updateSelectedIds();
+    }
+
+    private void fireSelectionChange() {
+        if (selectedIds.size() == 1) {
+            this.onThumbnailSelected(selectedIds.iterator().next());
+        } else {
+            this.onThumbnailsSelected(selectedIds);
+        }
+    }
+
+    private void updateSelectedIds() {
+        selectedIds.clear();
+        selectedIds.addAll(Lists.transform(getState().selection.selectedIndices, new Function<Integer, Object>() {
+            @Override
+            public Object apply(Integer input) {
+                return container.getIdByIndex(input.intValue());
+            }
+        }));
+    }
 
     public LazyThumbnailLayout() {
         setImmediate(true);
@@ -342,18 +354,18 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         return getState(false).size.height;
     }
 
-    public void clear() {
-        getState().resources.clear();
-        mapper.clearAll();
-    }
-
     public void refresh() {
         if (getState(false).thumbnailAmount > 0) {
-            clear();
+            getState().resources.clear();
+            mapper.clearAll();
         }
 
         if (container != null) {
             setThumbnailAmount(container.size());
+
+            if (getState().offset > container.size()) {
+                getState().offset = 0;
+            }
         }
     }
 
@@ -417,13 +429,41 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         if (selectedItemId == null) {
             this.getState().selection.selectedIndices.clear();
         } else {
-            this.getState().selection.select(container.indexOfId(selectedItemId));
+            this.getState().selection.toggleSelection(-1);
+            this.getState().selection.toggleSelection(container.indexOfId(selectedItemId));
+            updateSelectedIds();
         }
     }
 
     @Override
     public void containerItemSetChange(Container.ItemSetChangeEvent event) {
         refresh();
+        synchroniseSelection();
+    }
+
+
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+
+        getState().isFirstUpdate &= initial;
+    }
+
+    /**
+     * Since the item set changed - the indices in the state might now point to the different items.
+     * Since we know which items to select via {@code selectedIds}, we can update the indices in state as well.
+     */
+    private void synchroniseSelection() {
+        final List<Integer> formerSelectedIndices = getState().selection.selectedIndices;
+        getState().selection.toggleSelection(-1);
+
+        for (Object id : formerSelectedIndices) {
+            if (getContainerDataSource().containsId(id)) {
+                handleSelectionAtIndex(container.indexOfId(id), true);
+            }
+        }
+
+        updateSelectedIds();
     }
 
     /**
@@ -438,6 +478,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         void onThumbnailSelected(Object itemId);
 
         void onThumbnailsSelected(Set<Object> ids);
+
     }
 
     /**

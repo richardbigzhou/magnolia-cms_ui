@@ -63,6 +63,8 @@ class ThumbnailsSizeKeeper {
     private int unscaledWidth;
 
     private int unscaledHeight;
+    private int verticalDecorations;
+    private int horizontalDecorations;
 
     ThumbnailsSizeKeeper(Element thumbnailParent) {
         this.thumbnailParent = thumbnailParent;
@@ -70,8 +72,8 @@ class ThumbnailsSizeKeeper {
 
     void scale(float ratio) {
         this.ratio = ratio;
-        doUpdateAllThumbnailsSize(scaleDimension(baseWidth, ratio), scaleDimension(baseHeight, ratio));
         updateCalculatedOffsetSizes();
+        doUpdateAllThumbnailsSize(calculatedWidth, calculatedHeight);
     }
 
     public void scaleToWidth(int width) {
@@ -82,11 +84,11 @@ class ThumbnailsSizeKeeper {
     }
 
     int height() {
-        return this.calculatedHeight;
+        return this.calculatedHeight + verticalDecorations;
     }
 
     int width() {
-        return this.calculatedWidth;
+        return this.calculatedWidth + horizontalDecorations;
     }
 
     boolean updateAllThumbnailsSize(int width, int height) {
@@ -159,14 +161,14 @@ class ThumbnailsSizeKeeper {
         }
 
 
-        final int horizontalDecorations = padding[1] + padding[3] + border[1] + border[3] + margin[1] + margin[3];
-        final int verticalDecorations = padding[0] + padding[2] + border[0] + border[2] + margin[0] + margin[2];
+        horizontalDecorations = padding[1] + padding[3] + border[1] + border[3] + margin[1] + margin[3];
+        verticalDecorations = padding[0] + padding[2] + border[0] + border[2] + margin[0] + margin[2];
 
         this.unscaledWidth = baseWidth + horizontalDecorations;
         this.unscaledHeight = baseHeight + verticalDecorations;
 
-        this.calculatedWidth = scaleDimension(unscaledWidth, ratio);
-        this.calculatedHeight = scaleDimension(unscaledHeight, ratio);
+        this.calculatedWidth = scaleDimension(baseWidth, ratio);
+        this.calculatedHeight = scaleDimension(baseHeight, ratio);
 
     }
 

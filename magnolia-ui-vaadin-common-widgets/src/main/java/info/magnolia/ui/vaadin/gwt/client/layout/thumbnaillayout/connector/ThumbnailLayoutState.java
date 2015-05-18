@@ -58,6 +58,11 @@ public class ThumbnailLayoutState extends AbstractComponentState {
     public SelectionModel selection = new SelectionModel();
 
     /**
+     * Is {@code true} only during the first request.
+     */
+    public boolean isFirstUpdate = true;
+
+    /**
      * ThumbnailSize.
      */
     public static class ThumbnailSize implements Serializable {
@@ -78,7 +83,7 @@ public class ThumbnailLayoutState extends AbstractComponentState {
 
         public int max = -1;
 
-        public void select(int index) {
+        public void toggleSelection(int index) {
             int indexToSelect = index;
             if (selectedIndices.size() == 1 && selectedIndices.contains(index)) {
                 indexToSelect = -1;
@@ -86,7 +91,7 @@ public class ThumbnailLayoutState extends AbstractComponentState {
 
             selectedIndices.clear();
 
-            if (index >= 0) {
+            if (indexToSelect >= 0) {
                 selectedIndices.add(indexToSelect);
             }
 
@@ -94,7 +99,7 @@ public class ThumbnailLayoutState extends AbstractComponentState {
             this.max = indexToSelect;
         }
 
-        public void toggleSelection(int index) {
+        public void toggleMultiSelection(int index) {
             if (index < 0) {
                 throw new IllegalArgumentException("Index must be non-negative");
             }
