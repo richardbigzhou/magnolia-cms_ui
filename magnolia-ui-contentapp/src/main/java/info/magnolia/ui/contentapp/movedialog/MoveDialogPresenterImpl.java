@@ -98,19 +98,25 @@ import com.vaadin.data.Property.ValueChangeListener;
  */
 public class MoveDialogPresenterImpl extends BaseDialogPresenter implements MoveDialogPresenter {
 
-    private DialogView dialogView;
+    private final DialogView dialogView;
 
-    private EventBus eventBus = new ResettableEventBus(new SimpleEventBus());
+    private final EventBus eventBus = new ResettableEventBus(new SimpleEventBus());
 
-    private WorkbenchPresenter workbenchPresenter;
+    private final WorkbenchPresenter workbenchPresenter;
 
-    private AppContext appContext;
+    private final AppContext appContext;
+
+    private final I18nizer i18nizer;
+
+    private final ContentConnector contentConnector;
+
+    private final MoveHandler dropHandler;
+
+    private final Map<MoveLocation, ActionDefinition> actionMap = new HashMap<>();
+
+    private final Map<MoveLocation, MovePossibilityPredicate> possibilityPredicates = new HashMap<>();
 
     private List<Item> nodesToMove;
-
-    private Map<MoveLocation, ActionDefinition> actionMap = new HashMap<MoveLocation, ActionDefinition>();
-
-    private Map<MoveLocation, MovePossibilityPredicate> possibilityPredicates = new HashMap<MoveLocation, MovePossibilityPredicate>();
 
     private DropConstraint constraint;
 
@@ -119,12 +125,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private Item currentHostCandidate;
 
     private ConfiguredWorkbenchDefinition workbenchDefinition;
-
-    private I18nizer i18nizer;
-
-    private ContentConnector contentConnector;
-
-    private MoveHandler dropHandler;
 
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {

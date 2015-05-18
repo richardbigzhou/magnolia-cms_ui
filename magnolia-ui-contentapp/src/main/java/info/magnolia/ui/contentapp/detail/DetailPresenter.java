@@ -87,19 +87,27 @@ import com.vaadin.ui.Button;
  */
 public class DetailPresenter implements EditorCallback, EditorValidator, ActionListener {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(DetailPresenter.class);
 
-    private SubAppContext subAppContext;
+    private final SubAppContext subAppContext;
 
     private final EventBus eventBus;
 
     private final DetailView view;
 
-    private FormBuilder formBuilder;
+    private final FormBuilder formBuilder;
 
-    private ComponentProvider componentProvider;
+    private final ComponentProvider componentProvider;
 
-    private ActionExecutor executor;
+    private final ActionExecutor executor;
+
+    private final I18nizer i18nizer;
+
+    private final SimpleTranslator i18n;
+
+    private final AvailabilityChecker checker;
+
+    private final ContentConnector contentConnector;
 
     private EditorDefinition editorDefinition;
 
@@ -108,13 +116,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     private Object itemId;
 
     private DialogView dialogView;
-
-    private final I18nizer i18nizer;
-
-    private final SimpleTranslator i18n;
-
-    private AvailabilityChecker checker;
-    private ContentConnector contentConnector;
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,

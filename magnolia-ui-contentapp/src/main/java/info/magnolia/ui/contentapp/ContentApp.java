@@ -71,8 +71,10 @@ public class ContentApp extends BaseApp {
 
     private static final Logger log = LoggerFactory.getLogger(ContentApp.class);
 
-    private ComponentProvider componentProvider;
-    private Cloner cloner = new Cloner();
+    public static final String COMMIT_CHOOSE_DIALOG_ACTION = "commit";
+
+    private final ComponentProvider componentProvider;
+    private final Cloner cloner = new Cloner();
     private ChooseDialogPresenter presenter;
 
     @Inject
@@ -86,7 +88,6 @@ public class ContentApp extends BaseApp {
         openChooseDialog(overlayLayer, null, selectedId, callback);
     }
 
-    public static final String COMMIT_CHOOSE_DIALOG_ACTION = "commit";
 
     @Override
     public void openChooseDialog(UiContext overlayLayer, String targetTreeRootPath, String selectedId, final ChooseDialogCallback callback) {
