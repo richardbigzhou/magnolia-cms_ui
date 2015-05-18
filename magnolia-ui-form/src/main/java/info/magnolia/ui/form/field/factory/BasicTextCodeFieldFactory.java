@@ -44,6 +44,7 @@ import org.vaadin.aceeditor.AceEditor;
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Field;
 
 /**
@@ -92,6 +93,9 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
             aceEditor.setThemePath(aceEditorResourcePath);
         }
         aceEditor.setMode(getModeType(definition.getLanguage()));
+        if (definition.getHeight() > 0) {
+            aceEditor.setHeight(definition.getHeight(), Unit.PIXELS);
+        }
         return aceEditor;
     }
 
