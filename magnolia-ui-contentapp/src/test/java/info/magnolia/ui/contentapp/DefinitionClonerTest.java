@@ -243,10 +243,11 @@ public class DefinitionClonerTest {
 
     /**
      * A completely useless Decorator, just used to validate it doesn't get cloned.
-     * Note: Ritz Cloner uses Objenesis, which bypasses the default constructor, even if it exists and is public, so we
+     * Note: Rits Cloner uses Objenesis, which bypasses the default constructor, even if it exists and is public, so we
      * can only rely on something like {@link #extractDecorator(Object)} to validate this wasn't cloned.
      */
     public static class DummyDecorator extends Decorator<Bar> {
+        @Override
         public Object decorateResult(Bar proxy, Method method, Object[] args, Object result) {
             return super.decorateResult(proxy, method, args, result);
         }
