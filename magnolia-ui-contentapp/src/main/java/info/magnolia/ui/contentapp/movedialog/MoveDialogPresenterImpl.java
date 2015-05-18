@@ -112,6 +112,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private final MoveHandler dropHandler;
 
+    private final Cloner cloner;
+
     private final Map<MoveLocation, ActionDefinition> actionMap = new HashMap<>();
 
     private final Map<MoveLocation, MovePossibilityPredicate> possibilityPredicates = new HashMap<>();
@@ -135,6 +137,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
         this.dropHandler = componentProvider.newInstance(MoveHandler.class);
+        this.cloner = new Cloner();
     }
 
     @Override
@@ -190,11 +193,10 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ConfiguredImageProviderDefinition prepareImageProviderDefinition(BrowserSubAppDescriptor subAppDescriptor) {
-        return (ConfiguredImageProviderDefinition) new Cloner().deepClone(subAppDescriptor.getImageProvider());
+        return (ConfiguredImageProviderDefinition) cloner.deepClone(subAppDescriptor.getImageProvider());
     }
 
     private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
-        Cloner cloner = new Cloner();
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
 
@@ -220,7 +222,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
-        Cloner cloner = new Cloner();
         ContentPresenterDefinition def = cloner.deepClone(treePresenter);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
