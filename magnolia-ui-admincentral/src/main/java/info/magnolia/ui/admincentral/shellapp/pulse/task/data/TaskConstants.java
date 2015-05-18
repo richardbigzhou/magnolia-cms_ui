@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
-
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
-
-import java.util.Set;
-
-import com.vaadin.data.Container;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.data;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * Common constants used for arranging the access to {@link info.magnolia.task.Task} objects.
+ *
+ * @see TaskQueryDefinition
+ * @see TaskQuery
  */
-public interface PulseListView extends View {
-
-    void setDataSource(Container dataSource);
-
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
-
-    void setTabActive(PulseItemCategory category);
-
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
-    }
-
+public class TaskConstants {
+    public static final String ID = "id";
+    public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
+    public static final String SENT_TO_PROPERTY_ID = "sentTo";
+    public static final String LAST_CHANGE_PROPERTY_ID = "mgnl:lastModified";
+    public static final String SENDER_PROPERTY_ID = "sender";
+    public static final String STATUS_PROPERTY_ID = "status";
+    public static final String TASK_PROPERTY_ID = "task";
+    public static final String NEW_PROPERTY_ID = "new";
 }

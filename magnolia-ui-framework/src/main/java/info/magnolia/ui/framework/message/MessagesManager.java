@@ -37,6 +37,7 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manages users messages.
@@ -65,7 +66,7 @@ public interface MessagesManager {
 
     /**
      * Returns the number of uncleared (unread) messages for this user.
-     * 
+     *
      * @param userName name of the user
      * @return number of uncleared messages
      */
@@ -78,15 +79,37 @@ public interface MessagesManager {
 
     /**
      * Returns all messages kept for a specific user.
-     * 
+     *
      * @param userName name of the user
      * @return list of messages kept for the user
+     * @deprecated since 5.3.9 - potentially dangerous since it returns the whole set of messages for the user which could be large.
+     *             The {@link #getMessageBatch(String, java.util.List, java.util.Map, int, int)} should be used instead because it allows to set the limit and offset parameters.
      */
+    @Deprecated
     List<Message> getMessagesForUser(String userName);
 
     /**
+     * More efficient way to query message objects - the amount of return payload is limited, pre-sorted and filtered by type.
+     *
+     * @param types message types to include in the batch
+     * @param sortCriteria properties to order by (true if ascending)
+     * @param limit max amount of entries to inclde in the batch
+     * @param offset first entry index to query
+     * @return list of <code>N = limit</code> {@link Message}'s starting from <code>index = offset</code>
+     */
+    List<Message> getMessageBatch(String userName, List<MessageType> types, Map<String, Boolean> sortCriteria, int limit, int offset);
+
+    /**
+     * Get amount of messages of certain types.
+     *
+     * @param types types of messages to take in account
+     * @return amount of messages of certain types
+     */
+    long getMessagesAmount(String userName, List<MessageType> types);
+
+    /**
      * Returns a message.
-     * 
+     *
      * @param userName name of the user
      * @return list of messages kept for the user
      */
@@ -94,7 +117,7 @@ public interface MessagesManager {
 
     /**
      * Send message to a specific user.
-     * 
+     *
      * @param userName name of the user to receive the message
      * @param message message to send
      */
@@ -102,7 +125,7 @@ public interface MessagesManager {
 
     /**
      * Send message to a specific group.
-     * 
+     *
      * @param groupName name of the group to receive the message
      * @param message message to send
      */
@@ -110,25 +133,27 @@ public interface MessagesManager {
 
     /**
      * Send message to the current user.
-     * 
+     *
      * @param message message to send
      */
     void sendLocalMessage(Message message);
 
     /**
      * Sends a message to all users.
-     * 
+     *
      * @param message message to send
      */
     void broadcastMessage(Message message);
 
     /**
      * Marks a message as cleared.
-     * 
+     *
      * @param userName name of the user the message belongs to
      * @param messageId id of message
      */
     void clearMessage(String userName, String messageId);
 
     void removeMessage(String userName, String messageId);
+
+    void saveMessage(String userName, Message message);
 }

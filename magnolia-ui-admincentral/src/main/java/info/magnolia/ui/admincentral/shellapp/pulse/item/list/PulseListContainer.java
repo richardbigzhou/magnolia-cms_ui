@@ -34,41 +34,25 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
-
-import java.util.Set;
 
 import com.vaadin.data.Container;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * Orchestrator object for underlying Vaadin container. Provides interface methods for toggling entry grouping by type,
+ * filtering by {@link PulseItemCategory} and refreshing.
+ *
+ * @see info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer
+ * @see info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer
  */
-public interface PulseListView extends View {
+public interface PulseListContainer {
 
-    void setDataSource(Container dataSource);
-
-    void setListener(Listener listener);
+    long size();
 
     void refresh();
 
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
+    Container getVaadinContainer();
 
-    void setTabActive(PulseItemCategory category);
+    void setGrouping(boolean isGrouping);
 
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
-    }
-
+    void filterByItemCategory(PulseItemCategory category);
 }

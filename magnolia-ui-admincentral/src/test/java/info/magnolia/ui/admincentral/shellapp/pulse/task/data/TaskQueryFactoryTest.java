@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.data;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import static org.mockito.Mockito.mock;
 
-import java.util.Set;
+import info.magnolia.objectfactory.ComponentProvider;
 
-import com.vaadin.data.Container;
+import org.junit.Before;
+import org.junit.Test;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryDefinition;
 
-/**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
- */
-public interface PulseListView extends View {
+public class TaskQueryFactoryTest {
 
-    void setDataSource(Container dataSource);
+    private TaskQueryFactory factory;
 
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
-
-    void setTabActive(PulseItemCategory category);
-
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
+    @Before
+    public void setUp() throws Exception {
+        this.factory = new TaskQueryFactory(mock(ComponentProvider.class));
     }
 
+    /**
+     * Improper type of query definition passed to {@link TaskQueryFactory#constructQuery(org.vaadin.addons.lazyquerycontainer.QueryDefinition)}
+     * method triggers {@link IllegalArgumentException}.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testQueryCreationWithImproperDefinition() throws Exception {
+        // WHEN
+        factory.constructQuery(new LazyQueryDefinition(false, 0, ""));
+    }
 }

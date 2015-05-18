@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.data;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import java.io.Serializable;
+import java.util.List;
 
-import java.util.Set;
-
-import com.vaadin.data.Container;
+import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * Common interface for Pulse-related {@link QueryDefinition} objects.
+ *
+ * @param <ET> entity type enumeration
  */
-public interface PulseListView extends View {
+public interface PulseQueryDefinition<ET> extends QueryDefinition, Serializable {
 
-    void setDataSource(Container dataSource);
+    boolean isGroupingByType();
 
-    void setListener(Listener listener);
+    void setGroupingByType(boolean grouping);
 
-    void refresh();
+    List<ET> types();
 
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
+    void setTypes(List<ET> types);
 
-    void setTabActive(PulseItemCategory category);
+    String userName();
 
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
-    }
-
+    void setUserName(String name);
 }

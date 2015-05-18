@@ -57,22 +57,18 @@ import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.util.HierarchicalContainer;
 
 /**
  * Presenter of {@link TasksListView}.
  */
-public final class TasksListPresenter extends AbstractPulseListPresenter<Task> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener<Task>, TaskEventHandler {
+public final class TasksListPresenter extends AbstractPulseListPresenter implements TasksListView.Listener, PulseDetailPresenter.Listener, TaskEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
@@ -87,9 +83,9 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     private final EventBus admincentralEventBus;
 
     @Inject
-    public TasksListPresenter(final TasksListView view, final TasksContainer container, final ShellImpl shellImpl, final TasksManager tasksManager,
-            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
-            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition) {
+    public TasksListPresenter(final TasksContainer container, final TasksListView view, final ShellImpl shellImpl, final TasksManager tasksManager,
+                              final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
+                              @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition) {
         super(container);
         this.view = view;
         this.shell = shellImpl;
@@ -107,9 +103,11 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     public View start() {
         view.setListener(this);
         view.setTaskListener(this);
-        container.setListener(this);
         admincentralEventBus.addHandler(TaskEvent.class, this);
+        view.setDataSource(container.getVaadinContainer());
+
         updateView();
+        filterByItemCategory(PulseItemCategory.UNCLAIMED);
         return view;
     }
 
@@ -121,8 +119,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
         TaskDetailPresenter taskPresenter;
         if (definition instanceof TaskUiDefinition) {
             taskPresenter = componentProvider.newInstance(((TaskUiDefinition) definition).getPresenterClass(), task, definition);
-        }
-        else {
+        } else {
             log.debug("Task definition is not an instance of TaskUiDefinition, the presenter can not be configured.");
             taskPresenter = componentProvider.newInstance(DefaultTaskDetailPresenter.class, task, definition);
         }
@@ -132,28 +129,18 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
     }
 
     @Override
-    public String getItemTitle(Task task) {
-        String title = task.getName();
-        try {
-            TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
-            if (definition != null) {
-                title = definition.getTitle();
-            }
-        } catch (RegistrationException e) {
-            log.error("Could not get task definition for {}.", task.getName(), e);
-        }
-        String comment = (StringUtils.isNotEmpty(task.getComment())) ? "|" + task.getComment() : "";
-        return title + comment;
+    public long getTotalEntriesAmount() {
+        return container.size();
     }
 
-    private void updateView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed, Status.Scheduled));
-        HierarchicalContainer dataSource = container.createDataSource(tasks);
-        view.setDataSource(dataSource);
-        view.refresh();
-        for (Status status : Status.values()) {
-            doTasksStatusUpdate(status);
-        }
+    @Override
+    public void onItemClicked(String itemId) {
+        listener.openItem(definition.getName(), itemId);
+    }
+
+    @Override
+    public void updateDetailView(String itemId) {
+        listener.openItem(definition.getName(), itemId);
     }
 
     @Override
@@ -172,18 +159,9 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
             tasksManager.archiveTask(taskId);
         }
 
+        refreshData();
         // refresh the view
         updateView();
-    }
-
-    @Override
-    public void onItemClicked(String itemId) {
-        listener.openItem(definition.getName(), itemId);
-    }
-
-    @Override
-    public void updateDetailView(String itemId) {
-        listener.openItem(definition.getName(), itemId);
     }
 
     @Override
@@ -200,9 +178,68 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
             }
             tasksManager.claim(taskId, userId);
         }
-
         // refresh the view
         updateView();
+    }
+
+    @Override
+    public PulseItemCategory getCategory() {
+        return PulseItemCategory.TASKS;
+    }
+
+    @Override
+    public void taskClaimed(TaskEvent taskEvent) {
+        refreshData();
+    }
+
+    @Override
+    public void taskAdded(TaskEvent taskEvent) {
+        refreshData();
+        listener.updateView(PulseItemCategory.TASKS);
+        view.setTabActive(PulseItemCategory.UNCLAIMED);
+    }
+
+    @Override
+    public void taskResolved(TaskEvent taskEvent) {
+        refreshData();
+        listener.updateView(PulseItemCategory.TASKS);
+        view.setTabActive(PulseItemCategory.UNCLAIMED);
+    }
+
+    @Override
+    public void taskFailed(TaskEvent taskEvent) {
+        refreshData();
+        listener.updateView(PulseItemCategory.TASKS);
+        view.setTabActive(PulseItemCategory.FAILED);
+    }
+
+    @Override
+    public void taskArchived(TaskEvent taskEvent) {}
+
+    @Override
+    public void taskRemoved(TaskEvent taskEvent) {}
+
+    @Override
+    public void taskScheduled(TaskEvent taskEvent) {
+        refreshData();
+        listener.updateView(PulseItemCategory.SCHEDULED);
+    }
+
+    private void refreshData() {
+        listener.updatePulseCounter();
+        container.refresh();
+    }
+
+    @Override
+    public int getPendingItemCount() {
+        return tasksManager.findPendingTasksByUser(userId).size();
+    }
+
+    private void updateView() {
+        view.refresh();
+        for (Status status : Status.values()) {
+            doTasksStatusUpdate(status);
+        }
     }
 
     private void doTasksStatusUpdate(final Task.Status status) {
@@ -230,55 +267,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task> i
         default:
             break;
         }
-    }
-
-    @Override
-    public PulseItemCategory getCategory() {
-        return PulseItemCategory.TASKS;
-    }
-
-    @Override
-    public void taskClaimed(TaskEvent taskEvent) {
-        listener.updatePulseCounter();
-    }
-
-    @Override
-    public void taskAdded(TaskEvent taskEvent) {
-        listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.UNCLAIMED);
-    }
-
-    @Override
-    public void taskResolved(TaskEvent taskEvent) {
-        listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.UNCLAIMED);
-    }
-
-    @Override
-    public void taskFailed(TaskEvent taskEvent) {
-        listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.FAILED);
-    }
-
-    @Override
-    public void taskArchived(TaskEvent taskEvent) {
-        // nothing to do here
-    }
-
-    @Override
-    public void taskRemoved(TaskEvent taskEvent) {
-        // nothing to do here
-    }
-
-    @Override
-    public void taskScheduled(TaskEvent taskEvent) {
-        listener.updatePulseCounter();
-        listener.updateView(PulseItemCategory.SCHEDULED);
-    }
-
-    @Override
-    public int getPendingItemCount() {
-        return tasksManager.findPendingTasksByUser(userId).size();
     }
 
 }
