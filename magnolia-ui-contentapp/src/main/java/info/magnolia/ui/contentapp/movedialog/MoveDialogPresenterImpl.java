@@ -44,6 +44,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
+import info.magnolia.ui.contentapp.DefinitionCloner;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -88,7 +89,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 
-import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -112,7 +112,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private final MoveHandler dropHandler;
 
-    private final Cloner cloner;
+    private final DefinitionCloner cloner;
 
     private final Map<MoveLocation, ActionDefinition> actionMap = new HashMap<>();
 
@@ -137,7 +137,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
         this.dropHandler = componentProvider.newInstance(MoveHandler.class);
-        this.cloner = new Cloner();
+        this.cloner = new DefinitionCloner();
     }
 
     @Override

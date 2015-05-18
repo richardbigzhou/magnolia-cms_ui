@@ -62,8 +62,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rits.cloning.Cloner;
-
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
  */
@@ -74,7 +72,7 @@ public class ContentApp extends BaseApp {
     public static final String COMMIT_CHOOSE_DIALOG_ACTION = "commit";
 
     private final ComponentProvider componentProvider;
-    private final Cloner cloner = new Cloner();
+    private final DefinitionCloner cloner = new DefinitionCloner();
     private ChooseDialogPresenter presenter;
 
     @Inject

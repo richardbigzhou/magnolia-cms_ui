@@ -47,6 +47,7 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.contentapp.DefinitionCloner;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -76,7 +77,6 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
@@ -109,6 +109,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private final ContentConnector contentConnector;
 
+    private final DefinitionCloner cloner;
+
     private EditorDefinition editorDefinition;
 
     private Item item;
@@ -130,6 +132,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.i18n = i18n;
         this.checker = checker;
         this.contentConnector = contentConnector;
+        this.cloner = new DefinitionCloner();
     }
 
     public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
@@ -189,7 +192,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
      * @see ConfiguredFieldDefinition#setReadOnly(boolean)
      */
     private FormDefinition cloneFormDefinitionReadOnly(FormDefinition formDefinition) {
-        Cloner cloner = new Cloner();
         FormDefinition formDefinitionClone = cloner.deepClone(formDefinition);
 
         for (TabDefinition tab : formDefinitionClone.getTabs()) {
