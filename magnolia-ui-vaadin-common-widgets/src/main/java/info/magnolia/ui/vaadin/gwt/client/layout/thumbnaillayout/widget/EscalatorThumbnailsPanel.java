@@ -305,7 +305,9 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
         return imageContainer.getChildCount();
     }
 
-    public void initialize(int thumbnailAmount, int offset, ThumbnailLayoutState.ThumbnailSize size, float scaleRatio) {
+    public void initialize(int thumbnailAmount, int offset, ThumbnailLayoutState.ThumbnailSize size, float scaleRatio, boolean isFirstUpdateFromState) {
+        this.imageContainer.removeAllChildren();
+
         this.thumbnailAmount = thumbnailAmount;
         this.size.updateAllThumbnailsSize(size.width, size.height);
         // Set initial scale ratio
@@ -318,7 +320,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
 
         // If amount of thumbnails in a row exceeds the default threshold - scale them so that
         // there's not that many thumbnails in viewport
-        if (thumbnailsInRow > MAX_PREFFERED_AMOUNT_OF_THUMBNAILS_IN_ROW) {
+        if (isFirstUpdateFromState && thumbnailsInRow > MAX_PREFFERED_AMOUNT_OF_THUMBNAILS_IN_ROW) {
             int calculatedThumbnailWidth = imageContainer.getOffsetWidth() / MAX_PREFFERED_AMOUNT_OF_THUMBNAILS_IN_ROW;
             scaleToWidth(calculatedThumbnailWidth);
         }

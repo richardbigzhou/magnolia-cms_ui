@@ -306,6 +306,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             return -1;
         }
         int size = size();
+        ensureItemIndices();
         boolean wrappedAround = false;
         while (!wrappedAround) {
             for (Long i : itemIndexes.keySet()) {
@@ -323,6 +324,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             updateOffsetAndCache(nextIndex);
         }
         return -1;
+    }
+
+    protected void ensureItemIndices() {
+        if (itemIndexes.isEmpty()) {
+            getPage();
+        }
     }
 
     @Override

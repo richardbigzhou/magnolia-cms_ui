@@ -156,11 +156,11 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
         super.onStateChanged(stateChangeEvent);
 
         if (widgetInitialized && stateChangeEvent.hasPropertyChanged("size")) {
-            getWidget().setThumbnailSize(getState().size.width, getState().size.height);
+            getWidget().initialize(getState().thumbnailAmount, getState().offset, getState().size, getState().scaleRatio, getState().isFirstUpdate);
         }
 
         if (widgetInitialized && stateChangeEvent.hasPropertyChanged("thumbnailAmount")) {
-            getWidget().setThumbnailAmount(getState().thumbnailAmount);
+            refreshViewport();
         }
 
         if (widgetInitialized && stateChangeEvent.hasPropertyChanged("selection")) {
@@ -172,10 +172,16 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
                 @Override
                 public void execute() {
                     widgetInitialized = true;
-                    getWidget().initialize(getState().thumbnailAmount, getState().offset, getState().size, getState().scaleRatio);
+                    getWidget().initialize(getState().thumbnailAmount, getState().offset, getState().size, getState().scaleRatio, getState().isFirstUpdate);
+                    updateSelection();
                 }
             });
         }
+    }
+
+    private void refreshViewport() {
+        dropFromCache(getWidget().getDisplayedRange());
+        queryThumbnails(getWidget().getDisplayedRange());
     }
 
     @Override
