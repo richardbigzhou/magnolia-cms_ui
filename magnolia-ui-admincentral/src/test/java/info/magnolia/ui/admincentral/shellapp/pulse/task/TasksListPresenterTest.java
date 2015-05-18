@@ -33,17 +33,13 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.task.Task;
 import info.magnolia.task.TasksManager;
-import info.magnolia.task.definition.ConfiguredTaskDefinition;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
@@ -78,73 +74,6 @@ public class TasksListPresenterTest {
                 tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context);
 
         task.setName("testTask");
-    }
-
-    @Test
-    public void testGetTaskTitle() throws Exception {
-        // GIVEN
-        String title = "testTitle";
-
-        ConfiguredTaskDefinition taskDefinition = new ConfiguredTaskDefinition();
-        taskDefinition.setTitle(title);
-
-        when(definitionRegistry.get(task.getName())).thenReturn(taskDefinition);
-
-        // WHEN
-        String taskTitle = presenter.getItemTitle(task);
-
-        // THEN
-        assertThat(taskTitle, is(title));
-    }
-
-    @Test
-    public void testGetTaskTitleWithComment() throws Exception {
-        // GIVEN
-
-        String comment = "comment bla";
-        String title = "testTitle";
-
-        task.setComment(comment);
-
-        ConfiguredTaskDefinition taskDefinition = new ConfiguredTaskDefinition();
-        taskDefinition.setTitle(title);
-
-        when(definitionRegistry.get(task.getName())).thenReturn(taskDefinition);
-
-        // WHEN
-        String taskTitle = presenter.getItemTitle(task);
-
-        // THEN
-        String expectedTitle = title + "|" + comment;
-        assertThat(taskTitle, is(expectedTitle));
-    }
-
-    @Test
-    public void testFallBackToTaskName() throws Exception {
-        // GIVEN
-        when(definitionRegistry.get(task.getName())).thenThrow(new RegistrationException("Intentionally thrown exception."));
-
-        // WHEN
-        String taskTitle = presenter.getItemTitle(task);
-
-        // THEN
-        assertThat(taskTitle, is(task.getName()));
-    }
-
-    @Test
-    public void testFallBackToTaskNameWithComment() throws Exception {
-        // GIVEN
-        String comment = "comment bla";
-        task.setComment(comment);
-
-        when(definitionRegistry.get(task.getName())).thenThrow(new RegistrationException("Intentionally thrown exception."));
-
-        // WHEN
-        String taskTitle = presenter.getItemTitle(task);
-
-        // THEN
-        String expectedTitle = task.getName() + "|" + comment;
-        assertThat(taskTitle, is(expectedTitle));
     }
 
     @Test

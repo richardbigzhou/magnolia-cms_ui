@@ -96,9 +96,29 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryFactory</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryFactory</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListViewImpl</implementation>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryFactory</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryFactory</implementation>
+    </component>
+
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageDetailPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageDetailPresenter</implementation>
@@ -140,6 +160,16 @@
     <component>
       <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
       <implementation>info.magnolia.ui.framework.availability.AvailabilityCheckerImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryDefinition</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryDefinition</implementation>
     </component>
 
     <type-mapping>

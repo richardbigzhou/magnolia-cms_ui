@@ -67,6 +67,8 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     private ShellImpl shell;
     private PulseItemCategory selectedCategory = PulseItemCategory.TASKS;
     private boolean isDisplayingDetailView;
+    private View tasksView;
+    private View messagesView;
 
     @Inject
     public PulsePresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseView view, final ShellImpl shell,
@@ -86,7 +88,7 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
         messagesPresenter.setListener(this);
         tasksPresenter.setListener(this);
 
-        view.setPulseSubView(tasksPresenter.start());
+        view.setPulseSubView(getTasksView());
 
         return view;
     }
@@ -106,11 +108,25 @@ public final class PulsePresenter implements PulseListPresenter.Listener, PulseV
     @Override
     public void showList() {
         if (selectedCategory == PulseItemCategory.TASKS) {
-            view.setPulseSubView(tasksPresenter.start());
+            view.setPulseSubView(getTasksView());
         } else {
-            view.setPulseSubView(messagesPresenter.start());
+            view.setPulseSubView(getMessagesView());
         }
         isDisplayingDetailView = false;
+    }
+
+    private View getMessagesView() {
+        if (messagesView == null) {
+            messagesView = messagesPresenter.start();
+        }
+        return messagesView;
+    }
+
+    private View getTasksView() {
+        if (tasksView == null) {
+            tasksView = tasksPresenter.start();
+        }
+        return tasksView;
     }
 
     @Override

@@ -43,18 +43,27 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Stores messages on behalf of {@link MessagesManager} in the repository, every user in the system has its own set of
@@ -72,11 +81,19 @@ public class MessageStore {
     private static final String WORKSPACE_PATH = "/";
     private static final String USER_NODE_TYPE = NodeTypes.Content.NAME;
 
+    private static final String WHERE_TYPE_CLAUSE = " [messagetype] = '%s' ";
+    protected static final String ORDER_BY = " order by ";
+    protected static final String ASCENDING_KEYWORD = " asc";
+    protected static final String DESCENDING_KEYWORD = " desc";
+
+    private static final String QUERY_MESSAGE_STATEMENT = "select * from [mgnl:systemMessage] where ISDESCENDANTNODE([/%s])";
+    private static final String UNCLEARED_MSG_QUERY = "select * from [mgnl:systemMessage] as t where isdescendantnode([/%s]) and t.[cleared] = %s";
+
     /**
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
      * message is respected if present otherwise a new unique one is used. When the method returns the message has been
      * updated with a new id.
-     * 
+     *
      * @param userName user to save the message for
      * @param message message to save
      * @return true if saving was successful or false if it failed
@@ -111,20 +128,10 @@ public class MessageStore {
     public synchronized int getNumberOfUnclearedMessagesForUser(final String userName) {
 
         return MgnlContext.doInSystemContext(new MgnlContext.Op<Integer, RuntimeException>() {
-
             @Override
             public Integer exec() throws RuntimeException {
                 try {
-                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
-
-                    int n = 0;
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
-                        if (!messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.CLEARED).getBoolean()) {
-                            n++;
-                        }
-                    }
-                    return n;
-
+                    return (int) executeQuery(String.format(UNCLEARED_MSG_QUERY, userName, false), Query.JCR_SQL2, -1, -1).getNodes().getSize();
                 } catch (RepositoryException e) {
                     logger.warn("Failed to find the number of uncleared messages for user: " + userName, e);
                     return 0;
@@ -160,6 +167,123 @@ public class MessageStore {
                 }
             }
         });
+    }
+
+    private String constructOrderBy(Map<String, Boolean> sortingCriteria) {
+        StringBuilder stmt = new StringBuilder();
+        final Iterator<Map.Entry<String, Boolean>> it = sortingCriteria.entrySet().iterator();
+        if (it.hasNext()) {
+            stmt.append(ORDER_BY);
+        }
+
+        while (it.hasNext()) {
+            final Map.Entry<String, Boolean> entry = it.next();
+
+            String propertyName = entry.getKey();
+            stmt.append("[").append(propertyName).append("]").append(entry.getValue() ? ASCENDING_KEYWORD : DESCENDING_KEYWORD);
+
+            if (it.hasNext()) {
+                stmt.append(", ");
+            }
+        }
+
+        return stmt.toString();
+    }
+
+
+    public List<Message> getMessages(final String userName, final List<MessageType> types, final Map<String, Boolean> sortCriteria, final int limit, final int offset) {
+        return MgnlContext.doInSystemContext(new MgnlContext.Op<List<Message>, RuntimeException>() {
+
+            @Override
+            public List<Message> exec() throws RuntimeException {
+                try {
+                    String statement = buildQueryMessageStatement(userName, types, sortCriteria);
+                    final QueryResult result = executeQuery(statement, Query.JCR_SQL2, limit, offset);
+
+                    final List<Message> messages = new ArrayList<Message>();
+
+                    NodeIterator nodeIterator = result.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node messageNode = nodeIterator.nextNode();
+                        Message message = unmarshallMessage(messageNode);
+
+                        messages.add(message);
+                    }
+
+                    return messages;
+
+                } catch (RepositoryException e) {
+                    logger.error("Retrieving messages from JCR failed for user: " + userName, e);
+                    return new ArrayList<Message>();
+                } catch (Node2BeanException e) {
+                    logger.error("Unmarshalling message failed for user: " + userName, e);
+                    return new ArrayList<Message>();
+                }
+            }
+        });
+    }
+
+    public long getMessageAmount(final String userName, final List<MessageType> types) {
+        return MgnlContext.doInSystemContext(new MgnlContext.Op<Long, RuntimeException>() {
+
+            @Override
+            public Long exec() throws RuntimeException {
+                try {
+                    String statement = buildQueryMessageStatement(userName, types, Collections.<String, Boolean>emptyMap());
+                    QueryResult result = executeQuery(statement, Query.JCR_SQL2, 0, 0);
+
+                    return result.getNodes().getSize();
+
+                } catch (RepositoryException e) {
+                    logger.error("Retrieving messages from JCR failed for user: " + userName, e);
+                    return 0L;
+                }
+            }
+        });
+    }
+
+    protected String buildQueryMessageStatement(String userName, List<MessageType> messageTypeList, Map<String, Boolean> sortCriteria) {
+        MessageType[] messageTypes;
+        if (Iterables.elementsEqual(messageTypeList, Arrays.asList(MessageType.values()))) {
+            messageTypes = new MessageType[]{};
+        } else {
+            messageTypes = messageTypeList.toArray(new MessageType[messageTypeList.size()]);
+        }
+        return String.format(QUERY_MESSAGE_STATEMENT, userName).
+                concat(buildWhereTypesClause(messageTypes)).
+                concat(constructOrderBy(sortCriteria));
+    }
+
+    protected String buildWhereTypesClause(MessageType[] messageTypes) {
+        if (messageTypes == null || messageTypes.length == 0)
+            return StringUtils.EMPTY;
+
+        StringBuilder whereClauseStatement = new StringBuilder(" and (");
+        for (MessageType messageType : messageTypes) {
+            whereClauseStatement.append(String.format(WHERE_TYPE_CLAUSE, messageType.name()));
+            whereClauseStatement.append(" or ");
+        }
+        whereClauseStatement.delete(whereClauseStatement.length() - " or ".length(), whereClauseStatement.length());
+        whereClauseStatement.append(")");
+        return whereClauseStatement.toString();
+    }
+
+    protected QueryResult executeQuery(String statement, String language, int limit, int offset) throws RepositoryException {
+        final Session jcrSession = MgnlContext.getJCRSession(WORKSPACE_NAME);
+        final QueryManager jcrQueryManager = jcrSession.getWorkspace().getQueryManager();
+        final Query query = jcrQueryManager.createQuery(statement, language);
+        if (limit > 0) {
+            query.setLimit(limit);
+        }
+        if (offset >= 0) {
+            query.setOffset(offset);
+        }
+        logger.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{WORKSPACE_NAME, statement, limit, offset});
+        long start = System.currentTimeMillis();
+        final QueryResult result = query.execute();
+        logger.debug("Query execution took {} ms", System.currentTimeMillis() - start);
+
+        return result;
     }
 
     public synchronized Message findMessageById(final String userName, final String messageId) {
@@ -319,5 +443,4 @@ public class MessageStore {
         }
         return String.valueOf(largestIdFound + 1);
     }
-
 }

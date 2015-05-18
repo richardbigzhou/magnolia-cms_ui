@@ -42,6 +42,7 @@ import info.magnolia.ui.api.message.MessageType;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -95,7 +96,6 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void sendMessage(String userName, Message message) {
-
         // We need to set the id to null to make sure each user gets a unique id. Otherwise an id
         // suitable for a first user gets generated and is then used for everyone, possible overwriting
         // already existing messages for some users.
@@ -118,10 +118,7 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void sendLocalMessage(Message message) {
-        message.setId(null);
-        String userName = MgnlContext.getUser().getName();
-        messageStore.saveMessage(userName, message);
-        sendMessageSentEvent(userName, message);
+        sendMessage(MgnlContext.getUser().getName(), message);
     }
 
     @Override
@@ -142,6 +139,16 @@ public class MessagesManagerImpl implements MessagesManager {
     @Override
     public List<Message> getMessagesForUser(String userName) {
         return messageStore.findAllMessagesForUser(userName);
+    }
+
+    @Override
+    public List<Message> getMessageBatch(String userName, List<MessageType> types, Map<String, Boolean> sortCriteria, int limit, int offset) {
+        return messageStore.getMessages(userName, types, sortCriteria, limit, offset);
+    }
+
+    @Override
+    public long getMessagesAmount(final String userName, final List<MessageType> types) {
+        return messageStore.getMessageAmount(userName, types);
     }
 
     @Override
@@ -199,4 +206,8 @@ public class MessagesManagerImpl implements MessagesManager {
         return message.clone();
     }
 
+    @Override
+    public void saveMessage(String userName, Message message) {
+        messageStore.saveMessage(userName, message);
+    }
 }

@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer.*;
-
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageConstants;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
@@ -48,6 +46,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
@@ -59,49 +58,55 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class MessagesListViewImpl extends AbstractPulseListView implements MessagesListView {
 
-    private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID };
+    private static final String[] order = new String[]{MessageConstants.NEW_PROPERTY_ID, MessageConstants.TYPE_PROPERTY_ID, MessageConstants.TEXT_PROPERTY_ID, MessageConstants.SENDER_PROPERTY_ID, MessageConstants.DATE_PROPERTY_ID};
 
     @Inject
-    public MessagesListViewImpl(Shell shell, SimpleTranslator i18n) {
-        super(shell, i18n, order,
-                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date") },
+    public MessagesListViewImpl(SimpleTranslator i18n) {
+        super(i18n, order,
+                new String[]{i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date")},
                 i18n.translate("pulse.messages.empty"),
                 PulseItemCategory.ALL_MESSAGES, PulseItemCategory.INFO, PulseItemCategory.PROBLEM);
-        constructTable(getItemTable());
+        constructTable();
         setFooter(new PulseListFooter(getItemTable(), i18n, false));
     }
 
-    private void constructTable(Table table) {
-        table.addGeneratedColumn(NEW_PROPERTY_ID, new PulseNewItemColumnGenerator());
-        table.setColumnWidth(NEW_PROPERTY_ID, 100);
-        table.addGeneratedColumn(TYPE_PROPERTY_ID, new MessageTypeColumnGenerator());
-        table.setColumnWidth(TYPE_PROPERTY_ID, 50);
-        table.addGeneratedColumn(TEXT_PROPERTY_ID, new MessageSubjectColumnGenerator());
-        table.setColumnWidth(TEXT_PROPERTY_ID, 450);
-        table.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
-        table.setColumnWidth(DATE_PROPERTY_ID, 150);
+    private void constructTable() {
+        final Table table = getItemTable();
+        table.setCacheRate(1);
+        table.addGeneratedColumn(MessageConstants.NEW_PROPERTY_ID, new PulseNewItemColumnGenerator());
+        table.setColumnWidth(MessageConstants.NEW_PROPERTY_ID, 100);
+        table.addGeneratedColumn(MessageConstants.TYPE_PROPERTY_ID, new MessageTypeColumnGenerator());
+        table.setColumnWidth(MessageConstants.TYPE_PROPERTY_ID, 50);
+        table.addGeneratedColumn(MessageConstants.TEXT_PROPERTY_ID, new MessageSubjectColumnGenerator());
+        table.setColumnWidth(MessageConstants.TEXT_PROPERTY_ID, 450);
+        table.addGeneratedColumn(MessageConstants.DATE_PROPERTY_ID, new DateColumnFormatter(null));
+        table.setColumnWidth(MessageConstants.DATE_PROPERTY_ID, 150);
+        getItemTable().setSortAscending(false);
 
         // tooltips
         table.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
 
             @Override
             public String generateDescription(Component source, Object itemId, Object propertyId) {
-                if (TEXT_PROPERTY_ID.equals(propertyId)) {
-                    String subject = (String) ((AbstractSelect) source).getContainerProperty(itemId, SUBJECT_PROPERTY_ID).getValue();
+                if (MessageConstants.TEXT_PROPERTY_ID.equals(propertyId)) {
+                    String subject = (String) ((AbstractSelect) source).getContainerProperty(itemId, MessageConstants.SUBJECT_PROPERTY_ID).getValue();
                     return StringEscapeUtils.escapeXml(subject);
                 }
                 return null;
             }
         });
+    }
 
-        table.setSortContainerPropertyId(DATE_PROPERTY_ID);
-        table.setSortAscending(false);
+    @Override
+    public void setDataSource(Container dataSource) {
+        super.setDataSource(dataSource);
+        getItemTable().setSortContainerPropertyId(MessageConstants.DATE_PROPERTY_ID);
     }
 
     @Override
     protected GeneratedRow generateGroupingRow(Item item) {
         GeneratedRow row = new GeneratedRow();
-        MessageType messageType = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
+        MessageType messageType = (MessageType) item.getItemProperty(MessageConstants.TYPE_PROPERTY_ID).getValue();
 
         String key = null;
         switch (messageType) {
@@ -131,8 +136,8 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
         @Override
         public Object generateCell(Table source, Object itemId, Object columnId) {
 
-            String subject = (String) source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID).getValue();
-            String text = (String) source.getContainerProperty(itemId, TEXT_PROPERTY_ID).getValue();
+            String subject = (String) source.getContainerProperty(itemId, MessageConstants.SUBJECT_PROPERTY_ID).getValue();
+            String text = (String) source.getContainerProperty(itemId, MessageConstants.TEXT_PROPERTY_ID).getValue();
 
             if (StringUtils.isNotBlank(subject) && StringUtils.isNotBlank(text)) {
 
@@ -157,7 +162,7 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
 
         @Override
         public Object generateCell(Table source, Object itemId, Object columnId) {
-            MessageType messageType = (MessageType) source.getContainerProperty(itemId, TYPE_PROPERTY_ID).getValue();
+            MessageType messageType = (MessageType) source.getContainerProperty(itemId, MessageConstants.TYPE_PROPERTY_ID).getValue();
 
             String level, shape = "circle", mark;
             switch (messageType) {

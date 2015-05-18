@@ -47,13 +47,10 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 
-import java.util.Collection;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import com.vaadin.data.util.HierarchicalContainer;
 
 /**
  * Presenter of {@link MessagesListView}.
@@ -96,10 +93,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     private void initView() {
-        Collection<Message> messages = messagesManager.getMessagesForUser(userId);
-        HierarchicalContainer dataSource = container.createDataSource(messages);
-        view.setDataSource(dataSource);
-        view.refresh();
+        view.setDataSource(container.getVaadinContainer());
         for (MessageType type : MessageType.values()) {
             doUnreadMessagesUpdate(type);
         }
@@ -108,11 +102,8 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     @Override
     public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
-        container.addBeanAsItem(message);
+        container.refresh();
 
-        if (container.isGrouping()) {
-            container.buildTree();
-        }
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
     }
@@ -120,10 +111,9 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     @Override
     public void messageCleared(MessageEvent event) {
         final Message message = event.getMessage();
-        container.assignPropertiesFromBean(message, container.getItem(message.getId()));
-
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
+        container.refresh();
     }
 
     @Override
@@ -141,6 +131,11 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     @Override
+    public long getTotalEntriesAmount() {
+        return container.size();
+    }
+
+    @Override
     public void onItemClicked(String messageId) {
         listener.openMessage(messageId);
         messagesManager.clearMessage(userId, messageId);
@@ -153,14 +148,13 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Override
     public void messageRemoved(MessageEvent messageEvent) {
-        /*
-         * Refreshes the view to display the updated underlying data.
-         */
-        initView();
+        container.refresh();
+        for (MessageType type : MessageType.values()) {
+            doUnreadMessagesUpdate(type);
+        }
     }
 
     private void doUnreadMessagesUpdate(final MessageType type) {
-
         int count;
         switch (type) {
         case ERROR:

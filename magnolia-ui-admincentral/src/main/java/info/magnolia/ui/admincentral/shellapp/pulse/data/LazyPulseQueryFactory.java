@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.data;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.objectfactory.ComponentProvider;
 
-import java.util.Set;
-
-import com.vaadin.data.Container;
+import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
+import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * {@link ComponentProvider}-based implementation of {@link QueryFactory}.
+ *
+ * @param <T> type of the query produced by current factory.
+ * @see info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryFactory
+ * @see info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryFactory
  */
-public interface PulseListView extends View {
+public class LazyPulseQueryFactory<T extends LazyPulseQuery> implements QueryFactory {
 
-    void setDataSource(Container dataSource);
+    private final Class<T> type;
 
-    void setListener(Listener listener);
+    private final ComponentProvider componentProvider;
 
-    void refresh();
-
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
-
-    void setTabActive(PulseItemCategory category);
-
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
+    public LazyPulseQueryFactory(Class<T> type, ComponentProvider componentProvider) {
+        this.type = type;
+        this.componentProvider = componentProvider;
     }
 
+    @Override
+    public T constructQuery(QueryDefinition queryDefinition) {
+        return componentProvider.newInstance(type, queryDefinition);
+    }
 }

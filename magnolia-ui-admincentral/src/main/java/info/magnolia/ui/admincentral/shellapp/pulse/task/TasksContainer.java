@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,203 +33,70 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
-
+import info.magnolia.context.Context;
 import info.magnolia.task.Task;
+import info.magnolia.task.TasksManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.data.LazyPulseListContainer;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListContainer;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskQueryFactory;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
+import com.google.common.collect.Iterables;
 
 /**
- * The tasks container instantiates and manages an {@link HierarchicalContainer} with tasks.
+ * {@link LazyPulseListContainer} implementation capable of serving {@link Task} objects via
+ * {@link TasksManager}. {@link Task.Status} enumeration is used as a grouping criteria.
  */
-public class TasksContainer extends AbstractPulseListContainer<Task> {
+public class TasksContainer extends LazyPulseListContainer<Task.Status, TaskQueryDefinition, TaskQueryFactory> {
 
-    private static final Logger log = LoggerFactory.getLogger(TasksContainer.class);
+    private TasksManager tasksManager;
 
-    public static final String NEW_PROPERTY_ID = "new";
-    public static final String TASK_PROPERTY_ID = "task";
-    public static final String STATUS_PROPERTY_ID = "status";
-    public static final String SENDER_PROPERTY_ID = "sender";
-    public static final String LAST_CHANGE_PROPERTY_ID = "date";
-    public static final String SENT_TO_PROPERTY_ID = "sentTo";
-    public static final String ASSIGNED_TO_PROPERTY_ID = "assignedTo";
-
-
-    /*
-     * This filter hides grouping titles when
-     * grouping is not on or group would be empty
-     */
-    private Container.Filter sectionFilter = new Container.Filter() {
-
-        @Override
-        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && (!grouping || isTypeGroupEmpty(itemId))) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public boolean appliesToProperty(Object propertyId) {
-            return STATUS_PROPERTY_ID.equals(propertyId);
-        }
-
-        private boolean isTypeGroupEmpty(Object typeId) {
-            return container.getChildren(typeId) == null || container.getChildren(typeId).isEmpty();
-        }
-
-    };
-
-    @Override
-    public HierarchicalContainer createDataSource(Collection<Task> tasks) {
-        container = new HierarchicalContainer();
-        container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
-        container.addContainerProperty(TASK_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(STATUS_PROPERTY_ID, Task.Status.class, Task.Status.Created);
-        container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(ASSIGNED_TO_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(SENT_TO_PROPERTY_ID, String.class, null);
-        container.addContainerProperty(LAST_CHANGE_PROPERTY_ID, Date.class, null);
-
-        createSuperItems();
-
-        for (Task task : tasks) {
-            addBeanAsItem(task);
-        }
-
-        container.addContainerFilter(getSectionFilter());
-
-        return container;
+    @Inject
+    public TasksContainer(TasksManager tasksManager,
+                          TaskQueryDefinition taskQueryDefinition,
+                          Provider<TaskQueryFactory> taskQueryFactoryProvider,
+                          Context ctx) {
+        super(taskQueryDefinition, taskQueryFactoryProvider, ctx.getUser().getName());
+        this.tasksManager = tasksManager;
     }
 
     @Override
-    public void addBeanAsItem(Task task) {
-        log.debug("Adding task {}", task);
-        final String taskId = task.getId();
-        final Item item = container.addItem(taskId);
-        container.setChildrenAllowed(taskId, false);
-        assignPropertiesFromBean(task, item);
+    public long size() {
+        return tasksManager.getTasksAmountByUserAndStatus(getUserName(), getQueryDefinition().types());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void assignPropertiesFromBean(Task task, final Item item) {
-        if (item != null && task != null) {
-            item.getItemProperty(NEW_PROPERTY_ID).setValue(task.getStatus() == Task.Status.Created);
-            item.getItemProperty(TASK_PROPERTY_ID).setValue(getItemTitle(task));
-            item.getItemProperty(SENDER_PROPERTY_ID).setValue(task.getRequestor());
-            item.getItemProperty(LAST_CHANGE_PROPERTY_ID).setValue(task.getModificationDate());
-            item.getItemProperty(STATUS_PROPERTY_ID).setValue(task.getStatus());
-            item.getItemProperty(ASSIGNED_TO_PROPERTY_ID).setValue(StringUtils.defaultString(task.getActorId()));
+    public void filterByItemCategory(PulseItemCategory category) {
 
-            String sentTo = "";
-            if (task.getGroupIds() != null && task.getGroupIds().size() > 0) {
-                sentTo += StringUtils.join(task.getGroupIds(), ",");
-            }
-            if (task.getActorIds() != null && task.getActorIds().size() > 0) {
-                sentTo += StringUtils.join(task.getActorIds(), ",");
-            }
-            item.getItemProperty(SENT_TO_PROPERTY_ID).setValue(sentTo);
-        }
-    }
+        Task.Status[] statuses;
 
-    @Override
-    protected void createSuperItems() {
-        for (Task.Status status : Task.Status.values()) {
-            Object itemId = getSuperItem(status);
-            Item item = container.addItem(itemId);
-            item.getItemProperty(STATUS_PROPERTY_ID).setValue(status);
-            container.setChildrenAllowed(itemId, true);
+        switch (category) {
+        case UNCLAIMED:
+            statuses = new Task.Status[]{Task.Status.Created};
+            break;
+        case ONGOING:
+            statuses = new Task.Status[]{Task.Status.InProgress};
+            break;
+        case DONE:
+            statuses = new Task.Status[]{Task.Status.Resolved};
+            break;
+        case FAILED:
+            statuses = new Task.Status[]{Task.Status.Failed};
+            break;
+        default:
+            statuses = Task.Status.values();
         }
 
-    }
-
-    @Override
-    protected void clearSuperItems() {
-        for (Object itemId : container.getItemIds()) {
-            container.setParent(itemId, null);
+        List<Task.Status> newStatuses = Arrays.asList(statuses);
+        if (!Iterables.elementsEqual(newStatuses, getQueryDefinition().types())) {
+            getQueryDefinition().setTypes(newStatuses);
+            refresh();
         }
     }
-
-    private Object getSuperItem(Task.Status status) {
-        return GROUP_PLACEHOLDER_ITEMID + status;
-    }
-
-    /*
-     * Assign messages under correct parents so that
-     * grouping works.
-     */
-    @Override
-    public void buildTree() {
-        for (Object itemId : container.getItemIds()) {
-            // Skip super items
-            if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
-                Item item = container.getItem(itemId);
-
-                Task.Status status = (Task.Status) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
-                Object parentItemId = getSuperItem(status);
-                Item parentItem = container.getItem(parentItemId);
-                if (parentItem != null) {
-                    container.setParent(itemId, parentItemId);
-                }
-            }
-        }
-    }
-
-    /*
-    * Default visibility for testing purposes only.
-    */
-    private String getItemTitle(final Task task) {
-        return listener.getItemTitle(task);
-    }
-
-    @Override
-    protected void applyCategoryFilter(final PulseItemCategory category) {
-        final Container.Filter filter = new Container.Filter() {
-
-            @Override
-            public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-                final Task.Status type = (Task.Status) item.getItemProperty(STATUS_PROPERTY_ID).getValue();
-
-                switch (category) {
-                case UNCLAIMED:
-                    return type == Task.Status.Created;
-                case ONGOING:
-                    return type == Task.Status.InProgress;
-                case DONE:
-                    return type == Task.Status.Resolved;
-                case FAILED:
-                    return type == Task.Status.Failed;
-                default:
-                    return true;
-                }
-            }
-
-            @Override
-            public boolean appliesToProperty(Object propertyId) {
-                return STATUS_PROPERTY_ID.equals(propertyId);
-            }
-
-        };
-        container.addContainerFilter(filter);
-    }
-
-
-    @Override
-    protected Container.Filter getSectionFilter() {
-        return sectionFilter;
-    }
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
-
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
-
-import java.util.Set;
-
-import com.vaadin.data.Container;
+package info.magnolia.ui.admincentral.shellapp.pulse.data;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * Pulse backend data handling constants.
  */
-public interface PulseListView extends View {
-
-    void setDataSource(Container dataSource);
-
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
-
-    void setTabActive(PulseItemCategory category);
-
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
-    }
-
+public class PulseConstants {
+    public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
 }

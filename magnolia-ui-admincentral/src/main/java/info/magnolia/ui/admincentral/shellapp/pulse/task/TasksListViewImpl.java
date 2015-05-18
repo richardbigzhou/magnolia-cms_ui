@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.task.TasksContainer.*;
+import static info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskConstants.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.task.Task.Status;
+import info.magnolia.ui.admincentral.shellapp.pulse.data.PulseConstants;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
-import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
@@ -48,6 +48,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
@@ -59,19 +60,21 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class TasksListViewImpl extends AbstractPulseListView implements TasksListView {
 
-    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID };
+    private static final String[] order = new String[]{NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID};
 
     @Inject
-    public TasksListViewImpl(Shell shell, SimpleTranslator i18n) {
-        super(shell, i18n, order,
-                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
+    public TasksListViewImpl(SimpleTranslator i18n) {
+        super(i18n, order,
+                new String[]{i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange")},
                 i18n.translate("pulse.tasks.empty"),
                 PulseItemCategory.UNCLAIMED, PulseItemCategory.ONGOING, PulseItemCategory.DONE, PulseItemCategory.FAILED, PulseItemCategory.ALL_TASKS);
-        constructTable(getItemTable());
         setFooter(new PulseListFooter(getItemTable(), i18n, true));
+        constructTable();
     }
 
-    private void constructTable(Table table) {
+    private void constructTable() {
+        Table table = getItemTable();
+        table.setCacheRate(1);
         table.addGeneratedColumn(NEW_PROPERTY_ID, new PulseNewItemColumnGenerator());
         table.setColumnWidth(NEW_PROPERTY_ID, 100);
         table.addGeneratedColumn(TASK_PROPERTY_ID, new TaskSubjectColumnGenerator());
@@ -82,12 +85,16 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
         table.setColumnWidth(SENT_TO_PROPERTY_ID, 100);
         table.addGeneratedColumn(LAST_CHANGE_PROPERTY_ID, new DateColumnFormatter(null));
         table.setColumnWidth(LAST_CHANGE_PROPERTY_ID, 140);
+        table.setSortAscending(false);
 
         // tooltips
         table.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
 
             @Override
             public String generateDescription(Component source, Object itemId, Object propertyId) {
+                if (String.valueOf(itemId).startsWith(PulseConstants.GROUP_PLACEHOLDER_ITEMID)) {
+                    return null;
+                }
 
                 if (TASK_PROPERTY_ID.equals(propertyId)) {
                     String task = (String) ((AbstractSelect) source).getContainerProperty(itemId, TASK_PROPERTY_ID).getValue();
@@ -113,9 +120,12 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
                 return null;
             }
         });
+    }
 
-        table.setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
-        table.setSortAscending(false);
+    @Override
+    public void setDataSource(Container dataSource) {
+        super.setDataSource(dataSource);
+        getItemTable().setSortContainerPropertyId(LAST_CHANGE_PROPERTY_ID);
     }
 
     @Override
@@ -238,6 +248,5 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
             }
             return null;
         }
-    };
-
+    }
 }

@@ -52,21 +52,17 @@ import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.util.HierarchicalContainer;
 
 /**
  * Presenter of {@link TasksListView}.
  */
-public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener, TasksContainer.Listener<Task> {
+public final class TasksListPresenter extends AbstractPulseListPresenter<Task, TasksListPresenter.Listener> implements TasksListView.Listener, PulseDetailPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(TasksListPresenter.class);
 
@@ -95,8 +91,10 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     public View start() {
         view.setListener(this);
         view.setTaskListener(this);
-        container.setListener(this);
-        initView();
+        view.setDataSource(container.getVaadinContainer());
+
+        updateView();
+        filterByItemCategory(PulseItemCategory.UNCLAIMED);
         return view;
     }
 
@@ -108,8 +106,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         TaskDetailPresenter taskPresenter;
         if (definition instanceof TaskUiDefinition) {
             taskPresenter = componentProvider.newInstance(((TaskUiDefinition) definition).getPresenterClass(), task, definition);
-        }
-        else {
+        } else {
             log.debug("Task definition is not an instance of TaskUiDefinition, the presenter can not be configured.");
             taskPresenter = componentProvider.newInstance(DefaultTaskDetailPresenter.class, task, definition);
         }
@@ -119,24 +116,12 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     @Override
-    public String getItemTitle(Task task) {
-        String title = task.getName();
-        try {
-            TaskDefinition definition = taskDefinitionRegistry.get(task.getName());
-            if (definition != null) {
-                title = definition.getTitle();
-            }
-        } catch (RegistrationException e) {
-            log.error("Could not get task definition for {}.", task.getName(), e);
-        }
-        String comment = (StringUtils.isNotEmpty(task.getComment())) ? "|" + task.getComment() : "";
-        return title + comment;
+    public void showList() {
+        super.showList();
+        updateView();
     }
 
-    private void initView() {
-        Collection<Task> tasks = tasksManager.findTasksByUserAndStatus(userId, Arrays.asList(Task.Status.Created, Task.Status.InProgress, Status.Resolved, Task.Status.Failed));
-        HierarchicalContainer dataSource = container.createDataSource(tasks);
-        view.setDataSource(dataSource);
+    private void updateView() {
         view.refresh();
         for (Status status : Status.values()) {
             doTasksStatusUpdate(status);
@@ -159,8 +144,14 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
             tasksManager.archiveTask(taskId);
         }
 
+        refreshData();
         // refresh the view
-        initView();
+        updateView();
+    }
+
+    @Override
+    public long getTotalEntriesAmount() {
+        return container.size();
     }
 
     @Override
@@ -187,9 +178,9 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
             }
             tasksManager.claim(taskId, userId);
         }
-
+        refreshData();
         // refresh the view
-        initView();
+        updateView();
     }
 
     private void doTasksStatusUpdate(final Task.Status status) {
@@ -220,8 +211,12 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     public void setTabActive(PulseItemCategory category) {
-        initView();
+        updateView();
         view.setTabActive(category);
+    }
+
+    private void refreshData() {
+        container.refresh();
     }
 
     /**

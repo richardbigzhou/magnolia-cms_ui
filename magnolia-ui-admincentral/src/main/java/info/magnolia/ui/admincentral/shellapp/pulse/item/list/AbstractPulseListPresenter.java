@@ -36,8 +36,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 
-import java.util.Collection;
-
 /**
  * Abstract presenter for items displayed in pulse.
  *
@@ -46,10 +44,10 @@ import java.util.Collection;
  */
 public abstract class AbstractPulseListPresenter<T, L extends PulseListPresenter.Listener> implements PulseListPresenter<L>, PulseDetailPresenter.Listener, PulseListView.Listener {
 
-    protected AbstractPulseListContainer<T> container;
+    protected PulseListContainer container;
     protected L listener;
 
-    protected AbstractPulseListPresenter(AbstractPulseListContainer<T> container) {
+    protected AbstractPulseListPresenter(PulseListContainer container) {
         this.container = container;
     }
 
@@ -60,23 +58,8 @@ public abstract class AbstractPulseListPresenter<T, L extends PulseListPresenter
 
     @Override
     public void showList() {
+        container.refresh();
         listener.showList();
-    }
-
-    /**
-     * Return parent itemId for an item.
-     */
-    @Override
-    public Object getParent(Object itemId) {
-        return container.getParent(itemId);
-    }
-
-    /**
-     * Return list of child items.
-     */
-    @Override
-    public Collection<?> getGroup(Object itemId) {
-        return container.getGroup(itemId);
     }
 
     @Override

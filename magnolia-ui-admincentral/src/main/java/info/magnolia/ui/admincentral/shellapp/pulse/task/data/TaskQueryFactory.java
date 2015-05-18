@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.data;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.data.LazyPulseQueryFactory;
 
-import java.util.Set;
+import javax.inject.Inject;
 
-import com.vaadin.data.Container;
+import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 
 /**
- * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
+ * {@link LazyPulseQueryFactory} which is capable of producing {@link TaskQuery} objects.
  */
-public interface PulseListView extends View {
+public class TaskQueryFactory extends LazyPulseQueryFactory<TaskQuery> {
 
-    void setDataSource(Container dataSource);
-
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void updateCategoryBadgeCount(PulseItemCategory type, int count);
-
-    void setTabActive(PulseItemCategory category);
-
-    /**
-     * Listener interface to call back to {@link PulseListPresenter}.
-     */
-    public interface Listener {
-
-        void filterByItemCategory(PulseItemCategory category);
-
-        void onItemClicked(String itemId);
-
-        void setGrouping(boolean checked);
-
-        void deleteItems(Set<String> itemsIds);
-
-        long getTotalEntriesAmount();
+    @Inject
+    public TaskQueryFactory(ComponentProvider componentProvider) {
+        super(TaskQuery.class, componentProvider);
     }
 
+    @Override
+    public TaskQuery constructQuery(QueryDefinition queryDefinition) {
+        if (!(queryDefinition instanceof TaskQueryDefinition)) {
+            throw new IllegalArgumentException("Query definition must of type TaskQueryDefinition");
+        }
+        return super.constructQuery(queryDefinition);
+    }
 }
