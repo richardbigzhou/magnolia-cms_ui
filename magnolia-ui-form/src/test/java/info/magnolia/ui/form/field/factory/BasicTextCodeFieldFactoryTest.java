@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
@@ -51,11 +52,16 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
 
     private BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition> fieldFactory;
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+    }
+
     @Test
     public void createBasicCodeField() {
         // GIVEN
-        fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field<String> field = fieldFactory.createField();
 
@@ -67,8 +73,6 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void createBasicCodeFieldChangeValue() {
         // GIVEN
         baseItem.addItemProperty(propertyName, new DefaultProperty<String>(String.class, "private String s"));
-        fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<String> field = fieldFactory.createField();
         assertEquals("private String s", field.getValue());
 
@@ -79,6 +83,17 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         assertEquals("new Value", baseItem.getItemProperty(propertyName).getValue());
     }
 
+    @Test
+    public void createFieldSetsHeightAccordingToDefinition() {
+        // GIVEN
+        definition.setHeight(500);
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+
+        // THEN
+        assertThat(aceEditor.getHeight(), is(500f));
+    }
 
     @Override
     protected void createConfiguredFieldDefinition() {

@@ -39,7 +39,10 @@ import info.magnolia.ui.form.field.transformer.basic.NotNullInitialStringValueTr
  * Field definition for code text box.
  */
 public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
+
     private String language = "text";
+
+    private int height = 300;
 
     public BasicTextCodeFieldDefinition() {
         setTransformerClass(NotNullInitialStringValueTransformer.class);
@@ -55,6 +58,17 @@ public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    /**
+     * Defines the height of this code field, in pixels. Default value is <code>300</code>.
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
 }
