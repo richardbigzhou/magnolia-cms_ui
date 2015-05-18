@@ -45,7 +45,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListViewImpl.MessageSubjectColumnGenerator;
-import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import org.junit.After;
@@ -77,17 +77,17 @@ public class MessagesListViewImplTest {
     @Test
     public void testEnsureMessageIsEscaped() throws Exception {
         // GIVEN
-        MessagesListViewImpl view = new MessagesListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
+        MessagesListViewImpl view = new MessagesListViewImpl(mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
-        when(container.getContainerProperty(itemId, MessagesContainer.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
-        when(container.getContainerProperty(itemId, MessagesContainer.SUBJECT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "subject"));
+        when(container.getContainerProperty(itemId, "message")).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
+        when(container.getContainerProperty(itemId, MessageConstants.SUBJECT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "subject"));
         Table source = new Table();
         source.setContainerDataSource(container);
         MessageSubjectColumnGenerator messageColumnGenerator = view.new MessageSubjectColumnGenerator();
 
         // WHEN
-        String cell = (String) messageColumnGenerator.generateCell(source, itemId, MessagesContainer.TEXT_PROPERTY_ID);
+        String cell = (String) messageColumnGenerator.generateCell(source, itemId, "message");
 
         // THEN
         assertThat(cell, containsString("<strong>subject</strong>"));

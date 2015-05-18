@@ -46,7 +46,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListViewImpl.TaskSubjectColumnGenerator;
-import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.data.TaskConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.Collections;
@@ -83,16 +83,16 @@ public class TasksListViewImplTest {
     @Test
     public void testEnsureTaskCommentIsEscaped() throws Exception {
         // GIVEN
-        TasksListViewImpl view = new TasksListViewImpl(mock(Shell.class), mock(SimpleTranslator.class));
+        TasksListViewImpl view = new TasksListViewImpl(mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
-        when(container.getContainerProperty(itemId, TasksContainer.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));
+        when(container.getContainerProperty(itemId, TaskConstants.TASK_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "title|<span onmouseover=\"alert('xss')\">bug</span>"));
         Table source = new Table();
         source.setContainerDataSource(container);
         TaskSubjectColumnGenerator taskColumnGenerator = view.new TaskSubjectColumnGenerator();
 
         // WHEN
-        String cell = (String) taskColumnGenerator.generateCell(source, itemId, TasksContainer.TASK_PROPERTY_ID);
+        String cell = (String) taskColumnGenerator.generateCell(source, itemId, TaskConstants.TASK_PROPERTY_ID);
 
         // THEN comment is abbreviated
         assertThat(cell, containsString("<span class=\"comment\">&lt;span onmouseover=&"));

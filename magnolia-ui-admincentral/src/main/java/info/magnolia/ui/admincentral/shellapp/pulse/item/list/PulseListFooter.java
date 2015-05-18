@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import static info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView.GROUP_PLACEHOLDER_ITEMID;
-
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.admincentral.shellapp.pulse.data.PulseConstants;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.TasksListView;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 
@@ -57,41 +56,47 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.Table;
 
 /**
  * Footer view implementation displayed underneath the items list.
  */
 public final class PulseListFooter extends CustomComponent {
 
-    private HorizontalLayout footer;
-    private NativeButton actionPopupTrigger;
-    private TreeTable itemsTable;
+    private HorizontalLayout footer = new HorizontalLayout();
+    private ContextMenu contextMenu = new ActionPopup();
+    private Label status = new Label();
+    private NativeButton actionPopupTrigger = new NativeButton();
+
+    private Table itemsTable;
     private SimpleTranslator i18n;
-    private Label status;
     private PulseListView.Listener messagesListener;
     private TasksListView.Listener tasksListener;
-    private ContextMenu contextMenu;
+
     // can't get the menu items from ContextMenu
     private List<ContextMenuItem> menuItems = new ArrayList<ContextMenuItem>();
 
-    public PulseListFooter(final TreeTable itemsTable, final SimpleTranslator i18n, boolean withTaskContextMenu) {
+    private long totalAmount;
+
+    public PulseListFooter(final Table itemsTable, final SimpleTranslator i18n, boolean withTaskContextMenu) {
         super();
         this.itemsTable = itemsTable;
         this.i18n = i18n;
-        this.contextMenu = withTaskContextMenu ? buildTaskContextMenu(i18n, itemsTable) : buildMessageContextMenu(i18n, itemsTable);
+        if (withTaskContextMenu) {
+            buildTaskContextMenu();
+        } else {
+            buildMessageContextMenu();
+        }
         construct();
         setCompositionRoot(footer);
     }
 
     private void construct() {
-        footer = new HorizontalLayout();
         footer.setSizeUndefined();
         footer.addStyleName("footer");
 
         final Label actionLabel = new Label(i18n.translate("pulse.footer.title"));
 
-        actionPopupTrigger = new NativeButton();
         actionPopupTrigger.setHtmlContentAllowed(true);
         actionPopupTrigger.setCaption("<span class=\"icon-arrow2_e\"></span>");
         actionPopupTrigger.addStyleName("action-popup-trigger");
@@ -106,16 +111,14 @@ public final class PulseListFooter extends CustomComponent {
         footer.addComponent(actionLabel);
         footer.addComponent(actionPopupTrigger);
 
-        status = new Label();
         status.addStyleName("status");
         footer.addComponent(status);
 
         contextMenu.setAsContextMenuOf(actionPopupTrigger);
+        contextMenu.setOpenAutomatically(false);
     }
 
-    private ContextMenu buildTaskContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
-        final ActionPopup contextMenu = new ActionPopup();
-        contextMenu.setOpenAutomatically(false);
+    private void buildTaskContextMenu() {
 
         final ExternalResource iconAssignResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-user-public");
 
@@ -141,22 +144,15 @@ public final class PulseListFooter extends CustomComponent {
         // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
         // but as this is not straightforward, for the time being we hack it like this
         if (user.getAllRoles().contains("superuser")) {
-            addRemoveMenuItem(i18n, itemsTable, contextMenu, "publish.actions.archive");
+            addRemoveMenuItem("publish.actions.archive");
         }
-
-        return contextMenu;
     }
 
-    private ContextMenu buildMessageContextMenu(final SimpleTranslator i18n, final TreeTable itemsTable) {
-        final ActionPopup contextMenu = new ActionPopup();
-        contextMenu.setOpenAutomatically(false);
-
-        addRemoveMenuItem(i18n, itemsTable, contextMenu, "publish.actions.delete");
-
-        return contextMenu;
+    private void buildMessageContextMenu() {
+        addRemoveMenuItem("publish.actions.delete");
     }
 
-    private void addRemoveMenuItem(final SimpleTranslator i18n, final TreeTable itemsTable, final ContextMenu contextMenu, final String i18nKey) {
+    private void addRemoveMenuItem(final String i18nKey) {
         final ExternalResource iconDeleteResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + "icon-delete");
 
         final ContextMenuItem remove = contextMenu.addItem(i18n.translate(i18nKey), iconDeleteResource);
@@ -180,34 +176,22 @@ public final class PulseListFooter extends CustomComponent {
     }
 
     public void updateStatus() {
-        int totalMessages = 0;
         int totalSelected = 0;
 
-        for (Object id : itemsTable.getItemIds()) {
-            // skip generated header rows when grouping messages
-            if (((String) id).startsWith(GROUP_PLACEHOLDER_ITEMID)) {
-                continue;
-            }
-            totalMessages++;
-        }
         for (String id : (Set<String>) itemsTable.getValue()) {
             // skip generated header rows when grouping messages
-            if (id.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+            if (id.startsWith(PulseConstants.GROUP_PLACEHOLDER_ITEMID)) {
                 continue;
             }
             totalSelected++;
         }
         // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
         // but as this is not straightforward, for the time being we hack it like this
-        if (totalSelected > 0) {
-            enableActions(true);
-        } else {
-            enableActions(false);
-        }
+        enableActions(totalSelected > 0);
 
-        final String totalMessagesAsString = totalMessages > 0 ? Integer.toString(totalMessages) : i18n.translate("pulse.footer.status.no");
+
         final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : i18n.translate("pulse.footer.status.none");
-        status.setValue(i18n.translate("pulse.footer.status", totalMessagesAsString, selectedMessagesAsString));
+        status.setValue(i18n.translate("pulse.footer.status", totalAmount, selectedMessagesAsString));
     }
 
     public void setMessagesListener(final PulseListView.Listener listener) {
@@ -224,4 +208,8 @@ public final class PulseListFooter extends CustomComponent {
         }
     }
 
+    public void setTotalAmount(long amount) {
+        this.totalAmount = amount;
+        updateStatus();
+    }
 }

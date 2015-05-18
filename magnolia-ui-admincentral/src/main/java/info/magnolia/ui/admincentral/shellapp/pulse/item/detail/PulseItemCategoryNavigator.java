@@ -144,7 +144,7 @@ public final class PulseItemCategoryNavigator extends CssLayout {
 
         static {
             try {
-                ITEM_CATEGORY_CHANGED = ItemCategoryChangedListener.class.getDeclaredMethod("itemCategoryChanged", new Class[] { CategoryChangedEvent.class });
+                ITEM_CATEGORY_CHANGED = ItemCategoryChangedListener.class.getDeclaredMethod("itemCategoryChanged", new Class[]{CategoryChangedEvent.class});
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }

@@ -234,48 +234,6 @@ public class MessageStoreTest extends MgnlTestCase {
         assertNull(result);
     }
 
-    @Test
-    public void testGetNumberOfUnclearedMessagesForUser() throws Exception {
-        // GIVEN
-        final String id = "1234";
-        final MockNode messageNode = createEmptyMessageMockNode(id);
-
-        final String userName = MgnlContext.getUser().getName();
-        store.saveMessage(userName, store.unmarshallMessage(messageNode));
-
-        // WHEN
-        int count = store.getNumberOfUnclearedMessagesForUser(userName);
-
-        // THEN
-        assertEquals(1, count);
-    }
-
-    @Test
-    public void testGetNumberOfUnclearedMessagesForUserAndByType() throws Exception {
-        // GIVEN
-        final MockNode errorMessage = createEmptyMessageMockNode("1");
-        errorMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
-
-        final MockNode errorMessage2 = createEmptyMessageMockNode("2");
-        errorMessage2.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
-
-        final MockNode infoMessage = createEmptyMessageMockNode("3");
-        infoMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.INFO.name());
-
-        final String userName = MgnlContext.getUser().getName();
-        store.saveMessage(userName, store.unmarshallMessage(errorMessage));
-        store.saveMessage(userName, store.unmarshallMessage(errorMessage2));
-        store.saveMessage(userName, store.unmarshallMessage(infoMessage));
-
-        // WHEN
-        int errors = store.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
-        int info = store.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.INFO);
-
-        // THEN
-        assertEquals(2, errors);
-        assertEquals(1, info);
-    }
-
     private MockNode createEmptyMessageMockNode(final String id) throws RepositoryException {
         MockNode messageNode = new MockNode();
         final long now = System.currentTimeMillis();

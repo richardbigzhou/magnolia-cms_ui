@@ -256,29 +256,6 @@ public class MessagesManagerImplTest extends MgnlTestCase {
     }
 
     @Test
-    public void testClearMessage() throws RepositoryException {
-        // GIVEN
-        MessagesManager.MessageListener listener = mock(MessagesManager.MessageListener.class);
-        messagesManager.registerMessagesListener("bob", listener);
-
-        Message message = new Message();
-        message.setType(MessageType.ERROR);
-        message.setSubject("subject");
-        message.setMessage("message");
-        messagesManager.sendMessage("bob", message);
-
-        assertEquals(1, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
-
-        // WHEN
-        messagesManager.clearMessage("bob", message.getId());
-
-        // THEN
-        assertEquals(0, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
-        verify(listener).messageSent(any(Message.class));
-        assertTrue(session.getNode("/bob/0").getProperty("cleared").getBoolean());
-    }
-
-    @Test
     public void testDoNoClearAlreadyClearedMessage() throws RepositoryException {
         // GIVEN
         MessagesManager.MessageListener listener = mock(MessagesManager.MessageListener.class);

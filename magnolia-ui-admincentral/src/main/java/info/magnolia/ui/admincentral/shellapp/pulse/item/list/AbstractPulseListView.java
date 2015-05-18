@@ -34,14 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.admincentral.shellapp.pulse.data.PulseConstants;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
 import javax.inject.Inject;
 
@@ -58,7 +54,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.GeneratedRow;
-import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -66,13 +61,11 @@ import com.vaadin.ui.VerticalLayout;
  */
 public abstract class AbstractPulseListView implements PulseListView {
 
-    public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
-
     private final String[] order;
 
     private final String[] headers;
 
-    private final TreeTable itemTable = new MagnoliaTreeTable();
+    private final Table itemTable = new MagnoliaTable();
 
     private final VerticalLayout root = new VerticalLayout();
 
@@ -86,111 +79,17 @@ public abstract class AbstractPulseListView implements PulseListView {
 
     private PulseListFooter footer;
 
-    private PulseItemCategory currentlySelectedCategory = PulseItemCategory.UNCLAIMED;
-
-    private boolean categoryFilterAlreadyApplied;
-
     private Property.ValueChangeListener selectionListener = new Property.ValueChangeListener() {
-
-        private Set<Object> prevSelected = new HashSet<Object>();
-
         @Override
         public void valueChange(ValueChangeEvent event) {
-            /*
-             * selecting/unselecting cause valueChange events and it is not
-             * preferred that an event handler generates more events.
-             */
-            itemTable.removeValueChangeListener(this);
-
-            @SuppressWarnings("unchecked")
-            Set<Object> currSelected = new HashSet<Object>((Set<Object>) event.getProperty().getValue());
-            Set<Object> added = new HashSet<Object>(currSelected);
-            Set<Object> removed = new HashSet<Object>(prevSelected);
-
-            added.removeAll(prevSelected);
-            removed.removeAll(currSelected);
-
-            prevSelected = currSelected;
-
-            /*
-             * if group line was added/removed then select/unselect all it's
-             * children
-             */
-            selectChildren(added, true);
-            selectChildren(removed, false);
-
-            // Item deselection will always deselect group
-            for (Object child : removed) {
-                Object parent = listener.getParent(child);
-                if (parent != null) {
-                    itemTable.unselect(parent);
-                    prevSelected.remove(parent);
-                }
-            }
-
-            /*
-             * Selecting item must check that all siblings are also selected
-             */
-            for (Object child : added) {
-                Object parent = listener.getParent(child);
-                if (isAllChildrenSelected(parent)) {
-                    itemTable.select(parent);
-                    prevSelected.add(parent);
-                } else {
-                    itemTable.unselect(parent);
-                    prevSelected.remove(parent);
-                }
-            }
-
-            itemTable.addValueChangeListener(this);
             footer.updateStatus();
-        }
-
-        private boolean isAllChildrenSelected(Object parent) {
-            if (parent == null) {
-                return false;
-            }
-
-            Collection<?> siblings = listener.getGroup(parent);
-            boolean allSelected = true;
-
-            if (siblings != null) {
-                for (Object sibling : siblings) {
-                    if (!itemTable.isSelected(sibling)) {
-                        allSelected = false;
-                    }
-                }
-            } else {
-                return false;
-            }
-
-            return allSelected;
-        }
-
-        private void selectChildren(Set<Object> parents, boolean check) {
-            for (Object parent : parents) {
-                Collection<?> group = listener.getGroup(parent);
-                if (group != null) {
-                    for (Object child : group) {
-                        if (check) {
-                            itemTable.select(child);
-                            prevSelected.add(child);
-                        } else {
-                            itemTable.unselect(child);
-                            prevSelected.remove(child);
-                        }
-                    }
-                }
-            }
         }
     };
 
     private ValueChangeListener groupingListener = new ValueChangeListener() {
-
         @Override
         public void valueChange(ValueChangeEvent event) {
-            boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
-            doGrouping(checked);
+            doGrouping((Boolean) event.getProperty().getValue());
         }
     };
 
@@ -207,7 +106,9 @@ public abstract class AbstractPulseListView implements PulseListView {
              * acts as a placeholder for grouping sub section. This row
              * generator must render those special items.
              */
-            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+            String id = (String) table.getContainerProperty(itemId, "id").getValue();
+
+            if (id != null && id.startsWith(PulseConstants.GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
                 return generateGroupingRow(item);
             }
@@ -216,34 +117,36 @@ public abstract class AbstractPulseListView implements PulseListView {
         }
     };
 
+    private boolean isGrouping = false;
+
     @Inject
-    public AbstractPulseListView(Shell shell, SimpleTranslator i18n, String[] order, String[] headers, String emptyMessage, PulseItemCategory... categories) {
+    public AbstractPulseListView(SimpleTranslator i18n, String[] order, String[] headers, String emptyMessage, PulseItemCategory... categories) {
         this.i18n = i18n;
         this.order = order;
         this.headers = headers;
         navigator = new PulseItemCategoryNavigator(i18n, true, false, categories);
+        navigator.addGroupingListener(new ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                isGrouping = (Boolean)event.getProperty().getValue();
+            }
+        });
         root.setSizeFull();
         construct(emptyMessage);
     }
 
     @Override
-    public void refresh() {
-        // skip this if we're displaying all messages or if the category filter has just been applied (i.e. after clicking on a different tab)
-        if ((currentlySelectedCategory != PulseItemCategory.ALL_MESSAGES || currentlySelectedCategory != PulseItemCategory.ALL_TASKS) && !categoryFilterAlreadyApplied) {
-            listener.filterByItemCategory(currentlySelectedCategory);
-        }
-        // now this can be reset to its initial value
-        categoryFilterAlreadyApplied = false;
-        footer.updateStatus();
-        itemTable.sort();
-        doGrouping(false);
-    }
+    public void refresh() {}
 
     @Override
     public void setDataSource(Container dataSource) {
         itemTable.setContainerDataSource(dataSource);
         itemTable.setVisibleColumns(order);
         itemTable.setColumnHeaders(headers);
+
+        int size = dataSource.size();
+        setComponentVisibility(size != 0);
+        footer.setTotalAmount(size);
     }
 
     @Override
@@ -265,23 +168,27 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     public void setFooter(PulseListFooter footer) {
+        if (this.footer != null) {
+            root.removeComponent(this.footer);
+        }
         this.footer = footer;
         root.addComponent(footer);
         footer.setHeight("60px");
     }
 
+    protected final Listener getListener() {
+        return listener;
+    }
+
     private void construct(String emptyMessage) {
         root.addComponent(navigator);
         navigator.addCategoryChangeListener(new PulseItemCategoryNavigator.ItemCategoryChangedListener() {
-
             @Override
             public void itemCategoryChanged(PulseItemCategoryNavigator.CategoryChangedEvent event) {
                 final PulseItemCategory category = event.getCategory();
                 onItemCategoryChanged(category);
             }
         });
-
-        constructTable();
 
         emptyPlaceHolder = new Label();
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
@@ -290,11 +197,11 @@ public abstract class AbstractPulseListView implements PulseListView {
 
         root.addComponent(emptyPlaceHolder);
 
+        constructTable();
+
         // create an initial default footer to avoid NPE exception. This will be replaced later on by specific implementations
         footer = new PulseListFooter(itemTable, i18n, false);
         root.addComponent(footer);
-
-        setComponentVisibility(itemTable.getContainerDataSource());
     }
 
     private void constructTable() {
@@ -319,32 +226,28 @@ public abstract class AbstractPulseListView implements PulseListView {
         itemTable.addItemSetChangeListener(new Container.ItemSetChangeListener() {
             @Override
             public void containerItemSetChange(ItemSetChangeEvent event) {
-                setComponentVisibility(event.getContainer());
+                itemTable.setValue(null);
+                long totalEntriesAmount = listener.getTotalEntriesAmount();
+                setComponentVisibility(totalEntriesAmount > 0);
+                footer.setTotalAmount(totalEntriesAmount);
             }
         });
     }
 
     private void doGrouping(boolean checked) {
         listener.setGrouping(checked);
-
-        if (checked) {
-            for (Object itemId : itemTable.getItemIds()) {
-                itemTable.setCollapsed(itemId, false);
-            }
-        }
     }
 
-    private void setComponentVisibility(Container container) {
-        boolean isEmptyList = container.getItemIds().size() == 0;
-        if (isEmptyList) {
+    private void setComponentVisibility(boolean entriesAvailable) {
+        if (!entriesAvailable) {
             root.setExpandRatio(emptyPlaceHolder, 1f);
         } else {
             root.setExpandRatio(emptyPlaceHolder, 0f);
         }
 
-        itemTable.setVisible(!isEmptyList);
-        footer.setVisible(!isEmptyList);
-        emptyPlaceHolder.setVisible(isEmptyList);
+        itemTable.setVisible(entriesAvailable);
+        footer.setVisible(entriesAvailable);
+        emptyPlaceHolder.setVisible(!entriesAvailable);
     }
 
     /**
@@ -356,7 +259,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         return i18n;
     }
 
-    protected TreeTable getItemTable() {
+    protected Table getItemTable() {
         return itemTable;
     }
 
@@ -373,7 +276,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     protected void onItemClicked(ClickEvent event, final Object itemId) {
         String itemIdAsString = String.valueOf(itemId);
         // clicking on the group type header does nothing.
-        if (itemIdAsString.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+        if (itemIdAsString.startsWith(PulseConstants.GROUP_PLACEHOLDER_ITEMID)) {
             return;
         }
         if (event.isDoubleClick()) {
@@ -386,22 +289,14 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     private void onItemCategoryChanged(final PulseItemCategory category) {
-        currentlySelectedCategory = category;
         listener.filterByItemCategory(category);
-        categoryFilterAlreadyApplied = true;
         // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
-        for (String id : (Set<String>) itemTable.getValue()) {
-            itemTable.unselect(id);
-        }
+        itemTable.setValue(null);
 
-        switch (category) {
-        case ALL_TASKS:
-        case ALL_MESSAGES:
-            navigator.enableGroupBy(true);
-            break;
-        default:
-            navigator.enableGroupBy(false);
-        }
+        boolean isGroupingEnabled = category == PulseItemCategory.ALL_TASKS || category == PulseItemCategory.ALL_MESSAGES;
+        navigator.enableGroupBy(isGroupingEnabled);
+
+        doGrouping(isGroupingEnabled && isGrouping);
 
         refresh();
     }

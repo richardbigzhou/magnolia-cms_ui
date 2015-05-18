@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>26</cloverCoverageThreshold>
+    <cloverCoverageThreshold>34</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -69,6 +69,14 @@
       <artifactId>mockito-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -89,6 +97,10 @@
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+      <artifactId>vaadin-lazyquerycontainer</artifactId>
     </dependency>
   </dependencies>
   <build>

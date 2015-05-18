@@ -48,18 +48,15 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 
-import java.util.Collection;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.data.util.HierarchicalContainer;
-
 /**
  * Presenter of {@link MessagesListView}.
  */
-public final class MessagesListPresenter extends AbstractPulseListPresenter<Message> implements MessagesListView.Listener, MessageEventHandler {
+public final class MessagesListPresenter extends AbstractPulseListPresenter implements MessagesListView.Listener, MessageEventHandler {
 
     private final EventBus admincentralEventBus;
     private final MessagesListView view;
@@ -69,8 +66,9 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     private final PulseListDefinition definition;
 
     @Inject
-    public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final MessagesListView view, final MessagesManager messagesManager, ComponentProvider componentProvider, Context context, ConfiguredPulseListDefinition definition) {
+    public MessagesListPresenter(MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+                                 final MessagesListView view, final MessagesManager messagesManager,
+                                 ComponentProvider componentProvider, Context context, ConfiguredPulseListDefinition definition) {
         super(container);
         this.admincentralEventBus = admincentralEventBus;
         this.view = view;
@@ -99,10 +97,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     private void initView() {
-        Collection<Message> messages = messagesManager.getMessagesForUser(userId);
-        HierarchicalContainer dataSource = container.createDataSource(messages);
-        view.setDataSource(dataSource);
-        view.refresh();
+        view.setDataSource(container.getVaadinContainer());
         for (MessageType type : MessageType.values()) {
             doUnreadMessagesUpdate(type);
         }
@@ -111,11 +106,8 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     @Override
     public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
-        container.addBeanAsItem(message);
+        container.refresh();
 
-        if (container.isGrouping()) {
-            container.buildTree();
-        }
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
         listener.updatePulseCounter();
@@ -124,11 +116,10 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     @Override
     public void messageCleared(MessageEvent event) {
         final Message message = event.getMessage();
-        container.assignPropertiesFromBean(message, container.getItem(message.getId()));
-
         final MessageType type = message.getType();
         doUnreadMessagesUpdate(type);
         listener.updatePulseCounter();
+        container.refresh();
     }
 
     @Override
@@ -146,6 +137,11 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
     }
 
     @Override
+    public long getTotalEntriesAmount() {
+        return container.size();
+    }
+
+    @Override
     public void onItemClicked(String messageId) {
         listener.openItem(this.definition.getName(), messageId);
         messagesManager.clearMessage(userId, messageId);
@@ -158,15 +154,14 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter<Mess
 
     @Override
     public void messageRemoved(MessageEvent messageEvent) {
-        /*
-         * Refreshes the view to display the updated underlying data.
-         */
-        initView();
+        container.refresh();
+        for (MessageType type : MessageType.values()) {
+            doUnreadMessagesUpdate(type);
+        }
         listener.updatePulseCounter();
     }
 
     private void doUnreadMessagesUpdate(final MessageType type) {
-
         int count;
         switch (type) {
         case ERROR:
