@@ -38,10 +38,10 @@ import static org.junit.Assert.*;
 import info.magnolia.context.AbstractMapBasedContext;
 import info.magnolia.context.Context;
 import info.magnolia.test.model.Color;
+import info.magnolia.test.model.Pair;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Objects;
 
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class DefinitionClonerTest {
     @Test
     public void clonesAreEqualButNotSameInstance() {
         // GIVEN
-        final Bar b1 = new Bar(Color.ORANGE, new Date());
+        final Bar b1 = new Bar(Color.ORANGE, new Pair("a", 12));
 
         // WHEN
         final Bar b2 = new DefinitionCloner().deepClone(b1);
@@ -68,8 +68,8 @@ public class DefinitionClonerTest {
         assertNotSame(b1, b2);
         assertEquals(b1.color, b2.color);
         assertNotSame(b1.color, b2.color);
-        assertEquals(b1.date, b2.date);
-        assertNotSame(b1.date, b2.date);
+        assertEquals(b1.pair, b2.pair);
+        assertNotSame(b1.pair, b2.pair);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class DefinitionClonerTest {
         assertNotSame(new DummyContext(), new DummyContext());
 
         // GIVEN
-        final Foo foo1 = new Foo(Color.PINK, new BarWithContext(Color.RED, new Date(), new DummyContext()));
+        final Foo foo1 = new Foo(Color.PINK, new BarWithContext(Color.RED, new Pair("a", 12), new DummyContext()));
 
         // WHEN
         final Foo foo2 = new DefinitionCloner().deepClone(foo1);
@@ -96,7 +96,7 @@ public class DefinitionClonerTest {
 
     @Test
     public void referencesToProxyCallbacksAreNotCloned() throws Exception {
-        final Bar bar = new Bar(Color.RED, new Date());
+        final Bar bar = new Bar(Color.RED, new Pair("a", 12));
         final Bar decoratedBar = Decorating.proxy(bar).visiting(new DummyDecorator()).build(new CglibProxyFactory());
 
         // GIVEN
@@ -153,19 +153,19 @@ public class DefinitionClonerTest {
 
     public static class Bar {
         private final Color color;
-        private final Date date;
+        private final Pair pair;
 
-        public Bar(Color c, Date d) {
+        public Bar(Color c, Pair d) {
             this.color = c;
-            this.date = d;
+            this.pair = d;
         }
 
         public Color getColor() {
             return color;
         }
 
-        public Date getDate() {
-            return date;
+        public Pair getPair() {
+            return pair;
         }
 
         @Override
@@ -178,20 +178,20 @@ public class DefinitionClonerTest {
             }
             Bar bar = (Bar) o;
             return Objects.equals(color, bar.color) &&
-                    Objects.equals(date, bar.date);
+                    Objects.equals(pair, bar.pair);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(color, date);
+            return Objects.hash(color, pair);
         }
     }
 
     public static class BarWithContext extends Bar {
         private final Context ctx;
 
-        public BarWithContext(Color c, Date d, Context ctx) {
-            super(c, d);
+        public BarWithContext(Color c, Pair p, Context ctx) {
+            super(c, p);
             this.ctx = ctx;
         }
 
