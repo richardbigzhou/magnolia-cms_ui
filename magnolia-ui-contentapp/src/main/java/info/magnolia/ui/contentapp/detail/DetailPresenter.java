@@ -174,14 +174,18 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         Map<String, ActionDefinition> subAppActions = subAppContext.getSubAppDescriptor().getActions();
         List<ActionDefinition> filteredActions = new LinkedList<ActionDefinition>();
         List<FormActionItemDefinition> editorActions = editorDefinition.getActions();
-        for (FormActionItemDefinition editorAction : editorActions) {
-            ActionDefinition def = subAppActions.get(editorAction.getName());
-            AvailabilityDefinition availability = executor.getActionDefinition(editorAction.getName()).getAvailability();
-            if (def != null && checker.isAvailable(availability, Arrays.asList(itemId))) {
-                filteredActions.add(def);
-            } else {
-                log.debug("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
+        if (editorActions != null && !editorActions.isEmpty()) {
+            for (FormActionItemDefinition editorAction : editorActions) {
+                ActionDefinition def = subAppActions.get(editorAction.getName());
+                AvailabilityDefinition availability = executor.getActionDefinition(editorAction.getName()).getAvailability();
+                if (def != null && checker.isAvailable(availability, Arrays.asList(itemId))) {
+                    filteredActions.add(def);
+                } else {
+                    log.warn("DetailPresenter expected an action named {}, but no such action is currently configured in the subapp.", editorAction.getName());
+                }
             }
+        } else {
+            log.warn("DetailPresenter currently has no action configured.");
         }
         return filteredActions;
     }
