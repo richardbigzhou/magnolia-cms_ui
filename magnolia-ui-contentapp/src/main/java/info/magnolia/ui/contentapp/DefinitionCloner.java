@@ -38,11 +38,14 @@ import info.magnolia.context.Context;
 import com.rits.cloning.Cloner;
 
 /**
- * Up until Magnolia 5.4, we were using {@link Cloner} directly. To avoid duplicating configuration code everwhere,
+ * Up until Magnolia 5.4, we were using {@link Cloner} directly. To avoid duplicating configuration code everywhere,
  * we're introducing this wrapper which pre-configures it to work nicely with our definition objects.
  *
- * Specifically, it prevents cloning {@link Context} and proxy {@link net.sf.cglib.proxy.Callback} fields of definitions, which we use extensively
- * in the i18n mechanism. Those don't need to be cloned, they can be re-referenced as-is.
+ * Specifically, it prevents cloning {@link Context}.
+ *
+ * Note: Initially we wanted to avoid cloning all proxy {@link net.sf.cglib.proxy.Callback} fields of definitions, which we
+ * use extensively in the i18n mechanism. But that leads to the cloned object to still delegate method calls to the original
+ * due to proxy specifics.
  */
 public class DefinitionCloner {
     private final Cloner cloner;
@@ -50,7 +53,6 @@ public class DefinitionCloner {
     public DefinitionCloner() {
         this.cloner = new Cloner();
         cloner.dontCloneInstanceOf(Context.class);
-        cloner.dontCloneInstanceOf(net.sf.cglib.proxy.Callback.class);
     }
 
     public <T> T deepClone(final T definition) {

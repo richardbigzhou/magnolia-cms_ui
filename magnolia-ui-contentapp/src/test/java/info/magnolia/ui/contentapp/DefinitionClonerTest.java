@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.proxy.factory.CglibProxyFactory;
@@ -52,7 +53,7 @@ import com.thoughtworks.proxy.toys.decorate.DecoratingInvoker;
 import com.thoughtworks.proxy.toys.decorate.Decorator;
 
 /**
- *
+ * Tests for {@link info.magnolia.ui.contentapp.DefinitionCloner}.
  */
 public class DefinitionClonerTest {
     @Test
@@ -94,6 +95,7 @@ public class DefinitionClonerTest {
         assertSame("Context should not be cloned, ie same instance should be referenced on both sides", b1.ctx, b2.ctx);
     }
 
+    @Ignore("We're cloning form definitions in some corner cases and afterwards modify those. Introduce decorators for this.")
     @Test
     public void referencesToProxyCallbacksAreNotCloned() throws Exception {
         final Bar bar = new Bar(Color.RED, new Pair("a", 12));
