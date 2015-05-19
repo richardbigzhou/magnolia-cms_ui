@@ -42,8 +42,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * StubView.
- * TODO: Add proper JavaDoc.
+ * The StubView is an empty view used in the event of an app, or sub-app failure to start.
  */
 public class StubView implements View {
 
