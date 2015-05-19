@@ -1,7 +1,13 @@
 @charset "UTF-8";
 
 @mixin stubview {
-  .app-stub-view .icon {
-    font-size: 200px;
+
+  .app-stub-view {
+    .icon {
+      font-size: 300px;
+      color: $c13;
+      line-height: 1.0;
+    }
   }
+
 }
