@@ -12,39 +12,14 @@
          in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-security</id>
+    <component>
+      <type>info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule</type>
+      <implementation>info.magnolia.security.app.action.availability.SecurityAppWritePermissionRequiredRule</implementation>
+    </component>
     <type-mapping>
       <type>info.magnolia.ui.workbench.tree.MoveHandler</type>
       <implementation>info.magnolia.security.app.container.SecurityDropHandler</implementation>
     </type-mapping>
-  </components>
-
-  <components>
-    <id>app-security-systemUsers</id>
-    <component>
-      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
-      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-security-users</id>
-    <component>
-      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
-      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-security-groups</id>
-    <component>
-      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
-      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-security-roles</id>
-    <component>
-      <type>info.magnolia.ui.api.availability.AvailabilityChecker</type>
-      <implementation>info.magnolia.security.app.action.availability.SecurityAppAvailabilityCheckerImpl</implementation>
-    </component>
   </components>
 
   <dependencies>
