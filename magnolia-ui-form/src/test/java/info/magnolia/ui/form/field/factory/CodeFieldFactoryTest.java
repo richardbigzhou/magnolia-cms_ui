@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.lang.reflect.Method;
@@ -51,35 +51,32 @@ import org.vaadin.aceeditor.client.AceEditorState;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Field;
 
-/**
- * Test Class.
- */
-public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<BasicTextCodeFieldDefinition> {
+public class CodeFieldFactoryTest extends AbstractFieldFactoryTestCase<CodeFieldDefinition> {
 
-    private BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition> fieldFactory;
+    private CodeFieldFactory factory;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        fieldFactory = new BasicTextCodeFieldFactory<>(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        factory = new CodeFieldFactory(definition, baseItem);
+        factory.setComponentProvider(new MockComponentProvider());
     }
 
     @Test
-    public void createBasicCodeField() {
+    public void createCodeField() {
         // GIVEN
         // WHEN
-        Field<String> field = fieldFactory.createField();
+        Field<String> field = factory.createField();
 
         // THEN
         assertTrue(field instanceof AceEditor);
     }
 
     @Test
-    public void createBasicCodeFieldChangeValue() {
+    public void createCodeFieldChangeValue() {
         // GIVEN
         baseItem.addItemProperty(propertyName, new DefaultProperty<>(String.class, "private String s"));
-        Field<String> field = fieldFactory.createField();
+        Field<String> field = factory.createField();
         assertEquals("private String s", field.getValue());
 
         // WHEN
@@ -95,7 +92,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         definition.setHeight(500);
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
 
         // THEN
         assertThat(aceEditor.getHeight(), is(500f));
@@ -107,7 +104,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         definition.setLanguage("freemarker");
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
         AceEditorState aceEditorState = editorStateFor(aceEditor);
 
         // THEN
@@ -121,7 +118,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.ftl"));
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
         AceEditorState aceEditorState = editorStateFor(aceEditor);
 
         // THEN
@@ -135,7 +132,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.hh"));
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
         AceEditorState aceEditorState = editorStateFor(aceEditor);
 
         // THEN
@@ -150,7 +147,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.ada"));
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
         AceEditorState aceEditorState = editorStateFor(aceEditor);
 
         // THEN
@@ -162,7 +159,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         // GIVEN
 
         // WHEN
-        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditor aceEditor = (AceEditor) factory.createField();
         AceEditorState aceEditorState = editorStateFor(aceEditor);
 
         // THEN
@@ -171,7 +168,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
 
     @Override
     protected void createConfiguredFieldDefinition() {
-        BasicTextCodeFieldDefinition fieldDefinition = new BasicTextCodeFieldDefinition();
+        CodeFieldDefinition fieldDefinition = new CodeFieldDefinition();
         fieldDefinition.setName(propertyName);
         this.definition = fieldDefinition;
     }

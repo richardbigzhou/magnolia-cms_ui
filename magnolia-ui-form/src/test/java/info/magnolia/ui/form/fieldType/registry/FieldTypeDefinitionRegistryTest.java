@@ -41,11 +41,11 @@ import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.CodeFieldFactory;
 import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
@@ -73,8 +73,8 @@ public class FieldTypeDefinitionRegistryTest {
         registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
-        codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
-        codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
+        codeFieldDefinition.setDefinitionClass(CodeFieldDefinition.class);
+        codeFieldDefinition.setFactoryClass(CodeFieldFactory.class);
         registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
     }
@@ -133,7 +133,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(ConfiguredFieldDefinition.class);
-        codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
+        codeFieldDefinition.setFactoryClass(CodeFieldFactory.class);
         registry.register(new TestFieldTypeDefinitionProvider("extend", codeFieldDefinition));
         // WHEN
         FieldTypeDefinition res = registry.getByDefinition(ConfiguredFieldDefinition.class);

@@ -97,6 +97,14 @@ public class FieldConfig {
         return new MultiValueFieldBuilder(name);
     }
 
+    public CodeFieldBuilder code(String name) {
+        return new CodeFieldBuilder(name);
+    }
+
+    /**
+     * @deprecated Since 5.4, use {@link #code(String)} instead.
+     */
+    @Deprecated
     public BasicTextCodeFieldBuilder basicTextCode(String name) {
         return new BasicTextCodeFieldBuilder(name);
     }

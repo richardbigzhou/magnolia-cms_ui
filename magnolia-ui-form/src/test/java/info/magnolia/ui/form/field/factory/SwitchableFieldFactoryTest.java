@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
@@ -296,8 +296,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
-        codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
-        codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
+        codeFieldDefinition.setDefinitionClass(CodeFieldDefinition.class);
+        codeFieldDefinition.setFactoryClass(CodeFieldFactory.class);
         registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
         ConfiguredFieldTypeDefinition selectFieldDefinition = new ConfiguredFieldTypeDefinition();
@@ -341,7 +341,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         textFieldDefinition = (TextFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(textFieldDefinition, propertyName);
         textFieldDefinition.setRows(0);
         textFieldDefinition.setName("text");
-        BasicTextCodeFieldDefinition codeFieldDefinition = new BasicTextCodeFieldDefinition();
+        CodeFieldDefinition codeFieldDefinition = new CodeFieldDefinition();
         codeFieldDefinition.setLanguage("java");
         codeFieldDefinition.setName(propertyName);
         codeFieldDefinition.setName("code");

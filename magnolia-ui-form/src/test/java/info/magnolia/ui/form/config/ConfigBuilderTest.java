@@ -75,9 +75,9 @@ public class ConfigBuilderTest {
     private String styleName = "styleName";
 
     @Test
-    public void testBasicTextCodeFieldBuilder() {
+    public void testCodeFieldBuilder() {
         // GIVEN
-        BasicTextCodeFieldBuilder builder = new BasicTextCodeFieldBuilder("BasicTextCodeFieldBuilder");
+        CodeFieldBuilder builder = new CodeFieldBuilder("CodeFieldBuilder");
         initCommonAttributes(builder, true);
 
         // WHEN
@@ -279,8 +279,8 @@ public class ConfigBuilderTest {
 
         OptionBuilder optionBuilder1 = new OptionBuilder();
         OptionBuilder optionBuilder2 = new OptionBuilder();
-        BasicTextCodeFieldBuilder tfb1 = new BasicTextCodeFieldBuilder("tfb1");
-        BasicTextCodeFieldBuilder tfb2 = new BasicTextCodeFieldBuilder("tfb2");
+        CodeFieldBuilder tfb1 = new CodeFieldBuilder("tfb1");
+        CodeFieldBuilder tfb2 = new CodeFieldBuilder("tfb2");
 
         // WHEN
         builder.options(optionBuilder1, optionBuilder2).fields(tfb1, tfb2).selectionType("radio");
@@ -303,8 +303,8 @@ public class ConfigBuilderTest {
         CompositeFieldBuilder builder = new CompositeFieldBuilder("CompositeFieldBuilder");
         initCommonAttributes(builder, false);
 
-        BasicTextCodeFieldBuilder tfb1 = new BasicTextCodeFieldBuilder("tfb1");
-        BasicTextCodeFieldBuilder tfb2 = new BasicTextCodeFieldBuilder("tfb2");
+        CodeFieldBuilder tfb1 = new CodeFieldBuilder("tfb1");
+        CodeFieldBuilder tfb2 = new CodeFieldBuilder("tfb2");
         builder.fields(tfb1, tfb2).layout(Layout.vertical);
 
         // WHEN

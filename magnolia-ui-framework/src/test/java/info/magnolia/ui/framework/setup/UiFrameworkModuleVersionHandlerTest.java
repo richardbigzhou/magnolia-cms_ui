@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.setup;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
@@ -48,9 +50,9 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
-import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.CodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
@@ -157,32 +159,26 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_1AddFieldType() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        framework.addNode("fieldTypes", NodeTypes.ContentNode.NAME);
+        Node fieldTypes = framework.addNode("fieldTypes", NodeTypes.Content.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
 
         // THEN
-        // Basic Code field
-        assertTrue(framework.hasNode("fieldTypes/basicTextCodeField"));
-        Node basicTextCodeField = framework.getNode("fieldTypes/basicTextCodeField");
-        assertTrue(basicTextCodeField.hasProperty("definitionClass"));
-        assertEquals(BasicTextCodeFieldDefinition.class.getName(), basicTextCodeField.getProperty("definitionClass").getString());
-        assertTrue(basicTextCodeField.hasProperty("factoryClass"));
-        assertEquals(BasicTextCodeFieldFactory.class.getName(), basicTextCodeField.getProperty("factoryClass").getString());
-        // Switchable Field
-        assertTrue(framework.hasNode("fieldTypes/switchableField"));
-        Node switchableField = framework.getNode("fieldTypes/switchableField");
-        assertTrue(switchableField.hasProperty("definitionClass"));
-        assertEquals(SwitchableFieldDefinition.class.getName(), switchableField.getProperty("definitionClass").getString());
-        assertTrue(switchableField.hasProperty("factoryClass"));
-        assertEquals(SwitchableFieldFactory.class.getName(), switchableField.getProperty("factoryClass").getString());
-        //
-        assertTrue(framework.hasNode("fieldTypes/workbenchField"));
-        Node workbenchField = framework.getNode("fieldTypes/workbenchField");
-        assertTrue(workbenchField.hasProperty("definitionClass"));
-        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
-        assertTrue(workbenchField.hasProperty("factoryClass"));
-        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
+        // Code field
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("code"),
+                hasProperty("definitionClass", CodeFieldDefinition.class.getName()),
+                hasProperty("factoryClass", CodeFieldFactory.class.getName()))));
+        // Switchable field
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("switchableField"),
+                hasProperty("definitionClass", SwitchableFieldDefinition.class.getName()),
+                hasProperty("factoryClass", SwitchableFieldFactory.class.getName()))));
+        // Workbench field
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("workbenchField"),
+                hasProperty("definitionClass", "info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition"),
+                hasProperty("factoryClass", "info.magnolia.ui.contentapp.field.WorkbenchFieldFactory"))));
     }
 
     @Test
@@ -263,7 +259,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_2AddFieldTypeIfNotExisiting() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        framework.addNode("fieldTypes", NodeTypes.ContentNode.NAME);
+        Node fieldTypes = framework.addNode("fieldTypes", NodeTypes.Content.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 
@@ -274,6 +270,10 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
         assertTrue(workbenchField.hasProperty("factoryClass"));
         assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("workbenchField"),
+                hasProperty("definitionClass", "info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition"),
+                hasProperty("factoryClass", "info.magnolia.ui.contentapp.field.WorkbenchFieldFactory"))));
     }
 
     @Test
@@ -339,5 +339,24 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/rename/modalityLevel").getString());
         assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/folder/modalityLevel").getString());
+    }
+
+    @Test
+    public void updateFrom538UpdatesCodeFieldTypeDefinition() throws Exception {
+        // GIVEN
+        Node fieldTypes = framework.addNode("fieldTypes", NodeTypes.Content.NAME);
+        Node codeField = fieldTypes.addNode("basicTextCodeField", NodeTypes.ContentNode.NAME);
+        codeField.setProperty("definitionClass", "info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition");
+        codeField.setProperty("factoryClass", "info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+
+        // THEN
+        assertFalse(fieldTypes.hasNode("basicTextCodeField"));
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("code"),
+                hasProperty("definitionClass", CodeFieldDefinition.class.getName()),
+                hasProperty("factoryClass", CodeFieldFactory.class.getName()))));
     }
 }

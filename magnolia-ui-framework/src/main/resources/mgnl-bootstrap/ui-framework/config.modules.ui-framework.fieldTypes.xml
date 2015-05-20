@@ -476,7 +476,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="basicTextCodeField" >
+  <sv:node sv:name="code" >
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -487,10 +487,10 @@
       <sv:value>d40d438e-f1f3-4907-8d51-0466ca298a04</sv:value>
     </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition</sv:value>
+      <sv:value>info.magnolia.ui.form.field.definition.CodeFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.CodeFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
