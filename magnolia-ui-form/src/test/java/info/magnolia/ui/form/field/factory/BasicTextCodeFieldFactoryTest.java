@@ -33,16 +33,22 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.hamcrest.CoreMatchers.is;
+import static info.magnolia.ui.vaadin.integration.jcr.ModelConstants.JCR_NAME;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
+import java.lang.reflect.Method;
+
 import org.junit.Test;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.aceeditor.AceMode;
+import org.vaadin.aceeditor.client.AceEditorState;
 
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Field;
 
 /**
@@ -55,7 +61,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
+        fieldFactory = new BasicTextCodeFieldFactory<>(definition, baseItem);
         fieldFactory.setComponentProvider(new MockComponentProvider());
     }
 
@@ -72,7 +78,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
     @Test
     public void createBasicCodeFieldChangeValue() {
         // GIVEN
-        baseItem.addItemProperty(propertyName, new DefaultProperty<String>(String.class, "private String s"));
+        baseItem.addItemProperty(propertyName, new DefaultProperty<>(String.class, "private String s"));
         Field<String> field = fieldFactory.createField();
         assertEquals("private String s", field.getValue());
 
@@ -95,12 +101,86 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
         assertThat(aceEditor.getHeight(), is(500f));
     }
 
+    @Test
+    public void createFieldSetsModeIfLanguageIsPresent() throws Exception {
+        // GIVEN
+        definition.setLanguage("freemarker");
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditorState aceEditorState = editorStateFor(aceEditor);
+
+        // THEN
+        assertThat(aceEditorState.mode, is(AceMode.ftl.toString()));
+    }
+
+    @Test
+    public void createFieldResolvesAceModeFromFileExtension() throws Exception {
+        // GIVEN
+        definition.setFileNameProperty(JCR_NAME);
+        baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.ftl"));
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditorState aceEditorState = editorStateFor(aceEditor);
+
+        // THEN
+        assertThat(aceEditorState.mode, is(AceMode.ftl.toString()));
+    }
+
+    @Test
+    public void createFieldResolvesAceModeFromAdditionalMappingsIfAceModeDoesntMatch() throws Exception {
+        // GIVEN
+        definition.setFileNameProperty(JCR_NAME);
+        baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.hh"));
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditorState aceEditorState = editorStateFor(aceEditor);
+
+        // THEN
+        assertThat(aceEditorState.mode, is(AceMode.c_cpp.toString()));
+    }
+
+    @Test
+    public void createFieldFavoursLanguageOverFileNameProperty() throws Exception {
+        // GIVEN
+        definition.setLanguage("freemarker");
+        definition.setFileNameProperty(JCR_NAME);
+        baseItem.addItemProperty(JCR_NAME, new ObjectProperty<>("test.ada"));
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditorState aceEditorState = editorStateFor(aceEditor);
+
+        // THEN
+        assertThat(aceEditorState.mode, is(AceMode.ftl.toString()));
+    }
+
+    @Test
+    public void createFieldUsesDefaultModeIfLanguageAndFileNamePropertyAreNotPresent() throws Exception {
+        // GIVEN
+
+        // WHEN
+        AceEditor aceEditor = (AceEditor) fieldFactory.createField();
+        AceEditorState aceEditorState = editorStateFor(aceEditor);
+
+        // THEN
+        assertThat(aceEditorState.mode, is(AceMode.text.toString()));
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         BasicTextCodeFieldDefinition fieldDefinition = new BasicTextCodeFieldDefinition();
-        fieldDefinition.setLanguage("java");
         fieldDefinition.setName(propertyName);
         this.definition = fieldDefinition;
     }
 
+    // We have to use reflection because AceEditor doesn't expose its AceMode for assertions.
+    private AceEditorState editorStateFor(AceEditor aceEditor) throws Exception {
+        Class<? extends AceEditor> aClass = aceEditor.getClass();
+        Method method = aClass.getDeclaredMethod("getState");
+        method.setAccessible(true);
+        return (AceEditorState) method.invoke(aceEditor);
+    }
 }
