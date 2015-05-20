@@ -34,14 +34,20 @@
 package info.magnolia.ui.form.field.factory;
 
 
+import static com.google.common.base.Enums.getIfPresent;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.vaadin.aceeditor.AceMode.forFileEnding;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.aceeditor.AceMode;
 
+import com.google.common.base.Optional;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.Sizeable.Unit;
@@ -54,13 +60,9 @@ import com.vaadin.ui.Field;
  */
 public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> extends AbstractFieldFactory<D, String> {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicTextCodeFieldFactory.class);
-
-    public static final String FREEMARKER_LANGUAGE = "freemarker";
-
-    public static final String ACE_EDITOR_FTL_ID = "ftl";
-
-    public static final String ACE_EDITOR_RESOURCES = "/.resources/ace/";
+    private static final String FREEMARKER_LANGUAGE = "freemarker";
+    private static final String ACE_EDITOR_FTL_ID = "ftl";
+    private static final String ACE_EDITOR_RESOURCES = "/.resources/ace/";
 
     private AceEditor field;
 
@@ -85,25 +87,31 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
      * @return newly constructed {@link AceEditor}.
      */
     protected AceEditor newAceEditor() {
-        final AceEditor aceEditor =  new AceEditor();
+        AceEditor aceEditor = new AceEditor();
         if (MgnlContext.isWebContext()) {
             String aceEditorResourcePath = MgnlContext.getContextPath() + ACE_EDITOR_RESOURCES;
             aceEditor.setModePath(aceEditorResourcePath);
             aceEditor.setWorkerPath(aceEditorResourcePath);
             aceEditor.setThemePath(aceEditorResourcePath);
         }
-        aceEditor.setMode(getModeType(definition.getLanguage()));
+        // If language is set, then we don't want to conflict with it.
+        if (isNotBlank(definition.getLanguage())) {
+            aceEditor.setMode(getModeType(definition.getLanguage()));
+        } else if (isNotBlank(definition.getFileNameProperty())) {
+            Property<?> fileNameProperty = item.getItemProperty(definition.getFileNameProperty());
+            if (fileNameProperty != null) {
+                String fileName = String.valueOf(fileNameProperty.getValue());
+                String extension = getExtension(fileName);
+                AceMode mode = getAceModeByFileExtension(extension);
+                if (mode != null) {
+                    aceEditor.setMode(mode);
+                }
+            }
+        }
         if (definition.getHeight() > 0) {
             aceEditor.setHeight(definition.getHeight(), Unit.PIXELS);
         }
         return aceEditor;
-    }
-
-    /**
-     * Set {@link AceEditor} mode.
-     */
-    protected void setAceEditorMode() {
-        field.setMode(getModeType(definition.getLanguage()));
     }
 
     /**
@@ -138,4 +146,20 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
         return FREEMARKER_LANGUAGE.equals(language) ? ACE_EDITOR_FTL_ID : language;
     }
 
+    /**
+     * Get the {@link AceMode} by file extension.
+     * <p>
+     * First tries to match the given extension against an AceMode value, otherwise looks into AceMode's additional mappings (<code>endingModeMap</code>).
+     */
+    private AceMode getAceModeByFileExtension(String extension) {
+        // Trying the get AceMode from the Enum
+        Optional<AceMode> aceModeValue = getIfPresent(AceMode.class, extension);
+        if (aceModeValue.isPresent()) {
+            return aceModeValue.get();
+        } else {
+            // Trying to get AceMode from the AceMode.endingModeMap
+            AceMode aceMode = forFileEnding(extension);
+            return aceMode != null ? aceMode : null;
+        }
+    }
 }

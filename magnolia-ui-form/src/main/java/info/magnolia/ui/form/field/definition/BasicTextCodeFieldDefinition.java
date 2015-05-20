@@ -40,7 +40,8 @@ import info.magnolia.ui.form.field.transformer.basic.NotNullInitialStringValueTr
  */
 public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String language = "text";
+    private String language;
+    private String fileNameProperty;
 
     private int height = 300;
 
@@ -49,8 +50,11 @@ public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * Default language is 'text'.
-     * @return the desired Code language (java, groovy, ...).
+     * Defines the programming language to use for syntax highlighting.
+     * <p>
+     * See the {@link org.vaadin.aceeditor.AceMode AceMode} enum for possible values, <code>"freemarker"</code> is also supported.
+     *
+     * @see org.vaadin.aceeditor.AceMode
      */
     public String getLanguage() {
         return language;
@@ -71,4 +75,14 @@ public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
         this.height = height;
     }
 
+    /**
+     * Defines the Vaadin propertyId under which file name is exposed by the current form {@link com.vaadin.data.Item Item}.
+     */
+    public String getFileNameProperty() {
+        return fileNameProperty;
+    }
+
+    public void setFileNameProperty(String fileNameProperty) {
+        this.fileNameProperty = fileNameProperty;
+    }
 }
