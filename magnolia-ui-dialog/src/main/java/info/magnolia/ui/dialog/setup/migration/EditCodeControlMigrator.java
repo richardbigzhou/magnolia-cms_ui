@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.module.InstallContext;
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -47,7 +47,7 @@ public class EditCodeControlMigrator implements ControlMigrator {
     @Override
     public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", BasicTextCodeFieldDefinition.class.getName());
+        controlNode.setProperty("class", CodeFieldDefinition.class.getName());
         if (controlNode.hasProperty("language")) {
             String language = controlNode.getProperty("language").getString();
             if (language.equals("generic")) {

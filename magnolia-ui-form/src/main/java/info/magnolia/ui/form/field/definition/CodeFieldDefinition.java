@@ -33,20 +33,57 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.ui.form.field.transformer.basic.NotNullInitialStringValueTransformer;
 
 /**
- * Field definition for code text box.
- * @deprecated Since 5.4, use {@link CodeFieldDefinition}.
+ * Field definition for a rich code editor.
  */
-@Deprecated
-public class BasicTextCodeFieldDefinition extends CodeFieldDefinition {
+public class CodeFieldDefinition extends ConfiguredFieldDefinition {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicTextCodeFieldDefinition.class);
+    private String language;
+    private String fileNameProperty;
 
-    @Deprecated
-    public BasicTextCodeFieldDefinition() {
-        log.warn("BasicTextCodeFieldDefinition is deprecated, was renamed to CodeFieldDefinition.");
+    private int height = 300;
+
+    public CodeFieldDefinition() {
+        setTransformerClass(NotNullInitialStringValueTransformer.class);
     }
+
+    /**
+     * Defines the programming language to use for syntax highlighting.
+     * <p>
+     * See the {@link org.vaadin.aceeditor.AceMode AceMode} enum for possible values, <code>"freemarker"</code> is also supported.
+     *
+     * @see org.vaadin.aceeditor.AceMode
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    /**
+     * Defines the Vaadin propertyId under which file name is exposed by the current form {@link com.vaadin.data.Item Item}.
+     */
+    public String getFileNameProperty() {
+        return fileNameProperty;
+    }
+
+    public void setFileNameProperty(String fileNameProperty) {
+        this.fileNameProperty = fileNameProperty;
+    }
+
+    /**
+     * Defines the height of this code field, in pixels. Default value is <code>300</code>.
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
 }

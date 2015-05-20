@@ -39,26 +39,27 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 
 /**
  * Builder for building a basic text code field definition.
+ * @deprecated Since 5.4, use {@link CodeFieldBuilder}.
  */
-public class BasicTextCodeFieldBuilder extends AbstractFieldBuilder {
-
-    private BasicTextCodeFieldDefinition definition = new BasicTextCodeFieldDefinition();
+@Deprecated
+public class BasicTextCodeFieldBuilder extends CodeFieldBuilder {
 
     public BasicTextCodeFieldBuilder(String name) {
-        definition.setName(name);
+        super(name);
     }
+
+    // Overrides for methods in parent class changing return type to allow method chaining
 
     @Override
     public BasicTextCodeFieldDefinition definition() {
-        return definition;
+        return (BasicTextCodeFieldDefinition) super.definition();
     }
 
+    @Override
     public BasicTextCodeFieldBuilder language(String language) {
         definition().setLanguage(language);
         return this;
     }
-
-    // Overrides for methods in parent class changing return type to allow method chaining
 
     @Override
     public BasicTextCodeFieldBuilder label(String label) {
