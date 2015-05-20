@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.availability;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.framework.availability.IsPublishedRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
@@ -54,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigProtectedNodeRule extends AbstractAvailabilityRule {
 
-    private static final Logger log = LoggerFactory.getLogger(IsPublishedRule.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigProtectedNodeRule.class);
 
     @Override
     public boolean isAvailableForItem(Object itemId) {

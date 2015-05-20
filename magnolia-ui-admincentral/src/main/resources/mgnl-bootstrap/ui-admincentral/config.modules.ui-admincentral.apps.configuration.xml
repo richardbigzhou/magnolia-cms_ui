@@ -700,7 +700,7 @@
                   <sv:value>superuser</sv:value>
                 </sv:property>
               </sv:node>
-              <sv:node sv:name="HasDepthBiggerThanTwo">
+              <sv:node sv:name="ConfigProtectedNodeRule">
                 <sv:property sv:name="jcr:primaryType" sv:type="Name">
                   <sv:value>mgnl:contentNode</sv:value>
                 </sv:property>
