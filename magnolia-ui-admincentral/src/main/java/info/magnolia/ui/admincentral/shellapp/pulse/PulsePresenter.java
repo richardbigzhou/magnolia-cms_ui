@@ -69,7 +69,7 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
     private ShellImpl shell;
     private PulseItemCategory selectedCategory;
     private boolean isDisplayingDetailView;
-    private NavigableMap<PulseItemCategory, PulseListPresenter> presenters = new TreeMap<>();
+    private NavigableMap<String, PulseListPresenter> presenters = new TreeMap<>();
     private Map<PulseListPresenter, View> presenterToView = new HashMap<>();
     private PulseDefinition definition;
     private ComponentProvider componentProvider;
@@ -100,7 +100,7 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
             } else {
                 PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition);
                 presenter.setListener(this);
-                presenters.put(presenter.getCategory(), presenter);
+                presenters.put(pulseListDefinition.getName(), presenter);
                 categories.add(presenter.getCategory());
             }
         }
@@ -126,11 +126,13 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
 
     @Override
     public void showList() {
-        final PulseListPresenter pulseListPresenter = presenters.get(selectedCategory);
-        if (pulseListPresenter != null) {
-            view.setPulseSubView(startOrGetView(pulseListPresenter));
-            isDisplayingDetailView = false;
+        for (PulseListPresenter presenter : presenters.values()) {
+            if (selectedCategory == presenter.getCategory()) {
+                view.setPulseSubView(startOrGetView(presenter));
+                break;
+            }
         }
+        isDisplayingDetailView = false;
     }
 
     public boolean isDisplayingDetailView() {
