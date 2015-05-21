@@ -107,7 +107,7 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
 
         if (presenters.size() > 0) {
             view.initNavigator(categories.toArray(new PulseItemCategory[categories.size()]));
-            final PulseListPresenter currentPresenter = presenters.get(PulseItemCategory.TASKS);
+            final PulseListPresenter currentPresenter = presenters.lastEntry().getValue();
 
             selectedCategory = currentPresenter.getCategory();
             view.setPulseSubView(startOrGetView(currentPresenter));
