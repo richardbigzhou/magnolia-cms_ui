@@ -97,13 +97,14 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
         this.admincentralEventBus = admincentralEventBus;
         this.definition = definition;
 
+        admincentralEventBus.addHandler(TaskEvent.class, this);
     }
 
     @Override
     public View start() {
+
         view.setListener(this);
         view.setTaskListener(this);
-        admincentralEventBus.addHandler(TaskEvent.class, this);
         view.setDataSource(container.getVaadinContainer());
 
         updateView();

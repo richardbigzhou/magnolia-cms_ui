@@ -76,13 +76,14 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter impl
         this.componentProvider = componentProvider;
         this.userId = context.getUser().getName();
         this.definition = definition;
+
+        admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override
     public View start() {
         view.setListener(this);
         initView();
-        admincentralEventBus.addHandler(MessageEvent.class, this);
         return view;
     }
 
