@@ -144,4 +144,13 @@
   bottom: -30px;
 }
 
+// Styles for hidden elements proposed in http://webaim.org/techniques/css/invisiblecontent/
+.hidden-for-aria {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
 }
