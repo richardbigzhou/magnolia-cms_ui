@@ -60,6 +60,8 @@ public class AppTileWidget extends Widget {
     private final Element icon = DOM.createDiv();
 
     private final Element label = DOM.createDiv();
+    
+    private final Element ariaLink = DOM.createAnchor();
 
     private final Element root = DOM.createDiv();
 
@@ -83,14 +85,17 @@ public class AppTileWidget extends Widget {
         bindHandlers();
         updateIcon();
         updateCaption();
+        prepareAriaLink();
     }
 
     private void constructDOM() {
         setElement(root);
         root.appendChild(icon);
         root.appendChild(label);
+        root.appendChild(ariaLink);
         root.appendChild(runningIndicator);
         addStyleName("item");
+
         icon.addClassName("icon");
         icon.appendChild(iconContent);
 
@@ -221,5 +226,11 @@ public class AppTileWidget extends Widget {
 
     public void updateIcon() {
         iconContent.addClassName(appTile.getIcon());
+    }
+    
+    public void prepareAriaLink(){
+        ariaLink.setAttribute("href", "#app:" + appTile.getName());
+        ariaLink.setInnerText(appTile.getName());
+        ariaLink.addClassName("hidden-for-aria");
     }
 }
