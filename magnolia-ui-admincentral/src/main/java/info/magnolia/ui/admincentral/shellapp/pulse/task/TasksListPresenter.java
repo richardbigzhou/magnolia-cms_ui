@@ -223,7 +223,8 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     @Override
     public void taskScheduled(TaskEvent taskEvent) {
         refreshData();
-        listener.updateView(PulseItemCategory.SCHEDULED);
+        listener.updateView(PulseItemCategory.TASKS);
+        view.setTabActive(PulseItemCategory.SCHEDULED);
     }
 
     private void refreshData() {
