@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.workbench.column;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
@@ -125,7 +128,9 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     @Test
     public void testActivationStatusNotActivated() throws Exception {
         // GIVEN
-        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("ui-workbench.activation-status.not-activated")).thenReturn("not-activated");
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition, i18n);
 
         // WHEN
         Object res = statusColumnFormatter.generateCell(table, itemId, null);
@@ -133,14 +138,16 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // RED, not activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-red\"></span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-red\" title=\"not-activated\"></span>" + "<span class=\"hidden\">not-activated</span>", res.toString());
     }
 
     @Test
     public void testActivationStatusActivated() throws Exception {
         // GIVEN
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("ui-workbench.activation-status.activated")).thenReturn("activated");
         NodeTypes.Activatable.update(node, "superuser", true);
-        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition, i18n);
 
         // WHEN
         Object res = statusColumnFormatter.generateCell(table, itemId, null);
@@ -148,17 +155,19 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // GREEN, was activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-green\"></span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-green\" title=\"activated\"></span>" + "<span class=\"hidden\">activated</span>", res.toString());
     }
 
     @Test
     public void testActivationStatusModified() throws Exception {
         // GIVEN
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("ui-workbench.activation-status.modified")).thenReturn("modified");
         NodeTypes.Activatable.update(node, "superuser", true);
         Thread.sleep(5); // make sure lastActivated > lastModified, otherwise test fails if both happen to be set to the same millisecond (activation status is incorrect)
         node.setProperty("blabla", "He - I just modified the node. LUD wrapper should trigger updated of lastModified property...");
         node.getSession().save();
-        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition, i18n);
 
         // WHEN
         Object res = statusColumnFormatter.generateCell(table, itemId, null);
@@ -166,14 +175,16 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // YELLOW, was activated and then modified
-        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\"></span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\" title=\"modified\"></span>" + "<span class=\"hidden\">modified</span>", res.toString());
     }
 
     @Test
     public void testReadPermissionsAreNotShown() throws Exception {
         // GIVEN
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("ui-workbench.activation-status.not-activated")).thenReturn("not-activated");
         statusColumnDefinition.setActivation(false);
-        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition, i18n);
 
         // WHEN
         Object res = statusColumnFormatter.generateCell(table, itemId, null);

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.column;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 
@@ -50,11 +51,14 @@ import com.vaadin.ui.Table;
  * Column formatter for displaying the activation status of an item. Creates icons that represents the activation and
  * permission status. Use the definition to configure which icons should be included.
  */
-public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {
+public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {    
 
+    protected final SimpleTranslator i18n;
+    
     @Inject
-    public StatusColumnFormatter(StatusColumnDefinition definition) {
+    public StatusColumnFormatter(StatusColumnDefinition definition, SimpleTranslator i18n) {
         super(definition);
+        this.i18n = i18n;
     }
 
     @Override
@@ -65,8 +69,9 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             Node node = (Node) jcrItem;
 
             String activationStatus = "";
+            String activationStatusMessage = "";
             String permissionStatus = "";
-
+            
             // activation status
             if (definition.isActivation()) {
                 activationStatus += "icon-shape-circle activation-status ";
@@ -81,14 +86,18 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 switch (status) {
                 case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
                     activationStatus += "color-yellow";
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.modified");
                     break;
                 case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
                     activationStatus += "color-green";
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.activated");
                     break;
                 default:
                     activationStatus += "color-red";
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.not-activated");
                 }
-                activationStatus = "<span class=\"" + activationStatus + "\"></span>";
+                activationStatus = "<span class=\"" + activationStatus + "\" title=\"" + activationStatusMessage + "\"></span>";
+                activationStatus = activationStatus + "<span class=\"hidden\">" + activationStatusMessage + "</span>";
             }
 
             // permission status

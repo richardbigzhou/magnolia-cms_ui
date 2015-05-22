@@ -50,6 +50,9 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
 
     // Show Permission Status
     private boolean permissions = true;
+    
+    // Used to set text for activation status read by screen reader.
+    private String messages;
 
     public boolean isActivation() {
         return activation;
@@ -66,4 +69,14 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
     public void setPermissions(boolean permissions) {
         this.permissions = permissions;
     }
+
+    public String getMessages() {
+        return messages;
+    }
+
+    public void setMessages(String messages) {
+        this.messages = messages;
+    }
+    
+    
 }

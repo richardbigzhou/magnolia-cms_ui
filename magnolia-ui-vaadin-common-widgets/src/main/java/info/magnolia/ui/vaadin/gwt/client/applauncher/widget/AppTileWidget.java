@@ -60,6 +60,8 @@ public class AppTileWidget extends Widget {
     private final Element icon = DOM.createDiv();
 
     private final Element label = DOM.createDiv();
+    
+    private final Element link = DOM.createDiv();
 
     private final Element root = DOM.createDiv();
 
@@ -82,6 +84,7 @@ public class AppTileWidget extends Widget {
         constructDOM();
         bindHandlers();
         updateIcon();
+        updateLink();
         updateCaption();
     }
 
@@ -89,8 +92,10 @@ public class AppTileWidget extends Widget {
         setElement(root);
         root.appendChild(icon);
         root.appendChild(label);
+        root.appendChild(link);
         root.appendChild(runningIndicator);
         addStyleName("item");
+        link.addClassName("hidden");
         icon.addClassName("icon");
         icon.appendChild(iconContent);
 
@@ -221,5 +226,12 @@ public class AppTileWidget extends Widget {
 
     public void updateIcon() {
         iconContent.addClassName(appTile.getIcon());
+    }
+    
+    public void updateLink(){
+        Element l = DOM.createAnchor();
+        l.setAttribute("href", "#app:" + appTile.getName());
+        l.setInnerText(appTile.getName());
+        link.appendChild(l);
     }
 }
