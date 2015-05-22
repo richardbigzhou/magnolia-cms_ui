@@ -38,8 +38,7 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.PulseMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
@@ -71,6 +70,7 @@ public class TaskQueryTest extends MgnlTestCase {
     private TaskQuery taskQueryWithAllStatutesAllowed;
 
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

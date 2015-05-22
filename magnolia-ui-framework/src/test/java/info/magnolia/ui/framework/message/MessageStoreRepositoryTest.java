@@ -69,6 +69,7 @@ public class MessageStoreRepositoryTest extends RepositoryTestCase {
     private Message warning;
     private Message info;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

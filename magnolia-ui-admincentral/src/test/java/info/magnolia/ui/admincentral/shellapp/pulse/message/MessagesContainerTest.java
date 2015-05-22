@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -44,8 +44,8 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQuery;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageQueryFactory;
 import info.magnolia.ui.framework.message.MessagesManager;
 
@@ -65,6 +65,7 @@ public class MessagesContainerTest extends MgnlTestCase {
 
     private MessagesContainer messagesContainer;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
