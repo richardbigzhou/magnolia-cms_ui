@@ -62,6 +62,7 @@ public class MessageQueryTest extends MgnlTestCase {
 
     private MessagesManager messagesManager;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
