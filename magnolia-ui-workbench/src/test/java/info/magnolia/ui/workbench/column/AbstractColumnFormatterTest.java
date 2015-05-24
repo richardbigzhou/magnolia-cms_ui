@@ -50,7 +50,6 @@ import javax.jcr.Property;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
@@ -103,9 +102,9 @@ public class AbstractColumnFormatterTest {
         ContentDecorator decorator = new HTMLEscapingContentDecorator(false);
         JcrNodeAdapter nodeAdapter = mock(JcrNodeAdapter.class);
 
-        Mockito.when(nodeAdapter.getJcrItem()).thenReturn(node);
-        Mockito.when(nodeAdapter.isNode()).thenReturn(true);
-        Mockito.when(table.getItem(itemId)).thenReturn(nodeAdapter);
+        when(nodeAdapter.getJcrItem()).thenReturn(node);
+        when(nodeAdapter.isNode()).thenReturn(true);
+        when(table.getItem(itemId)).thenReturn(nodeAdapter);
 
         // WHEN
         javax.jcr.Item value = abstractColumnFormatter.getJcrItem(table, itemId);
@@ -121,9 +120,9 @@ public class AbstractColumnFormatterTest {
         ContentDecorator decorator = new HTMLEscapingContentDecorator(false);
         JcrItemAdapter nodeAdapter = mock(JcrItemAdapter.class);
 
-        Mockito.when(nodeAdapter.getJcrItem()).thenReturn(property);
-        Mockito.when(nodeAdapter.isNode()).thenReturn(false);
-        Mockito.when(table.getItem(itemId)).thenReturn(nodeAdapter);
+        when(nodeAdapter.getJcrItem()).thenReturn(property);
+        when(nodeAdapter.isNode()).thenReturn(false);
+        when(table.getItem(itemId)).thenReturn(nodeAdapter);
 
         // WHEN
         javax.jcr.Item value = abstractColumnFormatter.getJcrItem(table, itemId);

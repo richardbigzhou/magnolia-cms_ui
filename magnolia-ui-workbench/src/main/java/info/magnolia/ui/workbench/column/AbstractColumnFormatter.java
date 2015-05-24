@@ -52,9 +52,11 @@ import com.vaadin.ui.Table;
 public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implements ColumnFormatter {
 
     protected D definition;
+    private HTMLEscapingContentDecorator decorator;
 
     public AbstractColumnFormatter(D definition) {
         this.definition = definition;
+        this.decorator = new HTMLEscapingContentDecorator(false);
     }
 
     /**
@@ -66,7 +68,6 @@ public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implem
         com.vaadin.data.Item vaadinItem = source.getItem(itemId);
         if (vaadinItem instanceof JcrItemAdapter) {
             final JcrItemAdapter item = (JcrItemAdapter) vaadinItem;
-            HTMLEscapingContentDecorator decorator = new HTMLEscapingContentDecorator(false);
             if (item.isNode()) {
                 return decorator.wrapNode((Node) item.getJcrItem());
             } else {
