@@ -231,7 +231,7 @@ public class AppTileWidget extends Widget {
     public void updateLink(){
         Element l = DOM.createAnchor();
         l.setAttribute("href", "#app:" + appTile.getName());
-        l.setInnerText("Go to app " + appTile.getName());
+        l.setInnerText(appTile.getName());
         link.appendChild(l);
     }
 }
