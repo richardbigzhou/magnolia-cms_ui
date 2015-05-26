@@ -120,20 +120,28 @@ public class MagnoliaTabLabel extends SimplePanel {
         });
     }
 
-    private void onClickGeneric(NativeEvent nativeEvent){
+    private void onClickGeneric(NativeEvent nativeEvent) {
         textWrapper.setFocus(false);
         final Element target = (Element) nativeEvent.getEventTarget().cast();
+        boolean wasActive = getStyleName().contains("active");
         if (closeElement.isOrHasChild(target)) {
             eventBus.fireEvent(new TabCloseEvent(tab));
-        } else {
+        } else if (!wasActive) {
             eventBus.fireEvent(new ActiveTabChangedEvent(tab));
         }
         nativeEvent.stopPropagation();
     }
 
-
     public void setTab(final MagnoliaTabWidget tab) {
         this.tab = tab;
+    }
+
+    public MagnoliaTabWidget getTab() {
+        return tab;
+    }
+
+    public String getCaption() {
+        return textWrapper.getElement().getInnerText();
     }
 
     public void updateCaption(final String caption) {
