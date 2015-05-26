@@ -36,6 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -45,16 +48,18 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ui.Icon;
+import com.vaadin.client.ui.aria.AriaHelper;
 
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public class ActionbarItemWidget extends Widget {
+public class ActionbarItemWidget extends FocusWidget {
 
     private static final String CLASSNAME = "v-action";
 
@@ -127,6 +132,7 @@ public class ActionbarItemWidget extends Widget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
+        AriaHelper.bindCaption(this, text);
     }
 
     protected void bindHandlers() {
@@ -156,6 +162,15 @@ public class ActionbarItemWidget extends Widget {
                 }
             }
         }, MouseUpEvent.getType());
+        
+        addDomHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode())
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
+            }
+        }, KeyPressEvent.getType());
+               
     }
 
     public String getName() {
@@ -191,6 +206,5 @@ public class ActionbarItemWidget extends Widget {
 
     public ActionbarItem getData() {
         return data;
-    }
-
+    }     
 }
