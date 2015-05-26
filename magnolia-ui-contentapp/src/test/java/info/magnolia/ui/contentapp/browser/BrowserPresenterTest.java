@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -85,6 +86,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
@@ -337,5 +339,56 @@ public class BrowserPresenterTest {
         // just verifying that null is passed to the isAvailable() method instead of the actual item
 
         verify(availabilityChecker).isAvailable(eq(availability), anyList());
+    }
+
+    @Test
+    public void handleMultiSelectedItemsOnActionClick() throws Exception {
+
+        // GIVEN
+        Node node1 = session.getRootNode().addNode("node1");
+        Node node2 = session.getRootNode().addNode("node2");
+        List<Object> ids = new ArrayList<Object>();
+        ids.add(node1.getIdentifier());
+        ids.add(node2.getIdentifier());
+        when(presenter.getSelectedItemIds()).thenReturn(ids);
+
+        List<Item> selectedItems = new ArrayList<Item>();
+        selectedItems.add(contentConnector.getItem(ids.get(0)));
+        selectedItems.add(contentConnector.getItem(ids.get(1)));
+
+        ConfiguredActionDefinition myActionDefinition = new ConfiguredActionDefinition();
+        myActionDefinition.setName("myAction");
+        doReturn(myActionDefinition).when(actionExecutor).getActionDefinition(myActionDefinition.getName());
+        when(availabilityChecker.isAvailable(myActionDefinition.getAvailability(), ids)).thenReturn(true);
+
+        // WHEN
+        presenter.onActionbarItemClicked(myActionDefinition.getName());
+
+        // THEN
+        verify(actionExecutor).execute(eq(myActionDefinition.getName()), eq(selectedItems));
+    }
+
+    @Test
+    public void handleOneSelectedItemOnActionClick() throws Exception {
+
+        // GIVEN
+        List<Object> ids = new ArrayList<Object>();
+        ids.add(node.getIdentifier());
+        when(presenter.getSelectedItemIds()).thenReturn(ids);
+
+        List<Item> selectedItems = new ArrayList<Item>();
+        selectedItems.add(contentConnector.getItem(ids.get(0)));
+
+        ConfiguredActionDefinition myActionDefinition = new ConfiguredActionDefinition();
+        myActionDefinition.setName("myAction");
+
+        doReturn(myActionDefinition).when(actionExecutor).getActionDefinition(myActionDefinition.getName());
+        when(availabilityChecker.isAvailable(myActionDefinition.getAvailability(), ids)).thenReturn(true);
+
+        // WHEN
+        presenter.onActionbarItemClicked(myActionDefinition.getName());
+
+        // THEN
+        verify(actionExecutor).execute(eq(myActionDefinition.getName()), eq(selectedItems.get(0)), eq(selectedItems));
     }
 }
