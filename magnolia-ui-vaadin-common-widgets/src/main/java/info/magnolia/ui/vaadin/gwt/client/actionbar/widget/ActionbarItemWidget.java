@@ -49,7 +49,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
@@ -67,7 +66,9 @@ public class ActionbarItemWidget extends Widget {
 
     private final Element text = DOM.createSpan();
     
-   private final Button button = new Button();
+    private final Element buttonDiv = DOM.createDiv();
+    
+    private final Button button = new Button();
 
     // private final Element flyoutIndicator = DOM.createSpan();
 
@@ -135,8 +136,8 @@ public class ActionbarItemWidget extends Widget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
-        //root.appendChild(button);
-       // buttonDiv.addClassName("hidden");
+        root.appendChild(buttonDiv);
+        buttonDiv.addClassName("hidden");
     }
 
     protected void bindHandlers() {
@@ -206,7 +207,7 @@ public class ActionbarItemWidget extends Widget {
     
     private void updateButton(){
         button.setText(data.getName());
-        root.appendChild(button.getElement());
+        buttonDiv.appendChild(button.getElement());
         DOM.sinkEvents(button.getElement(), Event.KEYEVENTS);
         addDomHandler(new KeyPressHandler() {
             @Override
@@ -218,11 +219,5 @@ public class ActionbarItemWidget extends Widget {
         }, KeyPressEvent.getType());
     }
     
-    private class PressEnterKeyListener extends KeyboardListenerAdapter {
-        public void onKeyPress(Widget sender, char key, int mods) {
-          if (KeyboardListener.KEY_ENTER == key)
-                  eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
-        }
-      }
 
 }
