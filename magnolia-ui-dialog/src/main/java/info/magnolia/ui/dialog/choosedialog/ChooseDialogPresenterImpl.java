@@ -177,9 +177,12 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     @Override
     public Object[] getActionParameters(String actionName) {
         Set<Object> selected = new HashSet<Object>();
-        selected.add(chosenItemId != null ? chosenItemId : new Object());
+        if (chosenItemId == null) {
+            chosenItemId = contentConnector.getDefaultItemId();
+        }
+        selected.add(chosenItemId);
         Item item = contentConnector.getItem(chosenItemId);
-        return new Object[] { actionName, item == null ? new NullItem() : item, ChooseDialogPresenterImpl.this, field, getView(), callback, selected};
+        return new Object[] { actionName, item, ChooseDialogPresenterImpl.this, field, getView(), callback, selected };
     }
 
     @Override
