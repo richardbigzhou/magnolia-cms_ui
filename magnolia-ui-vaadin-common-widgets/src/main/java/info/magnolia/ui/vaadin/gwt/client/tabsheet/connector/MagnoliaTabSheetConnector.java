@@ -60,6 +60,8 @@ import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 import com.vaadin.client.ui.PostLayoutListener;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
@@ -104,7 +106,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
+                if (event.hasPropertyChanged("showAllEnabled")) {
+                    view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
+                }
+
                 if (getState().logo != null && getState().logoBgColor != null) {
                     view.setLogo(getState().logo, getState().logoBgColor);
                 }
@@ -115,7 +120,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
             @Override
             public void closeTab(Connector tabConnector) {
-                eventBus.fireEvent(new TabCloseEvent(((MagnoliaTabConnector)tabConnector).getWidget()));
+                eventBus.fireEvent(new TabCloseEvent(((MagnoliaTabConnector) tabConnector).getWidget()));
             }
         });
 
@@ -157,7 +162,16 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             }
 
         });
+
+        getLayoutManager().addElementResizeListener(view.getTabContainer().getElement(), listener);
     }
+
+    private final ElementResizeListener listener = new ElementResizeListener() {
+        @Override
+        public void onElementResize(ElementResizeEvent e) {
+            view.onResize();
+        }
+    };
 
     @Override
     public void updateCaption(ComponentConnector connector) {
@@ -184,7 +198,9 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     }
 
     @Override
-    public void onUnregister() {}
+    public void onUnregister() {
+        getLayoutManager().removeElementResizeListener(view.getTabContainer().getElement(), listener);
+    }
 
     @Override
     public void postLayout() {

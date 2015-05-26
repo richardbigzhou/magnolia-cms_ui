@@ -73,4 +73,5 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
 
     void clearTabs();
 
+    void onResize();
 }

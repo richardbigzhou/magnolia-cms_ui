@@ -205,4 +205,51 @@
   display: none;
 }
 
+.v-shell-tabsheet .nav li.hidden-tabs-popup-button {
+  font-size: 17px;
+  line-height: 20px;
+  border: none;
+  background: none !important;
+  padding: 3px 5px;
+}
+
+.hidden-tabs-menu {
+  background-color: white;
+  font-family: Verdana, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  color: $c10;
+  padding: 3px 0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10000;
+}
+
+.hidden-tabs-menu:after {
+  right: 100%;
+  top: 14px;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border: 8px solid rgba(255, 255, 255, 0);
+  border-right-color: $c80;
+  margin-top: -10px;
+}
+
+.hidden-tabs-menu table tr td.menu-item {
+  padding: 0 25px 0px 10px;
+  color: $c90;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.hidden-tabs-menu table tr td.menu-item:hover {
+  background-color: $c16;
+}
+
 }
