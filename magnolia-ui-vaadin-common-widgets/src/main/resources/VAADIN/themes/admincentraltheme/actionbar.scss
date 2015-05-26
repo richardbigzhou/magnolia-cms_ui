@@ -60,6 +60,10 @@
 .v-action.v-disabled:hover {cursor:default;}
 .v-action.v-disabled:hover {color:$c80;}
 
+.v-action:focus, .v-action.v-disabled:focus {
+  outline: none;
+}
+
 .v-action .v-icon {
   display: inline-block;
   font-size: 20px;
