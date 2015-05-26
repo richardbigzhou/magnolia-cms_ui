@@ -34,7 +34,10 @@
 package info.magnolia.ui.dialog.choosedialog;
 
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
+import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
@@ -64,7 +67,10 @@ import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionProvider;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -122,6 +128,32 @@ public class ChooseDialogPresenterImplTest extends TestCase {
 
         //THEN
         verify(callback, times(1)).onCancel();
+    }
+
+    @Test
+    public void useDefaultItemIdWhenChosenItemIsNull() throws Exception {
+        // GIVEN
+        ContentConnector contentConnector = mock(ContentConnector.class);
+
+        final Object defaultItemId = new Object();
+        when(contentConnector.getDefaultItemId()).thenReturn(defaultItemId);
+
+        final Item defaultItem = mock(Item.class);
+        when(defaultItem.toString()).thenReturn("default item");
+        when(contentConnector.getItem(eq(defaultItemId))).thenReturn(defaultItem);
+
+        final Object anotherId = new Object();
+        final Item nonDefaultItem = mock(Item.class);
+        when(nonDefaultItem.toString()).thenReturn("non-default item");
+        when(contentConnector.getItem(eq(anotherId))).thenReturn(nonDefaultItem);
+
+        ChooseDialogPresenterImpl chooseDialogPresenterImpl = new ChooseDialogPresenterImpl(null, null, null, null, null, null, null, contentConnector);
+
+        // WHEN
+        Object[] actionParams = chooseDialogPresenterImpl.getActionParameters("foo");
+
+        // THEN
+        assertThat(Arrays.asList(actionParams), hasItem(defaultItem));
     }
 
     private class TestEditorActionAreaPresenterImpl extends EditorActionAreaPresenterImpl {
