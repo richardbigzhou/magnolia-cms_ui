@@ -45,13 +45,20 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.ui.VButton;
 
@@ -70,13 +77,69 @@ public class TabBarWidget extends ComplexPanel {
 
     private VShellShowAllTabLabel showAllTab;
 
+    private HiddenTabsPopup hiddenTabsPopup;
+
+    private MagnoliaTabLabel activeTab;
+
     public TabBarWidget(EventBus eventBus) {
         this.eventBus = eventBus;
         setElement(tabContainer);
         setStyleName("nav");
         addStyleDependentName("tabs");
 
+        hiddenTabsPopup = new HiddenTabsPopup();
         bindHandlers();
+    }
+
+    void reArrangeTabVisibility() {
+        if (tabLabels.isEmpty()) {
+            return;
+        }
+
+        // Is this ever possible?
+        if (activeTab == null) {
+            activeTab = tabLabels.get(0);
+        }
+
+        int tabBarWidth = this.getElement().getOffsetWidth();
+        int showAllTabWidth = (showAllTab != null) ? showAllTab.getElement().getOffsetWidth() : 0;
+        int hiddenTabsMenuButtonWidth = hiddenTabsPopup.getElement().getOffsetWidth();
+        int tabsWidth = showAllTabWidth + hiddenTabsMenuButtonWidth;
+
+        hiddenTabsPopup.menubar.clearItems();
+        hiddenTabsPopup.hide();
+
+        int count = 0;
+        int index = tabLabels.indexOf(activeTab);
+        // Cyclicly iterate back-wards over the labels estimating the possibility to squeeze each of them into the visible area of the
+        // tab-bar, we start with the active tab so that it is always visible
+        int tabCount = tabLabels.size();
+        while (count < tabCount) {
+            final MagnoliaTabLabel tab = tabLabels.get((index + tabCount - 1) % tabCount);
+            tabsWidth += getTabWidth(tab);
+            toggleTabVisibility(tab, tabsWidth <= tabBarWidth);
+            ++index;
+            ++count;
+        }
+
+        hiddenTabsPopup.showControlIfNeeded();
+    }
+
+    private int getTabWidth(MagnoliaTabLabel tab) {
+        boolean isVisible = tab.isVisible();
+        if (!isVisible) {
+            tab.setVisible(true);
+        }
+        int tabWidth = tab.getElement().getOffsetWidth();
+        tab.setVisible(isVisible);
+        return tabWidth;
+    }
+
+    private void toggleTabVisibility(MagnoliaTabLabel tabLabel, boolean visible) {
+        tabLabel.setVisible(visible);
+        if (!visible) {
+            hiddenTabsPopup.addTabLabel(tabLabel);
+        }
     }
 
     private void bindHandlers() {
@@ -91,6 +154,11 @@ public class TabBarWidget extends ComplexPanel {
                     }
                     label.addStyleName("active");
                     showAll(false);
+                    activeTab = label;
+                    hiddenTabsPopup.menuWrapper.hide();
+                    if (!label.isVisible()) {
+                        reArrangeTabVisibility();
+                    }
                 }
             }
         });
@@ -104,11 +172,13 @@ public class TabBarWidget extends ComplexPanel {
                     final MagnoliaTabLabel nextLabel = getNextLabel(tabLabel);
                     if (nextLabel != null) {
                         nextLabel.addStyleName("active");
+                        activeTab = nextLabel;
                     }
                 }
                 tabLabels.remove(tabLabel);
                 remove(tabLabel);
                 updateSingleTabStyle();
+                reArrangeTabVisibility();
             }
         });
 
@@ -135,6 +205,7 @@ public class TabBarWidget extends ComplexPanel {
             // Keep show-all button last in the DOM when inserting labels.
             insert(label, tabContainer, tabLabels.size(), true);
             updateSingleTabStyle();
+            reArrangeTabVisibility();
         }
     }
 
@@ -154,6 +225,9 @@ public class TabBarWidget extends ComplexPanel {
             remove(showAllTab);
             showAllTab = null;
         }
+
+        add(hiddenTabsPopup, getElement());
+        reArrangeTabVisibility();
     }
 
     private class VShellShowAllTabLabel extends SimplePanel {
@@ -182,7 +256,7 @@ public class TabBarWidget extends ComplexPanel {
                 }
             }, ClickEvent.getType());
 
-            textWrapper.addClickHandler(new ClickHandler(){
+            textWrapper.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     textWrapper.setFocus(false);
@@ -191,11 +265,83 @@ public class TabBarWidget extends ComplexPanel {
             });
         }
 
-        private void onClickGeneric(NativeEvent nativeEvent){
+        private void onClickGeneric(NativeEvent nativeEvent) {
             eventBus.fireEvent(new ShowAllTabsEvent());
             nativeEvent.stopPropagation();
         }
 
+    }
+
+    private class HiddenTabsPopup extends Widget {
+
+        private DialogBox menuWrapper = new DialogBox(true);
+
+        private HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
+
+        public HiddenTabsPopup() {
+            setElement(LIElement.as(DOM.createElement("li")));
+            addStyleName("icon-arrow2_e");
+            addStyleName("hidden-tabs-popup-button");
+            getElement().getStyle().setFontSize(18, Unit.PX);
+            menuWrapper.add(menubar);
+            menuWrapper.setStyleName("context-menu-wrapper");
+            menuWrapper.getElement().getStyle().setZIndex(10000);
+
+            // Initially hide the component
+            setVisible(false);
+        }
+
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            bindHandlers();
+        }
+
+        public void addTabLabel(final MagnoliaTabLabel label) {
+            final MenuItem item = menubar.addItem(label.getCaption(), new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    menuWrapper.hide();
+                    eventBus.fireEvent(new ActiveTabChangedEvent(label.getTab()));
+                }
+            });
+            item.addStyleName("menu-item");
+        }
+
+        private void bindHandlers() {
+            addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    menuWrapper.setPopupPosition(hiddenTabsPopup.getAbsoluteLeft() + hiddenTabsPopup.getOffsetWidth(), hiddenTabsPopup.getAbsoluteTop());
+                    menuWrapper.show();
+                }
+
+            }, ClickEvent.getType());
+        }
+
+        public void hide() {
+            menuWrapper.hide();
+            setVisible(false);
+        }
+
+        public void showControlIfNeeded() {
+            setVisible(!menubar.isEmpty());
+        }
+
+        private class HiddenTabsMenuBar extends MenuBar {
+
+            public HiddenTabsMenuBar() {
+                super(true);
+                setStyleName("context-menu");
+                addStyleName("hidden-tabs-menu");
+            }
+
+            public boolean isEmpty() {
+                return super.getItems().isEmpty();
+            }
+        }
     }
 
     public void showAll(boolean showAll) {

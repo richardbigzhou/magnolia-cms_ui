@@ -305,6 +305,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         }
     }
 
+    @Override
+    public void onResize() {
+        tabBar.reArrangeTabVisibility();
+    }
+
     private void doRemovePreloader() {
         tabPanel.remove(preloader);
     }
