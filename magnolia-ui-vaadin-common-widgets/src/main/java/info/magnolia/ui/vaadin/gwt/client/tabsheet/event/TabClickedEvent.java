@@ -31,35 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.util;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
 
-import java.util.LinkedList;
-import java.util.List;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Util class for the collections operations.
+ * Event fired when the tab has been clicked.
  */
-public class CollectionUtil {
+public class TabClickedEvent extends GwtEvent<TabClickedEvent.Handler> {
 
-    public static <T> T getNext(final List<T> items, T item) {
-        int index = items.indexOf(item);
-        if (index >= 0) {
-            int nextIndex = (index + 1) % items.size();
-            return items.get(nextIndex);
-        }
-        return null;
+    public final static Type<TabClickedEvent.Handler> TYPE = new Type<TabClickedEvent.Handler>();
+
+    /**
+     * The handler for event.
+     */
+    public interface Handler extends EventHandler {
+        void onTabClicked(TabClickedEvent event);
     }
 
-    public static <T> List<T> reserveItemToFirst(final List<T> items, T item) {
-        List<T> newItems = new LinkedList<T>();
-        for (int i = items.indexOf(item); i < items.size(); i++) {
-            newItems.add(items.get(i));
-        }
+    private final MagnoliaTabWidget tab;
 
-        for (int i = items.indexOf(item) - 1; i >= 0; i--) {
-            newItems.add(items.get(i));
-        }
+    public TabClickedEvent(MagnoliaTabWidget tab) {
+        this.tab = tab;
+    }
 
-        return newItems;
+    public MagnoliaTabWidget getTab() {
+        return tab;
+    }
+
+    @Override
+    protected void dispatch(TabClickedEvent.Handler handler) {
+        handler.onTabClicked(this);
+    }
+
+    @Override
+    public GwtEvent.Type<TabClickedEvent.Handler> getAssociatedType() {
+        return TYPE;
     }
 }
