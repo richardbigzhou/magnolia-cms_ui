@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.util;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -47,5 +48,18 @@ public class CollectionUtil {
             return items.get(nextIndex);
         }
         return null;
+    }
+
+    public static <T> List<T> makeItemFirst(final List<T> items, T item) {
+        List<T> newItems = new LinkedList<T>();
+        for (int i = items.indexOf(item); i < items.size(); i++) {
+            newItems.add(items.get(i));
+        }
+
+        for (int i = items.indexOf(item) - 1; i >= 0; i--) {
+            newItems.add(items.get(i));
+        }
+
+        return newItems;
     }
 }
