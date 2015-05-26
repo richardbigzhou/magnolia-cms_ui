@@ -36,6 +36,8 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -45,6 +47,9 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
@@ -61,6 +66,8 @@ public class ActionbarItemWidget extends Widget {
     private final Element root = DOM.createElement("li");
 
     private final Element text = DOM.createSpan();
+    
+   private final Button button = new Button();
 
     // private final Element flyoutIndicator = DOM.createSpan();
 
@@ -114,6 +121,7 @@ public class ActionbarItemWidget extends Widget {
         this.eventBus = eventBus;
         this.iconImage = null;
 
+        updateButton();
         constructDOM();
         bindHandlers();
         update();
@@ -127,6 +135,8 @@ public class ActionbarItemWidget extends Widget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
+        //root.appendChild(button);
+       // buttonDiv.addClassName("hidden");
     }
 
     protected void bindHandlers() {
@@ -156,6 +166,7 @@ public class ActionbarItemWidget extends Widget {
                 }
             }
         }, MouseUpEvent.getType());
+               
     }
 
     public String getName() {
@@ -192,5 +203,26 @@ public class ActionbarItemWidget extends Widget {
     public ActionbarItem getData() {
         return data;
     }
+    
+    private void updateButton(){
+        button.setText(data.getName());
+        root.appendChild(button.getElement());
+        DOM.sinkEvents(button.getElement(), Event.KEYEVENTS);
+        addDomHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                //removeStyleName("mousedown");
+                if (KeyboardListener.KEY_ENTER == event.getNativeEvent().getKeyCode())
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
+            }
+        }, KeyPressEvent.getType());
+    }
+    
+    private class PressEnterKeyListener extends KeyboardListenerAdapter {
+        public void onKeyPress(Widget sender, char key, int mods) {
+          if (KeyboardListener.KEY_ENTER == key)
+                  eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
+        }
+      }
 
 }
