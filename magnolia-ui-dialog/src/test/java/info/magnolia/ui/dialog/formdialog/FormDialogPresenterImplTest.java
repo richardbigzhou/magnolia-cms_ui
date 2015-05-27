@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -42,19 +42,33 @@ import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
+import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
+import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Test for FormDialogPresenterImpl. ATM only testing the correct calls of the {@link TranslationService}.
@@ -62,14 +76,24 @@ import org.junit.Test;
  */
 public class FormDialogPresenterImplTest {
 
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private FormBuilder formBuilder;
-    private FormDialogPresenterImpl presenter;
-
     private ProxytoysI18nizer i18nizer;
+    private JcrContentConnector contentConnector = mock(JcrContentConnector.class);
+    private UiContext uiContext = mock(UiContext.class);
+    private ComponentProvider componentProvider = mock(ComponentProvider.class);
+    private FormDialogPresenterImpl presenter;
 
     @Before
     public void setUp() throws Exception {
+        DialogDefinitionRegistry dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
+        FormBuilder formBuilder = mock(FormBuilder.class);
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
+        TestEditorActionAreaPresenterImpl actionAreaPresenter = new TestEditorActionAreaPresenterImpl(actionAreaView);
+        AvailabilityChecker checker = mock(AvailabilityChecker.class);
+        final String workspaceName = "workspace";
+        FormView view = new ItemFormView(i18n, mock(I18NAuthoringSupport.class));
+        ConfiguredJcrContentConnectorDefinition configuredJcrContentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        OverlayCloser overlayCloser = mock(OverlayCloser.class);
         final TranslationService service = new BaseDialogPresenterTest.TestTranslationService();
         final LocaleProvider localeProvider = new LocaleProvider() {
             @Override
@@ -79,9 +103,13 @@ public class FormDialogPresenterImplTest {
         };
         i18nizer = new ProxytoysI18nizer(service, localeProvider);
 
-        dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
-        formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class), mock(AvailabilityChecker.class), mock(ContentConnector.class));
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, componentProvider, mock(DialogActionExecutor.class), view, i18nizer, i18n, checker, contentConnector);
+        when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
+        when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
+        configuredJcrContentConnectorDefinition.setWorkspace(workspaceName);
+        when(contentConnector.getContentConnectorDefinition()).thenReturn(configuredJcrContentConnectorDefinition);
+        view.setActionAreaView(actionAreaView);
+        when(uiContext.openOverlay(view, OverlayLayer.ModalityLevel.STRONG)).thenReturn(overlayCloser);
     }
 
     @Test
@@ -293,9 +321,33 @@ public class FormDialogPresenterImplTest {
         assertEquals("translated with key [baz.qux] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
     }
 
+    @Test
+    public void testCloseHandlerIsInvokedOnCloseDialog() {
+        // WHEN
+        EditorCallback callback = mock(EditorCallback.class);
+        presenter.start(mock(Item.class), getBasicDialogDefinition(), uiContext, callback, contentConnector);
+        presenter.closeDialog();
+
+        //THEN
+        verify(callback, times(1)).onCancel();
+    }
+
     private ConfiguredFormDialogDefinition getBasicDialogDefinition() {
         ConfiguredFormDialogDefinition cdd = new ConfiguredFormDialogDefinition();
         cdd.setId("dialogID");
         return cdd;
+    }
+
+    private class TestEditorActionAreaPresenterImpl extends EditorActionAreaPresenterImpl {
+
+        public TestEditorActionAreaPresenterImpl(EditorActionAreaView formView) {
+            super(formView, FormDialogPresenterImplTest.this.componentProvider);
+        }
+
+        @Override
+        public EditorActionAreaView getView() {
+            return super.getView();
+        }
+
     }
 }
