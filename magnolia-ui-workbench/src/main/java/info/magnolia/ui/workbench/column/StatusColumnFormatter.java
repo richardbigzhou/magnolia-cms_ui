@@ -66,6 +66,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
 
             String activationStatus = "";
             String permissionStatus = "";
+            String activationStatusMessage="";
 
             // activation status
             if (definition.isActivation()) {
@@ -81,14 +82,18 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 switch (status) {
                 case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
                     activationStatus += "color-yellow";
+                    activationStatusMessage = "modified";
                     break;
                 case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
                     activationStatus += "color-green";
+                    activationStatusMessage = "activated";
                     break;
                 default:
                     activationStatus += "color-red";
+                    activationStatusMessage = "not-activated";
                 }
                 activationStatus = "<span class=\"" + activationStatus + "\"></span>";
+                activationStatus = activationStatus + "<span class=\"hidden\">" + activationStatusMessage + "</span>";
             }
 
             // permission status
