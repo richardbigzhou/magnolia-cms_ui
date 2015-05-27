@@ -42,7 +42,6 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
@@ -177,11 +176,12 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         if (editorActions != null && !editorActions.isEmpty()) {
             for (FormActionItemDefinition editorAction : editorActions) {
                 ActionDefinition def = subAppActions.get(editorAction.getName());
-                AvailabilityDefinition availability = executor.getActionDefinition(editorAction.getName()).getAvailability();
-                if (def != null && checker.isAvailable(availability, Arrays.asList(itemId))) {
-                    filteredActions.add(def);
-                } else {
+                if (def == null) {
                     log.warn("DetailPresenter expected an action named {}, but no such action is currently configured in the subapp.", editorAction.getName());
+                    continue;
+                }
+                if (checker.isAvailable(def.getAvailability(), Arrays.asList(itemId))) {
+                    filteredActions.add(def);
                 }
             }
         } else {
