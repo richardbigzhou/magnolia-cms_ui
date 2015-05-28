@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'MagnoliaIcons';
-  src: url('fonts/MagnoliaIcons.eot?llcde5');
-  src: url('fonts/MagnoliaIcons.eot?#iefixllcde5') format('embedded-opentype'),
-    url('fonts/MagnoliaIcons.woff?llcde5') format('woff'),
-    url('fonts/MagnoliaIcons.ttf?llcde5') format('truetype'),
-    url('fonts/MagnoliaIcons.svg?llcde5#MagnoliaIcons') format('svg');
+  src: url('fonts/MagnoliaIcons.eot?ovuwp');
+  src: url('fonts/MagnoliaIcons.eot?#iefixovuwp') format('embedded-opentype'),
+    url('fonts/MagnoliaIcons.ttf?ovuwp') format('truetype'),
+    url('fonts/MagnoliaIcons.woff?ovuwp') format('woff'),
+    url('fonts/MagnoliaIcons.svg?ovuwp#MagnoliaIcons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -629,6 +629,15 @@
 }
 .icon-arrow-link:before {
   content: "\e60c";
+}
+.icon-play-button:before {
+  content: "\e60d";
+}
+.icon-story-button:before {
+  content: "\e60e";
+}
+.icon-i-beacon:before {
+  content: "\e60f";
 }
 .icon-link:before {
   content: "\e0bd";
