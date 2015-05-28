@@ -69,11 +69,11 @@ import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
-import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
-import info.magnolia.ui.form.field.factory.CodeFieldFactory;
+import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.MultiValueFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
@@ -120,7 +120,7 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml"))
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
-                .addTask(createNewFieldDefinition("code", CodeFieldDefinition.class.getName(), CodeFieldFactory.class.getName()))
+                .addTask(createNewFieldDefinition("basicTextCodeField", BasicTextCodeFieldDefinition.class.getName(), BasicTextCodeFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("switchableField", SwitchableFieldDefinition.class.getName(), SwitchableFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("multiField", MultiValueFieldDefinition.class.getName(), MultiValueFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("compositeField", CompositeFieldDefinition.class.getName(), CompositeFieldFactory.class.getName()))
@@ -154,11 +154,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                         )));
 
         register(DeltaBuilder.update("5.4", "")
-                .addTask(new NodeExistsDelegateTask("Update code field type", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/basicTextCodeField",
-                        new ArrayDelegateTask("", "",
-                                new RenameNodesTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes", "basicTextCodeField", "code", NodeTypes.ContentNode.NAME),
-                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/code", "definitionClass", "info.magnolia.ui.form.field.definition.CodeFieldDefinition"),
-                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/code", "factoryClass", "info.magnolia.ui.form.field.factory.CodeFieldFactory")))));
+                .addTask(new PartialBootstrapTask("Add new code fieldType", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.fieldTypes.xml", "fieldTypes/code"))
+        );
     }
 
     @Override
