@@ -135,3 +135,12 @@
          collapsedRowKey = rowKey;
          collapseRequest = true;
          client.updateVariable(paintableId, "toggleCollapsed", rowKey, true);
++@@ -898,4 +900,8 @@
+         setTotalRows(newTotalRows);
+     }
+
++    @Override
++    public void updateFirstVisibleAndScrollIfNeeded(UIDL uidl) {
++        // Left out blank to avoid scrolling glitches described in https://jira.magnolia-cms.com/browse/MGNLUI-960.
++    }
+ }
