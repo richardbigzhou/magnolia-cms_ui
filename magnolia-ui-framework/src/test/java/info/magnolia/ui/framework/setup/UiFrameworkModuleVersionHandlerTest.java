@@ -50,8 +50,10 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
+import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
@@ -342,7 +344,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     }
 
     @Test
-    public void updateFrom538UpdatesCodeFieldTypeDefinition() throws Exception {
+    public void updateFrom538AddsNewMappingForCodeFieldTypeDefinition() throws Exception {
         // GIVEN
         Node fieldTypes = framework.addNode("fieldTypes", NodeTypes.Content.NAME);
         Node codeField = fieldTypes.addNode("basicTextCodeField", NodeTypes.ContentNode.NAME);
@@ -352,8 +354,11 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
 
-        // THEN
-        assertFalse(fieldTypes.hasNode("basicTextCodeField"));
+        // THEN — old mapping has to stick around by the time we adjust affected modules, and remove deprecated classes
+        assertThat(fieldTypes, hasNode(allOf(
+                nodeName("basicTextCodeField"),
+                hasProperty("definitionClass", BasicTextCodeFieldDefinition.class.getName()),
+                hasProperty("factoryClass", BasicTextCodeFieldFactory.class.getName()))));
         assertThat(fieldTypes, hasNode(allOf(
                 nodeName("code"),
                 hasProperty("definitionClass", CodeFieldDefinition.class.getName()),
