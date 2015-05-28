@@ -108,7 +108,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     activationStatus += "color-red";
                     activationStatusMessage = messages.get(1)!=null?messages.get(2):DEFAULT_MESSAGES.get(2);
                 }
-                activationStatus = "<span class=\"" + activationStatus + "\"></span>";
+                activationStatus = "<span class=\"" + activationStatus + "\" title=\"" + activationStatusMessage + "\"></span>";
                 activationStatus = activationStatus + "<span class=\"hidden\">" + activationStatusMessage + "</span>";
             }
 

@@ -133,7 +133,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // RED, not activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-red\"></span>" + "<span class=\"hidden\">not-activated</span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-red\" title=\"not-activated\"></span>" + "<span class=\"hidden\">not-activated</span>", res.toString());
     }
 
     @Test
@@ -148,7 +148,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // GREEN, was activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-green\"></span>" + "<span class=\"hidden\">activated</span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-green\" title=\"activated\"></span>" + "<span class=\"hidden\">activated</span>", res.toString());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // YELLOW, was activated and then modified
-        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\"></span>" + "<span class=\"hidden\">modified</span>", res.toString());
+        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\" title=\"modified\"></span>" + "<span class=\"hidden\">modified</span>", res.toString());
     }
 
     @Test
