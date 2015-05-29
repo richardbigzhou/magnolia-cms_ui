@@ -1,7 +1,7 @@
 --- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-10-16 02:00:54.000000000 +0200
 +++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-11-21 18:58:00.000000000 +0100
 @@ -34,15 +34,15 @@
- import com.vaadin.client.Util;
+ import com.vaadin.client.WidgetUtil;
  import com.vaadin.client.ui.AbstractHasComponentsConnector;
  import com.vaadin.client.ui.PostLayoutListener;
 -import com.vaadin.client.ui.VScrollTable;
@@ -13,13 +13,13 @@
  import com.vaadin.shared.ui.Connect;
  import com.vaadin.shared.ui.table.TableConstants;
  import com.vaadin.shared.ui.table.TableState;
- 
+
 -@Connect(com.vaadin.ui.Table.class)
 -public class TableConnector extends AbstractHasComponentsConnector implements
 +//@Connect(com.vaadin.ui.Table.class)
 +public class TableConnectorPatched extends AbstractHasComponentsConnector implements
          Paintable, DirectionalManagedLayout, PostLayoutListener {
- 
+
      @Override
 @@ -145,6 +145,7 @@
 
@@ -53,7 +53,7 @@
                  @Override
 @@ -344,14 +345,14 @@
                      // IE8 needs some hacks to measure sizes correctly
-                     Util.forceIE8Redraw(getWidget().getElement());
+                     WidgetUtil.forceIE8Redraw(getWidget().getElement());
 
 -                    getLayoutManager().setNeedsMeasure(TableConnector.this);
 +                    getLayoutManager().setNeedsMeasure(TableConnectorPatched.this);
@@ -72,8 +72,8 @@
          TooltipInfo info = null;
 
          if (element != getWidget().getElement()) {
--            Object node = Util.findWidget(element, VScrollTableRow.class);
-+            Object node = Util.findWidget(element, getWidget().scrollBody.iterator().next().getClass());
+-            Object node = WidgetUtil.findWidget(element, VScrollTableRow.class);
++            Object node = WidgetUtil.findWidget(element, getWidget().scrollBody.iterator().next().getClass());
 
              if (node != null) {
                  VScrollTableRow row = (VScrollTableRow) node;

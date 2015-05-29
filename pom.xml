@@ -19,7 +19,7 @@
     <magnoliaVersion>5.4-SNAPSHOT</magnoliaVersion>
     <magnoliaTasksVersion>1.1-m3</magnoliaTasksVersion>
     <imagingVersion>3.2-SNAPSHOT</imagingVersion>
-    <vaadinVersion>7.3.4</vaadinVersion>
+    <vaadinVersion>7.4.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
 
@@ -264,6 +264,11 @@
       <dependency>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-client-compiled</artifactId>
+        <version>${vaadinVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-shared</artifactId>
         <version>${vaadinVersion}</version>
       </dependency>
       <dependency>

@@ -286,7 +286,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     @Override
-    protected boolean isEmpty() {
+    public boolean isEmpty() {
         boolean isEmpty = false;
         List<AbstractField<T>> fields = getFields(this, false);
         for (AbstractField<T> field : fields) {

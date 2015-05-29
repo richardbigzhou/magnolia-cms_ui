@@ -105,7 +105,8 @@ public class CropImageAction extends MediaEditorUIAction {
 
     @Override
     protected Component getStatusControls() {
-        Label l = new Label();
+        final Label l = new Label();
+        l.setWidth("400px");
         cropField.setStatusComponent(l);
         return l;
     }
