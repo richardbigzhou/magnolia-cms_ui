@@ -58,7 +58,7 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
     public static final String DEFAULT_WIDGETSET = "info.magnolia.widgetset.MagnoliaWidgetSet";
     public static final String DEFAULT_THEME = "admincentral";
 
-    public static final String WIDGETSET_DOCUMENTATION_URL = "http://documentation.magnolia-cms.com/display/DOCS/Using+custom+widgets";
+    public static final String WIDGETSET_DOCUMENTATION_URL = "https://documentation.magnolia-cms.com/display/DOCS/Using+custom+widgets";
 
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
