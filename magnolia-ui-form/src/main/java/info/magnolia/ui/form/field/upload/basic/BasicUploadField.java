@@ -576,7 +576,7 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
     }
 
     @Override
-    protected boolean isEmpty() {
+    public boolean isEmpty() {
         return getValue().isEmpty();
     }
 

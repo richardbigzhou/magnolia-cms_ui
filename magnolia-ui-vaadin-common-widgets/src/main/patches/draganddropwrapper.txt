@@ -1,6 +1,6 @@
 --- k1/src/main/java/com/vaadin/ui/DragAndDropWrapper.java 2013-09-27 18:30:04.000000000 +0200
 +++ k2/src/main/java/com/vaadin/ui/DragAndDropWrapper.java 2013-11-02 10:16:18.000000000 +0100
-@@ -336,9 +336,6 @@
+@@ -373,9 +373,6 @@
              // no need tell to the client about this receiver on next paint
              receivers.remove(id);
              sentIds.remove(id);

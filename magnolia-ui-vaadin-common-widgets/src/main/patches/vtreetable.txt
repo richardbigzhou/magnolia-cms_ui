@@ -20,7 +20,7 @@
 @@ -38,9 +39,9 @@
  import com.vaadin.client.ComputedStyle;
  import com.vaadin.client.UIDL;
- import com.vaadin.client.Util;
+ import com.vaadin.client.WidgetUtil;
 -import com.vaadin.client.ui.VTreeTable.VTreeTableScrollBody.VTreeTableRow;
 +import com.vaadin.client.ui.VTreeTablePatched.VTreeTableScrollBody.VTreeTableRow;
 
@@ -67,7 +67,7 @@
              protected Widget widgetInHierarchyColumn;
 
              public VTreeTableRow(UIDL uidl, char[] aligns2) {
-@@ -200,7 +201,7 @@
+@@ -202,7 +203,7 @@
                  return false;
              }
 
@@ -76,7 +76,7 @@
                  if (isTreeCellAdded) {
                      return false;
                  }
-@@ -229,14 +230,14 @@
+@@ -231,14 +232,14 @@
 
              }
 
@@ -93,7 +93,7 @@
                                  getIndent(), false);
                      }
                  }
-@@ -290,7 +291,7 @@
+@@ -292,7 +293,7 @@
                  super.setCellWidth(cellIx, width);
              }
 
@@ -102,7 +102,7 @@
                  return (depth + 1) * getIndentWidth();
              }
          }
-@@ -421,7 +422,7 @@
+@@ -424,7 +425,7 @@
              }
          }
 
@@ -111,7 +111,7 @@
              return indentWidth;
          }
 
-@@ -438,7 +439,8 @@
+@@ -441,7 +442,8 @@
                  VTreeTableRow next = (VTreeTableRow) iterator.next();
                  maxIndent = Math.max(maxIndent, next.getIndent());
              }
@@ -121,7 +121,7 @@
          }
 
          private void detectIndent(VTreeTableRow vTreeTableRow) {
-@@ -857,7 +859,7 @@
+@@ -860,7 +862,7 @@
          return super.handleNavigation(keycode, ctrl, shift);
      }
 
@@ -130,7 +130,7 @@
          collapsedRowKey = rowKey;
          collapseRequest = true;
          client.updateVariable(paintableId, "toggleCollapsed", rowKey, true);
-@@ -898,4 +900,8 @@
+@@ -901,4 +903,8 @@
          setTotalRows(newTotalRows);
      }
 

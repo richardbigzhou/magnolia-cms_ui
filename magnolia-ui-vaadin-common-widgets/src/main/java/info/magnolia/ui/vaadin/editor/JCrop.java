@@ -38,21 +38,25 @@ import info.magnolia.ui.vaadin.editor.CroppableImage.JCropSelectionEvent;
 import info.magnolia.ui.vaadin.gwt.client.jcrop.JCropState;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.gwt.json.client.JSONObject;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScriptFunction;
 
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
+import elemental.json.impl.JreJsonFactory;
+
+
 /**
  * An {@link Image} extension that operates JCrop JQuery plugin ({@link http://deepliquid.com/content/Jcrop.html}).
  */
 @JavaScript({ "jquery.color.js", "jquery.Jcrop.min.js", "jcrop_connector.js" })
 public class JCrop extends AbstractJavaScriptExtension {
+
+    private JreJsonFactory jsonFactory = new JreJsonFactory();
 
     @Override
     public CroppableImage getParent() {
@@ -62,8 +66,8 @@ public class JCrop extends AbstractJavaScriptExtension {
     public JCrop(JCropHandler handler) {
         addFunction("doOnSelect", new JavaScriptFunction() {
             @Override
-            public void call(JSONArray args) throws JSONException {
-                SelectionArea area = AreaFromJSON(args.getJSONObject(0));
+            public void call(JsonArray args) {
+                SelectionArea area = AreaFromJSON(args.getObject(0));
                 getState(false).selection = area;
                 getParent().fireEvent(new JCropSelectionEvent(getParent(), area));
             }
@@ -71,7 +75,7 @@ public class JCrop extends AbstractJavaScriptExtension {
 
         addFunction("doOnRelease", new JavaScriptFunction() {
             @Override
-            public void call(JSONArray args) throws JSONException {
+            public void call(JsonArray args) {
                 getState().selection = null;
                 getParent().fireEvent(new JCropReleaseEvent(getParent()));
             }
@@ -79,18 +83,18 @@ public class JCrop extends AbstractJavaScriptExtension {
 
         addFunction("onCreated", new JavaScriptFunction() {
             @Override
-            public void call(JSONArray args) throws JSONException {
+            public void call(JsonArray args) {
                 getState(false).isValid = true;
             }
         });
     }
 
-    protected SelectionArea AreaFromJSON(JSONObject json) {
-        try {
-            return new SelectionArea(json.getInt("x"), json.getInt("y"), json.getInt("w"), json.getInt("h"));
-        } catch (JSONException e) {
-            return new SelectionArea();
-        }
+    protected SelectionArea AreaFromJSON(JsonObject json) {
+            return new SelectionArea(
+                    (int)json.getNumber("x"),
+                    (int)json.getNumber("y"),
+                    (int)json.getNumber("w"),
+                    (int)json.getNumber("h"));
     }
 
     @Override
@@ -122,7 +126,7 @@ public class JCrop extends AbstractJavaScriptExtension {
     }
 
     public void animateTo(SelectionArea area) {
-        callFunction("animateTo", new JSONObject(area));
+        callFunction("animateTo", jsonFactory.create(area.toString()));
     }
 
     public boolean isCropVisible() {
