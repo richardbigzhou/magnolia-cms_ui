@@ -31,35 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.util;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
 
-import java.util.LinkedList;
-import java.util.List;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabLabel;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Util class for the collections operations.
+ * Event and handler to tracking resize changed.
  */
-public class CollectionUtil {
+public class ResizeEvent extends GwtEvent<ResizeHandler> {
 
-    public static <T> T getNext(final List<T> items, T item) {
-        int index = items.indexOf(item);
-        if (index >= 0) {
-            int nextIndex = (index + 1) % items.size();
-            return items.get(nextIndex);
-        }
-        return null;
+    public static Type<ResizeHandler> TYPE = new Type<ResizeHandler>();
+
+    private final MagnoliaTabLabel label;
+
+    public ResizeEvent(MagnoliaTabLabel label) {
+        this.label = label;
     }
 
-    public static <T> List<T> reserveItemToFirst(final List<T> items, T item) {
-        List<T> newItems = new LinkedList<T>();
-        for (int i = items.indexOf(item); i < items.size(); i++) {
-            newItems.add(items.get(i));
-        }
-
-        for (int i = items.indexOf(item) - 1; i >= 0; i--) {
-            newItems.add(items.get(i));
-        }
-
-        return newItems;
+    public MagnoliaTabLabel getLabel() {
+        return label;
     }
+
+    @Override
+    public GwtEvent.Type<ResizeHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(ResizeHandler handler) {
+        handler.onResize(this);
+
+    }
+
 }

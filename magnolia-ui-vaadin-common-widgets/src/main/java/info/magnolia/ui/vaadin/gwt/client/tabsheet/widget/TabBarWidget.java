@@ -36,6 +36,8 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.CaptionChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.CaptionChangedHandler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ResizeEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ResizeHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
@@ -112,41 +114,41 @@ public class TabBarWidget extends ComplexPanel {
             activeTab = tabLabels.get(0);
         }
 
-        if (visibleTabs.contains(activeTab)) {// TODO: Close case
+        if (visibleTabs.contains(activeTab)) {
             return;
         }
 
         int tabBarWidth = this.getElement().getOffsetWidth();
         int tabsWidth = ((showAllTab != null) ? showAllTab.getElement().getOffsetWidth() : 0) + moreTabs.getElement().getOffsetWidth();
 
-        List<MagnoliaTabLabel> tabs = new LinkedList<MagnoliaTabLabel>();
-
-        for (int i = tabLabels.indexOf(activeTab); i < tabLabels.size(); i++) {
-            tabs.add(tabLabels.get(i));
-        }
-
-        for (int i = tabLabels.indexOf(activeTab) - 1; i >= 0; i--) {
-            tabs.add(tabLabels.get(i));
-        }
+        List<MagnoliaTabLabel> tabs = CollectionUtil.reserveItemToFirst(tabLabels, activeTab);
 
         for (MagnoliaTabLabel tab : tabs) {
-            int tabWidth = tab.getElement().getOffsetWidth();
-            if (tabWidth != 0) {
-                tabSizes.put(tab, tabWidth);
-            } else {
-                tabWidth = (tabSizes.containsKey(tab)) ? tabSizes.get(tab).intValue() : 0;
-            }
-            tabsWidth += tabWidth;
-            if (tabsWidth <= tabBarWidth) {
-                tab.setVisible(true);
-                visibleTabs.add(tab);
-                moreTabs.menuItems.get(tab).getElement().removeClassName("inactive");
-            } else {
-                tab.setVisible(false);
-                moreTabs.setVisible(true);
-                visibleTabs.remove(tab);
-                moreTabs.menuItems.get(tab).getElement().addClassName("inactive");
-            }
+            tabsWidth += getTabWidth(tab);
+            toggleTabsVisibility(tab, tabsWidth <= tabBarWidth);
+        }
+    }
+
+    private int getTabWidth(MagnoliaTabLabel tab) {
+        int tabWidth = tab.getElement().getOffsetWidth();
+        if (tabWidth != 0) {
+            tabSizes.put(tab, tabWidth);
+        } else {
+            tabWidth = (tabSizes.containsKey(tab)) ? tabSizes.get(tab).intValue() : 0;
+        }
+
+        return tabWidth;
+    }
+
+    private void toggleTabsVisibility(MagnoliaTabLabel tab, boolean visible) {
+        tab.setVisible(visible);
+        moreTabs.setVisible(!visible);
+        if (visible) {
+            visibleTabs.add(tab);
+            moreTabs.menuItems.get(tab).getElement().removeClassName("inactive");
+        } else {
+            visibleTabs.remove(tab);
+            moreTabs.menuItems.get(tab).getElement().addClassName("inactive");
         }
     }
 
@@ -180,7 +182,7 @@ public class TabBarWidget extends ComplexPanel {
                     }
                 }
                 tabLabels.remove(tabLabel);
-                visibleTabs.remove(tabLabel);
+                visibleTabs.clear();
                 remove(tabLabel);
                 updateSingleTabStyle();
                 calculateHiddenTabs();
@@ -208,6 +210,14 @@ public class TabBarWidget extends ComplexPanel {
             }
         });
 
+        eventBus.addHandler(ResizeEvent.TYPE, new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                activeTab = event.getLabel();
+                visibleTabs.clear();
+                calculateHiddenTabs();
+            }
+        });
     }
 
     protected MagnoliaTabLabel getNextLabel(final MagnoliaTabLabel label) {
@@ -297,8 +307,8 @@ public class TabBarWidget extends ComplexPanel {
 
         public VShellMoreTabLabel() {
             super(DOM.createElement("li"));
-            addStyleName("show-all");
             addStyleName("icon-arrow2_e");
+            addStyleName("v-shell-more-tabs");
             getElement().getStyle().setFontSize(18, Unit.PX);
 
             menubar.setStyleName("context-menu");
