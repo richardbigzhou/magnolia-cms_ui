@@ -61,7 +61,7 @@ public class WidgetsetRelocationCondition extends AbstractCondition {
 
     @Inject
     public WidgetsetRelocationCondition(MagnoliaConfigurationProperties magnoliaProperties) {
-        super("Widgetset check", "See http://documentation.magnolia-cms.com/display/DOCS/Using+custom+widgets for more details.");
+        super("Widgetset check", "See " + WIDGETSET_DOCUMENTATION_URL + " for more details.");
         this.magnoliaProperties = magnoliaProperties;
     }
 
