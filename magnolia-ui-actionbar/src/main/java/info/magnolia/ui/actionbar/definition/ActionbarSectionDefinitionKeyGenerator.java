@@ -55,30 +55,36 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
         Object root = getRoot(sectionDefinition);
         final String fieldOrGetterName = fieldOrGetterName(el);
 
-        if (!(root instanceof AppDescriptor)) {
-            // not an app descriptor, but can be MessageView with an ID
+        if (root instanceof AppDescriptor) {
+            // Action bar within an app
+            AppDescriptor appDescriptor = (AppDescriptor) root;
+            SubAppDescriptor subAppDescriptor = null;
+            List<?> ancestors = getAncestors(sectionDefinition);
+            for (Object ancestor : ancestors) {
+                if (ancestor instanceof SubAppDescriptor) {
+                    subAppDescriptor = (SubAppDescriptor) ancestor;
+                    break;
+                }
+            }
+            final String appName = appDescriptor.getName();
+            final String sectionName = sectionDefinition.getName();
+            final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
+            addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName);
+            addKey(keys, appName, subappName, "actionbar", sectionName, fieldOrGetterName);
+            addKey(keys, appName, "actionbar", "sections", sectionName, fieldOrGetterName);
+            addKey(keys, appName, "actionbar", sectionName, fieldOrGetterName);
+
+        } else {
+            // Action bar within e.g. a MessageView in the pulse
             String idOrName = getIdOrNameForUnknownRoot(sectionDefinition);
             addKey(keys, idOrName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
+            addKey(keys, idOrName, "actionbar", sectionDefinition.getName(), fieldOrGetterName);
             String[] parts = StringUtils.split(idOrName, ".");
             if (parts.length > 1) {
                 String noModuleName = parts[parts.length - 1];
                 addKey(keys, noModuleName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
-            }
-
-            return;
-        }
-        AppDescriptor appDescriptor = (AppDescriptor) root;
-        SubAppDescriptor subAppDescriptor = null;
-        List<?> ancestors = getAncestors(sectionDefinition);
-        for (Object ancestor : ancestors) {
-            if (ancestor instanceof SubAppDescriptor) {
-                subAppDescriptor = (SubAppDescriptor) ancestor;
-                break;
+                addKey(keys, noModuleName, "actionbar", sectionDefinition.getName(), fieldOrGetterName);
             }
         }
-        final String appName = appDescriptor.getName();
-        final String sectionName = sectionDefinition.getName();
-        final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
-        addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName);
     }
 }
