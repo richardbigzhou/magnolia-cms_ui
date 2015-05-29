@@ -137,7 +137,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
     }
 
     /**
-     * A class that contains an actionbar, but is not an SubAppDescriptor - e.g. MessageViewDefinition.
+     * A class that contains an actionbar, but is not an AppDescriptor - e.g. MessageViewDefinition.
      * But the MessageViewDefinition is in a dependent module, so we cannot use it here.
      */
     @I18nable
