@@ -1,6 +1,7 @@
 <module>
 
   <inherits name="com.vaadin.DefaultWidgetSet" />
+  <extend-property name="user.agent" values="opera" fallback-value="safari" />
 
   <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
   <inherits name='com.googlecode.mgwt.dom.DOM' />
