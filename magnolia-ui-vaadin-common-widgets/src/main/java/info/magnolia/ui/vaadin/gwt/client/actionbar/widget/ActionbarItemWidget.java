@@ -131,9 +131,7 @@ public class ActionbarItemWidget extends FocusWidget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
-        setCaption(data.getLabel());
-        AriaHelper.bindCaption(this, getElement());
-        //buttonDiv.addClassName("hidden");
+        AriaHelper.bindCaption(this, text);
     }
 
     protected void bindHandlers() {
@@ -189,6 +187,9 @@ public class ActionbarItemWidget extends FocusWidget {
     }
 
     public void update() {
+        //set Caption
+        text.setInnerHTML(data.getLabel());
+        
         text.setInnerText(data.getLabel());
         if (data.getIconFontId() != null) {
             icon.setClassName("v-icon");
@@ -208,10 +209,5 @@ public class ActionbarItemWidget extends FocusWidget {
 
     public ActionbarItem getData() {
         return data;
-    }
-    
-    public void setCaption(String caption) {
-        root.setInnerHTML(caption);
-       
-    }    
+    }     
 }
