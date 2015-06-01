@@ -71,7 +71,7 @@ import com.vaadin.data.Property;
 
 /**
  * Implementation of a {@link Transformer} that handle a Binary Item instead of a simple property.<br>
- * 
+ *
  * @param <T> property type used by the related field.
  */
 public class FileTransformer<T extends UploadReceiver> implements Transformer<T> {
@@ -173,17 +173,13 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         if (item.getItemProperty(JcrConstants.JCR_DATA) != null && item.getItemProperty(JcrConstants.JCR_DATA).getValue() != null) {
             String fileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME) != null ? (String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue() : "";
             String MIMEType = item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()) : "";
-            OutputStream out = uploadReceiver.receiveUpload(fileName, MIMEType);
-            InputStream in;
-            try {
-                in = ((BinaryImpl) item.getItemProperty(JcrConstants.JCR_DATA).getValue()).getStream();
+
+            try (OutputStream out = uploadReceiver.receiveUpload(fileName, MIMEType);
+                 InputStream in = ((BinaryImpl) item.getItemProperty(JcrConstants.JCR_DATA).getValue()).getStream()) {
                 IOUtils.copy(in, out);
-                IOUtils.closeQuietly(in);
-                IOUtils.closeQuietly(out);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
         return uploadReceiver;
     }
@@ -201,7 +197,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
 
     /**
      * Populate the related Item with the values of 'newItem' in case {@link FileTransformer#isValid(Object, Item)} return true.<br>
-     * 
+     *
      * @see {@link FileTransformer#writeToItem(Object)}.
      */
     public Item populateItem(T newValue, Item item) {
@@ -226,7 +222,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
 
     /**
      * Handle the related Item in case {@link FileTransformer#isValid(Object, Item)} return false.<br>
-     * 
+     *
      * @see {@link FileTransformer#writeToItem(Object)}.
      */
     protected void handleInvalid(T newValue, Item item) {
