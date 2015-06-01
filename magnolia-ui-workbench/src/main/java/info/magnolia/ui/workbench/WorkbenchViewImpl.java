@@ -131,7 +131,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         clearSearchBoxButton = new Button();
         clearSearchBoxButton.addStyleName("icon-delete-search");
-        clearSearchBoxButton.addStyleName("searchbox-clearbutton");
+        // temporarily set this style to support for accessibility.
+        clearSearchBoxButton.addStyleName("searchbox-clearbutton-accessibility");
         clearSearchBoxButton.addClickListener(new Button.ClickListener() {
 
             @Override

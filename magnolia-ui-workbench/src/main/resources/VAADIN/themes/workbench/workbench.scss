@@ -117,7 +117,25 @@
     {
       display:none;
     }
+    
+    .searchbox-clearbutton-accessibility {
+      position: absolute;
+      right: -1px;
+      top: 2px;
+      background: none !important;
+      color: $c10;
+      padding: 0px;
+      margin: 0px;
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+      font-size: 21px;
+      display: block;
+      outline: none !important;
 
+      &:hover { color: $c10 !important; }
+      &:active { color: $c12 !important; }
+    }   
 
     .searchbox-icon {
       position: absolute;
