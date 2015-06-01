@@ -33,11 +33,16 @@
  */
 package info.magnolia.ui.form.field.transformer.upload;
 
+import static info.magnolia.cms.beans.runtime.FileProperties.*;
+import static info.magnolia.cms.core.SystemProperty.*;
+import static info.magnolia.test.ComponentsTestUtil.*;
+import static info.magnolia.test.mock.MockUtil.initMockContext;
+import static info.magnolia.ui.form.field.upload.UploadReceiver.INVALID_FILE_NAME;
+import static org.apache.commons.io.IOUtils.*;
+import static org.apache.jackrabbit.JcrConstants.JCR_DATA;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -47,10 +52,9 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.jcr.util.NodeTypes.ContentNode;
+import info.magnolia.jcr.util.NodeTypes.Resource;
 import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -65,8 +69,6 @@ import java.util.Locale;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.BinaryValue;
 import org.junit.After;
 import org.junit.Before;
@@ -81,24 +83,23 @@ public class FileTransformerTest {
 
     private BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
     private Item rootItem;
-    private MockNode rootNode;
     private Node fileNode;
     private I18nContentSupport i18nContentSupport;
     private Locale defaultLocal = Locale.ENGLISH;
 
     @Before
     public void setUp() throws Exception {
-        MockUtil.initMockContext();
-        SystemProperty.setProperty(SystemProperty.MAGNOLIA_APP_ROOTDIR, "./src/test/resources");
-        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, System.getProperty("java.io.tmpdir"));
+        initMockContext();
+        setProperty(MAGNOLIA_APP_ROOTDIR, "./src/test/resources");
+        setProperty(MAGNOLIA_UPLOAD_TMPDIR, System.getProperty("java.io.tmpdir"));
         // Init rootItem
         MockSession session = new MockSession("test");
         ((MockContext) MgnlContext.getInstance()).addSession("test", session);
-        rootNode = new MockNode(session);
+        MockNode rootNode = new MockNode(session);
         rootNode.setName("root");
-        rootNode.setPrimaryType(NodeTypes.ContentNode.NAME);
+        rootNode.setPrimaryType(ContentNode.NAME);
         rootNode.setProperty("text", "some text");
-        rootNode.addNode(new MockNode(definition.getBinaryNodeName(), NodeTypes.Resource.NAME));
+        rootNode.addNode(new MockNode(definition.getBinaryNodeName(), Resource.NAME));
         fileNode = rootNode.getNode(definition.getBinaryNodeName());
         rootItem = new JcrNodeAdapter(rootNode);
 
@@ -108,11 +109,11 @@ public class FileTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(false);
         definition.setI18n(false);
 
-        ComponentsTestUtil.setInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
+        setInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
 
-        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
     }
 
     @After
@@ -121,27 +122,27 @@ public class FileTransformerTest {
     }
 
     @Test
-    public void readFromItemWithoutExisitngFile() throws RepositoryException {
+    public void readFromItemWithoutExistingFile() throws RepositoryException {
         // GIVEN
         fileNode.remove();
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
 
         // WHEN
         UploadReceiver property = transformer.readFromItem();
 
         // THEN
         assertNotNull(property);
-        assertEquals(UploadReceiver.INVALID_FILE_NAME, property.getFileName());
+        assertEquals(INVALID_FILE_NAME, property.getFileName());
         assertEquals(0l, property.getFileSize());
     }
 
     @Test
-    public void readFromItemWithExisitngFile() throws RepositoryException {
+    public void readFromItemWithExistingFile() throws RepositoryException {
         // GIVEN
-        fileNode.setProperty(JcrConstants.JCR_DATA, new BinaryValue("test"));
-        fileNode.setProperty(FileProperties.PROPERTY_FILENAME, "test.jpg");
-        fileNode.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/jpg");
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        fileNode.setProperty(JCR_DATA, new BinaryValue("test"));
+        fileNode.setProperty(PROPERTY_FILENAME, "test.jpg");
+        fileNode.setProperty(PROPERTY_CONTENTTYPE, "image/jpg");
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
 
         // WHEN
         UploadReceiver property = transformer.readFromItem();
@@ -159,73 +160,73 @@ public class FileTransformerTest {
         // GIVEN
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         transformer.setI18NPropertyName(definition.getBinaryNodeName() + "_de");
         UploadReceiver property = transformer.readFromItem();
         OutputStream out = property.receiveUpload("test.jpg", "image/jpg");
-        IOUtils.copy(new BinaryValue("test").getStream(), out);
-        IOUtils.closeQuietly(out);
+        copy(new BinaryValue("test").getStream(), out);
+        closeQuietly(out);
 
         // WHEN
         transformer.writeToItem(property);
 
         // THEN
-        assertNotNull(((JcrNodeAdapter)rootItem).getChild(definition.getBinaryNodeName()+"_de"));
+        assertNotNull(((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName() + "_de"));
     }
 
     @Test
-    public void writeToItemWithoutExisitngFile() throws RepositoryException, IOException {
+    public void writeToItemWithoutExistingFile() throws RepositoryException, IOException {
         // GIVEN
         fileNode.remove();
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         UploadReceiver property = transformer.readFromItem();
         OutputStream out = property.receiveUpload("test.jpg", "image/jpg");
-        IOUtils.copy(new BinaryValue("test").getStream(), out);
-        IOUtils.closeQuietly(out);
+        copy(new BinaryValue("test").getStream(), out);
+        closeQuietly(out);
 
         // WHEN
         transformer.writeToItem(property);
 
         // THEN
         Item item = ((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName());
-        assertEquals("test.jpg", item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
-        assertEquals("image/jpg", item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-        assertEquals(4l, item.getItemProperty(FileProperties.SIZE).getValue());
-        assertEquals("jpg", item.getItemProperty(FileProperties.EXTENSION).getValue());
+        assertEquals("test.jpg", item.getItemProperty(PROPERTY_FILENAME).getValue());
+        assertEquals("image/jpg", item.getItemProperty(PROPERTY_CONTENTTYPE).getValue());
+        assertEquals(4l, item.getItemProperty(SIZE).getValue());
+        assertEquals("jpg", item.getItemProperty(EXTENSION).getValue());
     }
 
     @Test
-    public void writeToItemWithExisitngFile() throws RepositoryException, IOException {
+    public void writeToItemWithExistingFile() throws RepositoryException, IOException {
         // GIVEN
         // Init a stored file
-        fileNode.setProperty(JcrConstants.JCR_DATA, new BinaryValue("test"));
-        fileNode.setProperty(FileProperties.PROPERTY_FILENAME, "test.jpg");
-        fileNode.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/jpg");
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        fileNode.setProperty(JCR_DATA, new BinaryValue("test"));
+        fileNode.setProperty(PROPERTY_FILENAME, "test.jpg");
+        fileNode.setProperty(PROPERTY_CONTENTTYPE, "image/jpg");
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         // Simulate a new upload
         UploadReceiver property = transformer.readFromItem();
         OutputStream out = property.receiveUpload("newTest.pgn", "image/pgn");
-        IOUtils.copy(new BinaryValue("new test").getStream(), out);
-        IOUtils.closeQuietly(out);
+        copy(new BinaryValue("new test").getStream(), out);
+        closeQuietly(out);
 
         // WHEN
         transformer.writeToItem(property);
 
         // THEN
         Item item = ((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName());
-        assertEquals("newTest.pgn", item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
-        assertEquals("image/pgn", item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-        assertEquals(8l, item.getItemProperty(FileProperties.SIZE).getValue());
-        assertEquals("pgn", item.getItemProperty(FileProperties.EXTENSION).getValue());
+        assertEquals("newTest.pgn", item.getItemProperty(PROPERTY_FILENAME).getValue());
+        assertEquals("image/pgn", item.getItemProperty(PROPERTY_CONTENTTYPE).getValue());
+        assertEquals(8l, item.getItemProperty(SIZE).getValue());
+        assertEquals("pgn", item.getItemProperty(EXTENSION).getValue());
     }
 
     @Test
     public void createPropertyFromItem() throws RepositoryException {
         // GIVEN
-        fileNode.setProperty(JcrConstants.JCR_DATA, new BinaryValue("test"));
-        fileNode.setProperty(FileProperties.PROPERTY_FILENAME, "test.jpg");
-        fileNode.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/jpg");
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        fileNode.setProperty(JCR_DATA, new BinaryValue("test"));
+        fileNode.setProperty(PROPERTY_FILENAME, "test.jpg");
+        fileNode.setProperty(PROPERTY_CONTENTTYPE, "image/jpg");
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         transformer.readFromItem();
 
         // WHEN
@@ -243,43 +244,44 @@ public class FileTransformerTest {
     public void populateExistingItem() throws RepositoryException, IOException {
         // GIVEN
         // Init a stored file
-        fileNode.setProperty(JcrConstants.JCR_DATA, new BinaryValue("test"));
-        fileNode.setProperty(FileProperties.PROPERTY_FILENAME, "test.jpg");
-        fileNode.setProperty(FileProperties.PROPERTY_CONTENTTYPE, "image/jpg");
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        fileNode.setProperty(JCR_DATA, new BinaryValue("test"));
+        fileNode.setProperty(PROPERTY_FILENAME, "test.jpg");
+        fileNode.setProperty(PROPERTY_CONTENTTYPE, "image/jpg");
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         // Simulate a new upload
         UploadReceiver property = transformer.readFromItem();
         OutputStream out = property.receiveUpload("newTest.pgn", "image/pgn");
-        IOUtils.copy(new BinaryValue("new test").getStream(), out);
-        IOUtils.closeQuietly(out);
+        copy(new BinaryValue("new test").getStream(), out);
+        closeQuietly(out);
 
         // WHEN
         Item item = transformer.populateItem(property, ((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName()));
 
         // THEN
-        assertEquals("newTest.pgn", item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
-        assertEquals("image/pgn", item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-        assertEquals(8l, item.getItemProperty(FileProperties.SIZE).getValue());
-        assertEquals("pgn", item.getItemProperty(FileProperties.EXTENSION).getValue());
+        assertEquals("newTest.pgn", item.getItemProperty(PROPERTY_FILENAME).getValue());
+        assertEquals("image/pgn", item.getItemProperty(PROPERTY_CONTENTTYPE).getValue());
+        assertEquals(8l, item.getItemProperty(SIZE).getValue());
+        assertEquals("pgn", item.getItemProperty(EXTENSION).getValue());
     }
 
     @Test
     public void populateNewItem() throws RepositoryException, IOException {
         // GIVEN
         fileNode.remove();
-        FileTransformer<UploadReceiver> transformer = new FileTransformer<UploadReceiver>(rootItem, definition, UploadReceiver.class);
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
         UploadReceiver property = transformer.readFromItem();
         OutputStream out = property.receiveUpload("test.jpg", "image/jpg");
-        IOUtils.copy(new BinaryValue("test").getStream(), out);
-        IOUtils.closeQuietly(out);
+        copy(new BinaryValue("test").getStream(), out);
+        closeQuietly(out);
         transformer.writeToItem(property);
+
         // WHEN
         Item item = transformer.populateItem(property, ((JcrNodeAdapter) rootItem).getChild(definition.getBinaryNodeName()));
 
         // THEN
-        assertEquals("test.jpg", item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
-        assertEquals("image/jpg", item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-        assertEquals(4l, item.getItemProperty(FileProperties.SIZE).getValue());
-        assertEquals("jpg", item.getItemProperty(FileProperties.EXTENSION).getValue());
+        assertEquals("test.jpg", item.getItemProperty(PROPERTY_FILENAME).getValue());
+        assertEquals("image/jpg", item.getItemProperty(PROPERTY_CONTENTTYPE).getValue());
+        assertEquals(4l, item.getItemProperty(SIZE).getValue());
+        assertEquals("jpg", item.getItemProperty(EXTENSION).getValue());
     }
 }
