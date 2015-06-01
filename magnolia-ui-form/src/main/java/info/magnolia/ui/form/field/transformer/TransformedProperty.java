@@ -39,7 +39,7 @@ import com.vaadin.data.util.ObjectProperty;
 /**
  * Basic implementation of an {@link ObjectProperty} .<br>
  * This base property delegate to the {@link Transformer} the read and write of the value used by the field.<br>
- * 
+ *
  * @param <T>.
  */
 public class TransformedProperty<T> extends ObjectProperty<T> {
@@ -51,7 +51,7 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
      * The super {@link ObjectProperty} is initialized with: <br>
      * - value = {@link Transformer#readFromItem()} in order to get the Item property value,
      * - type = {@link Transformer#getType()}, the type of the value.
-     * 
+     *
      * @param transformer
      * the relate Property {@link Transformer}.
      */
@@ -71,6 +71,15 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
     @Override
     public T getValue() {
         return super.getValue();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        if (transformer != null) {
+            return transformer.isReadOnly();
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -40,6 +40,7 @@ import static info.magnolia.test.mock.MockUtil.initMockContext;
 import static info.magnolia.ui.form.field.upload.UploadReceiver.INVALID_FILE_NAME;
 import static org.apache.commons.io.IOUtils.*;
 import static org.apache.jackrabbit.JcrConstants.JCR_DATA;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -75,6 +76,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
 
 /**
  * Main test class for {@link FileTransformer}.
@@ -119,6 +121,21 @@ public class FileTransformerTest {
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
+    }
+
+    @Test
+    public void transformerIdentifiesReadOnlyProperty() throws RepositoryException {
+        // GIVEN
+        fileNode.setProperty(PROPERTY_FILENAME, "test.jpg");
+        fileNode.setProperty(PROPERTY_CONTENTTYPE, "image/jpg");
+        rootItem.addItemProperty(JCR_DATA, new ObjectProperty<>("test", String.class, true));
+        FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
+
+        // WHEN
+        boolean readOnly = transformer.isReadOnly();
+
+        // THEN
+        assertThat(readOnly, is(true));
     }
 
     @Test
