@@ -206,7 +206,7 @@ public class ActionbarItemWidget extends Widget {
     }
     
     private void updateButton(){
-        button.setText(data.getName());
+        button.setText(data.getLabel());
         buttonDiv.appendChild(button.getElement());
         DOM.sinkEvents(button.getElement(), Event.KEYEVENTS);
         addDomHandler(new KeyPressHandler() {

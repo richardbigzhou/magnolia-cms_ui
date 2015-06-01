@@ -33,22 +33,17 @@
  */
 package info.magnolia.ui.workbench.column;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 
 import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.ui.Table;
 
@@ -58,32 +53,25 @@ import com.vaadin.ui.Table;
  */
 public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {    
 
-    private static List<String> DEFAULT_MESSAGES =  Arrays.asList("activated", "modified", "not-activated");
+    protected final SimpleTranslator i18n;
     
     @Inject
-    public StatusColumnFormatter(StatusColumnDefinition definition) {
+    public StatusColumnFormatter(StatusColumnDefinition definition, SimpleTranslator i18n) {
         super(definition);
+        this.i18n = i18n;
     }
 
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
 
         final Item jcrItem = getJcrItem(source, itemId);
-        List<String> messages = new ArrayList<String>();
         if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
 
             String activationStatus = "";
+            String activationStatusMessage = "";
             String permissionStatus = "";
-            String activationStatusMessage="";
             
-            messages = new ArrayList<String>(DEFAULT_MESSAGES);
-            if(!StringUtils.isEmpty(definition.getMessages())){               
-                String[] messageArr = definition.getMessages().split(",");
-                if(!ArrayUtils.isEmpty(messageArr)){
-                    messages = Arrays.asList(messageArr);
-                }
-            }
             // activation status
             if (definition.isActivation()) {
                 activationStatus += "icon-shape-circle activation-status ";
@@ -98,15 +86,15 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 switch (status) {
                 case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
                     activationStatus += "color-yellow";
-                    activationStatusMessage = messages.get(1)!=null?messages.get(1):DEFAULT_MESSAGES.get(1);
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.modified");
                     break;
                 case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
                     activationStatus += "color-green";
-                    activationStatusMessage = messages.get(1)!=null?messages.get(0):DEFAULT_MESSAGES.get(0);
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.activated");
                     break;
                 default:
                     activationStatus += "color-red";
-                    activationStatusMessage = messages.get(1)!=null?messages.get(2):DEFAULT_MESSAGES.get(2);
+                    activationStatusMessage =  i18n.translate("ui-workbench.activation-status.not-activated");
                 }
                 activationStatus = "<span class=\"" + activationStatus + "\" title=\"" + activationStatusMessage + "\"></span>";
                 activationStatus = activationStatus + "<span class=\"hidden\">" + activationStatusMessage + "</span>";
