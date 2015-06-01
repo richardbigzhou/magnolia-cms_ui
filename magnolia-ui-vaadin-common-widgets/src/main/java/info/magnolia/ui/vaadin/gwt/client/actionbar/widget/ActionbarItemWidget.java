@@ -47,28 +47,24 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ui.Icon;
+import com.vaadin.client.ui.aria.AriaHelper;
 
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public class ActionbarItemWidget extends Widget {
+public class ActionbarItemWidget extends FocusWidget {
 
     private static final String CLASSNAME = "v-action";
 
     private final Element root = DOM.createElement("li");
 
-    private final Element text = DOM.createSpan();
-    
-    private final Element buttonDiv = DOM.createDiv();
-    
-    private final Button button = new Button();
+    private final Element text = DOM.createSpan();    
 
     // private final Element flyoutIndicator = DOM.createSpan();
 
@@ -122,7 +118,6 @@ public class ActionbarItemWidget extends Widget {
         this.eventBus = eventBus;
         this.iconImage = null;
 
-        updateButton();
         constructDOM();
         bindHandlers();
         update();
@@ -136,8 +131,9 @@ public class ActionbarItemWidget extends Widget {
         icon.addClassName("v-icon");
         root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
-        root.appendChild(buttonDiv);
-        buttonDiv.addClassName("hidden");
+        setCaption(data.getLabel());
+        AriaHelper.bindCaption(this, getElement());
+        //buttonDiv.addClassName("hidden");
     }
 
     protected void bindHandlers() {
@@ -167,6 +163,15 @@ public class ActionbarItemWidget extends Widget {
                 }
             }
         }, MouseUpEvent.getType());
+        
+        addDomHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                //removeStyleName("mousedown");
+                if (KeyboardListener.KEY_ENTER == event.getNativeEvent().getKeyCode())
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
+            }
+        }, KeyPressEvent.getType());
                
     }
 
@@ -205,19 +210,8 @@ public class ActionbarItemWidget extends Widget {
         return data;
     }
     
-    private void updateButton(){
-        button.setText(data.getLabel());
-        buttonDiv.appendChild(button.getElement());
-        DOM.sinkEvents(button.getElement(), Event.KEYEVENTS);
-        addDomHandler(new KeyPressHandler() {
-            @Override
-            public void onKeyPress(KeyPressEvent event) {
-                //removeStyleName("mousedown");
-                if (KeyboardListener.KEY_ENTER == event.getNativeEvent().getKeyCode())
-                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
-            }
-        }, KeyPressEvent.getType());
-    }
-    
-
+    public void setCaption(String caption) {
+        root.setInnerHTML(caption);
+       
+    }    
 }
