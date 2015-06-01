@@ -226,7 +226,12 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
 
-        return new TransformedProperty(transformer);
+        TransformedProperty transformedProperty = new TransformedProperty(transformer);
+        if (transformer.isPropertyReadOnly() || definition.isReadOnly()) {
+            transformedProperty.setReadOnly(true);
+        }
+
+        return transformedProperty;
     }
 
     /**
@@ -307,8 +312,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
 
         // Set ReadOnly (field property has to be updated)
-        if (field.getPropertyDataSource() != null) {
-            field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
+        if ((field.getPropertyDataSource() != null && field.getPropertyDataSource().isReadOnly()) ||
+                definition.isReadOnly()) {
+            field.setReadOnly(true);
         }
     }
 

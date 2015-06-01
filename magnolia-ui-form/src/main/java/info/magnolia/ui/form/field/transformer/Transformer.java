@@ -67,4 +67,9 @@ public interface Transformer<T> extends I18NAwareHandler {
      * to this type.
      */
     Class<T> getType();
+
+    /**
+     * Return true if property is read only.
+     */
+    boolean isPropertyReadOnly();
 }

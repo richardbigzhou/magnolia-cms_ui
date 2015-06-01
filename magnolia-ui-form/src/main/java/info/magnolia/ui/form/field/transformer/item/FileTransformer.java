@@ -284,6 +284,15 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         return this.type;
     }
 
+    /**
+     * Delegates to JCR_DATA property.
+     */
+    @Override
+    public boolean isPropertyReadOnly() {
+        Property property = relatedFormItem.getItemProperty(JcrConstants.JCR_DATA);
+        return property != null && property.isReadOnly();
+    }
+
 
     /* I18nAwareHandler impl */
 
