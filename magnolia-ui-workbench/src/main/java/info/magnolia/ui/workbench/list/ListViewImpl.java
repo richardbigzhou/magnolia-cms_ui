@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,8 +166,12 @@ public class ListViewImpl implements ListView {
                             items = new LinkedHashSet<Object>();
                             items.add(value);
                         }
-                        if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
-                            table.setValue(null);
+                        if (items.size() == 1) {
+                            Object next = items.iterator().next();
+                            // toggle selection if same row
+                            if (ObjectUtils.equals(next, event.getItemId())) {
+                                table.setValue(null);
+                            }
                         }
                     }
                 }

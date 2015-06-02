@@ -42,6 +42,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -100,7 +102,7 @@ public class WorkbenchStatusBarPresenter {
     public void setSelectedItems(Set<Object> itemIds) {
         if (!itemIds.isEmpty()) {
             Object id = itemIds.iterator().next();
-            rootIsSelected = id.equals(contentConnector.getDefaultItemId());
+            rootIsSelected = ObjectUtils.equals(id, contentConnector.getDefaultItemId());
             setSelectedItem(id, itemIds.size());
         } else {
             rootIsSelected = true;
