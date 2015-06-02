@@ -115,7 +115,8 @@
     }
     .v-textfield-prompt ~ .searchbox-clearbutton
     {
-      display:none;
+      // TODO MGNLUI-3420 - Always showing the clear buttonin order to ensure actionbar is accessible with TAB key.
+      //display:none;
     }
 
 
