@@ -97,6 +97,12 @@ public class DialogContainingFormConnector extends BaseDialogConnector implement
         doResize();
     }
 
+    @Override
+    public void setDescriptionVisibility(boolean isVisible) {
+        super.setDescriptionVisibility(isVisible);
+        doResize();
+    }
+
     // The light dialog should have a bottom margin equivalent to the UI bottom margin, which would be 40. Subtracted 2 so that it lines up nicely in practice.
     private static int LIGHT_DIALOG_BOTTOM_MARGIN = (40-2);
 
