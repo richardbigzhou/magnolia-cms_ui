@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.dialog.choosedialog;
 
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
@@ -47,17 +46,21 @@ import org.junit.Test;
 import com.vaadin.data.Item;
 
 
-/**
- * ChooseDialogPresenterImplTest.
- */
 public class ChooseDialogPresenterImplTest {
     @Test
     public void useDefaultItemIdWhenChosenItemIsNull() throws Exception {
         // GIVEN
         ContentConnector contentConnector = mock(ContentConnector.class);
-        when(contentConnector.getDefaultItemId()).thenReturn("qux");
-        Item item = mock(Item.class);
-        when(contentConnector.getItem(any())).thenReturn(item);
+
+        Item defaultItemId = mock(Item.class);
+        when(defaultItemId.toString()).thenReturn("default id");
+        when(contentConnector.getDefaultItemId()).thenReturn(defaultItemId);
+
+        Item anotherId = mock(Item.class);
+        when(anotherId.toString()).thenReturn("another id");
+
+        when(contentConnector.getItem(eq(defaultItemId))).thenReturn(defaultItemId);
+        when(contentConnector.getItem(eq(anotherId))).thenReturn(anotherId);
 
         ChooseDialogPresenterImpl chooseDialogPresenterImpl = new ChooseDialogPresenterImpl(null, null, null, null, null, null, null, contentConnector);
 
@@ -65,7 +68,6 @@ public class ChooseDialogPresenterImplTest {
         Object[] actionParams = chooseDialogPresenterImpl.getActionParameters("foo");
 
         // THEN
-        verify(contentConnector).getDefaultItemId();
-        assertThat(Arrays.asList(actionParams), hasItem(item));
+        assertThat(Arrays.asList(actionParams), hasItem(defaultItemId));
     }
 }
