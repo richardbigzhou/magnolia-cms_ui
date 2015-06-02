@@ -149,6 +149,9 @@
   .v-table-cell-content-nodash .v-table-cell-wrapper:empty:after {
     content: none;
   }
+  .v-table-cell-content-center .v-table-cell-wrapper {
+    text-align: center;
+  }
 
   .v-selection-cb {
     margin-left: 5px;
