@@ -60,6 +60,8 @@ public class AppTileWidget extends Widget {
     private final Element icon = DOM.createDiv();
 
     private final Element label = DOM.createDiv();
+    
+    private final Element appLink = DOM.createAnchor();
 
     private final Element root = DOM.createDiv();
 
@@ -82,6 +84,7 @@ public class AppTileWidget extends Widget {
         constructDOM();
         bindHandlers();
         updateIcon();
+        updateLink();
         updateCaption();
     }
 
@@ -89,6 +92,7 @@ public class AppTileWidget extends Widget {
         setElement(root);
         root.appendChild(icon);
         root.appendChild(label);
+        root.appendChild(appLink);
         root.appendChild(runningIndicator);
         addStyleName("item");
         icon.addClassName("icon");
@@ -221,5 +225,11 @@ public class AppTileWidget extends Widget {
 
     public void updateIcon() {
         iconContent.addClassName(appTile.getIcon());
+    }
+    
+    public void updateLink(){
+        appLink.setAttribute("href", "#app:" + appTile.getName());
+        appLink.addClassName("wai-aria-element");
+        appLink.setInnerText(appTile.getCaption());
     }
 }
