@@ -211,6 +211,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     @Override
     public void setMaxHeight(int height) {
-        this.tabSheet.setMaxHeight(height);
+        if (this.tabSheet != null) {
+            this.tabSheet.setMaxHeight(height);
+        }
     }
 }
