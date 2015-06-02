@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.editor.CroppableImage.JCropSelectionEvent;
 import info.magnolia.ui.vaadin.gwt.client.jcrop.JCropState;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
-import com.google.gwt.json.client.JSONObject;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.Component;
