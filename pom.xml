@@ -16,8 +16,8 @@
     <javaVersion>1.7</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.4-SNAPSHOT</magnoliaVersion>
-    <magnoliaTasksVersion>1.1-SNAPSHOT</magnoliaTasksVersion>
+    <magnoliaVersion>5.4-m11</magnoliaVersion>
+    <magnoliaTasksVersion>1.1-m3</magnoliaTasksVersion>
     <imagingVersion>3.0.1</imagingVersion>
     <vaadinVersion>7.3.4</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
