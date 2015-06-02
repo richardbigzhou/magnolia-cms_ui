@@ -59,6 +59,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Table.TableDragMode;
 
@@ -237,6 +238,11 @@ public class ListViewImpl implements ListView {
     @Override
     public void setColumnFormatter(String propertyId, ColumnFormatter formatter) {
         table.addGeneratedColumn(propertyId, formatter);
+    }
+
+    @Override
+    public void setColumnAlignment(String propertyId, String alignment) {
+        table.setColumnAlignment(propertyId, Align.valueOf(alignment));
     }
 
     @Override

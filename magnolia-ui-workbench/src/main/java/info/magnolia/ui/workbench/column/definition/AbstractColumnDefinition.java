@@ -62,6 +62,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean enabled = true;
 
+    private String alignment;
     private String styleClass;
 
     private Class<? extends ColumnAvailabilityRule> ruleClass;
@@ -127,6 +128,15 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setFormatterClass(Class<? extends ColumnFormatter> formatterClass) {
         this.formatterClass = formatterClass;
+    }
+
+    @Override
+    public String getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(String alignment) {
+        this.alignment = alignment;
     }
 
     @Override

@@ -100,6 +100,9 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             if (column.getStyleClass() != null) {
                 view.setColumnStyleClass(propertyId, column.getStyleClass());
             }
+            if (column.getAlignment() != null) {
+                view.setColumnAlignment(propertyId, column.getAlignment());
+            }
         }
 
         return view;

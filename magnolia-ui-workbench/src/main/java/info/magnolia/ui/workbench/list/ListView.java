@@ -53,6 +53,8 @@ public interface ListView extends ContentView {
 
     void setColumnFormatter(String propertyId, ColumnFormatter formatter);
 
+    void setColumnAlignment(String propertyId, String alignment);
+
     void setColumnStyleClass(String propertyId, String styleClass);
 
     void clearColumns();

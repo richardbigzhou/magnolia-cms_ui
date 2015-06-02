@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 
 /**
  * Defines a column in a workbench.
@@ -69,6 +69,14 @@ public interface ColumnDefinition {
 
     Class<? extends ColumnFormatter> getFormatterClass();
 
+    /**
+     * Defines the alignment for the column TODO COMPLETE....
+     */
+    String getAlignment();
+
+    /**
+     * Defines the style classes for the column TODO COMPLETE....
+     */
     String getStyleClass();
 
     Class<?> getType();
@@ -92,7 +100,7 @@ public interface ColumnDefinition {
     /**
      * If false - the column will not be displayed.
      * useful for turning a column off when extending a columns configuration.
-     * 
+     *
      * @return
      */
     boolean isEnabled();
