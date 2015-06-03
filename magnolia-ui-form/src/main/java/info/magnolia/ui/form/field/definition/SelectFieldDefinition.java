@@ -70,6 +70,10 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
+    private boolean textInputAllowed = false;
+
+    private int pageLength = 0;
+
     public List<SelectFieldOptionDefinition> getOptions() {
         return options;
     }
@@ -147,4 +151,21 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     public void setComparatorClass(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
         this.comparatorClass = comparatorClass;
     }
+
+    public boolean isTextInputAllowed() {
+        return textInputAllowed;
+    }
+
+    public void setTextInputAllowed(boolean textInputAllowed) {
+        this.textInputAllowed = textInputAllowed;
+    }
+
+    public int getPageLength() {
+        return pageLength;
+    }
+
+    public void setPageLength(int pageLength) {
+        this.pageLength = pageLength;
+    }
+
 }

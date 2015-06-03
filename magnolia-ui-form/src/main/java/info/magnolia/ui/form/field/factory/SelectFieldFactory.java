@@ -102,8 +102,8 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         select.setNewItemsAllowed(false);
         if (select instanceof ComboBox) {
             ((ComboBox) select).setFilteringMode(definition.getFilteringMode());
-            ((ComboBox) select).setTextInputAllowed(false);
-            ((ComboBox) select).setPageLength(0);
+            ((ComboBox) select).setTextInputAllowed(definition.isTextInputAllowed());
+            ((ComboBox) select).setPageLength(definition.getPageLength());
         }
         select.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         select.setItemCaptionPropertyId(optionLabelName);
