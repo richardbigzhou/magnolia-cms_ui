@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.dialog.choosedialog;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
-import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
@@ -75,6 +74,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 import junit.framework.TestCase;
@@ -119,7 +119,7 @@ public class ChooseDialogPresenterImplTest extends TestCase {
     }
 
     @Test
-    public void testCloseHandlerIsInvokedOnCloseDialog() {
+    public void testCloseHandlerIsInvokedOnCloseDialog() throws Exception {
         // WHEN
         ChooseDialogCallback callback = mock(ChooseDialogCallback.class);
         configuredChooseDialogDefinition.setField(new TextFieldDefinition());
