@@ -35,7 +35,9 @@ package info.magnolia.ui.framework.availability;
 
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
@@ -60,13 +62,14 @@ public class IsNotVersionedRule extends AbstractAvailabilityRule {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
             if (node != null) {
-                if (node instanceof Version) {
-                    return false;
-                }
-
                 try {
+                    if (NodeUtil.unwrap(node) instanceof Version) {
+                        return false;
+                    }
+
                     String workspace = node.getSession().getWorkspace().getName();
-                    if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
+                    String repositoryId = Components.getComponent(RepositoryManager.class).getRepositoryNameForWorkspace(node.getSession().getWorkspace().getName());
+                    if ((repositoryId + "-" + RepositoryConstants.VERSION_STORE).equals(workspace)) {
                         return false;
                     }
                 } catch (RepositoryException e) {
