@@ -83,6 +83,8 @@
 
                 if (isLink(selectedElement)) {
                     selectedElement.setAttribute('href', href);
+                    selectedElement.setAttribute('data-cke-saved-href', href);
+                    editor.focus();
                 } else {
                     var selectedText = editor.getSelection();
                     var elem = editor.document.createElement('a');
