@@ -103,7 +103,7 @@ public class FavoritesManagerImplTest extends RepositoryTestCase {
         final User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
         ctx.setUser(user);
-        ctx.addSession(RepositoryConstants.VERSION_STORE, MgnlContext.getJCRSession(RepositoryConstants.VERSION_STORE));
+        ctx.addSession("magnolia-" + RepositoryConstants.VERSION_STORE, MgnlContext.getJCRSession("magnolia-" + RepositoryConstants.VERSION_STORE));
         ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
 
         final SecuritySupportImpl sec = new SecuritySupportImpl();
