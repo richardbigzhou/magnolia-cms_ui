@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import static org.hamcrest.Matchers.arrayWithSize;
+
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -366,7 +366,6 @@ public class BrowserPresenterTest {
 
         // THEN
         verify(actionExecutor).execute(eq(myActionDefinition.getName()), eq(selectedItems));
-        assertThat(selectedItems.toArray(), arrayWithSize(2));
     }
 
     @Test
