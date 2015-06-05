@@ -36,6 +36,10 @@
       <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition</type>
       <implementation>info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition</type>
+      <implementation>info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition</implementation>
+    </type-mapping>
 
   </components>
 
