@@ -33,78 +33,20 @@
  */
 package info.magnolia.ui.dialog.choosedialog;
 
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.ChooseDialogCallback;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
-import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
-import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
-import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
-import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.stubbing.answers.Returns;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 
-import junit.framework.TestCase;
 
-public class ChooseDialogPresenterImplTest extends TestCase {
-
-    private UiContext uiContext = mock(UiContext.class);
-    private ChooseDialogPresenterImpl presenter;
-    private ConfiguredChooseDialogDefinition configuredChooseDialogDefinition = new ConfiguredChooseDialogDefinition();
-    private ComponentProvider componentProvider = mock(ComponentProvider.class);
-
-    @Before
-    public void setUp() throws Exception {
-        final EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
-        final EditorActionAreaPresenter actionAreaPresenter = mock(EditorActionAreaPresenter.class, new Returns(actionAreaView));
-        final I18nizer i18nizer = mock(I18nizer.class, new ReturnsArgumentAt(0));
-        final ChooseDialogView view = new ChooseDialogViewImpl();
-        view.setActionAreaView(actionAreaView);
-
-        Field<String> field = mock(Field.class);
-        TextFieldFactory textFieldFactory = mock(TextFieldFactory.class, new Returns(field));
-        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class, new Returns(textFieldFactory));
-
-        presenter = new ChooseDialogPresenterImpl(fieldFactoryFactory, componentProvider, mock(I18nContentSupport.class), mock(DialogActionExecutor.class), view, i18nizer, null, mock(ContentConnector.class));
-
-        when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
-        when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
-        when(uiContext.openOverlay(view, OverlayLayer.ModalityLevel.STRONG)).thenReturn(mock(OverlayCloser.class));
-    }
-
-    @Test
-    public void testCallbackIsInvokedOnDialogCancellation() throws Exception {
-        // WHEN
-        ChooseDialogCallback callback = mock(ChooseDialogCallback.class);
-        configuredChooseDialogDefinition.setField(new TextFieldDefinition());
-        presenter.start(callback, configuredChooseDialogDefinition, uiContext, "test");
-        presenter.closeDialog();
-
-        //THEN
-        verify(callback, times(1)).onCancel();
-    }
+public class ChooseDialogPresenterImplTest {
 
     @Test
     public void useDefaultItemIdWhenChosenItemIsNull() throws Exception {

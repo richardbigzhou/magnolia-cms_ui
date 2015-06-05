@@ -85,6 +85,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private ChooseDialogCallback callback;
 
+    private boolean isExecutingAction;
+
     private Field<Object> field;
 
     @Inject
@@ -114,6 +116,19 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext appContext, String selectedItemId) {
         start(definition, appContext);
         this.callback = callback;
+
+        // Additional close handler to check for cases when the dialog isn't closed from an action (shortcut, dialog close icon), and process callback accordingly
+        if (callback != null) {
+            getView().addDialogCloseHandler(new DialogCloseHandler() {
+
+                @Override
+                public void onDialogClose(DialogView dialogView) {
+                    if (!isExecutingAction) {
+                        ChooseDialogPresenterImpl.this.callback.onCancel();
+                    }
+                }
+            });
+        }
 
         final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), new NullItem());
         formField.setComponentProvider(componentProvider);
@@ -171,14 +186,14 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     }
 
     @Override
-    protected DialogActionExecutor getExecutor() {
-        return (DialogActionExecutor) super.getExecutor();
+    protected void executeAction(String actionName, Object[] actionContextParams) {
+        isExecutingAction = true;
+        super.executeAction(actionName, actionContextParams);
+        isExecutingAction = false;
     }
 
     @Override
-    protected void onCancel () {
-        if (callback != null) {
-            ChooseDialogPresenterImpl.this.callback.onCancel();
-        }
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor) super.getExecutor();
     }
 }

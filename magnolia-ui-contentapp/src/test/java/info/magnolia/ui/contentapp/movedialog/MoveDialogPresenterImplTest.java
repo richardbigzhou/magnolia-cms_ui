@@ -34,67 +34,40 @@
 package info.magnolia.ui.contentapp.movedialog;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
-import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.test.MgnlTestCase;
-import info.magnolia.test.mock.MockUtil;
-import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl;
-import info.magnolia.ui.dialog.BaseDialogViewImpl;
-import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
-import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.MoveLocation;
-
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.stubbing.answers.Returns;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-
-import com.vaadin.data.Item;
 
 /**
  * Test for {@link MoveDialogPresenterImpl}.
  */
-public class MoveDialogPresenterImplTest extends MgnlTestCase {
+public class MoveDialogPresenterImplTest {
+
+    private ComponentProvider componentProvider = mock(ComponentProvider.class);
+
+    private ActionRenderer actionRenderer = new DefaultEditorActionRenderer();
+
+    private ChooseDialogViewImpl view = new ChooseDialogViewImpl();
 
     private MoveDialogActionAreaView actionAreaView = new MoveDialogActionAreaViewImpl();
-    private MoveDialogPresenterImpl presenter;
-    private ComponentProvider componentProvider = mock(ComponentProvider.class);
+
+    private MoveDialogPresenterImpl presenter = new MoveDialogPresenterImpl(componentProvider, view, null, null, null, null, null, null);
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        MockUtil.setSessionAndHierarchyManager(new MockSession("workspace"));
-
-        final DialogView view = new BaseDialogViewImpl();
-
-        final ActionRenderer actionRenderer = new DefaultEditorActionRenderer();
-        final MoveDialogActionAreaPresenterImpl actionAreaPresenter = mock(MoveDialogActionAreaPresenterImpl.class, withSettings().defaultAnswer(new Returns(actionAreaView)));
-
-        final I18nizer i18nizer = mock(I18nizer.class, new ReturnsArgumentAt(0));
-        final View moveInsideActionView = actionRenderer.start(new MoveNodeActionDefinition(MoveLocation.INSIDE), presenter);
-
-        final JcrContentConnector contentConnector = mock(JcrContentConnector.class);
-        doReturn(mock(JcrContentConnectorDefinition.class, new Returns("workspace"))).when(contentConnector).getContentConnectorDefinition();
-
-        this.presenter = new MoveDialogPresenterImpl(componentProvider, view, null, mock(DialogActionExecutor.class), null, i18nizer, null, contentConnector);
-
-        when(componentProvider.newInstance(MoveDialogActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
-        when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
+        View moveInsideActionView = actionRenderer.start(new MoveNodeActionDefinition(MoveLocation.INSIDE), presenter);
         actionAreaView.addPrimaryAction(moveInsideActionView, MoveLocation.INSIDE.name());
         view.setActionAreaView(actionAreaView);
     }
@@ -159,16 +132,4 @@ public class MoveDialogPresenterImplTest extends MgnlTestCase {
         assertEquals(BaseDialog.CANCEL_ACTION_NAME, actionName);
     }
 
-    @Test
-    public void testCloseHandlerIsInvokedOnCloseDialog() {
-        // WHEN
-        MoveActionCallback callback = mock(MoveActionCallback.class);
-        ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
-        browserSubAppDescriptor.setWorkbench(mock(ConfiguredWorkbenchDefinition.class));
-        presenter.start(browserSubAppDescriptor, new ArrayList<Item>(), callback);
-        presenter.closeDialog();
-
-        //THEN
-        verify(callback, times(1)).onMoveCancelled();
-    }
 }
