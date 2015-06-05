@@ -202,6 +202,10 @@
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.contenttool.ContentToolDefinition</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.ConfiguredContentToolDefinition</implementation>
+    </type-mapping>
 
     <!-- Actionbar -->
     <type-mapping>
@@ -316,6 +320,10 @@
       <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.workbench.contenttool.search.SearchContentToolView</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.workbench.StatusBarView</type>
       <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
@@ -372,6 +380,10 @@
     <component>
       <type>info.magnolia.ui.workbench.search.SearchView</type>
       <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.contenttool.search.SearchContentToolView</type>
+      <implementation>info.magnolia.ui.workbench.contenttool.search.SearchContentToolViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.workbench.StatusBarView</type>
