@@ -139,7 +139,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         for (ContentToolDefinition entry : contentTools) {
             Class<? extends ContentToolPresenter> presenterClass = entry.getPresenterClass();
             if (presenterClass != null) {
-                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, entry, this);
+                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, entry, eventBus, this);
                 View contentToolView = contentToolPresenter.start();
                 view.addContentTool(contentToolView);
             }
@@ -165,7 +165,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     protected void addSearchContentTool() {
-        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, this);
+        SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, this, eventBus);
         View searchView = searchPresenter.start();
         this.view.addContentTool(searchView);
     }

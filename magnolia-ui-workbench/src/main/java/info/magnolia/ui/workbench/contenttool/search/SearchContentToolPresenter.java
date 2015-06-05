@@ -41,10 +41,8 @@ import info.magnolia.ui.workbench.event.QueryStatementChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
-import info.magnolia.ui.api.app.SubAppEventBus;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -65,9 +63,9 @@ public class SearchContentToolPresenter implements ContentToolPresenter, SearchC
     public SearchContentToolPresenter(
             WorkbenchPresenter workbenchPresenter,
             SearchContentToolView view,
-            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+            EventBus eventBus) {
         this.view = view;
-        this.eventBus = subAppEventBus;
+        this.eventBus = eventBus;
         this.workbenchPresenter = workbenchPresenter;
     }
 
