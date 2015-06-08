@@ -397,7 +397,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         admincentralEventBus.addHandler(LocationChangedEvent.class, new LocationChangedEvent.Handler() {
             @Override
             public void onLocationChanged(LocationChangedEvent event) {
-                updatePageEditor();
+                view.setStatusBarView(statusBarView);
             }
         });
     }
