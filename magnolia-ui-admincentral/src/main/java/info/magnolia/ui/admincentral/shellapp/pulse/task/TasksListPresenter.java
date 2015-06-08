@@ -93,7 +93,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
         view.setTaskListener(this);
         view.setDataSource(container.getVaadinContainer());
 
-        updateView();
+        updateView(false);
         filterByItemCategory(PulseItemCategory.UNCLAIMED);
         return view;
     }
@@ -122,6 +122,14 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
     }
 
     private void updateView() {
+        updateView(true);
+    }
+
+    private void updateView(boolean refreshData) {
+        if (refreshData) {
+            refreshData();
+        }
+
         view.refresh();
         for (Status status : Status.values()) {
             doTasksStatusUpdate(status);
@@ -144,7 +152,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
             tasksManager.archiveTask(taskId);
         }
 
-        refreshData();
         // refresh the view
         updateView();
     }
@@ -178,7 +185,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter<Task, T
             }
             tasksManager.claim(taskId, userId);
         }
-        refreshData();
         // refresh the view
         updateView();
     }
