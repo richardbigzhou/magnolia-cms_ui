@@ -11,10 +11,7 @@
   <name>magnolia-ui-vaadin-common-widgets</name>
 
   <properties>
-    <!-- We want to disable Clover for this module, so we removed enable-clover from the release-profiles. Unfortunately,
-         this doesn't work, and would need to be done at parent level (reactor). So we still have to reconfigure the
-         Clover plugin for this module. -->
-    <additionalReleaseProfiles />
+    <skipClover>true</skipClover>
   </properties>
 
   <dependencies>
@@ -295,14 +292,6 @@
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <!-- We're doing this here because the trick implemented for BUILD-110 actually does not work with submodules of reactors. -->
-          <groupId>com.atlassian.maven.plugins</groupId>
-          <artifactId>maven-clover2-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
