@@ -40,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ResizeEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ResizeHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsHandler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabClickedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabLabel;
@@ -52,10 +53,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -143,12 +147,11 @@ public class TabBarWidget extends ComplexPanel {
     private void toggleTabsVisibility(MagnoliaTabLabel tab, boolean visible) {
         tab.setVisible(visible);
         moreTabs.setVisible(!visible);
+        moreTabs.menuItems.get(tab).getElement().getParentElement().getStyle().setDisplay(!visible ? Display.BLOCK : Display.NONE);
         if (visible) {
             visibleTabs.add(tab);
-            moreTabs.menuItems.get(tab).getElement().removeClassName("inactive");
         } else {
             visibleTabs.remove(tab);
-            moreTabs.menuItems.get(tab).getElement().addClassName("inactive");
         }
     }
 
@@ -163,8 +166,9 @@ public class TabBarWidget extends ComplexPanel {
                         tabLabel.removeStyleName("active");
                     }
                     label.addStyleName("active");
-                    activeTab = label;
                     showAll(false);
+                    activeTab = label;
+                    moreTabs.menuWrapper.hide();
                 }
             }
         });
@@ -216,6 +220,15 @@ public class TabBarWidget extends ComplexPanel {
                 activeTab = event.getLabel();
                 visibleTabs.clear();
                 calculateHiddenTabs();
+            }
+        });
+
+        eventBus.addHandler(TabClickedEvent.TYPE, new TabClickedEvent.Handler() {
+            @Override
+            public void onTabClicked(TabClickedEvent event) {
+                if (moreTabs.isVisible()) {
+                    DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), moreTabs);
+                }
             }
         });
     }
@@ -342,9 +355,7 @@ public class TabBarWidget extends ComplexPanel {
                 public void onClick(ClickEvent event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    int posX = event.getNativeEvent().getClientX() - event.getX() + event.getRelativeElement().getOffsetWidth();
-                    int posY = event.getNativeEvent().getClientY() - event.getY();
-                    menuWrapper.setPopupPosition(posX, posY);
+                    menuWrapper.setPopupPosition(moreTabs.getAbsoluteLeft() + moreTabs.getOffsetWidth(), moreTabs.getAbsoluteTop());
                     menuWrapper.show();
                 }
 

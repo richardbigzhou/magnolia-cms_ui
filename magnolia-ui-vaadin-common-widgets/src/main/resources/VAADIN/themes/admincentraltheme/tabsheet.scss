@@ -213,8 +213,8 @@
     font-family: Verdana, sans-serif; 
     font-size: 12px; 
     line-height: 20px; 
-    color: #ccc;
-    padding:5px 0 ;
+    color: $c10;
+    padding:3px 0 ;
     box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     position: relative;
 }
@@ -241,10 +241,6 @@
 
 .more-tabs-menu table tr td.menu-item:hover {
     background-color: #efefef;
-}
-
-.more-tabs-menu table tr td.menu-item.inactive {
-    color: #000;
 }
 }
 

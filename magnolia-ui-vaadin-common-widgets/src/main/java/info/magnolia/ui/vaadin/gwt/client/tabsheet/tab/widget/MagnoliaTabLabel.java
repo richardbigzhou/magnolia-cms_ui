@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.CaptionChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabClickedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 
 import com.google.gwt.dom.client.NativeEvent;
@@ -121,17 +122,19 @@ public class MagnoliaTabLabel extends SimplePanel {
         });
     }
 
-    private void onClickGeneric(NativeEvent nativeEvent){
+    private void onClickGeneric(NativeEvent nativeEvent) {
         textWrapper.setFocus(false);
         final Element target = (Element) nativeEvent.getEventTarget().cast();
+        boolean wasActive = getStyleName().contains("active");
         if (closeElement.isOrHasChild(target)) {
             eventBus.fireEvent(new TabCloseEvent(tab));
-        } else {
+        } else if (!wasActive) {
             eventBus.fireEvent(new ActiveTabChangedEvent(tab));
+        } else {
+            eventBus.fireEvent(new TabClickedEvent(tab));
         }
         nativeEvent.stopPropagation();
     }
-
 
     public void setTab(final MagnoliaTabWidget tab) {
         this.tab = tab;
