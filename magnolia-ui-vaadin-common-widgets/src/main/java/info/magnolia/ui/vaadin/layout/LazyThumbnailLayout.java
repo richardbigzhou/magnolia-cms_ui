@@ -67,13 +67,13 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private static Logger log = LoggerFactory.getLogger(LazyThumbnailLayout.class);
 
-    private final List<ThumbnailSelectionListener> selectionListeners = new ArrayList<>();
+    private final List<ThumbnailSelectionListener> selectionListeners = new ArrayList<ThumbnailSelectionListener>();
 
-    private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<>();
+    private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<ThumbnailDblClickListener>();
 
-    private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<>();
+    private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<ThumbnailRightClickListener>();
 
-    private final Set<Object> selectedIds = new HashSet<>();
+    private final Set<Object> selectedIds = new HashSet<Object>();
 
     private DataProviderKeyMapper mapper = new DataProviderKeyMapper();
 
@@ -190,7 +190,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     }
 
     private List<ThumbnailData> fetchThumbnails(Range range) {
-        final List<ThumbnailData> thumbnails = new ArrayList<>(range.length());
+        final List<ThumbnailData> thumbnails = new ArrayList<ThumbnailData>(range.length());
         for (int i = range.getStart(); i < range.getEnd(); ++i) {
             final Object id = mapper.itemIdAtIndex(i);
             final Object resource = container.getThumbnailProperty(id).getValue();
@@ -440,7 +440,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
                 throw new IllegalArgumentException("keys may not be null");
             }
 
-            final List<Object> itemIds = new ArrayList<>(keys.size());
+            final List<Object> itemIds = new ArrayList<Object>(keys.size());
             for (String key : keys) {
                 itemIds.add(getItemId(key));
             }

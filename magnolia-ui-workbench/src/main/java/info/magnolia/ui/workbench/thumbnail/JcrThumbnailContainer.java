@@ -78,7 +78,7 @@ public class JcrThumbnailContainer extends FlatJcrContainer implements Refreshab
 
     @Override
     protected String getQueryWhereClauseNodeTypes() {
-        List<String> defs = new ArrayList<>();
+        List<String> defs = new ArrayList<String>();
         for (NodeTypeDefinition type : getConfiguration().getNodeTypes()) {
             if (type.isHideInList() || NodeTypes.Folder.NAME.equals(type.getName())) {
                 log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());

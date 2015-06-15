@@ -77,7 +77,7 @@ public class ThumbnailLayoutState extends AbstractComponentState {
      */
     public static class SelectionModel implements Serializable {
 
-        public List<Integer> selectedIndices = new ArrayList<>();
+        public List<Integer> selectedIndices = new ArrayList<Integer>();
 
         public int min = -1;
 

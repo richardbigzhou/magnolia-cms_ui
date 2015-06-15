@@ -40,7 +40,6 @@ import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
 import info.magnolia.ui.vaadin.gwt.shared.Range;
 
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +50,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -107,7 +108,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
 
     private final ScrollPanel scroller = new ScrollPanel();
 
-    private final DivElement imageContainer = DivElement.as(DOM.createDiv());
+    private final Element imageContainer = DOM.createDiv();
 
     private final DivElement upperSpacer = DivElement.as(DOM.createDiv());
 
@@ -115,7 +116,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
 
     private LazyThumbnailLayoutConnector.ThumbnailService thumbnailService;
 
-    private Deque<Element> floatingThumbnails = new LinkedList<>();
+    private LinkedList<Element> floatingThumbnails = new LinkedList<Element>();
 
     private int absoluteOffset = 0;
 
@@ -306,7 +307,10 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
     }
 
     public void initialize(int thumbnailAmount, int offset, ThumbnailLayoutState.ThumbnailSize size, float scaleRatio, boolean isFirstUpdateFromState) {
-        this.imageContainer.removeAllChildren();
+        final NodeList<Node> childNodes = this.imageContainer.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); ++i) {
+            imageContainer.removeChild(childNodes.getItem(i));
+        }
 
         this.thumbnailAmount = thumbnailAmount;
         this.size.updateAllThumbnailsSize(size.width, size.height);
@@ -498,7 +502,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
     }
 
     protected int getThumbnailIndex(Element element) {
-        return absoluteIndex(Util.getChildElementIndex(element));
+        return absoluteIndex(Util.getChildElementIndex((com.google.gwt.user.client.Element) element));
     }
 
     protected void scaleToWidth(int width) {
@@ -521,7 +525,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
 
         Element previousElement = relativeStartIndex == 0 ? null : Element.as(imageContainer.getChild(relativeStartIndex - 1));
         for (int i = 0; i < actualRange.length(); ++i) {
-            final Element stub = floatingThumbnails.isEmpty() ? thumbnailFlyweight.createThumbnail() : floatingThumbnails.pop();
+            final Element stub = floatingThumbnails.isEmpty() ? thumbnailFlyweight.createThumbnail() : floatingThumbnails.remove(0);
             size.applySizeToThumbnail(stub);
             if (previousElement == null) {
                 imageContainer.insertFirst(stub);
@@ -568,7 +572,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
     }
 
     private void releaseThumbnails(Range between) {
-        final Set<Element> toRelease = new HashSet<>();
+        final Set<Element> toRelease = new HashSet<Element>();
         for (int i = between.getStart(); i < between.getEnd(); ++i) {
             toRelease.add(Element.as(imageContainer.getChild(i)));
         }
@@ -581,7 +585,7 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
     private void clearThumbnail(Element thumbnail) {
         thumbnailFlyweight.clear(thumbnail);
         thumbnail.removeFromParent();
-        floatingThumbnails.push(thumbnail);
+        floatingThumbnails.add(thumbnail);
     }
 
     public void updateIconFontStyle(String style, int index) {
@@ -601,14 +605,14 @@ public class EscalatorThumbnailsPanel extends FlowPanel {
     }
 
     private void clearSelection() {
-        final JQueryWrapper selectedThumbnails = JQueryWrapper.select(DOM.asOld(imageContainer)).find(".selected");
+        final JQueryWrapper selectedThumbnails = JQueryWrapper.select((com.google.gwt.user.client.Element)imageContainer).find(".selected");
         if (selectedThumbnails != null) {
             selectedThumbnails.removeClass("selected");
         }
     }
 
     private boolean areAllVisibleThumbnailsCleared() {
-        return imageContainer.getChildCount() == JQueryWrapper.select(DOM.asOld(imageContainer)).find(".cleared").size();
+        return imageContainer.getChildCount() == JQueryWrapper.select((com.google.gwt.user.client.Element)imageContainer).find(".cleared").size();
     }
 
     private int getScrollableHeight() {

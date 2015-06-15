@@ -68,11 +68,11 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
 
     private Range cachedThumbnails = Range.between(0, 0);
 
-    private Map<Object, Integer> idToIndex = new HashMap<>();
+    private Map<Object, Integer> idToIndex = new HashMap<Object, Integer>();
 
-    private Map<Integer, ThumbnailData> indexToThumbnail = new HashMap<>();
+    private Map<Integer, ThumbnailData> indexToThumbnail = new HashMap<Integer, ThumbnailData>();
 
-    private Map<String, String> idToUrl = new HashMap<>();
+    private Map<String, String> idToUrl = new HashMap<String, String>();
 
     private final ThumbnailLayoutServerRpc rpc = RpcProxy.create(ThumbnailLayoutServerRpc.class, this);
 
@@ -309,7 +309,7 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
 
         final Range displayedRange = getWidget().getDisplayedRange();
         final Range selectionBoundaries = selection.getSelectionBoundaries();
-        final List<Integer> indices = new LinkedList<>();
+        final List<Integer> indices = new LinkedList<Integer>();
 
         if (selectionBoundaries.intersects(displayedRange)) {
             for (int selectedIndex : selection.selectedIndices) {
