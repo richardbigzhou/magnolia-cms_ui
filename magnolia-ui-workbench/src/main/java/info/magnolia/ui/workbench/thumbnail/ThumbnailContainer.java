@@ -52,7 +52,7 @@ import com.vaadin.data.util.AbstractProperty;
  * @deprecated since 5.3.10 in favor of {@link info.magnolia.ui.workbench.thumbnail.data.DelegatingThumbnailContainer}, this container
  *             should be avoided as it loads the items eagerly.
  */
-public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object, ThumbnailItem> implements Refreshable {
+public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object, ThumbnailItem> implements Refreshable, info.magnolia.ui.vaadin.layout.data.ThumbnailContainer {
 
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
@@ -243,5 +243,15 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object
      */
     public static interface IdProvider {
         List<?> getItemIds();
+    }
+
+    @Override
+    public Object getThumbnailPropertyId() {
+        return THUMBNAIL_PROPERTY_ID;
+    }
+
+    @Override
+    public Property getThumbnailProperty(Object itemId) {
+        return getContainerProperty(itemId, THUMBNAIL_PROPERTY_ID);
     }
 }
