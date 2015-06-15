@@ -62,6 +62,15 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
         return DefinitionMetadataBuilder.usingModuleAndRelativePathAsId();
     }
 
+    /**
+     * This method is kept for compatibility reasons. It adapts the given provider to the new DefinitionProvider introduced in 5.4.
+     *
+     * @deprecated since 5.4
+     */
+    public void register(DialogDefinitionProvider provider) {
+        register(new LegacyDialogDefinitionProviderAdapter(provider));
+    }
+
     @Override
     protected DefinitionProvider<DialogDefinition> onRegister(DefinitionProvider<DialogDefinition> provider) {
         return new DefinitionProviderWrapper<DialogDefinition>(provider) {
@@ -86,8 +95,10 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
             DefinitionProvider<DialogDefinition> dialogDefinitionProvider = getProvider(id);
             DialogDefinition dialogDefinition = dialogDefinitionProvider.get();
             return (FormDialogDefinition) dialogDefinition;
-        } catch (NoSuchDefinitionException | InvalidDefinitionException e) {
-            throw new RegistrationException(e.getMessage(), e);
+        } catch (NoSuchDefinitionException e) {
+            throw new RegistrationException("No dialog definition registered for id: " + id, e);
+        } catch (InvalidDefinitionException e) {
+            throw new RegistrationException("Invalid dialog definition registered for id: " + id, e);
         }
     }
 
@@ -96,7 +107,15 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
      */
     @Deprecated
     public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
-        return (Class<? extends FormDialogPresenter>) getProvider(id).get().getPresenterClass();
+        DefinitionProvider<DialogDefinition> provider = getProvider(id);
+
+        // If the provider is an adapter for a legacy (pre 4.5) provider we unwrap it and ask it for the presenter class.
+        LegacyDialogDefinitionProviderAdapter legacyDialogDefinitionProvider = LegacyDialogDefinitionProviderAdapter.unwrap(provider);
+        if (legacyDialogDefinitionProvider != null) {
+            return legacyDialogDefinitionProvider.getPresenterClass();
+        }
+
+        return (Class<? extends FormDialogPresenter>) provider.get().getPresenterClass();
     }
 
 }

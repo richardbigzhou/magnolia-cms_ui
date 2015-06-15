@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
+import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.dialog.registry.LegacyDialogDefinitionProviderAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -64,7 +67,25 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
 
     @Override
     public FormDialogPresenter createFormDialogPresenter(String dialogId) {
-        DialogDefinition dialogDefinition = registry.getProvider(dialogId).get();
+
+        DefinitionProvider<DialogDefinition> provider = registry.getProvider(dialogId);
+
+        // If the provider is an adapter for a legacy (pre 4.5) provider we unwrap it an ask it for the presenter class.
+        LegacyDialogDefinitionProviderAdapter legacyDialogDefinitionProvider = LegacyDialogDefinitionProviderAdapter.unwrap(provider);
+        if (legacyDialogDefinitionProvider != null) {
+            Class<? extends FormDialogPresenter> presenterClass;
+            try {
+                presenterClass = legacyDialogDefinitionProvider.getPresenterClass();
+            } catch (RegistrationException e) {
+                throw new RuntimeException("Could not resolve presenter class for legacy dialog provider with id: " + dialogId, e);
+            }
+            // Not passing a FormDialogDefinition here which seems safe since FormDialogPresenterImpl#start explicitly
+            // gets it from DialogDefinitionRegistry anyway. Wonder though what the contract is since
+            // #createFormDialogPresenter below pass it.
+            return componentProvider.newInstance(presenterClass);
+        }
+
+        DialogDefinition dialogDefinition = provider.get();
         if (dialogDefinition instanceof FormDialogDefinition) {
             return createFormDialogPresenter((FormDialogDefinition) dialogDefinition);
         } else if (dialogDefinition == null) {
