@@ -39,7 +39,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Utility class for fetching CSS properties from DOM StyleSheets JS object and
  * for creating new CSS rules dynamically.
  *
- * @deprecated
+ * @deprecated since 5.3.10, not needed anymore.
  */
 @Deprecated
 public class CssRule {
@@ -63,9 +63,9 @@ public class CssRule {
     private native void fetchRule(final String selector, final boolean deep)
     /*-{
         var sheets = $doc.styleSheets;
-        for (var i = 0; i < sheets.length; i++) {
+        for(var i = 0; i < sheets.length; i++) {
             var sheet = sheets[i];
-            if (sheet.href && sheet.href.indexOf("VAADIN/themes") > -1) {
+            if(sheet.href && sheet.href.indexOf("VAADIN/themes")>-1) {
                 this.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules = @info.magnolia.ui.vaadin.gwt.client.layout.CssRule::searchForRule(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;Z)(sheet, selector, deep);
                 return;
             }
@@ -81,7 +81,7 @@ public class CssRule {
             final JavaScriptObject sheet, final String selector,
             final boolean deep)
     /*-{
-        if (!$doc.styleSheets)
+        if(!$doc.styleSheets)
             return null;
 
         selector = selector.toLowerCase();
@@ -89,8 +89,8 @@ public class CssRule {
         var allMatches = [];
 
         // IE handles imported sheet differently
-        if (deep && sheet.imports.length > 0) {
-            for (var i = 0; i < sheet.imports.length; i++) {
+        if(deep && sheet.imports.length > 0) {
+            for(var i=0; i < sheet.imports.length; i++) {
                 var imports = @info.magnolia.ui.vaadin.gwt.client.layout.CssRule::searchForRule(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;Z)(sheet.imports[i], selector, deep);
                 allMatches.concat(imports);
             }
@@ -103,18 +103,18 @@ public class CssRule {
             theRules = sheet.rules
 
         var j = theRules.length;
-        for (var i = 0; i < j; i++) {
+        for(var i=0; i<j; i++) {
             var r = theRules[i];
-            if (r.type == 1 || sheet.imports) {
+            if(r.type == 1 || sheet.imports) {
                 var selectors = r.selectorText.toLowerCase().split(",");
                 var n = selectors.length;
-                for (var m = 0; m < n; m++) {
-                    if (selectors[m].replace(/^\s+|\s+$/g, "") == selector) {
+                for(var m=0; m<n; m++) {
+                    if(selectors[m].replace(/^\s+|\s+$/g, "") == selector) {
                         allMatches.unshift(r);
                         break; // No need to loop other selectors for this rule
                     }
                 }
-            } else if (deep && r.type == 3) {
+            } else if(deep && r.type == 3) {
                 // Search @import stylesheet
                 var imports = @info.magnolia.ui.vaadin.gwt.client.layout.CssRule::searchForRule(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;Z)(r.styleSheet, selector, deep);
                 allMatches.concat(imports);
@@ -133,10 +133,10 @@ public class CssRule {
     public native String getProperty(final String propertyName)
     /*-{
         var j = this.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules.length;
-        for (var i = 0; i < j; i++) {
+        for(var i=0; i<j; i++){
             var value = this.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules[i].style[propertyName];
-            if (value)
-                return value;
+        if(value)
+            return value;
         }
         return null;
     }-*/;
@@ -165,20 +165,20 @@ public class CssRule {
 
     private static native void createRule(final String selector, CssRule rule)
     /*-{
-        var sheets = $doc.styleSheets;
-        for (var i = 0; i < sheets.length; i++) {
-            var sheet = sheets[i];
-            if (sheet.href && sheet.href.indexOf("VAADIN/themes") > -1) {
-                if (sheet.insertRule) {
-                    sheet.insertRule(selector + "{}", sheet.cssRules.length);
-                    var r = sheet.cssRules[sheet.cssRules.length - 1];
-                } else { // IE
-                    sheet.addRule(selector, "foo:bar");
-                    var r = sheet.rules[sheet.rules.length - 1];
-                }
-                rule.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules = [r];
+    var sheets = $doc.styleSheets;
+    for(var i = 0; i < sheets.length; i++) {
+        var sheet = sheets[i];
+        if(sheet.href && sheet.href.indexOf("VAADIN/themes")>-1) {
+            if(sheet.insertRule) {
+                sheet.insertRule(selector + "{}", sheet.cssRules.length);
+                var r = sheet.cssRules[sheet.cssRules.length-1];
+            } else { // IE
+                sheet.addRule(selector, "foo:bar");
+                var r = sheet.rules[sheet.rules.length-1];
             }
+            rule.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules = [r];
         }
+    }
     }-*/;
 
 }

@@ -79,137 +79,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private ThumbnailContainer container;
 
-    /**
-     * Maps item ids, indices and client-side keys to each other.
-     *
-     * Highly inspired by Vaadin analogous class used in Grid component implementation
-     * (introduced in Vaadin 7.4).
-     */
-    public class DataProviderKeyMapper implements Serializable {
-
-        private final BiMap<Integer, Object> indexToItemId = HashBiMap.create();
-
-        private final BiMap<Object, String> itemIdToKey = HashBiMap.create();
-
-        private Range activeRange = Range.withLength(0, 0);
-
-        private long rollingIndex = 0;
-
-        private DataProviderKeyMapper() {
-        }
-
-        void setActiveRange(Range newActiveRange) {
-
-            /**
-             * First update container's page size if needed - in order to avoid multiple queries to
-             * the datasource.
-             */
-            if (container instanceof PagingThumbnailContainer) {
-                ((PagingThumbnailContainer) container).setPageSize(newActiveRange.length());
-            }
-
-            final Range[] removed = activeRange.partitionWith(newActiveRange);
-            final Range[] added = newActiveRange.partitionWith(activeRange);
-
-            removeActiveThumbnails(removed[0]);
-            removeActiveThumbnails(removed[2]);
-            addActiveThumbnails(added[0]);
-            addActiveThumbnails(added[2]);
-
-            log.debug("Former active: {}, New Active: {}, idx-id: {}, id-key: {}. Removed: {} and {}, Added: {} and {}",
-                    activeRange,
-                    newActiveRange,
-                    indexToItemId.size(),
-                    itemIdToKey.size(),
-                    removed[0],
-                    removed[2],
-                    added[0],
-                    added[2]);
-
-            activeRange = newActiveRange;
-
-
-        }
-
-        private void removeActiveThumbnails(final Range deprecated) {
-            for (int i = deprecated.getStart(); i < deprecated.getEnd(); i++) {
-                final Object itemId = indexToItemId.get(i);
-
-                itemIdToKey.remove(itemId);
-                indexToItemId.remove(i);
-            }
-        }
-
-        private void addActiveThumbnails(Range added) {
-            if (added.isEmpty()) {
-                return;
-            }
-
-            List<?> newItemIds = container.getItemIds(added.getStart(), added.length());
-            Integer index = added.getStart();
-            for (Object itemId : newItemIds) {
-                if (!indexToItemId.containsKey(index)) {
-                    if (!itemIdToKey.containsKey(itemId)) {
-                        itemIdToKey.put(itemId, nextKey());
-                    }
-
-                    indexToItemId.forcePut(index, itemId);
-                }
-                index++;
-            }
-        }
-
-        private String nextKey() {
-            return String.valueOf(rollingIndex++);
-        }
-
-        String getKey(Object itemId) {
-            String key = itemIdToKey.get(itemId);
-            if (key == null) {
-                key = nextKey();
-                itemIdToKey.put(itemId, key);
-            }
-            return key;
-        }
-
-        public Object getItemId(String key) throws IllegalStateException {
-            Object itemId = itemIdToKey.inverse().get(key);
-            if (itemId != null) {
-                return itemId;
-            } else {
-                throw new IllegalStateException("No item id for key " + key + " found.");
-            }
-        }
-
-        public Collection<Object> getItemIds(Collection<String> keys)
-                throws IllegalStateException {
-            if (keys == null) {
-                throw new IllegalArgumentException("keys may not be null");
-            }
-
-            final List<Object> itemIds = new ArrayList<>(keys.size());
-            for (String key : keys) {
-                itemIds.add(getItemId(key));
-            }
-            return itemIds;
-        }
-
-        Object itemIdAtIndex(int index) {
-            return indexToItemId.get(index);
-        }
-
-        int indexOf(Object itemId) {
-            return indexToItemId.inverse().get(itemId);
-        }
-
-        public void clearAll() {
-            indexToItemId.clear();
-            itemIdToKey.clear();
-            rollingIndex = 0;
-            activeRange = Range.withLength(0, 0);
-        }
-    }
-
     private ThumbnailLayoutClientRpc clientRpc;
 
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
@@ -441,7 +310,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         synchroniseSelection();
     }
 
-
     @Override
     public void beforeClientResponse(boolean initial) {
         super.beforeClientResponse(initial);
@@ -464,6 +332,135 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
 
         updateSelectedIds();
+    }
+
+    /**
+     * Maps item ids, indices and client-side keys to each other.
+     * Highly inspired by Vaadin analogous class used in Grid component implementation
+     * (introduced in Vaadin 7.4).
+     */
+    private class DataProviderKeyMapper implements Serializable {
+
+        private final BiMap<Integer, Object> indexToItemId = HashBiMap.create();
+
+        private final BiMap<Object, String> itemIdToKey = HashBiMap.create();
+
+        private Range activeRange = Range.withLength(0, 0);
+
+        private long rollingIndex = 0;
+
+        private DataProviderKeyMapper() {
+        }
+
+        void setActiveRange(Range newActiveRange) {
+
+            /**
+             * First update container's page size if needed - in order to avoid multiple queries to
+             * the datasource.
+             */
+            if (container instanceof PagingThumbnailContainer) {
+                ((PagingThumbnailContainer) container).setPageSize(newActiveRange.length());
+            }
+
+            final Range[] removed = activeRange.partitionWith(newActiveRange);
+            final Range[] added = newActiveRange.partitionWith(activeRange);
+
+            removeActiveThumbnails(removed[0]);
+            removeActiveThumbnails(removed[2]);
+            addActiveThumbnails(added[0]);
+            addActiveThumbnails(added[2]);
+
+            log.debug("Former active: {}, New Active: {}, idx-id: {}, id-key: {}. Removed: {} and {}, Added: {} and {}",
+                    activeRange,
+                    newActiveRange,
+                    indexToItemId.size(),
+                    itemIdToKey.size(),
+                    removed[0],
+                    removed[2],
+                    added[0],
+                    added[2]);
+
+            activeRange = newActiveRange;
+
+        }
+
+        private void removeActiveThumbnails(final Range deprecated) {
+            for (int i = deprecated.getStart(); i < deprecated.getEnd(); i++) {
+                final Object itemId = indexToItemId.get(i);
+
+                itemIdToKey.remove(itemId);
+                indexToItemId.remove(i);
+            }
+        }
+
+        private void addActiveThumbnails(Range added) {
+            if (added.isEmpty()) {
+                return;
+            }
+
+            List<?> newItemIds = container.getItemIds(added.getStart(), added.length());
+            Integer index = added.getStart();
+            for (Object itemId : newItemIds) {
+                if (!indexToItemId.containsKey(index)) {
+                    if (!itemIdToKey.containsKey(itemId)) {
+                        itemIdToKey.put(itemId, nextKey());
+                    }
+
+                    indexToItemId.forcePut(index, itemId);
+                }
+                index++;
+            }
+        }
+
+        private String nextKey() {
+            return String.valueOf(rollingIndex++);
+        }
+
+        String getKey(Object itemId) {
+            String key = itemIdToKey.get(itemId);
+            if (key == null) {
+                key = nextKey();
+                itemIdToKey.put(itemId, key);
+            }
+            return key;
+        }
+
+        public Object getItemId(String key) throws IllegalStateException {
+            Object itemId = itemIdToKey.inverse().get(key);
+            if (itemId != null) {
+                return itemId;
+            } else {
+                throw new IllegalStateException("No item id for key " + key + " found.");
+            }
+        }
+
+        public Collection<Object> getItemIds(Collection<String> keys)
+                throws IllegalStateException {
+            if (keys == null) {
+                throw new IllegalArgumentException("keys may not be null");
+            }
+
+            final List<Object> itemIds = new ArrayList<>(keys.size());
+            for (String key : keys) {
+                itemIds.add(getItemId(key));
+            }
+            return itemIds;
+        }
+
+        Object itemIdAtIndex(int index) {
+            return indexToItemId.get(index);
+        }
+
+        int indexOf(Object itemId) {
+            return indexToItemId.inverse().get(itemId);
+        }
+
+        public void clearAll() {
+            indexToItemId.clear();
+            itemIdToKey.clear();
+            rollingIndex = 0;
+            activeRange = Range.withLength(0, 0);
+        }
     }
 
     /**

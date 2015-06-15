@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,9 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.LazyThumbnailLayoutConnector;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutState;
-import info.magnolia.ui.vaadin.gwt.shared.Range;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
+import info.magnolia.ui.vaadin.gwt.shared.Range;
 
 import java.util.Deque;
 import java.util.HashSet;

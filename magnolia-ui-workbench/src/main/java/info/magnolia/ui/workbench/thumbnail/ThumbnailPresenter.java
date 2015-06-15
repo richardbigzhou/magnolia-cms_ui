@@ -43,7 +43,6 @@ import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.container.Refreshable;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.thumbnail.data.JcrDelegatingThumbnailContainer;
 
 import java.util.List;
 
@@ -97,7 +96,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     @Override
     protected Container initializeContainer() {
         JcrContentConnectorDefinition connectorDefinition = ((JcrContentConnector) contentConnector).getContentConnectorDefinition();
-        return new JcrDelegatingThumbnailContainer(imageProvider, connectorDefinition);
+        return new JcrThumbnailContainer(imageProvider, connectorDefinition);
     }
 
     @Override

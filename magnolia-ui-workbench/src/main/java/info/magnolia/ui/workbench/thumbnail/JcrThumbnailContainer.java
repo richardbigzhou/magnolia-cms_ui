@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.thumbnail.data;
+package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -59,69 +59,75 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractProperty;
 
 /**
- * .
+ * JCR implementation of {@link ThumbnailContainer} delegating to a {@link FlatJcrContainer}.
  */
-public class JcrDelegatingThumbnailContainer extends DelegatingThumbnailContainer<FlatJcrContainer> implements Refreshable, PagingThumbnailContainer {
+public class JcrThumbnailContainer extends FlatJcrContainer implements Refreshable, PagingThumbnailContainer {
 
-    private static final Logger log = LoggerFactory.getLogger(JcrDelegatingThumbnailContainer.class);
+    public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
-    private ImageProvider imageProvider;
+    private static final Logger log = LoggerFactory.getLogger(JcrThumbnailContainer.class);
 
-    public JcrDelegatingThumbnailContainer(ImageProvider imageProvider, final JcrContentConnectorDefinition definition) {
-        super(new FlatJcrContainer(definition) {
-            @Override
-            protected String getQueryWhereClauseNodeTypes() {
-                List<String> defs = new ArrayList<>();
-                for (NodeTypeDefinition type : definition.getNodeTypes()) {
-                    if (type.isHideInList() || NodeTypes.Folder.NAME.equals(type.getName())) {
-                        log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
-                        continue;
-                    }
-                    defs.add("[jcr:primaryType] = '" + type.getName() + "'");
-                }
-                return StringUtils.join(defs, " or ");
-            }
+    private final ImageProvider imageProvider;
 
-            @Override
-            public int indexOfId(Object itemId) {
-                if (!containsId(itemId)) {
-                    return -1;
-                }
-                return super.indexOfId(itemId);
-            }
-
-            @Override
-            public boolean containsId(Object itemId) {
-                final Item item = getJcrItem(itemId);
-                if (!item.isNode()) {
-                    return super.containsId(itemId);
-                }
-
-                Node node = (Node)item;
-                try {
-                    if (!getConfiguration().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
-                        return false;
-                    }
-
-                    String primaryNodeTypeName = node.getPrimaryNodeType().getName();
-                    for (NodeTypeDefinition nodeTypeDefinition : getConfiguration().getNodeTypes()) {
-                        if (nodeTypeDefinition.isStrict()) {
-                            if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
-                                return true;
-                            }
-                        } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
-                            return true;
-                        }
-                    }
-
-                } catch (RepositoryException e) {
-                    log.error("Failed to check presence of {} in container", itemId, e);
-                }
-                return false;
-            }
-        });
+    public JcrThumbnailContainer(ImageProvider imageProvider, final JcrContentConnectorDefinition definition) {
+        super(definition);
         this.imageProvider = imageProvider;
     }
+
+    // FILTERING OF JCR NODE-TYPES TO BE DISPLAYED AS THUMBNAILS
+
+    @Override
+    protected String getQueryWhereClauseNodeTypes() {
+        List<String> defs = new ArrayList<>();
+        for (NodeTypeDefinition type : getConfiguration().getNodeTypes()) {
+            if (type.isHideInList() || NodeTypes.Folder.NAME.equals(type.getName())) {
+                log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
+                continue;
+            }
+            defs.add("[jcr:primaryType] = '" + type.getName() + "'");
+        }
+        return StringUtils.join(defs, " or ");
+    }
+
+    @Override
+    public int indexOfId(Object itemId) {
+        if (!containsId(itemId)) {
+            return -1;
+        }
+        return super.indexOfId(itemId);
+    }
+
+    @Override
+    public boolean containsId(Object itemId) {
+        final Item item = getJcrItem(itemId);
+        if (!item.isNode()) {
+            return super.containsId(itemId);
+        }
+
+        Node node = (Node) item;
+        try {
+            if (!getConfiguration().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
+                return false;
+            }
+
+            String primaryNodeTypeName = node.getPrimaryNodeType().getName();
+            for (NodeTypeDefinition nodeTypeDefinition : getConfiguration().getNodeTypes()) {
+                if (nodeTypeDefinition.isStrict()) {
+                    if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
+                        return true;
+                    }
+                } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
+                    return true;
+                }
+            }
+
+        } catch (RepositoryException e) {
+            log.error("Failed to check presence of {} in container", itemId, e);
+        }
+        return false;
+    }
+
+    // SUPPORT OF THE THUMBNAIL CONTAINER PROPERTY
 
     @Override
     public Collection<?> getContainerPropertyIds() {
@@ -145,11 +151,6 @@ public class JcrDelegatingThumbnailContainer extends DelegatingThumbnailContaine
     }
 
     @Override
-    public void refresh() {
-        getDelegate().refresh();
-    }
-
-    @Override
     public Object getThumbnailPropertyId() {
         return THUMBNAIL_PROPERTY_ID;
     }
@@ -161,10 +162,10 @@ public class JcrDelegatingThumbnailContainer extends DelegatingThumbnailContaine
 
     @Override
     public void setPageSize(int pageSize) {
-        getDelegate().setPageLength(pageSize / 3);
-        getDelegate().setCacheRatio(3);
+        // TODO WHY 3?
+        setPageLength(pageSize / 3);
+        setCacheRatio(3);
     }
-
 
     /**
      * ThumbnailContainer property. Can have a Resource or a String as value.
@@ -199,5 +200,4 @@ public class JcrDelegatingThumbnailContainer extends DelegatingThumbnailContaine
         }
     }
 
-    public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 }

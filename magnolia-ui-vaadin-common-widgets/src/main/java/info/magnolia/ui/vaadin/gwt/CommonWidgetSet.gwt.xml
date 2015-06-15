@@ -1,48 +1,48 @@
 <module>
 
-  <inherits name="com.vaadin.DefaultWidgetSet"/>
+  <inherits name="com.vaadin.DefaultWidgetSet" />
 
-  <inherits name='org.vaadin.gwtgraphics.GWTGraphics'/>
-  <inherits name='com.googlecode.mgwt.dom.DOM'/>
-  <inherits name='com.googlecode.mgwt.ui.UI'/>
+  <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
+  <inherits name='com.googlecode.mgwt.dom.DOM' />
+  <inherits name='com.googlecode.mgwt.ui.UI' />
 
-  <inherits name='org.vaadin.aceeditor.AceEditorWidgetSet'/>
+  <inherits name='org.vaadin.aceeditor.AceEditorWidgetSet' />
 
-  <inherits name="com.google.gwt.json.JSON"/>
-  <inherits name="com.google.gwt.resources.Resources"/>
-  <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset"/>
-  <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset"/>
+  <inherits name="com.google.gwt.json.JSON" />
+  <inherits name="com.google.gwt.resources.Resources" />
+  <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
+  <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset" />
 
-  <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset"/>
+  <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 
-  <stylesheet src="jcrop/jquery.Jcrop.css"/>
+  <stylesheet src="jcrop/jquery.Jcrop.css" />
 
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
-    <when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl"/>
+    <when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
     <all>
-      <when-property-is name="mobile.user.agent" value="mobilesafari"/>
+      <when-property-is name="mobile.user.agent" value="mobilesafari" />
     </all>
   </replace-with>
 
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMobileSafariUI">
-    <when-type-is class="com.vaadin.client.ui.VUI"/>
+    <when-type-is class="com.vaadin.client.ui.VUI" />
     <all>
-      <when-property-is name="mobile.user.agent" value="mobilesafari"/>
+      <when-property-is name="mobile.user.agent" value="mobilesafari" />
     </all>
   </replace-with>
 
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMgwtStylesUI">
-    <when-type-is class="com.vaadin.client.ui.VUI"/>
+    <when-type-is class="com.vaadin.client.ui.VUI" />
     <all>
-      <when-property-is name="mgwt.os" value="desktop"/>
+      <when-property-is name="mgwt.os" value="desktop" />
     </all>
   </replace-with>
 
   <replace-with class="com.vaadin.client.ui.panel.EnterFriendlyPanelConnector">
-    <when-type-is class="com.vaadin.client.ui.panel.PanelConnector"/>
+    <when-type-is class="com.vaadin.client.ui.panel.PanelConnector" />
   </replace-with>
 
-  <set-configuration-property name="mgwt.css" value="pretty"/>
+  <set-configuration-property name="mgwt.css" value="pretty" />
 
   <source path="client"/>
   <source path="shared"/>

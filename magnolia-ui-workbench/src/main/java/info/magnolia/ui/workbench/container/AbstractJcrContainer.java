@@ -227,7 +227,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         try {
             return JcrItemUtil.getJcrItem((JcrItemId) itemId);
         } catch (PathNotFoundException p) {
-            log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[]{itemId, getWorkspace(), p.toString()});
+            log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[] { itemId, getWorkspace(), p.toString() });
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Could not retrieve jcr item with id: " + itemId, e);
         }
@@ -236,9 +236,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**************************************/
     /** Methods from interface Container **/
-    /**
-     * **********************************
-     */
+    /**************************************/
     @Override
     public Item getItem(Object itemId) {
         javax.jcr.Item item = getJcrItem(itemId);
@@ -515,11 +513,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>.
      * @return a string representing a JCR statement to retrieve this container's items.
-     *         It creates a JCR query in the form {@code select * from [nt:base] as selectorName [WHERE] [ORDER BY]"}.
-     *         <p>
-     *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()} or, at a more fine-grained level, {@link #getQueryWhereClauseNodeTypes()} and {@link #getQueryWhereClauseWorkspacePath()}.
-     *         <p>
-     *         A restriction on the node types to be searched for can be applied via {@link #getQueryWhereClauseNodeTypes()}.
+     * It creates a JCR query in the form {@code select * from [nt:base] as selectorName [WHERE] [ORDER BY]"}.
+     * <p>
+     * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()} or, at a more fine-grained level, {@link #getQueryWhereClauseNodeTypes()} and {@link #getQueryWhereClauseWorkspacePath()}.
+     * <p>
+     * A restriction on the node types to be searched for can be applied via {@link #getQueryWhereClauseNodeTypes()}.
      */
     protected final String constructJCRQuery(final boolean considerSorting) {
         final String select = getQuerySelectStatement();
@@ -570,7 +568,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return the JCR query where clause to select only node types which are not hidden in list and nodes under the path configured in the workspace as String - if the latter
-     *         is not configured return a blank string so that all nodes are considered.
+     * is not configured return a blank string so that all nodes are considered.
      * @see AbstractJcrContainer#getQueryWhereClauseNodeTypes()
      * @see #getQueryWhereClauseWorkspacePath()
      */
@@ -594,24 +592,24 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a String containing the node types to be displayed in a list view and searched for in a query. All node types declared in a workbench definition are returned
-     *         unless their <code>hideInList</code> property is true or the node is of type <code>mgnl:folder</code> (custom implementations of this method may still decide to display folders). Assuming a node types declaration like the following
+     * unless their <code>hideInList</code> property is true or the node is of type <code>mgnl:folder</code> (custom implementations of this method may still decide to display folders). Assuming a node types declaration like the following
      *
-     *         <pre>
-     *         ...
-     *         + workbench
-     *          + nodeTypes
-     *           + foo
-     *            * name = nt:foo
-     *           + bar
-     *            * name = nt:bar
-     *            * hideInList = true
-     *           + baz (a mixin type)
-     *            * name = nt:baz
-     *         ...
-     *         </pre>
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz (a mixin type)
+     *    * name = nt:baz
+     * ...
+     * </pre>
      *
-     *         this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be displayed in list views and searched for
-     *         in search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be displayed in list views and searched for
+     * in search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
      * @see #findSearchableNodeTypes()
      */
     protected String getQueryWhereClauseNodeTypes() {
@@ -655,7 +653,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @deprecated since 5.1. All node types declared in the workbench definition are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
-     *             The discriminating factor is the <code>hideInList</code> boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
+     * The discriminating factor is the <code>hideInList</code> boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
      */
     @Deprecated
     protected String getMainNodeType() {
@@ -733,7 +731,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (offset >= 0) {
             query.setOffset(offset);
         }
-        log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(), statement, limit, offset});
+        log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[] { getWorkspace(), statement, limit, offset });
         long start = System.currentTimeMillis();
         final QueryResult result = query.execute();
         log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
@@ -754,12 +752,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a Set of searchable {@link NodeType}s. A searchable node type is defined as follows
-     *         <ul>
-     *         <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/mymodule/apps/myapp/subApps/browser/workbench/nodeTypes</code>
-     *         <li>It is not hidden in list and search views (property <code>hideInList=true</code>). By default nodes are not hidden.
-     *         <li>If not strict (property <code>strict=false</code>), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
-     *         <li>Subtypes beginning with <code>jcr:, nt:, mix:, rep:</code> are not taken into account.
-     *         </ul>
+     * <ul>
+     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/mymodule/apps/myapp/subApps/browser/workbench/nodeTypes</code>
+     * <li>It is not hidden in list and search views (property <code>hideInList=true</code>). By default nodes are not hidden.
+     * <li>If not strict (property <code>strict=false</code>), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
+     * <li>Subtypes beginning with <code>jcr:, nt:, mix:, rep:</code> are not taken into account.
+     * </ul>
      */
     protected Set<NodeType> findSearchableNodeTypes() {
         final List<String> hiddenInList = new ArrayList<String>();

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.DOM;
 import com.vaadin.client.ComputedStyle;
 
 /**
- * Tracks the base sizes of the thumbnails set from the server, applies those to all the thumbnails via generated CSS rules,
+ * Tracks the base sizes of the thumbnails set from the server, applies those to all the thumbnails,
  * calculates the resulting actual size. Also is capable of applying a scaling ratio to the thumbnails.
  */
 class ThumbnailsSizeKeeper {

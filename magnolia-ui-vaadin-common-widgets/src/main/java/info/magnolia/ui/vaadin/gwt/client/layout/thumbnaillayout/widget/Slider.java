@@ -63,7 +63,7 @@ public class Slider extends Composite implements HasValueChangeHandlers<Integer>
         IconWidget iconSizeSmall = new IconWidget();
         iconSizeSmall.setIconName("search");
         iconSizeSmall.setSize(20);
-        iconSizeSmall.setColor("#AAAAAA");
+        iconSizeSmall.setColor("#aaa");
         iconSizeSmall.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
 
         panel.addStyleName("slider-panel");
@@ -74,7 +74,6 @@ public class Slider extends Composite implements HasValueChangeHandlers<Integer>
         slider.setWidth("125px");
         initWidget(panel);
     }
-
 
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> integerValueChangeHandler) {

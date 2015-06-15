@@ -59,8 +59,8 @@ import org.slf4j.LoggerFactory;
  * {@link ThumbnailContainer.IdProvider} which queries item ids from JCR workspace.
  *
  * @see info.magnolia.ui.workbench.thumbnail.JcrThumbnailItemIdProvider#getQueryWhereClauseNodeTypes for details.
- * @see info.magnolia.ui.workbench.thumbnail.data.JcrDelegatingThumbnailContainer
- * @deprecated since 5.3.9 should be avoided since it does not lazy load the items.
+ * @see info.magnolia.ui.workbench.thumbnail.JcrThumbnailContainer
+ * @deprecated since 5.3.10 should be avoided since it does not lazy load the items.
  */
 @Deprecated
 public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider {
@@ -78,7 +78,7 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
     @Override
     public List<?> getItemIds() {
         List<JcrItemId> uuids = new ArrayList<JcrItemId>();
-        String workspaceName = definition.getWorkspace();
+        String workspaceName =  definition.getWorkspace();
         final String query = constructQuery();
         try {
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
@@ -128,24 +128,24 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
 
     /**
      * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
-     *         unless their <code>hideInList</code> property is true or they are of type <code>mgnl:folder</code>. E.g. assuming a node types declaration like the following
+     * unless their <code>hideInList</code> property is true or they are of type <code>mgnl:folder</code>. E.g. assuming a node types declaration like the following
      *
-     *         <pre>
-     *         ...
-     *         + workbench
-     *          + nodeTypes
-     *           + foo
-     *            * name = nt:foo
-     *           + bar
-     *            * name = nt:bar
-     *            * hideInList = true
-     *           + baz
-     *            * name = nt:baz
-     *         ...
-     *         </pre>
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz
+     *    * name = nt:baz
+     * ...
+     * </pre>
      *
-     *         this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
-     *         in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
+     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
      */
     protected String getQueryWhereClauseNodeTypes() {
         List<String> defs = new ArrayList<String>();
