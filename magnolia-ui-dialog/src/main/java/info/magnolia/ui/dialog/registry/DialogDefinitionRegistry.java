@@ -87,7 +87,9 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
     @Deprecated
     public void register(DialogDefinitionProvider provider) {
         try {
-            // TODO The below is absurd
+            // TODO The following lines are duplicated code from TemplateDefinitionRegistry#register(). Additionally explicit parsing
+            // TODO of the provider Id is error prone and should be in some kind of metadata parser (in some way the counterpart to the metadata builder)
+            // TODO If this code gets somehow revived or refactored before its final removal please consider this duplication as well.
             final String[] idParts = provider.getId().split(":", 2); // At least in the case of blossom, the id is already set
             final String module = idParts[0];
 
@@ -100,7 +102,7 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
                     .build();
             register(dp);
         } catch (RegistrationException e) {
-            throw new RuntimeException(e); // TODO
+            throw new RuntimeException(e);
         }
     }
 
