@@ -36,7 +36,9 @@ package info.magnolia.ui.dialog.registry;
 import info.magnolia.config.registry.AbstractRegistry;
 import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
+import info.magnolia.config.registry.DefinitionProviderBuilder;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
+import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
@@ -75,6 +77,31 @@ public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition>
                 return dd;
             }
         };
+    }
+
+    /**
+     * This method is kept for compatibility reasons. It adapts the given provider to the new DefinitionProvider introduced in 5.4.
+     *
+     * @deprecated since 5.4
+     */
+    @Deprecated
+    public void register(DialogDefinitionProvider provider) {
+        try {
+            // TODO The below is absurd
+            final String[] idParts = provider.getId().split(":", 2); // At least in the case of blossom, the id is already set
+            final String module = idParts[0];
+
+            final DialogDefinition td = provider.getDialogDefinition();
+            final String relativeLocation = idParts[1];
+            final DefinitionProvider<DialogDefinition> dp = DefinitionProviderBuilder.<DialogDefinition> newBuilder()
+                    .metadata(newMetadataBuilder().type(type()).module(module).relativeLocation(relativeLocation))
+                    .rawView(DefinitionRawView.EMPTY) // We have no raw view for this, but the whole provider should still be considered valid.
+                    .definition(td)
+                    .build();
+            register(dp);
+        } catch (RegistrationException e) {
+            throw new RuntimeException(e); // TODO
+        }
     }
 
     /**
