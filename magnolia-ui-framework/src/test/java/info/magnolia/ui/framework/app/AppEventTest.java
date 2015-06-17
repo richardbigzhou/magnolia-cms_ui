@@ -46,6 +46,7 @@ import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -116,6 +117,7 @@ public class AppEventTest {
     @After
     public void tearDown() throws Exception {
         componentProvider.destroy();
+        Components.setComponentProvider(null);
 
         // Reset the static fields
         AppTestImpl.appNumber = 0;
