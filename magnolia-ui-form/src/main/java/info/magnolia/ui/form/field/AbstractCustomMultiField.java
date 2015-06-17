@@ -132,7 +132,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         T fieldValues = (T) getPropertyDataSource().getValue();
         initFields(fieldValues);
         // Update DataSource in order to handle the fields default values
-        if (relatedFieldItem instanceof ItemAdapter && ((ItemAdapter) relatedFieldItem).isNew()) {
+        if (relatedFieldItem instanceof ItemAdapter && ((ItemAdapter) relatedFieldItem).isNew() && !definition.isReadOnly()) {
             getPropertyDataSource().setValue(getValue());
         }
     }
@@ -201,6 +201,9 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
                 }
             });
         }
+
+        // Set read only based on the single field definition
+        field.setReadOnly(fieldDefinition.isReadOnly());
 
         return field;
     }
