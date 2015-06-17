@@ -101,6 +101,10 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         // Create all Fields including the select Field.
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
+            // Only propagate read only if the parent definition is read only
+            if (definition.isReadOnly()) {
+                fieldDefinition.setReadOnly(true);
+            }
             Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
             // Do not add hidden field.
             if (!field.isVisible()) {

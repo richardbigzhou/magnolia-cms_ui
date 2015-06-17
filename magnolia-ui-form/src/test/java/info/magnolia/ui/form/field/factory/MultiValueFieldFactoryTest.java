@@ -33,15 +33,27 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+
+import java.util.Iterator;
 
 import org.junit.Test;
 
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiValueFieldFactory}.
@@ -53,18 +65,75 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
+        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+
+        final FieldFactory fieldFactory = mock(FieldFactory.class);
+        final AbstractField field = mock(AbstractField.class);
+
+        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, fieldFactoryFactory, new MockComponentProvider(), null);
+        baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
+
+        definition.setDefaultValue("defaultValue");
+        definition.setField(fieldDefinition);
+
+        doReturn(fieldFactory).when(fieldFactoryFactory).createFieldFactory(eq(fieldDefinition), anyVararg());
+        doReturn(field).when(fieldFactory).createField();
     }
 
     @Test
     public void testGetField() throws Exception {
         // GIVEN
-        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, null, new MockComponentProvider(), null);
-        multiFieldFactory.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = multiFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiField);
+    }
+
+    @Test
+    public void areButtonsInvisibleWhenReadOnly() {
+
+        // GIVEN
+        definition.setReadOnly(true);
+
+        // WHEN
+        MultiField multiField = (MultiField) multiFieldFactory.createField();
+
+        // THEN
+        assertTrue(multiField.isReadOnly());
+        assertTrue(definition.getField().isReadOnly());
+        assertFalse(isExistButtons(multiField));
+    }
+
+    @Test
+    public void areButtonsVisibleWhenEditable() {
+
+        // GIVEN
+        definition.setReadOnly(false);
+
+        // WHEN
+        MultiField multiField = (MultiField) multiFieldFactory.createField();
+
+        // THEN
+        assertFalse(multiField.isReadOnly());
+        assertFalse(definition.getField().isReadOnly());
+        assertTrue(isExistButtons(multiField));
+    }
+
+    private boolean isExistButtons(MultiField multiField) {
+        VerticalLayout root = (VerticalLayout) multiField.iterator().next();
+        Iterator<Component> it = root.iterator();
+        boolean isExistButtons = false;
+        while (it.hasNext()) {
+            Component component = it.next();
+            if (component instanceof NativeButton || component instanceof Button) {
+                isExistButtons = true;
+            }
+        }
+
+        return isExistButtons;
     }
 
     @Override

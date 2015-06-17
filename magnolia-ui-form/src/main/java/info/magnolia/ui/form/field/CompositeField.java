@@ -87,6 +87,10 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
+            // Only propagate read only if the parent definition is read only
+            if (definition.isReadOnly()) {
+                fieldDefinition.setReadOnly(true);
+            }
             Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
             if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());

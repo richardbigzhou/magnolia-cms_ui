@@ -82,6 +82,10 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
     public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
         this.fieldDefinition = definition.getField();
+        // Only propagate read only if the parent definition is read only
+        if (definition.isReadOnly()) {
+            fieldDefinition.setReadOnly(true);
+        }
     }
 
     /**
@@ -151,7 +155,9 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             Property<?> property = newValue.getItemProperty(propertyId);
             root.addComponent(createEntryComponent(propertyId, property));
         }
-        root.addComponent(addButton);
+        if (!this.definition.isReadOnly()) {
+            root.addComponent(addButton);
+        }
     }
 
     /**
@@ -175,6 +181,14 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             ((PropertysetItem) getPropertyDataSource().getValue()).addItemProperty(propertyId, property);
         }
         final Property<?> propertyReference = property;
+        // set layout to full width
+        layout.setWidth(100, Unit.PERCENTAGE);
+
+        // distribute space in favour of field over delete button
+        layout.setExpandRatio(field, 1);
+        if (definition.isReadOnly()) {
+            return layout;
+        }
 
         // Delete Button
         Button deleteButton = new Button();
@@ -206,12 +220,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             }
         });
         layout.addComponent(deleteButton);
-
-        // set layout to full width
-        layout.setWidth(100, Unit.PERCENTAGE);
-
-        // distribute space in favour of field over delete button
-        layout.setExpandRatio(field, 1);
         layout.setExpandRatio(deleteButton, 0);
 
         // make sure button stays aligned with the field and not with the optional field label when used
