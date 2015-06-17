@@ -46,11 +46,11 @@ import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -117,7 +117,7 @@ public class AppEventTest {
     @After
     public void tearDown() throws Exception {
         componentProvider.destroy();
-        Components.setComponentProvider(null);
+        ComponentsTestUtil.clear();
 
         // Reset the static fields
         AppTestImpl.appNumber = 0;
