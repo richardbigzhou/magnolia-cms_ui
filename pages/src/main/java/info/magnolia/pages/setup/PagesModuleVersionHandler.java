@@ -259,7 +259,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.3.9", "")
                 .addTask(new NodeExistsDelegateTask("Configure multiple", "Allow select multiple items for activateDeletion action.",
                         RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability",
-                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability", "multiple", true))
+                        new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion/availability", "multiple", "true"))
                         )
         );
 

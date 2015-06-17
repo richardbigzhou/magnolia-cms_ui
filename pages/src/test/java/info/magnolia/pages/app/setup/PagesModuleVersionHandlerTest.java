@@ -647,7 +647,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // THEN
         assertThat(availabilityNode, hasProperty("multiple"));
-        assertThat(availabilityNode, hasProperty("multiple", true));
+        assertThat(availabilityNode, hasProperty("multiple", "true"));
     }
 
 }
