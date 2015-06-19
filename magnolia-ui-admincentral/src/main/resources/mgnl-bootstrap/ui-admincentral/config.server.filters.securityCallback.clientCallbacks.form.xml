@@ -16,7 +16,7 @@
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="loginForm" sv:type="String">
-    <sv:value>/mgnl-resources/defaultLoginForm/login.html</sv:value>
+    <sv:value>/defaultMagnoliaLoginForm/login.html</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:created" sv:type="Date">
     <sv:value>2007-05-11T16:25:54.934+02:00</sv:value>

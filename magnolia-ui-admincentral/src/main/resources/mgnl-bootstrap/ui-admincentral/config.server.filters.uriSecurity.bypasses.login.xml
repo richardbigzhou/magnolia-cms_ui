@@ -31,6 +31,6 @@
     <sv:value>superuser</sv:value>
   </sv:property>
   <sv:property sv:name="pattern" sv:type="String">
-    <sv:value>/.resources/defaultLoginForm</sv:value>
+    <sv:value>/.resources/defaultMagnoliaLoginForm</sv:value>
   </sv:property>
 </sv:node>

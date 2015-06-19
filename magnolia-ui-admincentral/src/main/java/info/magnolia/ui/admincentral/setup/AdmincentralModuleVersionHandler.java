@@ -276,9 +276,10 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PartialBootstrapTask("Add ConfigProtectedNodeRule rule to deactivation action.", "Add ConfigProtectedNodeRule rule to deactivation action.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/deactivate/availability/rules/ConfigProtectedNodeRule"))
         );
         register(DeltaBuilder.update("5.4", "")
-                .addTask(new BootstrapSingleResource("Bootstrap Pulse Presenters", "Bootstrap the new configuration for tasks and messages in Pulse.",
-                        "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml"))
+                .addTask(new BootstrapSingleResource("Bootstrap Pulse Presenters", "Bootstrap the new configuration for tasks and messages in Pulse.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml"))
                 .addTask(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy)
+                .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the location of the default login form.", RepositoryConstants.CONFIG, "/server/filters/securityCallback/clientCallbacks/form", "loginForm", "/mgnl-resources/defaultLoginForm/login.html", "/defaultMagnoliaLoginForm/login.html"))
+                .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the permissions to enable access to the default login form.", RepositoryConstants.CONFIG, "/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm", "/.resources/defaultMagnoliaLoginForm"))
         );
     }
 
@@ -288,7 +289,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         list.add(new IsModuleInstalledOrRegistered(
                 "Replace login security pattern",
-                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
+                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultMagnoliaLoginForm'.",
                 "adminInterface",
                 new CheckAndModifyPropertyValueTask(
                         "",
@@ -297,7 +298,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         "/server/filters/uriSecurity/bypasses/login",
                         "pattern",
                         "/.resources/loginForm",
-                        "/.resources/defaultLoginForm")));
+                        "/.resources/defaultMagnoliaLoginForm")));
         list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
         list.add(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",

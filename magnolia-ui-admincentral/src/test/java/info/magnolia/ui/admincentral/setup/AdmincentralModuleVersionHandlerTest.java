@@ -122,6 +122,8 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        addSupportForSetupModuleRepositoriesTask("<this parameter isn't used>");
+
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialogs = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.ContentNode.NAME);
         dialogs.getSession().save();
@@ -143,6 +145,18 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         this.setupConfigNode("/modules/ui-admincentral/templates/deleted");
         Node command = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/commands/default/delete/deactivate", NodeTypes.ContentNode.NAME);
         command.setProperty("enabled", true);
+
+        // update to 5.4 expects this has been setup before - TODO this wouldn't be valid if we had a test that checked the IsModuleInstalledOrRegistered("adminCentral") condition !
+        setupConfigProperty("/server/filters/securityCallback/clientCallbacks/form", "loginForm", "/mgnl-resources/defaultLoginForm/login.html");
+        setupConfigProperty("/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm");
+    }
+
+    @Test
+    public void testInstallWithoutOldAdminCentral() throws Exception {
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+        final Session jcrSession = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        assertThat(jcrSession.getNode("/server/filters/securityCallback/clientCallbacks/form"), hasProperty("loginForm", "/defaultMagnoliaLoginForm/login.html"));
+        assertThat(jcrSession.getNode("/server/filters/uriSecurity/bypasses/login"), hasProperty("pattern", "/.resources/defaultMagnoliaLoginForm"));
     }
 
     @Test
