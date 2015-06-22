@@ -127,11 +127,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         super.setLocale(locale);
     }
 
-    @Override
-    public Locale getLocale() {
-        return super.getLocale();
-    }
-
     @SuppressWarnings("unchecked")
     protected void initFields() {
         T fieldValues = (T) getPropertyDataSource().getValue();
