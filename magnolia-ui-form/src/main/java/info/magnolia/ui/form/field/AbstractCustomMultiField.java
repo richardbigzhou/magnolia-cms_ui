@@ -90,8 +90,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     protected final Item relatedFieldItem;
     protected AbstractOrderedLayout root;
 
-    private Locale currentLocale;
-
     protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         this.definition = definition;
         this.fieldFactoryFactory = fieldFactoryFactory;
@@ -126,12 +124,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         if (root != null) {
             initFields();
         }
-        this.currentLocale = locale;
-    }
-
-    @Override
-    public Locale getLocale() {
-        return currentLocale;
+        super.setLocale(locale);
     }
 
     @SuppressWarnings("unchecked")
