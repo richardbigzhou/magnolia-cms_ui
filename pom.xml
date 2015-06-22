@@ -352,6 +352,13 @@
             <goals>deploy</goals>
           </configuration>
         </plugin>
+        <plugin>
+          <!-- Use an isolated classloader to workaround issues where bootstrap files are not seen in tests. See BUILD-214 -->
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <useSystemClassLoader>false</useSystemClassLoader>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
