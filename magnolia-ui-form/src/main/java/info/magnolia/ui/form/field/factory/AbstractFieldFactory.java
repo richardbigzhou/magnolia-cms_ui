@@ -226,12 +226,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
 
-        TransformedProperty transformedProperty = new TransformedProperty(transformer);
-        if (transformer.isPropertyReadOnly() || definition.isReadOnly()) {
-            transformedProperty.setReadOnly(true);
-        }
-
-        return transformedProperty;
+        return new TransformedProperty(transformer);
     }
 
     /**

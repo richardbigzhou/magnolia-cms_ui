@@ -132,7 +132,7 @@ public class FileTransformerTest {
         FileTransformer<UploadReceiver> transformer = new FileTransformer<>(rootItem, definition, UploadReceiver.class);
 
         // WHEN
-        boolean readOnly = transformer.isPropertyReadOnly();
+        boolean readOnly = transformer.isReadOnly();
 
         // THEN
         assertThat(readOnly, is(true));
