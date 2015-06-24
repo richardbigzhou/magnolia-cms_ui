@@ -307,9 +307,8 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
 
         // Set ReadOnly (field property has to be updated)
-        if ((field.getPropertyDataSource() != null && field.getPropertyDataSource().isReadOnly()) ||
-                definition.isReadOnly()) {
-            field.setReadOnly(true);
+        if (field.getPropertyDataSource() != null) {
+            field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
         }
     }
 

@@ -91,6 +91,9 @@ public class BasicTransformer<T> implements Transformer<T> {
     @Override
     public T readFromItem() {
         Property<T> p = getOrCreateProperty(type);
+        if (definition.isReadOnly()) {
+            p.setReadOnly(true);
+        }
         return p.getValue();
     }
 
@@ -203,9 +206,4 @@ public class BasicTransformer<T> implements Transformer<T> {
         return type;
     }
 
-    @Override
-    public boolean isReadOnly() {
-        Property<T> property = getOrCreateProperty(type);
-        return definition.isReadOnly() || property.isReadOnly();
-    }
 }
