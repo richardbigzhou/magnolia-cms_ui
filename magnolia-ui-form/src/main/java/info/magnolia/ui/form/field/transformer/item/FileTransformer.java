@@ -290,8 +290,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
     @Override
     public boolean isReadOnly() {
         Property property = relatedFormItem.getItemProperty(JcrConstants.JCR_DATA);
-        boolean isPropertyReadOnly = property != null && property.isReadOnly();
-        return isPropertyReadOnly || definition.isReadOnly();
+        return (property != null && property.isReadOnly()) || definition.isReadOnly();
     }
 
 

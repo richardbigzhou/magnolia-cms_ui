@@ -72,21 +72,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
 
     @Test
-    public void factoryChecksForPropertyReadOnlyOption() throws Exception {
-        // GIVEN
-        definition.setReadOnly(false);
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
-        baseItem.addItemProperty(propertyName, new ObjectProperty<>("test", String.class, true));
-
-        // WHEN
-        Field<Object> field = fieldFactory.createField();
-
-        // THEN
-        assertThat(field.isReadOnly(), is(true));
-    }
-
-    @Test
     public void factoryChecksForDefinitionReadOnlyOption() throws Exception {
         // GIVEN
         definition.setReadOnly(true);

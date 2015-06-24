@@ -73,15 +73,6 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
         return super.getValue();
     }
 
-    @Override
-    public boolean isReadOnly() {
-        if (transformer != null) {
-            return transformer.isReadOnly();
-        } else {
-            return false;
-        }
-    }
-
     /**
      * @return true if the handler support I18N.
      */
