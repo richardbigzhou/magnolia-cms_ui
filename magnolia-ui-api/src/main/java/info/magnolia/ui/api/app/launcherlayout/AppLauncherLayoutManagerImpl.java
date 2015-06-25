@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.Registry;
@@ -110,7 +111,11 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     @Override
     public AppLauncherLayout getLayoutForCurrentUser() {
+        return getLayoutForUser(MgnlContext.getUser());
+    }
 
+    @Override
+    public AppLauncherLayout getLayoutForUser(User user) {
         AppLauncherLayoutDefinition layoutDefinition = layoutDefinitionReference.get();
         if (layoutDefinition == null) {
             return new AppLauncherLayout();
@@ -119,7 +124,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         AppLauncherLayout layout = new AppLauncherLayout();
         for (AppLauncherGroupDefinition groupDefinition : layoutDefinition.getGroups()) {
 
-            if (!isGroupVisibleForCurrentUser(groupDefinition)) {
+            if (!isGroupVisibleForCurrentUser(groupDefinition, user)) {
                 continue;
             }
 
@@ -143,7 +148,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                     continue;
                 }
 
-                if (isAppVisibleForCurrentUser(entryDefinition, appDescriptor)) {
+                if (isAppVisibleForCurrentUser(entryDefinition, appDescriptor, user)) {
                     AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
                     entry.setName(entryDefinition.getName());
                     entry.setEnabled(entryDefinition.isEnabled());
@@ -172,14 +177,14 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         sendChangedEvent();
     }
 
-    private boolean isAppVisibleForCurrentUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor) {
+    private boolean isAppVisibleForCurrentUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor, User user) {
         AccessDefinition permissions = appDescriptor.getPermissions();
-        return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(MgnlContext.getUser()));
+        return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(user));
     }
 
-    private boolean isGroupVisibleForCurrentUser(AppLauncherGroupDefinition group) {
+    private boolean isGroupVisibleForCurrentUser(AppLauncherGroupDefinition group, User user) {
         AccessDefinition permissions = group.getPermissions();
-        return (permissions == null || permissions.hasAccess(MgnlContext.getUser()));
+        return (permissions == null || permissions.hasAccess(user));
     }
 
     /**

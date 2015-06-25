@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.event.SystemEventBus;
@@ -72,18 +74,29 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     private final AppLauncherView view;
     private final AppLauncherLayoutChangedEventHandler handler;
 
+    private AppLauncherLayoutManager appLauncherLayoutManager;
+
     private AppController appController;
 
-    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private Context context;
 
     private Shell shell;
 
-    @Inject
+    /**
+     * @deprecated since 5.4 - use the c-tor which injects the {@link Context} instead.
+     */
+    @Deprecated
     public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SystemEventBus.NAME) EventBus systemEventBus) {
+        this(shell, view, appController, appLauncherLayoutManager, admincentralEventBus, systemEventBus, MgnlContext.getInstance());
+    }
+
+    @Inject
+    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SystemEventBus.NAME) EventBus systemEventBus, Context context) {
         this.view = view;
         this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.context = context;
 
         // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
@@ -163,7 +176,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
      * Reload Layout and set Icon for running apps.
      */
     private void reloadLayout() {
-        AppLauncherLayout layout = this.appLauncherLayoutManager.getLayoutForCurrentUser();
+        final AppLauncherLayout layout = this.appLauncherLayoutManager.getLayoutForUser(context.getUser());
         this.view.clearView();
         initView(layout);
         for (AppLauncherGroup group : layout.getGroups()) {
