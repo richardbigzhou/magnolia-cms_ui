@@ -15,7 +15,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>info.magnolia.config</groupId>
+      <groupId>info.magnolia.core</groupId>
       <artifactId>magnolia-configuration</artifactId>
     </dependency>
     <dependency>
