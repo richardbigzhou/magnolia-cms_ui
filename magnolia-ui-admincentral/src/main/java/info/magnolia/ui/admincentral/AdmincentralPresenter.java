@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
@@ -76,7 +77,7 @@ public class AdmincentralPresenter {
 
         appController.setViewport(shell.getAppViewport());
 
-        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
+        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager, MgnlContext.getInstance());
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
 

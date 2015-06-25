@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
@@ -135,9 +138,12 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private final SimpleTranslator i18n;
 
+    private final User user;
+
     @Inject
-    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer, SimpleTranslator i18n) {
+    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController,
+                                     Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager,
+                                     SystemMonitor systemMonitor, I18nizer i18nizer, SimpleTranslator i18n, Context context) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
@@ -147,6 +153,18 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.systemMonitor = systemMonitor;
         this.i18n = i18n;
+        this.user = context.getUser();
+    }
+
+    /**
+     * @deprecated since 5.4. Use {@link #AppInstanceControllerImpl(ModuleRegistry, AppController, LocationController, Shell, MessagesManager, AppDescriptor, AppLauncherLayoutManager, SystemMonitor, I18nizer, SimpleTranslator, Context)}
+     * instead.
+     */
+    @Deprecated
+    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
+                                     MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer, SimpleTranslator i18n) {
+        this(moduleRegistry, appController, locationController, shell, messagesManager, appDescriptor, appLauncherLayoutManager,
+                systemMonitor, i18nizer, i18n, MgnlContext.getInstance());
     }
 
     @Override
@@ -232,7 +250,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
         // Get icon colors from appLauncherLayoutManager
         if (StringUtils.isNotBlank(appDescriptor.getIcon())) {
-            for (AppLauncherGroup group : appLauncherLayoutManager.getLayoutForCurrentUser().getGroups()) {
+            for (AppLauncherGroup group : appLauncherLayoutManager.getLayoutForUser(user).getGroups()) {
                 for (AppLauncherGroupEntry entry : group.getApps()) {
                     if (entry.getName().equals(this.getAppDescriptor().getName())) {
                         app.getView().setAppLogo(getAppDescriptor().getIcon(), group.getColor());
@@ -476,7 +494,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
         // If the location has no subAppId defined, get default
         if (getDefaultSubAppDescriptor() != null) {
-        String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
+            String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
             for (SubAppDetails subAppDetails : subApps.values()) {
                 SubAppContext context = subAppDetails.context;

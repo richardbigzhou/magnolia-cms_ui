@@ -79,7 +79,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
     private EventBus systemEventBus;
     private AppDescriptorRegistry registry;
     private AppLauncherLayoutManagerImpl appLayoutManager;
-
+    private MgnlUser user;
     private I18nizer i18nizer = new I18nizer() {
         @Override
         public <C> C decorate(C child) {
@@ -130,7 +130,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         ArrayList<String> roles = new ArrayList<String>();
         roles.add("testRole");
 
-        MgnlUser user = new MgnlUser("testUser", null, new ArrayList<String>(), roles, new HashMap<String, String>()) {
+        user = new MgnlUser("testUser", null, new ArrayList<String>(), roles, new HashMap<String, String>()) {
 
             // Overridden to avoid querying the group manager in test
             @Override
@@ -147,7 +147,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
     public void testGetAppLayout() {
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertEquals(2, layout.getGroups().size());
@@ -189,7 +189,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1.setPermissions(permissions);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertFalse(layout.containsApp("app1"));
@@ -207,7 +207,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1.setPermissions(permissions);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertTrue(layout.containsApp("app1"));
@@ -223,7 +223,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1.setEnabled(false);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertFalse(layout.containsApp("app1"));
@@ -239,7 +239,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         ((ConfiguredAppLauncherGroupEntryDefinition) this.appGroup1.getApps().get(0)).setEnabled(false);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertFalse(layout.containsApp("app1"));
@@ -255,7 +255,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor3.setEnabled(false);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertEquals(1, layout.getGroups().size());
@@ -269,7 +269,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1.setLabel(null);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertEquals(1, layout.getGroups().get(0).getApps().size());
@@ -283,7 +283,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
         appDescriptor1.setIcon(null);
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         assertEquals(1, layout.getGroups().get(0).getApps().size());
@@ -297,7 +297,7 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
                 when(registry).getProvider(eq("app2"));
 
         // WHEN
-        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout layout = appLayoutManager.getLayoutForUser(user);
 
         // THEN
         List<AppLauncherGroup> groups = layout.getGroups();

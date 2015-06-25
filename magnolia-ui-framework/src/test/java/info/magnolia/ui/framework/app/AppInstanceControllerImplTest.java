@@ -127,6 +127,7 @@ public class AppInstanceControllerImplTest {
         subAppDescriptor.setSubAppClass(FailingToStartSubApp.class);
 
         appDescriptor.addSubApp(subAppDescriptor);
+        MgnlContext.setInstance(ctx);
 
         appInstanceControllerImpl = new AppInstanceControllerImpl(
                 moduleRegistry,
@@ -138,10 +139,10 @@ public class AppInstanceControllerImplTest {
                 mock(AppLauncherLayoutManager.class),
                 mock(SystemMonitor.class),
                 i18nizer,
-                i18n);
+                i18n,
+                ctx);
         appInstanceControllerImpl.setAppComponentProvider(initComponentProvider());
 
-        MgnlContext.setInstance(ctx);
     }
 
     @After
