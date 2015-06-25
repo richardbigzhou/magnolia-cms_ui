@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
@@ -64,7 +65,7 @@ public class AdmincentralPresenter {
     private final ShellImpl shell;
 
     @Inject
-    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager, UserMenuPresenter userMenu) {
+    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager, UserMenuPresenter userMenu, Context context) {
         this.shell = shell;
 
         shell.setUserMenu(userMenu.start());
@@ -76,7 +77,7 @@ public class AdmincentralPresenter {
 
         appController.setViewport(shell.getAppViewport());
 
-        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
+        DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager, context);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
 

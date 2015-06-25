@@ -36,7 +36,9 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.WebContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
@@ -111,7 +113,7 @@ public class AppControllerImplTest {
     private AppEventCollector eventCollector = null;
     private EventBus eventBus;
 
-    private MockWebContext ctx;
+    private WebContext ctx;
 
     @Before
     public void setUp() throws Exception {
@@ -126,10 +128,6 @@ public class AppControllerImplTest {
 
         appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
         appController.setViewport(mock(Viewport.class));
-
-        ctx = new MockWebContext();
-
-        MgnlContext.setInstance(ctx);
     }
 
     @After
@@ -539,6 +537,9 @@ public class AppControllerImplTest {
 
     public GuiceComponentProvider initComponentProvider() {
 
+        this.ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
 
         components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
@@ -546,6 +547,7 @@ public class AppControllerImplTest {
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
         components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
 
+        components.registerInstance(Context.class, ctx);
         components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
         components.registerImplementation(AppView.class, DefaultAppView.class);
@@ -560,6 +562,7 @@ public class AppControllerImplTest {
             }
         });
 
+        components.registerInstance(Context.class, ctx);
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));

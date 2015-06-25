@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.location.DefaultLocation;
@@ -44,10 +46,12 @@ import info.magnolia.ui.api.location.LocationHistoryMapper;
  */
 public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
-    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private final User user;
+    private final AppLauncherLayoutManager appLauncherLayoutManager;
 
-    public DefaultLocationHistoryMapper(AppLauncherLayoutManager appLauncherLayoutManager) {
+    public DefaultLocationHistoryMapper(final AppLauncherLayoutManager appLauncherLayoutManager, final Context context) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.user = context.getUser();
     }
 
     @Override
@@ -85,7 +89,7 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
             return false;
         }
 
-        AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
+        AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForUser(user);
         return appLauncherLayout.containsApp(appName);
     }
 }

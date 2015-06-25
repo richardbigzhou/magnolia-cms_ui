@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
@@ -110,8 +111,6 @@ public class AppEventTest {
         this.appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
         appController.setViewport(mock(Viewport.class));
 
-        ctx = new MockWebContext();
-        MgnlContext.setInstance(ctx);
     }
 
     @After
@@ -195,6 +194,9 @@ public class AppEventTest {
 
     public GuiceComponentProvider initComponentProvider() {
 
+        ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
 
         components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
@@ -211,6 +213,7 @@ public class AppEventTest {
         when(systemMonitor.isMemoryLimitReached()).thenReturn(false);
         components.registerInstance(SystemMonitor.class, systemMonitor);
 
+        components.registerInstance(Context.class, ctx);
         components.registerInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
