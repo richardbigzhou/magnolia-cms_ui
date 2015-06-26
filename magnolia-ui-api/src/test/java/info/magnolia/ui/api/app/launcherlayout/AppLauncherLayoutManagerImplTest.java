@@ -63,6 +63,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,7 +125,12 @@ public class AppLauncherLayoutManagerImplTest extends MgnlTestCase {
 
         systemEventBus = new SimpleEventBus();
 
-        appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus, i18nizer);
+        appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus, new Provider<I18nizer>() {
+            @Override
+            public I18nizer get() {
+                return i18nizer;
+            }
+        });
         appLayoutManager.setLayout(layoutDefinition);
 
         // Set up context with a user having only one role
