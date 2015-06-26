@@ -65,32 +65,18 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     private final ContentConnector contentConnector;
 
-    private final JcrNodesAllowedRule jcrNodesAllowedRule;
-    private final JcrPropertiesAllowedRule jcrPropertiesAllowedRule;
-    private final MultipleItemsAllowedRule multipleItemsAllowedRule;
-    private final JcrRootAllowedRule jcrRootAllowedRule;
-    private final JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule;
-    private final AccessGrantedRule accessGrantedRule;
-    private final WritePermissionRequiredRule writePermissionRequiredRule;
+    protected JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
+    protected JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
+    protected MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
+    protected JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
+    protected JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
+    protected AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
+    protected WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
 
     @Inject
-    public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector, JcrNodesAllowedRule jcrNodesAllowedRule, JcrPropertiesAllowedRule jcrPropertiesAllowedRule, MultipleItemsAllowedRule multipleItemsAllowedRule, JcrRootAllowedRule jcrRootAllowedRule, JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule, AccessGrantedRule accessGrantedRule, WritePermissionRequiredRule writePermissionRequiredRule) {
+    public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
         this.componentProvider = componentProvider;
         this.contentConnector = contentConnector;
-        this.jcrNodesAllowedRule = jcrNodesAllowedRule;
-        this.jcrPropertiesAllowedRule = jcrPropertiesAllowedRule;
-        this.multipleItemsAllowedRule = multipleItemsAllowedRule;
-        this.jcrRootAllowedRule = jcrRootAllowedRule;
-        this.jcrNodeTypesAllowedRule = jcrNodeTypesAllowedRule;
-        this.accessGrantedRule = accessGrantedRule;
-        this.writePermissionRequiredRule = writePermissionRequiredRule;
-    }
-
-    /**
-     * @deprecated since 5.3.9 instead of use {@link #AvailabilityCheckerImpl(info.magnolia.objectfactory.ComponentProvider, info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector, info.magnolia.ui.framework.availability.shorthandrules.JcrNodesAllowedRule, info.magnolia.ui.framework.availability.shorthandrules.JcrPropertiesAllowedRule, info.magnolia.ui.framework.availability.shorthandrules.MultipleItemsAllowedRule, info.magnolia.ui.framework.availability.shorthandrules.JcrRootAllowedRule, info.magnolia.ui.framework.availability.shorthandrules.JcrNodeTypesAllowedRule, info.magnolia.ui.framework.availability.shorthandrules.AccessGrantedRule, info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule)}
-     */
-    public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
-        this(componentProvider, contentConnector, componentProvider.getComponent(JcrNodesAllowedRule.class), componentProvider.getComponent(JcrPropertiesAllowedRule.class), componentProvider.getComponent(MultipleItemsAllowedRule.class), componentProvider.getComponent(JcrRootAllowedRule.class), componentProvider.getComponent(JcrNodeTypesAllowedRule.class), componentProvider.getComponent(AccessGrantedRule.class), componentProvider.getComponent(WritePermissionRequiredRule.class));
     }
 
     @Override
