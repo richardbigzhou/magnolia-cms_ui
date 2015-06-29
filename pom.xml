@@ -323,7 +323,12 @@
         <artifactId>vaadin-lazyquerycontainer</artifactId>
         <version>7.4.0.1</version>
       </dependency>
-
+      <dependency>
+        <!-- Used by vaadin-server, let's keep them in sync -->
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.8.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
