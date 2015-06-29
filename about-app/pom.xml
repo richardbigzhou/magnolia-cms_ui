@@ -4,7 +4,7 @@
     <artifactId>magnolia-ui-project</artifactId>
     <groupId>info.magnolia.ui</groupId>
     <version>5.4-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>info.magnolia.about</groupId>
   <artifactId>magnolia-about-app</artifactId>
