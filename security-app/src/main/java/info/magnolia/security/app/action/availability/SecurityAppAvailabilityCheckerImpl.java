@@ -35,6 +35,7 @@ package info.magnolia.security.app.action.availability;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.availability.AvailabilityCheckerImpl;
+import info.magnolia.ui.framework.availability.shorthandrules.WritePermissionRequiredRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import javax.inject.Inject;
@@ -48,6 +49,9 @@ public class SecurityAppAvailabilityCheckerImpl extends AvailabilityCheckerImpl 
     @Inject
     public SecurityAppAvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
         super(componentProvider, contentConnector);
-        writePermissionRequiredRule = new SecurityAppWritePermissionRequiredRule();
+    }
+
+    protected WritePermissionRequiredRule createWritePermissionRequiredRule() {
+        return new SecurityAppWritePermissionRequiredRule();
     }
 }

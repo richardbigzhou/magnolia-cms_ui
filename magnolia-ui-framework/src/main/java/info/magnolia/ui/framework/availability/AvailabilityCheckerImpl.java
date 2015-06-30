@@ -65,13 +65,13 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
 
     private final ContentConnector contentConnector;
 
-    protected JcrNodesAllowedRule jcrNodesAllowedRule = new JcrNodesAllowedRule();
-    protected JcrPropertiesAllowedRule jcrPropertiesAllowedRule = new JcrPropertiesAllowedRule();
-    protected MultipleItemsAllowedRule multipleItemsAllowedRule = new MultipleItemsAllowedRule();
-    protected JcrRootAllowedRule jcrRootAllowedRule = new JcrRootAllowedRule();
-    protected JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule = new JcrNodeTypesAllowedRule();
-    protected AccessGrantedRule accessGrantedRule = new AccessGrantedRule();
-    protected WritePermissionRequiredRule writePermissionRequiredRule = new WritePermissionRequiredRule();
+    private JcrNodesAllowedRule jcrNodesAllowedRule;
+    private JcrPropertiesAllowedRule jcrPropertiesAllowedRule;
+    private MultipleItemsAllowedRule multipleItemsAllowedRule;
+    private JcrRootAllowedRule jcrRootAllowedRule;
+    private JcrNodeTypesAllowedRule jcrNodeTypesAllowedRule;
+    private AccessGrantedRule accessGrantedRule;
+    private WritePermissionRequiredRule writePermissionRequiredRule;
 
     @Inject
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
@@ -117,6 +117,14 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     }
 
     private Collection<? extends AvailabilityRule> prepareShorthandRules(AvailabilityDefinition definition) {
+        jcrNodesAllowedRule = createJcrNodesAllowedRule();
+        jcrPropertiesAllowedRule = createJcrPropertiesAllowedRule();
+        jcrRootAllowedRule = createJcrRootAllowedRule();
+        jcrNodeTypesAllowedRule = createJcrNodeTypesAllowedRule();
+        multipleItemsAllowedRule = createMultipleItemsAllowedRule();
+        accessGrantedRule = createAccessGrantedRule();
+        writePermissionRequiredRule = createWritePermissionRequiredRule();
+
         jcrNodesAllowedRule.setNodesAllowed(definition.isNodes());
         jcrPropertiesAllowedRule.setPropertiesAllowed(definition.isProperties());
         jcrRootAllowedRule.setRootAllowed(definition.isRoot());
@@ -139,5 +147,33 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
         shorthands.add(writePermissionRequiredRule);
 
         return shorthands;
+    }
+
+    protected JcrNodesAllowedRule createJcrNodesAllowedRule() {
+        return new JcrNodesAllowedRule();
+    }
+
+    protected JcrPropertiesAllowedRule createJcrPropertiesAllowedRule() {
+        return new JcrPropertiesAllowedRule();
+    }
+
+    protected MultipleItemsAllowedRule createMultipleItemsAllowedRule() {
+        return new MultipleItemsAllowedRule();
+    }
+
+    protected JcrRootAllowedRule createJcrRootAllowedRule() {
+        return new JcrRootAllowedRule();
+    }
+
+    protected JcrNodeTypesAllowedRule createJcrNodeTypesAllowedRule() {
+        return new JcrNodeTypesAllowedRule();
+    }
+
+    protected AccessGrantedRule createAccessGrantedRule() {
+        return new AccessGrantedRule();
+    }
+
+    protected WritePermissionRequiredRule createWritePermissionRequiredRule() {
+        return new WritePermissionRequiredRule();
     }
 }
