@@ -34,12 +34,23 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.jcr.Node;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -53,6 +64,15 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     private static final String CHECKBOX_CAPTION = "Turn me on";
 
     private CheckBoxFieldFactory checkBoxField;
+    private TestI18NAuthoringSupport i18NAuthoringSupport;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        i18NAuthoringSupport = mock(TestI18NAuthoringSupport.class);
+        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, i18NAuthoringSupport);
+    }
 
     @Test
     public void simpleCheckBoxFieldTest() throws Exception {
@@ -100,6 +120,32 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         assertEquals(true, field.getPropertyDataSource().getValue());
     }
 
+    @Test
+    public void testDefaultValueOfI18nCheckbox() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
+        definition.setDefaultValue("true");
+        definition.setI18n(true);
+
+        Locale en = new Locale("en");
+        Locale de = new Locale("de");
+        List<Locale> locales = new ArrayList<Locale>();
+        locales.add(en);
+        locales.add(de);
+
+        when(i18NAuthoringSupport.getAvailableLocales(((Node)((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(locales);
+        when(i18NAuthoringSupport.getDefaultLocale(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(en);
+
+        // WHEN
+        Field<Boolean> field = checkBoxField.createField();
+
+        // THEN
+        assertEquals(true, baseItem.getItemProperty("propertyName").getValue());
+        assertEquals(true, baseItem.getItemProperty("propertyName_de").getValue());
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         CheckboxFieldDefinition fieldDefinition = new CheckboxFieldDefinition();
@@ -109,4 +155,10 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         this.definition = fieldDefinition;
     }
 
+    /**
+     * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
+     */
+    private interface TestI18NAuthoringSupport extends I18NAuthoringSupport {
+        Locale getDefaultLocale(Node node);
+    }
 }

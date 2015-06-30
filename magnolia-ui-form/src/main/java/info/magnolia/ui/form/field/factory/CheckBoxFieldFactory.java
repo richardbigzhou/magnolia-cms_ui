@@ -33,8 +33,25 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Locale;
+
+import javax.inject.Inject;
+import javax.jcr.Node;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -45,8 +62,63 @@ import com.vaadin.ui.Field;
  */
 public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefinition, Boolean> {
 
+    private static final Logger log = LoggerFactory.getLogger(CheckBoxFieldFactory.class);
+
+    private final I18NAuthoringSupport i18nAuthoringSupport;
+
+    @Inject
+    public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem);
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    @Deprecated
     public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
+        this.i18nAuthoringSupport = Components.getComponent(I18NAuthoringSupport.class);
+    }
+
+    @Override
+    public Field<Boolean> createField() {
+        super.createField();
+        if(definition.isI18n()) {
+            if (item instanceof JcrItemAdapter) {
+                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
+                if (jcrItem.isNode()) {
+                    Node node = (Node) jcrItem;
+                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
+                    Locale defaultLocale = getDefaultLocale(node);
+                    for (Locale locale : locales) {
+                        if (!locale.getLanguage().equals(defaultLocale.getLanguage())) {
+                            Property<?> property = initializeLocalizedProperty(locale);
+                            setPropertyDataSourceAndDefaultValue(property);
+                        }
+                    }
+                }
+            }
+        }
+
+        return field;
+    }
+
+    private String constructI18NPropertyName(CharSequence basePropertyName, Locale locale) {
+        return basePropertyName + "_" + locale.toString();
+    }
+
+    private Property<?> initializeLocalizedProperty(Locale locale) {
+        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+
+        if (transformerClass == null) {
+            // TODO explain why down cast
+            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+        }
+        Transformer<?> transformer = initializeTransformer(transformerClass);
+        transformer.setLocale(locale);
+        final String basePropertyName = transformer.getBasePropertyName();
+        final String localizedPropertyName = constructI18NPropertyName(basePropertyName, locale);
+        transformer.setI18NPropertyName(localizedPropertyName);
+
+        return new TransformedProperty(transformer);
     }
 
     @Override
@@ -68,5 +140,26 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
         if (property.getValue() == null) {
             setPropertyDataSourceDefaultValue(property);
         }
+    }
+
+    /**
+     * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
+     */
+    private Locale getDefaultLocale(Node node) {
+        Method methodToFind;
+        try {
+            methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
+            if (methodToFind != null) {
+                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[] {node});
+            }
+        } catch (NoSuchMethodException e) {
+            log.error("Error getting method 'getDefaultLocale(Node)' from I18nAuthoringSupport", e);
+        } catch (InvocationTargetException e) {
+            log.error("Error invoking method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
+        } catch (IllegalAccessException e) {
+            log.error("Error accessing method 'getDefaultLocale(%s)' from i18nAuthoringSupport [%s]", node, i18nAuthoringSupport, e);
+        }
+
+        return null;
     }
 }
