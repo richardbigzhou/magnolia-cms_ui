@@ -284,8 +284,8 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         return this.type;
     }
 
-
     /* I18nAwareHandler impl */
+
 
     @Override
     public boolean hasI18NSupport() {
@@ -307,4 +307,13 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         return this.locale;
     }
 
+    /**
+     * Delegates to JCR_DATA property.
+     */
+    @Override
+    public boolean isReadOnly() {
+        Property property = relatedFormItem.getItemProperty(JcrConstants.JCR_DATA);
+        boolean isPropertyReadOnly = property != null && property.isReadOnly();
+        return isPropertyReadOnly || definition.isReadOnly();
+    }
 }

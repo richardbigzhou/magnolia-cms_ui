@@ -308,7 +308,15 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
         // Set ReadOnly (field property has to be updated)
         if (field.getPropertyDataSource() != null) {
-            field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
+            Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+
+            if (transformerClass == null) {
+                // TODO explain why down cast
+                transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+            }
+            Transformer<?> transformer = initializeTransformer(transformerClass);
+
+            field.getPropertyDataSource().setReadOnly(transformer.isReadOnly());
         }
     }
 

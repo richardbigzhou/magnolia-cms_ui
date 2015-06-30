@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -69,6 +70,31 @@ import com.vaadin.ui.TextField;
 public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
 
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
+
+    @Test
+    public void factoryChecksForPropertyReadOnlyOption() throws Exception {
+        // GIVEN
+        definition.setReadOnly(false);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        baseItem.addItemProperty(propertyName, new ObjectProperty<>("test", String.class, true));
+        // WHEN
+        Field<Object> field = fieldFactory.createField();
+        // THEN
+        assertThat(field.isReadOnly(), is(true));
+    }
+
+    @Test
+    public void factoryChecksForDefinitionReadOnlyOption() throws Exception {
+        // GIVEN
+        definition.setReadOnly(true);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
+        // WHEN
+        Field<Object> field = fieldFactory.createField();
+        // THEN
+        assertThat(field.isReadOnly(), is(true));
+    }
 
     @Test
     public void simpleInitializationTest() {
@@ -340,6 +366,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         assertNull(field.getCaption());
     }
+
     @Test
     public void testFieldConverterInitialized() throws Exception {
         // GIVEN
@@ -357,7 +384,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     }
 
     @Test
-     public void testViewConverterInitialized() throws Exception {
+    public void testViewConverterInitialized() throws Exception {
         // GIVEN
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new TextFieldDefinition(), "foo");
         def.setConverterClass(StringToCalendarConverter.class);

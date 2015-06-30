@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
+import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
@@ -47,6 +49,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
  * Basic implementation of a {@link Transformer}.<br>
@@ -91,7 +94,7 @@ public class BasicTransformer<T> implements Transformer<T> {
     @Override
     public T readFromItem() {
         Property<T> p = getOrCreateProperty(type);
-        if (definition.isReadOnly()) {
+        if (isReadOnly()) {
             p.setReadOnly(true);
         }
         return p.getValue();
@@ -206,4 +209,9 @@ public class BasicTransformer<T> implements Transformer<T> {
         return type;
     }
 
+    @Override
+    public boolean isReadOnly() {
+        Property<T> property = getOrCreateProperty(type);
+        return property.isReadOnly() || definition.isReadOnly();
+    }
 }

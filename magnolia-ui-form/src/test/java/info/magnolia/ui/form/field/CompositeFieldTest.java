@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -124,6 +125,7 @@ public class CompositeFieldTest extends MgnlTestCase {
         final CompositeFieldDefinition fieldDefinition = new CompositeFieldDefinition();
         fieldDefinition.setFields(Arrays.asList(childFieldDef1, childFieldDef2));
         fieldDefinition.setRequired(true);
+        fieldDefinition.setName("compositeFieldDefinition");
 
         final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, fieldDefinition, PropertysetItem.class, Arrays.asList("f1", "f2"));
         doReturn(compositeTransformer).when(componentProvider).newInstance(eq(CompositeTransformer.class), anyVararg());
@@ -131,6 +133,7 @@ public class CompositeFieldTest extends MgnlTestCase {
         this.compositeFieldFactory = new CompositeFieldFactory(fieldDefinition, relatedItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
 
         // WHEN
+        //given(relatedItem.getItemProperty(""));
         this.multiField = (CompositeField) compositeFieldFactory.createField();
         // Forces the getContent() call internally which initializes Vaadin layout.
         multiField.iterator().next();
