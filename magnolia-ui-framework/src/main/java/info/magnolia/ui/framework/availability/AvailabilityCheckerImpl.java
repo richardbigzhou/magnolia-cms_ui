@@ -77,6 +77,13 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     public AvailabilityCheckerImpl(ComponentProvider componentProvider, ContentConnector contentConnector) {
         this.componentProvider = componentProvider;
         this.contentConnector = contentConnector;
+        this.jcrNodesAllowedRule = createJcrNodesAllowedRule();
+        this.jcrPropertiesAllowedRule = createJcrPropertiesAllowedRule();
+        this.jcrRootAllowedRule = createJcrRootAllowedRule();
+        this.jcrNodeTypesAllowedRule = createJcrNodeTypesAllowedRule();
+        this.multipleItemsAllowedRule = createMultipleItemsAllowedRule();
+        this.accessGrantedRule = createAccessGrantedRule();
+        this.writePermissionRequiredRule = createWritePermissionRequiredRule();
     }
 
     @Override
@@ -117,14 +124,6 @@ public class AvailabilityCheckerImpl implements AvailabilityChecker {
     }
 
     private Collection<? extends AvailabilityRule> prepareShorthandRules(AvailabilityDefinition definition) {
-        jcrNodesAllowedRule = createJcrNodesAllowedRule();
-        jcrPropertiesAllowedRule = createJcrPropertiesAllowedRule();
-        jcrRootAllowedRule = createJcrRootAllowedRule();
-        jcrNodeTypesAllowedRule = createJcrNodeTypesAllowedRule();
-        multipleItemsAllowedRule = createMultipleItemsAllowedRule();
-        accessGrantedRule = createAccessGrantedRule();
-        writePermissionRequiredRule = createWritePermissionRequiredRule();
-
         jcrNodesAllowedRule.setNodesAllowed(definition.isNodes());
         jcrPropertiesAllowedRule.setPropertiesAllowed(definition.isProperties());
         jcrRootAllowedRule.setRootAllowed(definition.isRoot());
