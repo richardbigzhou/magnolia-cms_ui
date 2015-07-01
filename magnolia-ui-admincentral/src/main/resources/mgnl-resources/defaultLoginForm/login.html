@@ -35,7 +35,7 @@
           <div id="login-divet" class="divet"></div>
           <div style="height:28px;"></div>
           <label for="login-username">user name</label>
-          <input type="text" value="" id="login-username" name="mgnlUserId" [#if loginError] class ="error"[/#if] tabindex="1" [#if !loginError] autofocus [/#if] autocorrect="off" autocapitalize="off">
+          <input type="text" value="${(mgnlUserId!)?html}" id="login-username" name="mgnlUserId" [#if loginError] class ="error"[/#if] tabindex="1" [#if !loginError] autofocus [/#if] autocorrect="off" autocapitalize="off">
           <br class="float-clear"/>
           <label for="login-password">password</label>
           <input type="password" id="login-password" value="" name="mgnlUserPSWD" tabindex="2" [#if loginError] class ="error"[/#if]><br class="float-clear"/>

@@ -204,7 +204,7 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.3.6/*</version>
+      <version>5.3.10/*</version>
     </dependency>
     <dependency>
       <name>imaging</name>
