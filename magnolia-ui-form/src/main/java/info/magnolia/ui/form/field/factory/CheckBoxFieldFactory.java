@@ -72,6 +72,9 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
         this.i18nAuthoringSupport = i18nAuthoringSupport;
     }
 
+    /**
+     * @deprecated since 5.3.10, use {@link #CheckBoxFieldFactory(CheckboxFieldDefinition , Item, I18NAuthoringSupport)} instead.
+     */
     @Deprecated
     public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
