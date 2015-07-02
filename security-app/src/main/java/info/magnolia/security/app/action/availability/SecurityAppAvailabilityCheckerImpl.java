@@ -51,6 +51,7 @@ public class SecurityAppAvailabilityCheckerImpl extends AvailabilityCheckerImpl 
         super(componentProvider, contentConnector);
     }
 
+    @Override
     protected WritePermissionRequiredRule createWritePermissionRequiredRule() {
         return new SecurityAppWritePermissionRequiredRule();
     }
