@@ -126,7 +126,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         AppLauncherLayout layout = new AppLauncherLayout();
         for (AppLauncherGroupDefinition groupDefinition : layoutDefinition.getGroups()) {
 
-            if (!isGroupVisibleForCurrentUser(groupDefinition, user)) {
+            if (!isGroupVisibleForUser(groupDefinition, user)) {
                 continue;
             }
 
@@ -150,7 +150,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                     continue;
                 }
 
-                if (isAppVisibleForCurrentUser(entryDefinition, appDescriptor, user)) {
+                if (isAppVisibleForUser(entryDefinition, appDescriptor, user)) {
                     AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
                     entry.setName(entryDefinition.getName());
                     entry.setEnabled(entryDefinition.isEnabled());
@@ -179,12 +179,12 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         sendChangedEvent();
     }
 
-    private boolean isAppVisibleForCurrentUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor, User user) {
+    private boolean isAppVisibleForUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor, User user) {
         AccessDefinition permissions = appDescriptor.getPermissions();
         return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(user));
     }
 
-    private boolean isGroupVisibleForCurrentUser(AppLauncherGroupDefinition group, User user) {
+    private boolean isGroupVisibleForUser(AppLauncherGroupDefinition group, User user) {
         AccessDefinition permissions = group.getPermissions();
         return (permissions == null || permissions.hasAccess(user));
     }
