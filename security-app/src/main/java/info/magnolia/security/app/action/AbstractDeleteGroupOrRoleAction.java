@@ -152,6 +152,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
             throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
         }
         if (assignedTo != null && !assignedTo.isEmpty()) {
+            //TODO invoke dialog with delete dependencies actions as submit action
             throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
         }
     }

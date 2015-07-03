@@ -107,6 +107,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
         }
         if (!assignedTo.isEmpty()) {
+            //TODO invoke dialog with delete dependencies actions as submit action
             throw new ActionExecutionException(getUserAndGroupListForErrorMessage(assignedTo));
         }
     }
