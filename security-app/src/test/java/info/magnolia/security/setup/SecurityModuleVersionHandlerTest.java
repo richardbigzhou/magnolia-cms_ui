@@ -405,13 +405,11 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteUser"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteItems"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/deleteActions/items/confirmDeleteUser"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items/confirmDeleteItems"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/confirmDeleteGroup"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/deleteGroup"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole"));
     }
 
     @Test
@@ -451,10 +449,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.3"));
 
         // THEN
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
-        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
     }
 
     @Test
@@ -549,5 +545,24 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         // THEN
         assertThat(session.getNode("/modules/security-app/dialogs/user/form/tabs/user/fields/email"), hasNode("validators"));
+    }
+
+    @Test
+    public void updateFrom539RemoveIndependentConfirmDialogs() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/confirmDeleteGroup");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.9"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/deleteGroup"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
+
     }
 }

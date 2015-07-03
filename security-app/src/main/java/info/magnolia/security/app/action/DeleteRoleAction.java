@@ -97,6 +97,26 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     }
 
     @Override
+    protected String getConfirmationDialogTitle() {
+        return getI18n().translate("security.roles.actions.confirmDeleteRole.confirmationHeader");
+    }
+
+    @Override
+    protected String getConfirmationDialogBody() {
+        return getI18n().translate("security.roles.actions.confirmDeleteRole.confirmationMessage");
+    }
+
+    @Override
+    protected String getConfirmationDialogProceedLabel() {
+        return getI18n().translate("security.roles.actions.confirmDeleteRole.proceedLabel");
+    }
+
+    @Override
+    protected String getConfirmationDialogCancelLabel() {
+        return getI18n().translate("security.roles.actions.confirmDeleteRole.cancelLabel");
+    }
+
+    @Override
     protected String getBaseErrorMessage() {
         return getI18n().translate("security.delete.role.isAssignedError");
     }
