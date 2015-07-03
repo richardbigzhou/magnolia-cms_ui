@@ -181,23 +181,25 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         final String groupOrRoleName = node.getName();
 
         final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
-        // users
-        // TODO MGNLUI-3286: depending on being in GROUPS or ROLES subapp we only have to check those dependencies
-        for (String user : securitySupport.getUserManager().getUsersWithGroup(groupOrRoleName)) {
-            assignedTo.add(translatedUserString + ":" + user);
-        }
-        for (String user : securitySupport.getUserManager().getUsersWithRole(groupOrRoleName)) {
-            assignedTo.add(translatedUserString + ":" + user);
-        }
 
-        // groups
         final String translatedGroupString = getI18n().translate("security.delete.groupIdentifier");
-        // TODO MGNLUI-3286: depending on being in GROUPS or ROLES subapp we only have to check those dependencies
-        for (String group : securitySupport.getGroupManager().getGroupsWithGroup(groupOrRoleName)) {
-            assignedTo.add(translatedGroupString + ":" + group);
-        }
-        for (String group : securitySupport.getGroupManager().getGroupsWithRole(groupOrRoleName)) {
-            assignedTo.add(translatedGroupString + ":" + group);
+
+        if (NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
+            // group - user, group - group
+            for (String user : securitySupport.getUserManager().getUsersWithGroup(groupOrRoleName)) {
+                assignedTo.add(translatedUserString + ":" + user);
+            }
+            for (String group : securitySupport.getGroupManager().getGroupsWithGroup(groupOrRoleName)) {
+                assignedTo.add(translatedGroupString + ":" + group);
+            }
+        } else if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME)) {
+            // role - user, role - group
+            for (String user : securitySupport.getUserManager().getUsersWithRole(groupOrRoleName)) {
+                assignedTo.add(translatedUserString + ":" + user);
+            }
+            for (String group : securitySupport.getGroupManager().getGroupsWithRole(groupOrRoleName)) {
+                assignedTo.add(translatedGroupString + ":" + group);
+            }
         }
 
         return assignedTo;

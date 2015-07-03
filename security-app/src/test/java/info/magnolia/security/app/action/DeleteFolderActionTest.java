@@ -41,8 +41,10 @@ import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.MgnlGroupManager;
 import info.magnolia.cms.security.MgnlRoleManager;
 import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
+import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
@@ -91,9 +93,11 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
     private CommandsManager commandsManager;
     private Session sessionRoles;
     private Session sessionGroups;
-    private SecuritySupport securitySupport;
+    private SecuritySupportImpl securitySupport;
     private MgnlGroupManager mgnlGroupManager;
     private MgnlRoleManager mgnlRoleManager;
+    private UserManager userManager;
+    private User user;
 
     @Before
     @Override
@@ -101,6 +105,9 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         super.setUp();
 
         definition = new DeleteFolderActionDefinition();
+
+        Session sessionUsers = MgnlContext.getJCRSession(RepositoryConstants.USERS);
+        sessionUsers.getRootNode().addNode("admin");
 
         sessionRoles = MgnlContext.getJCRSession(RepositoryConstants.USER_ROLES);
         sessionGroups = MgnlContext.getJCRSession(RepositoryConstants.USER_GROUPS);
@@ -122,7 +129,7 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         ).when(uiContext).openConfirmation(any(MessageStyleType.class),anyString(),anyString(),anyString(),anyString(),anyBoolean(),any(ConfirmationCallback.class));
         i18n = mock(SimpleTranslator.class);
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
-        securitySupport = Components.getComponent(SecuritySupport.class);
+        securitySupport = (SecuritySupportImpl) Components.getComponent(SecuritySupport.class);
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
         ComponentsTestUtil.setInstance(Map.class, new HashMap<String, Object>());
@@ -138,9 +145,9 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         mgnlGroupManager = new NoValidationMgnlGroupManager();
         HashMap<String, UserManager> userManagerHashMap = new HashMap<String, UserManager>();
         userManagerHashMap.put("magnolia", new MgnlUserManager());
-        ((SecuritySupportImpl) securitySupport).setRoleManager(mgnlRoleManager);
-        ((SecuritySupportImpl) securitySupport).setGroupManager(mgnlGroupManager);
-        ((SecuritySupportImpl) securitySupport).setUserManagers(userManagerHashMap);
+        securitySupport.setRoleManager(mgnlRoleManager);
+        securitySupport.setGroupManager(mgnlGroupManager);
+        securitySupport.setUserManagers(userManagerHashMap);
 
     }
 
@@ -236,10 +243,34 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         // GIVEN
         mgnlGroupManager.createGroup("/testFolder", "testGroup1");
 
-        Map<String, UserManager> userManagerMap = new HashMap<String, UserManager>();
-        userManagerMap.put("test", mock(UserManager.class));
+        actionGroups = new DeleteFolderAction(definition, itemGroups, commandsManager, eventBus, uiContext, i18n, securitySupport);
 
-        ((SecuritySupportImpl) securitySupport).setUserManagers(userManagerMap);
+        // WHEN
+        actionGroups.execute();
+
+        // THEN
+        assertFalse(sessionGroups.itemExists("/testFolder"));
+    }
+
+    @Test
+    public void testFolderIsDeletedWhenContainsNotUsedGroupAndGroupHasSameNameAsUsedRole() throws Exception {
+        // GIVEN
+        MgnlGroupManager mgnlGroupManager = new NoValidationMgnlGroupManager();
+        MgnlRoleManager mgnlRoleManager = new NoValidationMgnlRoleManager();
+        MgnlUserManager mgnlUserManager = new MgnlUserManager();
+
+        mgnlGroupManager.createGroup("/testFolder", "testGroupOrRole");
+        Role role = mgnlRoleManager.createRole("/testFolder", "testGroupOrRole");
+
+
+        Map<String, UserManager> userManagerMap = new HashMap<String, UserManager>();
+        userManagerMap.put("test", mgnlUserManager);
+        mgnlUserManager.setRealmName("admin");
+
+        User user = mgnlUserManager.createUser("admin", "user");
+        mgnlUserManager.addRole(user, role.getName());
+
+        securitySupport.setUserManagers(userManagerMap);
 
         actionGroups = new DeleteFolderAction(definition, itemGroups, commandsManager, eventBus, uiContext, i18n, securitySupport);
 
