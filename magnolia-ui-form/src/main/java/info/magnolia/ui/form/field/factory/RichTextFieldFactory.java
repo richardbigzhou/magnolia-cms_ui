@@ -57,12 +57,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
-import com.vaadin.server.ClientConnector.AttachEvent;
-import com.vaadin.server.ClientConnector.AttachListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinService;
-import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
 
 /**
@@ -115,19 +111,6 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         if (definition.getHeight() > 0) {
             richTextEditor.setHeight(definition.getHeight(), Unit.PIXELS);
         }
-
-        richTextEditor.addAttachListener(new AttachListener() {
-            @Override
-            public void attach(AttachEvent event) {
-                WebBrowser browser = Page.getCurrent().getWebBrowser();
-                if (browser.isIOS() || browser.isAndroid()) {
-                    // MGNLUI-1582: Workaround disabling non-operational ckeditor on the iPad or on android devices.
-                    richTextEditor.setEnabled(false);
-                    richTextEditor.setReadOnly(true);
-                    richTextEditor.addStyleName("richtextfield-disabled");
-                }
-            }
-        });
 
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
             @Override

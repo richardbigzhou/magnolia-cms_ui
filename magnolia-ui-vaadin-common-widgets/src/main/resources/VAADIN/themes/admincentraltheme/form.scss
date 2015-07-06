@@ -355,16 +355,6 @@ fieldset {
   width: 410px;
 }
 
-.richtextfield-disabled:after {
-  content: 'Rich text editing is currently disabled on touch devices.';
-  font-family: Verdana, Helvetica, sans-serif !important;
-  font-size: 12px;
-  display: block;
-  padding-top: 6px;
-  font-weight: bold;
-  text-align: center;
-}
-
 .textarea-stretcher {
   cursor: pointer;
   display: inline-block;
