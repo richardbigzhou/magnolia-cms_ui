@@ -97,6 +97,26 @@ public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGro
     }
 
     @Override
+    protected String getConfirmationDialogTitle() {
+        return getI18n().translate("security.groups.actions.confirmDeleteGroup.confirmationHeader");
+    }
+
+    @Override
+    protected String getConfirmationDialogBody() {
+        return getI18n().translate("security.groups.actions.confirmDeleteGroup.confirmationMessage");
+    }
+
+    @Override
+    protected String getConfirmationDialogProceedLabel() {
+        return getI18n().translate("security.groups.actions.confirmDeleteGroup.proceedLabel");
+    }
+
+    @Override
+    protected String getConfirmationDialogCancelLabel() {
+        return getI18n().translate("security.groups.actions.confirmDeleteGroup.cancelLabel");
+    }
+
+    @Override
     protected String getBaseErrorMessage() {
         return getI18n().translate("security.delete.group.isAssignedError");
     }

@@ -34,19 +34,25 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.GroupManager;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.action.DeleteAction;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +60,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -108,7 +115,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     protected abstract String getBaseErrorMessage();
 
     /**
-     * @return the message to be shown to the user in case the verification ({@link #getUsersAndGroupsThisItemIsAssignedTo()} method) fails.
+     * @return the message to be shown to the user in case the verification ({@link #getAssignedUsersAndGroups()} method) fails.
      */
     protected abstract String getVerificationErrorMessage();
 
@@ -142,48 +149,144 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     @Override
     protected void onPreExecute() throws Exception {
-        super.onPreExecute();
 
         List<String> assignedTo;
         try {
-            assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+            assignedTo = getAssignedUsersAndGroups();
         } catch (RepositoryException e) {
-            log.error("Cannot get the users/groups the group or role is assigned to.", e);
-            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+            throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
         }
         if (assignedTo != null && !assignedTo.isEmpty()) {
-            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+            removeDependencies();
         }
+        super.onPreExecute();
+    }
+
+    protected abstract String getConfirmationDialogTitle ();
+
+    protected abstract String getConfirmationDialogBody ();
+
+    protected abstract String getConfirmationDialogProceedLabel ();
+
+    protected abstract String getConfirmationDialogCancelLabel ();
+
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
+            executeOnConfirmation();
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+        }
+    }
+
+    private String getConfirmationDialogStatement() throws RepositoryException {
+        final List<String> assignedTo = new ArrayList<String>();
+        StringBuilder confirmMessage = new StringBuilder("<ul>");
+        for (JcrItemAdapter item : (List<JcrItemAdapter>) getSortedItems(getItemComparator())) {
+            final List<String> assignedToItem = new ArrayList<String>();
+            try {
+                List<String> dependenciesList = getAssignedUsersAndGroups(item.getJcrItem().getName());
+                if (!dependenciesList.isEmpty()) {
+                    confirmMessage.append("<li>");
+                    confirmMessage.append(item.getJcrItem().getName());
+                    confirmMessage.append("</li>");
+                    assignedToItem.addAll(dependenciesList);
+                }
+            } catch (RepositoryException e) {
+                throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
+            }
+            confirmMessage.append(formatUserAndGroupList(assignedToItem));
+            assignedTo.addAll(assignedToItem);
+        }
+        confirmMessage.append("</ul>");
+        return !assignedTo.isEmpty() ? confirmMessage.toString() : "";
+    }
+
+    private void executeOnConfirmation() throws RepositoryException {
+        final String message = getConfirmationDialogStatement();
+        getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
+                getConfirmationDialogTitle(),
+                (!message.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", message) + "<br />" : "") + getConfirmationDialogBody(),
+                getConfirmationDialogProceedLabel(),
+                getConfirmationDialogCancelLabel(),
+                true,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        try {
+                            AbstractDeleteGroupOrRoleAction.super.execute();
+                        } catch (Exception e) {
+                            onError(e);
+                        }
+                    }
+                });
     }
 
     /**
      * @return the list of user- and group-names this item (group or role) is directly assigned to.
      */
-    private List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException {
+    private List<String> getAssignedUsersAndGroups() throws RepositoryException {
+        return getAssignedUsersAndGroups(getCurrentItem().getJcrItem().getName());
+    }
+
+    private List<String> getAssignedUsersAndGroups(final String itemName) throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
-        final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
         final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
         // users
-        for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+        for (String user : getUsersWithGroupOrRoleToDelete(itemName)) {
             assignedTo.add(translatedUserString + ":" + user);
         }
         // groups
         final String translatedGroupString = getI18n().translate("security.delete.groupIdentifier");
-        for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
+        for (String group : getGroupsWithGroupOrRoleToDelete(itemName)) {
             assignedTo.add(translatedGroupString + ":" + group);
         }
 
         return assignedTo;
     }
 
-    private static String getUserAndGroupListForErrorMessage(Collection<String> usersAndGroups) {
+    private static String formatUserAndGroupList(Collection<String> usersAndGroups) {
         StringBuilder message = new StringBuilder("<ul>");
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
         }
         message.append("</ul>");
         return message.toString();
+    }
+
+    private void removeDependencies() throws RepositoryException, ActionExecutionException {
+        final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
+        final UserManager userManager = securitySupport.getUserManager();
+        final GroupManager groupManager = securitySupport.getGroupManager();
+        // users
+        for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+            if (getCurrentItem().isNode()) {
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                    userManager.removeGroup(userManager.getUser(user), groupOrRoleName);
+                }
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                    userManager.removeRole(userManager.getUser(user), groupOrRoleName);
+                }
+            }
+        }
+        // groups
+        for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
+            if (getCurrentItem().isNode()) {
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                    groupManager.removeGroup(groupManager.getGroup(group), groupOrRoleName);
+                }
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                    groupManager.removeRole(groupManager.getGroup(group), groupOrRoleName);
+                }
+            }
+        }
     }
 
     protected SecuritySupport getSecuritySupport() {
