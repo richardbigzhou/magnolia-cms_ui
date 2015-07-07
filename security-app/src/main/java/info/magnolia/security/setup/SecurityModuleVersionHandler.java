@@ -186,12 +186,6 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RenameNodeTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", false)))
                 .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of users subApp to use confirmDeleteItems action", "/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items/deleteItems",
                         new RenameNodeTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items", "deleteItems", "confirmDeleteItems", false)))
-                .addTask(new PartialBootstrapTask("Add confirmDeleteGroup action into groups subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteGroup"))
-                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of groups subApp to use confirmDeleteGroup action", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/deleteGroup",
-                        new RenameNodeTask("Reconfigure actionbar of groups subApp to use confirmDeleteGroup action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items", "deleteGroup", "confirmDeleteGroup", false)))
-                .addTask(new PartialBootstrapTask("Add confirmDeleteRole action into roles subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteRole"))
-                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole",
-                        new RenameNodeTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "deleteRole", "confirmDeleteRole", false)))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
                 .addTask(new AddDuplicateAndMoveActionsToSecurityAppTask())
@@ -207,15 +201,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         );
 
         register(DeltaBuilder.update("5.2.4", "")
-                .addTask(new ArrayDelegateTask("Add confirmation dialogs for folder deletion",
-                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteFolder"),
-                    new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteFolder"),
-                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder",
-                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true)),
-                    new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder",
-                        new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", true))))
-                .addTask(new NodeExistsDelegateTask("Reconfigure save action of user dialog", "/modules/security-app/dialogs/user/actions/commit",
-                        new CheckAndModifyPropertyValueTask("/modules/security-app/dialogs/user/actions/commit", "class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition", "info.magnolia.security.app.dialog.action.SaveUserDialogActionDefinition")))
+                        .addTask(new NodeExistsDelegateTask("Reconfigure save action of user dialog", "/modules/security-app/dialogs/user/actions/commit",
+                                new CheckAndModifyPropertyValueTask("/modules/security-app/dialogs/user/actions/commit", "class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition", "info.magnolia.security.app.dialog.action.SaveUserDialogActionDefinition")))
         );
 
         register(DeltaBuilder.update("5.3", "")
@@ -269,6 +256,17 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NodeExistsDelegateTask("Add validator for email field in user tab", "/modules/security-app/dialogs/user/form/tabs/user/fields/email/validators", null,
                                 new PartialBootstrapTask("", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.user.xml", "/user/form/tabs/user/fields/email/validators"))
                 )
+        );
+        register(DeltaBuilder.update("5.4.1", "")
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of groups subApp to use deleteGroup action", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/confirmDeleteGroup",
+                        new RenameNodeTask("Reconfigure actionbar of groups subApp to use deleteGroup action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items", "confirmDeleteGroup", "deleteGroup", false)))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use deleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole",
+                        new RenameNodeTask("Reconfigure actionbar of roles subApp to use deleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "confirmDeleteRole", "deleteRole", false)))
+                .addTask(new ArrayDelegateTask("Add confirmation dialogs for folder deletion",
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "deleteFolder", true)),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
+                                new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "deleteFolder", true))))
         );
     }
 
