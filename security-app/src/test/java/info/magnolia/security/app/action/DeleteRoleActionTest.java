@@ -34,7 +34,6 @@
 package info.magnolia.security.app.action;
 
 import static org.junit.Assert.*;
-
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.GroupManager;
@@ -53,6 +52,8 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -66,6 +67,8 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class DeleteRoleActionTest extends RepositoryTestCase {
 
@@ -86,6 +89,15 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         JcrItemAdapter item = new JcrNodeAdapter(groupNode);
         EventBus eventBus = mock(EventBus.class);
         UiContext uiContext = mock(UiContext.class);
+        doAnswer(new Answer() {
+                     @Override
+                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                         Object[] args = invocationOnMock.getArguments();
+                         ((ConfirmationCallback) args[6]).onSuccess();
+                         return null;
+                     }
+                 }
+        ).when(uiContext).openConfirmation(any(MessageStyleType.class),anyString(),anyString(),anyString(),anyString(),anyBoolean(),any(ConfirmationCallback.class));
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 
@@ -104,6 +116,12 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
 
         securitySupport = mock(SecuritySupport.class);
+
+        GroupManager gm = mock(GroupManager.class);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
+
+        UserManager um = mock(UserManager.class);
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         action = new DeleteRoleAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class), securitySupport);
     }
@@ -127,7 +145,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testRoleIsNotDeletedWhenItIsAssignedToUser() throws Exception {
+    public void testRoleIsDeletedWhenItIsAssignedToUser() throws Exception {
         // GIVEN
         UserManager um = mock(UserManager.class);
         when(um.getUsersWithRole(ROLENAME)).thenReturn(Arrays.asList("testUserHavingAssignedThatRole"));
@@ -137,11 +155,11 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        assertTrue(session.getRootNode().hasNode(ROLENAME));
+        assertFalse(session.getRootNode().hasNode(ROLENAME));
     }
 
     @Test
-    public void testRoleIsNotDeletedWhenItIsAssignedToGroup() throws Exception {
+    public void testRoleIsDeletedWhenItIsAssignedToGroup() throws Exception {
         // GIVEN
         GroupManager gm = mock(GroupManager.class);
         when(gm.getGroupsWithRole(ROLENAME)).thenReturn(Arrays.asList("groupThatHasThatRoleAssignedTo"));
@@ -151,6 +169,6 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        assertTrue(session.getRootNode().hasNode(ROLENAME));
+        assertFalse(session.getRootNode().hasNode(ROLENAME));
     }
 }
