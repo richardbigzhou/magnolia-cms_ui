@@ -34,19 +34,25 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.MgnlGroupManager;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.action.DeleteAction;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +60,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -70,12 +77,14 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     private final JcrItemAdapter item;
     private final SecuritySupport securitySupport;
+    private final SimpleTranslator i18n;
 
     @Inject
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, SecuritySupport securitySupport) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
         this.item = item;
         this.securitySupport = securitySupport;
+        this.i18n = i18n;
     }
 
     /**
@@ -152,8 +161,23 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
             throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
         }
         if (assignedTo != null && !assignedTo.isEmpty()) {
-            //TODO invoke dialog with delete dependencies actions as submit action
-            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+            getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
+                    i18n.translate("security-app.delete.confirmationDialog.title.label"),
+                    i18n.translate("security-app.delete.confirmationDialog.body.label", getUserAndGroupListForErrorMessage(assignedTo)),
+                    i18n.translate("security-app.delete.confirmationDialog.confirm.label"),
+                    i18n.translate("security-app.delete.confirmationDialog.cancel.label"),
+                    true,
+                    new ConfirmationCallback() {
+                        @Override
+                        public void onCancel() {
+                            // do nothing
+                        }
+
+                        @Override
+                        public void onSuccess() {
+                            forceDelete();
+                        }
+                    });
         }
     }
 
@@ -185,6 +209,43 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         }
         message.append("</ul>");
         return message.toString();
+    }
+
+    protected void forceDelete() {
+        try {
+            final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
+            final UserManager mgnlUserManager = securitySupport.getUserManager();
+            final MgnlGroupManager mgnlGroupManager = securitySupport.getGroupManager() instanceof MgnlGroupManager?(MgnlGroupManager) securitySupport.getGroupManager():null;
+            // users
+            for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+                if (getCurrentItem().isNode()) {
+                    if(NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                        mgnlUserManager.removeGroup(mgnlUserManager.getUser(user), groupOrRoleName);
+                    }
+                    if(NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                        mgnlUserManager.removeRole(mgnlUserManager.getUser(user), groupOrRoleName);
+                    }
+                }
+            }
+            // groups
+            if (mgnlGroupManager != null) {
+                for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
+                    if (getCurrentItem().isNode()) {
+                        if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                            mgnlGroupManager.removeGroup(mgnlGroupManager.getGroup(group), groupOrRoleName);
+                        }
+                        if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                            mgnlGroupManager.removeRole(mgnlGroupManager.getGroup(group), groupOrRoleName);
+                        }
+                    }
+                }
+            } else {
+                List<String> assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+                log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
+            }
+        } catch (RepositoryException e) {
+            log.error("Cannot get the users/groups the group or role is assigned to.", e);
+        }
     }
 
     protected SecuritySupport getSecuritySupport() {
