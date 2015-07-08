@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.BootstrapSingleResource;
@@ -63,6 +64,7 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
@@ -122,6 +124,27 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                     new CreateNodeTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activation", NodeTypes.ContentNode.NAME)),
             new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor", null,
                     new CreateNodeTask("Create node", "Create entry in appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activationMonitor", NodeTypes.ContentNode.NAME)));
+
+    private final Task addDownloadAsYamlActionTask = new AbstractTask("Download as Yaml action", "Add download as Yaml action to configuration app.") {
+
+        private final String appBootstrapFilePath = "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml";
+        private final String commandsBootstrapFilePath = "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml";
+        private final String actionBarFolderActionGroupsPath = "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups";
+
+        private ArrayDelegateTask delegate = new ArrayDelegateTask(getName(),
+                new PartialBootstrapTask("", "Register command", commandsBootstrapFilePath, "/commands/default/exportYaml"),
+                new NodeExistsDelegateTask("", actionBarFolderActionGroupsPath,
+                        new ArrayDelegateTask("",
+                                new CreateNodePathTask("", String.format("%s/%s", actionBarFolderActionGroupsPath, "downloadActions/items"), NodeTypes.ContentNode.NAME),
+                                new PartialBootstrapTask("", "Register in action bar", appBootstrapFilePath, "/configuration/subApps/browser/actionbar/sections/folders/groups/downloadActions/items/downloadYaml"),
+                                new OrderNodeBeforeTask(String.format("%s/%s", actionBarFolderActionGroupsPath, "downloadActions"), "importExportActions"),
+                                new PartialBootstrapTask("", "Add to app actions", appBootstrapFilePath, "/configuration/subApps/browser/actions/downloadYaml"))));
+
+        @Override
+        public void execute(InstallContext installContext) throws TaskExecutionException {
+            delegate.execute(installContext);
+        }
+    };
 
     public AdmincentralModuleVersionHandler() {
 
@@ -198,12 +221,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         List<NodeTypeDefinition> types = new ArrayList<NodeTypeDefinition>();
 
                         types.add(NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager,
-                                AdmincentralNodeTypes.Favorite.NAME,
-                                Arrays.asList(
-                                        JcrConstants.NT_BASE,
-                                        NodeTypes.Created.NAME,
-                                        NodeTypes.LastModified.NAME))
-                                );
+                                        AdmincentralNodeTypes.Favorite.NAME,
+                                        Arrays.asList(
+                                                JcrConstants.NT_BASE,
+                                                NodeTypes.Created.NAME,
+                                                NodeTypes.LastModified.NAME))
+                        );
 
                         return types;
                     }
@@ -251,7 +274,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                         new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
-                        ))));
+                ))));
 
         register(DeltaBuilder.update("5.2.7", "")
                 .addTask(new NodeExistsDelegateTask("Allow import action at root level in configuration and STK apps", UI_ACTIONS_IMPORT,
@@ -281,6 +304,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the location of the default login form.", RepositoryConstants.CONFIG, "/server/filters/securityCallback/clientCallbacks/form", "loginForm", "/mgnl-resources/defaultLoginForm/login.html", "/defaultMagnoliaLoginForm/login.html"))
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the permissions to enable access to the default login form.", RepositoryConstants.CONFIG, "/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm", "/.resources/defaultMagnoliaLoginForm"))
         );
+        register(DeltaBuilder.update("5.4.1", "")
+                .addTask(addDownloadAsYamlActionTask));
     }
 
     @Override
