@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.commands.impl.ExportCommand;
+import info.magnolia.commands.ExportJcrNodeToYamlCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -53,25 +53,27 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Action for exporting a node to XML format. Uses the export command to perform the serialization to XML then sends the
- * result to the client browser.
- *
- * @see ExportActionDefinition
+ * Action for exporting a node to YAML format. Uses the {@link ExportJcrNodeToYamlCommand} to perform the export operation.
+ * *
+ * @see ExportYamlActionDefinition
  */
-public class ExportAction extends AbstractCommandAction<ExportActionDefinition> {
+public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefinition> {
 
-    private File fileOutput;
+    private static final String YAML_EXTENSION = ".yaml";
+
     private FileOutputStream fileOutputStream;
+    private File fileOutput;
 
     private final FileDownloader fileDownloader;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, FileDownloader fileDownloader) throws ActionExecutionException {
+    public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, FileDownloader fileDownloader) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext, i18n);
         this.fileDownloader = fileDownloader;
+
         try {
             // Create a temporary file that will hold the data created by the export command.
-            fileOutput = File.createTempFile(item.getItemId().getUuid(), ".xml", Path.getTempDirectory());
+            fileOutput = File.createTempFile(item.getItemId().getUuid(), YAML_EXTENSION, Path.getTempDirectory());
             // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
             fileOutputStream = new FileOutputStream(fileOutput);
         } catch (Exception e) {
@@ -80,16 +82,16 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     }
 
     /**
-     * After command execution we push the created XML to the client browser.<br>
-     * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export command.<br>
+     * After command execution we push the created YAML to the client browser.<br>
+     * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export YAML command.<br>
      * This temporary file is the used to create a {@code FileInputStream} that ensure that this temporary file is removed once the <br>
      * fileInputStream is closed by Vaadin resource component.
      */
     @Override
     protected void onPostExecute() throws Exception {
         try {
-            ExportCommand exportCommand = (ExportCommand) getCommand();
-            fileDownloader.downloadFile(exportCommand.getFileName(), exportCommand.getMimeExtension(), FileUtils.openInputStream(fileOutput));
+            ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
+            fileDownloader.downloadFile(exportYamlCommand.getFileName(), FileUtils.openInputStream(fileOutput));
         } finally {
             IOUtils.closeQuietly(fileOutputStream);
             FileUtils.deleteQuietly(fileOutput);
@@ -97,12 +99,10 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     }
 
     @Override
-    protected Map<String, Object> buildParams(final Item jcrItem) {
+    protected Map<String, Object> buildParams(Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
-        params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
-        params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
-        params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.FALSE);
-        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, fileOutputStream);
+        params.put(ExportJcrNodeToYamlCommand.EXPORT_OUTPUT_STREAM, fileOutputStream);
+
         return params;
     }
 }

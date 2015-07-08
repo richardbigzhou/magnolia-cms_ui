@@ -281,6 +281,11 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the location of the default login form.", RepositoryConstants.CONFIG, "/server/filters/securityCallback/clientCallbacks/form", "loginForm", "/mgnl-resources/defaultLoginForm/login.html", "/defaultMagnoliaLoginForm/login.html"))
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the permissions to enable access to the default login form.", RepositoryConstants.CONFIG, "/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm", "/.resources/defaultMagnoliaLoginForm"))
         );
+        register(DeltaBuilder.update("5.4.1", "")
+                .addTask(new PartialBootstrapTask("Adding exportYamlAction to configuration app.", "Adding exportYamlAction to configuration app.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/importExportActions/items/exportYaml"))
+                .addTask(new PartialBootstrapTask("Adding exportYamlAction to configuration app.", "Adding exportYamlAction to configuration app.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/exportYaml"))
+                .addTask(new PartialBootstrapTask("Adding exportYamlAction to commands", "Adding exportYamlAction to commands.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/exportYaml"))
+        );
     }
 
     @Override

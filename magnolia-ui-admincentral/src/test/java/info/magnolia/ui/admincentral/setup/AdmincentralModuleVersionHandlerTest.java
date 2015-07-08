@@ -620,12 +620,27 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         Node workspacesExcludedFromFlushCachePolicy = NodeUtil.createPath(session.getRootNode(), "/" + ExcludeWorkspacesFromFlushCachePolicy.CACHE_CONFIGURATION_PATH + "defaultPageCache/" + ExcludeWorkspacesFromFlushCachePolicy.EXCLUDED_WORKSPACES_CONFIG_PATH, NodeTypes.Content.NAME);
 
         // WHEN
-       InstallContext ctx =  executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
+        InstallContext ctx = executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.8"));
 
         // THEN
         assertThat(workspacesExcludedFromFlushCachePolicy, hasProperty("profiles"));
         assertThat(workspacesExcludedFromFlushCachePolicy, hasProperty("messages"));
         this.assertNoMessages(ctx);
+    }
+
+    @Test
+    public void updateFrom54JcrToYamlExport() throws Exception {
+        // GIVEN
+        Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+        Node actionBar = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/importExportActions/items", NodeTypes.ContentNode.NAME);
+
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4"));
+
+        // THEN
+        assertThat(actionBar, hasNode("exportYaml"));
+        assertThat(actions, hasNode("exportYaml"));
     }
 
 }
