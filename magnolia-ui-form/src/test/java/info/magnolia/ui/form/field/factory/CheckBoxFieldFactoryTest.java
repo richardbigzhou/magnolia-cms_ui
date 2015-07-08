@@ -127,7 +127,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         when(i18NAuthoringSupport.getDefaultLocale(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(en);
 
         // WHEN
-        Field<Boolean> field = checkBoxField.createField();
+        checkBoxField.createField();
 
         // THEN
         assertEquals(true, baseItem.getItemProperty("propertyName").getValue());

@@ -107,6 +107,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
         return basePropertyName + "_" + locale.toString();
     }
 
+    @SuppressWarnings("unchecked")
     private Property<?> initializeLocalizedProperty(Locale locale) {
         Class<? extends Transformer<?>> transformerClass = super.getTransformerClass();
         Transformer<?> transformer = initializeTransformer(transformerClass);
