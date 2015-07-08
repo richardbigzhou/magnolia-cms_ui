@@ -144,9 +144,8 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
      * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
      */
     private Locale getDefaultLocale(Node node) {
-        Method methodToFind;
         try {
-            methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
+            Method methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
             if (methodToFind != null) {
                 return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[]{node});
             }
