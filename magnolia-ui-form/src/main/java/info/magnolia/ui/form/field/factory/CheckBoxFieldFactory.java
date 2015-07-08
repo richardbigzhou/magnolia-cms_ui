@@ -39,7 +39,6 @@ import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
-import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.lang.reflect.InvocationTargetException;
@@ -73,7 +72,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     }
 
     /**
-     * @deprecated since 5.3.10, use {@link #CheckBoxFieldFactory(CheckboxFieldDefinition , Item, I18NAuthoringSupport)} instead.
+     * @deprecated since 5.3.10, use {@link #CheckBoxFieldFactory(CheckboxFieldDefinition, Item, I18NAuthoringSupport)} instead.
      */
     @Deprecated
     public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
@@ -84,7 +83,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     @Override
     public Field<Boolean> createField() {
         super.createField();
-        if(definition.isI18n()) {
+        if (definition.isI18n()) {
             if (item instanceof JcrItemAdapter) {
                 javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
                 if (jcrItem.isNode()) {
@@ -109,12 +108,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     }
 
     private Property<?> initializeLocalizedProperty(Locale locale) {
-        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
-
-        if (transformerClass == null) {
-            // TODO explain why down cast
-            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
-        }
+        Class<? extends Transformer<?>> transformerClass = super.getTransformerClass();
         Transformer<?> transformer = initializeTransformer(transformerClass);
         transformer.setLocale(locale);
         final String basePropertyName = transformer.getBasePropertyName();
@@ -153,7 +147,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
         try {
             methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
             if (methodToFind != null) {
-                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[] {node});
+                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[]{node});
             }
         } catch (NoSuchMethodException e) {
             log.error("Error getting method 'getDefaultLocale(Node)' from I18nAuthoringSupport", e);

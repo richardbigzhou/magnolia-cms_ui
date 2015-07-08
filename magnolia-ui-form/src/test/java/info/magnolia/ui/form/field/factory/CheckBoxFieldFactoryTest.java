@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CheckBoxField;
@@ -44,7 +43,7 @@ import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,14 +70,14 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     public void setUp() throws Exception {
         super.setUp();
         i18NAuthoringSupport = mock(TestI18NAuthoringSupport.class);
-        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, i18NAuthoringSupport);
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem, i18NAuthoringSupport);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
     }
 
     @Test
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field<Boolean> field = checkBoxField.createField();
@@ -92,9 +91,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
-        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("false");
 
         // WHEN
@@ -108,9 +104,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void testDefaultValue() throws Exception {
         // GIVEN
-        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("true");
 
         // WHEN
@@ -123,19 +116,14 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void testDefaultValueOfI18nCheckbox() throws Exception {
         // GIVEN
-        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("true");
         definition.setI18n(true);
 
         Locale en = new Locale("en");
         Locale de = new Locale("de");
-        List<Locale> locales = new ArrayList<Locale>();
-        locales.add(en);
-        locales.add(de);
+        List<Locale> locales = Arrays.asList(en, de);
 
-        when(i18NAuthoringSupport.getAvailableLocales(((Node)((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(locales);
+        when(i18NAuthoringSupport.getAvailableLocales(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(locales);
         when(i18NAuthoringSupport.getDefaultLocale(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(en);
 
         // WHEN

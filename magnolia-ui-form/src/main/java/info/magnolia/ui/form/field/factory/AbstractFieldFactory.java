@@ -225,17 +225,21 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * Initialize the property used as field's Datasource.<br>
      * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
-    @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
-        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+        Class<? extends Transformer<?>> transformerClass = getTransformerClass();
+        Transformer<?> transformer = initializeTransformer(transformerClass);
 
+        return new TransformedProperty(transformer);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Class<? extends Transformer<?>> getTransformerClass() {
+        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
         if (transformerClass == null) {
             // TODO explain why down cast
             transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
-        Transformer<?> transformer = initializeTransformer(transformerClass);
-
-        return new TransformedProperty(transformer);
+        return transformerClass;
     }
 
     /**
