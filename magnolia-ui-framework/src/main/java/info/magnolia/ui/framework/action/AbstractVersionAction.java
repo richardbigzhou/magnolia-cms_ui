@@ -68,11 +68,13 @@ import com.vaadin.data.util.BeanItem;
 public abstract class AbstractVersionAction<D extends ActionDefinition> extends AbstractAction<D> {
 
     /**
-     * Label format for versions.
-     * Will display: VersionNumber (Date) (Comment), i.e. <code>1.1 (MM/dd/YYYY HH:mm) (Comment)</code>.
+     * Will display: VersionNumber (Date) (User: Comment), i.e. <code>1.1 (MM/dd/YYYY HH:mm) (User: Comment)</code>.
      */
-    public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL = "{0} ({1}) ({2})";
-    public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT = "{0} ({1})";
+    public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL = "{0} ({1}) ({2}: {3})";
+    /**
+     * Will display: VersionNumber (Date) (User), i.e. <code>1.1 (MM/dd/YYYY HH:mm) (User)</code>.
+     */
+    public final String MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT = "{0} ({1}) ({2})";
 
     protected final LocationController locationController;
     protected final UiContext uiContext;
@@ -81,12 +83,14 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     /**
      * @deprecated since 5.3.4 - define and inject {@link AbstractJcrNodeAdapter} in your subclass.
      */
+    @Deprecated
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
 
     /**
      * @deprecated since 5.3.4 - use {@link AbstractVersionAction(D, LocationController, UiContext, FormDialogPresenter, SimpleTranslator)} instead.
      */
+    @Deprecated
     protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
         super(definition);
         this.locationController = locationController;
@@ -168,9 +172,9 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
     protected String getVersionLabel(VersionInfo versionInfo) {
         if (StringUtils.isEmpty(versionInfo.getVersionComment())) {
-            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT, versionInfo.getVersionName(), versionInfo.getVersionDate());
+            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser());
         } else {
-            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionComment());
+            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser(), versionInfo.getVersionComment());
         }
     }
 
