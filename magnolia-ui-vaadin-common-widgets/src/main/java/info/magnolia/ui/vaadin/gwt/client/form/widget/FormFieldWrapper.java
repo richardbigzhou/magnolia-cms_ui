@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
+import com.vaadin.client.ui.aria.AriaHelper;
 
 /**
  * Wrapper widget that provides help and error indication.
@@ -155,6 +156,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         this.field = child;
         if (child != null) {
             child.removeFromParent();
+            AriaHelper.bindCaption(child, label);
             getChildren().add(child);
             fieldWrapper.insertBefore(child.getElement(), helpButton.getElement());
             adopt(child);
