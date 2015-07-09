@@ -77,14 +77,12 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     private final JcrItemAdapter item;
     private final SecuritySupport securitySupport;
-    private final SimpleTranslator i18n;
 
     @Inject
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n, SecuritySupport securitySupport) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
         this.item = item;
         this.securitySupport = securitySupport;
-        this.i18n = i18n;
     }
 
     /**
@@ -151,7 +149,6 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     @Override
     protected void onPreExecute() throws Exception {
-        super.onPreExecute();
 
         List<String> assignedTo;
         try {
@@ -161,24 +158,57 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
             throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
         }
         if (assignedTo != null && !assignedTo.isEmpty()) {
-            getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
-                    i18n.translate("security-app.delete.confirmationDialog.title.label"),
-                    i18n.translate("security-app.delete.confirmationDialog.body.label", getUserAndGroupListForErrorMessage(assignedTo)),
-                    i18n.translate("security-app.delete.confirmationDialog.confirm.label"),
-                    i18n.translate("security-app.delete.confirmationDialog.cancel.label"),
-                    true,
-                    new ConfirmationCallback() {
-                        @Override
-                        public void onCancel() {
-                            // do nothing
-                        }
-
-                        @Override
-                        public void onSuccess() {
-                            forceDelete();
-                        }
-                    });
+            removeDependencies();
         }
+        super.onPreExecute();
+    }
+
+    protected abstract String getConfirmationDialogTitle ();
+
+    protected abstract String getConfirmationDialogBody ();
+
+    protected abstract String getConfirmationDialogProceedLabel ();
+
+    protected abstract String getConfirmationDialogCancelLabel ();
+
+
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        String confirmMessage = "";
+        List<String> assignedTo;
+        for (JcrItemAdapter item : (List<JcrItemAdapter>) getSortedItems(getItemComparator())) {
+            try {
+                setCurrentItem(item);
+                assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+            } catch (RepositoryException e) {
+                log.error("Cannot get the users/groups the group or role is assigned to.", e);
+                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+            }
+            confirmMessage += getUserAndGroupListForErrorMessage(assignedTo);
+        }
+        setCurrentItem(null);
+        getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
+                getConfirmationDialogTitle (),
+                getConfirmationDialogBody () + (!confirmMessage.equals("<ul></ul>")? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage):""),
+                getConfirmationDialogProceedLabel(),
+                getConfirmationDialogCancelLabel (),
+                true,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        try {
+                            AbstractDeleteGroupOrRoleAction.super.execute();
+                        } catch (Exception e) {
+                            onError(e);
+                        }
+                    }
+                });
     }
 
     /**
@@ -211,40 +241,45 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         return message.toString();
     }
 
-    protected void forceDelete() {
-        try {
-            final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
-            final UserManager mgnlUserManager = securitySupport.getUserManager();
-            final MgnlGroupManager mgnlGroupManager = securitySupport.getGroupManager() instanceof MgnlGroupManager?(MgnlGroupManager) securitySupport.getGroupManager():null;
-            // users
-            for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+    private void removeDependencies() throws Exception {
+        final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
+        final UserManager mgnlUserManager = securitySupport.getUserManager();
+        //this is needed only for 5.3.x, in 5.4.x use securitySupport.getGroupManager() only
+        final MgnlGroupManager mgnlGroupManager = securitySupport.getGroupManager() instanceof MgnlGroupManager ? (MgnlGroupManager) securitySupport.getGroupManager() : null;
+        // users
+        for (String user : getUsersWithGroupOrRoleToDelete(groupOrRoleName)) {
+            if (getCurrentItem().isNode()) {
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                    mgnlUserManager.removeGroup(mgnlUserManager.getUser(user), groupOrRoleName);
+                }
+                if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                    mgnlUserManager.removeRole(mgnlUserManager.getUser(user), groupOrRoleName);
+                }
+            }
+        }
+        // groups
+        //this is needed only for 5.3.x, in 5.4.x remove null check
+        if (mgnlGroupManager != null) {
+            for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
                 if (getCurrentItem().isNode()) {
-                    if(NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
-                        mgnlUserManager.removeGroup(mgnlUserManager.getUser(user), groupOrRoleName);
+                    if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
+                        mgnlGroupManager.removeGroup(mgnlGroupManager.getGroup(group), groupOrRoleName);
                     }
-                    if(NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
-                        mgnlUserManager.removeRole(mgnlUserManager.getUser(user), groupOrRoleName);
+                    if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
+                        mgnlGroupManager.removeRole(mgnlGroupManager.getGroup(group), groupOrRoleName);
                     }
                 }
             }
-            // groups
-            if (mgnlGroupManager != null) {
-                for (String group : getGroupsWithGroupOrRoleToDelete(groupOrRoleName)) {
-                    if (getCurrentItem().isNode()) {
-                        if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Group.NAME)) {
-                            mgnlGroupManager.removeGroup(mgnlGroupManager.getGroup(group), groupOrRoleName);
-                        }
-                        if (NodeUtil.isNodeType((Node) getCurrentItem().getJcrItem(), NodeTypes.Role.NAME)) {
-                            mgnlGroupManager.removeRole(mgnlGroupManager.getGroup(group), groupOrRoleName);
-                        }
-                    }
-                }
-            } else {
-                List<String> assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
-                log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
+        } else {
+            List<String> assignedTo;
+            try {
+                assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+            } catch (RepositoryException e) {
+                log.error("Cannot get the users/groups the group or role is assigned to.", e);
+                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
             }
-        } catch (RepositoryException e) {
-            log.error("Cannot get the users/groups the group or role is assigned to.", e);
+            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
+            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
         }
     }
 
