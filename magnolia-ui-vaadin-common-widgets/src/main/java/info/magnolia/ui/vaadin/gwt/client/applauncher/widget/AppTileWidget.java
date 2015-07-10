@@ -230,7 +230,7 @@ public class AppTileWidget extends Widget {
     
     public void prepareAriaLink(){
         ariaLink.setAttribute("href", "#app:" + appTile.getName());
-        ariaLink.setInnerText(appTile.getName());
+        ariaLink.setInnerText(appTile.getCaption());
         ariaLink.addClassName("hidden-for-aria");
     }
 }
