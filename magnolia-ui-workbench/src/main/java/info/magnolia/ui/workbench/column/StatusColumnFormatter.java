@@ -97,7 +97,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     activationStatusMessage =  i18n.translate("activation-status.columns.not-activated");
                 }
                 activationStatus = "<span class=\"" + activationStatus + "\" title=\"" + activationStatusMessage + "\"></span>";
-                activationStatus = activationStatus + "<span class=\"hidden\">" + activationStatusMessage + "</span>";
+                activationStatus = activationStatus + "<span class=\"hidden-for-aria\">" + activationStatusMessage + "</span>";
             }
 
             // permission status
