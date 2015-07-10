@@ -7,7 +7,7 @@
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.3.8</version>
+  <version>5.3.8-MAGNOLIA-5975</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.3.7</magnoliaVersion>
+    <magnoliaVersion>5.3.8-MAGNOLIA-5975</magnoliaVersion>
     <magnoliaTasksVersion>1.0.1</magnoliaTasksVersion>
     <imagingVersion>3.1.3</imagingVersion>
     <vaadinVersion>7.1.7</vaadinVersion>
