@@ -79,10 +79,14 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
         this.i18n = i18n;
     }
 
+    protected Item getSelectedItem() throws ActionExecutionException {
+        return parentItem;
+    }
+
     @Override
     public void execute() throws ActionExecutionException {
 
-        Object parentId = contentConnector.getItemId(parentItem);
+        Object parentId = contentConnector.getItemId(getSelectedItem());
 
         if (contentConnector instanceof SupportsCreation) {
             final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(parentId, getDefinition().getNodeType());
