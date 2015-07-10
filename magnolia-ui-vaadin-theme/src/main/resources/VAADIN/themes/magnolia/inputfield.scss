@@ -45,6 +45,10 @@
   .v-filterselect {
     padding-right: 0;
 
+    & .v-filterselect-input {
+      padding: 4px 3px 4px 6px !important;
+    }
+
     &.v-has-width {
       padding-right: 11px;
     }
@@ -72,8 +76,7 @@
     width: 16px;
     height: 16px;
     padding: 5px 5px 4px;
-    margin-left: -26px;
-    margin-right: 0;
+    margin: 0 0 -3px -26px;
     background-position: 0 -6px;
   }
 
