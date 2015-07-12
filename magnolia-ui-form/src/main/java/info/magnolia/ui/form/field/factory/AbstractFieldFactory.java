@@ -218,20 +218,15 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
-        Class<? extends Transformer<?>> transformerClass = getTransformerClass();
-        Transformer<?> transformer = initializeTransformer(transformerClass);
-
-        return new TransformedProperty(transformer);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Class<? extends Transformer<?>> getTransformerClass() {
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+
         if (transformerClass == null) {
             // TODO explain why down cast
             transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
-        return transformerClass;
+        Transformer<?> transformer = initializeTransformer(transformerClass);
+
+        return new TransformedProperty(transformer);
     }
 
     /**

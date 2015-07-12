@@ -34,22 +34,12 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import javax.jcr.Node;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -63,21 +53,12 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     private static final String CHECKBOX_CAPTION = "Turn me on";
 
     private CheckBoxFieldFactory checkBoxField;
-    private I18NAuthoringSupport i18NAuthoringSupport;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
-        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem, i18NAuthoringSupport);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
-    }
 
     @Test
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field<Boolean> field = checkBoxField.createField();
@@ -91,6 +72,9 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("false");
 
         // WHEN
@@ -104,6 +88,9 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void testDefaultValue() throws Exception {
         // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
         definition.setDefaultValue("true");
 
         // WHEN
@@ -111,27 +98,6 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
 
         // THEN
         assertEquals(true, field.getPropertyDataSource().getValue());
-    }
-
-    @Test
-    public void testDefaultValueOfI18nCheckbox() throws Exception {
-        // GIVEN
-        definition.setDefaultValue("true");
-        definition.setI18n(true);
-
-        Locale en = new Locale("en");
-        Locale de = new Locale("de");
-        List<Locale> locales = Arrays.asList(en, de);
-
-        when(i18NAuthoringSupport.getAvailableLocales(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(locales);
-        when(i18NAuthoringSupport.getDefaultLocale(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(en);
-
-        // WHEN
-        checkBoxField.createField();
-
-        // THEN
-        assertEquals(true, baseItem.getItemProperty("propertyName").getValue());
-        assertEquals(true, baseItem.getItemProperty("propertyName_de").getValue());
     }
 
     @Override
@@ -142,4 +108,5 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         fieldDefinition.setButtonLabel(CHECKBOX_CAPTION);
         this.definition = fieldDefinition;
     }
+
 }
