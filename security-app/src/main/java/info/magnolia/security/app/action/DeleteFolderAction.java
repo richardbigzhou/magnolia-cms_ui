@@ -34,8 +34,10 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.MgnlGroupManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -45,8 +47,10 @@ import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.action.DeleteAction;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,11 +89,44 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     }
 
     @Override
+    public void execute() throws ActionExecutionException {
+        String confirmMessage = "";
+        final List<String> assignedTo = new ArrayList<String>();
+        for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
+            setCurrentItem(item);
+            assignedTo.addAll(getAssignedRolesAndGroupsList());
+            confirmMessage += getUserAndGroupListForErrorMessage(assignedTo);
+        }
+        setCurrentItem(null);
+        getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
+                getConfirmationDialogTitle(),
+                getConfirmationDialogBody() + (!assignedTo.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage) : ""),
+                getConfirmationDialogProceedLabel(),
+                getConfirmationDialogCancelLabel(),
+                true,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        try {
+                            DeleteFolderAction.super.execute();
+                        } catch (Exception e) {
+                            onError(e);
+                        }
+                    }
+                });
+    }
+
+    @Override
     protected void onPreExecute() throws Exception {
         super.onPreExecute();
 
-        final List<String> assignedTo = new ArrayList<String>();
-        try {
+        final List<String> assignedTo = getAssignedRolesAndGroupsList();
+        if (!assignedTo.isEmpty()) {
             if (getCurrentItem().isNode()) {
                 Node folder = (Node) getCurrentItem().getJcrItem();
 
@@ -97,18 +134,15 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
                     @Override
                     public void visit(Node node) throws RepositoryException {
                         if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME) || NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
-                            assignedTo.addAll(getUsersAndGroupsThisItemIsAssignedTo(node));
+                            try {
+                                removeDependencies(node);
+                            } catch (Exception e) {
+                                onError(e);
+                            }
                         }
                     }
                 });
             }
-        } catch (RepositoryException e) {
-            log.error("Cannot get the users/groups the group or role is assigned to.", e);
-            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
-        }
-        if (!assignedTo.isEmpty()) {
-            //TODO invoke dialog with delete dependencies actions as submit action
-            throw new ActionExecutionException(getUserAndGroupListForErrorMessage(assignedTo));
         }
     }
 
@@ -170,8 +204,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     }
 
     protected String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
-        StringBuilder message = new StringBuilder(getI18n().translate("security.delete.folder.roleOrGroupInfolderStillInUse"));
-        message.append("<ul>");
+        StringBuilder message = new StringBuilder("<ul>");
         int i = 0;
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
@@ -183,5 +216,82 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         }
         message.append("</ul>");
         return message.toString();
+    }
+
+    protected String getConfirmationDialogTitle() {
+        return getI18n().translate("security.folders.actions.confirmDeleteFolder.confirmationHeader");
+    }
+
+    protected String getConfirmationDialogBody() {
+        return getI18n().translate("security.folders.actions.confirmDeleteFolder.confirmationMessage");
+    }
+
+    protected String getConfirmationDialogProceedLabel() {
+        return getI18n().translate("security.folders.actions.confirmDeleteFolder.proceedLabel");
+    }
+
+    protected String getConfirmationDialogCancelLabel() {
+        return getI18n().translate("security.folders.actions.confirmDeleteFolder.cancelLabel");
+    }
+
+    protected String getBaseErrorMessage() {
+        return getI18n().translate("security.delete.folder.roleOrGroupInfolderStillInUse");
+    }
+
+    private void removeDependencies(Node node) throws Exception {
+        final String groupOrRoleName = node.getName();
+        final UserManager mgnlUserManager = securitySupport.getUserManager();
+        //this is needed only for 5.3.x, in 5.4.x use securitySupport.getGroupManager() only
+        final MgnlGroupManager mgnlGroupManager = securitySupport.getGroupManager() instanceof MgnlGroupManager ? (MgnlGroupManager) securitySupport.getGroupManager() : null;
+        if (NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
+            // group - user, group - group
+            for (String user : securitySupport.getUserManager().getUsersWithGroup(groupOrRoleName)) {
+                mgnlUserManager.removeGroup(mgnlUserManager.getUser(user), groupOrRoleName);
+            }
+            //this is needed only for 5.3.x, in 5.4.x remove null check
+            if (mgnlGroupManager != null) {
+                for (String group : securitySupport.getGroupManager().getGroupsWithGroup(groupOrRoleName)) {
+                    mgnlGroupManager.removeGroup(mgnlGroupManager.getGroup(group), groupOrRoleName);
+                }
+            }
+        } else if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME)) {
+            // role - user, role - group
+            for (String user : securitySupport.getUserManager().getUsersWithRole(groupOrRoleName)) {
+                mgnlUserManager.removeRole(mgnlUserManager.getUser(user), groupOrRoleName);
+            }
+            //this is needed only for 5.3.x, in 5.4.x remove null check
+            if (mgnlGroupManager != null) {
+                for (String group : securitySupport.getGroupManager().getGroupsWithRole(groupOrRoleName)) {
+                    mgnlGroupManager.removeRole(mgnlGroupManager.getGroup(group), groupOrRoleName);
+                }
+            }
+        }
+        if (mgnlGroupManager == null) {
+            final List<String> assignedTo = getAssignedRolesAndGroupsList();
+            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
+            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+        }
+    }
+
+    private List<String> getAssignedRolesAndGroupsList() throws ActionExecutionException {
+        final List<String> assignedTo = new ArrayList<String>();
+        try {
+            if (getCurrentItem().isNode()) {
+                Node folder = (Node) getCurrentItem().getJcrItem();
+
+                NodeUtil.visit(folder, new NodeVisitor() {
+                    @Override
+                    public void visit(Node node) throws RepositoryException {
+                        if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME) || NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
+                            assignedTo.addAll(getUsersAndGroupsThisItemIsAssignedTo(node));
+                        }
+                    }
+                });
+            }
+        } catch (RepositoryException e) {
+            log.error("Cannot get the users/groups the group or role is assigned to.", e);
+            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+        }
+        return assignedTo;
     }
 }

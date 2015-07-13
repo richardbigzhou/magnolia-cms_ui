@@ -176,11 +176,11 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     @Override
     public void execute() throws ActionExecutionException {
         String confirmMessage = "";
-        List<String> assignedTo;
+        final List<String> assignedTo = new ArrayList<String>();
         for (JcrItemAdapter item : (List<JcrItemAdapter>) getSortedItems(getItemComparator())) {
             try {
                 setCurrentItem(item);
-                assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+                assignedTo.addAll(getUsersAndGroupsThisItemIsAssignedTo());
             } catch (RepositoryException e) {
                 log.error("Cannot get the users/groups the group or role is assigned to.", e);
                 throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
@@ -190,7 +190,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         setCurrentItem(null);
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
                 getConfirmationDialogTitle (),
-                getConfirmationDialogBody () + (!confirmMessage.equals("<ul></ul>")? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage):""),
+                getConfirmationDialogBody () + (!assignedTo.isEmpty()? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage):""),
                 getConfirmationDialogProceedLabel(),
                 getConfirmationDialogCancelLabel (),
                 true,
