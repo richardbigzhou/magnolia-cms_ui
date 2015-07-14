@@ -34,7 +34,6 @@
 package info.magnolia.security.app.action;
 
 import static org.junit.Assert.*;
-
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.GroupManager;
@@ -52,7 +51,9 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -85,7 +86,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         Node groupNode = session.getRootNode().addNode(ROLENAME, NodeTypes.Group.NAME);
         JcrItemAdapter item = new JcrNodeAdapter(groupNode);
         EventBus eventBus = mock(EventBus.class);
-        UiContext uiContext = mock(UiContext.class);
+        UiContext uiContext = new TestSubAppContextImpl(mock(SubAppDescriptor.class),mock(Shell.class));
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 
@@ -104,6 +105,12 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         commandsManager.register(ContentUtil.asContent(exportModuleDef.getParent()));
 
         securitySupport = mock(SecuritySupport.class);
+
+        GroupManager gm = mock(GroupManager.class);
+        when(securitySupport.getGroupManager()).thenReturn(gm);
+
+        UserManager um = mock(UserManager.class);
+        when(securitySupport.getUserManager()).thenReturn(um);
 
         action = new DeleteRoleAction(definition, item, commandsManager, eventBus, uiContext, mock(SimpleTranslator.class), securitySupport);
     }
