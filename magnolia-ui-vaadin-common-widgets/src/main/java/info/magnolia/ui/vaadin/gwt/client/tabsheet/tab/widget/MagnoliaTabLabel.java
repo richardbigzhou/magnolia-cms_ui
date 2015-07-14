@@ -34,8 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.CaptionChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabClickedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 
 import com.google.gwt.dom.client.NativeEvent;
@@ -130,8 +128,6 @@ public class MagnoliaTabLabel extends SimplePanel {
             eventBus.fireEvent(new TabCloseEvent(tab));
         } else if (!wasActive) {
             eventBus.fireEvent(new ActiveTabChangedEvent(tab));
-        } else {
-            eventBus.fireEvent(new TabClickedEvent(tab));
         }
         nativeEvent.stopPropagation();
     }
@@ -144,10 +140,13 @@ public class MagnoliaTabLabel extends SimplePanel {
         return tab;
     }
 
+    public String getCaption() {
+        return textWrapper.getElement().getInnerText();
+    }
+
     public void updateCaption(final String caption) {
         textWrapper.getElement().setInnerText(caption);
         setWidth("");
-        eventBus.fireEvent(new CaptionChangedEvent(tab.getLabel()));
     }
 
     public void setClosable(boolean isClosable) {

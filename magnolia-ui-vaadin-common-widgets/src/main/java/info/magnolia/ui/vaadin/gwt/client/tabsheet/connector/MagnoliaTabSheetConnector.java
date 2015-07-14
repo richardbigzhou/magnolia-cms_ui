@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.connector;
 
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ResizeEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
@@ -107,7 +106,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
+                if (event.hasPropertyChanged("showAllEnabled")) {
+                    view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
+                }
+
                 if (getState().logo != null && getState().logoBgColor != null) {
                     view.setLogo(getState().logo, getState().logoBgColor);
                 }
@@ -167,10 +169,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     private final ElementResizeListener listener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector) getState().activeTab;
-            if (tabConnector != null) {
-                eventBus.fireEvent(new ResizeEvent(tabConnector.getWidget().getLabel()));
-            }
+            view.onResize();
         }
     };
 

@@ -50,7 +50,7 @@ public class CollectionUtil {
         return null;
     }
 
-    public static <T> List<T> reserveItemToFirst(final List<T> items, T item) {
+    public static <T> List<T> makeItemFirst(final List<T> items, T item) {
         List<T> newItems = new LinkedList<T>();
         for (int i = items.indexOf(item); i < items.size(); i++) {
             newItems.add(items.get(i));
