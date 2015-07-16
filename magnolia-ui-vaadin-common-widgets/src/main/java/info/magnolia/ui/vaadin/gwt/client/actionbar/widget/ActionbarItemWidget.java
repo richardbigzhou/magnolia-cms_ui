@@ -176,11 +176,13 @@ public class ActionbarItemWidget extends FocusWidget {
         return data.getName();
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
         update();
     }
 
+    @Override
     public boolean isEnabled() {
         return isEnabled;
     }
