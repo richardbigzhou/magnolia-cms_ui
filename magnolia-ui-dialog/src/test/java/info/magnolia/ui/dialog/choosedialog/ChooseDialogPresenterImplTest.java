@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog.choosedialog;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
@@ -89,6 +90,7 @@ public class ChooseDialogPresenterImplTest extends TestCase {
     private ConfiguredChooseDialogDefinition configuredChooseDialogDefinition = new ConfiguredChooseDialogDefinition();
     private ComponentProvider componentProvider = mock(ComponentProvider.class);
 
+    @Override
     @Before
     public void setUp() throws Exception {
         I18nContentSupport i18nContentSupport = mock(I18nContentSupport.class);
