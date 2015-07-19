@@ -284,6 +284,16 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         return this.type;
     }
 
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+
+    @Override
+    public void setReadOnly(boolean isReadOnly) {
+
+    }
+
 
     /* I18nAwareHandler impl */
 

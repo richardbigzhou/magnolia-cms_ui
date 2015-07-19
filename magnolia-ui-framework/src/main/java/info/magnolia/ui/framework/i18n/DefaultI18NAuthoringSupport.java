@@ -91,6 +91,11 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     @Override
     public Locale getDefaultLocale(Node node) {
+        return getDefaultLocale();
+    }
+
+    @Override
+    public Locale getDefaultLocale() {
         if (enabled && i18nContentSupport.isEnabled()) {
             return i18nContentSupport.getDefaultLocale();
         }

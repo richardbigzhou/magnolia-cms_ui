@@ -39,6 +39,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.vaadin.aceeditor.AceMode.forFileEnding;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 
 import org.vaadin.aceeditor.AceEditor;
@@ -64,7 +66,7 @@ public class CodeFieldFactory extends AbstractFieldFactory<CodeFieldDefinition, 
     private AceEditor field;
 
     public CodeFieldFactory(CodeFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        super(definition, relatedFieldItem, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

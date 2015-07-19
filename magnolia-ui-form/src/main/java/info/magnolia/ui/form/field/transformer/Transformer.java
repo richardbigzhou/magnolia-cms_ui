@@ -29,7 +29,6 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- *
  */
 package info.magnolia.ui.form.field.transformer;
 
@@ -41,7 +40,7 @@ import info.magnolia.ui.api.i18n.I18NAwareHandler;
  * Implemented Transformer have the responsibility to : <br>
  * - write : Convert the T newValue to a specific Item format (Single Item property, Multi Item property, Multi sub Items...) <br>
  * - read : Transform a specific Item values (single property, Multi. property, sub Items) to a specified type T. <br>
- * 
+ *
  * @param <T> type of the element handled.
  */
 public interface Transformer<T> extends I18NAwareHandler {
@@ -67,4 +66,9 @@ public interface Transformer<T> extends I18NAwareHandler {
      * to this type.
      */
     Class<T> getType();
+
+    boolean isReadOnly();
+
+    void setReadOnly(boolean isReadOnly);
+
 }

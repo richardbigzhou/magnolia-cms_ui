@@ -35,6 +35,10 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -49,6 +53,9 @@ import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
+import java.util.Locale;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,15 +80,34 @@ import com.vaadin.ui.Label;
 public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends AbstractFormItem implements FieldFactory {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldFactory.class);
     protected Item item;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+
+    protected SubAppContext getSubAppContext() {
+        return subAppContext;
+    }
+
+    private SubAppContext subAppContext;
+
     protected Field<T> field;
     protected D definition;
     private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
     private ComponentProvider componentProvider;
 
-    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+    public AbstractFieldFactory(D definition, Item relatedFieldItem, I18NAuthoringSupport i18NAuthoringSupport) {
         this.definition = definition;
         this.item = relatedFieldItem;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
     }
+
+    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+        this(definition, relatedFieldItem, Components.getComponent(I18NAuthoringSupport.class));
+
+    }
+
+    public void setSubAppContext(SubAppContext subAppContext) {
+        this.subAppContext = subAppContext;
+    }
+
 
     @Override
     public void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
@@ -98,10 +124,17 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     }
 
     @Override
+    public void setUiContext(UiContext uiContext) {
+        setSubAppContext((SubAppContext) uiContext);
+    }
+
+    @Override
     public Field<T> createField() {
         if (field == null) {
             // Create the Vaadin field
             this.field = createFieldComponent();
+            ((AbstractField)this.field).setLocale(subAppContext.getAuthoringLocale());
+
             if (field instanceof AbstractField && definition.getConverterClass() != null) {
                 Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
                 ((AbstractField) field).setConverter(converter);
@@ -117,15 +150,29 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
             field.setWidth(100, Unit.PERCENTAGE);
 
-            // Set label and required marker
-            if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
-                this.field.setCaption(getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
-            }
-
+            setFieldCaption();
             setConstraints();
 
         }
         return this.field;
+    }
+
+    private void setFieldCaption() {
+        // Set label and required marker
+        if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
+            String caption = getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : "");
+
+
+            if (subAppContext != null) {
+                // && definition.isI18n()
+                Locale authoringLocale = subAppContext.getAuthoringLocale();
+                if (authoringLocale != null && !ObjectUtils.equals(authoringLocale, i18NAuthoringSupport.getDefaultLocale())) {
+                    caption = String.format("%s (%s)", caption, authoringLocale.getLanguage());
+                }
+            }
+
+            this.field.setCaption(caption);
+        }
     }
 
     /**
@@ -225,7 +272,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
-
+        transformer.setLocale(subAppContext.getAuthoringLocale());
         return new TransformedProperty(transformer);
     }
 
@@ -315,6 +362,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     @Override
     public void setComponentProvider(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
+        this.subAppContext = (SubAppContext) componentProvider.getComponent(UiContext.class);
     }
 
     protected ComponentProvider getComponentProvider() {

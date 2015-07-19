@@ -69,6 +69,11 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
     }
 
     @Override
+    public boolean isReadOnly() {
+        return super.isReadOnly() && transformer.isReadOnly();
+    }
+
+    @Override
     public T getValue() {
         return super.getValue();
     }
@@ -76,6 +81,7 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
     /**
      * @return true if the handler support I18N.
      */
+    @Deprecated
     public boolean hasI18NSupport() {
         return transformer.hasI18NSupport();
     }
@@ -83,6 +89,7 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
     /**
      * In case of i18n change, Reload the Value returned by the Handler.
      */
+    @Deprecated
     public void fireI18NValueChange() {
         boolean readOnlyValue = isReadOnly();
         setReadOnly(false);

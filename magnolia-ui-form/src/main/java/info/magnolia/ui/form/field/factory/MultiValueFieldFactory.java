@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -96,7 +97,9 @@ public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFi
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class);
+        Transformer<?> transformer = this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class);
+        transformer.setLocale(getSubAppContext().getAuthoringLocale());
+        return transformer;
     }
 
 }

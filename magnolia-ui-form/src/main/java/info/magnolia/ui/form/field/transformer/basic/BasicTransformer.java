@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
@@ -43,6 +45,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
@@ -61,21 +64,34 @@ public class BasicTransformer<T> implements Transformer<T> {
 
     protected Item relatedFormItem;
     protected final ConfiguredFieldDefinition definition;
-
     protected String basePropertyName;
+
     protected String i18NPropertyName;
     private Locale locale;
     protected Class<T> type;
 
+    private boolean isReadOnly = false;
+
+    private I18NAuthoringSupport i18NAuthoringSupport;
+
     @Inject
-    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type, I18NAuthoringSupport i18NAuthoringSupport) {
         this.definition = definition;
         this.relatedFormItem = relatedFormItem;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.basePropertyName = definition.getName();
         if (hasI18NSupport()) {
             this.i18NPropertyName = this.basePropertyName;
         }
         setType(type);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     public Item getRelatedFormItem() {
@@ -166,9 +182,10 @@ public class BasicTransformer<T> implements Transformer<T> {
      * Based on the i18n information, define the property name to use.
      */
     protected String definePropertyName() {
-        if (hasI18NSupport()) {
-            return this.i18NPropertyName;
+        if (definition.isI18n() && locale != null && !ObjectUtils.equals(i18NAuthoringSupport.getDefaultLocale(), locale)) {
+            return basePropertyName + "_" + locale.toString();
         }
+
         return this.basePropertyName;
     }
 
@@ -204,6 +221,16 @@ public class BasicTransformer<T> implements Transformer<T> {
     @Override
     public Class<T> getType() {
         return type;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.isReadOnly || definition.isReadOnly() || getOrCreateProperty(type).isReadOnly();
+    }
+
+    @Override
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 
 }

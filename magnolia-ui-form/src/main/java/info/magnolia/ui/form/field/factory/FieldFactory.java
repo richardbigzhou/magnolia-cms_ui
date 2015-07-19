@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -77,6 +78,8 @@ public interface FieldFactory extends FormItem {
      */
     @Deprecated
     void setI18nContentSupport(I18nContentSupport i18nContentSupport);
+
+    void setUiContext(UiContext uiContext);
 
     void setComponentProvider(ComponentProvider componentProvider);
 }

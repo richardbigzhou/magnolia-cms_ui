@@ -195,7 +195,9 @@ public class FormBuilder {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : fields) {
-                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
+                FieldFactory fieldFactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item, uiContext);
+                fieldFactory.setUiContext(uiContext);
+                final FieldFactory formField = fieldFactory;
                 if (formField == null) {
                     continue;
                 }

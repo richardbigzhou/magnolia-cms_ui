@@ -104,7 +104,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void readFromItem() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -122,7 +122,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void readFromItemTwice() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();
@@ -137,7 +137,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         // GIVEN
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -158,7 +158,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         transformer.setI18NPropertyName("multi_de");
 
         // WHEN
@@ -177,7 +177,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void createNewElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         transformer.readFromItem();
         // WHEN
         Property<?> res = transformer.createProperty();
@@ -196,7 +196,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         transformer.setI18NPropertyName("multi_de");
         transformer.readFromItem();
         // WHEN
@@ -213,7 +213,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void removeElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         PropertysetItem initialElements = transformer.readFromItem();
 
         // WHEN
@@ -229,7 +229,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void removeElementAndCreate() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         PropertysetItem initialElements = transformer.readFromItem();
         transformer.removeProperty(initialElements.getItemPropertyIds().iterator().next());
 
@@ -247,7 +247,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void coherenceOfMultisetItemIds() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, null);
         PropertysetItem res = transformer.readFromItem();
         // create two elements
         transformer.createProperty();

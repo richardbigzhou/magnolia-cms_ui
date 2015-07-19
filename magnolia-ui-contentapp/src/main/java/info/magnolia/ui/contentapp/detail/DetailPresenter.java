@@ -42,6 +42,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
@@ -68,11 +69,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,10 +110,12 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     private final AvailabilityChecker checker;
 
     private final ContentConnector contentConnector;
+    private UiContext uiContext;
 
     private final DefinitionCloner cloner;
 
     private EditorDefinition editorDefinition;
+    private DetailView.ViewType viewType;
 
     private Item item;
 
@@ -120,7 +125,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector, UiContext uiContext) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
@@ -131,21 +136,44 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.i18n = i18n;
         this.checker = checker;
         this.contentConnector = contentConnector;
+        this.uiContext = uiContext;
         this.cloner = new DefinitionCloner();
     }
 
     public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
         this.editorDefinition = editorDefinition;
+        this.viewType = viewType;
         this.item = contentConnector.getItem(itemId);
         this.itemId = itemId;
-        setItemView(viewType);
+
+        initDetailView();
         return view;
     }
 
-    private void setItemView(DetailView.ViewType viewType) {
-        FormView formView = componentProvider.getComponent(FormView.class);
+    protected void initDetailView() {
+        final FormView formView = componentProvider.getComponent(FormView.class);
         this.dialogView = formView;
+        view.setItemView(dialogView.asVaadinComponent(), viewType);
+        formView.setListener(new FormView.Listener() {
+            @Override
+            public void localeChanged(Locale newLocale) {
+                // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
+                if (uiContext instanceof SubAppContext && newLocale != null) {
+                    SubAppContext subAppContext = (SubAppContext) uiContext;
+                    if (!ObjectUtils.equals(subAppContext.getAuthoringLocale(), newLocale)) {
+                        subAppContext.setAuthoringLocale(newLocale);
+                        formView.clear();
+                        buildFormView(formView);
+                    }
+                }
+            }
+        });
 
+        initActions();
+        buildFormView(formView);
+    }
+
+    protected void buildFormView(FormView formView) {
         FormDefinition formDefinition;
 
         switch (viewType) {
@@ -158,10 +186,9 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             break;
         }
 
-        initActions();
         formBuilder.buildForm(formView, formDefinition, item, null);
-        view.setItemView(dialogView.asVaadinComponent(), viewType);
     }
+
 
     private void initActions() {
         EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.newInstance(editorDefinition.getActionArea().getPresenterClass());
@@ -209,14 +236,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void onCancel() {
-        // setItemView(ItemView.ViewType.VIEW);
+        // initDetailView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 
     @Override
     public void onSuccess(String actionName) {
         eventBus.fireEvent(new ContentChangedEvent(itemId));
-        // setItemView(ItemView.ViewType.VIEW);
+        // initDetailView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 

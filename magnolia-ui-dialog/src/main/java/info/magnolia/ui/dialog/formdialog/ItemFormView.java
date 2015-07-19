@@ -35,7 +35,6 @@ package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
@@ -68,6 +67,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     private final SimpleTranslator i18n;
     private final I18NAuthoringSupport i18nAuthoringSupport;
     private final UiContext uiContext;
+    private FormView.Listener listener;
 
     @Inject
     public ItemFormView(SimpleTranslator i18n, I18NAuthoringSupport i18nAuthoringSupport, UiContext uiContext) {
@@ -167,6 +167,17 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
         }
     }
 
+    @Override
+    public void setListener(FormView.Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void clear() {
+        this.form = new Form();
+        getDialog().setContent(this.form);
+    }
+
     private void createLocaleSelector() {
         languageSelector = new ComboBox();
         languageSelector.setSizeUndefined();
@@ -182,12 +193,8 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     }
 
     protected void updateLocale(Locale locale) {
-        if (i18nAuthoringSupport != null) {
-            i18nAuthoringSupport.i18nize(form, (locale));
-            // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
-            if (uiContext instanceof SubAppContext && locale != null) {
-                ((SubAppContext) uiContext).setAuthoringLocale(locale);
-            }
+        if (listener != null) {
+            listener.localeChanged(locale);
         }
     }
 }

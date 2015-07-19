@@ -96,7 +96,7 @@ public interface DetailView extends View {
     /**
      * Listener for the ContentView.
      */
-    public interface Listener {
+    interface Listener {
 
     }
 }

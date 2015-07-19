@@ -49,12 +49,12 @@ public interface MultiTransformer extends Transformer<PropertysetItem> {
     /**
      * Creates and returns a new property associated to the root item.
      */
-    public Property<?> createProperty();
+    Property<?> createProperty();
 
     /**
      * Removes a property from the root item.
      * 
      * @param id the property identifier as specified by the concrete {@link Transformer} implementation
      */
-    public void removeProperty(Object id);
+    void removeProperty(Object id);
 }

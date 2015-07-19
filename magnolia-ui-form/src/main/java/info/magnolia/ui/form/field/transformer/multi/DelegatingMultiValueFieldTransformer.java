@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -44,6 +44,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -77,23 +78,29 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
 
     private static final Logger log = LoggerFactory.getLogger(DelegatingMultiValueFieldTransformer.class);
 
-    private final I18nContentSupport i18nContentSupport;
     protected String childNodeType = NodeTypes.ContentNode.NAME;
     protected String subItemBaseName;
     protected String i18nSuffix = StringUtils.EMPTY;
     private final String defaultLocale;
     // Map used to store PropertysetItem based on language (i18n support)
-    private Map<String, PropertysetItem> items = new HashMap<String, PropertysetItem>();;
-    private List<String> freezedName = new ArrayList<String>();
+    private Map<String, PropertysetItem> localisedItems = new HashMap<String, PropertysetItem>();;
+    private List<String> frozenNames = new ArrayList<String>();
+    private I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public DelegatingMultiValueFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18nContentSupport i18nContentSupport) {
+    public DelegatingMultiValueFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18nAuthoringSupport) {
         super(relatedFormItem, definition, type);
-        this.i18nContentSupport = i18nContentSupport;
-        this.i18nSuffix += this.i18nContentSupport.getDefaultLocale();
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
+        this.i18nSuffix += this.i18nAuthoringSupport.getDefaultLocale();
         this.defaultLocale = i18nSuffix;
         this.subItemBaseName = getSubItemBaseName();
-        items.put(this.i18nSuffix, new PropertysetItem());
+        localisedItems.put(this.i18nSuffix, new PropertysetItem());
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        super.setLocale(locale);
+        i18nSuffix = locale.getLanguage();
     }
 
     /**
@@ -104,7 +111,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     @Override
     public PropertysetItem readFromItem() {
-        PropertysetItem item = items.get(this.i18nSuffix);
+        PropertysetItem item = localisedItems.get(this.i18nSuffix);
         // Only read it once
         if (!item.getItemPropertyIds().isEmpty()) {
             return item;
@@ -120,7 +127,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
             if (itemName.matches(childItemRegexRepresentation())) {
                 item.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
                 position += 1;
-                freezedName.add(itemName);
+                frozenNames.add(itemName);
             }
         }
         return item;
@@ -149,7 +156,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         child.setParent(getRootItem());
         child.getParent().addChild(child);
         Property<?> res = new ObjectProperty<Item>(child);
-        PropertysetItem item = items.get(this.i18nSuffix);
+        PropertysetItem item = localisedItems.get(this.i18nSuffix);
         item.addItemProperty(item.getItemPropertyIds().size(), res);
 
         return res;
@@ -157,7 +164,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
 
     @Override
     public void removeProperty(Object id) {
-        PropertysetItem item = items.get(this.i18nSuffix);
+        PropertysetItem item = localisedItems.get(this.i18nSuffix);
         Property<?> propertyToRemove = item.getItemProperty(id);
         if (propertyToRemove != null && propertyToRemove.getValue() != null) {
             JcrNodeAdapter toRemove = (JcrNodeAdapter) propertyToRemove.getValue();
@@ -233,7 +240,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      * Creates a unique name for the child item, in the following format:
      * <i>subItemBaseName</i> + <i>increment</i> + <i>i18nSuffix</i>
      * <ul>
-     * <li><i>subItemBaseName</i> can be set via {@link #setSubItemBaseName()}; by default we use the {@link info.magnolia.ui.form.field.definition.FieldDefinition#getName()}
+     * <li><i>subItemBaseName</i> by default we use the {@link info.magnolia.ui.form.field.definition.FieldDefinition#getName()}
      * <li><i>increment</i> is the next available index for the current base name
      * <li><i>i18nSuffix</i> is the default i18n suffix (typically something formatted like '_de')
      * </ul>
@@ -241,7 +248,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     protected String createNewItemName() {
         int nb = 0;
-        String localeAsString = hasI18NSupport() && i18nContentSupport.isEnabled() && !this.defaultLocale.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
+        String localeAsString = hasI18NSupport() && !this.defaultLocale.equals(this.i18nSuffix) ? "_" + this.i18nSuffix : StringUtils.EMPTY;
         String name = this.subItemBaseName + String.valueOf(nb) + localeAsString;
         List<String> childNodeName = getChildItemNames();
         while (childNodeName.contains(name)) {
@@ -255,7 +262,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      * @return The regex used to filter child items based on i18n support and current locale
      */
     protected String childItemRegexRepresentation() {
-        if (hasI18NSupport() && i18nContentSupport.isEnabled()) {
+        if (hasI18NSupport()) {
             if (defaultLocale.equals(i18nSuffix)) {
                 // i18n set, current locale is the default locale
                 // match all node name that do not define locale extension
@@ -275,8 +282,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
 
     private List<String> getChildItemNames() {
         List<String> res = new ArrayList<String>();
-        res.addAll(freezedName);
-        PropertysetItem item = items.get(this.i18nSuffix);
+        res.addAll(frozenNames);
+        PropertysetItem item = localisedItems.get(this.i18nSuffix);
         for (Object id : item.getItemPropertyIds()) {
             Object value = item.getItemProperty(id).getValue();
             if (value instanceof JcrNodeAdapter) {
@@ -298,8 +305,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         String newLocale = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
         this.i18nSuffix = StringUtils.isBlank(newLocale) ? this.defaultLocale : newLocale;
         log.debug("Change language to '{}'", this.i18nSuffix);
-        if (!items.containsKey(this.i18nSuffix)) {
-            items.put(this.i18nSuffix, new PropertysetItem());
+        if (!localisedItems.containsKey(this.i18nSuffix)) {
+            localisedItems.put(this.i18nSuffix, new PropertysetItem());
         }
     }
 }
