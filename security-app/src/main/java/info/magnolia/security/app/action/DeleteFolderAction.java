@@ -94,7 +94,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         final List<String> assignedTo = new ArrayList<String>();
         for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
             setCurrentItem(item);
-            assignedTo.addAll(getAssignedRolesAndGroupsList());
+            assignedTo.addAll(getAssignedUsersAndGroupsList());
             confirmMessage += getUserAndGroupListForErrorMessage(assignedTo);
         }
         setCurrentItem(null);
@@ -125,7 +125,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     protected void onPreExecute() throws Exception {
         super.onPreExecute();
 
-        final List<String> assignedTo = getAssignedRolesAndGroupsList();
+        final List<String> assignedTo = getAssignedUsersAndGroupsList();
         if (!assignedTo.isEmpty()) {
             if (getCurrentItem().isNode()) {
                 Node folder = (Node) getCurrentItem().getJcrItem();
@@ -267,13 +267,13 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             }
         }
         if (mgnlGroupManager == null) {
-            final List<String> assignedTo = getAssignedRolesAndGroupsList();
+            final List<String> assignedTo = getAssignedUsersAndGroupsList();
             log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
             throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
         }
     }
 
-    private List<String> getAssignedRolesAndGroupsList() throws ActionExecutionException {
+    private List<String> getAssignedUsersAndGroupsList() throws ActionExecutionException {
         final List<String> assignedTo = new ArrayList<String>();
         try {
             if (getCurrentItem().isNode()) {
