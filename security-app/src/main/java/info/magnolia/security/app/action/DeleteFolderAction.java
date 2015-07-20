@@ -54,7 +54,9 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Named;
 import javax.jcr.Node;
@@ -90,12 +92,22 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
 
     @Override
     public void execute() throws ActionExecutionException {
-        String confirmMessage = "";
-        final List<String> assignedTo = new ArrayList<String>();
+        StringBuilder confirmMessage = new StringBuilder("<ul>");
+        final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
-            setCurrentItem(item);
-            assignedTo.addAll(getAssignedUsersAndGroupsList());
-            confirmMessage += getUserAndGroupListForErrorMessage(assignedTo);
+            final Map<String, List<String>> assignedToItem = new HashMap<String, List<String>>();
+            try {
+                setCurrentItem(item);
+                confirmMessage.append("<li>");
+                confirmMessage.append(item.getJcrItem().getName());
+                confirmMessage.append("</li>");
+                assignedToItem.putAll(getAssignedUsersAndGroupsMap());
+            } catch (RepositoryException e) {
+                log.error("Cannot get the users/groups the group or role is assigned to.", e);
+                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+            }
+            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedToItem));
+            assignedTo.putAll(assignedToItem);
         }
         setCurrentItem(null);
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
@@ -125,7 +137,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     protected void onPreExecute() throws Exception {
         super.onPreExecute();
 
-        final List<String> assignedTo = getAssignedUsersAndGroupsList();
+        final Map<String, List<String>> assignedTo = getAssignedUsersAndGroupsMap();
         if (!assignedTo.isEmpty()) {
             if (getCurrentItem().isNode()) {
                 Node folder = (Node) getCurrentItem().getJcrItem();
@@ -267,14 +279,15 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             }
         }
         if (mgnlGroupManager == null) {
-            final List<String> assignedTo = getAssignedUsersAndGroupsList();
-            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
-            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+            final Map<String, List<String>> assignedTo = getAssignedUsersAndGroupsMap();
+            String errorMessage = getUserAndGroupListForErrorMessage(assignedTo);
+            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", errorMessage);
+            throw new ActionExecutionException(getBaseErrorMessage() + errorMessage);
         }
     }
 
-    private List<String> getAssignedUsersAndGroupsList() throws ActionExecutionException {
-        final List<String> assignedTo = new ArrayList<String>();
+    private Map<String, List<String>> getAssignedUsersAndGroupsMap() throws ActionExecutionException {
+        final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         try {
             if (getCurrentItem().isNode()) {
                 Node folder = (Node) getCurrentItem().getJcrItem();
@@ -283,7 +296,10 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
                     @Override
                     public void visit(Node node) throws RepositoryException {
                         if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME) || NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
-                            assignedTo.addAll(getUsersAndGroupsThisItemIsAssignedTo(node));
+                            List<String> assignedToItem = getUsersAndGroupsThisItemIsAssignedTo(node);
+                            if (!assignedToItem.isEmpty()) {
+                                assignedTo.put(node.getName(), assignedToItem);
+                            }
                         }
                     }
                 });

@@ -175,22 +175,28 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     @Override
     public void execute() throws ActionExecutionException {
-        String confirmMessage = "";
+        StringBuilder confirmMessage = new StringBuilder("<ul>");
         final List<String> assignedTo = new ArrayList<String>();
         for (JcrItemAdapter item : (List<JcrItemAdapter>) getSortedItems(getItemComparator())) {
+            final List<String> assignedToItem = new ArrayList<String>();
             try {
                 setCurrentItem(item);
-                assignedTo.addAll(getUsersAndGroupsThisItemIsAssignedTo());
+                confirmMessage.append("<li>");
+                confirmMessage.append(item.getJcrItem().getName());
+                confirmMessage.append("</li>");
+                assignedToItem.addAll(getUsersAndGroupsThisItemIsAssignedTo());
             } catch (RepositoryException e) {
                 log.error("Cannot get the users/groups the group or role is assigned to.", e);
                 throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
             }
-            confirmMessage += getUserAndGroupListForErrorMessage(assignedTo);
+            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedTo));
+            assignedTo.addAll(assignedToItem);
         }
+        confirmMessage.append("</ul>");
         setCurrentItem(null);
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
                 getConfirmationDialogTitle (),
-                getConfirmationDialogBody () + (!assignedTo.isEmpty()? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage):""),
+                getConfirmationDialogBody () + (!assignedTo.isEmpty()? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage.toString()):""),
                 getConfirmationDialogProceedLabel(),
                 getConfirmationDialogCancelLabel (),
                 true,
