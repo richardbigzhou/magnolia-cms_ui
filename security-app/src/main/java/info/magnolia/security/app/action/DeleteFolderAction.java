@@ -98,10 +98,13 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             final Map<String, List<String>> assignedToItem = new HashMap<String, List<String>>();
             try {
                 setCurrentItem(item);
-                confirmMessage.append("<li>");
-                confirmMessage.append(item.getJcrItem().getName());
-                confirmMessage.append("</li>");
-                assignedToItem.putAll(getAssignedUsersAndGroupsMap());
+                Map<String, List<String>> dependenciesMap = getAssignedUsersAndGroupsMap();
+                if (!dependenciesMap.isEmpty()) {
+                    confirmMessage.append("<li>");
+                    confirmMessage.append(item.getJcrItem().getName());
+                    confirmMessage.append("</li>");
+                    assignedToItem.putAll(dependenciesMap);
+                }
             } catch (RepositoryException e) {
                 log.error("Cannot get the users/groups the group or role is assigned to.", e);
                 throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
@@ -215,16 +218,31 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         return groupsAndRoles;
     }
 
+    /**
+     * @deprecated since 5.3.10 - use {@link #getUserAndGroupListForErrorMessage(Map<String, List<String>>)} instead.
+     */
+    @Deprecated
     protected String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
+        Map<String, List<String>> usersAndGroupsMap = new HashMap<String, List<String>>();
+        usersAndGroupsMap.put("dependencies", usersAndGroups);
+        return getUserAndGroupListForErrorMessage(usersAndGroupsMap);
+    }
+
+    protected String getUserAndGroupListForErrorMessage(Map<String, List<String>> usersAndGroups) {
         StringBuilder message = new StringBuilder("<ul>");
-        int i = 0;
-        for (String name : usersAndGroups) {
-            message.append("<li>").append(name).append("</li>");
-            if (i > 4) {
-                message.append("<li>...</li>");
-                break;
+        for (String key : usersAndGroups.keySet()) {
+            int i = 0;
+            message.append("<li>").append(key).append("</li>");
+            message.append("<ul>");
+            for (String name : usersAndGroups.get(key)) {
+                message.append("<li>").append(name).append("</li>");
+                if (i > 4) {
+                    message.append("<li>...</li>");
+                    break;
+                }
+                i++;
             }
-            i++;
+            message.append("</ul>");
         }
         message.append("</ul>");
         return message.toString();

@@ -181,24 +181,27 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
             final List<String> assignedToItem = new ArrayList<String>();
             try {
                 setCurrentItem(item);
-                confirmMessage.append("<li>");
-                confirmMessage.append(item.getJcrItem().getName());
-                confirmMessage.append("</li>");
-                assignedToItem.addAll(getUsersAndGroupsThisItemIsAssignedTo());
+                List<String> dependenciesList = getUsersAndGroupsThisItemIsAssignedTo();
+                if (!dependenciesList.isEmpty()) {
+                    confirmMessage.append("<li>");
+                    confirmMessage.append(item.getJcrItem().getName());
+                    confirmMessage.append("</li>");
+                    assignedToItem.addAll(dependenciesList);
+                }
             } catch (RepositoryException e) {
                 log.error("Cannot get the users/groups the group or role is assigned to.", e);
                 throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
             }
-            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedTo));
+            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedToItem));
             assignedTo.addAll(assignedToItem);
         }
         confirmMessage.append("</ul>");
         setCurrentItem(null);
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
-                getConfirmationDialogTitle (),
-                getConfirmationDialogBody () + (!assignedTo.isEmpty()? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage.toString()):""),
+                getConfirmationDialogTitle(),
+                getConfirmationDialogBody() + (!assignedTo.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage.toString()) : ""),
                 getConfirmationDialogProceedLabel(),
-                getConfirmationDialogCancelLabel (),
+                getConfirmationDialogCancelLabel(),
                 true,
                 new ConfirmationCallback() {
                     @Override
