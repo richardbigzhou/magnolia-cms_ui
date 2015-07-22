@@ -86,6 +86,7 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
     protected void onPostExecute() throws Exception {
         final ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
         tempFileStreamResource.setFilename(exportYamlCommand.getFileName());
+        tempFileStreamResource.setMIMEType("application/yaml");
         // Directs the created file to user.
         Page.getCurrent().open(tempFileStreamResource, "", true);
     }

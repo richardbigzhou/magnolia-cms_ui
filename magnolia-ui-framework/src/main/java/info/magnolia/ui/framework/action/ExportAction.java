@@ -84,6 +84,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     protected void onPostExecute() throws Exception {
         final ExportCommand exportCommand = (ExportCommand) getCommand();
         tempFileStreamResource.setFilename(exportCommand.getFileName());
+        tempFileStreamResource.setMIMEType(exportCommand.getMimeExtension());
         // Directs the created file to user.
         Page.getCurrent().open(tempFileStreamResource, "", true);
     }

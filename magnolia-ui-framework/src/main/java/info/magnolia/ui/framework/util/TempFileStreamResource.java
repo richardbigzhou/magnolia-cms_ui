@@ -85,7 +85,7 @@ public class TempFileStreamResource extends StreamResource {
     public DownloadStream getStream() {
         final DownloadStream stream = super.getStream();
         if (!StringUtils.isBlank(getFilename())) {
-            stream.setParameter("Content-Disposition", "attachment; filename=" + getFilename() + "\"");
+            stream.setParameter("Content-Disposition", "attachment;filename=\"" + getFilename() + "\"");
         }
         return stream;
     }
