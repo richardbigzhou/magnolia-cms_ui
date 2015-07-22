@@ -33,24 +33,19 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.ExportJcrNodeToYamlCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.util.FileDownloader;
+import info.magnolia.ui.framework.util.ResourceDownloader;
+import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Action for exporting a node to YAML format. Uses the {@link ExportJcrNodeToYamlCommand} to perform the export operation.
@@ -61,24 +56,22 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
 
     private static final String YAML_EXTENSION = ".yaml";
 
-    private FileOutputStream fileOutputStream;
-    private File fileOutput;
+    private final ResourceDownloader resourceDownloader;
 
-    private final FileDownloader fileDownloader;
-
+    private TempFileStreamResource tempFileStreamResource;
     @Inject
-    public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, FileDownloader fileDownloader) throws ActionExecutionException {
-        super(definition, item, commandsManager, uiContext, i18n);
-        this.fileDownloader = fileDownloader;
 
-        try {
-            // Create a temporary file that will hold the data created by the export command.
-            fileOutput = File.createTempFile(item.getItemId().getUuid(), YAML_EXTENSION, Path.getTempDirectory());
-            // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
-            fileOutputStream = new FileOutputStream(fileOutput);
-        } catch (Exception e) {
-            throw new ActionExecutionException("Not able to create a temporary file.", e);
-        }
+    public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, ResourceDownloader resourceDownloader) throws ActionExecutionException {
+        super(definition, item, commandsManager, uiContext, i18n);
+        this.resourceDownloader = resourceDownloader;
+    }
+
+    @Override
+    protected void onPreExecute() throws Exception {
+        tempFileStreamResource = new TempFileStreamResource();
+        tempFileStreamResource.setTempFileExtension(YAML_EXTENSION);
+        tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
+        super.onPreExecute();
     }
 
     /**
@@ -89,19 +82,15 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
      */
     @Override
     protected void onPostExecute() throws Exception {
-        try {
-            ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
-            fileDownloader.downloadFile(exportYamlCommand.getFileName(), FileUtils.openInputStream(fileOutput));
-        } finally {
-            IOUtils.closeQuietly(fileOutputStream);
-            FileUtils.deleteQuietly(fileOutput);
-        }
+        final ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
+        tempFileStreamResource.setFilename(exportYamlCommand.getFileName());
+        resourceDownloader.download(tempFileStreamResource);
     }
 
     @Override
     protected Map<String, Object> buildParams(Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
-        params.put(ExportJcrNodeToYamlCommand.EXPORT_OUTPUT_STREAM, fileOutputStream);
+        params.put(ExportJcrNodeToYamlCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
 
         return params;
     }

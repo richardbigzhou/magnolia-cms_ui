@@ -63,7 +63,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.framework.util.FileDownloader;
+import info.magnolia.ui.framework.util.ResourceDownloader;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;
@@ -146,7 +146,7 @@ public class ExportActionTest extends RepositoryTestCase {
     @Test
     public void testExportActionGetParam() throws Exception {
         // GIVEN
-        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null, mock(SimpleTranslator.class), mock(FileDownloader.class));
+        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null, mock(SimpleTranslator.class), mock(ResourceDownloader.class));
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
 

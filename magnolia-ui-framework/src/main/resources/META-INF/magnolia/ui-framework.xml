@@ -90,8 +90,8 @@
 
     <!-- File Downloader -->
     <component>
-      <type>info.magnolia.ui.framework.util.FileDownloader</type>
-      <implementation>info.magnolia.ui.framework.util.FileDownloaderImpl</implementation>
+      <type>info.magnolia.ui.framework.util.ResourceDownloader</type>
+      <implementation>info.magnolia.ui.framework.util.ResourceDownloaderImpl</implementation>
     </component>
 
     <!-- Ui Api -->

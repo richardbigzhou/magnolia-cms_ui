@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.framework.util;
 
-import java.io.FileInputStream;
+import com.vaadin.server.Resource;
 
 
 /**
  * Downloads the given file.
  */
-public interface FileDownloader {
+public interface ResourceDownloader {
 
-    void downloadFile(String fileName, String mimeType, FileInputStream fileInputStream);
-
-    void downloadFile(String fileName, FileInputStream fileInputStream);
+    void download(Resource resource);
 }

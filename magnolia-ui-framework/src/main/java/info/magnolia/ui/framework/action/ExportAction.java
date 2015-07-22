@@ -33,25 +33,20 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.util.FileDownloader;
-import info.magnolia.ui.framework.util.FileDownloaderImpl;
+import info.magnolia.ui.framework.util.ResourceDownloader;
+import info.magnolia.ui.framework.util.ResourceDownloaderImpl;
+import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Action for exporting a node to XML format. Uses the export command to perform the serialization to XML then sends the
@@ -61,31 +56,31 @@ import org.apache.commons.io.IOUtils;
  */
 public class ExportAction extends AbstractCommandAction<ExportActionDefinition> {
 
-    private File fileOutput;
-    private FileOutputStream fileOutputStream;
+    private final ResourceDownloader resourceDownloader;
 
-    private final FileDownloader fileDownloader;
+    private TempFileStreamResource tempFileStreamResource;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, FileDownloader fileDownloader) throws ActionExecutionException {
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, ResourceDownloader resourceDownloader) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext, i18n);
-        this.fileDownloader = fileDownloader;
-        try {
-            // Create a temporary file that will hold the data created by the export command.
-            fileOutput = File.createTempFile(item.getItemId().getUuid(), ".xml", Path.getTempDirectory());
-            // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
-            fileOutputStream = new FileOutputStream(fileOutput);
-        } catch (Exception e) {
-            throw new ActionExecutionException("Not able to create a temporary file.", e);
-        }
+        this.resourceDownloader = resourceDownloader;
     }
 
     /**
-     * @deprecated since 5.4.1, use {@link #ExportAction(ExportActionDefinition, JcrItemAdapter, CommandsManager, UiContext, SimpleTranslator, FileDownloader)} instead.
+     * @deprecated since 5.4.1, use {@link #ExportAction(ExportActionDefinition, JcrItemAdapter, CommandsManager, UiContext, SimpleTranslator, ResourceDownloader)} instead.
      */
     @Deprecated
     public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
-        this(definition, item, commandsManager, uiContext, i18n, new FileDownloaderImpl());
+        this(definition, item, commandsManager, uiContext, i18n, new ResourceDownloaderImpl());
+    }
+
+    @Override
+    protected void onPreExecute() throws Exception {
+        tempFileStreamResource = new TempFileStreamResource();
+        tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
+        tempFileStreamResource.setTempFileExtension(".xml");
+
+        super.onPreExecute();
     }
 
     /**
@@ -96,13 +91,9 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
      */
     @Override
     protected void onPostExecute() throws Exception {
-        try {
-            ExportCommand exportCommand = (ExportCommand) getCommand();
-            fileDownloader.downloadFile(exportCommand.getFileName(), exportCommand.getMimeExtension(), FileUtils.openInputStream(fileOutput));
-        } finally {
-            IOUtils.closeQuietly(fileOutputStream);
-            FileUtils.deleteQuietly(fileOutput);
-        }
+        final ExportCommand exportCommand = (ExportCommand) getCommand();
+        tempFileStreamResource.setFilename(exportCommand.getFileName());
+        resourceDownloader.download(tempFileStreamResource);
     }
 
     @Override
@@ -111,7 +102,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
         params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.FALSE);
-        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, fileOutputStream);
+        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
         return params;
     }
 }
