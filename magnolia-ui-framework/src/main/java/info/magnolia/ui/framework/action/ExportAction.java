@@ -40,6 +40,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.util.FileDownloader;
+import info.magnolia.ui.framework.util.FileDownloaderImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.io.File;
@@ -77,6 +78,14 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         } catch (Exception e) {
             throw new ActionExecutionException("Not able to create a temporary file.", e);
         }
+    }
+
+    /**
+     * @deprecated since 5.4.1, use {@link #ExportAction(ExportActionDefinition, JcrItemAdapter, CommandsManager, UiContext, SimpleTranslator, FileDownloader)} instead.
+     */
+    @Deprecated
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
+        this(definition, item, commandsManager, uiContext, i18n, new FileDownloaderImpl());
     }
 
     /**
