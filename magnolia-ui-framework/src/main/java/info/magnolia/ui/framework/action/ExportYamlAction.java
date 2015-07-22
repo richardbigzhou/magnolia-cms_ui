@@ -38,7 +38,6 @@ import info.magnolia.commands.ExportJcrNodeToYamlCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.util.ResourceDownloader;
 import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
@@ -48,23 +47,23 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.jcr.Item;
 
+import com.vaadin.server.Page;
+
 /**
  * Action for exporting a node to YAML format. Uses the {@link ExportJcrNodeToYamlCommand} to perform the export operation.
- * *
+ * Then sends the result to the client browser.
+ *
  * @see ExportYamlActionDefinition
  */
 public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefinition> {
 
     private static final String YAML_EXTENSION = ".yaml";
 
-    private final ResourceDownloader resourceDownloader;
-
     private TempFileStreamResource tempFileStreamResource;
 
     @Inject
-    public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, ResourceDownloader resourceDownloader) throws ActionExecutionException {
+    public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext, i18n);
-        this.resourceDownloader = resourceDownloader;
     }
 
     @Override
@@ -72,6 +71,7 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
         tempFileStreamResource = new TempFileStreamResource();
         tempFileStreamResource.setTempFileExtension(YAML_EXTENSION);
         tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
+
         super.onPreExecute();
     }
 
@@ -80,12 +80,14 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
      * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export YAML command.<br>
      * This temporary file is the used to create a {@code FileInputStream} that ensure that this temporary file is removed once the <br>
      * fileInputStream is closed by Vaadin resource component.
+     * Directs the created YAML file to the user.
      */
     @Override
     protected void onPostExecute() throws Exception {
         final ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
         tempFileStreamResource.setFilename(exportYamlCommand.getFileName());
-        resourceDownloader.download(tempFileStreamResource);
+        // Directs the created file to user.
+        Page.getCurrent().open(tempFileStreamResource, "", true);
     }
 
     @Override

@@ -38,8 +38,6 @@ import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.util.ResourceDownloader;
-import info.magnolia.ui.framework.util.ResourceDownloaderImpl;
 import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
@@ -49,6 +47,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.jcr.Item;
 
+import com.vaadin.server.Page;
+
 /**
  * Action for exporting a node to XML format. Uses the export command to perform the serialization to XML then sends the
  * result to the client browser.
@@ -57,29 +57,18 @@ import javax.jcr.Item;
  */
 public class ExportAction extends AbstractCommandAction<ExportActionDefinition> {
 
-    private final ResourceDownloader resourceDownloader;
-
     private TempFileStreamResource tempFileStreamResource;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, ResourceDownloader resourceDownloader) throws ActionExecutionException {
-        super(definition, item, commandsManager, uiContext, i18n);
-        this.resourceDownloader = resourceDownloader;
-    }
-
-    /**
-     * @deprecated since 5.4.1, use {@link #ExportAction(ExportActionDefinition, JcrItemAdapter, CommandsManager, UiContext, SimpleTranslator, ResourceDownloader)} instead.
-     */
-    @Deprecated
     public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
-        this(definition, item, commandsManager, uiContext, i18n, new ResourceDownloaderImpl());
+        super(definition, item, commandsManager, uiContext, i18n);
     }
 
     @Override
     protected void onPreExecute() throws Exception {
         tempFileStreamResource = new TempFileStreamResource();
         tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
-        tempFileStreamResource.setTempFileExtension(".xml");
+        tempFileStreamResource.setTempFileExtension("xml");
 
         super.onPreExecute();
     }
@@ -89,12 +78,14 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
      * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export command.<br>
      * This temporary file is the used to create a {@code FileInputStream} that ensure that this temporary file is removed once the <br>
      * fileInputStream is closed by Vaadin resource component.
+     * Directs the created XML file to the user.
      */
     @Override
     protected void onPostExecute() throws Exception {
         final ExportCommand exportCommand = (ExportCommand) getCommand();
         tempFileStreamResource.setFilename(exportCommand.getFileName());
-        resourceDownloader.download(tempFileStreamResource);
+        // Directs the created file to user.
+        Page.getCurrent().open(tempFileStreamResource, "", true);
     }
 
     @Override

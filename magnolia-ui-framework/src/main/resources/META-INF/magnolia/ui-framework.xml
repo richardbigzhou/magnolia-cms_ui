@@ -88,12 +88,6 @@
       <implementation>info.magnolia.ui.framework.task.LocalTaskDispatcherManager</implementation>
     </component>
 
-    <!-- File Downloader -->
-    <component>
-      <type>info.magnolia.ui.framework.util.ResourceDownloader</type>
-      <implementation>info.magnolia.ui.framework.util.ResourceDownloaderImpl</implementation>
-    </component>
-
     <!-- Ui Api -->
     <type-mapping>
       <type>info.magnolia.ui.api.action.ActionDefinition</type>
