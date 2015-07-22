@@ -51,9 +51,9 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -67,6 +67,8 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class DeleteRoleActionTest extends RepositoryTestCase {
 
@@ -86,7 +88,16 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         Node groupNode = session.getRootNode().addNode(ROLENAME, NodeTypes.Group.NAME);
         JcrItemAdapter item = new JcrNodeAdapter(groupNode);
         EventBus eventBus = mock(EventBus.class);
-        UiContext uiContext = new TestSubAppContextImpl(mock(SubAppDescriptor.class),mock(Shell.class));
+        UiContext uiContext = mock(UiContext.class);
+        doAnswer(new Answer() {
+                     @Override
+                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                         Object[] args = invocationOnMock.getArguments();
+                         ((ConfirmationCallback) args[6]).onSuccess();
+                         return null;
+                     }
+                 }
+        ).when(uiContext).openConfirmation(any(MessageStyleType.class),anyString(),anyString(),anyString(),anyString(),anyBoolean(),any(ConfirmationCallback.class));
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 

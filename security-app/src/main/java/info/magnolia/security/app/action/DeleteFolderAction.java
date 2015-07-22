@@ -92,13 +92,16 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
 
     @Override
     public void execute() throws ActionExecutionException {
+        openConfirmationDialog(getMessageForConfirmationDialog());
+    }
+
+    private String getMessageForConfirmationDialog() throws ActionExecutionException {
         StringBuilder confirmMessage = new StringBuilder("<ul>");
         final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
             final Map<String, List<String>> assignedToItem = new HashMap<String, List<String>>();
             try {
-                setCurrentItem(item);
-                Map<String, List<String>> dependenciesMap = getAssignedUsersAndGroupsMap();
+                Map<String, List<String>> dependenciesMap = getAssignedUsersAndGroupsMap(item);
                 if (!dependenciesMap.isEmpty()) {
                     confirmMessage.append("<li>");
                     confirmMessage.append(item.getJcrItem().getName());
@@ -112,10 +115,14 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             confirmMessage.append(getUserAndGroupListForErrorMessage(assignedToItem));
             assignedTo.putAll(assignedToItem);
         }
-        setCurrentItem(null);
+        confirmMessage.append("</ul>");
+        return !assignedTo.isEmpty() ? confirmMessage.toString() : "";
+    }
+
+    private void openConfirmationDialog(String message) {
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
                 getConfirmationDialogTitle(),
-                getConfirmationDialogBody() + (!assignedTo.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", confirmMessage) : ""),
+                (!message.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", message) + "<br />" : "") + getConfirmationDialogBody(),
                 getConfirmationDialogProceedLabel(),
                 getConfirmationDialogCancelLabel(),
                 true,
@@ -305,10 +312,13 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     }
 
     private Map<String, List<String>> getAssignedUsersAndGroupsMap() throws ActionExecutionException {
+        return getAssignedUsersAndGroupsMap(getCurrentItem());
+    }
+    private Map<String, List<String>> getAssignedUsersAndGroupsMap(JcrItemAdapter jcrItemAdapter) throws ActionExecutionException {
         final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         try {
-            if (getCurrentItem().isNode()) {
-                Node folder = (Node) getCurrentItem().getJcrItem();
+            if (jcrItemAdapter.isNode()) {
+                Node folder = (Node) jcrItemAdapter.getJcrItem();
 
                 NodeUtil.visit(folder, new NodeVisitor() {
                     @Override
