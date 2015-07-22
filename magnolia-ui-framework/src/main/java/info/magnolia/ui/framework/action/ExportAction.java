@@ -80,7 +80,6 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         tempFileStreamResource = new TempFileStreamResource();
         tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
         tempFileStreamResource.setTempFileExtension(".xml");
-
         super.onPreExecute();
     }
 
@@ -94,6 +93,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     protected void onPostExecute() throws Exception {
         final ExportCommand exportCommand = (ExportCommand) getCommand();
         tempFileStreamResource.setFilename(exportCommand.getFileName());
+        tempFileStreamResource.setMIMEType(exportCommand.getMimeExtension());
         resourceDownloader.download(tempFileStreamResource);
     }
 
