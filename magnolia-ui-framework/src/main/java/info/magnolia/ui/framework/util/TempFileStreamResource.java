@@ -98,7 +98,7 @@ public class TempFileStreamResource extends StreamResource {
         getStreamSource().tempFileExtension = extension;
     }
 
-    public OutputStream getTempFileOutputStream() {
+    public OutputStream getTempFileOutputStream() throws IOException {
         return getStreamSource().getOutputStream();
     }
 
@@ -121,26 +121,19 @@ public class TempFileStreamResource extends StreamResource {
             }
         }
 
-        OutputStream getOutputStream() {
+        OutputStream getOutputStream() throws IOException {
             if (fileOutputStream == null) {
-                try {
-                    fileOutputStream = new FileOutputStream(getTempFile());
-                } catch (FileNotFoundException e) {
-                    return null;
-                }
+                fileOutputStream = new FileOutputStream(getTempFile());
             }
             return fileOutputStream;
         }
 
-        File getTempFile() {
+        File getTempFile() throws IOException {
             if (tempFile == null) {
                 // Create a temporary file that will hold the data created by the export command.
-                try {
-                    tempFile = File.createTempFile(tempFileName, tempFileExtension, Path.getTempDirectory());
-                } catch (IOException e) {
-                    log.error("", e);
-                    return null;
-                }
+
+                tempFile = File.createTempFile(tempFileName, tempFileExtension, Path.getTempDirectory());
+
             }
             return tempFile;
         }

@@ -42,6 +42,7 @@ import info.magnolia.ui.framework.util.ResourceDownloader;
 import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -59,8 +60,8 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
     private final ResourceDownloader resourceDownloader;
 
     private TempFileStreamResource tempFileStreamResource;
-    @Inject
 
+    @Inject
     public ExportYamlAction(ExportYamlActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, ResourceDownloader resourceDownloader) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext, i18n);
         this.resourceDownloader = resourceDownloader;
@@ -90,8 +91,11 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
     @Override
     protected Map<String, Object> buildParams(Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
-        params.put(ExportJcrNodeToYamlCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
-
+        try {
+            params.put(ExportJcrNodeToYamlCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to bind command to temp file output stream: ", e);
+        }
         return params;
     }
 }

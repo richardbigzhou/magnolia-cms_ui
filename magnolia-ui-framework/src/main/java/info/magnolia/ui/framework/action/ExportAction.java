@@ -43,6 +43,7 @@ import info.magnolia.ui.framework.util.ResourceDownloaderImpl;
 import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -102,7 +103,11 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
         params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.FALSE);
-        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
+        try {
+            params.put(ExportCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to bind command to temp file output stream: ", e);
+        }
         return params;
     }
 }
