@@ -115,7 +115,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     protected abstract String getBaseErrorMessage();
 
     /**
-     * @return the message to be shown to the user in case the verification ({@link #getUsersAndGroupsThisItemIsAssignedTo()} method) fails.
+     * @return the message to be shown to the user in case the verification ({@link #getAssignedUsersAndGroups()} method) fails.
      */
     protected abstract String getVerificationErrorMessage();
 
@@ -152,10 +152,9 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
         List<String> assignedTo;
         try {
-            assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+            assignedTo = getAssignedUsersAndGroups();
         } catch (RepositoryException e) {
-            log.error("Cannot get the users/groups the group or role is assigned to.", e);
-            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+            throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
         }
         if (assignedTo != null && !assignedTo.isEmpty()) {
             removeDependencies();
@@ -174,16 +173,20 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     @Override
     public void execute() throws ActionExecutionException {
-        openConfirmationDialog(getMessageForConfirmationDialog());
+        try {
+            executeOnConfirmation();
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+        }
     }
 
-    private String getMessageForConfirmationDialog() throws ActionExecutionException {
+    private String getConfirmationDialogStatement() throws RepositoryException {
         final List<String> assignedTo = new ArrayList<String>();
         StringBuilder confirmMessage = new StringBuilder("<ul>");
         for (JcrItemAdapter item : (List<JcrItemAdapter>) getSortedItems(getItemComparator())) {
             final List<String> assignedToItem = new ArrayList<String>();
             try {
-                List<String> dependenciesList = getUsersAndGroupsThisItemIsAssignedTo(item.getJcrItem().getName());
+                List<String> dependenciesList = getAssignedUsersAndGroups(item.getJcrItem().getName());
                 if (!dependenciesList.isEmpty()) {
                     confirmMessage.append("<li>");
                     confirmMessage.append(item.getJcrItem().getName());
@@ -191,17 +194,17 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
                     assignedToItem.addAll(dependenciesList);
                 }
             } catch (RepositoryException e) {
-                log.error("Cannot get the users/groups the group or role is assigned to.", e);
-                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+                throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
             }
-            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedToItem));
+            confirmMessage.append(formatUserAndGroupList(assignedToItem));
             assignedTo.addAll(assignedToItem);
         }
         confirmMessage.append("</ul>");
         return !assignedTo.isEmpty() ? confirmMessage.toString() : "";
     }
 
-    private void openConfirmationDialog(String message) {
+    private void executeOnConfirmation() throws RepositoryException {
+        final String message = getConfirmationDialogStatement();
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
                 getConfirmationDialogTitle(),
                 (!message.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", message) + "<br />" : "") + getConfirmationDialogBody(),
@@ -228,11 +231,11 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     /**
      * @return the list of user- and group-names this item (group or role) is directly assigned to.
      */
-    private List<String> getUsersAndGroupsThisItemIsAssignedTo()  throws RepositoryException {
-        return getUsersAndGroupsThisItemIsAssignedTo(getCurrentItem().getJcrItem().getName());
+    private List<String> getAssignedUsersAndGroups() throws RepositoryException {
+        return getAssignedUsersAndGroups(getCurrentItem().getJcrItem().getName());
     }
 
-    private List<String> getUsersAndGroupsThisItemIsAssignedTo(final String itemName) throws RepositoryException {
+    private List<String> getAssignedUsersAndGroups(final String itemName) throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
         final String translatedUserString = getI18n().translate("security.delete.userIdentifier");
@@ -249,7 +252,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         return assignedTo;
     }
 
-    private static String getUserAndGroupListForErrorMessage(Collection<String> usersAndGroups) {
+    private static String formatUserAndGroupList(Collection<String> usersAndGroups) {
         StringBuilder message = new StringBuilder("<ul>");
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
@@ -258,7 +261,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         return message.toString();
     }
 
-    private void removeDependencies() throws Exception {
+    private void removeDependencies() throws RepositoryException, ActionExecutionException {
         final String groupOrRoleName = getCurrentItem().getJcrItem().getName();
         final UserManager mgnlUserManager = securitySupport.getUserManager();
         //this is needed only for 5.3.x, in 5.4.x use securitySupport.getGroupManager() only
@@ -290,13 +293,13 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
         } else {
             List<String> assignedTo;
             try {
-                assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
+                assignedTo = getAssignedUsersAndGroups();
             } catch (RepositoryException e) {
-                log.error("Cannot get the users/groups the group or role is assigned to.", e);
-                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+                throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
             }
-            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", getUserAndGroupListForErrorMessage(assignedTo));
-            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+
+            log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", formatUserAndGroupList(assignedTo));
+            throw new ActionExecutionException(getBaseErrorMessage() + formatUserAndGroupList(assignedTo));
         }
     }
 

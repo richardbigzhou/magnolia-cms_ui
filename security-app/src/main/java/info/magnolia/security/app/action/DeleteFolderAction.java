@@ -92,10 +92,14 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
 
     @Override
     public void execute() throws ActionExecutionException {
-        openConfirmationDialog(getMessageForConfirmationDialog());
+        try {
+            executeOnConformation();
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+        }
     }
 
-    private String getMessageForConfirmationDialog() throws ActionExecutionException {
+    private String getConfirmationDialogStatement() throws RepositoryException {
         StringBuilder confirmMessage = new StringBuilder("<ul>");
         final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
@@ -109,17 +113,17 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
                     assignedToItem.putAll(dependenciesMap);
                 }
             } catch (RepositoryException e) {
-                log.error("Cannot get the users/groups the group or role is assigned to.", e);
-                throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+                throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
             }
-            confirmMessage.append(getUserAndGroupListForErrorMessage(assignedToItem));
+            confirmMessage.append(formatUserAndGroupList(assignedToItem));
             assignedTo.putAll(assignedToItem);
         }
         confirmMessage.append("</ul>");
         return !assignedTo.isEmpty() ? confirmMessage.toString() : "";
     }
 
-    private void openConfirmationDialog(String message) {
+    private void executeOnConformation() throws RepositoryException {
+        final String message = getConfirmationDialogStatement();
         getUiContext().openConfirmation(MessageStyleTypeEnum.WARNING,
                 getConfirmationDialogTitle(),
                 (!message.isEmpty() ? "<br />" + getI18n().translate("security-app.delete.confirmationDialog.body.label", message) + "<br />" : "") + getConfirmationDialogBody(),
@@ -171,7 +175,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     /**
      * @return the list of user- and group-names this item (group or role) is directly assigned to.
      */
-    private List<String> getUsersAndGroupsThisItemIsAssignedTo(Node node) throws RepositoryException {
+    private List<String> getAssignedUsersAndGroups(Node node) throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
         final String groupOrRoleName = node.getName();
@@ -226,16 +230,16 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
     }
 
     /**
-     * @deprecated since 5.3.10 - use {@link #getUserAndGroupListForErrorMessage(Map<String, List<String>>)} instead.
+     * @deprecated since 5.3.10 - use {@link #formatUserAndGroupList(Map<String, List<String>>)} instead.
      */
     @Deprecated
     protected String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
         Map<String, List<String>> usersAndGroupsMap = new HashMap<String, List<String>>();
         usersAndGroupsMap.put("dependencies", usersAndGroups);
-        return getUserAndGroupListForErrorMessage(usersAndGroupsMap);
+        return formatUserAndGroupList(usersAndGroupsMap);
     }
 
-    protected String getUserAndGroupListForErrorMessage(Map<String, List<String>> usersAndGroups) {
+    protected String formatUserAndGroupList(Map<String, List<String>> usersAndGroups) {
         StringBuilder message = new StringBuilder("<ul>");
         for (String key : usersAndGroups.keySet()) {
             int i = 0;
@@ -275,17 +279,16 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         return getI18n().translate("security.delete.folder.roleOrGroupInfolderStillInUse");
     }
 
-    private void removeDependencies(Node node) throws Exception {
+    private void removeDependencies(Node node) throws RepositoryException, ActionExecutionException {
         final String groupOrRoleName = node.getName();
         final UserManager mgnlUserManager = securitySupport.getUserManager();
-        //this is needed only for 5.3.x, in 5.4.x use securitySupport.getGroupManager() only
         final MgnlGroupManager mgnlGroupManager = securitySupport.getGroupManager() instanceof MgnlGroupManager ? (MgnlGroupManager) securitySupport.getGroupManager() : null;
         if (NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
             // group - user, group - group
             for (String user : securitySupport.getUserManager().getUsersWithGroup(groupOrRoleName)) {
                 mgnlUserManager.removeGroup(mgnlUserManager.getUser(user), groupOrRoleName);
             }
-            //this is needed only for 5.3.x, in 5.4.x remove null check
+
             if (mgnlGroupManager != null) {
                 for (String group : securitySupport.getGroupManager().getGroupsWithGroup(groupOrRoleName)) {
                     mgnlGroupManager.removeGroup(mgnlGroupManager.getGroup(group), groupOrRoleName);
@@ -296,7 +299,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
             for (String user : securitySupport.getUserManager().getUsersWithRole(groupOrRoleName)) {
                 mgnlUserManager.removeRole(mgnlUserManager.getUser(user), groupOrRoleName);
             }
-            //this is needed only for 5.3.x, in 5.4.x remove null check
+
             if (mgnlGroupManager != null) {
                 for (String group : securitySupport.getGroupManager().getGroupsWithRole(groupOrRoleName)) {
                     mgnlGroupManager.removeRole(mgnlGroupManager.getGroup(group), groupOrRoleName);
@@ -305,16 +308,16 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
         }
         if (mgnlGroupManager == null) {
             final Map<String, List<String>> assignedTo = getAssignedUsersAndGroupsMap();
-            String errorMessage = getUserAndGroupListForErrorMessage(assignedTo);
+            String errorMessage = formatUserAndGroupList(assignedTo);
             log.error("Cannot get MgnlGroupManager, dependencies in groups cannot be removed. {}", errorMessage);
             throw new ActionExecutionException(getBaseErrorMessage() + errorMessage);
         }
     }
 
-    private Map<String, List<String>> getAssignedUsersAndGroupsMap() throws ActionExecutionException {
+    private Map<String, List<String>> getAssignedUsersAndGroupsMap() throws RepositoryException {
         return getAssignedUsersAndGroupsMap(getCurrentItem());
     }
-    private Map<String, List<String>> getAssignedUsersAndGroupsMap(JcrItemAdapter jcrItemAdapter) throws ActionExecutionException {
+    private Map<String, List<String>> getAssignedUsersAndGroupsMap(JcrItemAdapter jcrItemAdapter) throws RepositoryException {
         final Map<String, List<String>> assignedTo = new HashMap<String, List<String>>();
         try {
             if (jcrItemAdapter.isNode()) {
@@ -324,7 +327,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
                     @Override
                     public void visit(Node node) throws RepositoryException {
                         if (NodeUtil.isNodeType(node, NodeTypes.Role.NAME) || NodeUtil.isNodeType(node, NodeTypes.Group.NAME)) {
-                            List<String> assignedToItem = getUsersAndGroupsThisItemIsAssignedTo(node);
+                            List<String> assignedToItem = getAssignedUsersAndGroups(node);
                             if (!assignedToItem.isEmpty()) {
                                 assignedTo.put(node.getName(), assignedToItem);
                             }
@@ -333,8 +336,7 @@ public class DeleteFolderAction extends DeleteAction<DeleteFolderActionDefinitio
                 });
             }
         } catch (RepositoryException e) {
-            log.error("Cannot get the users/groups the group or role is assigned to.", e);
-            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
+            throw new RepositoryException("Cannot get the users/groups the group or role is assigned to.", e);
         }
         return assignedTo;
     }
