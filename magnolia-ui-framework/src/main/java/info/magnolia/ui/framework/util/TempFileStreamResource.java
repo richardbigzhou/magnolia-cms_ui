@@ -29,6 +29,7 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
+ *
  */
 package info.magnolia.ui.framework.util;
 

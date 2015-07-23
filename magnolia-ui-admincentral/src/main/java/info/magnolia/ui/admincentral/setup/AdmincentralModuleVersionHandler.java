@@ -137,7 +137,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new ArrayDelegateTask("",
                                 new CreateNodePathTask("", String.format("%s/%s", actionBarFolderActionGroupsPath, "downloadActions/items"), NodeTypes.ContentNode.NAME),
                                 new PartialBootstrapTask("", "Register in action bar", appBootstrapFilePath, "/configuration/subApps/browser/actionbar/sections/folders/groups/downloadActions/items/downloadYaml"),
-                                new OrderNodeBeforeTask(String.format("%s/%s", actionBarFolderActionGroupsPath, "downloadActions"), "importExportActions"),
+                                new NodeExistsDelegateTask("", String.format("%s/%s", actionBarFolderActionGroupsPath, "importExportActions"),
+                                        new OrderNodeBeforeTask(String.format("%s/%s", actionBarFolderActionGroupsPath, "downloadActions"), "importExportActions")),
                                 new PartialBootstrapTask("", "Add to app actions", appBootstrapFilePath, "/configuration/subApps/browser/actions/downloadYaml"))));
 
         @Override
