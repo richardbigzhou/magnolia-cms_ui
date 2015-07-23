@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import info.magnolia.cms.core.version.VersionInfo;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -59,19 +60,21 @@ import org.junit.Test;
  */
 public class AbstractVersionActionTest {
 
-    private TestVersionAction action = new TestVersionAction(mock(ActionDefinition.class), mock(LocationController.class), mock(UiContext.class), mock(FormDialogPresenter.class), mock(SimpleTranslator.class));
+    private SimpleTranslator simpleTranslator = mock(SimpleTranslator.class);
+    private TestVersionAction action = new TestVersionAction(mock(ActionDefinition.class), mock(LocationController.class), mock(UiContext.class), mock(FormDialogPresenter.class), simpleTranslator);
 
     @Test
     public void testVersionLabelWithComment() {
         // GIVEN
         Date date = new Date();
         VersionInfo versionInfo = new VersionInfo("1.0", date, "superuser", "test");
+        when(simpleTranslator.translate("test")).thenReturn("translated test");
 
         // WHEN
         String versionLabel = action.getVersionLabel(versionInfo);
 
         // THEN
-        Assert.assertEquals(MessageFormat.format("1.0 ({0}) (superuser: test)", versionInfo.getVersionDate()), versionLabel);
+        Assert.assertEquals(MessageFormat.format("1.0 ({0}) (superuser: translated test)", versionInfo.getVersionDate()), versionLabel);
     }
 
     @Test
