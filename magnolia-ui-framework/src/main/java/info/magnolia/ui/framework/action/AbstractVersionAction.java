@@ -174,7 +174,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
         if (StringUtils.isEmpty(versionInfo.getVersionComment())) {
             return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser());
         } else {
-            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser(), versionInfo.getVersionComment());
+            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser(), i18n.translate(versionInfo.getVersionComment()));
         }
     }
 

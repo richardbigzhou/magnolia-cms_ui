@@ -158,7 +158,7 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
      * Creates a version with an extra comment before restoring.
      */
     protected Version createVersionBeforeRestore(Node node) throws RepositoryException {
-        NodeTypes.Versionable.set(node, i18n.translate("ui-contentapp.actions.restoreVersion.comment.restore"));
+        NodeTypes.Versionable.set(node, "ui-contentapp.actions.restoreVersion.comment.restore");
         node.getSession().save();
         Version version = versionManager.addVersion(node);
         NodeTypes.Versionable.set(node, null);
