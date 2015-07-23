@@ -632,15 +632,16 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     public void updateFrom54JcrToYamlExport() throws Exception {
         // GIVEN
         Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions", NodeTypes.ContentNode.NAME);
-        Node actionBar = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/importExportActions/items", NodeTypes.ContentNode.NAME);
+        Node actionBar = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups", NodeTypes.ContentNode.NAME);
 
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4"));
 
         // THEN
-        assertThat(actionBar, hasNode("exportYaml"));
-        assertThat(actions, hasNode("exportYaml"));
+        assertThat(actionBar, hasNode("downloadActions/items"));
+        assertThat(actionBar.getNode("downloadActions/items"), hasNode("downloadYaml"));
+        assertThat(actions, hasNode("downloadYaml"));
     }
 
 }
