@@ -85,7 +85,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         final ExportCommand exportCommand = (ExportCommand) getCommand();
         tempFileStreamResource.setFilename(exportCommand.getFileName());
         tempFileStreamResource.setMIMEType(exportCommand.getMimeExtension());
-        // Directs the created file to user.
+        // Opens the resource for download
         Page.getCurrent().open(tempFileStreamResource, "", true);
     }
 

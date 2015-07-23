@@ -75,19 +75,12 @@ public class ExportYamlAction extends AbstractCommandAction<ExportYamlActionDefi
         super.onPreExecute();
     }
 
-    /**
-     * After command execution we push the created YAML to the client browser.<br>
-     * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export YAML command.<br>
-     * This temporary file is the used to create a {@code FileInputStream} that ensure that this temporary file is removed once the <br>
-     * fileInputStream is closed by Vaadin resource component.
-     * Directs the created YAML file to the user.
-     */
     @Override
     protected void onPostExecute() throws Exception {
         final ExportJcrNodeToYamlCommand exportYamlCommand = (ExportJcrNodeToYamlCommand) getCommand();
         tempFileStreamResource.setFilename(exportYamlCommand.getFileName());
         tempFileStreamResource.setMIMEType("application/yaml");
-        // Directs the created file to user.
+        // Opens the resource for download
         Page.getCurrent().open(tempFileStreamResource, "", true);
     }
 
