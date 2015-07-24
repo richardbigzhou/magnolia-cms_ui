@@ -77,7 +77,7 @@ import com.vaadin.ui.TextField;
  */
 public class RestoreVersionActionTest extends RepositoryTestCase {
 
-    private final String CREATED_VERSION_BEFORE_RESTORE = "Created automatically before performing restore.";
+    private final String CREATED_VERSION_BEFORE_RESTORE = "ui-contentapp.actions.restoreVersion.comment.restore";
 
     private Node node;
 
