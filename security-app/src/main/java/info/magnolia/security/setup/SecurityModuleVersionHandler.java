@@ -262,11 +262,21 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RenameNodeTask("Reconfigure actionbar of groups subApp to use deleteGroup action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items", "confirmDeleteGroup", "deleteGroup", false)))
                 .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use deleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole",
                         new RenameNodeTask("Reconfigure actionbar of roles subApp to use deleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "confirmDeleteRole", "deleteRole", false)))
-                .addTask(new ArrayDelegateTask("Add confirmation dialogs for folder deletion",
+                .addTask(new ArrayDelegateTask("Reconfigure actionbar to use deleteFolder action",
                         new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
                                 new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "deleteFolder", true)),
                         new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder",
                                 new RenameNodeTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items", "confirmDeleteFolder", "deleteFolder", true))))
+                .addTask(new ArrayDelegateTask("Remove unused cofirmDelete actions.",
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole",
+                                new RemoveNodeTask("", "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole")),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder",
+                                new RemoveNodeTask("", "/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder")),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup",
+                                new RemoveNodeTask("", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup")),
+                        new NodeExistsDelegateTask("", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder",
+                                new RemoveNodeTask("", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"))
+                        ))
         );
     }
 
