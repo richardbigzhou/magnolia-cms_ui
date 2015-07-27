@@ -554,6 +554,10 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole");
         setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup");
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4"));
@@ -563,6 +567,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
         assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/folder/groups/addActions/items/deleteFolder"));
-
+        assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole"));
+        assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder"));
+        assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup"));
+        assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
     }
 }
