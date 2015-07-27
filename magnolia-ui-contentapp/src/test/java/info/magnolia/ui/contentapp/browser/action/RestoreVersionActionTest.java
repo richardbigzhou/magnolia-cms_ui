@@ -108,7 +108,6 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         uiContext = mock(UiContext.class);
         eventBus = mock(EventBus.class);
         i18n = mock(SimpleTranslator.class);
-        when(i18n.translate("ui-contentapp.actions.restoreVersion.comment.restore")).thenReturn(CREATED_VERSION_BEFORE_RESTORE);
 
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         node = webSiteSession.getRootNode().addNode("test", NodeTypes.Page.NAME);
