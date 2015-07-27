@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
 import info.magnolia.ui.vaadin.form.Form;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.DialogContainingFormConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView;
@@ -123,7 +124,7 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
 
     @Override
     public void updateCaption(ComponentConnector connector) {
-        //NOP
+        // NOP
     }
 
     @Override
@@ -135,6 +136,16 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
         final ComponentConnector content = getContent();
         if (content != null) {
             this.view.setContent(content.getWidget());
+        }
+    }
+
+    @Override
+    public void onShowErrors(Widget view) {
+        if (view != null) {
+            ComponentConnector cc = Util.findConnectorFor(view);
+            if (cc != null && cc instanceof DialogContainingFormConnector) {
+                ((DialogContainingFormConnector) cc).onResize(null);
+            }
         }
     }
 

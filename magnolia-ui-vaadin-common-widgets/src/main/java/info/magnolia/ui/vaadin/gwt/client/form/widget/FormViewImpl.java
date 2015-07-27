@@ -121,7 +121,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 @Override
                 public void onActiveTabChanged(ActiveTabChangedEvent event) {
                     // Focus the first field on the form of the current tab.
-                    if (!hasErrors){
+                    if (!hasErrors) {
                         if (!event.isShowingAllTabs()) {
                             focusFirstFieldInTab((FormTabWidget) event.getTab());
                         } else {
@@ -140,7 +140,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                     }
                 }
 
-                private void focusFirstFieldInTab(FormTabWidget tab){
+                private void focusFirstFieldInTab(FormTabWidget tab) {
                     FormFieldWrapper firstField = tab.getFields().get(0);
                     firstField.focusField();
                 }
@@ -190,6 +190,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 }
             }, ClickEvent.getType());
             errorPanel.add(errorButton);
+            onShowErrors();
         }
     }
 
@@ -209,8 +210,15 @@ public class FormViewImpl extends FlowPanel implements FormView {
         presenter.jumpToNextError(lastFocused);
     }
 
+    protected void onShowErrors() {
+        presenter.onShowErrors(this.asWidget().getParent());
+    }
+
     @Override
     public void setMaxHeight(int height) {
+        if (this.hasErrors) {
+            height -= errorPanel.getOffsetHeight() + 2;// 2 is margin of this panel
+        }
         if (this.tabSheet != null) {
             this.tabSheet.setMaxHeight(height);
         }

@@ -62,7 +62,8 @@ public interface FormView extends IsWidget {
 
         void jumpToNextError(FormFieldWrapper lastFocused);
 
-    }
+        void onShowErrors(Widget view);
 
+    }
 
 }
