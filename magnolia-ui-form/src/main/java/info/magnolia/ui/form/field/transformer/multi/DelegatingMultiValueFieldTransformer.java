@@ -42,10 +42,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -82,10 +80,11 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     protected String subItemBaseName;
     protected String i18nSuffix = StringUtils.EMPTY;
     private final String defaultLocale;
-    // Map used to store PropertysetItem based on language (i18n support)
-    private Map<String, PropertysetItem> localisedItems = new HashMap<String, PropertysetItem>();;
+
     private List<String> frozenNames = new ArrayList<String>();
     private I18NAuthoringSupport i18nAuthoringSupport;
+
+    private PropertysetItem delegateItem = new PropertysetItem();
 
     @Inject
     public DelegatingMultiValueFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18nAuthoringSupport) {
@@ -94,13 +93,12 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         this.i18nSuffix += this.i18nAuthoringSupport.getDefaultLocale();
         this.defaultLocale = i18nSuffix;
         this.subItemBaseName = getSubItemBaseName();
-        localisedItems.put(this.i18nSuffix, new PropertysetItem());
     }
 
     @Override
     public void setLocale(Locale locale) {
         super.setLocale(locale);
-        i18nSuffix = locale.getLanguage();
+        i18nSuffix = locale == null ? i18nAuthoringSupport.getDefaultLocale().getLanguage() : locale.getLanguage();
     }
 
     /**
@@ -111,26 +109,24 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     @Override
     public PropertysetItem readFromItem() {
-        PropertysetItem item = localisedItems.get(this.i18nSuffix);
         // Only read it once
-        if (!item.getItemPropertyIds().isEmpty()) {
-            return item;
-        }
-        JcrNodeAdapter rootItem = getRootItem();
-        // The root Item was never populated, add relevant child Item based on the stored nodes.
-        if (!rootItem.hasChildItemChanges()) {
-            populateStoredChildItems(rootItem);
-        }
-        // Get a list of childNodes
-        int position = 0;
-        for (String itemName : rootItem.getChildren().keySet()) {
-            if (itemName.matches(childItemRegexRepresentation())) {
-                item.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
-                position += 1;
-                frozenNames.add(itemName);
+        if (delegateItem.getItemPropertyIds().isEmpty()) {
+            JcrNodeAdapter rootItem = getRootItem();
+            // The root Item was never populated, add relevant child Item based on the stored nodes.
+            if (!rootItem.hasChildItemChanges()) {
+                populateStoredChildItems(rootItem);
+            }
+            // Get a list of childNodes
+            int position = 0;
+            for (String itemName : rootItem.getChildren().keySet()) {
+                if (itemName.matches(childItemRegexRepresentation())) {
+                    delegateItem.addItemProperty(position, new ObjectProperty<Item>(rootItem.getChild(itemName)));
+                    position += 1;
+                    frozenNames.add(itemName);
+                }
             }
         }
-        return item;
+        return delegateItem;
     }
 
     /**
@@ -156,22 +152,20 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         child.setParent(getRootItem());
         child.getParent().addChild(child);
         Property<?> res = new ObjectProperty<Item>(child);
-        PropertysetItem item = localisedItems.get(this.i18nSuffix);
-        item.addItemProperty(item.getItemPropertyIds().size(), res);
+        delegateItem.addItemProperty(delegateItem.getItemPropertyIds().size(), res);
 
         return res;
     }
 
     @Override
     public void removeProperty(Object id) {
-        PropertysetItem item = localisedItems.get(this.i18nSuffix);
-        Property<?> propertyToRemove = item.getItemProperty(id);
+        Property<?> propertyToRemove = delegateItem.getItemProperty(id);
         if (propertyToRemove != null && propertyToRemove.getValue() != null) {
             JcrNodeAdapter toRemove = (JcrNodeAdapter) propertyToRemove.getValue();
             toRemove.getParent().removeChild(toRemove);
         }
-        item.removeItemProperty(id);
-        reorganizeIndex((Integer) id, item);
+        delegateItem.removeItemProperty(id);
+        reorganizeIndex((Integer) id, delegateItem);
     }
 
     /**
@@ -283,9 +277,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     private List<String> getChildItemNames() {
         List<String> res = new ArrayList<String>();
         res.addAll(frozenNames);
-        PropertysetItem item = localisedItems.get(this.i18nSuffix);
-        for (Object id : item.getItemPropertyIds()) {
-            Object value = item.getItemProperty(id).getValue();
+        for (Object id : delegateItem.getItemPropertyIds()) {
+            Object value = delegateItem.getItemProperty(id).getValue();
             if (value instanceof JcrNodeAdapter) {
                 res.add(((JcrNodeAdapter) value).getNodeName());
             }
@@ -302,11 +295,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
 
     @Override
     public void setI18NPropertyName(String i18NSubNodeName) {
-        String newLocale = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
-        this.i18nSuffix = StringUtils.isBlank(newLocale) ? this.defaultLocale : newLocale;
-        log.debug("Change language to '{}'", this.i18nSuffix);
-        if (!localisedItems.containsKey(this.i18nSuffix)) {
-            localisedItems.put(this.i18nSuffix, new PropertysetItem());
-        }
+//        String newLocale = StringUtils.substringAfter(i18NSubNodeName, getBasePropertyName() + "_");
+//        this.i18nSuffix = StringUtils.isBlank(newLocale) ? this.defaultLocale : newLocale;
+//        log.debug("Change language to '{}'", this.i18nSuffix);
     }
 }
