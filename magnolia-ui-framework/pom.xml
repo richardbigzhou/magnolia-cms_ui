@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>65</cloverCoverageThreshold>
+    <cloverCoverageThreshold>64</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -72,6 +72,10 @@
       <groupId>info.magnolia.task</groupId>
       <artifactId>magnolia-task-management</artifactId>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.scheduler</groupId>
+      <artifactId>magnolia-module-scheduler</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -88,18 +92,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.quartz-scheduler</groupId>
-      <artifactId>quartz</artifactId>
-      <!-- keep version number in sync w/ m-m-scheduler -->
-      <version>1.8.6</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
@@ -140,12 +132,6 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <!-- TEST -->
-    <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-module-scheduler</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

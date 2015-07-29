@@ -66,6 +66,7 @@ import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -106,6 +107,7 @@ public class DeleteActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, AbstractCommandActionTest.DummyAsyncExecutor.class);
 
         MessagesManager messagesManager = mock(MessagesManager.class);
         Messages messages = mock(Messages.class);

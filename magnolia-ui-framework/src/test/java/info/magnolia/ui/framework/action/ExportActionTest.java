@@ -63,6 +63,8 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;
@@ -100,6 +102,7 @@ public class ExportActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, AbstractCommandActionTest.DummyAsyncExecutor.class);
 
         // Init Command
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
@@ -145,7 +148,7 @@ public class ExportActionTest extends RepositoryTestCase {
     @Test
     public void testExportActionGetParam() throws Exception {
         // GIVEN
-        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null, mock(SimpleTranslator.class));
+        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, mock(UiContext.class), mock(SimpleTranslator.class));
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
 

@@ -72,6 +72,7 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -112,6 +113,7 @@ public class ActivationActionTest extends RepositoryTestCase {
 
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
         ComponentsTestUtil.setImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, AbstractCommandActionTest.DummyAsyncExecutor.class);
 
         session = SessionTestUtil.createSession("website", website);
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);

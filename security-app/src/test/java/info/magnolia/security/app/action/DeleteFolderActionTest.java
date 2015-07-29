@@ -61,6 +61,7 @@ import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -132,6 +133,7 @@ public class DeleteFolderActionTest extends RepositoryTestCase {
         securitySupport = (SecuritySupportImpl) Components.getComponent(SecuritySupport.class);
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, mock(AsyncActionExecutor.class).getClass());
         ComponentsTestUtil.setInstance(Map.class, new HashMap<String, Object>());
 
         commandsManager = Components.getComponent(CommandsManager.class);

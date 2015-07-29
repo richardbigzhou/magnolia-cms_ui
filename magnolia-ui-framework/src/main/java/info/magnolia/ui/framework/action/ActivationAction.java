@@ -124,7 +124,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     protected String getMessage(boolean success) {
         if (success) {
-            return getDefinition().getSuccessMessage();
+            return getSuccessMessage() != null ? getSuccessMessage() : getDefinition().getSuccessMessage();
         } else {
             return getFailureMessage() != null ? getFailureMessage() : getDefinition().getFailureMessage();
         }

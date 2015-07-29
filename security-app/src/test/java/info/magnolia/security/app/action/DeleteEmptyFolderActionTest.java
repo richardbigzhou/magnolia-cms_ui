@@ -50,6 +50,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -95,6 +96,7 @@ public class DeleteEmptyFolderActionTest extends RepositoryTestCase {
         i18n = mock(SimpleTranslator.class);
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, mock(AsyncActionExecutor.class).getClass());
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
         ComponentsTestUtil.setInstance(Map.class, new HashMap<String, Object>());

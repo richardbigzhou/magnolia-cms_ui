@@ -645,4 +645,16 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertThat(actions, hasNode("downloadYaml"));
     }
 
+    @Test
+    public void updateFrom541AddsExceptionFieldToLongRunningMessageView() throws Exception {
+        // GIVEN
+        Node longRunning = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/messageViews/longRunning", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4"));
+
+        // THEN
+        assertThat(longRunning, hasNode("form/tabs/message/fields/exception"));
+    }
+
 }
