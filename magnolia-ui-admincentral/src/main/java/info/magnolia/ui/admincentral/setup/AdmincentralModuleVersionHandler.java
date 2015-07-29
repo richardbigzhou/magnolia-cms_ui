@@ -274,7 +274,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
                         new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                                 new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
-                        new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml")
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning")
                 ))));
 
         register(DeltaBuilder.update("5.2.7", "")
@@ -306,7 +306,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the permissions to enable access to the default login form.", RepositoryConstants.CONFIG, "/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm", "/.resources/defaultMagnoliaLoginForm"))
         );
         register(DeltaBuilder.update("5.4.1", "")
-                .addTask(addDownloadAsYamlActionTask));
+                .addTask(addDownloadAsYamlActionTask)
+                .addTask(new NodeExistsDelegateTask("", "/modules/ui-admincentral/messageViews/longRunning",
+                        new PartialBootstrapTask("Add exception field to longRunning messageView", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning/form/tabs/message/fields/exception"))));
     }
 
     @Override
@@ -334,7 +336,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")),
                 new NodeExistsDelegateTask("Configure deletion as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
-                new BootstrapSingleModuleResource("config.modules.ui-admincentral.messageViews.longRunning.xml"))));
+                new PartialBootstrapTask("", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning"))));
 
         list.add(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy);
         return list;

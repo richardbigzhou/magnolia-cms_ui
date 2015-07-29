@@ -61,7 +61,7 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
-import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.module.scheduler.SchedulerModule;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -71,6 +71,7 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -122,12 +123,14 @@ public class AbstractCommandActionTest {
         // Init scheduler
         ModuleRegistry moduleRegistry = mock(ModuleRegistryImpl.class);
         SchedulerModule schedulerModule = mock(SchedulerModule.class);
-        when(moduleRegistry.isModuleRegistered("scheduler")).thenReturn(true);
-        when(moduleRegistry.getModuleInstance("scheduler")).thenReturn(schedulerModule);
+
         scheduler = mock(Scheduler.class);
         when(schedulerModule.getScheduler()).thenReturn(scheduler);
 
         ComponentsTestUtil.setInstance(ModuleRegistry.class, moduleRegistry);
+        ComponentsTestUtil.setInstance(SchedulerModule.class, schedulerModule);
+
+        ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, DummyAsyncExecutor.class);
 
         MockWebContext webContext = new MockWebContext();
         webContext.setContextPath("/foo");
@@ -165,8 +168,8 @@ public class AbstractCommandActionTest {
                         new CommandActionDefinition(),
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
                         commandsManager,
-                        null,
-                        null);
+                        mock(UiContext.class),
+                        i18n);
 
         // WHEN
         action.setCurrentItem(action.getItems().get(0));
@@ -194,8 +197,8 @@ public class AbstractCommandActionTest {
                         new CommandActionDefinition(),
                         new JcrPropertyAdapter(jcrProperty),
                         commandsManager,
-                        null,
-                        null);
+                        mock(UiContext.class),
+                        i18n);
 
         // WHEN
         action.setCurrentItem(action.getItems().get(0));
@@ -229,7 +232,7 @@ public class AbstractCommandActionTest {
                         definition,
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
                         commandsManager,
-                        null,
+                        mock(UiContext.class),
                         i18n);
 
         // WHEN
@@ -258,12 +261,10 @@ public class AbstractCommandActionTest {
         QuxCommand quxCommand = new QuxCommand();
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
         when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
-
-        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                definition,
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction(definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null,
+                mock(UiContext.class),
                 i18n);
 
         // WHEN
@@ -278,7 +279,7 @@ public class AbstractCommandActionTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
         AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                new CommandActionDefinition(), item, commandsManager, null, null);
+                new CommandActionDefinition(), item, commandsManager, mock(UiContext.class),i18n);
         action.setCurrentItem(action.getItems().get(0));
         action.buildParams(item.getJcrItem());
 
@@ -310,7 +311,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, i18n, params1);
+                mock(UiContext.class), i18n, params1);
 
         action.execute();
         // WHEN
@@ -318,7 +319,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, i18n, params2);
+                mock(UiContext.class), i18n, params2);
 
         action2.execute();
 
@@ -343,7 +344,8 @@ public class AbstractCommandActionTest {
                 definition,
                 item,
                 commandsManager,
-                null, i18n, new HashMap<String, Object>());
+                mock(UiContext.class),
+                i18n, new HashMap<String, Object>());
 
         action.setCurrentItem(item);
 
@@ -366,6 +368,7 @@ public class AbstractCommandActionTest {
         QuxCommand quxCommand = new QuxCommand();
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "asynchronous")).thenReturn(quxCommand);
         when(scheduler.getCurrentlyExecutingJobs()).thenReturn(Arrays.asList(jobExecutionContext));
+        when(i18n.translate("ui-framework.abstractcommand.asyncaction.long")).thenReturn("ui-framework.abstractcommand.asyncaction.long");
 
         definition.setAsynchronous(true);
 
@@ -375,7 +378,9 @@ public class AbstractCommandActionTest {
                 definition,
                 item,
                 commandsManager,
-                null, i18n, new HashMap<String, Object>());
+                mock(UiContext.class),
+                i18n,
+                new HashMap<String, Object>());
 
         action.setCurrentItem(item);
 
@@ -383,7 +388,7 @@ public class AbstractCommandActionTest {
         action.executeOnItem(item);
 
         // THEN
-        assertEquals("ui-framework.abstractcommand.asyncaction.long", definition.getSuccessMessage());
+        assertEquals("ui-framework.abstractcommand.asyncaction.long", action.getSuccessMessage());
     }
 
     private static final class QuxCommand extends MgnlCommand {
@@ -409,13 +414,13 @@ public class AbstractCommandActionTest {
             params.putAll(parameter);
             return params;
         }
+
     }
 
-    private class SchedulerModule extends ModuleDefinition {
-
-        public Scheduler getScheduler() {
-            return null;
+    public class DummyAsyncExecutor implements AsyncActionExecutor {
+        @Override
+        public boolean execute(JcrItemAdapter item, Map<String, Object> params) throws Exception {
+            return true;
         }
     }
-
 }

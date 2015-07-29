@@ -123,6 +123,10 @@
       <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntryDefinition</type>
       <implementation>info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.framework.action.async.AsyncActionExecutor</type>
+      <implementation>info.magnolia.ui.framework.action.async.DefaultAsyncActionExecutor</implementation>
+    </type-mapping>
 
     <!-- Image provider -->
     <type-mapping>
