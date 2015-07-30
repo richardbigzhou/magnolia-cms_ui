@@ -48,7 +48,6 @@ import java.util.List;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -282,10 +281,8 @@ public class TabBarWidget extends ComplexPanel {
             setElement(LIElement.as(DOM.createElement("li")));
             addStyleName("icon-arrow2_e");
             addStyleName("hidden-tabs-popup-button");
-            getElement().getStyle().setFontSize(18, Unit.PX);
             menuWrapper.add(menubar);
             menuWrapper.setStyleName("context-menu-wrapper");
-            menuWrapper.getElement().getStyle().setZIndex(10000);
 
             // Initially hide the component
             setVisible(false);
