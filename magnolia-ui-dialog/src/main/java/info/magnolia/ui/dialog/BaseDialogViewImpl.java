@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.WideEvent;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.vaadin.event.ShortcutListener;
@@ -53,9 +53,11 @@ import com.vaadin.ui.Panel;
  */
 public class BaseDialogViewImpl extends Panel implements DialogView {
 
+    public static final int DIALOG_WIDTH = 720;
+
     private BaseDialog dialog;
 
-    private Set<DialogCloseHandler> dialogCloseHandlers = new HashSet<DialogCloseHandler>();
+    private Set<DialogCloseHandler> dialogCloseHandlers = new LinkedHashSet<DialogCloseHandler>();
 
     private View contentView;
 
@@ -63,7 +65,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private ModalityLevel modalityLevel = ModalityLevel.STRONG;
 
-    public static final int DIALOG_WIDTH = 720;
+    private boolean isClosed = false;
 
     public BaseDialogViewImpl() {
         this(new BaseDialog());
@@ -133,11 +135,15 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     @Override
     public void close() {
-        DialogCloseHandler[] handlers = dialogCloseHandlers.toArray(new DialogCloseHandler[dialogCloseHandlers.size()]);
-        for (final DialogCloseHandler handler : handlers) {
-            handler.onDialogClose(BaseDialogViewImpl.this);
+        // Some handler could call #close() method once again, but the handlers should be called only once -
+        // all the subsequent calls should be avoided.
+        if (!isClosed) {
+            isClosed = true;
+            for (final DialogCloseHandler handler : dialogCloseHandlers) {
+                handler.onDialogClose(BaseDialogViewImpl.this);
+            }
+            dialogCloseHandlers.clear();
         }
-        dialogCloseHandlers.clear();
     }
 
     @Override
