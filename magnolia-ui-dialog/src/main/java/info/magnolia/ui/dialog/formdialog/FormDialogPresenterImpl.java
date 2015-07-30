@@ -138,7 +138,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.callback = callback;
         this.item = item;
 
-        start(dialogDefinition, uiContext);
+        super.start(dialogDefinition, uiContext);
         getExecutor().setDialogDefinition(getDefinition());
         buildView(getDefinition());
 
@@ -225,4 +225,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return !text.contains(" ") && text.contains(".") && !text.endsWith(".");
     }
 
+    @Override
+    protected void onCancel () {
+        if (callback != null) {
+            callback.onCancel();
+        }
+    }
 }

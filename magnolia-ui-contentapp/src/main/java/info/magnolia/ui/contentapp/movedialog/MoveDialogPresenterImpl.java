@@ -327,4 +327,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             }
         }
     }
+
+    @Override
+    protected void onCancel () {
+        if (callback != null) {
+            callback.onMoveCancelled();
+        }
+    }
 }
