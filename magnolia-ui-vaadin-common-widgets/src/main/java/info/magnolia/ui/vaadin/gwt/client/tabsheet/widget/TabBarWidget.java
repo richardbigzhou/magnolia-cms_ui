@@ -42,13 +42,15 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabLabel;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -77,7 +79,7 @@ public class TabBarWidget extends ComplexPanel {
 
     private VShellShowAllTabLabel showAllTab;
 
-    private HiddenTabsPopup hiddenTabsPopup;
+    private final HiddenTabsPopup hiddenTabsPopup;
 
     private MagnoliaTabLabel activeTab;
 
@@ -87,7 +89,8 @@ public class TabBarWidget extends ComplexPanel {
         setStyleName("nav");
         addStyleDependentName("tabs");
 
-        hiddenTabsPopup = new HiddenTabsPopup();
+        hiddenTabsPopup = new HiddenTabsPopup(eventBus);
+        add(hiddenTabsPopup, tabContainer);
         bindHandlers();
     }
 
@@ -95,51 +98,74 @@ public class TabBarWidget extends ComplexPanel {
         if (tabLabels.isEmpty()) {
             return;
         }
-
         // Is this ever possible?
         if (activeTab == null) {
             activeTab = tabLabels.get(0);
         }
 
-        int tabBarWidth = this.getElement().getOffsetWidth();
-        int showAllTabWidth = (showAllTab != null) ? showAllTab.getElement().getOffsetWidth() : 0;
-        int hiddenTabsMenuButtonWidth = hiddenTabsPopup.getElement().getOffsetWidth();
-        int tabsWidth = showAllTabWidth + hiddenTabsMenuButtonWidth;
+        // Reset hidden-tabs popup
+        hiddenTabsPopup.setVisible(true);
+        int toggleWidth = hiddenTabsPopup.getOffsetWidth();
+        int availableWidth = tabContainer.getOffsetWidth();
 
-        hiddenTabsPopup.menubar.clearItems();
-        hiddenTabsPopup.hide();
+        // 1. Active tab is always visible, count its width first
+        activeTab.setVisible(true);
+        availableWidth -= activeTab.getOffsetWidth();
 
-        int count = 0;
-        int index = tabLabels.indexOf(activeTab);
-        // Cyclicly iterate back-wards over the labels estimating the possibility to squeeze each of them into the visible area of the
-        // tab-bar, we start with the active tab so that it is always visible
-        int tabCount = tabLabels.size();
-        while (count < tabCount) {
-            final MagnoliaTabLabel tab = tabLabels.get((index + tabCount - 1) % tabCount);
-            tabsWidth += getTabWidth(tab);
-            toggleTabVisibility(tab, tabsWidth <= tabBarWidth);
-            ++index;
-            ++count;
+        // 2. Account for show-all tab if needed
+        if (showAllTab != null) {
+            availableWidth -= showAllTab.getOffsetWidth();
         }
 
-        hiddenTabsPopup.showControlIfNeeded();
-    }
-
-    private int getTabWidth(MagnoliaTabLabel tab) {
-        boolean isVisible = tab.isVisible();
-        if (!isVisible) {
+        // Collect every tab's width (we'll have to know anyway)
+        Map<MagnoliaTabLabel, Integer> tabWidths = new HashMap<MagnoliaTabLabel, Integer>();
+        for (MagnoliaTabLabel tab : tabLabels) {
+            if (tab == activeTab) {
+                continue;
+            }
             tab.setVisible(true);
+            tabWidths.put(tab, tab.getOffsetWidth());
         }
-        int tabWidth = tab.getElement().getOffsetWidth();
-        tab.setVisible(isVisible);
-        return tabWidth;
-    }
 
-    private void toggleTabVisibility(MagnoliaTabLabel tabLabel, boolean visible) {
-        tabLabel.setVisible(visible);
-        if (!visible) {
-            hiddenTabsPopup.addTabLabel(tabLabel);
+        // 3. Squeeze all other tabs from start to end, as many as width allows
+        Iterator<MagnoliaTabLabel> it = tabLabels.iterator();
+        boolean outOfSpace = false;
+        while (it.hasNext()) {
+            MagnoliaTabLabel tab = it.next();
+            // Active tab is already accounted for, don't hide it
+            if (tab == activeTab) {
+                continue;
+            }
+            if (!outOfSpace) {
+                int width = tabWidths.get(tab);
+                int maxWidth = Collections.max(tabWidths.values());
+                // Either I have enough space for the next tab and it's the last one
+                if ((!it.hasNext() && availableWidth >= width)
+                        // Either I need enough space for the widest of the next tabs, plus the toggle
+                        // Why widest? The tab bar may have to accommodate it, not necessarily now, but maybe when switching.
+                        || (maxWidth + toggleWidth <= availableWidth)) {
+                    tabWidths.remove(tab);
+                    availableWidth -= width;
+                    continue;
+                } else {
+                    outOfSpace = true;
+                }
+            }
+            // If we're there we've run out of space
+            tab.setVisible(false);
         }
+
+        // 4. Compute content of the hidden tabs popup
+        hiddenTabsPopup.hide();
+        hiddenTabsPopup.menubar.clearItems();
+        it = tabLabels.iterator();
+        while (it.hasNext()) {
+            MagnoliaTabLabel tab = it.next();
+            if (!tab.isVisible()) {
+                hiddenTabsPopup.addTabLabel(tab);
+            }
+        }
+        hiddenTabsPopup.showControlIfNeeded();
     }
 
     private void bindHandlers() {
@@ -202,8 +228,8 @@ public class TabBarWidget extends ComplexPanel {
         label.setEventBus(eventBus);
         if (!tabLabels.contains(label)) {
             tabLabels.add(label);
-            // Keep show-all button last in the DOM when inserting labels.
-            insert(label, tabContainer, tabLabels.size(), true);
+            // Keep hidden-tabs toggle and show-all button last in the DOM when inserting labels.
+            insert(label, tabContainer, tabLabels.size() - 1, true);
             updateSingleTabStyle();
             reArrangeTabVisibility();
         }
@@ -225,8 +251,6 @@ public class TabBarWidget extends ComplexPanel {
             remove(showAllTab);
             showAllTab = null;
         }
-
-        add(hiddenTabsPopup, getElement());
         reArrangeTabVisibility();
     }
 
@@ -272,20 +296,20 @@ public class TabBarWidget extends ComplexPanel {
 
     }
 
-    private class HiddenTabsPopup extends Widget {
+    static class HiddenTabsPopup extends Widget {
 
-        private DialogBox menuWrapper = new DialogBox(true);
+        private final DialogBox menuWrapper = new DialogBox(true);
+        private final HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
+        private final EventBus eventBus;
 
-        private HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
+        public HiddenTabsPopup(EventBus eventBus) {
+            this.eventBus = eventBus;
 
-        public HiddenTabsPopup() {
-            setElement(LIElement.as(DOM.createElement("li")));
+            setElement(DOM.createElement("li"));
             addStyleName("icon-arrow2_e");
             addStyleName("hidden-tabs-popup-button");
-            getElement().getStyle().setFontSize(18, Unit.PX);
             menuWrapper.add(menubar);
             menuWrapper.setStyleName("context-menu-wrapper");
-            menuWrapper.getElement().getStyle().setZIndex(10000);
 
             // Initially hide the component
             setVisible(false);
@@ -314,7 +338,7 @@ public class TabBarWidget extends ComplexPanel {
                 public void onClick(ClickEvent event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    menuWrapper.setPopupPosition(hiddenTabsPopup.getAbsoluteLeft() + hiddenTabsPopup.getOffsetWidth(), hiddenTabsPopup.getAbsoluteTop());
+                    menuWrapper.setPopupPosition(getAbsoluteLeft() + getOffsetWidth(), getAbsoluteTop());
                     menuWrapper.show();
                 }
 
