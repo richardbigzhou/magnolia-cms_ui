@@ -34,42 +34,79 @@
 package info.magnolia.ui.contentapp.movedialog;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 
+import java.util.ArrayList;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Test for {@link MoveDialogPresenterImpl}.
  */
 public class MoveDialogPresenterImplTest {
 
-    private ComponentProvider componentProvider = mock(ComponentProvider.class);
-
-    private ActionRenderer actionRenderer = new DefaultEditorActionRenderer();
-
-    private ChooseDialogViewImpl view = new ChooseDialogViewImpl();
-
     private MoveDialogActionAreaView actionAreaView = new MoveDialogActionAreaViewImpl();
-
-    private MoveDialogPresenterImpl presenter = new MoveDialogPresenterImpl(componentProvider, view, null, null, null, null, null, null);
+    private MoveDialogPresenterImpl presenter;
+    private ComponentProvider componentProvider = mock(ComponentProvider.class);
 
     @Before
     public void setUp() throws Exception {
+        DialogActionExecutor executor = new DialogActionExecutor(componentProvider);
+        ActionRenderer actionRenderer = new DefaultEditorActionRenderer();
+        ChooseDialogViewImpl view = new ChooseDialogViewImpl();
+        TestMoveDialogActionAreaPresenterImpl actionAreaPresenter = new TestMoveDialogActionAreaPresenterImpl(actionAreaView);
+        I18nizer i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), mock(LocaleProvider.class));
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        JcrContentConnector contentConnector = mock(JcrContentConnector.class);
+        final String workspaceName = "workspace";
+        MockSession session;
+        ConfiguredJcrContentConnectorDefinition configuredJcrContentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        MockContext ctx = new MockContext();
         View moveInsideActionView = actionRenderer.start(new MoveNodeActionDefinition(MoveLocation.INSIDE), presenter);
+
+        presenter = new MoveDialogPresenterImpl(componentProvider, view, null, executor, null, i18nizer, i18n, contentConnector);
+        session = new MockSession(workspaceName);
+        ctx.addSession(workspaceName, session);
+        MgnlContext.setInstance(ctx);
+        when(componentProvider.newInstance(MoveDialogActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
+        when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
+        configuredJcrContentConnectorDefinition.setWorkspace(workspaceName);
+        when(contentConnector.getContentConnectorDefinition()).thenReturn(configuredJcrContentConnectorDefinition);
         actionAreaView.addPrimaryAction(moveInsideActionView, MoveLocation.INSIDE.name());
         view.setActionAreaView(actionAreaView);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
     }
 
     @Test
@@ -132,4 +169,29 @@ public class MoveDialogPresenterImplTest {
         assertEquals(BaseDialog.CANCEL_ACTION_NAME, actionName);
     }
 
+    @Test
+    public void testCloseHandlerIsInvokedOnCloseDialog() {
+        // WHEN
+        MoveActionCallback callback = mock(MoveActionCallback.class);
+        ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
+        browserSubAppDescriptor.setWorkbench(mock(ConfiguredWorkbenchDefinition.class));
+        presenter.start(browserSubAppDescriptor, new ArrayList<Item>(), callback);
+        presenter.closeDialog();
+
+        //THEN
+        verify(callback, times(1)).onMoveCancelled();
+    }
+
+    private class TestMoveDialogActionAreaPresenterImpl extends MoveDialogActionAreaPresenterImpl {
+
+        public TestMoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView actionAreaView) {
+            super(actionAreaView, MoveDialogPresenterImplTest.this.componentProvider);
+        }
+
+        @Override
+        public MoveDialogActionAreaView getView() {
+            return super.getView();
+        }
+
+    }
 }

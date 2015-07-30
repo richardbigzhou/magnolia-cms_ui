@@ -134,10 +134,10 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public void close() {
         DialogCloseHandler[] handlers = dialogCloseHandlers.toArray(new DialogCloseHandler[dialogCloseHandlers.size()]);
-        for (final DialogCloseHandler handler : handlers) {
-            handler.onDialogClose(BaseDialogViewImpl.this);
+        for (int i = 0; i < handlers.length; i++) {
+            removeDialogCloseHandler(handlers[i]);
+            handlers[i].onDialogClose(BaseDialogViewImpl.this);
         }
-        dialogCloseHandlers.clear();
     }
 
     @Override

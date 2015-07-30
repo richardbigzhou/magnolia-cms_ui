@@ -56,8 +56,6 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 
-import net.sf.cglib.proxy.Enhancer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +65,8 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
+
+import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -90,6 +90,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     private UiContext uiContext;
 
     private DialogDefinition definition;
+
+    private boolean isExecutingAction;
 
     @Inject
     public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer, SimpleTranslator i18n) {
@@ -128,6 +130,16 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     @Override
     public DialogView start(DialogDefinition dialogDefinition, UiContext uiContext) {
+        // Additional close handler to check for cases when the dialog isn't closed from an action (shortcut, dialog close icon), and process callback accordingly
+        getView().addDialogCloseHandler(new DialogCloseHandler() {
+
+            @Override
+            public void onDialogClose(DialogView dialogView) {
+                if (!isExecutingAction) {
+                    onCancel();
+                }
+            }
+        });
         this.uiContext = uiContext;
         // ChooseDialogDefinition is already enhanced as it is obtained via ContentAppDescriptor.getChooseDialog() at ContentApp.openChooseDialog(..)
         if (Enhancer.isEnhanced(dialogDefinition.getClass())) {
@@ -190,6 +202,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     protected void executeAction(String actionName, Object[] actionContextParams) {
+        isExecutingAction = true;
         Object[] providedParameters = getActionParameters(actionName);
         Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
         System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
@@ -205,7 +218,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             } else if (uiContext instanceof SubAppContext) {
                 ((SubAppContext) uiContext).getAppContext().sendLocalMessage(error);
             }
-
+        } finally {
+            isExecutingAction = false;
         }
     }
 
@@ -279,5 +293,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             // textareas are excluded on the client-side, see 'EnterFriendlyShortcutActionHandler', used in PanelConnector
             executeAction(BaseDialog.COMMIT_ACTION_NAME, new Object[0]);
         }
+    }
+
+    protected void onCancel() {
     }
 }
