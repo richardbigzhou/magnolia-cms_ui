@@ -87,6 +87,7 @@ public class TabBarWidget extends ComplexPanel {
         addStyleDependentName("tabs");
 
         hiddenTabsPopup = new HiddenTabsPopup();
+        add(hiddenTabsPopup, tabContainer);
         bindHandlers();
     }
 
@@ -201,7 +202,7 @@ public class TabBarWidget extends ComplexPanel {
         label.setEventBus(eventBus);
         if (!tabLabels.contains(label)) {
             tabLabels.add(label);
-            // Keep show-all button last in the DOM when inserting labels.
+            // Keep hidden-tabs toggle and show-all button last in the DOM when inserting labels.
             insert(label, tabContainer, tabLabels.size() - 1, true);
             updateSingleTabStyle();
             reArrangeTabVisibility();
@@ -224,8 +225,6 @@ public class TabBarWidget extends ComplexPanel {
             remove(showAllTab);
             showAllTab = null;
         }
-
-        add(hiddenTabsPopup, getElement());
         reArrangeTabVisibility();
     }
 
