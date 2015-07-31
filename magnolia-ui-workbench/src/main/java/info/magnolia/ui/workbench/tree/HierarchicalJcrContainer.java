@@ -302,7 +302,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return MgnlContext.getJCRSession(getWorkspace());
     }
 
-    private Node getRootNode() throws RepositoryException {
+    protected Node getRootNode() throws RepositoryException {
         return getSession().getNode(getConfiguration().getRootPath());
     }
 }
