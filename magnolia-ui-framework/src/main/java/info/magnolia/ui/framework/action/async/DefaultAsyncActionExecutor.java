@@ -62,8 +62,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerListener;
@@ -125,7 +125,7 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
         try {
             scheduler.scheduleJob(jd, trigger);
         }
-        catch (ObjectAlreadyExistsException e) {
+        catch (SchedulerException e) {
              throw new ParallelExecutionException(e);
         }
 
