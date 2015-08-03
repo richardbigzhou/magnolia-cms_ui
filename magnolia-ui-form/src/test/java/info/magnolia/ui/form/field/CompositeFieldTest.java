@@ -34,7 +34,10 @@
 package info.magnolia.ui.form.field;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.EmptyMessages;
@@ -125,7 +128,7 @@ public class CompositeFieldTest extends MgnlTestCase {
         fieldDefinition.setFields(Arrays.asList(childFieldDef1, childFieldDef2));
         fieldDefinition.setRequired(true);
 
-        final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, fieldDefinition, PropertysetItem.class, Arrays.asList("f1", "f2"));
+        final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, fieldDefinition, PropertysetItem.class, Arrays.asList("f1", "f2"), mock(I18NAuthoringSupport.class));
         doReturn(compositeTransformer).when(componentProvider).newInstance(eq(CompositeTransformer.class), anyVararg());
 
         this.compositeFieldFactory = new CompositeFieldFactory(fieldDefinition, relatedItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);

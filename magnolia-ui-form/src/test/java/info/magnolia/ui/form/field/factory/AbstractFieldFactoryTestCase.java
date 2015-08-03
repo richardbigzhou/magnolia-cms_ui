@@ -48,6 +48,7 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -81,6 +82,7 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     public void setUp() throws Exception {
         // Init Message & Providers
 
+        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
@@ -121,5 +123,4 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
      * Create the specific ConfiguredFieldDefinition or sub class.
      */
     protected abstract void createConfiguredFieldDefinition();
-
 }

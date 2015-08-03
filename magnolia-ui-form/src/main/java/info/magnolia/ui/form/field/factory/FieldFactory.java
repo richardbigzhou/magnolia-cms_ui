@@ -72,7 +72,7 @@ public interface FieldFactory extends FormItem {
     void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory);
 
     /**
-     * @deprecated This is deprecated since 5.3.4; {@link i18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
+     * @deprecated This is deprecated since 5.3.4; {@link I18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
      * If any, {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} is the one that should be used.
      */
     @Deprecated

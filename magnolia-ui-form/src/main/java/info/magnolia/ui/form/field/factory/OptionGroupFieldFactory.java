@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -86,7 +88,9 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        return this.componentProvider.newInstance(transformerClass, item, definition, defineType());
+        final Transformer<?> transformer = this.componentProvider.newInstance(transformerClass, item, definition, defineType(), Components.getComponent(I18NAuthoringSupport.class));
+        transformer.setLocale(getLocale());
+        return transformer;
     }
 
     protected Class<?> defineType() {

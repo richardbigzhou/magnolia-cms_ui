@@ -35,12 +35,16 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -57,15 +61,27 @@ public class FieldFactoryFactory implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(FieldFactoryFactory.class);
 
-    private ComponentProvider componentProvider;
-    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
-    private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
+    private final ComponentProvider componentProvider;
+    private final FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
+    private final FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+    private final UiContext uiContext;
 
     @Inject
-    public FieldFactoryFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
+    public FieldFactoryFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, FieldValidatorFactoryFactory fieldValidatorFactoryFactory, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
+        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
         this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.4.1 - use {@link #FieldFactoryFactory(ComponentProvider, FieldTypeDefinitionRegistry, FieldValidatorFactoryFactory, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public FieldFactoryFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
+        this(componentProvider, fieldTypeDefinitionRegistry, fieldValidatorFactoryFactory, componentProvider.getComponent(UiContext.class), componentProvider.getComponent(I18NAuthoringSupport.class));
     }
 
     /**
@@ -100,6 +116,12 @@ public class FieldFactoryFactory implements Serializable {
 
         FieldFactory fieldFactory = componentProvider.newInstance(factoryClass, combinedParameters);
         fieldFactory.setFieldValidatorFactoryFactory(fieldValidatorFactoryFactory);
+
+        if (fieldFactory instanceof AbstractFieldFactory && uiContext instanceof SubAppContext) {
+            final AbstractFieldFactory abstractFieldFactory = (AbstractFieldFactory) fieldFactory;
+            final Locale authoringLocale = ((SubAppContext)uiContext).getAuthoringLocale();
+            abstractFieldFactory.setLocale(authoringLocale == null ? i18NAuthoringSupport.getDefaultLocale() : authoringLocale);
+        }
 
         return fieldFactory;
     }
