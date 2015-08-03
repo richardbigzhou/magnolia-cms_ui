@@ -34,6 +34,9 @@
 package info.magnolia.ui.form.field.transformer;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.util.ObjectProperty;
 
 /**
@@ -43,6 +46,8 @@ import com.vaadin.data.util.ObjectProperty;
  * @param <T>.
  */
 public class TransformedProperty<T> extends ObjectProperty<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(TransformedProperty.class);
 
     private final Transformer<T> transformer;
 
@@ -68,30 +73,27 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
         }
     }
 
-    @Override
-    public T getValue() {
-        return super.getValue();
+    public Transformer<T> getTransformer() {
+        return this.transformer;
     }
 
     /**
-     * @return true if the handler support I18N.
+     * @return true if the transformer supports I18N.
+     *
+     * @deprecated since 5.4.1 without replacement, {@link TransformedProperty} should not care of i18n on its own.
      */
+    @Deprecated
     public boolean hasI18NSupport() {
         return transformer.hasI18NSupport();
     }
 
     /**
      * In case of i18n change, Reload the Value returned by the Handler.
+     *
+     * @deprecated since 5.4.1 without replacement, {@link TransformedProperty} should not care of i18n on its own.
      */
+    @Deprecated
     public void fireI18NValueChange() {
-        boolean readOnlyValue = isReadOnly();
-        setReadOnly(false);
-        super.setValue(transformer.readFromItem());
-        setReadOnly(readOnlyValue);
-        super.fireValueChange();
-    }
-
-    public Transformer<T> getTransformer() {
-        return this.transformer;
+        log.warn("TransformedProperty.fireI18NValueChange() is deprecated since 5.4.1 without replacement, it has no effect any longer and should never be called.");
     }
 }

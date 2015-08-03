@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.composite;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
@@ -58,12 +60,19 @@ public class DelegatingCompositeFieldTransformer extends BasicTransformer<Proper
     protected List<String> fieldsName;
     private PropertysetItem items;
 
-    @Inject
+    /**
+     * @deprecated since 5.4.1 - use {@link #DelegatingCompositeFieldTransformer(Item, ConfiguredFieldDefinition, Class, List, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public DelegatingCompositeFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
-        super(relatedFormItem, definition, type);
-        this.fieldsName = fieldsName;
+        this(relatedFormItem, definition, type, fieldsName, Components.getComponent(I18NAuthoringSupport.class));
     }
 
+    @Inject
+    public DelegatingCompositeFieldTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
+        this.fieldsName = fieldsName;
+    }
     /**
      * This transformer's write implementation is empty. We do not need to write to the item as this is delegated to the sub-fields.
      */

@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.field.transformer.basic;
 
 import info.magnolia.cms.security.SecurityUtil;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -44,8 +46,16 @@ import com.vaadin.data.Property;
  */
 public class BCryptTransformer extends BasicTransformer<String> {
 
+    /**
+     * @deprecated since 5.4.1 - use {@link #BCryptTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public BCryptTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type) {
-        super(relatedFormItem, definition, type);
+        super(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
+    }
+
+    public BCryptTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
     }
 
     @Override

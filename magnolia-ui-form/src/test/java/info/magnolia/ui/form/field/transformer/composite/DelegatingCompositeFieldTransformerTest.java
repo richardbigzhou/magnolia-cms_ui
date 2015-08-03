@@ -34,10 +34,12 @@
 package info.magnolia.ui.form.field.transformer.composite;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
@@ -86,7 +88,7 @@ public class DelegatingCompositeFieldTransformerTest {
     @Test
     public void readFromItemOnce() {
         // GIVEN
-        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -102,7 +104,7 @@ public class DelegatingCompositeFieldTransformerTest {
 
     public void readFromItemTwice() {
         // GIVEN
-        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames());
+        DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();

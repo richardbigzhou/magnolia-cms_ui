@@ -34,11 +34,14 @@
 package info.magnolia.ui.form.field.transformer.multi;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -72,7 +75,7 @@ public class MultiValueJSONTransformerTest extends RepositoryTestCase {
                         "/parent.propertyString=hello\n" +
                         "/parent/child.@type=mgnl:content\n" +
                         "/parent/child.propertyString=chield1\n";
-
+        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
         session.save();

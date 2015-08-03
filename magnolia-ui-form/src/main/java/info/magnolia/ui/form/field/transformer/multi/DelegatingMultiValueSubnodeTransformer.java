@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -71,8 +71,8 @@ public class DelegatingMultiValueSubnodeTransformer extends DelegatingMultiValue
 
     private JcrNodeAdapter subNode;
 
-    public DelegatingMultiValueSubnodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18nContentSupport i18nContentSupport) {
-        super(relatedFormItem, definition, type, i18nContentSupport);
+    public DelegatingMultiValueSubnodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
     }
 
     /**

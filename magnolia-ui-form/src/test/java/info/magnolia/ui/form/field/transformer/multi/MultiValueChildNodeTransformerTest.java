@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.transformer.multi;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
@@ -41,6 +42,7 @@ import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.wrapper.JCRPropertiesFilteringNodeWrapper;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -95,7 +97,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         newValue.addItemProperty(0, new ObjectProperty<String>("/xx/xxx"));
         newValue.addItemProperty(1, new ObjectProperty<String>("/yy"));
 
-        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         transformer.writeToItem(newValue);
@@ -119,7 +121,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         PropertysetItem newValue = new PropertysetItem();
         newValue.addItemProperty(0, new ObjectProperty<String>("/xx/xxx"));
 
-        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         transformer.writeToItem(newValue);
@@ -138,7 +140,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         rootNode.getNode(propertyName).remove();
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
 
-        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -153,7 +155,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
 
-        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -172,7 +174,7 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
     public void testReadFromItemWriteToItem() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildNodeTransformer transformer = new MultiValueChildNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // Read
         PropertysetItem res = transformer.readFromItem();

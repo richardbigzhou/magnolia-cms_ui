@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import javax.inject.Inject;
@@ -47,8 +48,8 @@ import com.vaadin.data.Item;
 public class NotNullInitialStringValueTransformer extends BasicTransformer<String> {
 
     @Inject
-    public NotNullInitialStringValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type) {
-        super(relatedFormItem, definition, type);
+    public NotNullInitialStringValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
     }
 
     /**

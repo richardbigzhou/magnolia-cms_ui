@@ -42,6 +42,10 @@ public interface I18NAwareHandler {
 
     void setLocale(Locale locale);
 
+    /**
+     * @deprecated since 5.4.1 without concrete replacement - should not be needed any longer.
+     */
+    @Deprecated
     void setI18NPropertyName(String i18NPropertyName);
 
     Locale getLocale();
