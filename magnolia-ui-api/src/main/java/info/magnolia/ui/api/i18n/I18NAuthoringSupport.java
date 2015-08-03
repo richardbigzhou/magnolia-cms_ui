@@ -45,19 +45,17 @@ import com.vaadin.ui.HasComponents;
  */
 public interface I18NAuthoringSupport {
 
-    /**
-     * Returns the available locales for the given page, area or component node.
-     */
-    List<Locale> getAvailableLocales(Node node);
+    List<Locale> getAvailableLocales();
 
-    /**
-     * Returns the default locale for the given page, area or component node.
-     */
-    Locale getDefaultLocale(Node node);
+    Locale getDefaultLocale();
 
-    void i18nize(HasComponents fieldContainer, Locale locale);
+    boolean isDefaultLocale(Locale locale);
 
     String createI18NURI(Node node, Locale locale);
+
+    String deriveLocalisedPropertyName(String base, Locale locale);
+
+    List<Locale> getAvailableLocales(Node node);
 
     /**
      * @deprecated I18nAuthoringSupport is an instance singleton, and should not be used to sync UI state of a specific user. Since 5.3.9, use {@link info.magnolia.ui.api.app.SubAppContext#getAuthoringLocale() SubAppContext#getAuthoringLocale()}.
@@ -66,4 +64,12 @@ public interface I18NAuthoringSupport {
     @Deprecated
     Locale getAuthorLocale();
 
+    Locale getDefaultLocale(Node node);
+
+    /**
+     * @deprecated since 5.4.1 without a substitute - the i18n-ready components should now take
+     * of switching the language on their own.
+     */
+    @Deprecated
+    void i18nize(HasComponents fieldContainer, Locale locale);
 }

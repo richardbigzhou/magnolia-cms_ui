@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.formdialog;
+package info.magnolia.ui.form;
 
-
-import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
 
-import java.util.List;
 import java.util.Locale;
 
+import com.vaadin.data.Item;
+
 /**
- * Interface for a locale-enabled form view.
+ * {@link FormPresenter} aims to help with form construction and management.
+ * <br>
+ * - Instead of producing the {@link FormViewReduced} it hooks to one and presents it, this is dictated by the implementation of the components
+ * which happen to use this class.
+ * <br>
+ * - Supports localisation.
  */
-public interface FormView extends DialogView, FormViewReduced {
+public interface FormPresenter {
 
-    void setCurrentLocale(Locale locale);
+    void presentView(FormViewReduced formView, FormDefinition formDefinition, Item item, FormItem parent);
 
-    void setAvailableLocales(List<Locale> locales);
+    void setLocale(Locale locale);
+
+    boolean isValid();
 }

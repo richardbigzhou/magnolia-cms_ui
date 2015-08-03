@@ -57,6 +57,7 @@ import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -94,8 +95,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private final DetailView view;
 
-    private final FormBuilder formBuilder;
-
     private final ComponentProvider componentProvider;
 
     private final ActionExecutor executor;
@@ -118,13 +117,23 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private DialogView dialogView;
 
+    private DetailView.ViewType viewType;
+
+    /**
+     * @deprecated since 5.4.1 - use {@link #DetailPresenter(SubAppContext, EventBus, DetailView, ComponentProvider, SubAppActionExecutor, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector)} instead.
+     */
+    @Deprecated
+    public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
+                           FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
+        this(subAppContext, eventBus, view, componentProvider, executor, i18nizer, i18n, checker, contentConnector);
+    }
+
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
+            ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
-        this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
         this.executor = executor;
         this.i18nizer = i18nizer;
@@ -136,16 +145,25 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
         this.editorDefinition = editorDefinition;
+        this.viewType = viewType;
         this.item = contentConnector.getItem(itemId);
         this.itemId = itemId;
-        setItemView(viewType);
+
+        initDetailView();
         return view;
     }
 
-    private void setItemView(DetailView.ViewType viewType) {
-        FormView formView = componentProvider.getComponent(FormView.class);
-        this.dialogView = formView;
+    protected void initDetailView() {
+        final FormView formView = componentProvider.getComponent(FormView.class);
 
+        this.dialogView = formView;
+        view.setItemView(dialogView.asVaadinComponent(), viewType);
+        initActions();
+
+        buildFormView(formView);
+    }
+
+    protected void buildFormView(FormView formView) {
         FormDefinition formDefinition;
 
         switch (viewType) {
@@ -158,9 +176,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             break;
         }
 
-        initActions();
-        formBuilder.buildForm(formView, formDefinition, item, null);
-        view.setItemView(dialogView.asVaadinComponent(), viewType);
+        final FormPresenter formPresenter = componentProvider.getComponent(FormPresenter.class);
+        formPresenter.presentView(formView, formDefinition, item, null);
     }
 
     private void initActions() {
@@ -209,14 +226,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void onCancel() {
-        // setItemView(ItemView.ViewType.VIEW);
+        // initDetailView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 
     @Override
     public void onSuccess(String actionName) {
         eventBus.fireEvent(new ContentChangedEvent(itemId));
-        // setItemView(ItemView.ViewType.VIEW);
+        // initDetailView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 

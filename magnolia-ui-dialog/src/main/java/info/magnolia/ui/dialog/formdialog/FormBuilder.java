@@ -135,7 +135,7 @@ public class FormBuilder {
             if (item instanceof JcrItemAdapter) {
                 javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
                 if (jcrItem.isNode()) {
-                    Node node = (Node) jcrItem;
+                    final Node node = (Node) jcrItem;
                     List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
                     view.setAvailableLocales(locales);
                     // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
@@ -188,45 +188,68 @@ public class FormBuilder {
         boolean firstFieldIsBuilt = false;
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            List<FieldDefinition> fields = tabDefinition.getFields();
-            if (fields.size() == 0) { // skip empty tabs
-                continue;
+            FormTab tab = buildFormTab(tabDefinition, item, form);
+            if (tab == null) continue;
+
+            Iterator<Component> fieldIt = tab.getContainer().iterator();
+            while (fieldIt.hasNext()) {
+                view.addField((Field<?>) fieldIt.next());
             }
-            FormTab tab = new FormTab(tabDefinition);
-            tab.setParent(form);
-            for (final FieldDefinition fieldDefinition : fields) {
-                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
-                if (formField == null) {
-                    continue;
-                }
-                formField.setComponentProvider(componentProvider);
-                formField.setParent(tab);
-                final Field<?> field = formField.createField();
-                if (field instanceof AbstractComponent) {
-                    ((AbstractComponent) field).setImmediate(true);
-                }
+
+            fieldIt = tab.getContainer().iterator();
+            if (!firstFieldIsBuilt && fieldIt.hasNext()) {
+                ((Component.Focusable)fieldIt.next()).focus();
+                firstFieldIsBuilt = true;
+            }
+
+            view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
+        }
+        view.setShowAllEnabled(view.getFormSections().size() > 1);
+    }
+
+    public FormTab buildFormTab(TabDefinition tabDefinition, Item itemDatasource, Form parentForm) {
+        List<FieldDefinition> fields = tabDefinition.getFields();
+        if (fields.isEmpty()) { // skip empty tabs
+            return null;
+        }
+        FormTab tab = new FormTab(tabDefinition);
+        tab.setParent(parentForm);
+        tab.getContainer().setName(tabDefinition.getName());
+        for (final FieldDefinition fieldDefinition : fields) {
+            final Field<?> field = createField(fieldDefinition, itemDatasource, tab);
+            if (field != null) {
                 tab.addField(field);
                 final String helpDescription = fieldDefinition.getDescription();
-
                 if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
                     tab.setComponentHelpDescription(field, helpDescription);
                 }
-
-                if (field instanceof TextArea || field instanceof CKEditorTextField || field instanceof AceEditor) {
-                    TextAreaStretcher.extend(field);
-                }
-
-                view.addField(field);
-
-                if (!firstFieldIsBuilt) {
-                    field.focus();
-                    firstFieldIsBuilt = true;
-                }
             }
-            view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
         }
-        view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
+        return tab;
+    }
 
+    public Field<?> createField(FieldDefinition fieldDefinition, Item itemDatasource, FormTab parentTab) {
+        final FieldFactory fieldFactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, itemDatasource);
+        final FieldFactory formField = fieldFactory;
+        if (formField == null) {
+            return null;
+        }
+
+        formField.setComponentProvider(componentProvider);
+        if (parentTab != null) {
+            formField.setParent(parentTab);
+        }
+
+        final Field<?> field = formField.createField();
+        if (field instanceof AbstractComponent) {
+            ((AbstractComponent) field).setImmediate(true);
+        }
+
+        if (field instanceof TextArea || field instanceof CKEditorTextField || field instanceof AceEditor) {
+            TextAreaStretcher.extend(field);
+        }
+
+        return field;
     }
 
     private boolean hasI18nAwareFields(FormDefinition formDefinition) {

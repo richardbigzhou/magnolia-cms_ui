@@ -50,6 +50,7 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.ArrayList;
@@ -155,8 +156,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private void buildView(FormDialogDefinition dialogDefinition) {
         final Dialog dialog = new Dialog(dialogDefinition);
+        final FormPresenter formPresenter = componentProvider.getComponent(FormPresenter.class);
 
-        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
+        formPresenter.presentView(formView, dialogDefinition.getForm(), item, dialog);
 
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
