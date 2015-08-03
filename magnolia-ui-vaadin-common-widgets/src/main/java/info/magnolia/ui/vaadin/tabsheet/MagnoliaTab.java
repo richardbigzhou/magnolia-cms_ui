@@ -103,6 +103,15 @@ public class MagnoliaTab extends AbstractSingleComponentContainer implements Sel
         return (MagnoliaTabSheet) super.getParent();
     }
 
+    @Override
+    public void setContent(Component content) {
+        final Component currentContent = super.getContent();
+        if (currentContent != null) {
+            content.setVisible(currentContent.isVisible());
+        }
+        super.setContent(content);
+    }
+
     public void setActive(boolean active) {
         getState().isActive = active;
     }

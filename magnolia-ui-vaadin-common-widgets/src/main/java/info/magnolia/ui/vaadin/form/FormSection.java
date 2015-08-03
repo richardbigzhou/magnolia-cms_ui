@@ -54,6 +54,8 @@ public class FormSection extends AbstractLayout {
 
     private final List<Component> components = new LinkedList<Component>();
 
+    private String name;
+
     public FormSection() {
         addStyleName("v-form-layout");
     }
@@ -72,7 +74,7 @@ public class FormSection extends AbstractLayout {
         if (components.contains(c)) {
             getState().helpDescriptions.put(c, description);
         } else {
-            throw new IllegalArgumentException("Layout doesn't contain this component.");  //TODO-TRANSLATE-EXCEPTION
+            throw new IllegalArgumentException("Layout doesn't contain this component.");
         }
     }
 
@@ -142,5 +144,13 @@ public class FormSection extends AbstractLayout {
 
     public void focusField(Component field) {
         getRpcProxy(FormSectionClientRpc.class).focus(field);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
