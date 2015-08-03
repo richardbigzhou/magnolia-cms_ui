@@ -73,6 +73,11 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
         }
     }
 
+    @Override
+    public boolean isReadOnly() {
+        return super.isReadOnly() || (transformer != null && transformer.isReadOnly());
+    }
+
     public Transformer<T> getTransformer() {
         return this.transformer;
     }

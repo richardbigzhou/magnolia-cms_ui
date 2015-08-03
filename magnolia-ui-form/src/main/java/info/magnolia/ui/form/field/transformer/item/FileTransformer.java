@@ -87,6 +87,8 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
     // i18n item name
     protected String i18NPropertyName;
 
+    private boolean isReadOnly = false;
+
     @Inject
     public FileTransformer(Item relatedFormItem, BasicUploadFieldDefinition definition, Class<T> type) {
         this.definition = definition;
@@ -282,6 +284,21 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
     @Override
     public Class<T> getType() {
         return this.type;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        if (this.isReadOnly) {
+            return true;
+        }
+        final Property property = relatedFormItem.getItemProperty(JcrConstants.JCR_DATA);
+        boolean isPropertyReadOnly = property != null && property.isReadOnly();
+        return isPropertyReadOnly || definition.isReadOnly();
+    }
+
+    @Override
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 
 

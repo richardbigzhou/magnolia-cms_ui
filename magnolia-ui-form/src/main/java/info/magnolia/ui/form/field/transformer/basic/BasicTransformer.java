@@ -78,6 +78,8 @@ public class BasicTransformer<T> implements Transformer<T> {
     private Locale locale;
     protected Class<T> type;
 
+    private boolean isReadOnly = false;
+
     private I18NAuthoringSupport i18NAuthoringSupport;
 
     @Inject
@@ -174,6 +176,7 @@ public class BasicTransformer<T> implements Transformer<T> {
             relatedFormItem.addItemProperty(propertyName, property);
         }
 
+        this.isReadOnly |= property.isReadOnly();
         return property;
     }
 
@@ -227,5 +230,15 @@ public class BasicTransformer<T> implements Transformer<T> {
     @Override
     public Class<T> getType() {
         return type;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.isReadOnly || definition.isReadOnly();
+    }
+
+    @Override
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 }
