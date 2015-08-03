@@ -69,6 +69,9 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -84,6 +87,8 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests.
@@ -173,7 +178,7 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
     public void testMarkNodeAsDeleteLeaf() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1").getNode("article2"));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true), mock(SimpleTranslator.class));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, uiContext(true), mock(SimpleTranslator.class));
 
         // WHEN
         deleteAction.execute();
@@ -189,7 +194,7 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
     public void testMarkNodeAsDeleteWithChildren() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1"));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true), mock(SimpleTranslator.class));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, uiContext(true), mock(SimpleTranslator.class));
 
         // WHEN
         deleteAction.execute();
@@ -207,7 +212,7 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
         List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
         items.add(new JcrNodeAdapter(referenceNode.getNode("article1").getNode("article2")));
         items.add(new JcrNodeAdapter(referenceNode.getNode("article3")));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, items, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true), mock(SimpleTranslator.class));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, items, commandsManager, eventBus, uiContext(true), mock(SimpleTranslator.class));
 
         // WHEN
         deleteAction.execute();
@@ -220,5 +225,22 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
         assertTrue(referenceNode.hasNode("article3"));
         assertTrue(referenceNode.getNode("article3").hasProperty(NodeTypes.Deleted.DELETED));
 
+    }
+
+    private UiContext uiContext(final boolean checkValidation) {
+        final UiContext uiContext = mock(UiContext.class);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ConfirmationCallback callback = (ConfirmationCallback) invocation.getArguments()[6];
+                if (checkValidation) {
+                    callback.onSuccess();
+                } else {
+                    callback.onCancel();
+                }
+                return null;
+            }
+        }).when(uiContext).openConfirmation(any(MessageStyleType.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
+        return uiContext;
     }
 }

@@ -34,6 +34,8 @@
 package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.i18n.DefaultMessagesManager;
@@ -58,12 +60,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -80,6 +78,8 @@ import javax.jcr.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test covering execution of {@link ConfirmationAction}.
@@ -136,7 +136,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node1");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), uiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -152,7 +152,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node2");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), uiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -170,7 +170,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, uiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -188,7 +188,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, uiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -212,7 +212,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, uiContext(true), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -238,7 +238,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor, i18n, contentConnector);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, uiContext(false), actionExecutor, i18n, contentConnector);
 
         // WHEN
         confirmationAction.execute();
@@ -250,68 +250,21 @@ public class ConfirmationActionTest extends MgnlTestCase {
         assertEquals("/node1@property_long", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(1).getJcrItem()));
     }
 
-    /**
-     * Basic Empty implementation of {@link info.magnolia.ui.api.context.UiContext} for test purpose.
-     */
-    public static class TestUiContext implements UiContext {
-
-        private boolean validateChanges;
-
-        public TestUiContext(boolean validateChanges) {
-            this.validateChanges = validateChanges;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view) {
-            return null;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-            return null;
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-            if (validateChanges) {
-                cb.onSuccess();
-            } else {
-                cb.onCancel();
+    private UiContext uiContext(final boolean checkValidation) {
+        final UiContext uiContext = mock(UiContext.class);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ConfirmationCallback callback = (ConfirmationCallback) invocation.getArguments()[6];
+                if (checkValidation) {
+                    callback.onSuccess();
+                } else {
+                    callback.onCancel();
+                }
+                return null;
             }
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, View body, String okButton, AlertCallback callback) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, View body, String confirmButton, String cancelButton, boolean cancelIsDefault, ConfirmationCallback callback) {
-        }
-
+        }).when(uiContext).openConfirmation(any(MessageStyleType.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
+        return uiContext;
     }
 
     /**
