@@ -37,6 +37,8 @@ package info.magnolia.ui.vaadin.form;
 import info.magnolia.ui.api.view.View;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -58,6 +60,21 @@ public interface FormViewReduced extends View, Item.Editor {
 
     boolean isValid();
 
+    List<FormSection> getFormSections();
+
+    /**
+     * @deprecated since 5.4.2 - use {@link #getFormSections()} instead.
+     */
+    @Deprecated
     Collection<Field<?>> getFields();
 
+    void setListener(Listener listener);
+
+    /**
+     * Listener interface.
+     */
+    interface Listener {
+
+        void localeChanged(Locale newLocale);
+    }
 }

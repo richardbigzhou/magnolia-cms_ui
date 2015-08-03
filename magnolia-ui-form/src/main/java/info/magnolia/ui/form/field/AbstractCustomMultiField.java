@@ -182,7 +182,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         // Set Caption if desired
         if (setCaptionToNull) {
             field.setCaption(null);
-        } else if (StringUtils.isNotBlank(fieldDefinition.getLabel())) {
+        } else if (StringUtils.isBlank(field.getCaption()) && StringUtils.isNotBlank(fieldDefinition.getLabel())) {
             field.setCaption(fieldDefinition.getLabel());
         }
 
@@ -191,15 +191,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         // propagate locale to complex fields further down, in case they have i18n-aware fields
         if (field instanceof AbstractCustomMultiField) {
             ((AbstractCustomMultiField) field).setLocale(getLocale());
-        }
-        // i18nize field entry — crazily depends upon component hierarchy so we must do this after field is attached
-        if (fieldDefinition.isI18n()) {
-            field.addAttachListener(new AttachListener() {
-                @Override
-                public void attach(AttachEvent event) {
-                    i18nAuthoringSupport.i18nize(((Component) event.getSource()).getParent(), getLocale());
-                }
-            });
         }
 
         // Set read only based on the single field definition

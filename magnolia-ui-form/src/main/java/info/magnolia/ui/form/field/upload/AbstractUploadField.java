@@ -153,12 +153,14 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
      * </ul>
      */
     protected void updateDisplay() {
-        if (this.getValue().isEmpty()) {
-            buildEmptyLayout();
-        } else {
-            buildCompletedLayout();
+        if (getValue() != null) {
+            if (this.getValue().isEmpty()) {
+                buildEmptyLayout();
+            } else {
+                buildCompletedLayout();
+            }
+            markAsDirty();
         }
-        markAsDirty();
     }
 
     /**

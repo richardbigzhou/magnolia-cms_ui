@@ -33,13 +33,19 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import static info.magnolia.test.hamcrest.ExceptionMatcher.instanceOf;
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsAnException;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.hamcrest.Execution;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -77,7 +83,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         definition.setType("String");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -94,7 +100,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -115,7 +121,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         definition.setType("Long");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -132,7 +138,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, 200l);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -155,7 +161,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -167,7 +173,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
-        assertTrue(rootItem.getItemProperty(propertyName).isReadOnly());
+        assertTrue(new TransformedProperty(handler).isReadOnly());
     }
 
     @Test
@@ -177,7 +183,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         definition.setDefaultValue("defaultStringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN
@@ -197,7 +203,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN
@@ -216,7 +222,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         definition.setDefaultValue("100");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN
@@ -236,7 +242,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, 120l);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN
@@ -248,7 +254,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         assertEquals(200l, res.getProperty(propertyName).getLong());
     }
 
-    @Test(expected = ReadOnlyException.class)
+    @Test
     public void testWriteToDataSourceReadOnly() throws RepositoryException {
         // GIVEN
         definition.setType("String");
@@ -257,13 +263,16 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
-        handler.readFromItem();
+        final BasicTransformer<String> transformer = new BasicTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
+        transformer.readFromItem();
 
-        // WHEN
-        handler.writeToItem("newValue");
-
-        // THEN
+        // WHEN/THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                new TransformedProperty(transformer).setValue("newValue");
+            }
+        }, throwsAnException(instanceOf(ReadOnlyException.class)));
     }
 
     @Test
@@ -273,7 +282,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "false");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -294,7 +303,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -312,7 +321,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "titi");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -330,7 +339,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "false");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class);
+        BasicTransformer<Boolean> handler = new BasicTransformer<Boolean>(rootItem, definition, Boolean.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN
@@ -350,7 +359,7 @@ public class BasicTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "titi");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class, mock(I18NAuthoringSupport.class));
         handler.readFromItem();
 
         // WHEN

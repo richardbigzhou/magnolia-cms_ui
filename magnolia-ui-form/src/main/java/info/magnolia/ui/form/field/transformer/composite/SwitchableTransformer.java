@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.transformer.composite;
 
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import java.util.List;
@@ -52,8 +53,16 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class SwitchableTransformer extends CompositeTransformer {
 
+    /**
+     * @deprecated since 5.4.2 - use {@link #SwitchableTransformer(Item, ConfiguredFieldDefinition, Class, List, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public SwitchableTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
         super(relatedFormItem, definition, type, fieldsName);
+    }
+
+    public SwitchableTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, fieldsName, i18NAuthoringSupport);
     }
 
     @Override

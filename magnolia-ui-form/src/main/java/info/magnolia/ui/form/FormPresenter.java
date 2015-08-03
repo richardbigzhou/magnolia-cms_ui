@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.i18n;
+package info.magnolia.ui.form;
+
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.vaadin.form.FormViewReduced;
 
 import java.util.Locale;
 
+import com.vaadin.data.Item;
+
 /**
- * Interface for locale-dependent property.
+ * {@link FormPresenter} aims to help with form construction and management.
+ * <br>
+ * - Instead of producing the {@link FormViewReduced} it hooks to one and presents it, this is dictated by the implementation of the components
+ * which happen to use this class.
+ * <br>
+ * - Supports localisation.
  */
-public interface I18NAwareHandler {
+public interface FormPresenter {
+
+    void presentView(FormViewReduced formView, FormDefinition formDefinition, Item item, FormItem parent);
 
     void setLocale(Locale locale);
 
-    /**
-     * @deprecated since 5.4.2 without concrete replacement - should not be needed any longer.
-     */
-    @Deprecated
-    void setI18NPropertyName(String i18NPropertyName);
-
-    Locale getLocale();
-
-    /**
-     * Returns the property base name that the {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} should use.
-     */
-    String getBasePropertyName();
+    boolean isValid();
 }

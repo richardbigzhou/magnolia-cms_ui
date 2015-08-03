@@ -33,23 +33,25 @@
  */
 package info.magnolia.ui.form.field.transformer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.data.Item;
@@ -71,7 +73,7 @@ public class TransformedPropertyTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
+        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         definition.setName(propertyName);
         relatedFormNode = session.getRootNode().addNode("form", NodeTypes.Content.NAME);
@@ -171,46 +173,10 @@ public class TransformedPropertyTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testFireI18NValueChange() throws RepositoryException {
-        // GIVEN
-        relatedFormNode.setProperty(propertyName, "enPropertyName");
-        relatedFormItem = new JcrNodeAdapter(relatedFormNode);
-        definition.setI18n(true);
-        transformer = new BasicTransformer(relatedFormItem, definition, UndefinedPropertyType.class);
-        property = new TransformedProperty(transformer);
-        property.getTransformer().setI18NPropertyName(propertyName + "_de");
-        property.getTransformer().setLocale(new Locale("de"));
-
-        // WHEN
-        property.fireI18NValueChange();
-
-        // THEN
-        property.setValue("dePropertyName");
-
-        assertNotNull(relatedFormItem.getItemProperty(propertyName + "_de"));
-        assertEquals("dePropertyName", property.getValue());
-        assertNotNull(relatedFormItem.getItemProperty(propertyName));
-        assertEquals("enPropertyName", relatedFormItem.getItemProperty(propertyName).getValue());
-    }
+    @Ignore("TransformedProperty no longer deals with I18N on its own")
+    public void testFireI18NValueChange() throws RepositoryException {}
 
     @Test
-    public void testFireI18NValueChangeWithReadOnlyTrue() throws RepositoryException {
-        // GIVEN
-        relatedFormNode.setProperty(propertyName, "enPropertyName");
-        relatedFormNode.setProperty(propertyName + "_de", "dePropertyName");
-        relatedFormItem = new JcrNodeAdapter(relatedFormNode);
-        definition.setI18n(true);
-        definition.setReadOnly(true);
-        transformer = new BasicTransformer(relatedFormItem, definition, UndefinedPropertyType.class);
-        property = new TransformedProperty(transformer);
-        property.getTransformer().setI18NPropertyName(propertyName + "_de");
-        property.getTransformer().setLocale(new Locale("de"));
-        property.setReadOnly(true);
-
-        // WHEN
-        property.fireI18NValueChange();
-
-        // THEN
-        assertEquals("dePropertyName", property.getValue());
-    }
+    @Ignore("TransformedProperty no longer deals with I18N on its own")
+    public void testFireI18NValueChangeWithReadOnlyTrue() {}
 }

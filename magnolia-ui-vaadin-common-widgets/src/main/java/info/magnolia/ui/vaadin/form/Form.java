@@ -43,7 +43,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.shared.Connector;
@@ -59,6 +61,8 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     private List<Field<?>> fields = new LinkedList<Field<?>>();
 
     private Item itemDataSource;
+
+    private FormViewReduced.Listener listener;
 
     private boolean isValidationVisible = false;
 
@@ -172,6 +176,11 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     }
 
     @Override
+    public void setListener(FormViewReduced.Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
     public boolean isValid() {
         boolean res = true;
         getState().errorAmount = 0;
@@ -183,6 +192,17 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
             res &= isFieldValid;
         }
         return res;
+    }
+
+    @Override
+    public List<FormSection> getFormSections() {
+        final Iterator<Component> it = tabSheet.iterator();
+        final List<FormSection> formSections = Lists.newLinkedList();
+        while (it.hasNext()) {
+            final MagnoliaFormTab tab = (MagnoliaFormTab) it.next();
+            formSections.add(tab.getContent());
+        }
+        return formSections;
     }
 
     @Override
@@ -199,6 +219,14 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
             if (c instanceof MagnoliaFormTab) {
                 ((MagnoliaFormTab) c).setValidationVisible(isVisible);
             }
+        }
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        super.setLocale(locale);
+        if (listener != null) {
+            listener.localeChanged(locale);
         }
     }
 

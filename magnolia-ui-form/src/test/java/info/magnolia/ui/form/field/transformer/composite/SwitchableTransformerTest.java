@@ -34,12 +34,14 @@
 package info.magnolia.ui.form.field.transformer.composite;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
@@ -112,7 +114,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -135,7 +137,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();
@@ -160,7 +162,7 @@ public class SwitchableTransformerTest {
         // GIVEN
         Node parent = session.getRootNode();
         JcrNodeAdapter node = new JcrNewNodeAdapter(parent, NodeTypes.ContentNode.NAME, "node");
-        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames());
+        SwitchableTransformer delegate = new SwitchableTransformer(node, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem itemSet = new PropertysetItem();

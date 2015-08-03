@@ -418,6 +418,11 @@
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
+    <component>
+      <type>info.magnolia.ui.form.FormPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormPresenterImpl</implementation>
+    </component>
+
     <!-- UI Api -->
     <component>
       <type>info.magnolia.ui.api.action.ActionExecutor</type>

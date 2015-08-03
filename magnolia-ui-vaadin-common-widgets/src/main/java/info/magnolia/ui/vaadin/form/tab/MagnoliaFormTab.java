@@ -42,13 +42,10 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
  */
 public class MagnoliaFormTab extends MagnoliaTab {
 
-    private final FormSection content;
-
     public MagnoliaFormTab(String caption, final FormSection content) {
         super(caption, content);
-        this.content = content;
         // DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
+        content.setCaption(caption);
     }
 
     @Override
@@ -58,10 +55,10 @@ public class MagnoliaFormTab extends MagnoliaTab {
 
     @Override
     public FormSection getContent() {
-        return content;
+        return (FormSection) super.getContent();
     }
 
     public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
+        getContent().setValidationVisible(isVisible);
     }
 }

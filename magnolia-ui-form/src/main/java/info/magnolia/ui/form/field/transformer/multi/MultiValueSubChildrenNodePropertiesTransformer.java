@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -63,6 +64,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
@@ -93,8 +95,17 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
 
     private final MultiValueFieldDefinition definition;
 
+    /**
+     * @deprecated since 5.4.2 - use {@link #MultiValueSubChildrenNodePropertiesTransformer(Item, MultiValueFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public MultiValueSubChildrenNodePropertiesTransformer(Item relatedFormItem, MultiValueFieldDefinition definition, Class<PropertysetItem> type) {
-        super(relatedFormItem, definition, type);
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
+    }
+
+    @Inject
+    public MultiValueSubChildrenNodePropertiesTransformer(Item relatedFormItem, MultiValueFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
         this.definition = definition;
     }
 

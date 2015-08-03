@@ -34,11 +34,13 @@
 package info.magnolia.ui.form.field.transformer.basic;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -79,7 +81,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -100,7 +102,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         definition.setMultiselect(true);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -116,7 +118,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         Object value = handler.readFromItem();
@@ -135,7 +137,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
         Object value = handler.readFromItem();
         assertNotNull(value);
         assertTrue(value instanceof HashSet);
@@ -160,7 +162,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         definition.setMultiselect(true);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, LinkedList.class);
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, LinkedList.class, mock(I18NAuthoringSupport.class));
         HashSet<String> value = new HashSet<String>();
         value.add("a");
 
@@ -181,8 +183,8 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
-        Object value = handler.readFromItem();
+        ListToSetTransformer transformer = new ListToSetTransformer(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
+        Object value = transformer.readFromItem();
         assertNotNull(value);
         assertTrue(value instanceof HashSet);
         ((HashSet) value).remove("a");
@@ -190,7 +192,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         ((HashSet) value).remove("c");
 
         // WHEN
-        handler.writeToItem(value);
+        transformer.writeToItem(value);
         rootItem.applyChanges();
 
         // THEN
@@ -205,11 +207,11 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        ListToSetTransformer transformer = new ListToSetTransformer(rootItem, definition, String.class, mock(I18NAuthoringSupport.class));
         LinkedList value = new LinkedList();
 
         // WHEN
-        handler.writeToItem(value);
+        transformer.writeToItem(value);
         rootItem.applyChanges();
 
         // THEN

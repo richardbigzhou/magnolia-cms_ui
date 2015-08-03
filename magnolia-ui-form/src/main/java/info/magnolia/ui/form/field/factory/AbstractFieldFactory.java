@@ -35,6 +35,10 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -48,6 +52,10 @@ import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+
+import java.util.Locale;
+
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -73,14 +81,33 @@ import com.vaadin.ui.Label;
 public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends AbstractFormItem implements FieldFactory {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldFactory.class);
     protected Item item;
+    private UiContext uiContext;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+
     protected Field<T> field;
+
     protected D definition;
     private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
     private ComponentProvider componentProvider;
 
-    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+    private Locale locale;
+
+    @Inject
+    public AbstractFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
         this.definition = definition;
         this.item = relatedFieldItem;
+        this.uiContext = uiContext;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.4.2 - use {@link #AbstractFieldFactory(FieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+        // Since we can't use Components utility for retreiving UiContext - leave it as null for the time being
+        // and get it via component provider when it is set (#setComponentProvider(..) method)
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override
@@ -89,7 +116,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     }
 
     /**
-     * @deprecated This is deprecated since 5.3.4; {@link i18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
+     * @deprecated This is deprecated since 5.3.4; {@link I18nContentSupport} was never used within any {@link FieldFactory}, rightfully so.
      * If any, {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport I18NAuthoringSupport} is the one that should be used.
      */
     @Override
@@ -99,12 +126,24 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     @Override
     public Field<T> createField() {
+        if (locale == null) {
+            if (uiContext instanceof SubAppContext) {
+                final Locale authoringLocale = ((SubAppContext) uiContext).getAuthoringLocale();
+                setLocale(authoringLocale == null ? i18NAuthoringSupport.getDefaultLocale(item) : authoringLocale);
+            }
+        }
+
         if (field == null) {
             // Create the Vaadin field
             this.field = createFieldComponent();
-            if (field instanceof AbstractField && definition.getConverterClass() != null) {
-                Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
-                ((AbstractField) field).setConverter(converter);
+
+            if (field instanceof AbstractField) {
+                final AbstractField field = (AbstractField) this.field;
+                if (definition.getConverterClass() != null) {
+                    Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
+                    field.setConverter(converter);
+                }
+                field.setLocale(locale);
             }
 
             Property<?> property = initializeProperty();
@@ -117,15 +156,26 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
             field.setWidth(100, Unit.PERCENTAGE);
 
-            // Set label and required marker
-            if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
-                this.field.setCaption(getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
-            }
-
+            setFieldCaption();
             setConstraints();
 
         }
         return this.field;
+    }
+
+
+    private void setFieldCaption() {
+        // Set label and required marker
+        if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
+            String caption = getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : "");
+
+
+            if (locale != null && definition.isI18n()) {
+                caption = String.format("%s (%s)", caption, locale.getLanguage());
+            }
+
+            this.field.setCaption(caption);
+        }
     }
 
     /**
@@ -221,11 +271,14 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
 
         if (transformerClass == null) {
-            // TODO explain why down cast
+            // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
+            // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
+            // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
+            // At runtime it all works due to type erasure.
             transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
-
+        transformer.setLocale(locale);
         return new TransformedProperty(transformer);
     }
 
@@ -234,6 +287,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * This allows to add additional constructor parameter if needed.<br>
      */
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        /**
+         * I18NAuthoringSupport is passed through Components utility for test purposes
+         * since version 5.4.1 - otherwise all the existing field factory tests would have to be adapted.
+         */
         return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
@@ -244,7 +301,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     protected Converter<?, ?> initializeConverter(Class<? extends Converter<?, ?>> converterClass) {
         return this.componentProvider.newInstance(converterClass, item, definition, getFieldType());
     }
-
 
     /**
      * Define the field property value type Class.<br>
@@ -315,10 +371,20 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     @Override
     public void setComponentProvider(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
+        if (uiContext == null) {
+            uiContext = componentProvider.getComponent(UiContext.class);
+        }
     }
 
     protected ComponentProvider getComponentProvider() {
         return componentProvider;
     }
 
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
 }

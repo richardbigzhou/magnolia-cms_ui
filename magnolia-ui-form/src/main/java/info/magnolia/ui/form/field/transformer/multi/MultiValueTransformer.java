@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -40,6 +42,8 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -53,8 +57,17 @@ import com.vaadin.data.util.PropertysetItem;
 
 public class MultiValueTransformer extends BasicTransformer<PropertysetItem> {
 
+    /**
+     * @deprecated since 5.4.2 - use {@link #MultiValueTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public MultiValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
-        super(relatedFormItem, definition, type);
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
+    }
+
+    @Inject
+    public MultiValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
     }
 
     @SuppressWarnings("rawtypes")

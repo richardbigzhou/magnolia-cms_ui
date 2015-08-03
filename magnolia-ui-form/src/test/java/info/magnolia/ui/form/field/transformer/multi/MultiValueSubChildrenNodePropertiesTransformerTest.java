@@ -36,10 +36,13 @@ package info.magnolia.ui.form.field.transformer.multi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -91,7 +94,7 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueSubChildrenNodePropertiesTransformer delegate = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        MultiValueSubChildrenNodePropertiesTransformer delegate = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         PropertysetItem mainProperties = new PropertysetItem();
         PropertysetItem values1 = new PropertysetItem();
         values1.addItemProperty("property1", new ObjectProperty<String>("value1"));
@@ -111,11 +114,13 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
         assertEquals("value12", res.getNode("property/00").getProperty("property2").getString());
     }
 
+
+
     @Test
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueSubChildrenNodePropertiesTransformer delegate = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        MultiValueSubChildrenNodePropertiesTransformer delegate = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = delegate.readFromItem();
@@ -133,7 +138,7 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
     public void testUpdateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         // Set the same values
         PropertysetItem mainProperties = new PropertysetItem();
         PropertysetItem values1 = new PropertysetItem();
@@ -169,7 +174,7 @@ public class MultiValueSubChildrenNodePropertiesTransformerTest extends Reposito
     public void testUpdateMultiPropertyWMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class);
+        MultiValueSubChildrenNodePropertiesTransformer transformer = new MultiValueSubChildrenNodePropertiesTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         // Set the same values
         PropertysetItem mainProperties = new PropertysetItem();
         PropertysetItem values1 = new PropertysetItem();

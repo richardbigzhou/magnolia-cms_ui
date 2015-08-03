@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
@@ -123,9 +122,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTe
 
     protected void initBuilder() {
         fieldFactory = new AbstractFieldFactoryTest.TestTextFieldFactory(definition, baseItem);
-
-        MockComponentProvider cc = new MockComponentProvider();
-        fieldFactory.setComponentProvider(cc);
+        fieldFactory.setComponentProvider(componentProvider);
     }
 
     @Override

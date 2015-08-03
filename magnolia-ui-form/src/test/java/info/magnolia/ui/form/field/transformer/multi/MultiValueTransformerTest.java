@@ -35,12 +35,14 @@ package info.magnolia.ui.form.field.transformer.multi;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -91,7 +93,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         PropertysetItem propertysetItem = new PropertysetItem();
         propertysetItem.addItemProperty("1", new DefaultProperty("one"));
@@ -117,7 +119,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         String[] values = { "Art", "Dan", "Jen" };
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = delegate.readFromItem();
@@ -138,7 +140,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         newValues.addItemProperty(1, new ObjectProperty<String>("Ph"));
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         delegate.writeToItem(newValues);
@@ -165,7 +167,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
         PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
 
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = delegate.readFromItem();
@@ -184,7 +186,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
     public void testWriteNullProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         delegate.writeToItem(null);
@@ -203,7 +205,7 @@ public class MultiValueTransformerTest extends RepositoryTestCase {
     public void testWriteEmptyPropertysetItem() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         delegate.writeToItem(new PropertysetItem());

@@ -38,7 +38,6 @@ import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -71,7 +70,8 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
         final FieldFactory fieldFactory = mock(FieldFactory.class);
         final AbstractField field = mock(AbstractField.class);
 
-        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, fieldFactoryFactory, new MockComponentProvider(), null);
+
+        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
 
         definition.setDefaultValue("defaultValue");

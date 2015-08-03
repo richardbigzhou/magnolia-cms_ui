@@ -43,16 +43,20 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -104,7 +108,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void readFromItem() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -122,7 +126,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void readFromItemTwice() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();
@@ -137,7 +141,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         // GIVEN
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, createI18AuthoringSupportMock());
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -158,8 +162,10 @@ public class DelegatingMultiValueFieldTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
-        transformer.setI18NPropertyName("multi_de");
+        final I18NAuthoringSupport i18nAuthoringSupport = createI18AuthoringSupportMock();
+
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nAuthoringSupport);
+        transformer.setLocale(Locale.GERMANY);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -174,10 +180,24 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0_de"));
     }
 
+    private I18NAuthoringSupport createI18AuthoringSupportMock() {
+        final I18NAuthoringSupport i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        doReturn(Locale.ENGLISH).when(i18nAuthoringSupport).getDefaultLocale(rootItem);
+        doReturn(Arrays.asList(Locale.ENGLISH, Locale.GERMAN)).when(i18nAuthoringSupport).getAvailableLocales(rootItem);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock inv) throws Throwable {
+                final Object[] args = inv.getArguments();
+                return String.format("%s_%s", args[0], ((Locale) args[1]).getLanguage());
+            }
+        }).when(i18nAuthoringSupport).deriveLocalisedPropertyName(anyString(), any(Locale.class));
+        return i18nAuthoringSupport;
+    }
+
     @Test
     public void createNewElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         transformer.readFromItem();
         // WHEN
         Property<?> res = transformer.createProperty();
@@ -196,8 +216,8 @@ public class DelegatingMultiValueFieldTransformerTest {
         when(i18nContentSupport.isEnabled()).thenReturn(true);
         definition.setI18n(true);
 
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
-        transformer.setI18NPropertyName("multi_de");
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, createI18AuthoringSupportMock());
+        transformer.setLocale(Locale.GERMANY);
         transformer.readFromItem();
         // WHEN
         Property<?> res = transformer.createProperty();
@@ -213,7 +233,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void removeElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         PropertysetItem initialElements = transformer.readFromItem();
 
         // WHEN
@@ -229,7 +249,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void removeElementAndCreate() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         PropertysetItem initialElements = transformer.readFromItem();
         transformer.removeProperty(initialElements.getItemPropertyIds().iterator().next());
 
@@ -247,7 +267,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void coherenceOfMultisetItemIds() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18nContentSupport);
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         PropertysetItem res = transformer.readFromItem();
         // create two elements
         transformer.createProperty();

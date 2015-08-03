@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
@@ -44,6 +46,8 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -58,24 +62,40 @@ import com.vaadin.data.Property;
  * @param <T>
  */
 public class BasicTransformer<T> implements Transformer<T> {
+    private static final Logger log = LoggerFactory.getLogger(BasicTransformer.class);
 
-    protected Item relatedFormItem;
     protected final ConfiguredFieldDefinition definition;
 
+    protected Item relatedFormItem;
+
     protected String basePropertyName;
+
+    /**
+     * @deprecated since 5.4.2 - should not be used any longer, alter {@link #basePropertyName} in {@link #setLocale(Locale)} method if needed.
+     */
+    @Deprecated
     protected String i18NPropertyName;
     private Locale locale;
     protected Class<T> type;
 
+    private I18NAuthoringSupport i18NAuthoringSupport;
+
     @Inject
-    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type, I18NAuthoringSupport i18NAuthoringSupport) {
         this.definition = definition;
         this.relatedFormItem = relatedFormItem;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.basePropertyName = definition.getName();
-        if (hasI18NSupport()) {
-            this.i18NPropertyName = this.basePropertyName;
-        }
+
         setType(type);
+    }
+
+    /**
+     * @deprecated since 5.4.2 - use {@link #BasicTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     public Item getRelatedFormItem() {
@@ -90,11 +110,7 @@ public class BasicTransformer<T> implements Transformer<T> {
 
     @Override
     public T readFromItem() {
-        Property<T> p = getOrCreateProperty(type);
-        if (definition.isReadOnly()) {
-            p.setReadOnly(true);
-        }
-        return p.getValue();
+        return getOrCreateProperty(type).getValue();
     }
 
     /**
@@ -161,20 +177,27 @@ public class BasicTransformer<T> implements Transformer<T> {
         return property;
     }
 
-
     /**
      * Based on the i18n information, define the property name to use.
      */
     protected String definePropertyName() {
-        if (hasI18NSupport()) {
-            return this.i18NPropertyName;
+        final String propertyName = deriveLocaleAwareName(this.basePropertyName);
+        this.i18NPropertyName = propertyName;
+        return propertyName;
+    }
+
+    protected String deriveLocaleAwareName(String baseName) {
+        if (hasI18NSupport() && locale != null && !i18NAuthoringSupport.isDefaultLocale(locale, relatedFormItem)) {
+            return i18NAuthoringSupport.deriveLocalisedPropertyName(baseName, locale);
         }
-        return this.basePropertyName;
+        return baseName;
+    }
+
+    protected I18NAuthoringSupport getI18NAuthoringSupport() {
+        return i18NAuthoringSupport;
     }
 
     // //////
-    // I18N support
-    // /////
 
     @Override
     public void setLocale(Locale locale) {
@@ -183,7 +206,7 @@ public class BasicTransformer<T> implements Transformer<T> {
 
     @Override
     public void setI18NPropertyName(String i18nPropertyName) {
-        this.i18NPropertyName = i18nPropertyName;
+        log.warn("BasicTransformer.setI18NPropertyName() is deprecated since 5.4.2 without replacement, override BasicTransformer.definePropertyName() and construct the locale-specific property name there if needed.");
     }
 
     @Override
@@ -205,5 +228,4 @@ public class BasicTransformer<T> implements Transformer<T> {
     public Class<T> getType() {
         return type;
     }
-
 }

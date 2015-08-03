@@ -34,29 +34,24 @@
 package info.magnolia.ui.framework.i18n;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.form.field.AbstractCustomMultiField;
-import info.magnolia.ui.form.field.transformer.TransformedProperty;
-import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
+import com.vaadin.data.Item;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -84,9 +79,9 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     @Override
     public List<Locale> getAvailableLocales(Node node) {
         if (enabled && i18nContentSupport.isEnabled()) {
-            return new ArrayList<Locale>(i18nContentSupport.getLocales());
+            return new ArrayList<>(i18nContentSupport.getLocales());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -98,68 +93,34 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     }
 
     @Override
-    public void i18nize(HasComponents fieldContainer, Locale locale) {
-        Locale defaultLocale = null;
-        Iterator<Component> fieldComponentIterator = fieldContainer.iterator();
-        if (isEnabled() && i18nContentSupport.isEnabled() && locale != null) {
-            while (fieldComponentIterator.hasNext()) {
-                Component component = fieldComponentIterator.next();
-                if (component instanceof Field) {
-                    Field field = (Field) component;
-                    Property propertyDataSource = field.getPropertyDataSource();
+    public String deriveLocalisedPropertyName(String base, Locale locale) {
+        return String.format("%s_%s", base, locale.getLanguage());
+    }
 
-                    if (propertyDataSource instanceof TransformedProperty) {
-                        final TransformedProperty i18nBaseProperty = (TransformedProperty) propertyDataSource;
-
-                        if (defaultLocale == null && i18nBaseProperty.getTransformer() instanceof BasicTransformer) {
-                            com.vaadin.data.Item item = ((BasicTransformer) i18nBaseProperty.getTransformer()).getRelatedFormItem();
-                            if (item instanceof JcrItemAdapter) {
-                                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
-                                if (jcrItem.isNode()) {
-                                    defaultLocale = getDefaultLocale((Node) jcrItem);
-                                }
-                            }
-                        }
-
-                        boolean isDefaultLocale = locale.equals(defaultLocale);
-
-                        if (i18nBaseProperty.hasI18NSupport()) {
-                            final Locale formerLocale = i18nBaseProperty.getTransformer().getLocale();
-                            final String basePropertyName = i18nBaseProperty.getTransformer().getBasePropertyName();
-                            final String localizedPropertyName = isDefaultLocale ?
-                                    basePropertyName :
-                                    constructI18NPropertyName(basePropertyName, locale);
-                            i18nBaseProperty.getTransformer().setI18NPropertyName(localizedPropertyName);
-                            i18nBaseProperty.getTransformer().setLocale(locale);
-                            i18nBaseProperty.fireI18NValueChange();
-                            String currentCaption = field.getCaption();
-
-                            if (StringUtils.isNotBlank(currentCaption)) {
-                                if (formerLocale != null) {
-                                    currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
-                                }
-                                field.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
-                            }
-
-                            // set locale on Vaadin field
-                            if (field instanceof AbstractField) {
-                                ((AbstractField) field).setLocale(locale);
-                            }
-
-                        } else if (field instanceof AbstractCustomMultiField) {
-                            // propagate locale to multifield even when itself is not i18nized; its entries must be created in current locale.
-                            ((AbstractCustomMultiField) field).setLocale(locale);
-                        }
-
-                    }
-                }
-
-                // try to i18nize nested fields anyway
-                if (component instanceof HasComponents) {
-                    i18nize((HasComponents) component, locale);
-                }
-            }
+    @Override
+    public List<Locale> getAvailableLocales(Item item) {
+        if (item instanceof JcrNodeAdapter) {
+            return getAvailableLocales(((JcrNodeAdapter)item).getJcrItem());
         }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Locale getDefaultLocale(Item item) {
+        if (item instanceof JcrNodeAdapter) {
+            return getDefaultLocale(((JcrNodeAdapter) item).getJcrItem());
+        }
+        return MgnlContext.getLocale();
+    }
+
+    @Override
+    public boolean isDefaultLocale(Locale locale, Item item) {
+        return ObjectUtils.equals(getDefaultLocale(item), locale);
+    }
+
+    @Override
+    public void i18nize(HasComponents fieldContainer, Locale locale) {
+        log.warn("I18NAuthoringSupport.i18nize is deprecated without a replacement as of version 5.4.1, see e.g. #FormView.Listener.localeChanged(..) implementation for a workaround hint");
     }
 
     @Override
@@ -177,10 +138,6 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
             i18nContentSupport.setLocale(currentLocale);
         }
         return uri;
-    }
-
-    private String constructI18NPropertyName(CharSequence basePropertyName, Locale locale) {
-        return basePropertyName + "_" + locale.toString();
     }
 
     public boolean isEnabled() {

@@ -57,9 +57,9 @@ public class FieldFactoryFactory implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(FieldFactoryFactory.class);
 
-    private ComponentProvider componentProvider;
-    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
-    private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
+    private final ComponentProvider componentProvider;
+    private final FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
+    private final FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
 
     @Inject
     public FieldFactoryFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
@@ -67,6 +67,7 @@ public class FieldFactoryFactory implements Serializable {
         this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
     }
+
 
     /**
      * Based on the {@link FieldDefinition}, get the related {@link FieldFactory} initialized with the input parameters. <br>

@@ -59,6 +59,7 @@ import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -85,11 +86,11 @@ public class FormDialogPresenterImplTest {
     private UiContext uiContext = mock(UiContext.class);
     private ComponentProvider componentProvider = mock(ComponentProvider.class);
     private FormDialogPresenterImpl presenter;
+    private FormPresenter formPresenter;
 
     @Before
     public void setUp() throws Exception {
         DialogDefinitionRegistry dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
-        FormBuilder formBuilder = mock(FormBuilder.class);
         DialogActionExecutor executor = new DialogActionExecutor(componentProvider);
         SimpleTranslator i18n = mock(SimpleTranslator.class);
         EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
@@ -108,8 +109,11 @@ public class FormDialogPresenterImplTest {
         };
         i18nizer = new ProxytoysI18nizer(service, localeProvider);
 
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, componentProvider, executor, view, i18nizer, i18n, checker, contentConnector);
+        this.formPresenter = mock(FormPresenter.class);
+        this.presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, componentProvider, executor, view, i18nizer, i18n, checker, contentConnector, formPresenter);
+
         when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
+
         when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
         configuredJcrContentConnectorDefinition.setWorkspace(workspaceName);
         when(contentConnector.getContentConnectorDefinition()).thenReturn(configuredJcrContentConnectorDefinition);

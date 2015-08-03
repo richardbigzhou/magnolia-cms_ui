@@ -34,19 +34,16 @@
 package info.magnolia.ui.dialog.formdialog;
 
 
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
 
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.data.Item;
-
 /**
  * Interface for a locale-enabled form view.
  */
-public interface FormView extends DialogView, View, Item.Editor, FormViewReduced {
+public interface FormView extends DialogView, FormViewReduced {
 
     void setCurrentLocale(Locale locale);
 

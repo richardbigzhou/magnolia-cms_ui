@@ -36,6 +36,8 @@ package info.magnolia.ui.form.field.transformer.multi;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.NullItem;
@@ -50,6 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -84,9 +87,18 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
     protected String childNodeType = NodeTypes.ContentNode.NAME;
     private String childValuePropertyName;
 
-    public MultiValueChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
-        super(relatedFormItem, definition, type);
+    @Inject
+    public MultiValueChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
         this.childValuePropertyName = definition.getName();
+    }
+
+    /**
+     * @deprecated since 5.4.2 - use {@link #MultiValueChildrenNodeTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public MultiValueChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     /**

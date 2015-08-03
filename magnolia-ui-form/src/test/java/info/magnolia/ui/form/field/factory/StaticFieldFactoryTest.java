@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.StaticField;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
@@ -54,7 +53,7 @@ public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticF
     public void testGetField() {
         // GIVEN
         staticFieldFactory = new StaticFieldFactory(definition, baseItem);
-        staticFieldFactory.setComponentProvider(new MockComponentProvider());
+        staticFieldFactory.setComponentProvider(componentProvider);
 
         // WHEN
         Field field = staticFieldFactory.createField();

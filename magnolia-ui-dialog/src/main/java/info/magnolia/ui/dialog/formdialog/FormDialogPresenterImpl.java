@@ -50,6 +50,7 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private AvailabilityChecker checker;
 
-    private FormBuilder formBuilder;
+    private FormPresenter formPresenter;
 
     private FormView formView;
 
@@ -89,20 +90,28 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     /**
      * Constructor backwards compatible with pre-5.3 versions.
      *
-     * @deprecated since version 5.3.1, use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, FormBuilder, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector)} instead.
+     * @deprecated since version 5.3.1, use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector, FormPresenter)} instead.
      */
     @Deprecated
     public FormDialogPresenterImpl(DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n) {
-        this(dialogDefinitionRegistry, formBuilder, componentProvider, executor, view, i18nizer, i18n, componentProvider.getComponent(AvailabilityChecker.class), componentProvider.getComponent(ContentConnector.class));
+        this(dialogDefinitionRegistry, componentProvider, executor, view, i18nizer, i18n, componentProvider.getComponent(AvailabilityChecker.class), componentProvider.getComponent(ContentConnector.class), componentProvider.getComponent(FormPresenter.class));
+    }
+
+    /**
+     * @deprecated since 5.4.2 - use {@link #FormDialogPresenterImpl(DialogDefinitionRegistry, ComponentProvider, DialogActionExecutor, FormView, I18nizer, SimpleTranslator, AvailabilityChecker, ContentConnector, FormPresenter)} instead.
+     */
+    @Deprecated
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
+        this(dialogDefinitionRegistry, componentProvider, executor, view, i18nizer, i18n, checker, contentConnector, componentProvider.getComponent(FormPresenter.class));
     }
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector) {
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n, AvailabilityChecker checker, ContentConnector contentConnector, FormPresenter formPresenter) {
         super(componentProvider, executor, view, i18nizer, i18n);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
-        this.formBuilder = formBuilder;
         this.checker = checker;
         this.contentConnector = contentConnector;
+        this.formPresenter = formPresenter;
         this.componentProvider = componentProvider;
         this.formView = view;
     }
@@ -155,8 +164,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private void buildView(FormDialogDefinition dialogDefinition) {
         final Dialog dialog = new Dialog(dialogDefinition);
-
-        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
+        formPresenter.presentView(formView, dialogDefinition.getForm(), item, dialog);
 
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();

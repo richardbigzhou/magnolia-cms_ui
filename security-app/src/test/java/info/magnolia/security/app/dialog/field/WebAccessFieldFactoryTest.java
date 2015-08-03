@@ -40,15 +40,16 @@ import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -68,7 +69,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Test case for {@link WebAccessFieldFactory}.
  */
-public class WebAccessFieldFactoryTest extends MgnlTestCase {
+public class WebAccessFieldFactoryTest extends AbstractFieldFactoryTestCase<WebAccessFieldDefinition> {
 
     private SimpleTranslator i18n;
 
@@ -82,6 +83,11 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         when(i18n.translate("security.web.field.addNew")).thenReturn("Add new");
     }
 
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        this.definition = new WebAccessFieldDefinition();
+    }
+
     @Test
     public void testShowsAddButtonAndEmptyLabelWhenEmpty() {
 
@@ -90,7 +96,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         MockUtil.setSessionAndHierarchyManager(session);
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
-        WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
+
         WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, i18n);
 
         // WHEN

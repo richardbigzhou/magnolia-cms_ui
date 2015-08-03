@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.composite;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
@@ -60,8 +62,16 @@ public class CompositeTransformer extends BasicTransformer<PropertysetItem> {
     protected List<String> fieldsName;
     protected String propertyPrefix;
 
+    /**
+     * @deprecated since 5.4.2 - use {@link #CompositeTransformer(Item, ConfiguredFieldDefinition, Class, List, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public CompositeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
-        super(relatedFormItem, definition, type);
+        this(relatedFormItem, definition, type, fieldsName, Components.getComponent(I18NAuthoringSupport.class));
+    }
+
+    public CompositeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
         this.fieldsName = fieldsName;
         this.propertyPrefix = createPropertyPrefix(definition);
     }

@@ -46,8 +46,11 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -76,11 +79,15 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     protected Node baseNode;
     protected Item baseItem;
     protected D definition;
+    protected MockComponentProvider componentProvider;
+    protected I18NAuthoringSupport i18NAuthoringSupport;
 
     @Before
     public void setUp() throws Exception {
         // Init Message & Providers
 
+        i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
+        ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, i18NAuthoringSupport);
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
@@ -109,6 +116,9 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);
+        componentProvider = new MockComponentProvider();
+        componentProvider.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
+        componentProvider.setInstance(UiContext.class, mock(UiContext.class));
     }
 
     @After
@@ -121,5 +131,4 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
      * Create the specific ConfiguredFieldDefinition or sub class.
      */
     protected abstract void createConfiguredFieldDefinition();
-
 }

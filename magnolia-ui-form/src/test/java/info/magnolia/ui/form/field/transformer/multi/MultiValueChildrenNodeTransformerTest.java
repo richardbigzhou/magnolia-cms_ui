@@ -34,11 +34,13 @@
 package info.magnolia.ui.form.field.transformer.multi;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -87,7 +89,7 @@ public class MultiValueChildrenNodeTransformerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         PropertysetItem properties = new PropertysetItem();
         properties.addItemProperty("0", new ObjectProperty<String>("value1"));
         properties.addItemProperty("1", null);
@@ -103,7 +105,7 @@ public class MultiValueChildrenNodeTransformerTest extends RepositoryTestCase {
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem res = delegate.readFromItem();
@@ -119,7 +121,7 @@ public class MultiValueChildrenNodeTransformerTest extends RepositoryTestCase {
     public void testUpdateMultiPropertyWithoutChanges() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
         // Set the same values
         PropertysetItem input = new PropertysetItem();
         input.addItemProperty(0, new ObjectProperty<String>("value1"));
@@ -149,7 +151,7 @@ public class MultiValueChildrenNodeTransformerTest extends RepositoryTestCase {
         input.addItemProperty(2, new ObjectProperty<String>("Po"));
 
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class);
+        MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         delegate.writeToItem(input);

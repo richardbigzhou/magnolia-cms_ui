@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.transformer.basic;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.security.SecurityUtil;
 import info.magnolia.context.MgnlContext;
@@ -41,6 +42,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -88,7 +90,7 @@ public class BCryptTransformerTest {
         String encriptedPassword = SecurityUtil.getBCrypt("password");
         dialogNode.setProperty(propertyName, encriptedPassword);
         JcrNodeAdapter item = new JcrNodeAdapter(dialogNode);
-        transformer = new BCryptTransformer(item, definition, String.class);
+        transformer = new BCryptTransformer(item, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         String res = transformer.readFromItem();
@@ -104,7 +106,7 @@ public class BCryptTransformerTest {
         String newPassword = "New password";
         JcrNodeAdapter item = new JcrNodeAdapter(dialogNode);
         item.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, newPassword));
-        transformer = new BCryptTransformer(item, definition, String.class);
+        transformer = new BCryptTransformer(item, definition, String.class, mock(I18NAuthoringSupport.class));
 
         // WHEN
         transformer.writeToItem(newPassword);

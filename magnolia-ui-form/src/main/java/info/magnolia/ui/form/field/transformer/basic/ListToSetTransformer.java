@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.transformer.basic;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
@@ -55,8 +57,16 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
     private final boolean multiselect;
 
+    /**
+     * @deprecated since 5.4.2 - use {@link #ListToSetTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public ListToSetTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
-        super(relatedFormItem, definition, type);
+        this(relatedFormItem, definition, type, Components.getComponent(I18NAuthoringSupport.class));
+    }
+
+    public ListToSetTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(relatedFormItem, definition, type, i18NAuthoringSupport);
         multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 

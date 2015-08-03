@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -119,7 +120,9 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         if (!propertyNames.contains(definition.getName())) {
             propertyNames.add(definition.getName());
         }
-        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
+        final Transformer<?> transformer = this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames, Components.getComponent(I18NAuthoringSupport.class));
+        transformer.setLocale(getLocale());
+        return transformer;
     }
 
     /**

@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 
 import org.junit.Test;
@@ -56,7 +55,7 @@ public class HiddenFieldFactoryTest extends AbstractFieldFactoryTestCase<HiddenF
         // GIVEN
         definition.setDefaultValue("test");
         factory = new HiddenFieldFactory(definition, baseItem);
-        factory.setComponentProvider(new MockComponentProvider());
+        factory.setComponentProvider(componentProvider);
 
         // WHEN
         Field<?> field = factory.createField();
@@ -75,7 +74,7 @@ public class HiddenFieldFactoryTest extends AbstractFieldFactoryTestCase<HiddenF
         definition.setDefaultValue("test2");
         baseItem.addItemProperty("hiddenProperty", new ObjectProperty<String>("test1"));
         factory = new HiddenFieldFactory(definition, baseItem);
-        factory.setComponentProvider(new MockComponentProvider());
+        factory.setComponentProvider(componentProvider);
 
         // WHEN
         Field<?> field = factory.createField();

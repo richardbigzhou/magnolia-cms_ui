@@ -39,11 +39,13 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.converter.StringToCalendarConverter;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -53,6 +55,8 @@ import javax.jcr.PropertyType;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -70,11 +74,27 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
 
+    private MockComponentProvider componentProvider;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        componentProvider = mock(MockComponentProvider.class);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock inv) throws Throwable {
+                Object[] args = inv.getArguments();
+                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3], mock(I18NAuthoringSupport.class));
+            }
+        }).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
+        componentProvider.setInstance(BasicTransformer.class, mock(BasicTransformer.class));
+    }
+
     @Test
     public void simpleInitializationTest() {
         // GIVEN
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<Object> field = fieldFactory.createField();
         // THEN
@@ -90,7 +110,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void changePropertyValueTest() throws Exception {
         // GIVEN
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -115,7 +135,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // Set do not change
         definition.setReadOnly(false);
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -135,7 +155,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -151,7 +171,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -169,7 +189,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         definition.setDefaultValue("defaultValue");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -187,7 +207,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         definition.setDefaultValue("defaultValue");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -204,7 +224,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // Set property Type
         definition.setType("Double");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
         // WHEN
@@ -227,7 +247,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         definition.setLabel("message.label");
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         Field<Object> field = fieldFactory.createField();
@@ -242,7 +262,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         definition.setRequired(true);
         fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         Field<Object> field = fieldFactory.createField();
@@ -259,7 +279,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new BeanItem<TestBean>(new TestBean("bar"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
 
@@ -275,7 +295,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
 
@@ -291,7 +311,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "bar");
         fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
 
@@ -307,7 +327,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         def.setRequired(true);
 
         fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         Field<?> field = fieldFactory.createField();
@@ -323,7 +343,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         def.setLabel("");
 
         fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         Field<?> field = fieldFactory.createField();
@@ -347,7 +367,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         def.setConverterClass(StringToCalendarConverter.class);
 
         fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         fieldFactory.createField();
@@ -363,7 +383,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         def.setConverterClass(StringToCalendarConverter.class);
 
         fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
-        fieldFactory.setComponentProvider(new MockComponentProvider());
+        fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
         fieldFactory.getView();

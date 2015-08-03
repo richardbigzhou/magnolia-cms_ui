@@ -96,7 +96,9 @@ public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFi
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class);
+        Transformer<?> transformer = this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class);
+        transformer.setLocale(getLocale());
+        return transformer;
     }
 
 }
