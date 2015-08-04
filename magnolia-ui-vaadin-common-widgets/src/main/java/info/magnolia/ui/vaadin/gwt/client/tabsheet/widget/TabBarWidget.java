@@ -75,11 +75,7 @@ public class TabBarWidget extends ComplexPanel {
         setElement(tabContainer);
         setStyleName("nav");
         addStyleDependentName("tabs");
-    }
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
         bindHandlers();
     }
 
