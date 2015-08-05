@@ -34,7 +34,7 @@
 package info.magnolia.ui.imageprovider;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.util.LinkUtil;
+import info.magnolia.link.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
