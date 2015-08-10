@@ -265,3 +265,33 @@ div#mgnlEditorMoveDiv {
 }
 
 /* --- End of DnD definitions --- */
+
+/* -------------------------------------
+ *  Status indicator on bar
+ * -------------------------------------
+ */
+div.mgnlEditorBar.area.mgnlEditorBarStatusIndicator,
+div.mgnlEditorBar.component.mgnlEditorBarStatusIndicator {
+  margin-left: 28px !important;
+}
+ 
+.mgnlEditor .status-indicator {
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  line-height: 26px;
+  width: 25px !important;
+  font-size: 26px !important;
+  margin-left: -27px !important;
+  color: white !important;
+  float: left !important;
+}
+
+.mgnlEditor .status-indicator.background-color-red {
+  background-color: $cp55 !important;
+}
+
+.mgnlEditor .status-indicator.background-color-yellow {
+  background-color: $cp56 !important;
+}
+ 
+ /* --- End of Status indicator on bar definitions --- */
