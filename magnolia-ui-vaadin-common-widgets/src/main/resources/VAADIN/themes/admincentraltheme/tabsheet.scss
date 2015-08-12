@@ -21,125 +21,122 @@
 .dialog-panel .v-shell-tabsheet .nav li.active {color:$c90;}
 
 .v-shell-tabsheet-logo {
-    position: absolute;
-    float: left;
-    display: inline-block;
-    text-align: center;
-    width: 17px;
-    height: 17px;
-    top: 4px;
-    left: 23px;
-    line-height: 17px;
-    font-size: 16px;
-    color: $c80;
-    z-index: 10;
+  position: absolute;
+  float: left;
+  display: inline-block;
+  text-align: center;
+  width: 17px;
+  height: 17px;
+  top: 4px;
+  left: 23px;
+  line-height: 17px;
+  font-size: 16px;
+  color: $c80;
+  z-index: 10;
 }
 
 .v-app-preloader > .nav {
-    margin-left: 30px !important;
+  margin-left: 30px !important;
 }
 
 .v-shell-tabsheet-logo + .nav li:first-child {
-    padding-left: 46px;
+  padding-left: 46px;
 }
 
 .v-shell-tabsheet-scroller {
-	position: absolute;
-	top: 25px;
-	bottom: 0;
-	width: 100%;
+  position: absolute;
+  top: 25px;
+  bottom: 0;
+  width: 100%;
 }
 
 .v-shell-tabsheet-scroller > div {
-	height: 100%;
-    /*Override relative position set by GWT's core widget in order to allow 'full-form'
-      TextAreas.
-    */
-    position: static !important;
+  height: 100%;
+  /*Override relative position set by GWT's core widget in order to allow 'full-form' TextAreas. */
+  position: static !important;
 }
 
 .v-shell-tabsheet-tab-wrapper {
-	height: 100%;
-	width: 100%;
-    position: relative;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
 /* tabs */
 .v-shell-tabsheet .nav {
-    height: 24px;
-    margin: 0;
-    padding: 0;
-    border-style: solid;
-    border-width: 0 0 1px 0;
-    list-style: none outside;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  list-style: none outside;
 }
 
 .v-shell-tabsheet .nav li {
-    float: left;
-    height: 19px;
-    margin: 0;
-    padding: 3px 8px 2px 16px;
-    border-style: solid;
-    border-width: 0 1px 0 0;
-    font-size: 14px;
-    line-height: normal;
-    cursor: pointer;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    position: relative;
+  float: left;
+  height: 19px;
+  margin: 0;
+  padding: 3px 8px 2px 16px;
+  border-style: solid;
+  border-width: 0 1px 0 0;
+  font-size: 14px;
+  line-height: normal;
+  cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  position: relative;
 }
 
 .v-shell-tabsheet .nav li.show-all {
-    float: right;
-    border-width: 0 0 0 1px;
+  float: right;
+  border-width: 0 0 0 1px;
 }
 .v-shell-tabsheet .nav li.show-all .tab-title {
-    padding-right: 8px;
+  padding-right: 8px;
 }
 
-.v-shell-tabsheet .nav li.active  {
-    padding-bottom: 3px;
-    cursor: default;
+.v-shell-tabsheet .nav li.active {
+  padding-bottom: 3px;
+  cursor: default;
 }
 
 /* tab text */
 .v-shell-tabsheet .tab-title {
-    display:block;
-    font-family:DINWebPro;
-    font-size: 14px;
-    line-height: 22px;
-    height:19px;
-    max-width:200px;
+  display: block;
+  font-family: DINWebPro;
+  font-size: 14px;
+  line-height: 22px;
+  height: 19px;
+  max-width: 200px;
 
-    padding-right: 40px;
-    padding-left: 2px;
-    padding-top: 0px;
-    margin: -3px;
-    margin-top:0px;
-    margin-right:4px;
-    outline:none;
+  padding-right: 40px;
+  padding-left: 2px;
+  padding-top: 0px;
+  margin: -3px;
+  margin-top: 0px;
+  margin-right: 4px;
+  outline: none;
 
-    background: none;
-    border: none;
-    color: inherit;
+  background: none;
+  border: none;
+  color: inherit;
 
-    text-transform:uppercase;
-    white-space:nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-    .v-ui:not(.tablet) &:focus:not(:active){
-      outline: $c22 solid 2px;
-    }
-    &:focus{
-      outline: none;
-    }
-    &::-moz-focus-inner {
-      border: 0;
-    }
+  .v-ui:not(.tablet) &:focus:not(:active) {
+    outline: $c22 solid 2px;
+  }
+  &:focus {
+    outline: none;
+  }
+  &::-moz-focus-inner {
+    border: 0;
+  }
 
 }
-
 
 /* close icon */
 .v-shell-tab-close {
@@ -152,55 +149,55 @@
 }
 
 .v-shell-tab-close:hover, .v-shell-tab-close:focus {
-	opacity:0.6;
+  opacity: 0.6;
 }
 
 /* single tab */
 .v-shell-tabsheet .single-tab {
-	background-color:transparent;
-	padding-bottom:1px;
-	border-bottom:none;
+  background-color: transparent;
+  padding-bottom: 1px;
+  border-bottom: none;
 }
 
 .v-shell-tabsheet .single-tab > li {
-	border-right:none;
+  border-right: none;
 }
 
 /* shell tabs and notifications */
 .v-shell-tab {
-	visibility:inherit !important; /* do not show tab content if parent is set to hidden */
+  visibility: inherit !important; /* do not show tab content if parent is set to hidden */
 }
-.v-shell-tab.inactive{
-	visibility:hidden;
+.v-shell-tab.inactive {
+  visibility: hidden;
 }
 
 .v-shell-tab-notification {
-    background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;
-	display: inline-block;
-    height: 22px;
-    width: 22px;
-    z-index: 1000;
-    float: right;
+  background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;
+  display: inline-block;
+  height: 22px;
+  width: 22px;
+  z-index: 1000;
+  float: right;
 }
 
 .v-shell-tab-error {
-	height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 
-	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
-	display: inline-block;
-    z-index: 1000;
-    float: right;
+  background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+  display: inline-block;
+  z-index: 1000;
+  float: right;
 }
 
 .v-shell-tab-notification > span {
-	height: 22px;
-	width: 22px;
-    color: $c80;
-    font-size: 12px;
-    vertical-align: text-bottom;
-    z-index: 4001;
-    text-align: center;
+  height: 22px;
+  width: 22px;
+  color: $c80;
+  font-size: 12px;
+  vertical-align: text-bottom;
+  z-index: 4001;
+  text-align: center;
 }
 
 /* force hiding of iframes inside the tabsheet, when it's inactive. Bug in webkit. */
@@ -209,4 +206,3 @@
 }
 
 }
-
