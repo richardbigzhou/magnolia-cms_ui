@@ -66,7 +66,7 @@ public class TabBarWidget extends ComplexPanel {
 
     private final Element tabContainer = DOM.createElement("ul");
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     private VShellShowAllTabLabel showAllTab;
 
@@ -75,11 +75,7 @@ public class TabBarWidget extends ComplexPanel {
         setElement(tabContainer);
         setStyleName("nav");
         addStyleDependentName("tabs");
-    }
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
         bindHandlers();
     }
 
@@ -136,7 +132,8 @@ public class TabBarWidget extends ComplexPanel {
         label.setEventBus(eventBus);
         if (!tabLabels.contains(label)) {
             tabLabels.add(label);
-            add(label, getElement());
+            // Keep show-all button last in the DOM when inserting labels.
+            insert(label, tabContainer, tabLabels.size(), true);
             updateSingleTabStyle();
         }
     }
