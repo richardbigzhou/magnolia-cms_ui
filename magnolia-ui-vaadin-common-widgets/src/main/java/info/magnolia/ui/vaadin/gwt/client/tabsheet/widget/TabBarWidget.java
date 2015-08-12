@@ -85,7 +85,7 @@ public class TabBarWidget extends ComplexPanel {
         setStyleName("nav");
         addStyleDependentName("tabs");
 
-        hiddenTabsPopup = new HiddenTabsPopup();
+        hiddenTabsPopup = new HiddenTabsPopup(eventBus);
         add(hiddenTabsPopup, tabContainer);
         bindHandlers();
     }
@@ -269,13 +269,15 @@ public class TabBarWidget extends ComplexPanel {
 
     }
 
-    private class HiddenTabsPopup extends Widget {
+    static class HiddenTabsPopup extends Widget {
 
-        private DialogBox menuWrapper = new DialogBox(true);
+        private final DialogBox menuWrapper = new DialogBox(true);
+        private final HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
+        private final EventBus eventBus;
 
-        private HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
+        public HiddenTabsPopup(EventBus eventBus) {
+            this.eventBus = eventBus;
 
-        public HiddenTabsPopup() {
             setElement(DOM.createElement("li"));
             addStyleName("icon-arrow2_e");
             addStyleName("hidden-tabs-popup-button");
@@ -309,7 +311,7 @@ public class TabBarWidget extends ComplexPanel {
                 public void onClick(ClickEvent event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    menuWrapper.setPopupPosition(hiddenTabsPopup.getAbsoluteLeft() + hiddenTabsPopup.getOffsetWidth(), hiddenTabsPopup.getAbsoluteTop());
+                    menuWrapper.setPopupPosition(getAbsoluteLeft() + getOffsetWidth(), getAbsoluteTop());
                     menuWrapper.show();
                 }
 
