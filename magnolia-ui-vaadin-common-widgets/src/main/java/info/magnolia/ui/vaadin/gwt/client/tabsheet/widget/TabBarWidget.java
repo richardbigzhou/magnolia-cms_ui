@@ -296,6 +296,9 @@ public class TabBarWidget extends ComplexPanel {
 
     }
 
+    /**
+     * The toggle display the hidden-tabs popup upon click.
+     */
     static class HiddenTabsPopup extends Widget {
 
         private final DialogBox menuWrapper = new DialogBox(true);
