@@ -66,7 +66,7 @@ public class TabBarWidget extends ComplexPanel {
 
     private final Element tabContainer = DOM.createElement("ul");
 
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     private VShellShowAllTabLabel showAllTab;
 
