@@ -46,7 +46,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -277,7 +276,7 @@ public class TabBarWidget extends ComplexPanel {
         private HiddenTabsMenuBar menubar = new HiddenTabsMenuBar();
 
         public HiddenTabsPopup() {
-            setElement(LIElement.as(DOM.createElement("li")));
+            setElement(DOM.createElement("li"));
             addStyleName("icon-arrow2_e");
             addStyleName("hidden-tabs-popup-button");
             menuWrapper.add(menubar);
