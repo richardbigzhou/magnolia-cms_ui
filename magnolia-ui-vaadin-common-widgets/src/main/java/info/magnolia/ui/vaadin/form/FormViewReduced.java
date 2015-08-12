@@ -62,6 +62,10 @@ public interface FormViewReduced extends View, Item.Editor {
 
     List<FormSection> getFormSections();
 
+    /**
+     * @deprecated since 5.4.1 - use {@link #getFormSections()} instead.
+     */
+    @Deprecated
     Collection<Field<?>> getFields();
 
     void setListener(Listener listener);
