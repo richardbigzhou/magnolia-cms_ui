@@ -75,7 +75,7 @@ public class TabBarWidget extends ComplexPanel {
 
     private VShellShowAllTabLabel showAllTab;
 
-    private HiddenTabsPopup hiddenTabsPopup;
+    private final HiddenTabsPopup hiddenTabsPopup;
 
     private MagnoliaTabLabel activeTab;
 
