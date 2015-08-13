@@ -16,7 +16,7 @@
     <javaVersion>1.7</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.4.1-SNAPSHOT</magnoliaVersion>
+    <magnoliaVersion>5.4.1</magnoliaVersion>
     <magnoliaTasksVersion>1.1</magnoliaTasksVersion>
     <imagingVersion>3.2</imagingVersion>
     <vaadinVersion>7.4.7</vaadinVersion>
@@ -206,7 +206,7 @@
       <dependency>
         <groupId>info.magnolia.scheduler</groupId>
         <artifactId>magnolia-module-scheduler</artifactId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>2.2.1</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>
