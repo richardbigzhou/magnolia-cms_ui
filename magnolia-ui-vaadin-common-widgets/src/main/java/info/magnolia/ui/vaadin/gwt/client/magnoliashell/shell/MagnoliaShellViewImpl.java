@@ -56,8 +56,10 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -85,6 +87,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     private JQueryAnimation viewportShifter = new JQueryAnimation();
 
     private final Element viewportSlot = DOM.createDiv();
+
+    // notice that also a fragment like "#app:groovy:;" (with no subapp id, i.e. console)
+    // can represent the console and must be taken into account
+    private static final RegExp GROOVY_CONSOLE_URL_FRAGMENT_REGEX = RegExp.compile("(app:groovy:)(console|;)");
 
     // To remove focus (blur) all input elements, one just needs to focus this element.
     private final FocusPanel blurHelper = new FocusPanel();
@@ -132,7 +138,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
                     return;
                 }
 
-                if (isFocusedElementGroovyConsole()) {
+                if (isAppInFocusGroovyConsole()) {
                     return;
                 }
 
@@ -352,18 +358,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     /*
-     * We need to check for groovy console element (a DIV) css classname (terminal) and skip the shell apps shortcuts. Should the need arise for a generic mechanism usable by other components too,
-     * we could expose something like a special css class or better a special html5 data-* attribute. See http://jira.magnolia-cms.com/browse/MGNLGROOVY-123
+     * If the current app in focus is groovy and skip the shell apps shortcuts. See http://jira.magnolia-cms.com/browse/MGNLUI-3526
      */
-    private boolean isFocusedElementGroovyConsole() {
-        Element focused = elementInFocus(RootPanel.get().getElement());
-
-        String className = focused.getClassName();
-
-        if (className.contains("terminal")) {
-            return true;
-        }
-        return false;
+    private boolean isAppInFocusGroovyConsole() {
+        String hash = Window.Location.getHash();
+        return GROOVY_CONSOLE_URL_FRAGMENT_REGEX.test(hash);
     }
 
 }
