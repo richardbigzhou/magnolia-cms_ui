@@ -79,6 +79,10 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
 
+        if(isEmpty()) {
+            this.setValue(null, true);
+        }
+
         if (config != null && config.getListenedEvents().length > 0) {
             // See if client sends events
             for (String eventName : config.getListenedEvents()) {
@@ -138,5 +142,13 @@ public class MagnoliaRichTextField extends CKEditorTextField {
      */
     public interface PluginListener {
         void onPluginEvent(String eventName, String value);
+    }
+
+    /**
+     * As decribed in AbstractField empty string should be threat as "empty", but method isEmpty is not overriden in CKEditorTextField so ve need to do it here.
+     */
+    @Override
+    protected boolean isEmpty() {
+        return super.isEmpty() || getValue().length() == 0;
     }
 }
