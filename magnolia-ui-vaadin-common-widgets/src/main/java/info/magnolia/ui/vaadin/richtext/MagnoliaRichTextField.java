@@ -145,7 +145,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     }
 
     /**
-     * As decribed in AbstractField empty string should be threat as "empty", but method isEmpty is not overriden in CKEditorTextField so ve need to do it here.
+     * As described in AbstractField empty string should be threat as "empty", but method isEmpty is not overriden in CKEditorTextField so we need to do it here.
      */
     @Override
     protected boolean isEmpty() {
