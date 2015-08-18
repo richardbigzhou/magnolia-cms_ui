@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -78,6 +79,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
     private final Button addButton = new NativeButton();
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
+    private String _buttonCaptionMoveUp = "move up";
+    private String _buttonCaptionMoveDown = "move down";
 
     public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
@@ -133,7 +136,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 }
 
                 root.addComponent(createEntryComponent(newPropertyId, property), root.getComponentCount() - 1);
-            };
+            }
         });
 
         // Initialize Existing field
@@ -168,7 +171,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      */
     private Component createEntryComponent(Object propertyId, Property<?> property) {
 
-        HorizontalLayout layout = new HorizontalLayout();
+        final HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
 
@@ -189,6 +192,51 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         if (definition.isReadOnly()) {
             return layout;
         }
+
+        // move up Button
+        Button moveUpButton = new Button();
+        moveUpButton.setHtmlContentAllowed(true);
+        moveUpButton.setCaption("<span class=\"" + "icon-arrow2_n" + "\"></span>");
+        moveUpButton.addStyleName("inline");
+        moveUpButton.setDescription(_buttonCaptionMoveUp);
+        moveUpButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                AbstractOrderedLayout parentLayout = root;
+                int currPos = parentLayout.getComponentIndex(layout);
+
+                if (currPos != 0) {
+
+                    parentLayout.replaceComponent(parentLayout.getComponent(currPos - 1), parentLayout.getComponent(currPos));
+                    switchItemProperties(currPos - 1, currPos);
+                }
+
+            }
+        });
+
+        // move down Button
+        Button moveDownButton = new Button();
+        moveDownButton.setHtmlContentAllowed(true);
+        moveDownButton.setCaption("<span class=\"" + "icon-arrow2_s" + "\"></span>");
+        moveDownButton.addStyleName("inline");
+        moveDownButton.setDescription(_buttonCaptionMoveDown);
+        moveDownButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                AbstractOrderedLayout parentLayout = root;
+                int currPos = parentLayout.getComponentIndex(layout);
+                int numberOfComponents = parentLayout.getComponentCount() - 1;
+
+                if (currPos < numberOfComponents - 1) {
+
+                    parentLayout.replaceComponent(parentLayout.getComponent(currPos + 1), parentLayout.getComponent(currPos));
+                    switchItemProperties(currPos + 1, currPos);
+                }
+            }
+        });
+
 
         // Delete Button
         Button deleteButton = new Button();
@@ -219,8 +267,9 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 }
             }
         });
-        layout.addComponent(deleteButton);
-        layout.setExpandRatio(deleteButton, 0);
+
+        layout.addComponents(moveUpButton, moveDownButton, deleteButton);
+        //layout.setExpandRatio(deleteButton, 0);
 
         // make sure button stays aligned with the field and not with the optional field label when used
         layout.setComponentAlignment(deleteButton, Alignment.BOTTOM_RIGHT);
@@ -264,6 +313,34 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             getValue().addItemProperty(toIndex, getValue().getItemProperty(fromIndex));
             getValue().removeItemProperty(fromIndex);
         }
+    }
+
+    // switches the values of two properties.
+    private void switchItemProperties(Object firstPropertyId, Object secondPropertyId) {
+        Property propertyFirst = getValue().getItemProperty(firstPropertyId);
+        Property propertySecond = getValue().getItemProperty(secondPropertyId);
+
+        PropertysetItem storedValues = null;
+        try {
+            storedValues = (PropertysetItem) getValue().clone();
+        } catch (CloneNotSupportedException e) {
+            log.debug("Unable to clone PropertysetItem.", e);
+        }
+
+        if (storedValues != null) {
+            for (Object propertyId : storedValues.getItemPropertyIds()) {
+                getValue().removeItemProperty(propertyId);
+                if (propertyId == firstPropertyId) {
+                    getValue().addItemProperty(firstPropertyId, propertySecond);
+                } else if (propertyId == secondPropertyId) {
+                    getValue().addItemProperty(secondPropertyId, propertyFirst);
+                } else {
+                    getValue().addItemProperty(propertyId, storedValues.getItemProperty(propertyId));
+                }
+            }
+            getPropertyDataSource().setValue(getValue());
+        }
+
     }
 
 }
