@@ -190,7 +190,7 @@ public class BasicTransformer<T> implements Transformer<T> {
     }
 
     protected String deriveLocaleAwareName(String baseName) {
-        if (hasI18NSupport() && locale != null && !i18NAuthoringSupport.isDefaultLocale(locale)) {
+        if (hasI18NSupport() && locale != null && !i18NAuthoringSupport.isDefaultLocale(locale, relatedFormItem)) {
             return i18NAuthoringSupport.deriveLocalisedPropertyName(baseName, locale);
         }
         return baseName;

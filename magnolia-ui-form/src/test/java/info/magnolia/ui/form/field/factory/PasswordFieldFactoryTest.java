@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.PasswordFields;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 
@@ -58,7 +57,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(false);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
+        passwordFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         Field field = passwordFieldFactory.createField();
 
@@ -71,7 +70,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
+        passwordFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
 
@@ -87,7 +86,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
+        passwordFieldFactory.setComponentProvider(componentProvider);
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("aa");
@@ -105,7 +104,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         // GIVEN
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
-        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
+        passwordFieldFactory.setComponentProvider(componentProvider);
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("axa");

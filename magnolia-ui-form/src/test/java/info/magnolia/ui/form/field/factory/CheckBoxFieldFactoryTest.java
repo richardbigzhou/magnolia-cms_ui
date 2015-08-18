@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -58,7 +57,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
+        checkBoxField.setComponentProvider(componentProvider);
 
         // WHEN
         Field<Boolean> field = checkBoxField.createField();
@@ -74,7 +73,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
+        checkBoxField.setComponentProvider(componentProvider);
         definition.setDefaultValue("false");
 
         // WHEN
@@ -90,7 +89,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
-        checkBoxField.setComponentProvider(new MockComponentProvider());
+        checkBoxField.setComponentProvider(componentProvider);
         definition.setDefaultValue("true");
 
         // WHEN

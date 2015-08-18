@@ -263,7 +263,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
      */
     protected String childItemRegexRepresentation() {
         if (hasI18NSupport()) {
-            if (getLocale() == null || getI18NAuthoringSupport().isDefaultLocale(getLocale())) {
+            if (getLocale() == null || getI18NAuthoringSupport().isDefaultLocale(getLocale(), relatedFormItem)) {
                 // i18n set, current locale is the default locale
                 // match all node name that do not define locale extension
                 return subItemBaseName + incrementRegexRepresentation() + "((?!(_\\w{2}){1,3}))$";

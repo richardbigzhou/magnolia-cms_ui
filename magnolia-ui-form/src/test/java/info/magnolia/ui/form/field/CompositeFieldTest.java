@@ -34,28 +34,20 @@
 package info.magnolia.ui.form.field;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.EmptyMessages;
-import info.magnolia.cms.i18n.MessagesManager;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.MgnlTestCase;
-import info.magnolia.test.mock.MockUtil;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -64,13 +56,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractField;
 
-public class CompositeFieldTest extends MgnlTestCase {
+public class CompositeFieldTest extends AbstractFieldFactoryTestCase<CompositeFieldDefinition> {
 
     private FieldFactoryFactory fieldFactoryFactory;
-
-    private I18NAuthoringSupport i18NAuthoringSupport;
-
-    private ComponentProvider componentProvider;
 
     private Item relatedItem;
 
@@ -83,14 +71,11 @@ public class CompositeFieldTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
         this.fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        this.i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
-        this.componentProvider = mock(ComponentProvider.class);
-        MockUtil.getMockContext().setLocale(Locale.ENGLISH);
-        MessagesManager messagesManager = mock(MessagesManager.class);
-        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+    }
 
-        when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
-        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        this.definition = new CompositeFieldDefinition();
     }
 
     @Test
@@ -124,14 +109,15 @@ public class CompositeFieldTest extends MgnlTestCase {
         doReturn(f2).when(childFieldFactory2).createField();
 
         // Composite field/factory/transformer
-        final CompositeFieldDefinition fieldDefinition = new CompositeFieldDefinition();
-        fieldDefinition.setFields(Arrays.asList(childFieldDef1, childFieldDef2));
-        fieldDefinition.setRequired(true);
 
-        final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, fieldDefinition, PropertysetItem.class, Arrays.asList("f1", "f2"), mock(I18NAuthoringSupport.class));
-        doReturn(compositeTransformer).when(componentProvider).newInstance(eq(CompositeTransformer.class), anyVararg());
+        this.definition.setFields(Arrays.asList(childFieldDef1, childFieldDef2));
+        this.definition.setRequired(true);
 
-        this.compositeFieldFactory = new CompositeFieldFactory(fieldDefinition, relatedItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
+        final CompositeTransformer compositeTransformer = new CompositeTransformer(relatedItem, this.definition, PropertysetItem.class, Arrays.asList("f1", "f2"), mock(I18NAuthoringSupport.class));
+        componentProvider.setInstance(CompositeTransformer.class, compositeTransformer);
+        componentProvider.setImplementation(CompositeTransformer.class, CompositeTransformer.class.getName());
+
+        this.compositeFieldFactory = new CompositeFieldFactory(this.definition, relatedItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
 
         // WHEN
         this.multiField = (CompositeField) compositeFieldFactory.createField();

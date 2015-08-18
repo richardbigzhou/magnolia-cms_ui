@@ -41,11 +41,11 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -71,7 +71,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Test case for {@link WorkspaceAccessFieldFactory}.
  */
-public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
+public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCase<WorkspaceAccessFieldDefinition> {
 
     private SimpleTranslator i18n;
     private ComponentProvider componentProvider;
@@ -90,6 +90,11 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         componentProvider = new MockComponentProvider();
     }
 
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        this.definition = new WorkspaceAccessFieldDefinition();
+    }
+
     @Test
     public void testShowsAddButtonAndEmptyLabelWhenEmpty() {
 
@@ -98,7 +103,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         MockUtil.setSessionAndHierarchyManager(session);
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
-        WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
+
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n, componentProvider);
 
         // WHEN

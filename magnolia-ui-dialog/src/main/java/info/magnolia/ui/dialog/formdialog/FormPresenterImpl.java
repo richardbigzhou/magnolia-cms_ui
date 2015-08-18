@@ -93,7 +93,6 @@ public class FormPresenterImpl implements FormPresenter {
         this.formBuilder = formBuilder;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
         this.subAppContext = subAppContext;
-        this.activeLocale = this.i18NAuthoringSupport.getDefaultLocale();
     }
 
     @Override

@@ -38,6 +38,7 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -45,11 +46,11 @@ import com.vaadin.ui.HasComponents;
  */
 public interface I18NAuthoringSupport {
 
-    List<Locale> getAvailableLocales();
+    List<Locale> getAvailableLocales(Item item);
 
-    Locale getDefaultLocale();
+    Locale getDefaultLocale(Item item);
 
-    boolean isDefaultLocale(Locale locale);
+    boolean isDefaultLocale(Locale locale, Item item);
 
     String createI18NURI(Node node, Locale locale);
 

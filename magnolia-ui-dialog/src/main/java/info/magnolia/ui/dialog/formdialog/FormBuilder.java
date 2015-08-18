@@ -51,7 +51,6 @@ import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
 import java.util.Iterator;
@@ -59,7 +58,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -132,20 +130,14 @@ public class FormBuilder {
         buildReducedForm(formDefinition, view, item, parent);
 
         if (hasI18nAwareFields(formDefinition)) {
-            if (item instanceof JcrItemAdapter) {
-                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
-                if (jcrItem.isNode()) {
-                    final Node node = (Node) jcrItem;
-                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
-                    view.setAvailableLocales(locales);
-                    // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
-                    if (uiContext instanceof SubAppContext && ((SubAppContext) uiContext).getAuthoringLocale() != null) {
-                        view.setCurrentLocale(((SubAppContext) uiContext).getAuthoringLocale());
-                    } else {
-                        view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(node));
-                    }
+                List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(item);
+                view.setAvailableLocales(locales);
+                // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
+                if (uiContext instanceof SubAppContext && ((SubAppContext) uiContext).getAuthoringLocale() != null) {
+                    view.setCurrentLocale(((SubAppContext) uiContext).getAuthoringLocale());
+                } else {
+                    view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(item));
                 }
-            }
         }
     }
 

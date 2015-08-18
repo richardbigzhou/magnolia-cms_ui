@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
@@ -61,7 +60,7 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
         CurrentInstance.set(VaadinRequest.class, request);
         // GIVEN
         richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null, null);
-        richTextFieldFactory.setComponentProvider(new MockComponentProvider());
+        richTextFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         Field field = richTextFieldFactory.createField();
 
