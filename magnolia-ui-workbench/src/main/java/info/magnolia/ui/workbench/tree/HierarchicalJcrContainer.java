@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -42,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.container.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +58,8 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -69,6 +73,10 @@ import com.vaadin.data.Container;
 public class HierarchicalJcrContainer extends AbstractJcrContainer implements Container.Hierarchical {
 
     private static final Logger log = LoggerFactory.getLogger(HierarchicalJcrContainer.class);
+
+    private static final String WHERE_CLAUSE_FOR_PATH = " ISCHILDNODE('%s')";
+
+    private String nodePath;
 
     private static class ItemNameComparator implements Comparator<Item> {
         @Override
@@ -189,6 +197,18 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return false;
     }
 
+    @Override
+    public void sort(final Object[] propertyId, final boolean[] ascending) {
+        sorters.clear();
+        for (int i = 0; i < propertyId.length; i++) {
+            if (getSortableContainerPropertyIds().contains(String.valueOf(propertyId[i]))) {
+                OrderBy orderBy = new OrderBy((String) propertyId[i], ascending[i]);
+                sorters.add(orderBy);
+            }
+        }
+        fireItemSetChange();
+    }
+
     private boolean isJcrOrMgnlProperty(Property property) throws RepositoryException {
         final String propertyName = property.getName();
         return propertyName.startsWith(NodeTypes.JCR_PREFIX) || propertyName.startsWith(NodeTypes.MGNL_PREFIX);
@@ -207,23 +227,25 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return ids;
     }
 
-    @Override
-    public List<String> getSortableContainerPropertyIds() {
-        // at present tree view is not sortable
-        return Collections.emptyList();
-    }
-
     public Collection<Item> getChildren(Item item) {
         if (!item.isNode()) {
             return Collections.emptySet();
         }
 
         Node node = (Node) item;
-
-        ArrayList<Item> items = new ArrayList<Item>();
-
+        ArrayList<Item> items = new ArrayList<>();
         try {
-            NodeIterator iterator = node.getNodes();
+            NodeIterator iterator;
+            // we cannot use query just for getting children of a node as SQL2 is not returning them in natural order
+            // so if any sorter is defined use query, otherwise get all children from the node
+            if (sorters.size() > 0) {
+                nodePath = node.getPath();
+                String query = constructJCRQuery(true);
+                iterator = QueryUtil.search(getWorkspace(), query, Query.JCR_SQL2);
+            } else {
+                iterator = node.getNodes();
+            }
+
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
                 if (isNodeVisible(next)) {
@@ -232,7 +254,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             }
 
             if (getConfiguration().isIncludeProperties()) {
-                ArrayList<Property> properties = new ArrayList<Property>();
+                ArrayList<Property> properties = new ArrayList<>();
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
                     final Property property = propertyIterator.nextProperty();
@@ -288,6 +310,43 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             }
         }
         return true;
+    }
+
+    @Override
+    protected String getQueryWhereClause() {
+        String whereClause;
+        String clauseWorkspacePath = getQueryWhereClauseForNodePath(nodePath);
+        String clauseNodeTypes = getQueryWhereClauseNodeTypes();
+        if (StringUtils.isNotBlank(clauseNodeTypes)) {
+            whereClause = " where ((" + clauseNodeTypes + ") ";
+            if (StringUtils.isNotBlank(clauseWorkspacePath)) {
+                whereClause += "and " + clauseWorkspacePath;
+            }
+            whereClause += ") ";
+        } else {
+            whereClause = " where ";
+        }
+
+        log.debug("JCR query WHERE clause is {}", whereClause);
+        return whereClause;
+    }
+
+    private String getQueryWhereClauseForNodePath(final String nodePath) {
+        return String.format(WHERE_CLAUSE_FOR_PATH, nodePath);
+    }
+
+    @Override
+    protected String getQueryWhereClauseNodeTypes() {
+        List<String> defs = new ArrayList<>();
+        for (NodeType nt : getSearchableNodeTypes()) {
+            if (nt.isMixin()) {
+                // Mixin type information is found in jcr:mixinTypes property see http://www.day.com/specs/jcr/2.0/10_Writing.html#10.10.3%20Assigning%20Mixin%20Node%20Types
+                defs.add("[jcr:mixinTypes] = '" + nt.getName() + "'");
+            } else {
+                defs.add("[jcr:primaryType] = '" + nt.getName() + "'");
+            }
+        }
+        return StringUtils.join(defs, " or ");
     }
 
     /**

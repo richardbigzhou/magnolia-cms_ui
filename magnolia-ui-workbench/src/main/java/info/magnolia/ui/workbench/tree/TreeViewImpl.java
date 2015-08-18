@@ -89,7 +89,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         super.initializeTable(table);
         this.tree = (MagnoliaTreeTable) table;
         rowScroller = new TreeRowScroller(tree);
-        tree.setSortEnabled(false);
+        tree.setSortEnabled(true);
         collapseListener = new CollapsedNodeListener();
         tree.addCollapseListener(collapseListener);
     }
