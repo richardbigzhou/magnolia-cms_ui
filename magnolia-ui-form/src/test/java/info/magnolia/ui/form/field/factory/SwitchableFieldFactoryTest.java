@@ -38,8 +38,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
@@ -78,18 +76,15 @@ import com.vaadin.ui.Field;
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
-    private MockComponentProvider componentProvider;
     private FieldFactoryFactory subfieldFactory;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
         FieldTypeDefinitionRegistry fieldDefinitionRegistery = createFieldTypeRegistery();
-        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null, mock(UiContext.class), mock(I18NAuthoringSupport.class));
+        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
     }
 
     @Test

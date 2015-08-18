@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -63,14 +62,11 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
 
     private LinkFieldFactory<LinkFieldDefinition> linkFieldFactory;
 
-    private MockComponentProvider componentProvider;
-
     @Override
     @Before
     public void setUp() throws Exception {
-        componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
         super.setUp();
+        componentProvider.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
     }
 
     @Test

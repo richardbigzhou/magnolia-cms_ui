@@ -34,9 +34,11 @@
 package info.magnolia.ui.framework.i18n;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +51,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -75,12 +78,18 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
      */
     @Override
     public List<Locale> getAvailableLocales(Node node) {
-        return getAvailableLocales();
+        if (enabled && i18nContentSupport.isEnabled()) {
+            return new ArrayList<>(i18nContentSupport.getLocales());
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public Locale getDefaultLocale(Node node) {
-        return getDefaultLocale();
+        if (enabled && i18nContentSupport.isEnabled()) {
+            return i18nContentSupport.getDefaultLocale();
+        }
+        return null;
     }
 
     @Override
@@ -89,24 +98,24 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
     }
 
     @Override
-    public List<Locale> getAvailableLocales() {
-        if (enabled && i18nContentSupport.isEnabled()) {
-            return new ArrayList<>(i18nContentSupport.getLocales());
+    public List<Locale> getAvailableLocales(Item item) {
+        if (item instanceof JcrNodeAdapter) {
+            return getAvailableLocales(((JcrNodeAdapter)item).getJcrItem());
         }
         return Collections.emptyList();
     }
 
     @Override
-    public Locale getDefaultLocale() {
-        if (enabled && i18nContentSupport.isEnabled()) {
-            return i18nContentSupport.getDefaultLocale();
+    public Locale getDefaultLocale(Item item) {
+        if (item instanceof JcrNodeAdapter) {
+            return getDefaultLocale(((JcrNodeAdapter) item).getJcrItem());
         }
-        return null;
+        return MgnlContext.getLocale();
     }
 
     @Override
-    public boolean isDefaultLocale(Locale locale) {
-        return ObjectUtils.equals(getDefaultLocale(), locale);
+    public boolean isDefaultLocale(Locale locale, Item item) {
+        return ObjectUtils.equals(getDefaultLocale(item), locale);
     }
 
     @Override

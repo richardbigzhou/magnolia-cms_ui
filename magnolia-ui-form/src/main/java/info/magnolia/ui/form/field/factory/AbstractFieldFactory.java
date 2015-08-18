@@ -36,6 +36,8 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
@@ -52,6 +54,8 @@ import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -77,6 +81,8 @@ import com.vaadin.ui.Label;
 public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends AbstractFormItem implements FieldFactory {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldFactory.class);
     protected Item item;
+    private UiContext uiContext;
+    private I18NAuthoringSupport i18NAuthoringSupport;
 
     protected Field<T> field;
 
@@ -86,9 +92,22 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     private Locale locale;
 
-    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+    @Inject
+    public AbstractFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
         this.definition = definition;
         this.item = relatedFieldItem;
+        this.uiContext = uiContext;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.4.1 - use {@link #AbstractFieldFactory(FieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public AbstractFieldFactory(D definition, Item relatedFieldItem) {
+        // Since we can't use Components utility for retreiving UiContext - leave it as null for the time being
+        // and get it via component provider when it is set (#setComponentProvider(..) method)
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override
@@ -107,6 +126,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     @Override
     public Field<T> createField() {
+        if (locale == null) {
+            if (uiContext instanceof SubAppContext) {
+                final Locale authoringLocale = ((SubAppContext) uiContext).getAuthoringLocale();
+                setLocale(authoringLocale == null ? i18NAuthoringSupport.getDefaultLocale(item) : authoringLocale);
+            }
+        }
+
         if (field == null) {
             // Create the Vaadin field
             this.field = createFieldComponent();
@@ -245,7 +271,11 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
 
         if (transformerClass == null) {
-            transformerClass = (Class<? extends Transformer<?>>) (Object)BasicTransformer.class;
+            // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
+            // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
+            // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
+            // At runtime it all works due to type erasure.
+            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
         transformer.setLocale(locale);
@@ -261,7 +291,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
          * I18NAuthoringSupport is passed through Components utility for test purposes
          * since version 5.4.1 - otherwise all the existing field factory tests would have to be adapted.
          */
-        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), Components.getComponent(I18NAuthoringSupport.class));
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
     /**
@@ -341,6 +371,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     @Override
     public void setComponentProvider(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
+        if (uiContext == null) {
+            uiContext = componentProvider.getComponent(UiContext.class);
+        }
     }
 
     protected ComponentProvider getComponentProvider() {

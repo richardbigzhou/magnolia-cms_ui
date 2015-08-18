@@ -182,8 +182,8 @@ public class DelegatingMultiValueFieldTransformerTest {
 
     private I18NAuthoringSupport createI18AuthoringSupportMock() {
         final I18NAuthoringSupport i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
-        doReturn(Locale.ENGLISH).when(i18nAuthoringSupport).getDefaultLocale();
-        doReturn(Arrays.asList(Locale.ENGLISH, Locale.GERMAN)).when(i18nAuthoringSupport).getAvailableLocales();
+        doReturn(Locale.ENGLISH).when(i18nAuthoringSupport).getDefaultLocale(rootItem);
+        doReturn(Arrays.asList(Locale.ENGLISH, Locale.GERMAN)).when(i18nAuthoringSupport).getAvailableLocales(rootItem);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock inv) throws Throwable {

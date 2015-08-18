@@ -37,7 +37,6 @@ import static info.magnolia.ui.vaadin.integration.jcr.ModelConstants.JCR_NAME;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
@@ -59,7 +58,7 @@ public class CodeFieldFactoryTest extends AbstractFieldFactoryTestCase<CodeField
     public void setUp() throws Exception {
         super.setUp();
         factory = new CodeFieldFactory(definition, baseItem);
-        factory.setComponentProvider(new MockComponentProvider());
+        factory.setComponentProvider(componentProvider);
     }
 
     @Test

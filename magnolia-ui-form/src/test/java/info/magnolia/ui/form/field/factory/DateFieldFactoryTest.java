@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -64,7 +63,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setComponentProvider(new MockComponentProvider());
+        dialogDate.setComponentProvider(componentProvider);
         // WHEN
         Field field = dialogDate.createField();
 
@@ -85,7 +84,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setComponentProvider(new MockComponentProvider());
+        dialogDate.setComponentProvider(componentProvider);
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
         calNew.set(Calendar.MONTH, 2);
@@ -115,7 +114,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
-        dialogDate.setComponentProvider(new MockComponentProvider());
+        dialogDate.setComponentProvider(componentProvider);
         // WHEN
         Field field = dialogDate.createField();
 
