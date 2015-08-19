@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.server.PaintException;
@@ -149,6 +150,6 @@ public class MagnoliaRichTextField extends CKEditorTextField {
      */
     @Override
     protected boolean isEmpty() {
-        return super.isEmpty() || getValue().length() == 0;
+        return StringUtils.isBlank(getValue());
     }
 }
