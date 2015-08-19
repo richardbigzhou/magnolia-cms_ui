@@ -76,6 +76,14 @@ public class JQueryWrapper extends JavaScriptObject {
         });
     }-*/;
 
+    public final native int marginHeight() /*-{
+        return this.outerHeight(true);
+    }-*/;
+
+    public final native int marginWidth() /*-{
+        return this.outerWidth(true);
+    }-*/;
+
     public final native boolean is(String selector) /*-{
         return this.is(selector);
     }-*/;
