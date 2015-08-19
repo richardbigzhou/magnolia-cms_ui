@@ -140,7 +140,6 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
 
     @Override
     public void onErrorsDisplayed() {
-        getLayoutManager().setNeedsMeasure(this);
+        getLayoutManager().setNeedsMeasure(FormConnector.this);
     }
-
 }
