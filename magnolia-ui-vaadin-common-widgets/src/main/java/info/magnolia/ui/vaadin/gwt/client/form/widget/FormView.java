@@ -58,11 +58,12 @@ public interface FormView extends IsWidget {
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
-    public interface Presenter {
+    interface Presenter {
 
         void jumpToNextError(FormFieldWrapper lastFocused);
 
-    }
+        void onErrorsDisplayed();
 
+    }
 
 }

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
@@ -121,7 +122,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 @Override
                 public void onActiveTabChanged(ActiveTabChangedEvent event) {
                     // Focus the first field on the form of the current tab.
-                    if (!hasErrors){
+                    if (!hasErrors) {
                         if (!event.isShowingAllTabs()) {
                             focusFirstFieldInTab((FormTabWidget) event.getTab());
                         } else {
@@ -140,7 +141,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                     }
                 }
 
-                private void focusFirstFieldInTab(FormTabWidget tab){
+                private void focusFirstFieldInTab(FormTabWidget tab) {
                     FormFieldWrapper firstField = tab.getFields().get(0);
                     firstField.focusField();
                 }
@@ -190,6 +191,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 }
             }, ClickEvent.getType());
             errorPanel.add(errorButton);
+            presenter.onErrorsDisplayed();
         }
     }
 
@@ -211,6 +213,9 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     @Override
     public void setMaxHeight(int height) {
+        if (this.hasErrors) {
+            height -= JQueryWrapper.select(errorPanel).marginHeight();
+        }
         if (this.tabSheet != null) {
             this.tabSheet.setMaxHeight(height);
         }
