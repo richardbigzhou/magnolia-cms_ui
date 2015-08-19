@@ -114,9 +114,12 @@
     border: none !important;
     width: 100% !important;
     height: 100% !important;
+  }
+  
+  .preview.iframe-preview-loading-indicator  {
     background: center no-repeat url(img/loading.gif) !important;
   }
-
+  
   .preview {
     margin: auto;
     position: relative;

@@ -77,7 +77,7 @@ public class PageEditorPreviewWrapper extends CssLayout {
     }
 
     private void updateStyles() {
-        setStyleName("preview");
+        setStyleName("preview iframe-preview-loading-indicator");
         addStyleName(currentPlatform.getStyleName(isPortrait));
     }
 }

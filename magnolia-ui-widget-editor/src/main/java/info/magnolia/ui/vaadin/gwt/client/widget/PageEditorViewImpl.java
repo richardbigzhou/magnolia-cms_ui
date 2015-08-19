@@ -38,6 +38,8 @@ import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -78,6 +80,14 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         iframeElement.setAttribute("height", "100%");
         iframeElement.setAttribute("allowTransparency", "true");
         iframeElement.setAttribute("frameborder", "0");
+
+        iframe.addLoadHandler(new LoadHandler() {
+
+            @Override
+            public void onLoad(LoadEvent event) {
+                getParent().removeStyleName("iframe-preview-loading-indicator");
+            }
+        });
 
         handler.init();
         if (BrowserInfo.get().isIE8()) {
