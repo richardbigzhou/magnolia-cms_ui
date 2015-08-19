@@ -87,6 +87,9 @@ public class DialogContainingFormConnector extends BaseDialogConnector implement
     public void onUnregister() {
         registration.removeHandler();
         getLayoutManager().removeElementResizeListener(getWidget().getElement(), listener);
+        if (getContent() != null) {
+            getLayoutManager().removeElementResizeListener(getContent().getWidget().getElement(), listener);
+        }
     }
 
     /**
@@ -101,6 +104,13 @@ public class DialogContainingFormConnector extends BaseDialogConnector implement
     public void setDescriptionVisibility(boolean isVisible) {
         super.setDescriptionVisibility(isVisible);
         doResize();
+    }
+
+    @Override
+    protected void updateContent() {
+        getLayoutManager().removeElementResizeListener(getContent().getWidget().getElement(), listener);
+        super.updateContent();
+        getLayoutManager().addElementResizeListener(getContent().getWidget().getElement(), listener);
     }
 
     // The light dialog should have a bottom margin equivalent to the UI bottom margin, which would be 40. Subtracted 2 so that it lines up nicely in practice.
