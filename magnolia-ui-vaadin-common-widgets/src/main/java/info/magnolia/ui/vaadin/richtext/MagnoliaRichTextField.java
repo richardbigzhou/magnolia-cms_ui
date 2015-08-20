@@ -146,7 +146,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     }
 
     @Override
-    protected boolean isEmpty() {
+    public boolean isEmpty() {
         return StringUtils.isEmpty(getValue());
     }
 }
