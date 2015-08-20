@@ -245,7 +245,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return contentConnector.getItem(itemId) != null;
+        return contentConnector.canHandleItem(itemId) && contentConnector.getItem(itemId) != null;
     }
 
     public List<Object> getSelectedItemIds() {

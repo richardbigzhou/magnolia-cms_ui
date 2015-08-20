@@ -35,7 +35,12 @@ package info.magnolia.ui.contentapp.browser;
 
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -53,6 +58,7 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyAction;
 import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
@@ -73,6 +79,7 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +93,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
@@ -127,6 +135,7 @@ public class BrowserPresenterTest {
     private JcrNodeAdapter adapter;
     private ConfiguredActionDefinition defaultActionDefinition;
     private ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+    private EventBus admincentralEventBus;
 
     @Before
     public void setUp() throws RepositoryException {
@@ -138,7 +147,6 @@ public class BrowserPresenterTest {
         MgnlContext.setInstance(ctx);
 
         initBrowserPresenter();
-
     }
 
     private void initBrowserPresenter() throws RepositoryException {
@@ -163,12 +171,11 @@ public class BrowserPresenterTest {
         BrowserView browserView = mock(BrowserView.class);
         subAppEventBus = new SimpleEventBus();
 
-        EventBus admincentralEventBus = mock(EventBus.class);
+        admincentralEventBus = new SimpleEventBus();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         ActionbarPresenter actionBarPresenter = mock(ActionbarPresenter.class);
 
         actionExecutor = mock(ActionExecutor.class);
-
 
         connectorDefinition.setWorkspace(WORKSPACE);
         connectorDefinition.setRootPath(ROOT_PATH);
@@ -276,7 +283,7 @@ public class BrowserPresenterTest {
         when(availabilityChecker.isAvailable(eq(defaultActionDefinition.getAvailability()), anyList())).thenReturn(false);
 
         List<Object> ids = new ArrayList<Object>(1);
-        ids.add(new JcrItemId(node.getIdentifier(),WORKSPACE));
+        ids.add(new JcrItemId(node.getIdentifier(), WORKSPACE));
         when(workbenchPresenter.getSelectedIds()).thenReturn(ids);
 
         // WHEN
@@ -390,5 +397,23 @@ public class BrowserPresenterTest {
 
         // THEN
         verify(actionExecutor).execute(eq(myActionDefinition.getName()), eq(selectedItems.get(0)), eq(selectedItems));
+    }
+
+    @Test
+    public void contentChangedEventCheckIfItemCanBeHandledByContentConnector() throws Exception {
+        // GIVEN
+        given(contentConnector.canHandleItem(node.getIdentifier())).willReturn(false);
+        given(contentConnector.canHandleItem(node.getParent().getIdentifier())).willReturn(true);
+        given(presenter.getSelectedItemIds()).willReturn(Lists.<Object>newArrayList(node.getIdentifier()));
+
+        // Save the deletion request.
+        node.remove();
+        session.save();
+
+        // WHEN
+        admincentralEventBus.fireEvent(new ContentChangedEvent(node.getParent().getIdentifier()));
+
+        // THEN
+        verify(workbenchPresenter).select(eq(Collections.emptyList()));
     }
 }

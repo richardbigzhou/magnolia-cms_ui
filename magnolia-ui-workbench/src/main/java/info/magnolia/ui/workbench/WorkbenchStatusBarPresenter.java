@@ -131,8 +131,14 @@ public class WorkbenchStatusBarPresenter {
         }
 
         int selected = activeContentPresenter.getSelectedItemIds().size();
+
         if (selected == 1) {
-            setSelectedItem(activeContentPresenter.getSelectedItemIds().get(0), selected);
+            Object selectedItemId = activeContentPresenter.getSelectedItemIds().get(0);
+            if (!contentConnector.canHandleItem(selectedItemId)) {
+                setSelectedItem(null, 0);
+            } else {
+                setSelectedItem(selectedItemId, selected);
+            }
         } else {
             setSelectedItem(null, selected);
         }
