@@ -689,7 +689,7 @@
                 <sv:value>7b2c0ada-5143-41c8-b9d7-fcc434d2913d</sv:value>
               </sv:property>
               <sv:property sv:name="allowedMimeTypePattern" sv:type="String">
-                <sv:value>application/(zip|x-zip|x-zip-compressed)</sv:value>
+                <sv:value>application/(zip|x-zip|x-zip-compressed|octet-stream)</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -701,7 +701,7 @@
                 <sv:value>2012-11-14T13:41:40.375+01:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                <sv:value>2013-11-25T12:58:58.979+01:00</sv:value>
+                <sv:value>2015-08-21T09:25:44.134+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                 <sv:value>superuser</sv:value>

@@ -42,6 +42,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
+import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.MoveNodeTask;
@@ -156,6 +157,12 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         register(DeltaBuilder.update("5.4", "")
                 .addTask(new PartialBootstrapTask("Add new code fieldType", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.fieldTypes.xml", "fieldTypes/code"))
         );
+
+        register(DeltaBuilder.update("5.4.2", "")
+                .addTask(new NodeExistsDelegateTask("Check if path '/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name' exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name",
+                        new ArrayDelegateTask("",
+                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
+                ));
     }
 
     @Override

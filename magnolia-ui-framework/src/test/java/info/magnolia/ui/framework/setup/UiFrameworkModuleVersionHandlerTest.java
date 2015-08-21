@@ -98,7 +98,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // (only needs to be a non-empty list of existing module descriptors, so we pick the most basic one).
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-                );
+        );
     }
 
     @Override
@@ -363,5 +363,18 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
                 nodeName("code"),
                 hasProperty("definitionClass", CodeFieldDefinition.class.getName()),
                 hasProperty("factoryClass", CodeFieldFactory.class.getName()))));
+    }
+
+    @Test
+    public void updateFrom541ChangeZipUploadActionProperties() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name");
+        this.setupConfigProperty("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
     }
 }
