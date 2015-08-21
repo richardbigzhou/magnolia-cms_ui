@@ -171,6 +171,7 @@ public class ConfigBuilderTest {
 
         builder.binaryNodeName("binaryNodeName").maxUploadSize(100l).allowedMimeTypePattern("*.gif").editFileName(true).editFileFormat(false).selectAnotherCaption("selectAnotherCaption");
         builder.userInterruption("userInterruption").fileDetailFormatCaption("fileDetailFormatCaption").fileDetailHeaderCaption("fileDetailHeaderCaption").fileDetailNameCaption("fileDetailNameCaption").fileDetailSizeCaption("fileDetailSizeCaption");
+        builder.allowedFallbackMimeType("fallbackMime").allowedFileExtensionPattern("*.jpg");
 
         // WHEN
         builder.fileDetailSourceCaption("fileDetailSourceCaption").selectNewCaption("selectNewCaption").successNoteCaption("successNoteCaption");
@@ -193,6 +194,8 @@ public class ConfigBuilderTest {
         assertEquals("fileDetailSourceCaption", definition.getFileDetailSourceCaption());
         assertEquals("selectNewCaption", definition.getSelectNewCaption());
         assertEquals("successNoteCaption", definition.getSuccessNoteCaption());
+        assertEquals("fallbackMime", definition.getFallbackMimeType());
+        assertEquals("*.jpg", definition.getAllowedFileExtensionPattern());
 
     }
 

@@ -91,6 +91,10 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
 
     private String allowedMimeTypePattern = ".*";
 
+    private String fallbackMimeType = ".*";
+
+    private String allowedFileExtensionPattern = ".*";
+
     // Used to handle Cancel / Interrupted upload in the DragAndDrop
     // implementation.
     private boolean interruptedDragAndDropUpload = false;
@@ -283,6 +287,9 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
                     setDragAndDropUploadInterrupted(false);
                     name = event.getFileName();
                     mime = event.getMimeType();
+                    if(mime.isEmpty() && name.matches(allowedFileExtensionPattern)){
+                        mime = fallbackMimeType;
+                    };
                     StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
                     uploadStarted(startEvent);
                 }
@@ -410,6 +417,14 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
     public void setAllowedMimeTypePattern(String allowedMimeTypePattern) {
         this.allowedMimeTypePattern = allowedMimeTypePattern;
 
+    }
+
+    public void setFallbackMimeType(String fallbackMimeType) {
+        this.fallbackMimeType = fallbackMimeType;
+    }
+
+    public void setAllowedFileExtensionPattern(String allowedFileExtensionPattern) {
+        this.allowedFileExtensionPattern = allowedFileExtensionPattern;
     }
 
     @Override
