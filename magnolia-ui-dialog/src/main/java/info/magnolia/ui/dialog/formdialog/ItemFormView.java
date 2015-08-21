@@ -170,7 +170,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     @Override
     public void setListener(FormView.Listener listener) {
-        form.setListener(listener);;
+        form.setListener(listener);
     }
 
     private void createLocaleSelector() {

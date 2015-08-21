@@ -149,6 +149,11 @@
     </component>
 
     <component>
+      <type>info.magnolia.ui.form.FormPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormPresenterImpl</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector</type>
       <implementation>info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector</implementation>
     </component>

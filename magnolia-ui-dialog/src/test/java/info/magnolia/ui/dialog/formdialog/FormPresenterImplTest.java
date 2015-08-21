@@ -114,7 +114,7 @@ public class FormPresenterImplTest {
         doReturn(mock(BasicTransformer.class)).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         this.item = new PropertysetItem();
         this.formBuilder = new FormBuilder(fieldFactoryFactory, i18NAuthoringSupport, subAppContext, componentProvider);
-        this.formPresenter = new FormPresenterImpl(formBuilder, i18NAuthoringSupport, subAppContext);
+        this.formPresenter = new FormPresenterImpl(formBuilder, subAppContext);
         this.formView = new ItemFormView(i18n);
     }
 

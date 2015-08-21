@@ -62,6 +62,10 @@
       <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.form.FormPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormPresenterImpl</implementation>
+    </component>
     <type-mapping>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl</implementation>

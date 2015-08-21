@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -74,11 +74,9 @@ public class FormPresenterImpl implements FormPresenter {
 
     private final FormBuilder formBuilder;
 
-    private final I18NAuthoringSupport i18NAuthoringSupport;
-
     private final Map<Locale, Map<TabDefinition, FormSection>> localeToFormSections = Maps.newHashMap();
 
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
 
     private FormViewReduced formView;
 
@@ -89,10 +87,9 @@ public class FormPresenterImpl implements FormPresenter {
     private Item itemDatasource;
 
     @Inject
-    public FormPresenterImpl(FormBuilder formBuilder, I18NAuthoringSupport i18NAuthoringSupport, SubAppContext subAppContext) {
+    public FormPresenterImpl(FormBuilder formBuilder, UiContext uiContext) {
         this.formBuilder = formBuilder;
-        this.i18NAuthoringSupport = i18NAuthoringSupport;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
     }
 
     @Override
@@ -100,29 +97,31 @@ public class FormPresenterImpl implements FormPresenter {
         this.formView = formView;
         this.formDefinition = formDefinition;
         this.itemDatasource = item;
-        this.activeLocale = subAppContext.getAuthoringLocale();
 
         localeToFormSections.clear();
+        // FormBuilder still expects the FormView object to build, so we have to cast here but ideally that should be refactored
+        formBuilder.buildForm((FormView) this.formView, this.formDefinition, item, parent);
 
-        formBuilder.buildForm((FormView)this.formView, this.formDefinition, item, parent);
-
-        localeToFormSections.put(this.activeLocale, Maps.toMap(formDefinition.getTabs(), new Function<TabDefinition, FormSection>() {
-            @Nullable
-            @Override
-            public FormSection apply(final TabDefinition tabDefinition) {
-                return Iterables.tryFind(FormPresenterImpl.this.formView.getFormSections(), new FormSectionNameMatches(tabDefinition.getName())).orNull();
-            }
-        }));
-
-
-        formView.setListener(new FormView.Listener() {
-            @Override
-            public void localeChanged(Locale newLocale) {
-                if (newLocale != null && !ObjectUtils.equals(subAppContext.getAuthoringLocale(), newLocale)) {
-                    setLocale(newLocale);
+        // We should expand locale-awareness onto all the UI contexts.
+        if (uiContext instanceof SubAppContext) {
+            this.activeLocale = ((SubAppContext)uiContext).getAuthoringLocale();
+            formView.setListener(new FormView.Listener() {
+                @Override
+                public void localeChanged(Locale newLocale) {
+                    if (newLocale != null && !ObjectUtils.equals(((SubAppContext)uiContext).getAuthoringLocale(), newLocale)) {
+                        setLocale(newLocale);
+                    }
                 }
-            }
-        });
+            });
+
+            localeToFormSections.put(this.activeLocale, Maps.toMap(formDefinition.getTabs(), new Function<TabDefinition, FormSection>() {
+                @Nullable
+                @Override
+                public FormSection apply(final TabDefinition tabDefinition) {
+                    return Iterables.tryFind(FormPresenterImpl.this.formView.getFormSections(), new FormSectionNameMatches(tabDefinition.getName())).orNull();
+                }
+            }));
+        }
     }
 
     @Override
@@ -132,10 +131,10 @@ public class FormPresenterImpl implements FormPresenter {
 
     @Override
     public void setLocale(Locale locale) {
-        if (!ObjectUtils.equals(locale, this.activeLocale)) {
+        if (uiContext instanceof SubAppContext && !ObjectUtils.equals(locale, this.activeLocale)) {
             final Locale formerLocale = this.activeLocale;
             this.activeLocale = locale;
-            subAppContext.setAuthoringLocale(locale);
+            ((SubAppContext)uiContext).setAuthoringLocale(locale);
 
             final Map<TabDefinition, FormSection> currentFormSections = localeToFormSections.get(formerLocale);
             final Map<TabDefinition, FormSection> newFormSections = getLocaleSpecificFormSections(this.activeLocale);
