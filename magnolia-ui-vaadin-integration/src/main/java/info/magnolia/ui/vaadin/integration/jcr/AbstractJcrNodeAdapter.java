@@ -38,11 +38,15 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -51,6 +55,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.vaadin.data.Property;
 
 /**
@@ -63,7 +70,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     private String primaryNodeType;
 
-    private final Map<String, AbstractJcrNodeAdapter> children = new LinkedHashMap<String, AbstractJcrNodeAdapter>();
+    private final LinkedHashMap<String, AbstractJcrNodeAdapter> children = new LinkedHashMap<String, AbstractJcrNodeAdapter>();
 
     private final Map<String, AbstractJcrNodeAdapter> removedChildren = new HashMap<String, AbstractJcrNodeAdapter>();
 
@@ -189,6 +196,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
         // Update Node properties and children
         updateProperties(node);
+
+        // we need to take care of re-ordering here somewhere :(
         updateChildren(node);
 
         return node;
@@ -200,18 +209,57 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      * TODO: Has been made public as of MGNLUI-3124 resolution. Needs further API improvement (e.g. no-arg version or possibly some other better way to update the JCR node internals).
      */
     public void updateChildren(Node node) throws RepositoryException {
+        LinkedList<String> childNames = new LinkedList<>();
         if (!children.isEmpty()) {
             for (AbstractJcrNodeAdapter child : children.values()) {
                 // Update child node as well
                 child.applyChanges();
+                childNames.add(child.getJcrItem().getIdentifier());
+
+            }
+            if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
+                sortNodes(node, childNames);
             }
         }
+
         // Remove child node if needed
         if (!removedChildren.isEmpty()) {
             for (AbstractJcrNodeAdapter removedChild : removedChildren.values()) {
                 if (node.hasNode(removedChild.getNodeName())) {
                     node.getNode(removedChild.getNodeName()).remove();
                 }
+            }
+        }
+    }
+
+    private void sortNodes(Node parent, LinkedList<String> sortedIdentifiers) throws RepositoryException {
+
+        ArrayList<String> unsortedIdentifiers = Lists.newArrayList(Iterators.transform(parent.getNodes(), new Function<Node, String>() {
+            @Nullable
+            @Override
+            public String apply(Node node) {
+                try {
+                    return node.getIdentifier();
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+                return "";
+            }
+        }));
+
+        for (int pos = 0; pos < sortedIdentifiers.size(); pos++) {
+            String current = sortedIdentifiers.get(pos);
+            int nodePos = unsortedIdentifiers.indexOf(current);
+
+            Node nodeToMove = parent.getSession().getNodeByIdentifier(unsortedIdentifiers.get(pos));
+            Node target = parent.getSession().getNodeByIdentifier(current);
+
+            int diff = pos - nodePos;
+
+            if (diff != 0) {
+                NodeUtil.moveNodeBefore(nodeToMove, target);
+                String movedId = unsortedIdentifiers.remove(nodePos);
+                unsortedIdentifiers.add(pos, movedId);
             }
         }
     }
