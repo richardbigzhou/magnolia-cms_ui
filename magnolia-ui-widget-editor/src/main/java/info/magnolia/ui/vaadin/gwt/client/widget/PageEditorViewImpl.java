@@ -85,7 +85,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
 
             @Override
             public void onLoad(LoadEvent event) {
-                getParent().removeStyleName("iframe-preview-loading-indicator");
+                iframe.removeStyleName("iframe-preloader");
             }
         });
 

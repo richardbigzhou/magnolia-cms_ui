@@ -131,6 +131,9 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 PageEditorParameters params = getState().parameters;
                 view.setUrl(params.getUrl());
+                if (params.isPreview()) {
+                    view.getFrame().addStyleName("iframe-preloader");
+                }
             }
         });
 
