@@ -290,7 +290,7 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
                     if(mime.isEmpty() && name.matches(allowedFileExtensionPattern)){
                         mime = fallbackMimeType;
                     };
-                    StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    StartedEvent startEvent = new StartedEvent(upload, name, mime, event.getContentLength());
                     uploadStarted(startEvent);
                 }
 

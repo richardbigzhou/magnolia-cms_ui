@@ -689,7 +689,7 @@
                 <sv:value>7b2c0ada-5143-41c8-b9d7-fcc434d2913d</sv:value>
               </sv:property>
               <sv:property sv:name="allowedFileExtensionPattern" sv:type="String">
-                <sv:value>*.(zip)$</sv:value>
+                <sv:value>.*\.(zip)$</sv:value>
               </sv:property>
               <sv:property sv:name="allowedMimeTypePattern" sv:type="String">
                 <sv:value>application/(zip|x-zip|x-zip-compressed|octet-stream)</sv:value>

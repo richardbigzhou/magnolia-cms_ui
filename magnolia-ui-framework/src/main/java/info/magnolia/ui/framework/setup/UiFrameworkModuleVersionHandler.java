@@ -160,11 +160,11 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.4.2", "")
                 .addTask(new NodeExistsDelegateTask("Check if path '/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name' exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name",
-                        new ArrayDelegateTask("",
-                                new NewPropertyTask("Add fallback MimeType to upload zip action, that will be used if browser do not recognize mimeType file has allowed extension.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "fallbackMimeType", "application/zip"),
-                                new NewPropertyTask("Add allowed extension that will be test against, if browser do not recognize mimeType of file.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedFileExtensionPattern", "*.(zip)$"),
-                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
-        ));
+                                new ArrayDelegateTask("",
+                                        new NewPropertyTask("Add fallback MimeType to upload zip action, that will be used if browser do not recognize mimeType file has allowed extension.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "fallbackMimeType", "application/zip"),
+                                        new NewPropertyTask("Add allowed extension that will be test against, if browser do not recognize mimeType of file.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedFileExtensionPattern", ".*\\.(zip)$"),
+                                        new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
+                ));
     }
 
     @Override
