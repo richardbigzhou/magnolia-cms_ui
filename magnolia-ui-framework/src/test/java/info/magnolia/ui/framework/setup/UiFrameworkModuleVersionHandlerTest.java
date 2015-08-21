@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.setup;
 
 import static org.junit.Assert.*;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
@@ -326,5 +327,18 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/rename/modalityLevel").getString());
         assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/folder/modalityLevel").getString());
+    }
+
+    @Test
+    public void updateFrom53ChangeZipUploadActionProperties() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name");
+        this.setupConfigProperty("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
     }
 }

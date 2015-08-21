@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import info.magnolia.cms.beans.config.MIMEMapping;
+
 import java.io.OutputStream;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +83,7 @@ import com.vaadin.ui.Upload.StartedListener;
  * <b>Important exposed method</b><br>
  * {@link Upload} getUpload() : Return the Vaadin Upload Component responsible for the Uploading a File based on a folder. <br>
  * createDropZone(Component c) : Give the Drop ability to the passed Component.<br>
- * 
+ *
  * @param <T> {@link UploadReceiver} implemented class.
  */
 public abstract class AbstractUploadField<T extends UploadReceiver> extends CustomField<T> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadField {
@@ -283,7 +286,14 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
                     setDragAndDropUploadInterrupted(false);
                     name = event.getFileName();
                     mime = event.getMimeType();
-                    StartedEvent startEvent = new StartedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
+                    if (StringUtils.isEmpty(mime)) {
+                        String extension = StringUtils.substringAfterLast(name, ".");
+                        mime = MIMEMapping.getMIMEType(extension);
+                        if (StringUtils.isEmpty(mime)) {
+                            log.warn("Couldn't find mimeType in MIMEMappings for file extension: {}", extension);
+                        }
+                    }
+                    StartedEvent startEvent = new StartedEvent(upload, name, mime, event.getContentLength());
                     uploadStarted(startEvent);
                 }
 
