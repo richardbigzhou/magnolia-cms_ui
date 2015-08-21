@@ -48,6 +48,7 @@ import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -105,7 +106,7 @@ public class OpenEditRoleDialogActionTest extends RepositoryTestCase {
         private FormDialogDefinition dialogDefinition;
 
         public MockFormDialogPresenter() {
-            super(null, null, null, null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null, null, (FormPresenter)null);
         }
 
         @Override
