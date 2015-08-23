@@ -248,7 +248,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public boolean isValid() {
-        return dialogView instanceof FormView ? ((FormView) dialogView).isValid() : true;
+        return formPresenter.isValid();
     }
 
     @Override

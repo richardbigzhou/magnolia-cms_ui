@@ -190,7 +190,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     public boolean isValid() {
-        return getView().isValid();
+        return formPresenter.isValid();
     }
 
     @Override

@@ -45,6 +45,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -95,10 +97,12 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     }
 
     public void focusFirstField() {
-        if (fields.isEmpty()) {
+        final List<FormSection> formSections = getFormSections();
+        if (formSections.isEmpty()) {
             return;
         }
-        fields.get(0).focus();
+        final FormSection firstFormSection = formSections.get(0);
+        firstFormSection.focusField(firstFormSection.iterator().next());
     }
 
     private void doFocusNextProblematicField(Connector currentFocused) {
@@ -184,12 +188,15 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     public boolean isValid() {
         boolean res = true;
         getState().errorAmount = 0;
-        for (Field<?> field : getFields()) {
-            boolean isFieldValid = field.isValid();
-            if(!isFieldValid){
-                ++getState().errorAmount;
+
+        for (final FormSection formSection : getFormSections()) {
+            for (final Component fieldComponent : formSection) {
+                boolean isFieldValid = ((Field)fieldComponent).isValid();
+                if(!isFieldValid){
+                    ++getState().errorAmount;
+                }
+                res &= isFieldValid;
             }
-            res &= isFieldValid;
         }
         return res;
     }
@@ -224,9 +231,16 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
 
     @Override
     public void setLocale(Locale locale) {
-        super.setLocale(locale);
-        if (listener != null) {
-            listener.localeChanged(locale);
+        if (!ObjectUtils.equals(locale, getLocale())) {
+            super.setLocale(locale);
+            if (listener != null) {
+                listener.localeChanged(locale);
+            }
+
+            if (isValidationVisible) {
+                showValidation(true);
+                isValid();
+            }
         }
     }
 
