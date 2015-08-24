@@ -694,9 +694,6 @@
               <sv:property sv:name="allowedMimeTypePattern" sv:type="String">
                 <sv:value>application/(zip|x-zip|x-zip-compressed|octet-stream)</sv:value>
               </sv:property>
-              <sv:property sv:name="fallbackMimeType" sv:type="String">
-                <sv:value>application/zip</sv:value>
-              </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
               </sv:property>

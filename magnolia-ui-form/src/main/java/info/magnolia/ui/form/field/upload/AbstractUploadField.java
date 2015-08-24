@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import info.magnolia.cms.beans.config.MIMEMapping;
+
 import java.io.OutputStream;
 import java.util.Locale;
 
@@ -91,8 +93,6 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
     private long maxUploadSize = Long.MAX_VALUE;
 
     private String allowedMimeTypePattern = ".*";
-
-    private String fallbackMimeType;
 
     private String allowedFileExtensionPattern = ".*";
 
@@ -288,8 +288,9 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
                     setDragAndDropUploadInterrupted(false);
                     name = event.getFileName();
                     mime = event.getMimeType();
-                    if (StringUtils.isEmpty(mime) && !StringUtils.isEmpty(fallbackMimeType) && name.matches(allowedFileExtensionPattern)) {
-                        mime = fallbackMimeType;
+                    if (StringUtils.isEmpty(mime) && name.matches(allowedFileExtensionPattern)) {
+                        String extension = StringUtils.substringAfterLast(name, ".");
+                        mime = MIMEMapping.getMIMEType(extension);
                     }
                     StartedEvent startEvent = new StartedEvent(upload, name, mime, event.getContentLength());
                     uploadStarted(startEvent);
@@ -418,10 +419,6 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
     public void setAllowedMimeTypePattern(String allowedMimeTypePattern) {
         this.allowedMimeTypePattern = allowedMimeTypePattern;
 
-    }
-
-    public void setFallbackMimeType(String fallbackMimeType) {
-        this.fallbackMimeType = fallbackMimeType;
     }
 
     public void setAllowedFileExtensionPattern(String allowedFileExtensionPattern) {

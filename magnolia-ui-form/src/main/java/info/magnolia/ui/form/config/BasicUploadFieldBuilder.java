@@ -76,11 +76,6 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
-    public BasicUploadFieldBuilder allowedFallbackMimeType(String fallbackMimeType) {
-        definition().setFallbackMimeType(fallbackMimeType);
-        return this;
-    }
-
     public BasicUploadFieldBuilder editFileName(boolean editFileName) {
         definition().setEditFileName(editFileName);
         return this;

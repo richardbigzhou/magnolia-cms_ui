@@ -398,7 +398,6 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
         this.setMaxUploadSize(definition.getMaxUploadSize());
         this.setAllowedMimeTypePattern(definition.getAllowedMimeTypePattern());
         this.setAllowedFileExtensionPattern(definition.getAllowedFileExtensionPattern());
-        this.setFallbackMimeType(definition.getFallbackMimeType());
 
         this.setSelectNewCaption(definition.getSelectNewCaption());
         this.setSelectAnotherCaption(definition.getSelectAnotherCaption());

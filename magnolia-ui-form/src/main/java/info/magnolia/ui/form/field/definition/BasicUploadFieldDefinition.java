@@ -47,8 +47,6 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
     private long maxUploadSize = Long.MAX_VALUE;
     // Define allowed uploadMimeType
     private String allowedMimeTypePattern = ".*";
-    // Define MimeType to fall back to if file has allowed extension
-    private String fallbackMimeType;
     // Define allowed extension to check against if browser send mimeType==""
     private String allowedFileExtensionPattern = ".*";
     // Define if the File Name can be edited
@@ -101,14 +99,6 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setAllowedMimeTypePattern(String allowedMimeTypePattern) {
         this.allowedMimeTypePattern = allowedMimeTypePattern;
-    }
-
-    public String getFallbackMimeType() {
-        return fallbackMimeType;
-    }
-
-    public void setFallbackMimeType(String fallbackMimeType) {
-        this.fallbackMimeType = fallbackMimeType;
     }
 
     public String getAllowedFileExtensionPattern() {

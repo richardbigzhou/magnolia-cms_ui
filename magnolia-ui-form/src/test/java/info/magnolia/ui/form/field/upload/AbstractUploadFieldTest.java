@@ -36,12 +36,24 @@ package info.magnolia.ui.form.field.upload;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.beans.config.MIMEMapping;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.mock.MockWebContext;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 
+import javax.jcr.Node;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +76,15 @@ public class AbstractUploadFieldTest {
     private Html5File file;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        MockWebContext ctx = new MockWebContext();
+        MockSession session = new MockSession(RepositoryConstants.CONFIG);
+        ctx.addSession(RepositoryConstants.CONFIG, session);
+        Node zipMime = NodeUtil.createPath(session.getRootNode(), "/server/MIMEMapping/zip", NodeTypes.ContentNode.NAME);
+        zipMime.setProperty("mime-type", "application/zip");
+        zipMime.setProperty("extension", "zip");
+        MgnlContext.setInstance(ctx);
+        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
         definition = new BasicUploadFieldDefinition();
         basicUploadField = new BasicUploadField(mock(ImageProvider.class), mock(UiContext.class), definition, mock(SimpleTranslator.class));
         basicUploadField.setPropertyDataSource(mock(Property.class));
@@ -76,6 +96,13 @@ public class AbstractUploadFieldTest {
         files[0] = file;
         when(transferable.getFiles()).thenReturn(files);
         event = new DragAndDropEvent(transferable, mock(TargetDetails.class));
+        MIMEMapping.init();
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
+        ComponentsTestUtil.clear();
     }
 
     @Test
@@ -83,7 +110,6 @@ public class AbstractUploadFieldTest {
         //GIVEN
         definition.setAllowedMimeTypePattern("zip");
         definition.setAllowedFileExtensionPattern(".*.zip");
-        definition.setFallbackMimeType("zip");
         StreamingStartEvent startEvent = mock(StreamingStartEvent.class);
         when(startEvent.getFileName()).thenReturn("test.zip");
         when(startEvent.getMimeType()).thenReturn("");
