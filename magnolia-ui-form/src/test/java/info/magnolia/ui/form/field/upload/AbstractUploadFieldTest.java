@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -41,10 +42,13 @@ import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Property;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.TargetDetails;
+import com.vaadin.server.StreamVariable;
 import com.vaadin.server.StreamVariable.StreamingStartEvent;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.Html5File;
@@ -54,17 +58,32 @@ import com.vaadin.ui.Html5File;
  */
 public class AbstractUploadFieldTest {
 
+    private BasicUploadFieldDefinition definition;
+    private BasicUploadField basicUploadField;
+    private DragAndDropEvent event;
+    private Html5File file;
+
+    @Before
+    public void setUp() {
+        definition = new BasicUploadFieldDefinition();
+        basicUploadField = new BasicUploadField(mock(ImageProvider.class), mock(UiContext.class),  definition, mock(SimpleTranslator.class));
+        basicUploadField.setPropertyDataSource(mock(Property.class));
+        DragAndDropWrapper.WrapperTransferable transferable = mock(DragAndDropWrapper.WrapperTransferable.class);
+        Html5File[] files = new Html5File[1];
+        file = mock(Html5File.class);
+        doCallRealMethod().when(file).setStreamVariable(any(StreamVariable.class));
+        doCallRealMethod().when(file).getStreamVariable();
+        files[0] = file;
+        when(transferable.getFiles()).thenReturn(files);
+        event = new DragAndDropEvent(transferable, mock(TargetDetails.class));
+    }
+
     @Test
     public void testDropWithEmptyMimeType() {
         //GIVEN
-        BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
-        BasicUploadField basicUploadField = new BasicUploadField(mock(ImageProvider.class), mock(UiContext.class),  definition, mock(SimpleTranslator.class));
-        DragAndDropWrapper.WrapperTransferable transferable = mock(DragAndDropWrapper.WrapperTransferable.class);
-        Html5File[] files = new Html5File[1];
-        Html5File file = mock(Html5File.class);
-        files[0] = file;
-        when(transferable.getFiles()).thenReturn(files);
-        DragAndDropEvent event = new DragAndDropEvent(transferable, mock(TargetDetails.class));
+        definition.setAllowedMimeTypePattern("zip");
+        definition.setAllowedFileExtensionPattern(".*.zip");
+        definition.setFallbackMimeType("zip");
         StreamingStartEvent startEvent = mock(StreamingStartEvent.class);
         when(startEvent.getFileName()).thenReturn("test.zip");
         when(startEvent.getMimeType()).thenReturn("");
@@ -73,5 +92,7 @@ public class AbstractUploadFieldTest {
         basicUploadField.drop(event);
         file.getStreamVariable().streamingStarted(startEvent);
 
+        //THEN
+        assertFalse("Mimetype was set to fallback value and upload started.", file.getStreamVariable().isInterrupted());
     }
 }

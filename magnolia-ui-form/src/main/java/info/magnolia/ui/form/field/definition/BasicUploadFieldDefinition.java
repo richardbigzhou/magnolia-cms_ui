@@ -48,7 +48,7 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
     // Define allowed uploadMimeType
     private String allowedMimeTypePattern = ".*";
     // Define MimeType to fall back to if file has allowed extension
-    private String fallbackMimeType = ".*";
+    private String fallbackMimeType;
     // Define allowed extension to check against if browser send mimeType==""
     private String allowedFileExtensionPattern = ".*";
     // Define if the File Name can be edited

@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.upload;
 import java.io.OutputStream;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,7 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
 
     private String allowedMimeTypePattern = ".*";
 
-    private String fallbackMimeType = ".*";
+    private String fallbackMimeType;
 
     private String allowedFileExtensionPattern = ".*";
 
@@ -287,7 +288,7 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
                     setDragAndDropUploadInterrupted(false);
                     name = event.getFileName();
                     mime = event.getMimeType();
-                    if (mime.isEmpty() && name.matches(allowedFileExtensionPattern)) {
+                    if (StringUtils.isEmpty(mime) && !StringUtils.isEmpty(fallbackMimeType) && name.matches(allowedFileExtensionPattern)) {
                         mime = fallbackMimeType;
                     }
                     StartedEvent startEvent = new StartedEvent(upload, name, mime, event.getContentLength());
