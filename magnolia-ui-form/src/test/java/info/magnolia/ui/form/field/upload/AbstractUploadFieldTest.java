@@ -66,7 +66,7 @@ public class AbstractUploadFieldTest {
     @Before
     public void setUp() {
         definition = new BasicUploadFieldDefinition();
-        basicUploadField = new BasicUploadField(mock(ImageProvider.class), mock(UiContext.class),  definition, mock(SimpleTranslator.class));
+        basicUploadField = new BasicUploadField(mock(ImageProvider.class), mock(UiContext.class), definition, mock(SimpleTranslator.class));
         basicUploadField.setPropertyDataSource(mock(Property.class));
         DragAndDropWrapper.WrapperTransferable transferable = mock(DragAndDropWrapper.WrapperTransferable.class);
         Html5File[] files = new Html5File[1];
