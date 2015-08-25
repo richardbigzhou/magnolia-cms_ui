@@ -49,7 +49,6 @@ import info.magnolia.module.delta.MoveNodeTask;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
-import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
@@ -161,10 +160,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.4.2", "")
                 .addTask(new NodeExistsDelegateTask("Check if path '/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name' exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name",
-                                new ArrayDelegateTask("",
-                                        new PropertyExistsDelegateTask("Check if property 'allowedFileExtensionPattern' do not exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedFileExtensionPattern", null,
-                                                new NewPropertyTask("Add allowed extension that will be test against, if browser do not recognize mimeType of file.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedFileExtensionPattern", ".*\\.(zip)$")),
-                                        new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
+                        new ArrayDelegateTask("",
+                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
                 ));
     }
 

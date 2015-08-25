@@ -109,7 +109,6 @@ public class AbstractUploadFieldTest {
     public void testDropWithEmptyMimeType() {
         //GIVEN
         definition.setAllowedMimeTypePattern("zip");
-        definition.setAllowedFileExtensionPattern(".*.zip");
         StreamingStartEvent startEvent = mock(StreamingStartEvent.class);
         when(startEvent.getFileName()).thenReturn("test.zip");
         when(startEvent.getMimeType()).thenReturn("");

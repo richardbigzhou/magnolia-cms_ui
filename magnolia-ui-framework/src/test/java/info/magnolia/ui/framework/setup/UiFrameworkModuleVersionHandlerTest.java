@@ -376,6 +376,5 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
         //THEN
         assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
-        assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedFileExtensionPattern", ".*\\.(zip)$"));
     }
 }

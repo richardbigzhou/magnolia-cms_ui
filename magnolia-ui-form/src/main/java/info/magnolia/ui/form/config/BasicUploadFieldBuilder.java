@@ -71,11 +71,6 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
-    public BasicUploadFieldBuilder allowedFileExtensionPattern(String allowedFileExtensionPattern) {
-        definition().setAllowedFileExtensionPattern(allowedFileExtensionPattern);
-        return this;
-    }
-
     public BasicUploadFieldBuilder editFileName(boolean editFileName) {
         definition().setEditFileName(editFileName);
         return this;
