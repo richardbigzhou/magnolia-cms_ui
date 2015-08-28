@@ -56,6 +56,7 @@ import javax.jcr.Session;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ReadOnlyException;
 
 /**
@@ -372,4 +373,18 @@ public class BasicTransformerTest extends RepositoryTestCase {
         assertEquals(10l, res.getProperty(propertyName).getLong());
     }
 
+    @Test
+    public void underlyingJCRPropertyConformsToTransformerReadonlyState() throws Exception {
+        // GIVEN
+        definition.setReadOnly(true);
+        definition.setType("String");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(rootNode);
+        BasicTransformer<String> transformer = new BasicTransformer<>(adapter, definition, String.class, mock(I18NAuthoringSupport.class));
+
+        // WHEN
+        Property<String> property = transformer.getOrCreateProperty(String.class, true);
+
+        // THEN
+        assertTrue(property.isReadOnly());
+    }
 }

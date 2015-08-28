@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,8 +156,7 @@ public class BasicTransformer<T> implements Transformer<T> {
         Property<T> property = relatedFormItem.getItemProperty(propertyName);
 
         if (property == null) {
-            property = new DefaultProperty<T>(type, null);
-            relatedFormItem.addItemProperty(propertyName, property);
+            property = initializeDefaultProperty(type, null);
         } else if (checkTypes && !type.isAssignableFrom(property.getType())) {
             // solve MGNLUI-2494
             // as we have type inconsistency (type of the jcr value is diff. of the definition one), try to convert the jcr type to the type coming from the definition.
@@ -171,12 +171,20 @@ public class BasicTransformer<T> implements Transformer<T> {
             } catch (Exception e) {
                 // Ignore. In case of exception, set a null value.
             }
-            property = new DefaultProperty<T>(type, value);
-            // This will replace the previous property (with the wrong type) with the new one (correctly typed).
-            relatedFormItem.addItemProperty(propertyName, property);
+            if (!ObjectUtils.equals(value, property.getValue())) {
+                property = initializeDefaultProperty(type, value);
+            }
         }
 
         this.isReadOnly |= property.isReadOnly();
+        return property;
+    }
+
+    private <T> Property<T> initializeDefaultProperty(Class<T> type, T value) {
+        final Property<T> property = new DefaultProperty<>(type, value);
+        property.setReadOnly(isReadOnly());
+        // This will replace the previous property (with the wrong type) with the new one (correctly typed).
+        relatedFormItem.addItemProperty(definePropertyName(), property);
         return property;
     }
 
