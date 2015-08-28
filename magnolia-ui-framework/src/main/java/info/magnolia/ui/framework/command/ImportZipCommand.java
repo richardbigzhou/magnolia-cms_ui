@@ -95,7 +95,7 @@ public class ImportZipCommand extends BaseRepositoryCommand {
     @Override
     public boolean execute(Context context) throws Exception {
         this.context = context;
-        File tmpFile =  null;
+        File tmpFile = null;
         FileOutputStream tmpStream = null;
         try {
             tmpFile = File.createTempFile(ZIP_TMP_FILE_PREFIX, ZIP_TMP_FILE_SUFFIX);
@@ -119,13 +119,17 @@ public class ImportZipCommand extends BaseRepositoryCommand {
             Collections.sort(zipEntries, new Comparator() {
                 @Override
                 public int compare(Object first, Object second) {
-                    Boolean isFirstDirectory = ((ZipArchiveEntry)first).isDirectory();
-                    Boolean isSecondDirectory = ((ZipArchiveEntry)second).isDirectory();
-                    return isFirstDirectory.compareTo(isSecondDirectory);
+                    ZipArchiveEntry firstEntry = ((ZipArchiveEntry) first);
+                    ZipArchiveEntry secondEntry = ((ZipArchiveEntry) second);
+                    if (firstEntry.isDirectory() != secondEntry.isDirectory()) {
+                        // order folders first
+                        return Boolean.compare(secondEntry.isDirectory(), firstEntry.isDirectory());
+                    }
+                    // order alphabetically
+                    return firstEntry.getName().compareTo(secondEntry.getName());
                 }
             });
 
-            Collections.reverse(zipEntries);
             final Iterator it = zipEntries.iterator();
             while (it.hasNext()) {
                 ZipArchiveEntry entry = (ZipArchiveEntry) it.next();
@@ -137,18 +141,17 @@ public class ImportZipCommand extends BaseRepositoryCommand {
     }
 
     private void processEntry(ZipFile zip, ZipArchiveEntry entry) throws IOException, RepositoryException {
-            if (entry.getName().startsWith("__MACOSX")) {
-                return;
-            }
-            else if (entry.getName().endsWith(".DS_Store")) {
-                return;
-            }
+        if (entry.getName().startsWith("__MACOSX")) {
+            return;
+        } else if (entry.getName().endsWith(".DS_Store")) {
+            return;
+        }
 
-            if (entry.isDirectory()) {
-                ensureFolder(entry);
-            } else {
-                handleFileEntry(zip, entry);
-            }
+        if (entry.isDirectory()) {
+            ensureFolder(entry);
+        } else {
+            handleFileEntry(zip, entry);
+        }
 
     }
 
@@ -200,7 +203,8 @@ public class ImportZipCommand extends BaseRepositoryCommand {
      * @param receiver wraps the entry file and its basic meta-information.
      * @throws RepositoryException
      */
-    protected void doHandleEntryFromReceiver(Node folder, UploadReceiver receiver) throws RepositoryException {}
+    protected void doHandleEntryFromReceiver(Node folder, UploadReceiver receiver) throws RepositoryException {
+    }
 
     private void ensureFolder(ZipArchiveEntry entry) throws RepositoryException {
         String path = extractEntryPath(entry);
@@ -209,7 +213,7 @@ public class ImportZipCommand extends BaseRepositoryCommand {
 
     private String extractEntryPath(ZipArchiveEntry entry) {
         String entryName = entry.getName();
-        String path = (StringUtils.contains(entryName, "/")) ?  StringUtils.substringBeforeLast(entryName, "/") : "/";
+        String path = (StringUtils.contains(entryName, "/")) ? StringUtils.substringBeforeLast(entryName, "/") : "/";
 
         if (!path.startsWith("/")) {
             path = "/" + path;
