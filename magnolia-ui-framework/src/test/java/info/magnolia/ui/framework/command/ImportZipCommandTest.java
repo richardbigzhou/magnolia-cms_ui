@@ -35,24 +35,31 @@ package info.magnolia.ui.framework.command;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.Context;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.upload.UploadReceiver;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,10 +71,11 @@ public class ImportZipCommandTest extends MgnlTestCase {
     MockContext mockContext;
     private MockSession session;
 
-    private ImportZipCommand importZipCommand;
+    private ImportZipCommandForTests importZipCommand;
     private ZipArchiveEntry zipArchiveEntry;
     private ZipFile zipFile;
     private SimpleTranslator translator;
+    private InputStream inputStream;
 
     @Override
     @Before
@@ -77,19 +85,58 @@ public class ImportZipCommandTest extends MgnlTestCase {
         session = new MockSession("assets");
         MockUtil.getSystemMockContext().addSession("assets", session);
         translator = mock(SimpleTranslator.class);
-        importZipCommand = new ImportZipCommandForHandleFileEntry(translator, mockContext);
+        importZipCommand = new ImportZipCommandForTests(translator);
         importZipCommand.setRepository("assets");
         zipFile = mock(ZipFile.class);
         zipArchiveEntry = mock(ZipArchiveEntry.class);
+    }
 
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        IOUtils.closeQuietly(inputStream);
+        super.tearDown();
+    }
+
+    @Test
+    public void testExecuteOrderOfNodes() throws Exception {
+        //GIVEN
+        String fileName = "test.zip";
+        inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        importZipCommand.setInputStream(inputStream);
+        Node root = session.getRootNode();
+
+        //WHEN
+        boolean result = importZipCommand.execute(mockContext);
+
+        //THEN
+        List<Node> list = NodeUtil.asList(NodeUtil.getNodes(root));
+        List<Node> listFolder1 = NodeUtil.asList(NodeUtil.getNodes(list.get(0)));
+        List<Node> listFolder2 = NodeUtil.asList(NodeUtil.getNodes(list.get(1)));
+        assertFalse(result);
+        assertEquals("Folder1", list.get(0).getName());
+        assertEquals("Folder2", list.get(1).getName());
+        assertEquals("errorCMYK.jpg", list.get(2).getName());
+        assertEquals("test.txt", list.get(3).getName());
+
+        assertEquals("Folder1", listFolder1.get(0).getName());
+        assertEquals("Folder2", listFolder1.get(1).getName());
+        assertEquals("errorCMYK.jpg", listFolder1.get(2).getName());
+        assertEquals("test.txt", listFolder1.get(3).getName());
+
+        assertEquals("Folder1", listFolder2.get(0).getName());
+        assertEquals("Folder2", listFolder2.get(1).getName());
+        assertEquals("errorCMYK.jpg", listFolder2.get(2).getName());
+        assertEquals("test.txt", listFolder2.get(3).getName());
     }
 
     @Test
     public void testHandleFileEntry() throws IOException, RepositoryException {
 
         //GIVEN
+        importZipCommand.setContext(mockContext);
         when(zipArchiveEntry.getName()).thenReturn("folderName/fileName.jpg");
-        InputStream inputStream = new ByteArrayInputStream(new byte[10]);
+        inputStream = new ByteArrayInputStream(new byte[10]);
         when(zipFile.getInputStream(zipArchiveEntry)).thenReturn(inputStream);
 
         //WHEN
@@ -99,11 +146,19 @@ public class ImportZipCommandTest extends MgnlTestCase {
         assertThat(mockContext.getJCRSession("assets").getRootNode(), hasNode("folderName", NodeTypes.Folder.NAME));
     }
 
-    private class ImportZipCommandForHandleFileEntry extends ImportZipCommand {
+    private class ImportZipCommandForTests extends ImportZipCommand {
 
-        public ImportZipCommandForHandleFileEntry(SimpleTranslator translator, Context context) {
+        public ImportZipCommandForTests(SimpleTranslator translator) {
             super(translator);
+        }
+
+        public void setContext(Context context) {
             this.context = context;
+        }
+
+        @Override
+        protected void doHandleEntryFromReceiver(Node parentFolder, UploadReceiver receiver) throws RepositoryException {
+            parentFolder.addNode(receiver.getFileName(), "mgnl:asset");
         }
     }
 }
