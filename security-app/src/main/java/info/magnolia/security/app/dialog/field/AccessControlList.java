@@ -135,7 +135,7 @@ public class AccessControlList {
         }
 
         public EntryKey createKey() {
-            return new EntryKey(permissions,  path);
+            return new EntryKey(permissions, path);
         }
 
         @Override
@@ -143,7 +143,7 @@ public class AccessControlList {
             if (this == o) return true;
             if (!(o instanceof Entry)) return false;
 
-            return createKey().equals(((Entry)o).createKey());
+            return createKey().equals(((Entry) o).createKey());
         }
 
         @Override
@@ -193,17 +193,12 @@ public class AccessControlList {
 
         long accessType;
 
-        if (path.equals("/")) {
-            accessType = ACCESS_TYPE_NODE;
-        } else if (path.equals("/*")) {
-            accessType = ACCESS_TYPE_NODE_AND_CHILDREN;
-            path = "/";
-        } else if (path.endsWith("/*")) {
+        if (path.endsWith("/*")) {
             accessType = ACCESS_TYPE_CHILDREN;
-            path = StringUtils.substringBeforeLast(path, "/*");
+            path = path.equals("/*") ?  "/" : StringUtils.substringBeforeLast(path, "/*");
         } else {
             accessType = ACCESS_TYPE_NODE;
-            path = StringUtils.removeEnd(path, "/");
+            path = path.equals("/") ?  path : StringUtils.removeEnd(path, "/");
         }
 
         return new Entry(permissions, accessType, path);
@@ -218,32 +213,17 @@ public class AccessControlList {
             long permissions = entry.getPermissions();
             long accessType = entry.getAccessType();
 
-            if (path.equals("/")) {
-                switch ((int) accessType) {
-                case (int) ACCESS_TYPE_CHILDREN:
-                    path = "/*";
-                    break;
-                case (int) ACCESS_TYPE_NODE:
-                    path = "/";
-                    break;
-                case (int) ACCESS_TYPE_NODE_AND_CHILDREN:
-                    path = "/*";
-                    break;
-                }
-            } else {
-                switch ((int) accessType) {
-                case (int) ACCESS_TYPE_CHILDREN:
-                    path += "/*";
-                    break;
-                case (int) ACCESS_TYPE_NODE:
-                    break;
-                case (int) ACCESS_TYPE_NODE_AND_CHILDREN:
-                    String nodeName = Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0");
-                    Node extraEntry = aclNode.addNode(nodeName, NodeTypes.ContentNode.NAME);
-                    extraEntry.setProperty(PATH_PROPERTY_NAME, path + "/*");
-                    extraEntry.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
-                    break;
-                }
+            String suffixForChildren = path.equals("/") ? "*" : "/*";
+            switch ((int) accessType) {
+            case (int) ACCESS_TYPE_CHILDREN:
+                path += suffixForChildren;
+                break;
+            case (int) ACCESS_TYPE_NODE_AND_CHILDREN:
+                String nodeName = Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0");
+                Node extraEntry = aclNode.addNode(nodeName, NodeTypes.ContentNode.NAME);
+                extraEntry.setProperty(PATH_PROPERTY_NAME, path + suffixForChildren);
+                extraEntry.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
+                break;
             }
 
             entryNode.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);

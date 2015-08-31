@@ -128,7 +128,9 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         // GIVEN
         Session session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 "/role/acl_config/0.permissions=long:63",
-                "/role/acl_config/0.path=/*"
+                "/role/acl_config/0.path=/*",
+                "/role/acl_config/00.permissions=long:63",
+                "/role/acl_config/00.path=/"
         );
         MockUtil.setSessionAndHierarchyManager(session);
         JcrNodeAdapter item = new JcrNodeAdapter(session.getNode("/role"));
