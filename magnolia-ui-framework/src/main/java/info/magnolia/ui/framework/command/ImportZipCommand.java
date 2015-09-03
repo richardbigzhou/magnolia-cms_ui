@@ -123,7 +123,7 @@ public class ImportZipCommand extends BaseRepositoryCommand {
                     ZipArchiveEntry secondEntry = ((ZipArchiveEntry) second);
                     if (firstEntry.isDirectory() != secondEntry.isDirectory()) {
                         // order folders first
-                        return Boolean.compare(secondEntry.isDirectory(), firstEntry.isDirectory());
+                        return ((Boolean) secondEntry.isDirectory()).compareTo(firstEntry.isDirectory());
                     }
                     // order alphabetically
                     return firstEntry.getName().compareTo(secondEntry.getName());
