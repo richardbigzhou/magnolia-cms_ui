@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
@@ -71,6 +72,16 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     @Override
     public TreeView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, ContentConnector contentConnector) {
         TreeView view = (TreeView) super.start(workbenchDefinition, eventBus, viewTypeName, contentConnector);
+        boolean sortable = false;
+        for (ContentPresenterDefinition definition : workbenchDefinition.getContentViews()) {
+            if (TreePresenterDefinition.VIEW_TYPE.equals(definition.getViewType()) && definition instanceof TreePresenterDefinition) {
+                sortable = ((TreePresenterDefinition) definition).isSortable();
+                break;
+            }
+        }
+        if (view instanceof TreeViewImpl) {
+            ((TreeViewImpl) view).setSortable(sortable);
+        }
 
         // inplace-editing
         if (workbenchDefinition.isEditable()) {

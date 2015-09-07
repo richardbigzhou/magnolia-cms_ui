@@ -1560,10 +1560,13 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-06-13T22:00:20.278+02:00</sv:value>
+              <sv:value>2015-09-04T14:28:40.790+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="sortable" sv:type="String">
+              <sv:value>true</sv:value>
             </sv:property>
             <sv:node sv:name="columns">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">

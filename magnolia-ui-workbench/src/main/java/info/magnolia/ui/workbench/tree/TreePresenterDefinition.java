@@ -42,11 +42,21 @@ public class TreePresenterDefinition extends ConfiguredContentPresenterDefinitio
 
     public static final String VIEW_TYPE = "treeview";
 
+    private boolean sortable;
+
     public TreePresenterDefinition() {
         setImplementationClass(TreePresenter.class);
         setViewType(VIEW_TYPE);
         setActive(true);
         setIcon("icon-view-tree");
+        setSortable(false);
     }
 
+    public void setSortable(final boolean sortable) {
+        this.sortable = sortable;
+    }
+
+    public boolean isSortable() {
+        return sortable;
+    }
 }
