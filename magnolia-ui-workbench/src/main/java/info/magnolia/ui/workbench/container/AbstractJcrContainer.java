@@ -122,7 +122,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private final List<String> sortableProperties = new ArrayList<String>();
 
-    private final List<OrderBy> sorters = new ArrayList<OrderBy>();
+    protected final List<OrderBy> sorters = new ArrayList<OrderBy>();
 
     private int size = Integer.MIN_VALUE;
 
@@ -519,7 +519,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * <p>
      * A restriction on the node types to be searched for can be applied via {@link #getQueryWhereClauseNodeTypes()}.
      */
-    protected final String constructJCRQuery(final boolean considerSorting) {
+    protected String constructJCRQuery(final boolean considerSorting) {
         final String select = getQuerySelectStatement();
         final StringBuilder stmt = new StringBuilder(select);
         // Return results only within the node configured in workbench/path

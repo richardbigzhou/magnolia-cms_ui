@@ -89,7 +89,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         super.initializeTable(table);
         this.tree = (MagnoliaTreeTable) table;
         rowScroller = new TreeRowScroller(tree);
-        tree.setSortEnabled(false);
         collapseListener = new CollapsedNodeListener();
         tree.addCollapseListener(collapseListener);
     }
@@ -242,6 +241,13 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         this.shortcutActionManager = shortcutActionManager;
     }
 
+    public void setSortable(boolean sortable) {
+        if (tree.getContainerDataSource() instanceof HierarchicalJcrContainer) {
+            tree.setSortEnabled(sortable);
+            ((HierarchicalJcrContainer) tree.getContainerDataSource()).setSortable(sortable);
+        }
+    }
+
     private final class CollapsedNodeListener implements CollapseListener {
 
         @Override
@@ -392,5 +398,4 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             setEditing(firstSelectedId, propertyId);
         }
     }
-
 }

@@ -94,6 +94,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/apps/security/subApps/groups/workbench");
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench");
 
+        setupConfigNode("/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree");
+
     }
 
     @Override
@@ -571,5 +573,16 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteFolder"));
         assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup"));
         assertFalse(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"));
+    }
+
+    @Test
+    public void updateTo5311AddSortableProperty() throws Exception {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.10"));
+
+        //THEN
+        assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree/sortable"));
     }
 }
