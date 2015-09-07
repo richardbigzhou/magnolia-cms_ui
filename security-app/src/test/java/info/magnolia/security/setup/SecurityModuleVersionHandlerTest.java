@@ -576,7 +576,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     }
 
     @Test
-    public void updateTo5311AddSortableProperty() throws Exception {
+    public void updateFrom541AddSortableProperty() throws Exception {
         // GIVEN
 
         // WHEN
