@@ -421,4 +421,8 @@ fieldset {
   font-size: 11px;
 }
 
+.app-inactive .v-ckeditortextfield {
+  visibility: hidden !important;
+}
+
 }
