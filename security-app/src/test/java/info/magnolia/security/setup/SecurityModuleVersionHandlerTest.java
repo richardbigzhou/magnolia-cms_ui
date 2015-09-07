@@ -580,7 +580,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // GIVEN
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.10"));
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
 
         //THEN
         assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree/sortable"));
