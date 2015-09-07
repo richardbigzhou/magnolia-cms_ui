@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
@@ -52,7 +53,10 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -490,5 +494,33 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals("/server/filters/aaa", items[2].getPath());
         assertEquals("/server/filters/foo", items[3].getPath());
         assertEquals("/server/filters/qux", items[4].getPath());
+    }
+
+    @Test
+    public void testGetOrderedChildren() throws Exception {
+        // GIVEN
+        List<String> paths = Arrays.asList("/foo/z", "/foo/c", "/foo/n", "/foo/g", "/foo/j", "/foo/u");
+        for (String path : paths) {
+            NodeUtil.createPath(session.getRootNode(), path, NodeTypes.Content.NAME);
+        }
+        session.save();
+        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition.setHideInList(false);
+        nodeTypeDefinition.setName(NodeTypes.Content.NAME);
+        connectorDefinition.addNodeType(nodeTypeDefinition);
+        hierarchicalJcrContainer.setSortable(true);
+        hierarchicalJcrContainer.addSortableProperty("jcrName");
+        hierarchicalJcrContainer.sort(new Object[] {"jcrName"}, new boolean[] {true});
+
+        // WHEN
+        Collection<Item> items = hierarchicalJcrContainer.getChildren(session.getNode("/foo"));
+
+        // THEN
+        Collections.sort(paths);
+        int i = 0;
+        for (Item item : items) {
+            Node node = (Node) item;
+            assertTrue(paths.get(i++).equals(node.getPath()));
+        }
     }
 }

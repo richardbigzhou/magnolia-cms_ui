@@ -278,6 +278,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new RemoveNodeTask("Remove groups/confirmDeleteFolder action.", "/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteFolder"))
                         ))
         );
+        register(DeltaBuilder.update("5.3.11", "")
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "sortable", "true"))
+        );
     }
 
     @Override
