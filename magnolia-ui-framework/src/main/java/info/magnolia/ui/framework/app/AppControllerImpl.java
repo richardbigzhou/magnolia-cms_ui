@@ -270,6 +270,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private void doStop(AppInstanceController appInstanceController) {
+        sendEvent(AppLifecycleEventType.STOPPED, appInstanceController.getAppDescriptor());
         appInstanceController.stop();
         eventBusProtector.resetEventBuses();
         while (appHistory.remove(appInstanceController)) {
@@ -281,7 +282,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentAppInstanceController = null;
             viewport.setView(null);
         }
-        sendEvent(AppLifecycleEventType.STOPPED, appInstanceController.getAppDescriptor());
+
         if (!appHistory.isEmpty()) {
             doFocus(appHistory.peekFirst());
         }
