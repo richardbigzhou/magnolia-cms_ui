@@ -57,6 +57,7 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.AppInstanceController;
 import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubAppDescriptor;
@@ -176,6 +177,24 @@ public class AppEventTest {
         assertEquals(1, firstInstanceHandler.getInvocationCount());
         assertEquals(1, secondInstanceHandler.getInvocationCount());
     }
+
+    @Test
+    public void appNotifiedOfStoppingThroughAnEvent() throws Exception {
+        // GIVEN
+        String appName = String.format("%s_name", name);
+
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
+        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
+        final AppLifecycleEventHandler mock = mock(AppLifecycleEventHandler.class);
+        firstAppInstance.admincentralEventBus.addHandler(AppLifecycleEvent.class, mock);
+
+        // WHEN
+        appController.stopApp(appName);
+
+        // THEN
+        verify(mock, only()).onAppStopped(any(AppLifecycleEvent.class));
+    }
+    
 
     /**
      * Init a LayoutManager containing 1 group with one app.
