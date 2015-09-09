@@ -35,8 +35,10 @@ package info.magnolia.ui.form.field.transformer.basic;
 
 import static info.magnolia.test.hamcrest.ExceptionMatcher.instanceOf;
 import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsAnException;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
@@ -46,6 +48,7 @@ import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -386,5 +389,22 @@ public class BasicTransformerTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(property.isReadOnly());
+    }
+
+    @Test
+    public void readOnlyStateIsReflectedOnAlreadyExistingProperties() throws Exception {
+        // GIVEN
+        definition.setReadOnly(true);
+        definition.setType("String");
+        DefaultProperty<String> property = new DefaultProperty<>("");
+        JcrNodeAdapter adapter = mock(JcrNodeAdapter.class);
+        when(adapter.getItemProperty(anyString())).thenReturn(property);
+        BasicTransformer<String> transformer = new BasicTransformer<>(adapter, definition, String.class, mock(I18NAuthoringSupport.class));
+
+        // WHEN
+        Property<String> res = transformer.getOrCreateProperty(String.class, true);
+
+        // THEN
+        assertThat(res.isReadOnly(), is(true));
     }
 }

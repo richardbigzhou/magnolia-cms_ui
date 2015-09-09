@@ -174,6 +174,8 @@ public class BasicTransformer<T> implements Transformer<T> {
             if (!ObjectUtils.equals(value, property.getValue())) {
                 property = initializeDefaultProperty(type, value);
             }
+        } else {
+            property.setReadOnly(isReadOnly());
         }
 
         this.isReadOnly |= property.isReadOnly();
