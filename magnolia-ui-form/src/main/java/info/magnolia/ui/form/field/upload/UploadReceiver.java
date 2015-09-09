@@ -79,7 +79,7 @@ public class UploadReceiver extends FileBuffer {
     }
 
     public String getFileName() {
-        if (StringUtils.isBlank(this.fileName) || StringUtils.isBlank(PathUtil.getExtension(this.fileName))) {
+        if (StringUtils.isBlank(this.fileName)) {
             return INVALID_FILE_NAME;
         }
         return this.fileName;

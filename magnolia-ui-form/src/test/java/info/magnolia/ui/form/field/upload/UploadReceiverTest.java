@@ -210,4 +210,18 @@ public class UploadReceiverTest {
         assertNotNull(res);
         assertEquals("jpg", res);
     }
+
+    @Test
+    public void testFilenameWithoutExtensionIsValid() {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("foo", "image/jpeg");
+        uploadReceiver.setValue(uploadFile);
+
+        // WHEN
+        String res = uploadReceiver.getFileName();
+
+        // THEN
+        assertEquals("foo", res);
+    }
 }
