@@ -149,7 +149,7 @@ public class AbstractContentPresenterTest {
     }
 
     @Test
-    public void selectionIsFilteredUponReview() throws Exception {
+    public void selectionIsFilteredUponRefresh() throws Exception {
         // GIVEN
         final ContentConnector contentConnector = mock(ContentConnector.class);
 
