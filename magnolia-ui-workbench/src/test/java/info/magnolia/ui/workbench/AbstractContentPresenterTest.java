@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -47,6 +48,7 @@ import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,11 +73,6 @@ public class AbstractContentPresenterTest {
         @Override
         protected Container initializeContainer() {
             return null;
-        }
-
-        @Override
-        public void refresh() {
-            // do nothing;
         }
     }
 
@@ -149,5 +146,29 @@ public class AbstractContentPresenterTest {
 
         // THEN
         assertThat(result, hasItem(rootId));
+    }
+
+    @Test
+    public void selectionIsFilteredUponRefresh() throws Exception {
+        // GIVEN
+        final ContentConnector contentConnector = mock(ContentConnector.class);
+
+        final Object id1 = new Object();
+        final Object id2 = new Object();
+
+        presenter.start(mock(WorkbenchDefinition.class), mock(EventBus.class), "test", contentConnector);
+        presenter.setSelectedItemIds(Arrays.asList(id1, id2));
+
+        // Still can handle second id, but not the first one any more (e.g. if it was deleted)
+        doReturn(false).when(contentConnector).canHandleItem(id1);
+        doReturn(true).when(contentConnector).canHandleItem(id2);
+
+        // WHEN
+        presenter.refresh();
+
+        // THEN
+        // Selection is filtered
+        assertThat(presenter.getSelectedItemIds(), contains(id2));
+
     }
 }

@@ -95,12 +95,13 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public void select(List<Object> itemIds) {
+        tree.setValue(null);
+
         Object firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
         if (firstItemId == null) {
             return;
         }
 
-        tree.setValue(null);
         for (Object id : itemIds) {
             tree.select(id);
         }

@@ -43,6 +43,8 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -50,6 +52,7 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 
 /**
@@ -85,6 +88,21 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
             log.warn("Unable to resolve icon", e);
         }
         return null;
+    }
+
+    @Override
+    public void refresh() {
+        final List<Object> newSelection = Lists.newLinkedList();
+        for (final Object id : getSelectedItemIds()) {
+            if (contentConnector.canHandleItem(id)) {
+                newSelection.add(id);
+            }
+        }
+
+        if (newSelection.size() != getSelectedItemIds().size()) {
+            select(newSelection);
+            setSelectedItemIds(newSelection);
+        }
     }
 
     private NodeTypeDefinition getNodeTypeDefinitionForNode(Node node) throws RepositoryException {
