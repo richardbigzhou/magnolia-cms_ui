@@ -46,8 +46,10 @@ import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.Util;
 
 /**
@@ -75,6 +77,12 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
      * that ensures the zooming animation is distracted with Vaadin layout.
      */
     private Object lock = new Object();
+
+    /**
+     * If response handling has already started we cannot lock anything and cannot prevent scheduled {@link com.vaadin.client.LayoutManager} runs
+     * which might spoil the layout of a zoomed app. In order to prevent that
+     */
+    private boolean isResponseProcessingInProgress = false;
 
     private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false) {
         @Override
@@ -110,6 +118,28 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     };
 
+    private Command pendingAppZoomCommand = null;
+
+    final ApplicationConnection.CommunicationHandler communicationHandler = new ApplicationConnection.CommunicationHandler() {
+
+        @Override
+        public void onRequestStarting(ApplicationConnection.RequestStartingEvent e) {}
+
+        @Override
+        public void onResponseHandlingStarted(ApplicationConnection.ResponseHandlingStartedEvent e) {
+            isResponseProcessingInProgress = true;
+        }
+
+        @Override
+        public void onResponseHandlingEnded(ApplicationConnection.ResponseHandlingEndedEvent e) {
+            isResponseProcessingInProgress = false;
+            if (pendingAppZoomCommand != null) {
+                pendingAppZoomCommand.execute();
+                pendingAppZoomCommand = null;
+            }
+        }
+    };
+
     public AppsTransitionDelegate(final AppsViewportWidget viewport) {
         this.viewport = viewport;
         curtainFadeOutAnimation.addCallback(new JQueryCallback() {
@@ -118,6 +148,9 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
                 setCurtainAttached(false);
             }
         });
+
+        Util.findConnectorFor(viewport).getConnection().addHandler(ApplicationConnection.ResponseHandlingStartedEvent.TYPE, communicationHandler);
+        Util.findConnectorFor(viewport).getConnection().addHandler(ApplicationConnection.ResponseHandlingEndedEvent.TYPE, communicationHandler);
     }
 
     /**
@@ -128,7 +161,20 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     public void setVisibleChild(final ViewportWidget viewport, final Widget app) {
         if (!((AppsViewportWidget)viewport).isAppClosing() && isWidgetVisibilityHidden(app)) {
             viewport.showChildNoTransition(app);
-            zoomInAnimation.run(ZOOM_DURATION, app.getElement());
+            pendingAppZoomCommand = new Command() {
+                @Override
+                public void execute() {
+                    Util.findConnectorFor(viewport).getLayoutManager().layoutNow();
+                    zoomInAnimation.run(ZOOM_DURATION, app.getElement());
+                }
+            };
+
+            if (!isResponseProcessingInProgress) {
+                pendingAppZoomCommand.execute();
+                this.pendingAppZoomCommand = null;
+            }
+
+
         } else {
             viewport.showChildNoTransition(app);
             ShellState.get().setAppStarted();
