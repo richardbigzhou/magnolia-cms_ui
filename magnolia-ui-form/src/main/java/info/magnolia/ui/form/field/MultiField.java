@@ -45,15 +45,9 @@ import info.magnolia.ui.form.field.transformer.multi.MultiTransformer;
 
 import java.util.Iterator;
 
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterators;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
@@ -63,7 +57,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
@@ -85,8 +78,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
     private final Button addButton = new NativeButton();
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
-    private String buttonCaptionMoveUp = "Move Up";
-    private String buttonCaptionMoveDown = "Move Down";
 
     public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
@@ -142,7 +133,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
                 }
 
                 root.addComponent(createEntryComponent(newPropertyId, property), root.getComponentCount() - 1);
-            }
+            };
         });
 
         // Initialize Existing field
@@ -177,11 +168,11 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      */
     private Component createEntryComponent(Object propertyId, Property<?> property) {
 
-        final HorizontalLayout layout = new HorizontalLayout();
+        HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
 
-        final Field<?> field = createLocalField(fieldDefinition, property, true); // creates property datasource if given property is null
+        Field<?> field = createLocalField(fieldDefinition, property, true); // creates property datasource if given property is null
         layout.addComponent(field);
 
         // bind the field's property to the item
@@ -199,35 +190,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             return layout;
         }
 
-        // move up Button
-        Button moveUpButton = new Button();
-        moveUpButton.setHtmlContentAllowed(true);
-        moveUpButton.setCaption("<span class=\"" + "icon-arrow2_n" + "\"></span>");
-        moveUpButton.addStyleName("inline");
-        moveUpButton.setDescription(buttonCaptionMoveUp);
-        moveUpButton.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onMove(layout, propertyReference, true);
-            }
-        });
-
-        // move down Button
-        Button moveDownButton = new Button();
-        moveDownButton.setHtmlContentAllowed(true);
-        moveDownButton.setCaption("<span class=\"" + "icon-arrow2_s" + "\"></span>");
-        moveDownButton.addStyleName("inline");
-        moveDownButton.setDescription(buttonCaptionMoveDown);
-        moveDownButton.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onMove(layout, propertyReference, false);
-            }
-        });
-
-
         // Delete Button
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
@@ -238,19 +200,34 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                onDelete(layout, propertyReference);
+                Component layout = event.getComponent().getParent();
+                root.removeComponent(layout);
+                Transformer<?> transformer = ((TransformedProperty<?>) getPropertyDataSource()).getTransformer();
+
+                // get propertyId to delete, this might have changed since initialization above (see #removeValueProperty)
+                Object propertyId = findPropertyId(getValue(), propertyReference);
+
+                if (transformer instanceof MultiTransformer) {
+                    ((MultiTransformer) transformer).removeProperty(propertyId);
+                } else {
+                    if (propertyId != null && propertyId.getClass().isAssignableFrom(Integer.class)) {
+                        removeValueProperty((Integer) propertyId);
+                    } else {
+                        log.error("Property id {} is not an integer and as such property can't be removed", propertyId);
+                    }
+                    getPropertyDataSource().setValue(getValue());
+                }
             }
         });
-
-        layout.addComponents(moveUpButton, moveDownButton, deleteButton);
+        layout.addComponent(deleteButton);
+        layout.setExpandRatio(deleteButton, 0);
 
         // make sure button stays aligned with the field and not with the optional field label when used
         layout.setComponentAlignment(deleteButton, Alignment.BOTTOM_RIGHT);
-        layout.setComponentAlignment(moveUpButton, Alignment.BOTTOM_RIGHT);
-        layout.setComponentAlignment(moveDownButton, Alignment.BOTTOM_RIGHT);
 
         return layout;
     }
+
 
     @Override
     public Class<? extends PropertysetItem> getType() {
@@ -286,86 +263,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
             fromIndex +=1;
             getValue().addItemProperty(toIndex, getValue().getItemProperty(fromIndex));
             getValue().removeItemProperty(fromIndex);
-        }
-    }
-
-    /**
-     * Switches two properties. We have to clone the original {@link PropertysetItem} to re-arrange the ordering.
-     */
-    private void switchItemProperties(Object firstPropertyId, Object secondPropertyId) {
-        Property propertyFirst = getValue().getItemProperty(firstPropertyId);
-        Property propertySecond = getValue().getItemProperty(secondPropertyId);
-
-        try {
-            PropertysetItem storedValues = (PropertysetItem) getValue().clone();
-            if (storedValues != null) {
-                for (Object propertyId : storedValues.getItemPropertyIds()) {
-                    getValue().removeItemProperty(propertyId);
-                    if (propertyId == firstPropertyId) {
-                        getValue().addItemProperty(firstPropertyId, propertySecond);
-                    } else if (propertyId == secondPropertyId) {
-                        getValue().addItemProperty(secondPropertyId, propertyFirst);
-                    } else {
-                        getValue().addItemProperty(propertyId, storedValues.getItemProperty(propertyId));
-                    }
-                }
-                getPropertyDataSource().setValue(getValue());
-            }
-        } catch (CloneNotSupportedException e) {
-            log.error("Unable to switch properties on MultiField. Unable to clone PropertysetItem.", e);
-        }
-
-    }
-
-    private void onDelete(Component layout, Property<?> propertyReference) {
-        root.removeComponent(layout);
-        Transformer<?> transformer = ((TransformedProperty<?>) getPropertyDataSource()).getTransformer();
-
-        // get propertyId to delete, this might have changed since initialization above (see #removeValueProperty)
-        Object propertyId = findPropertyId(getValue(), propertyReference);
-
-        if (transformer instanceof MultiTransformer) {
-            ((MultiTransformer) transformer).removeProperty(propertyId);
-        } else {
-            if (propertyId != null && propertyId.getClass().isAssignableFrom(Integer.class)) {
-                removeValueProperty((Integer) propertyId);
-            } else {
-                log.error("Property id {} is not an integer and as such property can't be removed", propertyId);
-            }
-            getPropertyDataSource().setValue(getValue());
-        }
-    }
-
-    /**
-     * Takes care of moving a field up or down. Tries hard not to assume much about the layout, so we're iterating over parents
-     * and component types to make sure we're dealing with Fields.
-     */
-    private void onMove(Component layout, Property<?> propertyReference, boolean moveUp) {
-        int currentPosition = root.getComponentIndex(layout);
-        int switchPosition = currentPosition + (moveUp ? -1 : 1);
-
-        Field[] fields = Iterators.toArray(Iterators.filter(Iterators.transform(root.iterator(), new Function<Component, Field>() {
-            @Nullable
-            @Override
-            public Field apply(Component input) {
-                if (input instanceof HasComponents) {
-                    Optional<Component> field = Iterators.tryFind(((HasComponents) input).iterator(), Predicates.instanceOf(Field.class));
-                    if (field.isPresent()) {
-                        return (Field) field.get();
-                    }
-                }
-                return null;
-            }
-        }), Predicates.notNull()), Field.class);
-
-        if (moveUp && currentPosition != 0 || (!moveUp && currentPosition != fields.length - 1)) {
-
-            Field switchField = fields[switchPosition];
-            Object currentPropertyId =  MultiField.this.findPropertyId(getValue(), propertyReference);
-            Object switchPropertyId = MultiField.this.findPropertyId(getValue(), switchField.getPropertyDataSource());
-
-            root.replaceComponent(root.getComponent(currentPosition), root.getComponent(switchPosition));
-            switchItemProperties(currentPropertyId, switchPropertyId);
         }
     }
 

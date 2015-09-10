@@ -33,33 +33,22 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.MockNodeType;
-import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 
 /**
  * Test class {@link JcrNodeAdapter} for the Child Item handling.
@@ -320,89 +309,5 @@ public class JcrNodeAdapterChildItemTest {
         assertEquals("childPropertyValue", res.getNode("childNode").getProperty("childPropertyName").getValue().getString());
         assertEquals(1, item.getChildren().size());
         assertEquals(0, item.getRemovedChildren().size());
-    }
-
-    @Test
-    public void testReOrderingOfChildNodes() throws Exception {
-        // GIVEN
-        ((MockNode)baseNode).setPrimaryNodeType(new MockNodeType(NodeTypes.Content.NAME, null, true));
-        baseNode.addNode("child-a");
-        baseNode.addNode("child-b");
-        baseNode.addNode("child-c");
-        JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-c")));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-b")));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-a")));
-
-        // WHEN
-        item.applyChanges();
-
-        // THEN
-        List<String> nodes = Lists.newArrayList(Iterators.transform(item.getJcrItem().getNodes(), new Function<Node, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable Node node) {
-                        return NodeUtil.getName(node);
-                    }
-                }
-        ));
-
-        assertThat(nodes, contains("child-c", "child-b", "child-a"));
-    }
-
-    @Test
-    public void testReOrderingOfChildNodesWithNewChild() throws Exception {
-        // GIVEN
-        ((MockNode)baseNode).setPrimaryNodeType(new MockNodeType(NodeTypes.Content.NAME, null, true));
-        baseNode.addNode("child-a");
-        baseNode.addNode("child-b");
-        JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        item.addChild(new JcrNewNodeAdapter(baseNode, "", "child-c"));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-b")));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-a")));
-
-        // WHEN
-        item.applyChanges();
-
-        // THEN
-        List<String> nodes = Lists.newArrayList(Iterators.transform(item.getJcrItem().getNodes(), new Function<Node, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable Node node) {
-                        return NodeUtil.getName(node);
-                    }
-                }
-        ));
-
-        assertThat(nodes, contains("child-c", "child-b", "child-a"));
-    }
-
-
-    @Test
-    public void testReOrderingOfChildNodesWithRemovedChild() throws Exception {
-        // GIVEN
-        ((MockNode)baseNode).setPrimaryNodeType(new MockNodeType(NodeTypes.Content.NAME, null, true));
-        baseNode.addNode("child-a");
-        baseNode.addNode("child-b");
-        baseNode.addNode("child-c");
-        JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        item.removeChild(new JcrNodeAdapter(baseNode.getNode("child-c")));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-b")));
-        item.addChild(new JcrNodeAdapter(baseNode.getNode("child-a")));
-
-        // WHEN
-        item.applyChanges();
-
-        // THEN
-        List<String> nodes = Lists.newArrayList(Iterators.transform(item.getJcrItem().getNodes(), new Function<Node, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable Node node) {
-                        return NodeUtil.getName(node);
-                    }
-                }
-        ));
-
-        assertThat(nodes, contains("child-b", "child-a"));
     }
 }
