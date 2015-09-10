@@ -146,6 +146,8 @@ public class FormBuilder {
                         Locale authoringLocale = getAuthoringLocale((SubAppContext) uiContext);
                         if (authoringLocale != null) {
                             view.setCurrentLocale(authoringLocale);
+                        } else {
+                            view.setCurrentLocale(getDefaultLocale(node));
                         }
                     } else {
                         view.setCurrentLocale(getDefaultLocale(node));

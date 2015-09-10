@@ -59,6 +59,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
 
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +75,7 @@ public class FormBuilderTest {
     private MockSession session;
 
     private FieldFactoryFactory fieldFactoryFactory;
-    private I18NAuthoringSupport i18nAuthoringSupport;
+    private MockI18NAuthoringSupport i18nAuthoringSupport;
     private MockSubAppContextImpl subAppContext;
     private FormView view = mock(FormView.class);
 
@@ -85,7 +87,7 @@ public class FormBuilderTest {
         MgnlContext.setInstance(ctx);
 
         fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        i18nAuthoringSupport = mock(MockI18NAuthoringSupport.class);
         subAppContext = mock(MockSubAppContextImpl.class);
         view = mock(FormView.class);
     }
@@ -106,6 +108,31 @@ public class FormBuilderTest {
         FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
         Locale locale = new Locale("de");
         doReturn(locale).when(subAppContext).getAuthoringLocale();
+
+        // WHEN
+        builder.buildForm(view, formDefinition, item, parent);
+
+        // THEN
+        verify(view).setCurrentLocale(locale);
+    }
+
+    @Test
+    public void testBuildFormRespectDefaultLocaleIfAuthorLocaleNotSet() {
+        // GIVEN
+        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+        fieldDefinition.setI18n(true);
+        ConfiguredTabDefinition tabDefinition = new ConfiguredTabDefinition();
+        tabDefinition.addField(fieldDefinition);
+        ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
+        formDefinition.addTab(tabDefinition);
+
+        JcrItemAdapter item = new JcrNodeAdapter(session.getRootNode());
+        FormItem parent = null;
+
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
+        Locale locale = new Locale("de");
+        doReturn(null).when(subAppContext).getAuthoringLocale();
+        doReturn(locale).when(i18nAuthoringSupport).getDefaultLocale(any(Node.class));
 
         // WHEN
         builder.buildForm(view, formDefinition, item, parent);
@@ -172,12 +199,23 @@ public class FormBuilderTest {
 
     /**
      * Just here for the sake of testing authoringLocale, despite being implemented only in SubAppContextImpl (binary compatibility), which lives in a descendant module.
-     * 
+     *
      * @deprecated since 5.4, not needed anymore.
      */
     @Deprecated
     private static interface MockSubAppContextImpl extends SubAppContext {
 
         Locale getAuthoringLocale();
+    }
+
+    /**
+     * Just here for the sake of testing getDefaultLocale, despite being implemented only in I18NAuthoringSupport (binary compatibility), which lives in a descendant module.
+     *
+     * @deprecated since 5.4, not needed anymore.
+     */
+    @Deprecated
+    private static interface MockI18NAuthoringSupport extends I18NAuthoringSupport {
+
+        Locale getDefaultLocale(Node node);
     }
 }
