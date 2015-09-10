@@ -87,6 +87,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
 
     @Override
     public void refresh() {
+        super.refresh();
         if (container instanceof Refreshable) {
             ((Refreshable) container).refresh();
         }

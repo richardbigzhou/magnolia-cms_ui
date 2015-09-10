@@ -116,6 +116,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     @Override
     public void refresh() {
+        super.refresh();
         // This will update the row count and display the newly created items.
         if (container instanceof Refreshable) {
             ((Refreshable) container).refresh();
