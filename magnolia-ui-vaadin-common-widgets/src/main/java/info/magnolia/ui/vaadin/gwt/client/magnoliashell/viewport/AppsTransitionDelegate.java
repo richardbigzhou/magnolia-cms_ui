@@ -164,10 +164,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             pendingAppZoomCommand = new Command() {
                 @Override
                 public void execute() {
-                    if (!Util.findConnectorFor(viewport).getConnection().isUpdatingState()) {
-                        Util.findConnectorFor(viewport).getLayoutManager().layoutNow();
-                        zoomInAnimation.run(ZOOM_DURATION, app.getElement());
-                    }
+                    Util.findConnectorFor(viewport).getLayoutManager().layoutNow();
+                    zoomInAnimation.run(ZOOM_DURATION, app.getElement());
                 }
             };
 
