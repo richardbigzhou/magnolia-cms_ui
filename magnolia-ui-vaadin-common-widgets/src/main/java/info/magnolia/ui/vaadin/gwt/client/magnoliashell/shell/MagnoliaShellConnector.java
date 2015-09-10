@@ -253,17 +253,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
                     if (ShellState.get().isAppStarting() || !getConnection().hasActiveRequest()) {
                         rpc.activateApp(newFragment);
-                        Scheduler.get().scheduleFinally(new Scheduler.RepeatingCommand() {
-                            @Override
-                            public boolean execute() {
-                                boolean doneProcessingRequest = !getConnection().hasActiveRequest();
-                                if (doneProcessingRequest) {
-
-                                }
-                                return !doneProcessingRequest;
-                            }
-                        });
-
                     }
                 }
                 lastHandledFragment = newFragment;
