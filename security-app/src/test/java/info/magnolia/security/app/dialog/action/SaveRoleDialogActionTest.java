@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -52,6 +53,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.decoration.AbstractContentDecorator;
 import info.magnolia.jcr.decoration.ContentDecoratorSessionWrapper;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
@@ -78,6 +80,9 @@ import javax.security.auth.Subject;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 import com.vaadin.data.Item;
 
 /**
@@ -188,10 +193,7 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
 
         // THEN
         assertRoleHasReadAccessToItself("testRole");
-
-        assertTrue(session.nodeExists("/testRole/acl_userroles/00"));
-        assertEquals("/read", session.getProperty("/testRole/acl_userroles/00/path").getString());
-        assertEquals(Permission.READ, session.getProperty("/testRole/acl_userroles/00/permissions").getLong());
+        assertRoleHasReadAccessToPath("testRole", "/read");
     }
 
     @Test
@@ -521,10 +523,27 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
     }
 
     private void assertRoleHasReadAccessToItself(String roleName) throws RepositoryException {
-        assertTrue(session.nodeExists("/"+ roleName));
-        assertTrue(session.nodeExists("/"+ roleName +"/acl_userroles/0"));
-        assertEquals("/" + roleName, session.getProperty("/" + roleName + "/acl_userroles/0/path").getString());
-        assertEquals(Permission.READ, session.getProperty("/"+ roleName +"/acl_userroles/0/permissions").getLong());
+        assertRoleHasReadAccessToPath(roleName, "/" + roleName);
+    }
+
+    private void assertRoleHasReadAccessToPath(String roleName, String path) throws RepositoryException {
+        Optional<Node> node = getACLNodeForPath(roleName, path);
+        assertTrue(node.isPresent());
+        assertThat(node.get(), hasProperty("permissions", Permission.READ));
+    }
+
+    private Optional<Node> getACLNodeForPath(String roleName, final String path) throws RepositoryException {
+        Node role = session.getNode("/"+ roleName);
+        Node userRoles = role.getNode("acl_userroles");
+
+        Optional<Node> aclNode = Iterators.tryFind(userRoles.getNodes(), new Predicate<Node>() {
+            @Override
+            public boolean apply(Node node) {
+                return path.equals(PropertyUtil.getString(node, "path"));
+            }
+        });
+        return aclNode;
+
     }
 
     private void grant(String aclName, String path, long permissions) {

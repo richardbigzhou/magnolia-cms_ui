@@ -118,8 +118,8 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         JcrNodeAdapter adapterChild_1 = new JcrNodeAdapter(node.getNode("child_1"));
         adapterChild_1.addItemProperty("p2", DefaultPropertyUtil.newDefaultProperty("String", "2"));
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        adapter.addChild(adapterChild_1);
         adapter.addChild(adapterChild_2);
+        adapter.addChild(adapterChild_1);
 
         // WHEN
         Node res = adapter.applyChanges();

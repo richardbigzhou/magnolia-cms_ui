@@ -38,13 +38,17 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -201,17 +205,49 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      */
     public void updateChildren(Node node) throws RepositoryException {
         if (!children.isEmpty()) {
+            List<String> sortedChildIdentifiers = new LinkedList<>();
             for (AbstractJcrNodeAdapter child : children.values()) {
                 // Update child node as well
                 child.applyChanges();
+                sortedChildIdentifiers.add(child.getJcrItem().getIdentifier());
+            }
+            if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
+                sortChildren(node, sortedChildIdentifiers);
             }
         }
+
         // Remove child node if needed
         if (!removedChildren.isEmpty()) {
             for (AbstractJcrNodeAdapter removedChild : removedChildren.values()) {
                 if (node.hasNode(removedChild.getNodeName())) {
                     node.getNode(removedChild.getNodeName()).remove();
                 }
+            }
+        }
+    }
+
+    /**
+     * Sorts the child nodes of {@code node} according to the passed list of identifiers {@code sortedIdentifiers}.
+     */
+    private void sortChildren(Node node, List<String> sortedIdentifiers) throws RepositoryException {
+
+        List<String> unsortedIdentifiers = new ArrayList<>();
+
+        for (NodeIterator it = node.getNodes(); it.hasNext();) {
+            unsortedIdentifiers.add(it.nextNode().getIdentifier());
+        }
+
+        for (int pos = 0; pos < sortedIdentifiers.size(); pos++) {
+            String current = sortedIdentifiers.get(pos);
+            int nodePos = unsortedIdentifiers.indexOf(current);
+
+            if (nodePos != -1 || nodePos != pos) {
+                Node nodeToMove = node.getSession().getNodeByIdentifier(current);
+                Node target = node.getSession().getNodeByIdentifier(unsortedIdentifiers.get(pos));
+
+                NodeUtil.moveNodeBefore(nodeToMove, target);
+                String movedId = unsortedIdentifiers.remove(nodePos);
+                unsortedIdentifiers.add(pos, movedId);
             }
         }
     }
