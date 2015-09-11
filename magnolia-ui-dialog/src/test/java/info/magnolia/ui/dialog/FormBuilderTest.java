@@ -63,6 +63,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
@@ -106,6 +107,31 @@ public class FormBuilderTest {
         FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
         Locale locale = new Locale("de");
         doReturn(locale).when(subAppContext).getAuthoringLocale();
+
+        // WHEN
+        builder.buildForm(view, formDefinition, item, parent);
+
+        // THEN
+        verify(view).setCurrentLocale(locale);
+    }
+
+    @Test
+    public void testBuildFormRespectDefaultLocaleIfAuthorLocaleNotSet() {
+        // GIVEN
+        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+        fieldDefinition.setI18n(true);
+        ConfiguredTabDefinition tabDefinition = new ConfiguredTabDefinition();
+        tabDefinition.addField(fieldDefinition);
+        ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
+        formDefinition.addTab(tabDefinition);
+
+        JcrItemAdapter item = new JcrNodeAdapter(session.getRootNode());
+        FormItem parent = null;
+
+        FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
+        Locale locale = new Locale("de");
+        doReturn(null).when(subAppContext).getAuthoringLocale();
+        doReturn(locale).when(i18nAuthoringSupport).getDefaultLocale(any(Item.class));
 
         // WHEN
         builder.buildForm(view, formDefinition, item, parent);
