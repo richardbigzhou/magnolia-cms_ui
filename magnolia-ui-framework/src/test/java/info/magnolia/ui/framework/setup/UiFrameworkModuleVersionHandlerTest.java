@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
@@ -377,4 +378,73 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         //THEN
         assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
     }
+
+    @Test
+    public void updateFrom542ConfigureCleanTempFilesCommandAndDoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.2"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("class", "info.magnolia.ui.framework.command.CleanTempFilesCommand"));
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
+    @Test
+    public void updateFrom542DoNotConfigureCleanTempFilesCommandIfExistsAndDoNotRegisterSchedulerJobIfDifferentCommandClassIsUsed() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+        this.setupConfigNode("/modules/ui-framework/commands/default/cleanTempFiles");
+        this.setupConfigProperty("/modules/ui-framework/commands/default/cleanTempFiles", "class", "testPropertyValue");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.2"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("class", "testPropertyValue"));
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
+    @Test
+    public void updateFrom542ConfigureCleanTempFilesJobIfSchedulerModuleIsInstalled() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.2"));
+
+        //THEN
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+    }
+
+    @Test
+    public void testCleanInstallConfigureCleanTempFilesJobIfSchedulerModuleIsInstalled() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        //THEN
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+    }
+
+    @Test
+    public void testCleanInstallDoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        //THEN
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
 }
