@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
+
+import javax.inject.Inject;
 
 /**
- * Simply invokes either {@link EditorCallback#onSuccess(String)} or {@link EditorCallback#onCancel()} depending
- * on the definition.
+ * Invokes either {@link EditorCallback#onSuccess(String)} or {@link EditorCallback#onCancel()} depending
+ * on the definition. Optionally performs the validation via {@link EditorValidator} beforehand.
  *
- * @deprecated since 5.4.3 - use info.magnolia.ui.framework.action.EditorCallbackAction instead.
+ * @param <D> the definition type
+ *
+ * @see EditorCallbackActionDefinition#isCallSuccess()
+ * @see EditorCallbackActionDefinition#isValidationEnabled()
  */
-@Deprecated
-public class CallbackFormAction extends AbstractAction<CallbackFormActionDefinition> {
+public class EditorCallbackAction<D extends EditorCallbackActionDefinition> extends AbstractAction<D> {
 
-    private EditorCallback callback;
+    private final EditorCallback callback;
+    private final EditorValidator validator;
 
-    public CallbackFormAction(CallbackFormActionDefinition definition, EditorCallback callback) {
+    @Inject
+    public EditorCallbackAction(D definition, EditorCallback callback, EditorValidator validator) {
         super(definition);
         this.callback = callback;
+        this.validator = validator;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        // validate
+        if (getDefinition().isValidationEnabled()) {
+            validator.showValidation(true);
+            if (!validator.isValid()) {
+                return;
+            }
+        }
+
+        // invoke appropriate callback
         if (getDefinition().isCallSuccess()) {
             callback.onSuccess(getDefinition().getSuccessActionName());
         } else {

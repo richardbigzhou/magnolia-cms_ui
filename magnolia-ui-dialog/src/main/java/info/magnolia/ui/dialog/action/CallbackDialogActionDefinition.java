@@ -33,44 +33,12 @@
  */
 package info.magnolia.ui.dialog.action;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.form.action.CallbackFormActionDefinition;
 
 /**
  * Defines a dialog action configuration for simple call back actions.
+ *
+ * @deprecated since 5.4.3 - use info.magnolia.ui.framework.action.EditorCallbackActionDefinition instead.
  */
-public class CallbackDialogActionDefinition extends ConfiguredActionDefinition {
-
-    private boolean callSuccess = true;
-    private String successActionName = "success";
-
-    public CallbackDialogActionDefinition() {
-        setImplementationClass(CallbackDialogAction.class);
-    }
-
-    public boolean isCallSuccess() {
-        return this.callSuccess;
-    }
-
-    /**
-     * @param callSuccess
-     *            true (default) call Callback.onSuccess(String action) - false
-     *            call Callback.onCancel()
-     */
-    public void setCallSuccess(boolean callSuccess) {
-        this.callSuccess = callSuccess;
-    }
-
-    public String getSuccessActionName() {
-        return this.successActionName;
-    }
-
-    /**
-     * @param successActionName
-     *            will be passed as parameter to Callback.onSuccess(String
-     *            successActionName) - in case of callSuccess = true.
-     */
-    public void setSuccessActionName(String successActionName) {
-        this.successActionName = successActionName;
-    }
-
-}
+@Deprecated
+public class CallbackDialogActionDefinition extends CallbackFormActionDefinition {}

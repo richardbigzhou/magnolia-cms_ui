@@ -33,86 +33,94 @@
  */
 package info.magnolia.ui.form.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * CallbackFormActionTest.
+ *
+ * @deprecated since 5.4.3, class under test is also deprecated in favor of info.magnolia.ui.framework.action.EditorCallbackAction
  */
+@Deprecated
 public class CallbackFormActionTest extends MgnlTestCase {
 
-    private CallbackFormAction formAction;
-    private CallbackFormActionDefinition formActionDefinition;
-    private TestEditorCallback presenter;
+    private CallbackFormAction action;
+    private CallbackFormActionDefinition definition;
+    private EditorCallback callback;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
-        this.formActionDefinition = new CallbackFormActionDefinition();
-        this.presenter = new TestEditorCallback();
+        definition = createDefinition();
+        callback = mock(EditorCallback.class);
+    }
+
+    /**
+     * Use similar inheritance scheme in tests, as for the class under test (i.e. thus inheriting test-cases).
+     */
+    protected CallbackFormActionDefinition createDefinition() {
+        return new CallbackFormActionDefinition();
+    }
+
+    /**
+     * Use similar inheritance scheme in tests, as for the class under test (i.e. thus inheriting test-cases).
+     */
+    protected CallbackFormAction createAction(CallbackFormActionDefinition definition, EditorCallback callback) {
+        return new CallbackFormAction(definition, callback);
     }
 
     @Test
     public void executeDefaultOnSuccessTest() throws ActionExecutionException {
         // GIVEN
-        initDefinition("name", "label", null, null);
-        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
+        action = createAction(definition, callback);
 
         // WHEN
-        formAction.execute();
+        action.execute();
 
         // THEN
-        assertEquals("onSuccess(success)", presenter.callbackActionCalled);
+        verify(callback, only()).onSuccess(eq("success"));
     }
+
 
     @Test
     public void executeCustomOnSuccessTest() throws ActionExecutionException {
         // GIVEN
-        initDefinition("name", "label", null, "reload");
-        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
+        definition.setSuccessActionName("reload");
+        action = createAction(definition, callback);
 
         // WHEN
-        formAction.execute();
+        action.execute();
 
         // THEN
-        assertEquals("onSuccess(reload)", presenter.callbackActionCalled);
+        verify(callback, only()).onSuccess(eq("reload"));
     }
 
     @Test
     public void executeOnCancelTest() throws ActionExecutionException {
         // GIVEN
-        initDefinition("name", "label", false, null);
-        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
+        definition.setCallSuccess(false);
+        action = createAction(definition, callback);
 
         // WHEN
-        formAction.execute();
+        action.execute();
 
         // THEN
-        assertEquals("onCancel()", presenter.callbackActionCalled);
+        verify(callback, only()).onCancel();
     }
 
     /**
-     * Init the Definition.
+     * @deprecated since 5.4.3 use proper mocks instead.
      */
-    private void initDefinition(String name, String label, Boolean callSuccess, String successActionName) {
-        this.formActionDefinition.setCallSuccess((callSuccess != null) ? callSuccess : true);
-        this.formActionDefinition.setLabel(label);
-        this.formActionDefinition.setName(name);
-        this.formActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
-    }
-
+    @Deprecated
     public static class TestEditorCallback implements EditorCallback {
 
         private String callbackActionCalled;
@@ -147,11 +155,14 @@ public class CallbackFormActionTest extends MgnlTestCase {
         }
     }
 
+    /**
+     * @deprecated since 5.4.3 use proper mocks instead.
+     */
+    @Deprecated
     public static class TestEditorValidator implements EditorValidator {
 
         @Override
         public void showValidation(boolean visible) {
-
         }
 
         @Override

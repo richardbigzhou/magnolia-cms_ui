@@ -34,31 +34,18 @@
 package info.magnolia.ui.dialog.action;
 
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.form.action.CallbackFormAction;
 
 /**
- * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialog}.
- * This Action can be configured to perform a cancel or a success Action.
+ * Simply invokes either {@link EditorCallback#onSuccess(String)} or {@link EditorCallback#onCancel()} depending
+ * on the definition.
  *
- * @see CallbackDialogActionDefinition
+ * @deprecated since 5.4.3 - use info.magnolia.ui.framework.action.EditorCallbackAction instead.
  */
-public class CallbackDialogAction extends AbstractAction<CallbackDialogActionDefinition> {
-
-    private EditorCallback callback;
+@Deprecated
+public class CallbackDialogAction extends CallbackFormAction {
 
     public CallbackDialogAction(CallbackDialogActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+        super(definition, callback);
     }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        if (getDefinition().isCallSuccess()) {
-            callback.onSuccess(getDefinition().getSuccessActionName());
-        } else {
-            callback.onCancel();
-        }
-    }
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,70 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * CallbackFormActionDefinition.
+ * Configures an action which simply delegates to an {@link info.magnolia.ui.form.EditorCallback EditorCallback},
+ * optionally performing validation beforehand.
  *
- * @deprecated since 5.4.3 - use info.magnolia.ui.framework.action.EditorCallbackActionDefinition instead.
+ * <p>This action is typically configured as a dialog/editor's 'commit' action (instead of a plain save action).
+ * It allows to keep the callback code close to that of the dialog/editor opening action.
  */
-@Deprecated
-public class CallbackFormActionDefinition extends ConfiguredActionDefinition {
-    
+public class EditorCallbackActionDefinition extends ConfiguredActionDefinition {
+
     private boolean callSuccess = true;
 
     private String successActionName = "success";
 
-    public CallbackFormActionDefinition() {
-        setImplementationClass(CallbackFormAction.class);
+    private boolean isValidationEnabled = false;
+
+    public EditorCallbackActionDefinition() {
+        setImplementationClass(EditorCallbackAction.class);
     }
 
+    /**
+     * Defines whether the action will invoke the success callback when executed (or alternatively the cancel callback).
+     * Default is <code>true</code>, i.e. success.
+     *
+     * @see #getSuccessActionName()
+     * @see info.magnolia.ui.form.EditorCallback#onSuccess(String)
+     */
     public boolean isCallSuccess() {
         return this.callSuccess;
     }
 
-    /**
-     * @param callSuccess
-     *            true (default) call Callback.onSuccess(String action). false
-     *            call Callback.onCancel()
-     */
     public void setCallSuccess(boolean callSuccess) {
         this.callSuccess = callSuccess;
     }
 
+    /**
+     * Defines the success string to pass to the success callback when executed.
+     * Default is <code>"success"</code>.
+     *
+     * @see #isCallSuccess()
+     * @see info.magnolia.ui.form.EditorCallback#onSuccess(String)
+     */
     public String getSuccessActionName() {
         return this.successActionName;
     }
 
-    /**
-     * @param successActionName
-     *            will be passed as parameter to Callback.onSuccess(String
-     *            successActionName) in case of callSuccess = true.
-     */
     public void setSuccessActionName(String successActionName) {
         this.successActionName = successActionName;
+    }
+
+    /**
+     * Defines whether validation should be performed before invoking the callback.
+     * Default is <code>false</code>, i.e. non-validated.
+     *
+     * @see info.magnolia.ui.form.EditorValidator
+     */
+    public boolean isValidationEnabled() {
+        return isValidationEnabled;
+    }
+
+    public void setValidationEnabled(boolean isValidationEnabled) {
+        this.isValidationEnabled = isValidationEnabled;
     }
 }
