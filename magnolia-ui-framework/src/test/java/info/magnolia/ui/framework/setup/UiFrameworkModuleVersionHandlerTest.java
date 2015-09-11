@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.framework.setup;
 
-import static org.junit.Assert.*;
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
@@ -341,4 +343,58 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         //THEN
         assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
     }
+
+    @Test
+    public void updateFrom5310ConfigureCleanTempFilesCommandAndDoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.10"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("class", "info.magnolia.ui.framework.command.CleanTempFilesCommand"));
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
+    @Test
+    public void updateFrom5310DoNotConfigureCleanTempFilesCommandIfExistsAndDoNotRegisterSchedulerJobIfDifferentCommandClassIsUsed() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+        this.setupConfigNode("/modules/ui-framework/commands/default/cleanTempFiles");
+        this.setupConfigProperty("/modules/ui-framework/commands/default/cleanTempFiles", "class", "testPropertyValue");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.10"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("class", "testPropertyValue"));
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
+    @Test
+    public void updateFrom5310ConfigureCleanTempFilesJobIfSchedulerModuleIsInstalled() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3.10"));
+
+        //THEN
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+    }
+
+    @Test
+    public void testCleanInstallDoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        //THEN
+        assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
 }
