@@ -33,9 +33,13 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
@@ -43,6 +47,7 @@ import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -56,20 +61,28 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
     private UiContext uiContext;
     private final SimpleTranslator i18n;
     private final ComponentProvider componentProvider;
+    private EventBus admincentralEventBus;
 
     @Inject
-    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
         super(definition, relatedFieldItem);
         this.imageProvider = imageProvider;
         this.uiContext = uiContext;
         this.i18n = i18n;
         this.componentProvider = componentProvider;
+        this.admincentralEventBus = admincentralEventBus;
     }
 
     @Override
     protected Field<UploadReceiver> createFieldComponent() {
         // Create Upload Filed.
         BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(imageProvider, uiContext, definition, i18n);
+        this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
+            @Override
+            public void onAppStopped(AppLifecycleEvent event) {
+                field.getValue().getFile().delete();
+            }
+        });
         return uploadField;
     }
 

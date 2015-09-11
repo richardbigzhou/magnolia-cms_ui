@@ -41,14 +41,17 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
+import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.ModuleDependencyBootstrapTask;
 import info.magnolia.module.delta.MoveNodeTask;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
+import info.magnolia.module.delta.PropertyValueDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
@@ -161,13 +164,20 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         register(DeltaBuilder.update("5.4.2", "")
                 .addTask(new NodeExistsDelegateTask("Check if path '/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name' exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name",
                         new ArrayDelegateTask("",
-                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))
-                ));
+                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)"))))
+                .addTask(new NodeExistsDelegateTask("Configure 'cleanTempFiles' command if does not exists.", "/modules/ui-framework/commands/default/cleanTempFiles", null,
+                        new PartialBootstrapTask("Configure 'cleanTempFiles' command.", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.commands.xml", "commands/default/cleanTempFiles")))
+                .addTask(new IsModuleInstalledOrRegistered("Configure 'CleanTempFiles' job - check if scheduler module is installed.", "scheduler",
+                        new NodeExistsDelegateTask("Check if 'cleanTempFiles' command was already configured.", "/modules/ui-framework/commands/default/cleanTempFiles",
+                                new PropertyValueDelegateTask("Check if 'class' property of 'cleanTempFiles' command has required value 'info.magnolia.ui.framework.command.CleanTempFilesCommand'.", "/modules/ui-framework/commands/default/cleanTempFiles", "class", "info.magnolia.ui.framework.command.CleanTempFilesCommand", false,
+                                        new NodeExistsDelegateTask("Configure 'CleanTempFiles' job if does not exist.", "/modules/scheduler/config/jobs/cleanTempFiles", null,
+                                                new BootstrapSingleResource("", "Configure 'CleanTempFiles' job.", "/info/magnolia/module/ui-framework/setup/scheduler/config.modules.scheduler.config.jobs.cleanTempFiles.xml")))))));
     }
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         ArrayList<Task> tasks = new ArrayList<Task>();
+        tasks.add(new ModuleDependencyBootstrapTask("scheduler"));
         return tasks;
     }
 

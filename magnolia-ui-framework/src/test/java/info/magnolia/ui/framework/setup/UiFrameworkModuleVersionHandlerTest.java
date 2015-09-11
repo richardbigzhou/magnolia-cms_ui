@@ -377,4 +377,95 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         //THEN
         assertThat(session.getNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name"), hasProperty("allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed|octet-stream)"));
     }
+
+    @Test
+    public void updateFrom541ConfigureCleanTempFilesCommandIfDoesNotExist() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("class", "info.magnolia.ui.framework.command.CleanTempFilesCommand"));
+    }
+
+    @Test
+    public void updateFrom541DoNotConfigureCleanTempFilesCommandIfExists() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/ui-framework/commands/default/cleanTempFiles");
+        this.setupConfigProperty("/modules/ui-framework/commands/default/cleanTempFiles", "testProperty", "testPropertyValue");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertFalse(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles").hasProperty("class"));
+        assertThat(session.getNode("/modules/ui-framework/commands/default/cleanTempFiles"), hasProperty("testProperty", "testPropertyValue"));
+    }
+
+    @Test
+    public void updateFrom541ConfigureCleanTempFilesJobIfSchedulerModuleIsInstalled() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+    }
+
+    @Test
+    public void updateFrom541DoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertFalse(session.nodeExists("/modules/scheduler/config/jobs/cleanTempFiles"));
+    }
+
+    @Test
+    public void updateFrom541DoNotConfigureCleanTempFilesJobIfSchedulerModuleIsInstalledButCleanTempFilesCommandAlreadyExistsWithAnotherValueOfClassProperty() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/ui-framework/commands/default/cleanTempFiles");
+        this.setupConfigProperty("/modules/ui-framework/commands/default/cleanTempFiles", "class", "testPropertyValue");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.1"));
+
+        //THEN
+        assertFalse(session.nodeExists("/modules/scheduler/config/jobs/cleanTempFiles"));
+    }
+
+    @Test
+    public void testCleanInstallConfigureCleanTempFilesJobIfSchedulerModuleIsInstalled() throws Exception {
+        //GIVEN
+        this.setupConfigNode("/modules/scheduler");
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        //THEN
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+    }
+
+    @Test
+    public void testCleanInstallDoNotConfigureCleanTempFilesJobIfSchedulerModuleIsNotInstalled() throws Exception {
+        //GIVEN
+
+        //WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        //THEN
+        assertFalse(session.nodeExists("/modules/scheduler/config/jobs/cleanTempFiles"));
+    }
+
 }
