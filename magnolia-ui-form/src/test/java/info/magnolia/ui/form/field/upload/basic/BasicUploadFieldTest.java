@@ -187,7 +187,6 @@ public class BasicUploadFieldTest {
                 
         // WHEN
         textField.setValue("newMe.png");
-        uploadField.getFileDetailFileName();
         
         // THEN
         assertEquals("newMe.png", receiver.getFileName());
