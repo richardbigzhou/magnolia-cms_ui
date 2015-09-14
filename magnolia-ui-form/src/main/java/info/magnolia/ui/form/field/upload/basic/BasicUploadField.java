@@ -47,6 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -59,7 +60,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
-import com.vaadin.data.Property;
 
 /**
  * Basic implementation of {@link AbstractUploadField}.<br>
@@ -310,7 +310,8 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
      */
     protected Component getFileDetailFileName() {
         // Build the file name without the extension
-        final String extension = "." + getValue().getExtension();
+        final boolean hasExtension = StringUtils.isNotBlank(getValue().getExtension());
+        final String extension = hasExtension ? "." + getValue().getExtension() : "";
         String fileName = StringUtils.removeEnd(getValue().getFileName(), extension);
 
         if (this.editFileName && !isReadOnly()) {

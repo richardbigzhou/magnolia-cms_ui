@@ -172,6 +172,26 @@ public class BasicUploadFieldTest {
         // THEN
         assertEquals("newMe.jpg", receiver.getFileName());
     }
+    
+    @Test
+    public void fileNameChangeIsPropagatedWhenFileHasNoExtension() throws IOException {
+        // GIVEN
+        BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
+        definition.setEditFileName(true);
+        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(null, null, definition, simpleTranslator);
+        receiver.setFileName("me");
+        Property<UploadReceiver> property = new ObjectProperty<UploadReceiver>(receiver);
+        uploadField.setPropertyDataSource(property);
+        TextField textField = (TextField) uploadField.getFileDetailFileName();
+        assertEquals("me", textField.getValue());
+                
+        // WHEN
+        textField.setValue("newMe.png");
+        uploadField.getFileDetailFileName();
+        
+        // THEN
+        assertEquals("newMe.png", receiver.getFileName());
+    }
 
 
     @Test
