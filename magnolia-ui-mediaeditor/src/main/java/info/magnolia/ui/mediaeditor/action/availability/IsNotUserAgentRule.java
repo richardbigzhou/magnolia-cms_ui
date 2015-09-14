@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.setup;
+package info.magnolia.ui.mediaeditor.action.availability;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.delta.DeltaBuilder;
-import info.magnolia.module.delta.NodeExistsDelegateTask;
-import info.magnolia.module.delta.PartialBootstrapTask;
+import info.magnolia.context.MgnlContext;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Version handler for the mediaeditor module.
+ * Availability rule which returns true if user agent is not one of defined.
  */
-public class MediaEditorModuleVersionHandler extends DefaultModuleVersionHandler {
+public class IsNotUserAgentRule extends AbstractMediaEditorAvailabilityRule {
 
-    public MediaEditorModuleVersionHandler() {
-        register(DeltaBuilder.update("5.1", "")
-                // Remove hardcoded i18n properties, e.g. label, description, etc.
-                .addTask((new RemoveHardcodedI18nPropertiesFromMediaEditorTask("ui-mediaeditor"))));
+    private final IsNotUserAgentRuleDefinition isNotUserAgentRuleDefinition;
 
-        register(DeltaBuilder.update("5.3.11", "")
-                .addTask(new NodeExistsDelegateTask("Add availability check for crop action", "/modules/ui-mediaeditor/mediaEditors/image/actions/crop",
-                        new PartialBootstrapTask("Add availability check for crop action", "/mgnl-bootstrap/ui-mediaeditor/config.modules.ui-mediaeditor.mediaEditors.xml", "/mediaEditors/image/actions/crop/availability")))
-        );
-
+    public IsNotUserAgentRule(IsNotUserAgentRuleDefinition isNotUserAgentRuleDefinition) {
+        this.isNotUserAgentRuleDefinition = isNotUserAgentRuleDefinition;
     }
 
+    @Override
+    public boolean isAvailable() {
+        final String userAgent = MgnlContext.getWebContext().getRequest().getHeader("User-Agent");
 
+        for (String disableUserAgent : isNotUserAgentRuleDefinition.getUserAgents().values()) {
+            if (StringUtils.isNotBlank(disableUserAgent) && (userAgent.contains(disableUserAgent) || userAgent.matches(disableUserAgent))) {
+                return false;
+            }
+        }
 
-
+        return true;
+    }
 
 }

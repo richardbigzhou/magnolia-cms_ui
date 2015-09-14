@@ -54,6 +54,7 @@ import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
+import info.magnolia.ui.mediaeditor.action.availability.MediaEditorAvailabilityChecker;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
 
@@ -146,8 +147,9 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ((MediaEditorActionExecutor) mediaActionExecutor).setDef(definition);
 
         ActionbarPresenter actionBarPresenter = mediaEditorComponentProvider.getComponent(ActionbarPresenter.class);
+        MediaEditorAvailabilityChecker mediaEditorAvailabilityChecker = mediaEditorComponentProvider.getComponent(MediaEditorAvailabilityChecker.class);
         DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
-        MediaEditorPresenter mediaEditorPresenter = new MediaEditorPresenterImpl(definition, eventBus, view, actionBarPresenter, dialogPresenter, appContext, i18n);
+        MediaEditorPresenter mediaEditorPresenter = new MediaEditorPresenterImpl(definition, eventBus, view, actionBarPresenter, dialogPresenter, appContext, i18n, mediaEditorAvailabilityChecker);
 
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);
         return mediaEditorPresenter;

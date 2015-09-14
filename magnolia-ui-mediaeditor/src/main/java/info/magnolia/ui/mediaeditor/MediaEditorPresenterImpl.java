@@ -36,17 +36,21 @@ package info.magnolia.ui.mediaeditor;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.mediaeditor.action.availability.MediaEditorAvailabilityChecker;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -59,6 +63,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -83,6 +88,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     private HandlerRegistration internalMediaEditorEventHandlerRegistration;
     private Set<HandlerRegistration> completionHandlers = new HashSet<HandlerRegistration>();
     private final SimpleTranslator i18n;
+    private final MediaEditorAvailabilityChecker mediaEditorAvailabilityChecker;
 
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
@@ -91,7 +97,8 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             ActionbarPresenter actionbarPresenter,
             DialogPresenter dialogPresenter,
             AppContext appContext,
-            SimpleTranslator i18n) {
+            SimpleTranslator i18n,
+            MediaEditorAvailabilityChecker mediaEditorAvailabilityChecker) {
         this.eventBus = eventBus;
         this.view = view;
         this.actionbarPresenter = actionbarPresenter;
@@ -99,6 +106,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         this.dialogPresenter = dialogPresenter;
         this.appContext = appContext;
         this.i18n = i18n;
+        this.mediaEditorAvailabilityChecker = mediaEditorAvailabilityChecker;
         this.actionbarPresenter.setListener(this);
         this.internalMediaEditorEventHandlerRegistration = eventBus.addHandler(MediaEditorInternalEvent.class, this);
         this.view.asVaadinComponent().addDetachListener(new ClientConnector.DetachListener() {
@@ -107,6 +115,21 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
                 dataSource.purgeHistory();
             }
         });
+    }
+
+    /**
+     * @deprecated since 5.4.3 - use {@link MediaEditorPresenterImpl#MediaEditorPresenterImpl(info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition, info.magnolia.event.EventBus, info.magnolia.ui.mediaeditor.MediaEditorView, info.magnolia.ui.actionbar.ActionbarPresenter, info.magnolia.ui.dialog.DialogPresenter, info.magnolia.ui.api.app.AppContext, info.magnolia.i18nsystem.SimpleTranslator)} instead.
+     */
+    @Deprecated
+    public MediaEditorPresenterImpl(
+            MediaEditorDefinition definition,
+            EventBus eventBus,
+            MediaEditorView view,
+            ActionbarPresenter actionbarPresenter,
+            DialogPresenter dialogPresenter,
+            AppContext appContext,
+            SimpleTranslator i18n) {
+        this(definition, eventBus, view, actionbarPresenter, dialogPresenter, appContext, i18n, Components.getComponent(MediaEditorAvailabilityChecker.class));
     }
 
     @Override
@@ -118,6 +141,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar(), definition.getActions());
+            updateActionbar();
             final DialogView dialogView = dialogPresenter.start(new ConfiguredDialogDefinition(), appContext);
             this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream), i18n);
             this.dataSource.setListener(this);
@@ -126,7 +150,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
-            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.errorWhileEditing")+" ", e);
+            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.errorWhileEditing") + " ", e);
             log.error("Error occurred while editing media: " + e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(stream);
@@ -199,7 +223,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.actionExecutionException")+" ", e);
+            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.actionExecutionException") + " ", e);
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }
@@ -208,5 +232,17 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public void errorOccurred(String message, Throwable e) {
         Message error = new Message(MessageType.ERROR, message, e.getMessage());
         appContext.sendLocalMessage(error);
+    }
+
+    protected void updateActionbar() {
+        Map<String, ActionDefinition> actionsDefinition = definition.getActions();
+        for (Map.Entry<String, ActionDefinition> action : actionsDefinition.entrySet()) {
+            AvailabilityDefinition availabilityDefinition = action.getValue().getAvailability();
+            if (mediaEditorAvailabilityChecker.isAvailable(availabilityDefinition)) {
+                actionbarPresenter.enable(action.getKey());
+            } else {
+                actionbarPresenter.disable(action.getKey());
+            }
+        }
     }
 }

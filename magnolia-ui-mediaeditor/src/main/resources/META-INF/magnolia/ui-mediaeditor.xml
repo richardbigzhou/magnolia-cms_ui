@@ -61,6 +61,11 @@
       <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
     </component>
 
+    <component>
+      <type>info.magnolia.ui.mediaeditor.action.availability.MediaEditorAvailabilityChecker</type>
+      <implementation>info.magnolia.ui.mediaeditor.action.availability.MediaEditorAvailabilityChecker</implementation>
+    </component>
+
   </components>
 
   <dependencies>

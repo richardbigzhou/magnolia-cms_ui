@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-mediaeditor</artifactId>
   <name>magnolia-ui-mediaeditor</name>
   <properties>
-    <cloverCoverageThreshold>0</cloverCoverageThreshold>
+    <cloverCoverageThreshold>5</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -33,18 +33,30 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
