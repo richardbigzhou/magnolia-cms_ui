@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.setup;
+package info.magnolia.ui.mediaeditor.action.availability;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.delta.DeltaBuilder;
-import info.magnolia.module.delta.NodeExistsDelegateTask;
-import info.magnolia.module.delta.PartialBootstrapTask;
+import info.magnolia.ui.api.availability.AvailabilityRule;
+
+import java.util.Collection;
 
 /**
- * Version handler for the mediaeditor module.
+ * Abstract media editor action availability rule.
  */
-public class MediaEditorModuleVersionHandler extends DefaultModuleVersionHandler {
+public abstract class AbstractMediaEditorAvailabilityRule implements AvailabilityRule {
 
-    public MediaEditorModuleVersionHandler() {
-        register(DeltaBuilder.update("5.1", "")
-                // Remove hardcoded i18n properties, e.g. label, description, etc.
-                .addTask((new RemoveHardcodedI18nPropertiesFromMediaEditorTask("ui-mediaeditor"))));
-
-        register(DeltaBuilder.update("5.4.3", "")
-                .addTask(new NodeExistsDelegateTask("Add availability check for crop action", "/modules/ui-mediaeditor/mediaEditors/image/actions/crop",
-                        new PartialBootstrapTask("Add availability check for crop action", "/mgnl-bootstrap/ui-mediaeditor/config.modules.ui-mediaeditor.mediaEditors.xml", "/mediaEditors/image/actions/crop/availability")))
-        );
-
+    @Override
+    public boolean isAvailable(Collection<?> itemIds) {
+        return isAvailable();
     }
 
-
-
-
-
+    public abstract boolean isAvailable();
 }
