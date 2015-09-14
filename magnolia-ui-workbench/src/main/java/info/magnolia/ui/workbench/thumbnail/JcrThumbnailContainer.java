@@ -163,7 +163,8 @@ public class JcrThumbnailContainer extends FlatJcrContainer implements Refreshab
     @Override
     public void setPageSize(int pageSize) {
         // TODO WHY 3?
-        setPageLength(pageSize / 3);
+        int pageLength = Double.valueOf(Math.ceil(pageSize / 3.0)).intValue();
+        setPageLength(pageLength);
         setCacheRatio(3);
     }
 
