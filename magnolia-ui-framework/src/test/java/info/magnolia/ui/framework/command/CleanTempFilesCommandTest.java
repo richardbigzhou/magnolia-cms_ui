@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.framework.command;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.init.MagnoliaConfigurationProperties;
@@ -82,10 +81,10 @@ public class CleanTempFilesCommandTest {
         File file2 = new File("tmp/file2");
         file2.createNewFile();
 
-        File file3= new File("tmp/file3");
+        File file3 = new File("tmp/file3");
         file3.createNewFile();
 
-        File file4= new File("tmp/file4");
+        File file4 = new File("tmp/file4");
         file4.createNewFile();
         file4.setLastModified(lastModified);
 

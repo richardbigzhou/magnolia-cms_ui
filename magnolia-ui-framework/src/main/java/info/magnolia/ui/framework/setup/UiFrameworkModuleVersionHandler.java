@@ -81,6 +81,7 @@ import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.MultiValueFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
+import info.magnolia.ui.framework.command.CleanTempFilesCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,12 +165,13 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         register(DeltaBuilder.update("5.4.2", "")
                 .addTask(new NodeExistsDelegateTask("Check if path '/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name' exist.", "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name",
                         new ArrayDelegateTask("",
-                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)"))))
+                                new CheckAndModifyPropertyValueTask("Add mimeType application/octet-stream that is used by google chrome for zip files.", "Add mimeType application/octet-stream that is used by google chrome for zip files.", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/name", "allowedMimeTypePattern", "application/(zip|x-zip|x-zip-compressed)", "application/(zip|x-zip|x-zip-compressed|octet-stream)")))));
+        register(DeltaBuilder.update("5.4.3", "")
                 .addTask(new NodeExistsDelegateTask("Configure 'cleanTempFiles' command if does not exists.", "/modules/ui-framework/commands/default/cleanTempFiles", null,
                         new PartialBootstrapTask("Configure 'cleanTempFiles' command.", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.commands.xml", "commands/default/cleanTempFiles")))
                 .addTask(new IsModuleInstalledOrRegistered("Configure 'CleanTempFiles' job - check if scheduler module is installed.", "scheduler",
                         new NodeExistsDelegateTask("Check if 'cleanTempFiles' command was already configured.", "/modules/ui-framework/commands/default/cleanTempFiles",
-                                new PropertyValueDelegateTask("Check if 'class' property of 'cleanTempFiles' command has required value 'info.magnolia.ui.framework.command.CleanTempFilesCommand'.", "/modules/ui-framework/commands/default/cleanTempFiles", "class", "info.magnolia.ui.framework.command.CleanTempFilesCommand", false,
+                                new PropertyValueDelegateTask("Check if 'class' property of 'cleanTempFiles' command has required value 'info.magnolia.ui.framework.command.CleanTempFilesCommand'.", "/modules/ui-framework/commands/default/cleanTempFiles", "class", CleanTempFilesCommand.class.getName(), false,
                                         new NodeExistsDelegateTask("Configure 'CleanTempFiles' job if does not exist.", "/modules/scheduler/config/jobs/cleanTempFiles", null,
                                                 new BootstrapSingleResource("", "Configure 'CleanTempFiles' job.", "/info/magnolia/module/ui-framework/setup/scheduler/config.modules.scheduler.config.jobs.cleanTempFiles.xml")))))));
     }

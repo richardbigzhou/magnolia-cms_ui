@@ -80,7 +80,9 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
             @Override
             public void onAppStopped(AppLifecycleEvent event) {
-                field.getValue().getFile().delete();
+                if (field.getValue().getFile() != null) {
+                    field.getValue().getFile().delete();
+                }
             }
         });
         return uploadField;
