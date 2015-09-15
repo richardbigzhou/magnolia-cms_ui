@@ -235,4 +235,38 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
         assertEquals("/modules/testModule/dialogs/generic/pages/tabMetaData", dialogNode.getNode("generic/master/basePageProperties/form/tabs/tabMetaData").getProperty("extends").getString());
         assertEquals("Do not change invalid path", "../../../teasers/highlighted", dialogNode.getNode("generic/master/baseTeaserGroup/form/tabs/tabTeaser/fields/highlighted").getProperty("extends").getString());
     }
+
+    /**
+     * Test for MGNLUI-3516.
+     */
+    @Test
+    public void testExecuteExtendedTabAndAdditionFieldsMigration() throws RepositoryException, TaskExecutionException {
+        // GIVEN
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
+
+        // WHEN
+        task.execute(installContext);
+
+        // THEN
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserExample/form/tabs/tabTeaser/fields/highlighted"));
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserExample/form/tabs/tabTeaser/fields/link"));
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserExample/form/tabs/tabTeaser/fields/teaserAbstract"));
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserExample/form/tabs/tabTeaserExample/fields/teaserTitle"));
+        assertEquals("Check relative path reference", "/modules/testModule/dialogs/generic/master/baseTeaserExample/form/tabs/tabTeaser", dialogNode.getNode("generic/master/baseTeaserExample/form/tabs/tabTeaserExample").getProperty("extends").getString());
+    }
+
+    @Test
+    public void testExecuteExtendsRelatedPathMigration() throws RepositoryException, TaskExecutionException {
+        // GIVEN
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
+
+        // WHEN
+        task.execute(installContext);
+
+        // THEN
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserExample/form/tabs/tabTeaser/fields/highlighted"));
+        assertEquals("Check relative path reference", "/modules/testModule/dialogs/generic/teasers/highlighted", dialogNode.getNode("generic/master/baseTeaserExample/form/tabs/tabTeaser/fields/highlighted").getProperty("extends").getString());
+
+        assertFalse("Check that no empty node 'fields' was created", session.getNode("/modules/testModule/dialogs/generic/master/basePageProperties/form/tabs/tabMetaData").hasNode("fields"));
+    }
 }
