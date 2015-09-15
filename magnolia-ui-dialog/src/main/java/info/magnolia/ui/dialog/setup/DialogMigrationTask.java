@@ -75,9 +75,10 @@ import org.slf4j.LoggerFactory;
 public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
+    private static final String PROPERTY_NAME_EXTENDS = "extends";
+    private static final String PROPERTY_NAME_REFERENCE = "reference";
+
     private final String moduleName;
-    private static final String propertyNameExtends = "extends";
-    private static final String propertyNameReference = "reference";
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
     private ControlMigratorsRegistry controlMigratorsRegistry;
 
@@ -90,8 +91,8 @@ public class DialogMigrationTask extends AbstractTask {
     private HashMap<String, List<ActionCreator>> customDialogActionsToMigrate;
 
     /**
-     * @param taskName
-     * @param taskDescription
+     * @param taskName name of the task
+     * @param taskDescription short decription of the task
      * @param moduleName all dialog define under this module name will be migrated.
      * @param customControlsToMigrate Custom controls to migrate.
      * @param customDialogActionsToMigrate Custom actions to migrate
@@ -120,7 +121,7 @@ public class DialogMigrationTask extends AbstractTask {
      */
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
-        Session session = null;
+        Session session;
         this.installContext = installContext;
         try {
             registerControlsAndActionsMigrators();
@@ -182,9 +183,9 @@ public class DialogMigrationTask extends AbstractTask {
      * Override this method in order to register custom controls to migrate.<br>
      * In case a control name is already define in the default map, the old control migrator is replaced by the newly registered control migrator.
      *
-     * @param controlsToMigrate. <br>
-     * - key : controls name <br>
-     * - value : {@link ControlMigrator} used to take actions in order to migrate the control into a field.
+     * @param controlsToMigrate
+     * key : controls name <br>
+     * value : {@link ControlMigrator} used to take actions in order to migrate the control into a field.
      */
     protected void addCustomControlsToMigrate(HashMap<String, ControlMigrator> controlsToMigrate) {
     }
@@ -210,9 +211,9 @@ public class DialogMigrationTask extends AbstractTask {
     /**
      * Override this method in order to register custom actions to create on a specific dialog.<br>
      *
-     * @param dialogActionsToMigrate.<br>
-     * - key: Dialog name <br>
-     * - value: List of {@link ActionCreator} to create on the desired dialog.
+     * @param dialogActionsToMigrate
+     * key: Dialog name <br>
+     * value: List of {@link ActionCreator} to create on the desired dialog.
      */
     protected void addCustomDialogActionToCreate(HashMap<String, List<ActionCreator>> dialogActionsToMigrate) {
     }
@@ -229,7 +230,7 @@ public class DialogMigrationTask extends AbstractTask {
                 handleTab(dialog);
             } else {
                 // Handle action
-                if (!dialog.hasProperty("controlType") && !dialog.hasProperty(propertyNameExtends) && !dialog.hasProperty(propertyNameReference)) {
+                if (!dialog.hasProperty("controlType") && !dialog.hasProperty(PROPERTY_NAME_EXTENDS) && !dialog.hasProperty(PROPERTY_NAME_REFERENCE)) {
                     handleAction(dialog);
                 }
                 // Handle tab
@@ -256,7 +257,7 @@ public class DialogMigrationTask extends AbstractTask {
         Node actionsNode = dialog.getNode("actions");
 
         List<ActionCreator> actions = dialogActionsToMigrate.get(defaultDialogActions);
-        //Use the specific Actions list if defined
+        // Use the specific Actions list if defined
         if (dialogActionsToMigrate.containsKey(dialog.getName())) {
             actions = dialogActionsToMigrate.get(dialog.getName());
         }
@@ -307,7 +308,7 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle a Tab.
      */
     private void handleTab(Node tab) throws RepositoryException {
-        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty(propertyNameExtends))) {
+        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty(PROPERTY_NAME_EXTENDS))) {
             if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
                 // Remove controlType Property
                 tab.getProperty("controlType").remove();
@@ -361,10 +362,10 @@ public class DialogMigrationTask extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty(propertyNameExtends));
+            extendsAndReferenceProperty.add(node.getProperty(PROPERTY_NAME_EXTENDS));
         } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty(propertyNameReference));
+            extendsAndReferenceProperty.add(node.getProperty(PROPERTY_NAME_REFERENCE));
         }
     }
 
@@ -389,39 +390,39 @@ public class DialogMigrationTask extends AbstractTask {
      * to found a correct path.
      */
     private void postProcessForExtendsAndReference() throws RepositoryException {
-        for (Property p : extendsAndReferenceProperty) {
-            String path = p.getString();
+        for (Property property : extendsAndReferenceProperty) {
+            String path = property.getString();
             if (path.equals("override")) {
                 continue;
             }
-            if (!isAbsoulutePath(p, path)) {
-                log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", p.getPath(), path);
+            if (!isAbsolutePath(property, path)) {
+                log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", property.getPath(), path);
                 continue;
             }
 
-            if (!p.getSession().nodeExists(path)) {
+            if (!property.getSession().nodeExists(path)) {
 
-                String newPath = insertBeforeLastSlashAndTest(p.getSession(), path, "/tabs", "/fields", "/tabs/fields", "/form/tabs");
+                String newPath = insertBeforeLastSlashAndTest(property.getSession(), path, "/tabs", "/fields", "/tabs/fields", "/form/tabs");
                 if (newPath != null) {
-                    p.setValue(newPath);
+                    property.setValue(newPath);
                     continue;
                 }
 
                 // try to add a tabs before the 2nd last /
-                String beging = path.substring(0, path.lastIndexOf("/"));
-                String end = path.substring(beging.lastIndexOf("/"));
-                beging = beging.substring(0, beging.lastIndexOf("/"));
-                newPath = beging + "/form/tabs" + end;
-                if (p.getSession().nodeExists(newPath)) {
-                    p.setValue(newPath);
+                String begin = path.substring(0, path.lastIndexOf("/"));
+                String end = path.substring(begin.lastIndexOf("/"));
+                begin = begin.substring(0, begin.lastIndexOf("/"));
+                newPath = begin + "/form/tabs" + end;
+                if (property.getSession().nodeExists(newPath)) {
+                    property.setValue(newPath);
                     continue;
                 }
                 // try with a fields before the last / with a tabs before the 2nd last /
                 newPath = insertBeforeLastSlash(newPath, "/fields");
-                if (p.getSession().nodeExists(newPath)) {
-                    p.setValue(newPath);
+                if (property.getSession().nodeExists(newPath)) {
+                    property.setValue(newPath);
                 } else {
-                    log.warn("Reference from propertyName '{}' to '{}' not found. The initial value will be keeped", p.getPath(), newPath);
+                    log.warn("Reference from propertyName '{}' to '{}' not found. The initial value will be keeped", property.getPath(), newPath);
                 }
             }
         }
@@ -430,9 +431,9 @@ public class DialogMigrationTask extends AbstractTask {
     /**
      * @return true if the path refers to an absolute path, false otherwise.
      */
-    private boolean isAbsoulutePath(Property p, String path) {
+    private boolean isAbsolutePath(Property property, String path) {
         try {
-            p.getSession().nodeExists(path);
+            property.getSession().nodeExists(path);
             return true;
         } catch (RepositoryException e) {
             return false;
@@ -458,9 +459,9 @@ public class DialogMigrationTask extends AbstractTask {
      * Insert the toInsert ("/tabs") before the last /.
      */
     private String insertBeforeLastSlash(String reference, String toInsert) {
-        String beging = reference.substring(0, reference.lastIndexOf("/"));
+        String begin = reference.substring(0, reference.lastIndexOf("/"));
         String end = reference.substring(reference.lastIndexOf("/"));
-        return beging + toInsert + end;
+        return begin + toInsert + end;
     }
 
     /**
@@ -471,21 +472,22 @@ public class DialogMigrationTask extends AbstractTask {
      */
     private void resolveRelativeExtendsPath(Node dialog) {
         try {
-            final String queryString = "SELECT * FROM [nt:base] AS t WHERE   ISDESCENDANTNODE(t, '" + dialog.getPath() + "') AND (" + propertyNameExtends + " is not null OR " + propertyNameReference + " is not null)";
-            NodeIterator iterator = QueryUtil.search(RepositoryConstants.CONFIG, queryString, Query.JCR_SQL2);
+            final String queryString = String.format("SELECT * FROM [nt:base] AS t WHERE ISDESCENDANTNODE(t, '%s') AND (%s is not null OR %s is not null)", dialog.getPath(), PROPERTY_NAME_EXTENDS, PROPERTY_NAME_REFERENCE);
+            final NodeIterator iterator = QueryUtil.search(RepositoryConstants.CONFIG, queryString, Query.JCR_SQL2);
             while (iterator.hasNext()) {
-                Node node = iterator.nextNode();
-                String propertyValue = PropertyUtil.getString(node, propertyNameExtends);
-                Property property = null;
+                final Node node = iterator.nextNode();
+                String propertyValue = PropertyUtil.getString(node, PROPERTY_NAME_EXTENDS);
 
+                Property property;
                 if (StringUtils.isNotBlank(propertyValue)) {
-                    property = node.getProperty(propertyNameExtends);
+                    property = node.getProperty(PROPERTY_NAME_EXTENDS);
                 } else {
-                    propertyValue = PropertyUtil.getString(node, propertyNameReference);
-                    property = node.getProperty(propertyNameReference);
+                    propertyValue = PropertyUtil.getString(node, PROPERTY_NAME_REFERENCE);
+                    property = node.getProperty(PROPERTY_NAME_REFERENCE);
                 }
+
                 // Check if it's a relative path
-                if (StringUtils.isNotBlank(propertyValue) && !isAbsoulutePath(property, propertyValue) && node.hasNode(propertyValue)) {
+                if (StringUtils.isNotBlank(propertyValue) && !isAbsolutePath(property, propertyValue) && node.hasNode(propertyValue)) {
                     property.setValue(node.getNode(propertyValue).getPath());
                     log.info("Change propertyValue of '{}' from '{}' to '{}'", property.getPath(), propertyValue, node.getNode(propertyValue).getPath());
                 }
