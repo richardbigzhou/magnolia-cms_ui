@@ -253,7 +253,7 @@ public class DialogMigrationTask extends AbstractTask {
      */
     private void handleAction(Node dialog) throws RepositoryException {
         // Create actions node
-        dialog.addNode("actions", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(dialog, "actions", NodeTypes.ContentNode.NAME);
         Node actionsNode = dialog.getNode("actions");
 
         List<ActionCreator> actions = dialogActionsToMigrate.get(defaultDialogActions);
@@ -272,9 +272,9 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle Tabs.
      */
     private void handleTabs(Node dialog, Iterator<Node> tabNodes) throws RepositoryException {
-        Node form = dialog.addNode("form", NodeTypes.ContentNode.NAME);
+        Node form = NodeUtil.createPath(dialog, "form", NodeTypes.ContentNode.NAME);
         handleFormLabels(dialog, form);
-        Node dialogTabs = form.addNode("tabs", NodeTypes.ContentNode.NAME);
+        Node dialogTabs = NodeUtil.createPath(form, "tabs", NodeTypes.ContentNode.NAME);
         while (tabNodes.hasNext()) {
             Node tab = tabNodes.next();
             // Handle Fields Tab
@@ -308,30 +308,28 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle a Tab.
      */
     private void handleTab(Node tab) throws RepositoryException {
-        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty(PROPERTY_NAME_EXTENDS))) {
-            if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
-                // Remove controlType Property
-                tab.getProperty("controlType").remove();
-            }
-            // get all controls to be migrated
-            Iterator<Node> controls = NodeUtil.getNodes(tab, NodeTypes.ContentNode.NAME).iterator();
+        if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
+            // Remove controlType Property
+            tab.getProperty("controlType").remove();
+        }
+
+        // get all controls to be migrated
+        final Iterator<Node> controls = NodeUtil.getNodes(tab, NodeTypes.ContentNode.NAME).iterator();
+        if (controls.hasNext()) {
             // create a fields Node
-            Node fields = tab.addNode("fields", NodeTypes.ContentNode.NAME);
+            final Node fields = NodeUtil.createPath(tab, "fields", NodeTypes.ContentNode.NAME);
 
             while (controls.hasNext()) {
-                Node control = controls.next();
+                final Node control = controls.next();
                 // Handle fields
                 handleField(control);
                 // Move to fields
                 NodeUtil.moveNode(control, fields);
             }
-        } else if (tab.hasNode("inheritable")) {
-            // Handle inheritable
-            Node inheritable = tab.getNode("inheritable");
-            handleExtendsAndReference(inheritable);
-        } else {
-            handleExtendsAndReference(tab);
         }
+
+        // Handle inheritable
+        handleExtendsAndReference(tab.hasNode("inheritable") ? tab.getNode("inheritable") : tab);
     }
 
     /**
@@ -352,12 +350,10 @@ public class DialogMigrationTask extends AbstractTask {
                 }
                 log.warn("No field defined for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
             }
-        } else {
-            // Handle Field Extends/Reference
-            handleExtendsAndReference(fieldNode);
         }
+        // Handle Field Extends/Reference
+        handleExtendsAndReference(fieldNode);
     }
-
 
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
@@ -396,8 +392,15 @@ public class DialogMigrationTask extends AbstractTask {
                 continue;
             }
             if (!isAbsolutePath(property, path)) {
-                log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", property.getPath(), path);
-                continue;
+                try {
+                    String newPath = property.getNode().getNode(path).getPath();
+                    property.setValue(newPath);
+                    log.info("Updated extends from parent relative path of node '{}' with original path '{}' by new path '{}'.", property.getPath(), path, newPath);
+                    path = newPath;
+                } catch (RepositoryException re) {
+                    log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", property.getPath(), path);
+                    continue;
+                }
             }
 
             if (!property.getSession().nodeExists(path)) {
