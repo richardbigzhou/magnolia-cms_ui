@@ -20,28 +20,6 @@
       <scope>singleton</scope>
     </component>
 
-    <!-- i18n -->
-    <component>
-      <type>info.magnolia.i18nsystem.LocaleProvider</type>
-      <implementation>info.magnolia.i18nsystem.ContextLocaleProvider</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.i18nsystem.TranslationService</type>
-      <implementation>info.magnolia.i18nsystem.TranslationServiceImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.i18nsystem.DefaultMessageBundlesLoader</type>
-      <implementation>info.magnolia.i18nsystem.DefaultMessageBundlesLoader</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.i18nsystem.I18nizer</type>
-      <implementation>info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.i18nsystem.SimpleTranslator</type>
-      <implementation>info.magnolia.i18nsystem.SimpleTranslator</implementation>
-    </component>
-
     <!-- Ui framework -->
     <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
