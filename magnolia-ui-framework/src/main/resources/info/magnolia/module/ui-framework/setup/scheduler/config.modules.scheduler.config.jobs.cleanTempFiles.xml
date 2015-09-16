@@ -6,6 +6,9 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>45e94e37-db41-48cf-8715-6b76b4cdf061</sv:value>
   </sv:property>
+  <sv:property sv:name="active" sv:type="Boolean">
+    <sv:value>true</sv:value>
+  </sv:property>
   <sv:property sv:name="command" sv:type="String">
     <sv:value>cleanTempFiles</sv:value>
   </sv:property>
@@ -14,9 +17,6 @@
   </sv:property>
   <sv:property sv:name="description" sv:type="String">
     <sv:value>cleans temp files older than 12 hours once per 12 hours</sv:value>
-  </sv:property>
-  <sv:property sv:name="enabled" sv:type="Boolean">
-    <sv:value>true</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
