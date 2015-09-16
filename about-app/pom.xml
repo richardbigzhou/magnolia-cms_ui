@@ -3,7 +3,7 @@
   <parent>
     <artifactId>magnolia-ui-project</artifactId>
     <groupId>info.magnolia.ui</groupId>
-    <version>5.3.11-SNAPSHOT</version>
+    <version>5.3.11</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>info.magnolia.about</groupId>
