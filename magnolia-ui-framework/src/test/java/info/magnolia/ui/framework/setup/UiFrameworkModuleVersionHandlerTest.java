@@ -383,7 +383,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("command", "cleanTempFiles"));
         assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("cron", "0 0 0/12 1/1 * ? *"));
         assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("description", "cleans temp files older than 12 hours once per 12 hours"));
-        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("enabled", true));
+        assertThat(session.getNode("/modules/scheduler/config/jobs/cleanTempFiles"), hasProperty("active", true));
     }
 
     @Test
