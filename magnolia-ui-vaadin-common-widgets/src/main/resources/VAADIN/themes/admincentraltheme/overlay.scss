@@ -28,7 +28,6 @@
     overflow:visible;
 }
 
-.overlay.modality-light .modal-curtain,
 .overlay.modality-strong .modal-curtain
 {
     position:absolute;
@@ -46,7 +45,7 @@
 }
 
 .overlay.modality-light .modal-curtain{
-    background-color:transparent;
+    display: none;
 }
 
 .v-panel-content-overlay-child {
