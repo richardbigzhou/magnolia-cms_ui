@@ -305,9 +305,8 @@
 /* light dialog */
 
   .light {
-    position: absolute;
-    top: 74px;
-    width: 600px !important;
+    margin-top: 74px;
+    padding: 0 15px;
   }
 
   .light .dialog-wrapper{
