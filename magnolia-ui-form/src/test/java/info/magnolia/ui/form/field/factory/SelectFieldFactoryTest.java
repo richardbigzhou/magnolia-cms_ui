@@ -395,7 +395,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         dialogSelect.setComponentProvider(componentProvider);
 
 
-
         // WHEN
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
@@ -405,6 +404,39 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         assertThat(field.getValue().toString(), is("1"));
     }
 
+    @Test
+    public void createFieldSortsOptionsByNullSafeLabelComparator() throws Exception {
+        // GIVEN
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+
+        SelectFieldOptionDefinition nullOption = new SelectFieldOptionDefinition();
+        nullOption.setLabel(null);
+        nullOption.setValue("1");
+        options.add(nullOption);
+
+        SelectFieldOptionDefinition emptyOption = new SelectFieldOptionDefinition();
+        emptyOption.setLabel("");
+        emptyOption.setValue("2");
+        options.add(emptyOption);
+
+        SelectFieldOptionDefinition blankOption = new SelectFieldOptionDefinition();
+        blankOption.setLabel("   ");
+        blankOption.setValue("3");
+        options.add(blankOption);
+
+        definition.setOptions(options);
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+
+        // THEN
+        Collection<String> items = (Collection<String>) field.getItemIds();
+
+        assertThat(items, contains("1", "2", "3"));
+        assertThat(field.getValue().toString(), is("1"));
+    }
 
     public static class TestComparator implements Comparator<SelectFieldOptionDefinition> {
 
