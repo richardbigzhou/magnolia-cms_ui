@@ -88,7 +88,7 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        final Transformer<?> transformer = this.componentProvider.newInstance(transformerClass, item, definition, defineType(), Components.getComponent(I18NAuthoringSupport.class));
+        final Transformer<?> transformer = componentProvider.newInstance(transformerClass, item, definition, defineType(), Components.getComponent(I18NAuthoringSupport.class));
         transformer.setLocale(getLocale());
         return transformer;
     }

@@ -51,6 +51,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
@@ -135,7 +136,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
                 Collections.sort(options, comparator);
             } else {
-                Collections.sort(options);
+                Collections.sort(options, new DefaultOptionComparator());
             }
         }
         if (!options.isEmpty()) {
@@ -352,5 +353,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      */
     protected String getRemoteOptionsValue(Node option, String propertyName) throws RepositoryException {
         return getRemoteOptionsName(option, propertyName);
+    }
+
+    /**
+     * A null safe comparator based on the label.
+     */
+    public static class DefaultOptionComparator implements Comparator<SelectFieldOptionDefinition> {
+
+        @Override
+        public int compare(SelectFieldOptionDefinition def, SelectFieldOptionDefinition otherDef) {
+            // Null safe comparison of Comparables. null is assumed to be less than a non-null value.
+            return ComparatorUtils.nullLowComparator(String.CASE_INSENSITIVE_ORDER).compare(def.getLabel(), otherDef.getLabel());
+        }
     }
 }

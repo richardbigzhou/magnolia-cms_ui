@@ -95,7 +95,11 @@ public class SelectFieldOptionDefinition implements Comparable<SelectFieldOption
         this.iconSrc = iconSrc;
     }
 
+    /**
+     * @deprecated since 5.4.3, please use {@link info.magnolia.ui.form.field.factory.SelectFieldFactory.DefaultOptionComparator} instead.
+     */
     @Override
+    @Deprecated
     public int compareTo(SelectFieldOptionDefinition arg) {
         return this.label.compareToIgnoreCase(arg.getLabel());
     }

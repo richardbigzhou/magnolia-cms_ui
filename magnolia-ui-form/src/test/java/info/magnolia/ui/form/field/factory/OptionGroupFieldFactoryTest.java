@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -56,7 +55,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void simpleRadioFieldTest() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field<?> field = dialogSelect.createField();
@@ -70,7 +69,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void testNoPreselectedRadioField() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -84,7 +83,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         definition.getOptions().get(2).setSelected(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -98,7 +97,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         // we keep baseItem as a regular JcrNodeAdapter here
         definition.getOptions().get(2).setSelected(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -111,7 +110,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -132,7 +131,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         option2.setSelected(true);
 
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -151,7 +150,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         option2.setSelected(true);
 
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, componentProvider);
 
         // WHEN
         Field field = dialogSelect.createField();
