@@ -53,6 +53,7 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,8 +130,10 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
      * Get i18n Template title.
      */
     // FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
-    public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
-        Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
-        return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
+    public static synchronized String getI18nTitle(TemplateDefinition definition) {
+        Messages messages = MessagesManager.getMessages(definition.getI18nBasename());
+        // fallback to name or id (the latter should never be null) in case title is blank.
+        String templateTitle = StringUtils.isNotBlank(definition.getTitle()) ? definition.getTitle() : StringUtils.isNotBlank(definition.getName()) ? definition.getName() : definition.getId();
+        return messages.getWithDefault(templateTitle, templateTitle);
     }
 }
