@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
@@ -76,8 +77,8 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         // THEN
         assertTrue(field instanceof ComboBox);
         Collection<?> items = ((ComboBox) field).getItemIds();
-        assertEquals(3, items.size());
-        assertEquals("1", field.getValue().toString());
+        assertThat(items.size(), is(3));
+        assertThat(field.getValue().toString(), is("1"));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN first option is selected
-        assertEquals("1", field.getValue().toString());
+        assertThat(field.getValue().toString(), is("1"));
     }
 
     @Test
@@ -144,7 +145,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals("3", field.getValue().toString());
+        assertThat(field.getValue().toString(), is("3"));
     }
 
     @Test
@@ -170,9 +171,9 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        Collection<?> items = ((ComboBox) field).getItemIds();
-        assertEquals(2, items.size());
-        assertEquals("en", field.getValue().toString());
+        Collection<String> items = ((Collection<String>) ((ComboBox) field).getItemIds());
+        assertThat(items, contains("en", "fr"));
+        assertThat(field.getValue().toString(), is("en"));
     }
 
     @Test
@@ -199,8 +200,8 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         // THEN
         Collection<?> items = ((ComboBox) field).getItemIds();
-        assertEquals("Only get one option as fr option node is not of 'mgnl' type", 1, items.size());
-        assertEquals("en", field.getValue().toString());
+        assertThat("Only get one option as fr option node is not of 'mgnl' type", items.size(), is(1));
+        assertThat(field.getValue().toString(), is("en"));
     }
 
     @Test
@@ -231,9 +232,9 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        Collection<?> items = ((ComboBox) field).getItemIds();
-        assertEquals(2, items.size());
-        assertEquals("fr", field.getValue().toString());
+        Collection<String> items = ((Collection<String>) ((ComboBox) field).getItemIds());
+        assertThat(items, contains("en", "fr"));
+        assertThat(field.getValue().toString(), is("fr"));
     }
 
     @Test
@@ -265,13 +266,9 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
         // THEN
-        String[] items = field.getItemIds().toArray(new String[] {});
-
-        // we need to use the values here to ensure the options are sorted as expected
-        assertEquals("2", items[0]);
-        assertEquals("1", items[1]);
-        assertEquals("3", items[2]);
-        assertEquals("2", field.getValue().toString());
+        Collection<String> items = (Collection<String>) field.getItemIds();
+        assertThat(items, contains("2", "1", "3"));
+        assertThat(field.getValue().toString(), is("2"));
     }
 
     @Test
@@ -305,12 +302,9 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
         // THEN
-        String[] items = field.getItemIds().toArray(new String[] {});
-
-        assertEquals("1", items[0]);
-        assertEquals("2", items[1]);
-        assertEquals("3", items[2]);
-        assertEquals("1", field.getValue().toString());
+        Collection<String> items = (Collection<String>) field.getItemIds();
+        assertThat(items, contains("1", "2", "3"));
+        assertThat(field.getValue().toString(), is("1"));
     }
 
     @Test
@@ -328,7 +322,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Object defaultValue = dialogSelect.createDefaultValue(dataSource);
 
         // THEN
-        assertEquals("1", defaultValue.toString());
+        assertThat(defaultValue.toString(), is("1"));
     }
 
     @Override
@@ -404,16 +398,9 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
         // THEN
-        String[] items = field.getItemIds().toArray(new String[] {});
-
-        // we need to use the values here to ensure the options are sorted as expected
-        assertEquals("1", items[0]);
-        assertEquals("6", items[1]);
-        assertEquals("2", items[2]);
-        assertEquals("5", items[3]);
-        assertEquals("3", items[4]);
-        assertEquals("4", items[5]);
-        assertEquals("1", field.getValue().toString());
+        Collection<String> items = (Collection<String>) field.getItemIds();
+        assertThat(items, contains("1", "6", "2", "5", "3", "4"));
+        assertThat(field.getValue().toString(), is("1"));
     }
 
 
