@@ -97,7 +97,6 @@ public class TemplateSelectorFieldFactoryTest {
         // GIVEN
         templateDefinition.setId("foo");
         templateDefinition.setTitle("bar");
-        templateDefinition.setName("baz");
         templates.add(templateDefinition);
 
         // WHEN
@@ -108,26 +107,10 @@ public class TemplateSelectorFieldFactoryTest {
     }
 
     @Test
-    public void optionDefinitionFallsbackToName() throws Exception {
-        // GIVEN
-        templateDefinition.setId("foo");
-        templateDefinition.setTitle(null);
-        templateDefinition.setName("baz");
-        templates.add(templateDefinition);
-
-        // WHEN
-        List<SelectFieldOptionDefinition> defs = templateFieldFactory.getSelectFieldOptionDefinition();
-
-        // THEN
-        assertThat(defs.get(0).getLabel(), is("baz"));
-    }
-
-    @Test
     public void optionDefinitionFallsbackToId() {
         // GIVEN
         templateDefinition.setId("foo");
         templateDefinition.setTitle(null);
-        templateDefinition.setName(null);
         templates.add(templateDefinition);
 
         // WHEN

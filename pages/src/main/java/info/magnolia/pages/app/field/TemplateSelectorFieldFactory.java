@@ -132,8 +132,8 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
     // FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
     public static synchronized String getI18nTitle(TemplateDefinition definition) {
         Messages messages = MessagesManager.getMessages(definition.getI18nBasename());
-        // fallback to name or id (the latter should never be null) in case title is blank.
-        String templateTitle = StringUtils.isNotBlank(definition.getTitle()) ? definition.getTitle() : StringUtils.isNotBlank(definition.getName()) ? definition.getName() : definition.getId();
+        // fallback to id (the latter should never be null) in case title is blank.
+        String templateTitle = StringUtils.isNotBlank(definition.getTitle()) ? definition.getTitle() : definition.getId();
         return messages.getWithDefault(templateTitle, templateTitle);
     }
 }
