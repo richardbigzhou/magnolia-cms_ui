@@ -58,9 +58,9 @@ import com.vaadin.data.Item;
  * Configurable confirmation action. Can be used to intercept the actual action with user feedback.
  * Allows configuration of a success action and a cancel action.
  * 
- * @see ConfirmationActionDefinition
+ * @param <D> {@link ConfirmationActionDefinition}.
  */
-public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinition> {
+public class ConfirmationAction<D extends ConfirmationActionDefinition> extends AbstractAction<D> {
 
     private static final Logger log = LoggerFactory.getLogger(ConfirmationAction.class);
 
@@ -70,7 +70,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     private final SimpleTranslator i18n;
     private ContentConnector contentConnector;
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, Item item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
+    public ConfirmationAction(D definition, Item item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition);
         this.contentConnector = contentConnector;
         this.items = Arrays.asList(item);
@@ -80,7 +80,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     }
 
     @Inject
-    public ConfirmationAction(ConfirmationActionDefinition definition, List<? extends Item> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
+    public ConfirmationAction(D definition, List<? extends Item> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
