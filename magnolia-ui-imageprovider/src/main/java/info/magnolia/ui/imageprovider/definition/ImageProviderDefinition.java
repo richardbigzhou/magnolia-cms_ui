@@ -42,7 +42,7 @@ public interface ImageProviderDefinition {
 
     static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
     static final String IMAGING_SERVLET_PATH = ".imaging";
-    static final String IMAGE_EXTENSION = "png";
+    static final String IMAGE_EXTENSION = "jpg";
 
     /**
      * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.

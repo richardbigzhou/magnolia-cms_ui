@@ -121,7 +121,7 @@ public class DefaultImageProviderTest {
         final String result = imageProvider.getThumbnailPath(itemId);
 
         // THEN
-        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.png", result);
+        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.jpg", result);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class DefaultImageProviderTest {
         final String result = imageProvider.getThumbnailPath(itemId);
 
         // THEN
-        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/myNode.png", result);
+        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/myNode.jpg", result);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class DefaultImageProviderTest {
         final String result = imageProvider.getPortraitPath(itemId);
 
         // THEN
-        assertEquals("/foo/.imaging/portrait/test/" + imageNodeUuid + "/MaxMustermann.png", result);
+        assertEquals("/foo/.imaging/portrait/test/" + imageNodeUuid + "/MaxMustermann.jpg", result);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class DefaultImageProviderTest {
         // THEN
         assertNotNull(resource);
         assertTrue(resource instanceof ExternalResource);
-        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.png", ((ExternalResource) resource).getURL());
+        assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.jpg", ((ExternalResource) resource).getURL());
     }
 
     @Test

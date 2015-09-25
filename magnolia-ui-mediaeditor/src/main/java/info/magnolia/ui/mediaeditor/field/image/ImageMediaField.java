@@ -62,7 +62,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public abstract class ImageMediaField extends CustomField<byte[]> implements MediaField, Scalable {
 
-    protected final static String DEFAULT_FORMAT = "png";
+    protected final static String DEFAULT_FORMAT = "jpg";
 
     protected final static String TEMP_FILE_NAME_BASE = "image_media_editor";
 
