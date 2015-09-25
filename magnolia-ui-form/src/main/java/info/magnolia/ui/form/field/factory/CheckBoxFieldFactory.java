@@ -84,18 +84,26 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     public Field<Boolean> createField() {
         super.createField();
         if (definition.isI18n()) {
-            if (item instanceof JcrItemAdapter) {
-                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
-                if (jcrItem.isNode()) {
-                    Node node = (Node) jcrItem;
-                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
-                    Locale defaultLocale = getDefaultLocale(node);
-                    for (Locale locale : locales) {
-                        if (!locale.getLanguage().equals(defaultLocale.getLanguage())) {
-                            Property<?> property = initializeLocalizedProperty(locale);
-                            setPropertyDataSourceAndDefaultValue(property);
-                        }
-                    }
+            if (!(item instanceof JcrItemAdapter)) {
+                return field;
+            }
+
+            javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
+            if (!jcrItem.isNode()) {
+                return field;
+            }
+
+            Node node = (Node) jcrItem;
+            List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(node);
+            if (locales == null) {
+                return field;
+            }
+
+            Locale defaultLocale = getDefaultLocale(node);
+            for (Locale locale : locales) {
+                if (!locale.getLanguage().equals(defaultLocale.getLanguage())) {
+                    Property<?> property = initializeLocalizedProperty(locale);
+                    setPropertyDataSourceAndDefaultValue(property);
                 }
             }
         }
@@ -143,11 +151,12 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     /**
      * @deprecated since 5.4 - once interface method <code>getDefaultLocale(Node)</code> is added to I18nAuthoringSupport, remove.
      */
+    @Deprecated
     private Locale getDefaultLocale(Node node) {
         try {
-            Method methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[]{Node.class});
+            Method methodToFind = i18nAuthoringSupport.getClass().getDeclaredMethod("getDefaultLocale", new Class[] { Node.class });
             if (methodToFind != null) {
-                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[]{node});
+                return (Locale) methodToFind.invoke(i18nAuthoringSupport, new Object[] { node });
             }
         } catch (NoSuchMethodException e) {
             log.error("Error getting method 'getDefaultLocale(Node)' from I18nAuthoringSupport", e);
