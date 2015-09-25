@@ -134,6 +134,22 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         assertEquals(true, baseItem.getItemProperty("propertyName_de").getValue());
     }
 
+    @Test
+    public void testI18nCheckboxIsDisabledWhenI18nSystemIsDisabled() throws Exception {
+        // GIVEN
+        definition.setDefaultValue("true");
+        definition.setI18n(true);
+
+        when(i18NAuthoringSupport.getAvailableLocales(((Node) ((JcrItemAdapter) baseItem).getJcrItem()))).thenReturn(null);
+
+        // WHEN
+        checkBoxField.createField();
+
+        // THENbaseItem
+        assertEquals(true, baseItem.getItemProperty("propertyName").getValue());
+        assertEquals(1, baseItem.getItemPropertyIds().size());
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         CheckboxFieldDefinition fieldDefinition = new CheckboxFieldDefinition();
