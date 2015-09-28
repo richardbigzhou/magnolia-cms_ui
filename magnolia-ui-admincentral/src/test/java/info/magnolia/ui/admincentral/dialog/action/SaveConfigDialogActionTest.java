@@ -33,31 +33,23 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlUser;
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.event.Event;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.EventHandler;
-import info.magnolia.event.HandlerRegistration;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
@@ -70,87 +62,52 @@ import com.vaadin.data.Item;
  */
 public class SaveConfigDialogActionTest extends MgnlTestCase {
 
-    private SaveConfigDialogAction dialogAction;
-    private SaveConfigDialogActionDefinition dialogActionDefinition;
-    private CallbackDialogActionTest.FormDialogPresenterTest presenter;
-    private Node node;
-    private Item item;
-    private MockSession session;
-    private TestEventBus subAppEventBus;
+    private final SaveConfigDialogActionDefinition definition = new SaveConfigDialogActionDefinition();
+    private EditorCallback callback;
+    private EditorValidator validator;
+    private EventBus subAppEventBus;
+    private Session session;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
-        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        callback = mock(EditorCallback.class);
+        validator = mock(EditorValidator.class);
+        doReturn(true).when(validator).isValid();
+        subAppEventBus = mock(EventBus.class);
 
-        dialogActionDefinition = new SaveConfigDialogActionDefinition();
-        dialogActionDefinition.setLabel("label");
-        dialogActionDefinition.setName("name");
-
-        presenter = new CallbackDialogActionTest.FormDialogPresenterTest();
-        // Init Node
+        // Mock session
         session = new MockSession(RepositoryConstants.WEBSITE);
         MockContext ctx = new MockContext();
-        ctx.setUser(new MgnlUser("userName", "realm", new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, String>()));
         ctx.addSession(RepositoryConstants.WEBSITE, session);
         MgnlContext.setInstance(ctx);
 
-        subAppEventBus = new TestEventBus();
     }
 
     @Override
     @After
     public void tearDown() throws Exception {
-        dialogActionDefinition = null;
-        presenter = null;
         session = null;
         subAppEventBus = null;
         MgnlContext.setInstance(null);
     }
 
-    /**
-     * Test if an event is sent when the action is executed.
-     */
     @Test
-    public void testExecuteDefaultExecute() throws RepositoryException, ActionExecutionException {
+    public void executeFiresSelectionChangeEvent() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.setProperty("test", "test");
         node.getSession().save();
-        item = new JcrPropertyAdapter(node.getProperty("test"));
+        Item item = new JcrPropertyAdapter(node.getProperty("test"));
         item.getItemProperty("jcrName").setValue("1");
-        dialogAction = new SaveConfigDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback(), subAppEventBus);
+        SaveConfigDialogAction dialogAction = new SaveConfigDialogAction(definition, item, validator, callback, subAppEventBus);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertTrue(subAppEventBus.getEventFired());
-    }
-
-    /**
-     * Helper so that we can test if an event was fired on an eventbus.
-     */
-    private class TestEventBus implements EventBus {
-
-        private boolean eventFired = false;
-
-        public boolean getEventFired() {
-            return eventFired;
-        }
-
-        @Override
-        public <H extends EventHandler> HandlerRegistration addHandler(Class<? extends Event<H>> eventClass, H handler) {
-            // Do Nothing for the moment.
-            return null;
-        }
-
-        @Override
-        public <H extends EventHandler> void fireEvent(Event<H> event) {
-            eventFired = true;
-        }
+        verify(subAppEventBus, only()).fireEvent(any(SelectionChangedEvent.class));
     }
 
 }

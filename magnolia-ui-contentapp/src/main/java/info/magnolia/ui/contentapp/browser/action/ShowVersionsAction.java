@@ -44,7 +44,6 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
@@ -53,6 +52,7 @@ import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.framework.action.AbstractVersionAction;
+import info.magnolia.ui.framework.action.EditorCallbackActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -117,7 +117,7 @@ public class ShowVersionsAction<D extends ActionDefinition> extends AbstractVers
         dialog.setId(dialogID);
         dialog.setForm(form);
 
-        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
+        EditorCallbackActionDefinition callbackAction = new EditorCallbackActionDefinition();
         callbackAction.setName("commit");
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 

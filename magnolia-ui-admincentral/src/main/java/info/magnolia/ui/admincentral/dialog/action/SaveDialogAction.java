@@ -57,7 +57,7 @@ import com.vaadin.data.Item;
  * @see SaveDialogActionDefinition
  * @param <T> definition type
  */
-public class SaveDialogAction<T extends  SaveDialogActionDefinition> extends AbstractAction<T> {
+public class SaveDialogAction<T extends SaveDialogActionDefinition> extends AbstractAction<T> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 

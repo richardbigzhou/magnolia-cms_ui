@@ -36,8 +36,8 @@ package info.magnolia.ui.form;
 /**
  * Callback invoked when work with a dialog or an editor sub-app is finished. Depending on the
  * result success a corresponding method should be called.
- * @see info.magnolia.ui.form.action.CallbackFormAction
- * @see info.magnolia.ui.admincentral.dialog.action.CallbackDialogAction.
+ *
+ * @see info.magnolia.ui.framework.action.EditorCallbackAction
  */
 public interface EditorCallback {
     void onCancel();
