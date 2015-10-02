@@ -14,6 +14,7 @@
 
 @mixin magnolia {
 
+  @include magnoliaIcons;
   @include base;
   @include commonbase;
 

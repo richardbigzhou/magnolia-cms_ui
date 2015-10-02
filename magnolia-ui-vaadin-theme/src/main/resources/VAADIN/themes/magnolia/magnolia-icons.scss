@@ -9,8 +9,11 @@
   font-style: normal;
 }
 
+@mixin magnoliaIcons {
+
 [class^="icon-"], [class*=" icon-"] {
-  font-family: MagnoliaIcons;
+  /* TODO review the !important directive, do we really need that? */ 
+  font-family: MagnoliaIcons !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -667,4 +670,6 @@
 }
 .icon-shape-triangle:before {
   content: "\e0c6";
+}
+
 }

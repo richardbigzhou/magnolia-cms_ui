@@ -33,6 +33,11 @@ a.disabled:hover {
  * General appearance of edit bar.
  */
 div.mgnlEditorBar {
+  @include magnoliaIcons;
+  div.editorIcon {
+    line-height: inherit !important;
+  }
+
   /* Change the box model to include borders and paddings in the width and height set. */
   /* Allows here for a more intuitive handling of place holder heights and widths. */
   -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
@@ -188,7 +193,6 @@ div.mgnlEditorBarButtons {
  */
 div.editorIcon {
   -webkit-backface-visibility: hidden;
-  line-height: inherit;
   padding: 0 0 0 11px !important;
   cursor: pointer !important;
   font-size: 18px !important;
