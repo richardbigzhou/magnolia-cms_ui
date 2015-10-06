@@ -61,15 +61,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The WorkbenchPresenter is responsible for creating, configuring and updating the workbench view, as well as handling its interaction.
  */
 public class WorkbenchPresenter implements WorkbenchView.Listener {
-
-    private static final Logger log = LoggerFactory.getLogger(WorkbenchPresenter.class);
 
     private final WorkbenchView view;
 
@@ -101,6 +97,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         sanityCheck(workbenchDefinition);
 
+        // find default viewType
+        String defaultViewType = getDefaultViewType();
+
         // add content views
         for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
             ContentPresenter presenter;
@@ -110,14 +109,18 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
                 ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), contentConnector);
 
-                if (presenterDefinition.isActive()) {
-                    activePresenter = presenter;
-                    List<Object> ids = new ArrayList<Object>(1);
-                    Object workbenchRootItemId = resolveWorkbenchRoot();
-                    ids.add(workbenchRootItemId);
-                    activePresenter.setSelectedItemIds(ids);
+                // use new #addContentView (doesn't require the content-view definition anymore)
+                if (view instanceof WorkbenchViewImpl) {
+                    ((WorkbenchViewImpl) view).addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition.getIcon());
+                } else {
+                    // will be deprecated
+                    view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
                 }
-                view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
+
+                if (presenterDefinition.getViewType().equals(defaultViewType)) {
+                    activePresenter = presenter;
+                    setViewType(presenterDefinition.getViewType());
+                }
 
                 if (presenter instanceof TreePresenter && workbenchDefinition.isDialogWorkbench()) {
                     ((TreePresenter) presenter).disableDragAndDrop();
@@ -127,7 +130,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             }
 
         }
-
 
         if (hasViewType(ListPresenterDefinition.VIEW_TYPE) && hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
             // always include search component in the toolbar search component
@@ -154,13 +156,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return view;
     }
 
+    /**
+     * Returns the default item id of this workbench.
+     * @deprecated since 5.4.3. Method isn't used anymore.
+     */
+    @Deprecated
     public Object resolveWorkbenchRoot() {
         return contentConnector.getDefaultItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
         if (workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+            throw new IllegalArgumentException("Failed to init a workbench: WorkbenchDefinition is null.");
+        } else if (workbenchDefinition.getContentViews() == null || workbenchDefinition.getContentViews().size() == 0) {
+            throw new IllegalArgumentException("Failed to init a workbench: No content-view is configured.");
         }
     }
 
@@ -256,12 +265,12 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public String getDefaultViewType() {
-        for (ContentPresenterDefinition definition : this.workbenchDefinition.getContentViews()) {
+        for (ContentPresenterDefinition definition : workbenchDefinition.getContentViews()) {
             if (definition.isActive()) {
                 return definition.getViewType();
             }
         }
-        return this.workbenchDefinition.getContentViews().get(0).getViewType();
+        return workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
     public boolean hasViewType(String viewType) {
@@ -302,6 +311,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     protected final WorkbenchDefinition getWorkbenchDefinition() {
-        return this.workbenchDefinition;
+        return workbenchDefinition;
     }
 }
