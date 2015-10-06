@@ -141,6 +141,11 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
                 // Eventually check whether all needed rows are now available
                 serveThumbnails();
             }
+
+            @Override
+            public void refresh() {
+                refreshViewport();
+            }
         });
 
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
@@ -157,10 +162,6 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
 
         if (widgetInitialized && stateChangeEvent.hasPropertyChanged("size")) {
             getWidget().initialize(getState().thumbnailAmount, getState().offset, getState().size, getState().scaleRatio, getState().isFirstUpdate);
-        }
-
-        if (widgetInitialized && stateChangeEvent.hasPropertyChanged("thumbnailAmount")) {
-            refreshViewport();
         }
 
         if (widgetInitialized && stateChangeEvent.hasPropertyChanged("selection")) {
@@ -180,11 +181,21 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector imp
     }
 
     private void refreshViewport() {
-        dropFromCache(getWidget().getDisplayedRange());
+        // Clear caches and maps
+        this.cachedThumbnails = Range.between(0, 0);
+        this.idToUrl.clear();
+        this.idToIndex.clear();
+        this.indexToThumbnail.clear();
+
+        // Reset thumbnail amount
+        getWidget().setThumbnailAmount(getState().thumbnailAmount);
+
+        // Previous call would trigger lazy update of the viewport, but we don't need it because we anyway
+        // are going to query the whole visible range => cancel the timer
+        timer.cancel();
         queryThumbnails(getWidget().getDisplayedRange());
     }
 
-    @Override
     public EscalatorThumbnailsPanel getWidget() {
         return (EscalatorThumbnailsPanel) super.getWidget();
     }

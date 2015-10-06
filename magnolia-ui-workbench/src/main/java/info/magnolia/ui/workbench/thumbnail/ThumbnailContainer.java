@@ -49,7 +49,7 @@ import com.vaadin.data.util.AbstractProperty;
 /**
  * Container that provides thumbnails lazily.
  *
- * @deprecated since 5.3.10 in favor of {@link info.magnolia.ui.workbench.thumbnail.data.DelegatingThumbnailContainer}, this container
+ * @deprecated since 5.3.10 in favor of {@link info.magnolia.ui.workbench.thumbnail.JcrThumbnailContainer}, this container
  *             should be avoided as it loads the items eagerly.
  */
 public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object, ThumbnailItem> implements Refreshable, info.magnolia.ui.vaadin.layout.data.ThumbnailContainer {
