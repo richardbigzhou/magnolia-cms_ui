@@ -33,9 +33,13 @@
  */
 package info.magnolia.ui.workbench;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
@@ -102,7 +106,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
             }
         };
 
-        final WorkbenchView view = new WorkbenchViewImpl(mock(SimpleTranslator.class));
+        final WorkbenchView view = new WorkbenchViewImpl();
         final WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
         doReturn(new StatusBarViewImpl() {
             @Override
@@ -134,7 +138,6 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
     @Test
     public void testGetDefaultViewType() {
-
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
@@ -148,6 +151,27 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         assertEquals(TreePresenterDefinition.VIEW_TYPE, viewType);
     }
 
+    /**
+     * Tests whether #getDefaultViewType also works without a TreePresenterDefinition (which is "active" per default)
+     * and whether workbenchDefinition.getContentViews() doesn't automatically adds the tree view anymore.
+     */
+    @Test
+    public void testGetDefaultViewTypeWithoutTree() {
+        // GIVEN
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
+        workbenchDefinition.getContentViews().add(new ThumbnailPresenterDefinition());
+        presenter.start(workbenchDefinition, mock(ImageProviderDefinition.class), mock(EventBus.class));
+
+        // WHEN
+        String defaultViewType = presenter.getDefaultViewType();
+        boolean hasTreeDefined = presenter.hasViewType(TreePresenterDefinition.VIEW_TYPE);
+
+        // THEN
+        assertThat(defaultViewType, is(ListPresenterDefinition.VIEW_TYPE));
+        assertThat(hasTreeDefined , not(true));
+    }
+
     @Test
     public void testHasViewType() {
 
@@ -155,7 +179,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
-        presenter.start(workbenchDefinition, null, null);
+        presenter.start(workbenchDefinition, null, mock(EventBus.class));
 
         // WHEN
         boolean hasTreeView = presenter.hasViewType(TreePresenterDefinition.VIEW_TYPE);

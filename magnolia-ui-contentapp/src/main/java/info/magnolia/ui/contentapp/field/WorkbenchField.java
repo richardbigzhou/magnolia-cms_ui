@@ -41,10 +41,6 @@ import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
@@ -57,8 +53,6 @@ import com.vaadin.ui.CustomField;
 public class WorkbenchField extends CustomField<Object> {
 
     private static final String DEFAULT_HEIGHT = "400px";
-
-    private Logger log = LoggerFactory.getLogger(getClass());
 
     private ImageProviderDefinition imageProvider;
 
@@ -79,10 +73,9 @@ public class WorkbenchField extends CustomField<Object> {
 
     @Override
     protected Component initContent() {
-        ((ConfiguredWorkbenchDefinition)this.workbenchDefinition).setDialogWorkbench(true);
-        this.view = presenter.start(workbenchDefinition, imageProvider, workbenchEventbus);
-        this.view.setViewType(TreePresenterDefinition.VIEW_TYPE);
-        this.view.asVaadinComponent().setHeight(DEFAULT_HEIGHT);
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
+        view = presenter.start(workbenchDefinition, imageProvider, workbenchEventbus);
+        view.asVaadinComponent().setHeight(DEFAULT_HEIGHT);
         presenter.select(getValue());
 
         workbenchEventbus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
@@ -99,7 +92,7 @@ public class WorkbenchField extends CustomField<Object> {
             }
         });
 
-        return this.view.asVaadinComponent();
+        return view.asVaadinComponent();
     }
 
     @Override
