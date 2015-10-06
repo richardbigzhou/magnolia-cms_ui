@@ -213,8 +213,21 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     }
 
+
+    /**
+     * Adds a content view by given view type, content view and content view definition.
+     * @deprecated since 5.4.3. Use addContentView( viewType, view, viewTypeIcon) instead. Interface method will become deprecated on magnolia-ui 5.5.
+     */
+    @Deprecated
     @Override
     public void addContentView(String viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
+        addContentView(viewType, view, contentViewDefintion.getIcon());
+    }
+
+    /**
+     * Adds a content view by given view type, content view and view type icon.
+     */
+    public void addContentView(String viewType, ContentView view, String viewTypeIcon) {
         contentViews.put(viewType, view);
 
         if (view instanceof TreeView) {
@@ -223,23 +236,22 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // display search-box only if both list and search content presenters are configured
         if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {
-            searchBox.setVisible(true);
+            if (toolBar.getComponentCount() > 1) { // components > 1 because first component in the toolbar is switcher between tree/list view
+                toolBar.getComponent(1).setVisible(true);
+            }
         }
 
-        if (contentViewDefintion instanceof SearchPresenterDefinition) {
+        if (SearchPresenterDefinition.VIEW_TYPE.equals(viewType)) {
             // do not add a view-type button for search
             return;
         }
 
         // set button
-        Button button = buildButton(viewType, contentViewDefintion.getIcon(), contentViewDefintion.isActive());
+        Button button = buildButton(viewType, viewTypeIcon);
         contentViewsButton.put(viewType, button);
         viewModes.addComponent(button);
-        // set active
-        if (contentViewDefintion.isActive()) {
-            currentViewType = previousViewType = viewType;
-        }
     }
+
 
     @Override
     public void setViewType(String type) {
@@ -249,12 +261,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // setExpandRatio(c, 1);
         keyboardEventPanel.setContent(c);
 
-        if (!StringUtils.equals(type, SearchPresenterDefinition.VIEW_TYPE)) {
-            previousViewType = type;
+        if (SearchPresenterDefinition.VIEW_TYPE.equals(currentViewType) && !SearchPresenterDefinition.VIEW_TYPE.equals(type)) {
             setSearchQuery(null);
         }
         setViewTypeStyling(type);
-
         currentViewType = type;
     }
 
@@ -289,7 +299,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         this.listener = listener;
     }
 
-    private Button buildButton(final String viewType, final String icon, final boolean active) {
+    private Button buildButton(final String viewType, final String icon) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -300,10 +310,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         button.setHtmlContentAllowed(true);
         button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow view-type-arrow-" + viewType + " icon-arrow2_n\"></span>");
-
-        if (active) {
-            button.addStyleName("active");
-        }
         return button;
     }
 
