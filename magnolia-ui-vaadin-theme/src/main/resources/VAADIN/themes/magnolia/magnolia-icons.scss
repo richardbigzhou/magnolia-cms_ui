@@ -1,19 +1,18 @@
 @font-face {
-  font-family: 'MagnoliaIcons';
-  src: url('fonts/MagnoliaIcons.eot?ovuwp');
-  src: url('fonts/MagnoliaIcons.eot?#iefixovuwp') format('embedded-opentype'),
-    url('fonts/MagnoliaIcons.ttf?ovuwp') format('truetype'),
-    url('fonts/MagnoliaIcons.woff?ovuwp') format('woff'),
-    url('fonts/MagnoliaIcons.svg?ovuwp#MagnoliaIcons') format('svg');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'MagnoliaIcons';
+	src:url('fonts/MagnoliaIcons.eot?d7lfa');
+	src:url('fonts/MagnoliaIcons.eot?d7lfa#iefix') format('embedded-opentype'),
+		url('fonts/MagnoliaIcons.ttf?d7lfa') format('truetype'),
+		url('fonts/MagnoliaIcons.woff?d7lfa') format('woff'),
+		url('fonts/MagnoliaIcons.svg?d7lfa#MagnoliaIcons') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @mixin magnoliaIcons {
 
 [class^="icon-"], [class*=" icon-"] {
-  /* TODO review the !important directive, do we really need that? */ 
-  font-family: MagnoliaIcons !important;
+  font-family: MagnoliaIcons;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -70,9 +69,6 @@
 }
 .icon-configuration-app:before {
   content: "\e00e";
-}
-.icon-templating-app:before {
-  content: "\e00f";
 }
 .icon-security-app:before {
   content: "\e010";
@@ -670,6 +666,75 @@
 }
 .icon-shape-triangle:before {
   content: "\e0c6";
+}
+.icon-resource-files-app:before {
+  content: "\e800"
+}
+.icon-configuration-files-app:before {
+  content: "\e801"
+}
+.icon-web-resources-app:before {
+  content: "\e802"
+}
+.icon-rft-template:before {
+  content: "\e803"
+}
+.icon-rft-configuration-file:before {
+  content: "\e804"
+}
+.icon-rft-web-resource:before {
+  content: "\e805"
+}
+.icon-from-jcr:before {
+  content: "\e806"
+}
+.icon-from-fs:before {
+  content: "\e807"
+}
+.icon-from-classpath:before {
+  content: "\e808"
+}
+.icon-definitions-app:before {
+  content: "\e809"
+}
+.icon-dt-generic-definition:before {
+  content: "\e80a"
+}
+.icon-dt-subapp-definition:before {
+  content: "\e80b"
+}
+.icon-dt-template-definition:before {
+  content: "\e80c"
+}
+.icon-dt-dialog-definition:before {
+  content: "\e80d"
+}
+.icon-dt-form-definition:before {
+  content: "\e80e"
+}
+.icon-dt-form-field-definition:before {
+  content: "\e80f"
+}
+.icon-cut:before {
+  content: "\e810"
+}
+.icon-marker:before {
+  content: "\e811"
+}
+.icon-open:before {
+  content: "\e812"
+}
+.icon-close:before {
+  content: "\e813"
+}
+.icon-leaf-node:before {
+  content: "\e814"
+}
+.icon-reference-node:before {
+  content: "\e815"
+}
+.icon-templating-app:before {
+  content: "\e816"
 }
 
 }
