@@ -236,6 +236,9 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
                 getState().offset = 0;
             }
         }
+
+        synchroniseSelection();
+        clientRpc.refresh();
     }
 
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
@@ -265,14 +268,14 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             throw new IllegalArgumentException("Container must implement info.magnolia.ui.vaadin.layout.data.ThumbnailContainer...");
         }
 
+        if (this.container instanceof Container.ItemSetChangeNotifier) {
+            ((Container.ItemSetChangeNotifier) this.container).removeItemSetChangeListener(this);
+        }
+
         this.container = (ThumbnailContainer) newDataSource;
 
         if (this.container instanceof Container.ItemSetChangeNotifier) {
             ((Container.ItemSetChangeNotifier) this.container).addItemSetChangeListener(this);
-        }
-
-        if (this.container instanceof Container.ItemSetChangeNotifier) {
-            ((Container.ItemSetChangeNotifier) this.container).removeItemSetChangeListener(this);
         }
 
         refresh();
@@ -307,7 +310,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     @Override
     public void containerItemSetChange(Container.ItemSetChangeEvent event) {
         refresh();
-        synchroniseSelection();
     }
 
     @Override
@@ -332,6 +334,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
 
         updateSelectedIds();
+        fireSelectionChange();
     }
 
     /**
