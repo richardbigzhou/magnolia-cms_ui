@@ -36,9 +36,11 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.api.view.View;
 
+import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
+import com.vaadin.ui.Component;
 
 /**
  * A generic pulse item view. An item can be e.g. an error message, a workflow task etc.
@@ -55,6 +57,10 @@ public interface PulseListView extends View {
 
     void setTabActive(PulseItemCategory category);
 
+    void setFooter(Component footer);
+
+    List<Object> getSelectedItemIds();
+
     /**
      * Listener interface to call back to {@link PulseListPresenter}.
      */
@@ -64,11 +70,19 @@ public interface PulseListView extends View {
 
         void onItemClicked(String itemId);
 
+        void onSelectionChanged(Set<String> itemIds);
+
         void setGrouping(boolean checked);
 
+        /**
+         * @deprecated since 5.4.3. Bulk actions on footer now configurable. So, this function moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.message.action.DeleteMessagesAction}.
+         */
+        @Deprecated
         void deleteItems(Set<String> itemsIds);
 
         long getTotalEntriesAmount();
+
+        void onItemSetChanged(long totalEntriesAmount);
     }
 
 }

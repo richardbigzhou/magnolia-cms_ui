@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -46,17 +47,20 @@ import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.task.event.TaskEvent;
 import info.magnolia.task.event.TaskEventHandler;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListActionExecutor;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.TaskUiDefinition;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -79,14 +83,26 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     private final ComponentProvider componentProvider;
     private final SimpleTranslator i18n;
     private final String userId;
-    private final PulseListDefinition definition;
     private final EventBus admincentralEventBus;
+
+    /**
+     * @deprecated since 5.4.3.
+     */
+    @Deprecated
+    public TasksListPresenter(final TasksContainer container, final TasksListView view, final ShellImpl shellImpl, final TasksManager tasksManager,
+            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
+            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition) {
+        this(container, view, shellImpl, tasksManager, taskDefinitionRegistry, componentProvider, i18n, context, admincentralEventBus, definition,
+                componentProvider.getComponent(AvailabilityChecker.class), componentProvider.getComponent(PulseListActionExecutor.class),
+                componentProvider.getComponent(PulseListFooterPresenter.class), componentProvider.getComponent(I18nizer.class));
+    }
 
     @Inject
     public TasksListPresenter(final TasksContainer container, final TasksListView view, final ShellImpl shellImpl, final TasksManager tasksManager,
-                              final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
-                              @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition) {
-        super(container);
+            final TaskDefinitionRegistry taskDefinitionRegistry, final ComponentProvider componentProvider, final SimpleTranslator i18n, Context context,
+            @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, ConfiguredPulseListDefinition definition,
+            AvailabilityChecker availabilityChecker, PulseListActionExecutor pulseListActionExecutor, PulseListFooterPresenter pulseListFooterPresenter, I18nizer i18nizer) {
+        super(container, i18nizer.decorate(definition), availabilityChecker, pulseListActionExecutor, pulseListFooterPresenter);
         this.view = view;
         this.shell = shellImpl;
         this.tasksManager = tasksManager;
@@ -95,20 +111,20 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
         this.i18n = i18n;
         this.userId = context.getUser().getName();
         this.admincentralEventBus = admincentralEventBus;
-        this.definition = definition;
 
         admincentralEventBus.addHandler(TaskEvent.class, this);
     }
 
     @Override
     public View start() {
-
         view.setListener(this);
-        view.setTaskListener(this);
         view.setDataSource(container.getVaadinContainer());
+        View footer = pulseListFooterPresenter.start(definition.getBulkActions(), getTotalEntriesAmount());
+        view.setFooter(footer.asVaadinComponent());
 
         updateView();
         filterByItemCategory(PulseItemCategory.UNCLAIMED);
+
         return view;
     }
 
@@ -145,6 +161,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     }
 
     @Override
+    @Deprecated
     public void deleteItems(final Set<String> itemIds) {
         if (itemIds == null || itemIds.isEmpty()) {
             return;
@@ -166,6 +183,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     }
 
     @Override
+    @Deprecated
     public void claimTask(final Set<String> itemIds) {
         if (itemIds == null || itemIds.isEmpty()) {
             return;
@@ -215,10 +233,13 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     }
 
     @Override
-    public void taskArchived(TaskEvent taskEvent) {}
+    public void taskArchived(TaskEvent taskEvent) {
+        refreshData();
+    }
 
     @Override
-    public void taskRemoved(TaskEvent taskEvent) {}
+    public void taskRemoved(TaskEvent taskEvent) {
+    }
 
     @Override
     public void taskScheduled(TaskEvent taskEvent) {
@@ -230,6 +251,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     private void refreshData() {
         listener.updatePulseCounter();
         container.refresh();
+        updateView();
     }
 
     @Override
@@ -269,6 +291,11 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
         default:
             break;
         }
+    }
+
+    @Override
+    protected List<Object> getSelectedItemIds() {
+        return view.getSelectedItemIds();
     }
 
 }

@@ -34,6 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Configured {@link PulseListDefinition}.
@@ -42,6 +46,7 @@ public class ConfiguredPulseListDefinition implements PulseListDefinition {
 
     private String name;
     private Class<? extends PulseListPresenter> presenterClass;
+    private List<ActionDefinition> bulkActions = new ArrayList<>();
 
     @Override
     public String getName() {
@@ -60,4 +65,14 @@ public class ConfiguredPulseListDefinition implements PulseListDefinition {
     public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
         this.presenterClass = presenterClass;
     }
+
+    @Override
+    public List<ActionDefinition> getBulkActions() {
+        return bulkActions;
+    }
+
+    public void setBulkActions(List<ActionDefinition> bulkActions) {
+        this.bulkActions = bulkActions;
+    }
+
 }

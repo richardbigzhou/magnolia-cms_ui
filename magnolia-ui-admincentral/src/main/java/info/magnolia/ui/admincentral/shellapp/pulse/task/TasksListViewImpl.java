@@ -40,7 +40,6 @@ import info.magnolia.task.Task.Status;
 import info.magnolia.ui.admincentral.shellapp.pulse.data.PulseConstants;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import javax.inject.Inject;
@@ -60,15 +59,14 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class TasksListViewImpl extends AbstractPulseListView implements TasksListView {
 
-    private static final String[] order = new String[]{NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID};
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TASK_PROPERTY_ID, STATUS_PROPERTY_ID, SENDER_PROPERTY_ID, SENT_TO_PROPERTY_ID, ASSIGNED_TO_PROPERTY_ID, LAST_CHANGE_PROPERTY_ID };
 
     @Inject
     public TasksListViewImpl(SimpleTranslator i18n) {
         super(i18n, order,
-                new String[]{i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange")},
+                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.tasks.task"), i18n.translate("pulse.tasks.status"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.tasks.sentTo"), i18n.translate("pulse.tasks.assignedTo"), i18n.translate("pulse.tasks.lastChange") },
                 i18n.translate("pulse.tasks.empty"),
                 PulseItemCategory.UNCLAIMED, PulseItemCategory.ONGOING, PulseItemCategory.DONE, PulseItemCategory.FAILED, PulseItemCategory.SCHEDULED, PulseItemCategory.ALL_TASKS);
-        setFooter(new PulseListFooter(getItemTable(), i18n, true));
         constructTable();
     }
 
@@ -164,7 +162,6 @@ public final class TasksListViewImpl extends AbstractPulseListView implements Ta
 
     @Override
     public void setTaskListener(TasksListView.Listener listener) {
-        getFooter().setTasksListener(listener);
     }
 
     /**

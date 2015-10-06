@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListView;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListFooter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.data.MessageConstants;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
@@ -58,16 +57,15 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public final class MessagesListViewImpl extends AbstractPulseListView implements MessagesListView {
 
-    private static final String[] order = new String[]{MessageConstants.NEW_PROPERTY_ID, MessageConstants.TYPE_PROPERTY_ID, MessageConstants.TEXT_PROPERTY_ID, MessageConstants.SENDER_PROPERTY_ID, MessageConstants.DATE_PROPERTY_ID};
+    private static final String[] order = new String[] { MessageConstants.NEW_PROPERTY_ID, MessageConstants.TYPE_PROPERTY_ID, MessageConstants.TEXT_PROPERTY_ID, MessageConstants.SENDER_PROPERTY_ID, MessageConstants.DATE_PROPERTY_ID };
 
     @Inject
     public MessagesListViewImpl(SimpleTranslator i18n) {
         super(i18n, order,
-                new String[]{i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date")},
+                new String[] { i18n.translate("pulse.items.new"), i18n.translate("pulse.items.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.items.sender"), i18n.translate("pulse.items.date") },
                 i18n.translate("pulse.messages.empty"),
                 PulseItemCategory.ALL_MESSAGES, PulseItemCategory.INFO, PulseItemCategory.PROBLEM);
         constructTable();
-        setFooter(new PulseListFooter(getItemTable(), i18n, false));
     }
 
     private void constructTable() {

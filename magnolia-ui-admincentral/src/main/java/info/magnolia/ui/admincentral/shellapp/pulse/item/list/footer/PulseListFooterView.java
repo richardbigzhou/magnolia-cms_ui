@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListView;
+import info.magnolia.ui.api.view.View;
 
-import java.util.Set;
+import com.vaadin.server.ExternalResource;
 
 /**
- * Tasks Pulse tab UI.
+ * Footer view.
  */
-public interface TasksListView extends PulseListView {
+public interface PulseListFooterView extends View {
 
     /**
-     * @deprecated since 5.4.3. bulk action in footer now configurable.
+     * Base interface for an action listener.
      */
-    @Deprecated
-    void setTaskListener(Listener listener);
+    interface Listener {
 
-    /**
-     * Listener.
-     * 
-     * @deprecated since 5.4.3. bulk action in footer now configurable.
-     */
-    @Deprecated
-    interface Listener extends PulseListView.Listener {
-
-        void claimTask(Set<String> itemIds);
+        /**
+         * Event handler invoked on clicking an item.
+         *
+         * @param actionToken the action token
+         */
+        void onBulkActionItemClicked(String actionToken);
     }
+
+    void setListener(Listener listener);
+
+    void addActionItem(String name, String label, ExternalResource iconFontResource);
+
+    void setActionEnabled(String action, boolean enabled);
+
+    void updateStatus(long totalAmount, int totalSelected);
 }

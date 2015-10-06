@@ -60,7 +60,10 @@ import com.vaadin.ui.Table;
 
 /**
  * Footer view implementation displayed underneath the items list.
+ * 
+ * @deprecated since 5.4.3. Moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter}.
  */
+@Deprecated
 public final class PulseListFooter extends CustomComponent {
 
     private HorizontalLayout footer = new HorizontalLayout();
@@ -188,7 +191,6 @@ public final class PulseListFooter extends CustomComponent {
         // TODO ideally context menu action availability should use the same mechanism and rules defined in the messageView config
         // but as this is not straightforward, for the time being we hack it like this
         enableActions(totalSelected > 0);
-
 
         final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : i18n.translate("pulse.footer.status.none");
         status.setValue(i18n.translate("pulse.footer.status", totalAmount, selectedMessagesAsString));

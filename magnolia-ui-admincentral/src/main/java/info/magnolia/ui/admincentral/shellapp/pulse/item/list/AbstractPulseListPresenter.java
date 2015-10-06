@@ -34,20 +34,51 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseDetailPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.view.View;
+
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract presenter for items displayed in pulse.
  */
-public abstract class AbstractPulseListPresenter implements PulseListPresenter, PulseDetailPresenter.Listener, PulseListView.Listener {
+public abstract class AbstractPulseListPresenter implements PulseListPresenter, PulseDetailPresenter.Listener, PulseListView.Listener, PulseListFooterPresenter.Listener {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractPulseListPresenter.class);
 
     protected PulseListContainer container;
     protected Listener listener;
+    protected AvailabilityChecker availabilityChecker;
+    protected PulseListActionExecutor actionExecutor;
+    protected PulseListFooterPresenter pulseListFooterPresenter;
+    protected PulseListDefinition definition;
 
     protected AbstractPulseListPresenter(PulseListContainer container) {
         this.container = container;
+    }
+
+    protected AbstractPulseListPresenter(PulseListContainer container, ConfiguredPulseListDefinition definition,
+            AvailabilityChecker availabilityChecker, PulseListActionExecutor pulseListActionExecutor, PulseListFooterPresenter pulseListFooterPresenter) {
+        this.container = container;
+        this.availabilityChecker = availabilityChecker;
+        this.actionExecutor = pulseListActionExecutor;
+        this.pulseListFooterPresenter = pulseListFooterPresenter;
+        this.definition = definition;
+
+        this.actionExecutor.setActionsDefinition(definition.getBulkActions());
+        this.pulseListFooterPresenter.setListener(this);
     }
 
     @Override
@@ -79,4 +110,41 @@ public abstract class AbstractPulseListPresenter implements PulseListPresenter, 
 
     @Override
     public abstract int getPendingItemCount();
+
+    protected abstract List<Object> getSelectedItemIds();
+
+    @Override
+    public void onSelectionChanged(Set<String> itemIds) {
+        pulseListFooterPresenter.updateStatus(getTotalEntriesAmount(), itemIds.size());
+        // Evaluate availability of each action within the section
+        for (ActionDefinition actionDefinition : definition.getBulkActions()) {
+            AvailabilityDefinition availability = actionDefinition.getAvailability();
+            pulseListFooterPresenter.toggleActionEnable(actionDefinition.getName(), availabilityChecker.isAvailable(availability, getSelectedItemIds()));
+        }
+
+    }
+
+    @Override
+    public void onItemSetChanged(long totalEntriesAmount) {
+        if (pulseListFooterPresenter != null) {
+            pulseListFooterPresenter.updateStatus(getTotalEntriesAmount(), 0);
+        }
+    }
+
+    @Override
+    public void onBulkActionItemClicked(String itemName) {
+        executeAction(itemName);
+    }
+
+    protected void executeAction(String actionName) {
+        try {
+            AvailabilityDefinition availability = actionExecutor.getActionDefinition(actionName).getAvailability();
+            if (availabilityChecker.isAvailable(availability, getSelectedItemIds())) {
+                actionExecutor.execute(actionName, new Object[] { getSelectedItemIds() });
+            }
+        } catch (ActionExecutionException e) {
+            log.error("An error occurred while executing action [{}]", actionName, e);
+        }
+    }
+
 }

@@ -33,14 +33,21 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.List;
 
 /**
  * Definition for list-presenters in the pulse.
  */
+@I18nable(keyGenerator = PulseDefinitionKeyGenerator.class)
 public interface PulseListDefinition {
 
     String getName();
 
     Class<? extends PulseListPresenter> getPresenterClass();
+
+    List<ActionDefinition> getBulkActions();
 }

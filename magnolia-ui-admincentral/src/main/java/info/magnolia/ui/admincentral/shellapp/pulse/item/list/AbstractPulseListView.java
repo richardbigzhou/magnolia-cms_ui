@@ -39,6 +39,10 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategor
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import com.vaadin.data.Container;
@@ -77,12 +81,12 @@ public abstract class AbstractPulseListView implements PulseListView {
 
     private Label emptyPlaceHolder;
 
-    private PulseListFooter footer;
+    private Component footer;
 
     private Property.ValueChangeListener selectionListener = new Property.ValueChangeListener() {
         @Override
         public void valueChange(ValueChangeEvent event) {
-            footer.updateStatus();
+            listener.onSelectionChanged((Set<String>) event.getProperty().getValue());
         }
     };
 
@@ -128,7 +132,7 @@ public abstract class AbstractPulseListView implements PulseListView {
         navigator.addGroupingListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                isGrouping = (Boolean)event.getProperty().getValue();
+                isGrouping = (Boolean) event.getProperty().getValue();
             }
         });
         root.setSizeFull();
@@ -136,7 +140,8 @@ public abstract class AbstractPulseListView implements PulseListView {
     }
 
     @Override
-    public void refresh() {}
+    public void refresh() {
+    }
 
     @Override
     public void setDataSource(Container dataSource) {
@@ -146,15 +151,11 @@ public abstract class AbstractPulseListView implements PulseListView {
 
         int size = dataSource.size();
         setComponentVisibility(size != 0);
-        footer.setTotalAmount(size);
     }
 
     @Override
     public void setListener(PulseListView.Listener listener) {
         this.listener = listener;
-        // message listener can use the generic listener
-        // as the only thing it does now is deleting items
-        this.footer.setMessagesListener(listener);
     }
 
     @Override
@@ -167,7 +168,8 @@ public abstract class AbstractPulseListView implements PulseListView {
         return root;
     }
 
-    public void setFooter(PulseListFooter footer) {
+    @Override
+    public void setFooter(Component footer) {
         if (this.footer != null) {
             root.removeComponent(this.footer);
         }
@@ -198,10 +200,6 @@ public abstract class AbstractPulseListView implements PulseListView {
         root.addComponent(emptyPlaceHolder);
 
         constructTable();
-
-        // create an initial default footer to avoid NPE exception. This will be replaced later on by specific implementations
-        footer = new PulseListFooter(itemTable, i18n, false);
-        root.addComponent(footer);
     }
 
     private void constructTable() {
@@ -229,7 +227,7 @@ public abstract class AbstractPulseListView implements PulseListView {
                 itemTable.setValue(null);
                 long totalEntriesAmount = listener.getTotalEntriesAmount();
                 setComponentVisibility(totalEntriesAmount > 0);
-                footer.setTotalAmount(totalEntriesAmount);
+                listener.onItemSetChanged(totalEntriesAmount);
             }
         });
     }
@@ -246,7 +244,9 @@ public abstract class AbstractPulseListView implements PulseListView {
         }
 
         itemTable.setVisible(entriesAvailable);
-        footer.setVisible(entriesAvailable);
+        if (footer != null) {
+            footer.setVisible(entriesAvailable);
+        }
         emptyPlaceHolder.setVisible(!entriesAvailable);
     }
 
@@ -269,8 +269,10 @@ public abstract class AbstractPulseListView implements PulseListView {
         onItemCategoryChanged(category);
     }
 
-    protected PulseListFooter getFooter() {
-        return footer;
+    @Override
+    public List<Object> getSelectedItemIds() {
+        Set<Object> itemIds = (Set<Object>) getItemTable().getValue();
+        return Arrays.asList(itemIds.toArray());
     }
 
     protected void onItemClicked(ClickEvent event, final Object itemId) {

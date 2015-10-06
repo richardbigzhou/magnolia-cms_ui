@@ -39,6 +39,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
@@ -98,7 +99,8 @@ public class PulsePresenter implements PulseListPresenter.Listener, PulseView.Li
             if (pulseListDefinition.getPresenterClass() == null) {
                 log.error("There is no presenterClass defined for pulse list '{}'.", pulseListDefinition.getName());
             } else {
-                PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition);
+                PulseListActionExecutor actionExecutor = componentProvider.newInstance(PulseListActionExecutor.class);
+                PulseListPresenter presenter = componentProvider.newInstance(pulseListDefinition.getPresenterClass(), pulseListDefinition, actionExecutor);
                 presenter.setListener(this);
                 presenters.put(pulseListDefinition.getName(), presenter);
                 categories.add(presenter.getCategory());

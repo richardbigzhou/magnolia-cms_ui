@@ -88,6 +88,14 @@
       <implementation>info.magnolia.ui.actionbar.ActionbarViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListViewImpl</implementation>
     </component>

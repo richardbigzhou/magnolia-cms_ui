@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task;
+package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListView;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
-import java.util.Set;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Tasks Pulse tab UI.
+ * Key generator for {@link PulseListDefinition}.
  */
-public interface TasksListView extends PulseListView {
+public class PulseDefinitionKeyGenerator extends AbstractI18nKeyGenerator<PulseListDefinition> {
 
-    /**
-     * @deprecated since 5.4.3. bulk action in footer now configurable.
-     */
-    @Deprecated
-    void setTaskListener(Listener listener);
-
-    /**
-     * Listener.
-     * 
-     * @deprecated since 5.4.3. bulk action in footer now configurable.
-     */
-    @Deprecated
-    interface Listener extends PulseListView.Listener {
-
-        void claimTask(Set<String> itemIds);
+    @Override
+    protected void keysFor(final List<String> keys, final PulseListDefinition definition, final AnnotatedElement el) {
+        addKey(keys, definition.getName(), fieldOrGetterName(el));
     }
 }
