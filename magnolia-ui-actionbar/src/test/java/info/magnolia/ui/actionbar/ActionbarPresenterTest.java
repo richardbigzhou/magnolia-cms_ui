@@ -46,7 +46,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.DefaultActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
@@ -129,7 +129,7 @@ public class ActionbarPresenterTest {
         // GIVEN
         final String emptyGroupName = "2";
         ActionbarSectionDefinition section = definition.getSections().get(0);
-        ((ConfiguredActionbarSectionDefinition) section).addGroup(new ConfiguredActionbarGroupDefinition() {
+        ((DefaultActionbarSectionDefinition) section).addGroup(new ConfiguredActionbarGroupDefinition() {
             {
                 setName(emptyGroupName);
             }
@@ -207,7 +207,7 @@ public class ActionbarPresenterTest {
     private ActionbarDefinition initDefinitions() {
         return new ConfiguredActionbarDefinition() {
             {
-                addSection(new ConfiguredActionbarSectionDefinition() {
+                addSection(new DefaultActionbarSectionDefinition() {
                     {
                         setName(SECTION_ASSETS);
                         addGroup(new ConfiguredActionbarGroupDefinition() {
@@ -225,7 +225,7 @@ public class ActionbarPresenterTest {
                         });
                     }
                 });
-                addSection(new ConfiguredActionbarSectionDefinition() {
+                addSection(new DefaultActionbarSectionDefinition() {
                     {
                         setName(SECTION_BOOKS);
                         addGroup(new ConfiguredActionbarGroupDefinition() {

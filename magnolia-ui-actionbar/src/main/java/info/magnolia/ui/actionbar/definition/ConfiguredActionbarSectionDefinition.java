@@ -42,7 +42,10 @@ import java.util.List;
 
 /**
  * Simple implementation for {@link ActionbarSectionDefinition}.
+ *
+ * @deprecated since 5.4.3, use {@link DefaultActionbarSectionDefinition} instead.
  */
+@Deprecated
 public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDefinition {
 
     private String name;

@@ -56,7 +56,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         // generator
         ActionbarSectionDefinitionKeyGenerator generator = new ActionbarSectionDefinitionKeyGenerator();
         // structure
-        ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
+        DefaultActionbarSectionDefinition section = new DefaultActionbarSectionDefinition();
         section.setName("test-section");
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         ConfiguredAppDescriptor app = new ConfiguredAppDescriptor();
@@ -95,7 +95,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         // generator
         ActionbarSectionDefinitionKeyGenerator generator = new ActionbarSectionDefinitionKeyGenerator();
         // structure
-        ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
+        DefaultActionbarSectionDefinition section = new DefaultActionbarSectionDefinition();
         section.setName("test-section");
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
         TestMessageView messageView = new TestMessageView("test-module:testMessageView");

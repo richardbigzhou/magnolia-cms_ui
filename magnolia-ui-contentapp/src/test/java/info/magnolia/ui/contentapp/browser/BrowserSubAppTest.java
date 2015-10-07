@@ -34,7 +34,9 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -57,7 +59,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.DefaultActionbarSectionDefinition;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
@@ -135,8 +137,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private ConfiguredAvailabilityDefinition sAvailabilityAlways;
 
     // testActionbarPresenter definition
-    private ConfiguredActionbarSectionDefinition sectionToShow;
-    private ConfiguredActionbarSectionDefinition sectionToHide;
+    private DefaultActionbarSectionDefinition sectionToShow;
+    private DefaultActionbarSectionDefinition sectionToHide;
 
     // nodes
     private Node testContentNode;
@@ -346,11 +348,11 @@ public class BrowserSubAppTest extends MgnlTestCase {
         oneActionGroup.setName("oneActionGroup");
         oneActionGroup.setItems(createActionbarItemDefinitionList(ONE_ACTION));
 
-        sectionToShow = new ConfiguredActionbarSectionDefinition();
+        sectionToShow = new DefaultActionbarSectionDefinition();
         sectionToShow.setName(SECTION_TO_SHOW);
         sectionToShow.addGroup(allActionsGroup);
 
-        sectionToHide = new ConfiguredActionbarSectionDefinition();
+        sectionToHide = new DefaultActionbarSectionDefinition();
         sectionToHide.setName(SECTION_TO_HIDE);
         sectionToHide.addGroup(oneActionGroup);
     }
