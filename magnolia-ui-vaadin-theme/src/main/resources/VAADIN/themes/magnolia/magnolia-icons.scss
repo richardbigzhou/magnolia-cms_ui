@@ -12,7 +12,8 @@
 @mixin magnoliaIcons {
 
 [class^="icon-"], [class*=" icon-"] {
-  font-family: MagnoliaIcons;
+  /* Icons may have their font overridden locally if not !important (e.g. in confirm-dialogs), see MGNLUI-3613. */
+  font-family: MagnoliaIcons !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
