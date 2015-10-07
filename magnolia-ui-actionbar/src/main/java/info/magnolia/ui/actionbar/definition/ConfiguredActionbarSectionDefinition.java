@@ -54,7 +54,7 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private String i18nBasename;
 
-    private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+    private List<ActionbarGroupDefinition> groups = new ArrayList<>();
 
     private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
 

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.actionbar;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -55,7 +56,6 @@ import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -81,7 +81,7 @@ public class ActionbarPresenterTest {
     private ActionbarPresenter presenter;
 
     private ActionbarDefinition definition;
-    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+    private Map<String, ActionDefinition> actions = newHashMap();
 
     @Before
     public void setUp() throws Exception {
@@ -202,7 +202,7 @@ public class ActionbarPresenterTest {
     }
 
     /**
-     * Builds an actionbar definition consisiting of two sections with two groups each, one for adding/deleting actions, one for editing actions.
+     * Builds an actionbar definition consisting of two sections with two groups each, one for adding/deleting actions, one for editing actions.
      */
     private ActionbarDefinition initDefinitions() {
         return new ConfiguredActionbarDefinition() {

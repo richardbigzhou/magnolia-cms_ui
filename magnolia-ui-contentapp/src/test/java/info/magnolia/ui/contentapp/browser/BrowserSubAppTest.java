@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -80,7 +81,6 @@ import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -122,11 +122,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private EventBus subAppEventBus;
     private ContentSubAppView view;
     private BrowserPresenter browserPresenter;
-    private ComponentProvider componentProvider;
 
     private ActionbarPresenter actionbarPresenter;
-    private final Set<String> visibleSections = new HashSet<String>();
-    private final Set<String> enabledActions = new HashSet<String>();
+    private final Set<String> visibleSections = newHashSet();
+    private final Set<String> enabledActions = newHashSet();
 
 
     // actions
@@ -143,16 +142,13 @@ public class BrowserSubAppTest extends MgnlTestCase {
     // nodes
     private Node testContentNode;
 
-    private ContentConnector contentConnector;
-    private AvailabilityChecker availabilityChecker;
-
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
-        componentProvider = mock(ComponentProvider.class);
+        ComponentProvider componentProvider = mock(ComponentProvider.class);
         doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         initActions();
@@ -172,8 +168,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
 
-        contentConnector = mock(ContentConnector.class);
-        availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector);
+        ContentConnector contentConnector = mock(ContentConnector.class);
+        AvailabilityChecker availabilityChecker = new AvailabilityCheckerImpl(componentProvider, contentConnector);
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, mock(EventBus.class), contentConnector, availabilityChecker);
     }
 
@@ -254,7 +250,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     // not to support nodes -> it fails.
     public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
-        List<Object> ids = new ArrayList<Object>(1);
+        List<Object> ids = new ArrayList<>(1);
         ids.add(JcrItemUtil.getItemId(session.getRootNode()));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
@@ -271,7 +267,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnNonRootNode() throws Exception {
         // GIVEN
-        List<Object> ids = new ArrayList<Object>(1);
+        List<Object> ids = new ArrayList<>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
@@ -288,7 +284,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnProperty() throws Exception {
         // GIVEN
-        List<Object> ids = new ArrayList<Object>(1);
+        List<Object> ids = new ArrayList<>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
@@ -358,7 +354,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     }
 
     private List<ActionbarItemDefinition> createActionbarItemDefinitionList(String[] actions) {
-        List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
+        List<ActionbarItemDefinition> items = new ArrayList<>();
         for (String action : actions) {
             ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
             item.setName(action);
@@ -404,7 +400,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private static class SimpleActionExecutor extends AbstractActionExecutor {
 
-        private List<ActionDefinition> definitions = new ArrayList<ActionDefinition>();
+        private List<ActionDefinition> definitions = new ArrayList<>();
 
         @Inject
         public SimpleActionExecutor(ComponentProvider componentProvider) {
