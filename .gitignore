@@ -10,6 +10,7 @@ target
 .checkstyle
 .metadata
 .clover
+*.DS_Store
 **rebel.xml
 
 magnolia-ui-vaadin-common-widgets/src/main/java/com/vaadin/ui
