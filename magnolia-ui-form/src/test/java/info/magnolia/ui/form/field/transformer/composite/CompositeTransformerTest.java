@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.transformer.composite;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -66,6 +67,8 @@ public class CompositeTransformerTest extends RepositoryTestCase {
     private final String fieldName = "fieldName";
     private List<String> fieldsName = Arrays.asList("field1", "field2", "field3");
     private CompositeFieldDefinition definition = new CompositeFieldDefinition();
+    private CompositeTransformer delegate;
+    private JcrNodeAdapter parent;
 
     @Override
     @Before
@@ -82,13 +85,13 @@ public class CompositeTransformerTest extends RepositoryTestCase {
         definition.setName(fieldName);
 
         rootNode = session.getRootNode().getNode("parent");
+        parent = new JcrNodeAdapter(rootNode);
+        delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName, mock(I18NAuthoringSupport.class));
     }
 
     @Test
     public void testWriteMultiProperty() throws RepositoryException {
         // GIVEN
-        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName, mock(I18NAuthoringSupport.class));
         PropertysetItem itemSet = new PropertysetItem();
         itemSet.addItemProperty("field1", new DefaultProperty<String>("hello1"));
 
@@ -106,8 +109,6 @@ public class CompositeTransformerTest extends RepositoryTestCase {
     @Test
     public void testWriteMultiPropertyWithNullValue() throws RepositoryException {
         // GIVEN
-        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName, mock(I18NAuthoringSupport.class));
         PropertysetItem itemSet = new PropertysetItem();
         itemSet.addItemProperty("field1", null);
 
@@ -125,9 +126,6 @@ public class CompositeTransformerTest extends RepositoryTestCase {
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
 
-        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName, mock(I18NAuthoringSupport.class));
-
         // WHEN
         PropertysetItem res = delegate.readFromItem();
 
@@ -140,8 +138,6 @@ public class CompositeTransformerTest extends RepositoryTestCase {
     @Test
     public void testReadWriteMultiProperty() throws RepositoryException {
         // GIVEN
-        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName, mock(I18NAuthoringSupport.class));
 
         // WHEN
         PropertysetItem itemSet = delegate.readFromItem();
@@ -156,4 +152,15 @@ public class CompositeTransformerTest extends RepositoryTestCase {
         assertFalse(rootNode.hasProperty("fieldNamefield2"));
     }
 
+    @Test
+    public void testGetLocalizedCompositePropertyName() {
+        // GIVEN
+        definition.setI18n(true);
+
+        // WHEN
+        String localizedCompositePropertyName = delegate.getCompositePropertyName("test");
+
+        // THEN
+        assertThat(localizedCompositePropertyName, is("fieldNametest"));
+    }
 }
