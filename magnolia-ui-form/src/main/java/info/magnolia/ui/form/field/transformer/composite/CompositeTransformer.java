@@ -41,8 +41,6 @@ import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
@@ -111,10 +109,7 @@ public class CompositeTransformer extends BasicTransformer<PropertysetItem> {
     }
 
     protected String getCompositePropertyName(String propertyName) {
-        propertyName = propertyPrefix + propertyName;
-        if (hasI18NSupport()) {
-            propertyName = propertyName + StringUtils.difference(basePropertyName, i18NPropertyName);
-        }
+        propertyName = propertyPrefix + deriveLocaleAwareName(propertyName);
         return propertyName;
     }
 }
