@@ -102,11 +102,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         bindKeyboardHandlers();
     }
 
-    @Deprecated
     /**
-     * Constructor for WorkbenchViewImpl.
-     * @deprecated use default constructor instead.
+     * @deprecated since 5.4.3. Use default constructor instead.
      */
+    @Deprecated
     public WorkbenchViewImpl(SimpleTranslator i18n) {
         this();
     }
@@ -138,12 +137,13 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         }
     }
 
-    @Override
-    @Deprecated
+
     /**
-     * Adds a content view by given view type, content view and content view definition.<br/>
-     * @deprecated use addContentView( viewType,  view,  viewTypeIcon) instead. Interface method will become deprecated on magnolia-ui 5.5.
+     * Adds a content view by given view type, content view and content view definition.
+     * @deprecated since 5.4.3. Use addContentView( viewType, view, viewTypeIcon) instead. Interface method will become deprecated on magnolia-ui 5.5.
      */
+    @Deprecated
+    @Override
     public void addContentView(String viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         addContentView(viewType, view, contentViewDefintion.getIcon());
     }

@@ -156,18 +156,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return view;
     }
 
-    @Deprecated
     /**
-     * Returns the default item id of this workbench.<br/>
-     * @deprecated Method isn't used anymore.
+     * Returns the default item id of this workbench.
+     * @deprecated since 5.4.3. Method isn't used anymore.
      */
+    @Deprecated
     public Object resolveWorkbenchRoot() {
         return contentConnector.getDefaultItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
-        if (workbenchDefinition == null || workbenchDefinition.getContentViews() == null || workbenchDefinition.getContentViews().size() == 0) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition or no view is configured.");
+        if (workbenchDefinition == null) {
+            throw new IllegalArgumentException("Failed to init a workbench: WorkbenchDefinition is null.");
+        } else if (workbenchDefinition.getContentViews() == null || workbenchDefinition.getContentViews().size() == 0) {
+            throw new IllegalArgumentException("Failed to init a workbench: No content-view is configured.");
         }
     }
 

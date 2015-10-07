@@ -152,8 +152,8 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
     }
 
     /**
-     * Tests whether #getDefaultViewType also works without a TreePresenterDefinition (which is "active" per default)
-     * and whether workbenchDefinition.getContentViews() doesn't automatically adds the tree view anymore.
+     * Tests whether WorkbenchPresenter#getDefaultViewType also works without a TreePresenterDefinition (which is "active" per default)
+     * and whether workbenchDefinition.getContentViews() doesn't automatically add the tree view anymore.
      */
     @Test
     public void testGetDefaultViewTypeWithoutTree() {
@@ -169,7 +169,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
         // THEN
         assertThat(defaultViewType, is(ListPresenterDefinition.VIEW_TYPE));
-        assertThat(hasTreeDefined , not(true));
+        assertThat(hasTreeDefined, not(true));
     }
 
     @Test
