@@ -208,6 +208,8 @@
                 </artifactItem>
               </artifactItems>
               <includes>
+                com/vaadin/client/ui/VFilterSelect.java,
+                com/vaadin/client/ui/combobox/ComboBoxConnector.java,
                 com/vaadin/client/ui/VScrollTable.java,
                 com/vaadin/client/ui/VTreeTable.java,
                 com/vaadin/client/ui/panel/PanelConnector.java,
@@ -227,6 +229,8 @@
         <configuration>
           <optimizations>false</optimizations>
           <patches>
+            <patch>vfilterselect.txt</patch>
+            <patch>comboboxconnector.txt</patch>
             <patch>vscrolltable.txt</patch>
             <patch>vtreetable.txt</patch>
             <patch>panelconnector.txt</patch>
@@ -266,6 +270,8 @@
                 import java.util.regex.Matcher
                 def path = "${project.build.sourceDirectory}/com/vaadin/client/ui/"
                 def renameMap = [
+                    (new File(path + "VFilterSelect.java")):(new File(path + "VFilterSelectPatched.java")),
+                    (new File(path + "combobox/ComboBoxConnector.java")):(new File(path + "combobox/ComboBoxConnectorPatched.java")),
                     (new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
                     (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java")),
                     (new File(path + "panel/PanelConnector.java")):(new File(path + "panel/EnterFriendlyPanelConnector.java")),
