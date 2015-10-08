@@ -281,10 +281,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     protected final EventBus getEventBus() {
-        return this.eventBus;
+        return eventBus;
     }
 
     protected final WorkbenchDefinition getWorkbenchDefinition() {
-        return this.workbenchDefinition;
+        return workbenchDefinition;
     }
 }

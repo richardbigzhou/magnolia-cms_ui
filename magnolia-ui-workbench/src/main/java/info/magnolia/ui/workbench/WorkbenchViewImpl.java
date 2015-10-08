@@ -216,7 +216,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     /**
      * Adds a content view by given view type, content view and content view definition.
-     * @deprecated since 5.4.3. Use addContentView( viewType, view, viewTypeIcon) instead. Interface method will become deprecated on magnolia-ui 5.5.
+     * @deprecated since 5.3.12. Use addContentView( viewType, view, viewTypeIcon) instead. Interface method will become deprecated on magnolia-ui 5.5.
      */
     @Deprecated
     @Override
@@ -236,9 +236,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // display search-box only if both list and search content presenters are configured
         if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {
-            if (toolBar.getComponentCount() > 1) { // components > 1 because first component in the toolbar is switcher between tree/list view
-                toolBar.getComponent(1).setVisible(true);
-            }
+            searchBox.setVisible(true);
         }
 
         if (SearchPresenterDefinition.VIEW_TYPE.equals(viewType)) {
