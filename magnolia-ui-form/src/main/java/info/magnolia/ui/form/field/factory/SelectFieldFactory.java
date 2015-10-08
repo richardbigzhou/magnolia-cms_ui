@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.vaadin.combobox.MagnoliaComboBox;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
@@ -116,7 +117,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * Used to initialize the desired subclass of AbstractSelect field component. Subclasses can override this method.
      */
     protected AbstractSelect createSelectionField() {
-        return new ComboBox();
+        return new MagnoliaComboBox();
     }
 
     /**

@@ -1,0 +1,133 @@
+--- /src/main/java/com/vaadin/client/ui/VFilterSelect.java	2013-09-27 18:30:04.000000000 +0700
++++ /src/main/java/com/vaadin/client/ui/VFilterSelect.java	2015-10-08 14:16:44.000000000 +0700
+@@ -80,11 +80,10 @@
+ 
+ /**
+  * Client side implementation of the Select component.
+- * 
+  * TODO needs major refactoring (to be extensible etc)
+  */
+ @SuppressWarnings("deprecation")
+-public class VFilterSelect extends Composite implements Field, KeyDownHandler,
++public class VFilterSelectPatched extends Composite implements Field, KeyDownHandler,
+         KeyUpHandler, ClickHandler, FocusHandler, BlurHandler, Focusable,
+         SubPartAware, HandlesAriaCaption, HandlesAriaInvalid,
+         HandlesAriaRequired {
+@@ -227,7 +226,7 @@
+         SuggestionPopup() {
+             super(true, false, true);
+             debug("VFS.SP: constructor()");
+-            setOwner(VFilterSelect.this);
++            setOwner(VFilterSelectPatched.this);
+             menu = new SuggestionMenu();
+             setWidget(menu);
+ 
+@@ -285,7 +284,7 @@
+                     getElement().setId("VAADIN_COMBOBOX_OPTIONLIST");
+ 
+                     menu.setSuggestions(currentSuggestions);
+-                    final int x = VFilterSelect.this.getAbsoluteLeft();
++                    final int x = VFilterSelectPatched.this.getAbsoluteLeft();
+ 
+                     topPosition = tb.getAbsoluteTop();
+                     topPosition += tb.getOffsetHeight();
+@@ -342,11 +341,11 @@
+             }
+             if (active) {
+                 DOM.sinkEvents(down, Event.ONCLICK);
+-                down.setClassName(VFilterSelect.this.getStylePrimaryName()
++                down.setClassName(VFilterSelectPatched.this.getStylePrimaryName()
+                         + "-nextpage");
+             } else {
+                 DOM.sinkEvents(down, 0);
+-                down.setClassName(VFilterSelect.this.getStylePrimaryName()
++                down.setClassName(VFilterSelectPatched.this.getStylePrimaryName()
+                         + "-nextpage-off");
+             }
+         }
+@@ -363,11 +362,11 @@
+ 
+             if (active) {
+                 DOM.sinkEvents(up, Event.ONCLICK);
+-                up.setClassName(VFilterSelect.this.getStylePrimaryName()
++                up.setClassName(VFilterSelectPatched.this.getStylePrimaryName()
+                         + "-prevpage");
+             } else {
+                 DOM.sinkEvents(up, 0);
+-                up.setClassName(VFilterSelect.this.getStylePrimaryName()
++                up.setClassName(VFilterSelectPatched.this.getStylePrimaryName()
+                         + "-prevpage-off");
+             }
+ 
+@@ -454,7 +453,7 @@
+ 
+             public void scrollUp() {
+                 debug("VFS.SP.LPS: scrollUp()");
+-                if (currentPage + pagesToScroll > 0) {
++                if (pageLength > 0 && currentPage + pagesToScroll > 0) {
+                     pagesToScroll--;
+                     cancel();
+                     schedule(200);
+@@ -463,7 +462,8 @@
+ 
+             public void scrollDown() {
+                 debug("VFS.SP.LPS: scrollDown()");
+-                if (totalMatches > (currentPage + pagesToScroll + 1)
++                if (pageLength > 0
++                        && totalMatches > (currentPage + pagesToScroll + 1)
+                         * pageLength) {
+                     pagesToScroll++;
+                     cancel();
+@@ -549,7 +549,7 @@
+ 
+             // reset menu size and retrieve its "natural" size
+             menu.setHeight("");
+-            if (currentPage > 0) {
++            if (currentPage > 0 && hasNextPage()) {
+                 // fix height to avoid height change when getting to last page
+                 menu.fixHeightTo(pageLength);
+             }
+@@ -584,7 +584,7 @@
+                     + Window.getScrollTop()) {
+                 // popup on top of input instead
+                 top = getPopupTop() - offsetHeight
+-                        - VFilterSelect.this.getOffsetHeight();
++                        - VFilterSelectPatched.this.getOffsetHeight();
+                 if (top < 0) {
+                     top = 0;
+                 }
+@@ -603,8 +603,8 @@
+             offsetWidth = menuFirstChild.getOffsetWidth();
+             if (offsetWidth + getPopupLeft() > Window.getClientWidth()
+                     + Window.getScrollLeft()) {
+-                left = VFilterSelect.this.getAbsoluteLeft()
+-                        + VFilterSelect.this.getOffsetWidth()
++                left = VFilterSelectPatched.this.getAbsoluteLeft()
++                        + VFilterSelectPatched.this.getOffsetWidth()
+                         + Window.getScrollLeft() - offsetWidth;
+                 if (left < 0) {
+                     left = 0;
+@@ -655,11 +655,11 @@
+         public void updateStyleNames(UIDL uidl,
+                 AbstractComponentState componentState) {
+             debug("VFS.SP: updateStyleNames()");
+-            setStyleName(VFilterSelect.this.getStylePrimaryName()
++            setStyleName(VFilterSelectPatched.this.getStylePrimaryName()
+                     + "-suggestpopup");
+-            menu.setStyleName(VFilterSelect.this.getStylePrimaryName()
++            menu.setStyleName(VFilterSelectPatched.this.getStylePrimaryName()
+                     + "-suggestmenu");
+-            status.setClassName(VFilterSelect.this.getStylePrimaryName()
++            status.setClassName(VFilterSelectPatched.this.getStylePrimaryName()
+                     + "-status");
+             if (ComponentStateUtil.hasStyles(componentState)) {
+                 for (String style : componentState.styles) {
+@@ -1108,7 +1108,7 @@
+     /**
+      * Default constructor.
+      */
+-    public VFilterSelect() {
++    public VFilterSelectPatched() {
+         tb = createTextBox();
+         suggestionPopup = createSuggestionPopup();
+ 
