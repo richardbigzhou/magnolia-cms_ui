@@ -77,7 +77,7 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
             return false;
         }
 
-        Task task = null;
+        Task task;
         if (itemId instanceof Task) {
             task = (Task) itemId;
         } else {

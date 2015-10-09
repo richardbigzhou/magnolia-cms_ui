@@ -62,7 +62,6 @@ import javax.inject.Named;
  */
 public final class MessagesListPresenter extends AbstractPulseListPresenter implements MessagesListView.Listener, MessageEventHandler {
 
-    private final EventBus admincentralEventBus;
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
@@ -86,7 +85,6 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter impl
             ComponentProvider componentProvider, Context context, ConfiguredPulseListDefinition definition,
             AvailabilityChecker availabilityChecker, PulseListActionExecutor pulseListActionExecutor, PulseListFooterPresenter pulseListFooterPresenter, I18nizer i18nizer) {
         super(container, i18nizer.decorate(definition), availabilityChecker, pulseListActionExecutor, pulseListFooterPresenter);
-        this.admincentralEventBus = admincentralEventBus;
         this.view = view;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;

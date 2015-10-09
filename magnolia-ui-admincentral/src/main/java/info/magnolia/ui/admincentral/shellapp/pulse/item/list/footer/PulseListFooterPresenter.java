@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 
@@ -62,7 +61,7 @@ public class PulseListFooterPresenter implements PulseListFooterView.Listener {
     private Listener listener;
 
     @Inject
-    public PulseListFooterPresenter(PulseListFooterView view, AvailabilityChecker availabilityChecker) {
+    public PulseListFooterPresenter(PulseListFooterView view) {
         this.view = view;
         this.view.setListener(this);
     }

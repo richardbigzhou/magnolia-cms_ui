@@ -64,11 +64,11 @@ public class PulseListFooterViewImpl extends CustomComponent implements PulseLis
     private Label status = new Label();
     private NativeButton actionPopupTrigger = new NativeButton();
     private Label actionLabel;
+    private PulseListFooterView.Listener listener;
     // can't get the menu items from ContextMenu
-    private Map<String, ContextMenuItem> menuItems = new HashMap<String, ContextMenu.ContextMenuItem>();
+    private Map<String, ContextMenuItem> menuItems = new HashMap<>();
 
     private final SimpleTranslator i18n;
-    private PulseListFooterView.Listener listener;
 
     @Inject
     public PulseListFooterViewImpl(SimpleTranslator i18n) {
@@ -135,8 +135,8 @@ public class PulseListFooterViewImpl extends CustomComponent implements PulseLis
     @Override
     public void updateStatus(long totalAmount, int totalSelected) {
         toggleActionTriggerVisibility(totalSelected != 0);
-        final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : i18n.translate("pulse.footer.status.none");
-        status.setValue(i18n.translate("pulse.footer.status", totalAmount, selectedMessagesAsString));
+        final String selectedMessages = totalSelected > 0 ? Integer.toString(totalSelected) : i18n.translate("pulse.footer.status.none");
+        status.setValue(i18n.translate("pulse.footer.status", totalAmount, selectedMessages));
     }
 
     @Override

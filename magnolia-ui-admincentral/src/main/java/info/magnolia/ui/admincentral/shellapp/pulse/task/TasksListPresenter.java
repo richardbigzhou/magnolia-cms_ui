@@ -83,7 +83,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     private final ComponentProvider componentProvider;
     private final SimpleTranslator i18n;
     private final String userId;
-    private final EventBus admincentralEventBus;
 
     /**
      * @deprecated since 5.4.3.
@@ -110,7 +109,6 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
         this.componentProvider = componentProvider;
         this.i18n = i18n;
         this.userId = context.getUser().getName();
-        this.admincentralEventBus = admincentralEventBus;
 
         admincentralEventBus.addHandler(TaskEvent.class, this);
     }

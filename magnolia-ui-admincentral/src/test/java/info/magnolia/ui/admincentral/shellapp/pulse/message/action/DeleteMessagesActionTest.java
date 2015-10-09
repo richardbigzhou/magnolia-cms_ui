@@ -33,18 +33,20 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.task.action.BaseHumanTaskActionTest;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.message.MessagesManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 /**
  * Tests for {@link DeleteMessagesAction}.
@@ -52,30 +54,23 @@ import org.junit.Test;
 public class DeleteMessagesActionTest extends BaseHumanTaskActionTest {
 
     private DeleteMessagesAction action;
-    private List<String> messageIds;
     private MessagesManager messagesManager;
 
     @Override
     @Before
     public void setUp() {
         super.setUp();
-        messageIds = new ArrayList<>();
+        List<String> messageIds = Lists.newArrayList("1", "2", "3");
         messagesManager = mock(MessagesManager.class);
-        action = new DeleteMessagesAction(mock(DeleteMessagesActionDefinition.class), messageIds, messagesManager, mock(UiContext.class));
+        action = new DeleteMessagesAction(new DeleteMessagesActionDefinition(), messageIds, messagesManager, mock(UiContext.class));
     }
 
     @Test
     public void testArchiveActionCallsTasksManager() throws Exception {
-        // GIVEN
-        messageIds.add("1");
-        messageIds.add("2");
-        messageIds.add("3");
-
-        // WHEN
+        // GIVEN // WHEN
         action.execute();
 
         // THEN
         verify(messagesManager, times(3)).removeMessage(eq(CURRENT_USER), anyString());
     }
-
 }

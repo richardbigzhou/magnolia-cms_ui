@@ -39,12 +39,12 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategor
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategoryNavigator;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Item;
@@ -272,7 +272,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     @Override
     public List<Object> getSelectedItemIds() {
         Set<Object> itemIds = (Set<Object>) getItemTable().getValue();
-        return Arrays.asList(itemIds.toArray());
+        return Lists.newArrayList(itemIds);
     }
 
     protected void onItemClicked(ClickEvent event, final Object itemId) {
