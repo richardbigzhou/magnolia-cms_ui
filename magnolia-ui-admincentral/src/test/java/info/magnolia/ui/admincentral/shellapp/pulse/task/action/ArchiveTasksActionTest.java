@@ -39,11 +39,12 @@ import static org.mockito.Mockito.*;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.context.UiContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 /**
  * Tests for {@link ArchiveTasksAction}.
@@ -51,30 +52,23 @@ import org.junit.Test;
 public class ArchiveTasksActionTest extends BaseHumanTaskActionTest {
 
     private ArchiveTasksAction action;
-    private List<String> taskIds;
     private TasksManager tasksManager;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        taskIds = new ArrayList<>();
+        List<String> taskIds = Lists.newArrayList("1", "2", "3");
         tasksManager = mock(TasksManager.class);
         action = new ArchiveTasksAction(mock(ArchiveTasksActionDefinition.class), taskIds, tasksManager, mock(UiContext.class));
     }
 
     @Test
     public void testArchiveActionCallsTasksManager() throws Exception {
-        // GIVEN
-        taskIds.add("1");
-        taskIds.add("2");
-        taskIds.add("3");
-
-        // WHEN
+        // GIVEN // WHEN
         action.execute();
 
         // THEN
         verify(tasksManager, times(3)).archiveTask(anyString());
     }
-
 }

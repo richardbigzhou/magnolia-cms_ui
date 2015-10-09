@@ -106,7 +106,7 @@ public final class MessagesListViewImpl extends AbstractPulseListView implements
         GeneratedRow row = new GeneratedRow();
         MessageType messageType = (MessageType) item.getItemProperty(MessageConstants.TYPE_PROPERTY_ID).getValue();
 
-        String key = null;
+        String key;
         switch (messageType) {
         case ERROR:
             key = "pulse.messages.errors";

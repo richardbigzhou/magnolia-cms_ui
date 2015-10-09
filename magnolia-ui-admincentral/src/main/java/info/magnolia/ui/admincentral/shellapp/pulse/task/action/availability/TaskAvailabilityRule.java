@@ -53,7 +53,7 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(TaskAvailabilityRule.class);
 
-    private TaskAvailabilityRuleDefinition definition;
+    private final TaskAvailabilityRuleDefinition definition;
     private final TasksManager tasksManager;
 
     /**
