@@ -36,7 +36,10 @@ package info.magnolia.ui.vaadin.combobox;
 import com.vaadin.ui.ComboBox;
 
 /**
- * Patched combobox for magnolia.
+ * MGNLUI-3600 forced creation of this class.
+ * <p>
+ * Used to workaround the issue of disappearance of select field background.
+ * This class is not needed in newer version of Magnolia which uses Vaadin 7.4 and higher.
  */
 public class MagnoliaComboBox extends ComboBox {
 

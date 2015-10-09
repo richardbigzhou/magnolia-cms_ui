@@ -65,6 +65,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.ComboBox;
 
 /**
  * Creates and initializes a selection field based on a field definition.
@@ -101,10 +102,10 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-        if (select instanceof MagnoliaComboBox) {
-            ((MagnoliaComboBox) select).setFilteringMode(definition.getFilteringMode());
-            ((MagnoliaComboBox) select).setTextInputAllowed(definition.isTextInputAllowed());
-            ((MagnoliaComboBox) select).setPageLength(definition.getPageLength());
+        if (select instanceof ComboBox) {
+            ((ComboBox) select).setFilteringMode(definition.getFilteringMode());
+            ((ComboBox) select).setTextInputAllowed(definition.isTextInputAllowed());
+            ((ComboBox) select).setPageLength(definition.getPageLength());
         }
         select.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         select.setItemCaptionPropertyId(optionLabelName);

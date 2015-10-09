@@ -40,7 +40,7 @@ import com.vaadin.client.ui.combobox.ComboBoxConnectorPatched;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Connector for Magnolia combobox.
+ * Connector for {@link MagnoliaComboBox}.
  */
 @Connect(MagnoliaComboBox.class)
 public class MagnoliaComboBoxConnector extends ComboBoxConnectorPatched {
