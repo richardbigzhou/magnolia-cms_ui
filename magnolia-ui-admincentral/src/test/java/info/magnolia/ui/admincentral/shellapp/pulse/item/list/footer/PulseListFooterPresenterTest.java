@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.availability.AvailabilityChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +59,11 @@ public class PulseListFooterPresenterTest {
     @Before
     public void setUp() throws Exception {
         view = mock(PulseListFooterView.class);
-        pulseListFooterPresenter = new PulseListFooterPresenter(view, mock(AvailabilityChecker.class));
+        pulseListFooterPresenter = new PulseListFooterPresenter(view);
     }
 
     @Test
-    public void verifyThatBulkActionCreatedEnough() throws Exception {
+    public void verifyThatBulkActionCreatedEnough() {
         // GIVEN
         List<ActionDefinition> bulkActions = new ArrayList<>();
         bulkActions.add(new ConfiguredActionDefinition());
