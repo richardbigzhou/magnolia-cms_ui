@@ -65,11 +65,9 @@ public class TasksListPresenterTest {
 
     private TasksListPresenter presenter;
     private TaskDefinitionRegistry definitionRegistry;
-    private ConfiguredPulseListDefinition presenterDefinition;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
     private Task task;
-    private EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
@@ -80,16 +78,15 @@ public class TasksListPresenterTest {
 
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
-        this.presenterDefinition = mock(ConfiguredPulseListDefinition.class);
+        ConfiguredPulseListDefinition presenterDefinition = mock(ConfiguredPulseListDefinition.class);
         I18nizer i18nizer = mock(I18nizer.class);
         when(presenterDefinition.getBulkActions()).thenReturn(new ArrayList<ActionDefinition>());
         when(i18nizer.decorate(presenterDefinition)).thenReturn(presenterDefinition);
 
         this.tasksManager = mock(TasksManager.class);
-        this.eventBus = mock(EventBus.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksContainer.class), mock(TasksListView.class), mock(ShellImpl.class),
-                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, eventBus, presenterDefinition, mock(AvailabilityChecker.class),
+                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, mock(EventBus.class), presenterDefinition, mock(AvailabilityChecker.class),
                 mock(PulseListActionExecutor.class), mock(PulseListFooterPresenter.class), i18nizer);
         task.setName("testTask");
     }

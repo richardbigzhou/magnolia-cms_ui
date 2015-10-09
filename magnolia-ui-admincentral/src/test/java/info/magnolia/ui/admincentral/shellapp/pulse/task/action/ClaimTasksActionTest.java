@@ -33,17 +33,19 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.context.UiContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 /**
  * Tests for {@link ClaimTasksAction}.
@@ -51,30 +53,23 @@ import org.junit.Test;
 public class ClaimTasksActionTest extends BaseHumanTaskActionTest {
 
     private ClaimTasksAction action;
-    private List<String> taskIds;
     private TasksManager tasksManager;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        taskIds = new ArrayList<>();
+        List<String> taskIds = Lists.newArrayList("1", "2", "3");
         tasksManager = mock(TasksManager.class);
         action = new ClaimTasksAction(mock(ClaimTasksActionDefinition.class), taskIds, tasksManager, mock(UiContext.class));
     }
 
     @Test
     public void testClaimActionCallsTasksManager() throws Exception {
-        // GIVEN
-        taskIds.add("1");
-        taskIds.add("2");
-        taskIds.add("3");
-
-        // WHEN
+        // GIVEN // WHEN
         action.execute();
 
         // THEN
         verify(tasksManager, times(3)).claim(anyString(), eq(CURRENT_USER));
     }
-
 }
