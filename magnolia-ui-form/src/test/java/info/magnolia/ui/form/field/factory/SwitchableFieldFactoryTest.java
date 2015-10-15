@@ -59,21 +59,30 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.vaadin.aceeditor.AceEditor;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterators;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
     private I18NAuthoringSupport i18nAuthoringSupport;
+    private SwitchableField field;
+    private TextFieldDefinition textFieldDefinition;
+    private CodeFieldDefinition codeFieldDefinition;
+    private HiddenFieldDefinition hiddenFieldDefinition;
 
     @Override
     @Before
@@ -81,8 +90,17 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         super.setUp();
         i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
+
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
         subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
+    }
+
+    @Override
+    @After
+    public void tearDown() {
+        super.tearDown();
+        field = null;
+        factory = null;
     }
 
     @Test
@@ -275,6 +293,89 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertEquals("has only the select field as the hidden is not visible", 1, getVisibleFieldNb(layout));
     }
 
+    @Test
+    public void validationIsTriggeredOnlyForVisibleField() {
+        // GIVEN
+        textFieldDefinition.setRequired(true);
+        codeFieldDefinition.setRequired(true);
+
+        createField();
+
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
+        select.setValue("text");
+        TextField textField = getSubFieldWithType(TextField.class);
+        textField.setValue("foo");
+
+        // WHEN
+        boolean isValid = field.isValid();
+
+        // THEN
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void validationOfSelectedOptionFails() {
+        // GIVEN
+        textFieldDefinition.setRequired(true);
+        codeFieldDefinition.setRequired(true);
+
+        createField();
+
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
+        select.setValue("code");
+        // default value for AceEditor is empty string, and AceEditor doesn't consider this an empty value in #isEmpty(), as it should (see AbstractTextField#isEmpty)
+        AceEditor codeField = getSubFieldWithType(AceEditor.class);
+        codeField.setValue(null);
+
+        // WHEN
+        boolean isValid = field.isValid();
+
+        // THEN
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void validationOfRequiredSwitchableFailsIfNoOptionIsSelected() {
+        // GIVEN
+        definition.setRequired(true);
+        createField();
+        // invoke CustomField#getContent() on CustomField (indirectly through component iterators)
+        getSubFieldWithType(AbstractSelect.class);
+
+        // WHEN
+        boolean isValid = field.isValid();
+
+        // THEN
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void validationOfRequiredSwitchableSucceedsIfOptionIsSelected() {
+        // GIVEN
+        definition.setRequired(true);
+        createField();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
+        select.setValue("text");
+
+        // WHEN
+        boolean isValid = field.isValid();
+
+        // THEN
+        assertTrue(isValid);
+    }
+
+    private void createField() {
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory.setComponentProvider(componentProvider);
+        field = (SwitchableField) factory.createField();
+    }
+
+    private <F extends Component> F getSubFieldWithType(final Class<F> fieldClass) {
+        AbstractOrderedLayout rootLayout = (AbstractOrderedLayout) field.iterator().next();
+        Iterator<Component> filteredIterator = Iterators.filter(rootLayout.iterator(), Predicates.instanceOf(fieldClass));
+        return filteredIterator.hasNext() ? (F) filteredIterator.next() : null;
+    }
+
     private int getVisibleFieldNb(AbstractOrderedLayout layout) {
         Iterator<Component> iterator = layout.iterator();
         int res = 0;
@@ -334,15 +435,15 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         definition.setOptions(options);
 
         // Set fields
-        TextFieldDefinition textFieldDefinition = new TextFieldDefinition();
+        textFieldDefinition = new TextFieldDefinition();
         textFieldDefinition.setRows(0);
         textFieldDefinition.setName("text");
 
-        CodeFieldDefinition codeFieldDefinition = new CodeFieldDefinition();
+        codeFieldDefinition = new CodeFieldDefinition();
         codeFieldDefinition.setLanguage("java");
         codeFieldDefinition.setName("code");
 
-        HiddenFieldDefinition hiddenFieldDefinition = new HiddenFieldDefinition();
+        hiddenFieldDefinition = new HiddenFieldDefinition();
         hiddenFieldDefinition.setName("hidden");
 
         List<ConfiguredFieldDefinition> fields = newArrayList(textFieldDefinition, codeFieldDefinition, hiddenFieldDefinition);
