@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -178,4 +179,37 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         return PropertysetItem.class;
     }
 
+    /**
+     * Validates only fields which are actually visible, that is have been selected.
+     */
+    @Override
+    public boolean isValid() {
+        // first check that if the switchable field itself needs validation (e.g. is required), conditions are met
+        try {
+            validate();
+        } catch (InvalidValueException e) {
+            return false;
+        }
+        // then validates only visible fields.
+        boolean isValid = true;
+        for (String innerFieldName : fieldMap.keySet()) {
+            Field<?> field = fieldMap.get(innerFieldName);
+            if (field.isVisible()) {
+                isValid = field.isValid();
+                if (!isValid) {
+                    return isValid;
+            }
+        }
+    }
+        return isValid;
+    }
+
+    /**
+     * A switchable field is empty when no choice has been made yet. This method is called by Vaadin framework to perform a basic isRequired check.
+     */
+    @Override
+    public boolean isEmpty() {
+        Field<?> name = fieldMap.get(definition.getName());
+        return name == null || name.getValue() == null;
+    }
 }
