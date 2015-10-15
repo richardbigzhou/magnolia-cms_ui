@@ -33,15 +33,34 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListActionExecutor;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesContainer;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagesListView;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.framework.availability.AvailabilityCheckerImpl;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,13 +72,41 @@ import com.vaadin.server.ExternalResource;
  */
 public class PulseListFooterPresenterTest {
 
-    private PulseListFooterPresenter pulseListFooterPresenter;
     private PulseListFooterView view;
+    private ConfiguredPulseListDefinition definition;
+    private PulseListFooterPresenter pulseListFooterPresenter;
+    private MessagesListPresenter messagesListPresenter;
+    private Set<String> selectedItems;
 
     @Before
     public void setUp() throws Exception {
         view = mock(PulseListFooterView.class);
         pulseListFooterPresenter = new PulseListFooterPresenter(view);
+
+        ComponentProvider componentProvider = new MockComponentProvider();
+
+        definition = new ConfiguredPulseListDefinition();
+        I18nizer i18nizer = mock(I18nizer.class);
+        when(i18nizer.decorate(definition)).thenReturn(definition);
+
+        AvailabilityChecker availabilityChecker = new AvailabilityCheckerImpl(componentProvider, mock(ContentConnector.class));
+
+        MockContext context = new MockContext();
+        MgnlContext.setInstance(context);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("username");
+        when(user.getAllRoles()).thenReturn(Arrays.asList("canexecute"));
+        context.setUser(user);
+
+        selectedItems = new HashSet<>();
+        selectedItems.add("item 1");
+
+        MessagesListView messageView = mock(MessagesListView.class);
+        when(messageView.getSelectedItemIds()).thenReturn(Arrays.asList(selectedItems.toArray()));
+
+        messagesListPresenter = new MessagesListPresenter(mock(MessagesContainer.class), mock(EventBus.class),
+                messageView, null, componentProvider, context, definition, availabilityChecker,
+                new PulseListActionExecutor(componentProvider), pulseListFooterPresenter, i18nizer);
     }
 
     @Test
@@ -70,9 +117,72 @@ public class PulseListFooterPresenterTest {
         bulkActions.add(new ConfiguredActionDefinition());
 
         // WHEN
-        pulseListFooterPresenter.start(bulkActions, 10);
+        pulseListFooterPresenter.start(bulkActions, 0);
 
         // THEN
         verify(view, times(2)).addActionItem(anyString(), anyString(), any(ExternalResource.class));
+    }
+
+    @Test
+    public void verifyThatBulkActionEnableWithoutConfiguredRole() {
+        // GIVEN
+        List<ActionDefinition> bulkActions = new ArrayList<>();
+        bulkActions.add(new ConfiguredActionDefinition());
+
+        definition.setBulkActions(bulkActions);
+
+        // WHEN
+        messagesListPresenter.onSelectionChanged(selectedItems);
+
+        // THEN
+        verify(view, times(1)).setActionEnabled(anyString(), eq(true));
+    }
+
+    @Test
+    public void verifyThatBulkActionEnableWithMatchedConfiguredRole() {
+        // GIVEN
+        List<ActionDefinition> bulkActions = new ArrayList<>();
+
+        ConfiguredAccessDefinition accessDefinition = new ConfiguredAccessDefinition();
+        accessDefinition.setRoles(Arrays.asList("canexecute"));
+
+        ConfiguredAvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
+        availability.setAccess(accessDefinition);
+
+        ConfiguredActionDefinition deleteAction = new ConfiguredActionDefinition();
+        deleteAction.setAvailability(availability);
+        bulkActions.add(deleteAction);
+
+        definition.setBulkActions(bulkActions);
+
+        // WHEN
+        messagesListPresenter.onSelectionChanged(selectedItems);
+
+        // THEN
+        verify(view, times(1)).setActionEnabled(anyString(), eq(true));
+    }
+
+    @Test
+    public void verifyThatBulkActionDisableWithUnmatchedConfiguredRole() {
+        // GIVEN
+        List<ActionDefinition> bulkActions = new ArrayList<>();
+
+        ConfiguredAccessDefinition accessDefinition = new ConfiguredAccessDefinition();
+        accessDefinition.setRoles(Arrays.asList("cannotexecute"));
+
+        ConfiguredAvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
+        availability.setAccess(accessDefinition);
+
+        ConfiguredActionDefinition deleteAction = new ConfiguredActionDefinition();
+        deleteAction.setAvailability(availability);
+        bulkActions.add(deleteAction);
+
+        definition.setBulkActions(bulkActions);
+
+        // WHEN
+        messagesListPresenter.onSelectionChanged(selectedItems);
+
+        // THEN
+        verify(view, times(1)).setActionEnabled(anyString(), eq(false));
     }
 }
