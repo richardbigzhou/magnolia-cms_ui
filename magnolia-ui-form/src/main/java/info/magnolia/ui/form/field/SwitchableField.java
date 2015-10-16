@@ -180,7 +180,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     }
 
     /**
-     * Validates only fields which are actually visible, that is have been selected.
+     * Validates only fields which are actually visible, that is those which have been selected.
      */
     @Override
     public boolean isValid() {
@@ -190,7 +190,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         } catch (InvalidValueException e) {
             return false;
         }
-        // then validates only visible fields.
+        // then validate only visible fields.
         boolean isValid = true;
         for (String innerFieldName : fieldMap.keySet()) {
             Field<?> field = fieldMap.get(innerFieldName);
