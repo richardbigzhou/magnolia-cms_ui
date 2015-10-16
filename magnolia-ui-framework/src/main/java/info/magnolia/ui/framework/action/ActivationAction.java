@@ -63,14 +63,12 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ActivationAction<D extends ActivationActionDefinition> extends AbstractCommandAction<D> {
 
+    public static final String ATTRIBUTE_MODIFIEDONLY = "modifiedOnly";
+
     private final EventBus admincentralEventBus;
     private final UiContext uiContext;
-
-    private SimpleTranslator i18n;
-
-    final static public String ATTRIBUTE_MODIFIEDONLY = "modifiedOnly";
-
-    private JcrItemId changedItemId;
+    private final SimpleTranslator i18n;
+    private final JcrItemId changedItemId;
 
     public ActivationAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, final SimpleTranslator i18n) {
@@ -83,7 +81,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;
         this.i18n = i18n;
-        this.changedItemId = items.get(0).getItemId();
+        this.changedItemId = items.isEmpty() ? null : items.get(0).getItemId();
     }
 
     @Override
@@ -97,7 +95,7 @@ public class ActivationAction<D extends ActivationActionDefinition> extends Abst
 
     @Override
     protected void onError(Exception e) {
-        String errorMessage = null;
+        String errorMessage;
         if (e.getCause() != null && e.getCause() instanceof ExchangeException) {
             errorMessage = e.getCause().getLocalizedMessage();
             errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
