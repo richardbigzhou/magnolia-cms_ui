@@ -106,9 +106,6 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
     }
 
     public void setAvailability(AvailabilityDefinition availability) {
-        // FIXME This is plain wrong, availability for multiple selection matches sections for which it is not configured (i.e. set to false)
-        // But we have to keep it for the time being because some content apps rely on this incorrect behavior.
-        ((ConfiguredAvailabilityDefinition) availability).setMultiple(true);
         this.availability = availability;
     }
 }
