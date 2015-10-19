@@ -69,9 +69,6 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
-/**
- * Test class.
- */
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
@@ -103,7 +100,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     @Test
-    public void testSelectHasNoDefaultValueIfNotConfigured() {
+    public void selectHasNoDefaultValueIfNotConfigured() {
         // GIVEN
         factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
@@ -119,7 +116,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     @Test
-    public void testSelectHasDefaultValueIfConfigured() throws Exception {
+    public void selectHasDefaultValueIfConfigured() throws Exception {
         // GIVEN
         definition.getOptions().get(1).setSelected(true);
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
@@ -167,7 +164,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     @Test
-    public void testSwitchingWritesToItem() throws Exception {
+    public void switchingWritesToItem() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName()) {
             @Override
@@ -193,7 +190,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     @Test
-    public void testSwitchingWritesToItemWithDefaultValue() throws Exception {
+    public void switchingWritesToItemWithDefaultValue() throws Exception {
         // GIVEN
         definition.getFields().get(0).setDefaultValue("hop!");
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
@@ -338,13 +335,11 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
         // Set fields
         TextFieldDefinition textFieldDefinition = new TextFieldDefinition();
-        textFieldDefinition = (TextFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(textFieldDefinition, propertyName);
         textFieldDefinition.setRows(0);
         textFieldDefinition.setName("text");
 
         CodeFieldDefinition codeFieldDefinition = new CodeFieldDefinition();
         codeFieldDefinition.setLanguage("java");
-        codeFieldDefinition.setName(propertyName);
         codeFieldDefinition.setName("code");
 
         HiddenFieldDefinition hiddenFieldDefinition = new HiddenFieldDefinition();

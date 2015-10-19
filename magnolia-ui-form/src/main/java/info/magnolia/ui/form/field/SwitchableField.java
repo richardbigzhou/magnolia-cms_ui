@@ -41,6 +41,7 @@ import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
     // - key : Field name. Should be the same as the related select value.<br>
     // - value : Related Field. Created based on the definition coming from the Fields Definition list.
-    private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
+    private final Map<String, Field<?>> fieldMap = new HashMap<>();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
@@ -118,7 +119,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // set select field at the first position
             if (StringUtils.equals(fieldDefinition.getName(), definition.getName())) {
                 root.addComponentAsFirst(field);
-            }else {
+            } else {
                 root.addComponent(field);
             }
 
@@ -156,13 +157,13 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
      */
     private void switchField(String fieldName) {
         // Check
-        if (root.getComponentCount() < 2 && StringUtils.equals(((Field<?>) root.getComponent(0)).getId(), definition.getName())) {
+        if (root.getComponentCount() < 2 && StringUtils.equals(root.getComponent(0).getId(), definition.getName())) {
             log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
             root.addComponent(new Label("No field configured for this switchable field "), 1);
             return;
         }
 
-        for(String innerFieldName:fieldMap.keySet()) {
+        for (String innerFieldName : fieldMap.keySet()) {
             Field<?> field = fieldMap.get(innerFieldName);
             // Set the select component visible and the selected field
             if (StringUtils.equals(innerFieldName, fieldName) || StringUtils.equals(innerFieldName, definition.getName())) {
