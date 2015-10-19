@@ -216,9 +216,10 @@
       <type>info.magnolia.ui.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
+    <!-- This deprecated definition is for backwards compatibility of misconfigured content-apps, since Magnolia 5.3. See MGNLUI-3626 -->
     <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition</type>
-      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
+      <implementation>info.magnolia.ui.actionbar.definition.DeprecatedActionbarSectionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
