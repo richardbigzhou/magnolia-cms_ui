@@ -44,7 +44,7 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
     private boolean multiselect = false;
 
     /**
-     * Option group need a specific {@link PropertyHandler} in order to handle the conversion between Set and List.
+     * Option group need a specific {@link Transformer} in order to handle the conversion between Set and List.
      */
     @SuppressWarnings("unchecked")
     public OptionGroupFieldDefinition() {
