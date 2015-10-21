@@ -34,8 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterView;
 import info.magnolia.ui.api.view.View;
 
+import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
@@ -49,26 +51,42 @@ public interface PulseListView extends View {
 
     void setListener(Listener listener);
 
+    /**
+     * @deprecated since 5.4.3.
+     */
+    @Deprecated
     void refresh();
 
     void updateCategoryBadgeCount(PulseItemCategory type, int count);
 
     void setTabActive(PulseItemCategory category);
 
+    void setFooter(PulseListFooterView footer);
+
+    List<Object> getSelectedItemIds();
+
     /**
      * Listener interface to call back to {@link PulseListPresenter}.
      */
-    public interface Listener {
+    interface Listener {
 
         void filterByItemCategory(PulseItemCategory category);
 
         void onItemClicked(String itemId);
 
+        void onSelectionChanged(Set<String> itemIds);
+
         void setGrouping(boolean checked);
 
+        /**
+         * @deprecated since 5.4.3. Bulk actions on footer now configurable. So, this function moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.message.action.DeleteMessagesAction}.
+         */
+        @Deprecated
         void deleteItems(Set<String> itemsIds);
 
         long getTotalEntriesAmount();
+
+        void onItemSetChanged(long totalEntriesAmount);
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,46 +33,18 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.item;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
-import java.util.ArrayList;
+import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * Configured {@link PulseListDefinition}.
+ * Key generator for {@link PulseListDefinition}.
  */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
-
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+public class PulseDefinitionKeyGenerator extends AbstractI18nKeyGenerator<PulseListDefinition> {
 
     @Override
-    public String getName() {
-        return name;
+    protected void keysFor(final List<String> keys, final PulseListDefinition definition, final AnnotatedElement el) {
+        addKey(keys, definition.getName(), fieldOrGetterName(el));
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
-    }
-
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

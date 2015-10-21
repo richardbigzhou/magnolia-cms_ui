@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Configured {@link PulseListDefinition}.
+ * Footer view.
  */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+public interface PulseListFooterView extends View {
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+    void setListener(Listener listener);
 
-    @Override
-    public String getName() {
-        return name;
+    void addActionItem(String name, String label, String icon);
+
+    void setActionEnabled(String action, boolean enabled);
+
+    void updateStatus(long totalAmount, int totalSelected);
+
+    /**
+     * Base interface for an action listener.
+     */
+    interface Listener {
+
+        /**
+         * Event handler invoked on clicking an item.
+         *
+         * @param actionToken the action token
+         */
+        void onBulkActionItemClicked(String actionToken);
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
-    }
-
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

@@ -35,11 +35,15 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
-import info.magnolia.ui.admincentral.shellapp.pulse.item.PulseListDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.detail.PulseItemCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.AbstractPulseListPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListActionExecutor;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterView;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
@@ -48,6 +52,7 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -58,24 +63,35 @@ import javax.inject.Named;
  */
 public final class MessagesListPresenter extends AbstractPulseListPresenter implements MessagesListView.Listener, MessageEventHandler {
 
-    private final EventBus admincentralEventBus;
     private final MessagesListView view;
     private final MessagesManager messagesManager;
     private final ComponentProvider componentProvider;
     private final String userId;
-    private final PulseListDefinition definition;
+
+    /**
+     * @deprecated since 5.4.3, use {@link MessagesListPresenter#MessagesListPresenter(MessagesContainer, EventBus, MessagesListView, MessagesManager, ComponentProvider,
+     * Context, ConfiguredPulseListDefinition, AvailabilityChecker, PulseListActionExecutor, PulseListFooterPresenter, I18nizer)} instead.
+     */
+    @Deprecated
+    public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+                                 final MessagesListView view, final MessagesManager messagesManager, final ComponentProvider componentProvider,
+                                 final Context context, final ConfiguredPulseListDefinition definition) {
+        this(container, admincentralEventBus, view, messagesManager, componentProvider, context, definition,
+                componentProvider.getComponent(AvailabilityChecker.class), componentProvider.getComponent(PulseListActionExecutor.class),
+                componentProvider.getComponent(PulseListFooterPresenter.class), componentProvider.getComponent(I18nizer.class));
+    }
 
     @Inject
-    public MessagesListPresenter(MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-                                 final MessagesListView view, final MessagesManager messagesManager,
-                                 ComponentProvider componentProvider, Context context, ConfiguredPulseListDefinition definition) {
-        super(container);
-        this.admincentralEventBus = admincentralEventBus;
+    public MessagesListPresenter(final MessagesContainer container, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+                                 final MessagesListView view, final MessagesManager messagesManager, final ComponentProvider componentProvider,
+                                 final Context context, final ConfiguredPulseListDefinition definition, final AvailabilityChecker availabilityChecker,
+                                 final PulseListActionExecutor pulseListActionExecutor, final PulseListFooterPresenter pulseListFooterPresenter,
+                                 final I18nizer i18nizer) {
+        super(container, i18nizer.decorate(definition), availabilityChecker, pulseListActionExecutor, pulseListFooterPresenter);
         this.view = view;
         this.messagesManager = messagesManager;
         this.componentProvider = componentProvider;
         this.userId = context.getUser().getName();
-        this.definition = definition;
 
         admincentralEventBus.addHandler(MessageEvent.class, this);
     }
@@ -102,6 +118,8 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter impl
         for (MessageType type : MessageType.values()) {
             doUnreadMessagesUpdate(type);
         }
+        PulseListFooterView footer = pulseListFooterPresenter.start(definition.getBulkActions(), getTotalEntriesAmount());
+        view.setFooter(footer);
     }
 
     @Override
@@ -189,4 +207,10 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter impl
     public int getPendingItemCount() {
         return messagesManager.getNumberOfUnclearedMessagesForUser(userId);
     }
+
+    @Override
+    protected List<Object> getSelectedItemIds() {
+        return view.getSelectedItemIds();
+    }
+
 }
