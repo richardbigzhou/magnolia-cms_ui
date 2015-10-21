@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
- * Action definition for {@link ArchiveTaskAction}.
+ * Action executor for pulse items.
  */
-public class ArchiveTaskActionDefinition extends ConfiguredActionDefinition {
+public class PulseListActionExecutor extends AbstractActionExecutor {
 
-    public ArchiveTaskActionDefinition() {
-        setImplementationClass(ArchiveTaskAction.class);
+    private List<ActionDefinition> actionDefinitions;
+
+    @Inject
+    public PulseListActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        for (ActionDefinition actionDef : actionDefinitions) {
+            if (actionDef.getName().equals(actionName)) {
+                return actionDef;
+            }
+        }
+        return null;
+    }
+
+    public void setActionsDefinition(List<ActionDefinition> actionDefinitions) {
+        this.actionDefinitions = actionDefinitions;
     }
 }

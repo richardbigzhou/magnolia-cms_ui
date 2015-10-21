@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,11 +36,11 @@ package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Action definition for {@link ArchiveTaskAction}.
+ * Action definition for {@link ClaimTasksAction}.
  */
-public class ArchiveTaskActionDefinition extends ConfiguredActionDefinition {
+public class ClaimTasksActionDefinition extends ConfiguredActionDefinition {
 
-    public ArchiveTaskActionDefinition() {
-        setImplementationClass(ArchiveTaskAction.class);
+    public ClaimTasksActionDefinition() {
+        setImplementationClass(ClaimTasksAction.class);
     }
 }

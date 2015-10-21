@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2014-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Action definition for {@link ArchiveTaskAction}.
+ * Used to configure a {@link DeleteMessagesAction}.
+ * 
+ * @see DeleteMessagesAction
  */
-public class ArchiveTaskActionDefinition extends ConfiguredActionDefinition {
+public class DeleteMessagesActionDefinition extends ConfiguredActionDefinition {
 
-    public ArchiveTaskActionDefinition() {
-        setImplementationClass(ArchiveTaskAction.class);
+    public DeleteMessagesActionDefinition() {
+        setImplementationClass(DeleteMessagesAction.class);
     }
 }
