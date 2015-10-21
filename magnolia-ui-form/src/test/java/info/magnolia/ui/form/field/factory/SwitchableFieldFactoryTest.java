@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.hamcrest.CoreMatchers.is;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -55,8 +56,6 @@ import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,20 +76,22 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
+    private I18NAuthoringSupport i18nAuthoringSupport;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
-        FieldTypeDefinitionRegistry fieldDefinitionRegistery = createFieldTypeRegistery();
-        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
+        FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
+        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
     }
 
     @Test
     public void createFieldComponentTest() {
         // GIVEN
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -104,7 +105,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void testSelectHasNoDefaultValueIfNotConfigured() {
         // GIVEN
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -122,7 +123,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.getOptions().get(1).setSelected(true);
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -140,7 +141,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.setTransformerClass(DelegatingCompositeFieldTransformer.class);
         definition.setI18n(true);
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -155,7 +156,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.setTransformerClass(SwitchableTransformer.class);
         definition.setI18n(true);
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -174,7 +175,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
                 return super.addItemProperty(propertyId, property);
             }
         };
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         SwitchableField field = (SwitchableField) factory.createField();
         AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
@@ -196,7 +197,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.getFields().get(0).setDefaultValue("hop!");
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         SwitchableField field = (SwitchableField) factory.createField();
         AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
@@ -216,12 +217,13 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void fieldNamesAndFieldsStayInSynch() {
         // GIVEN
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         factory.createField();
         assertEquals(4, definition.getFields().size());
         assertEquals(4, definition.getFieldNames().size());
         assertTrue(definition.getFieldNames().contains(definition.getName()));
+
         // WHEN
         factory.createField();
 
@@ -237,32 +239,29 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
      */
     @Test
     public void fieldNamesAndFieldsStayInSynchWhenGetFieldsIsCalledBeforeSetFields() {
-        CompositeFieldDefinition compositeFieldDefinition = new CompositeFieldDefinition();
-        ConfiguredFieldDefinition field;
-        List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-
-        field = new ConfiguredFieldDefinition();
-        field.setName("a");
-        fields.add(field);
-        field = new ConfiguredFieldDefinition();
-        field.setName("b");
-        fields.add(field);
-
         // GIVEN
-        List<String> names = compositeFieldDefinition.getFieldNames();
+        ConfiguredFieldDefinition fieldA = new ConfiguredFieldDefinition();
+        fieldA.setName("a");
+
+        ConfiguredFieldDefinition fieldB = new ConfiguredFieldDefinition();
+        fieldB.setName("b");
+
+        List<ConfiguredFieldDefinition> fields = newArrayList(fieldA, fieldB);
+
+        CompositeFieldDefinition compositeFieldDefinition = new CompositeFieldDefinition();
         compositeFieldDefinition.setFields(fields);
 
         // WHEN
-        names = compositeFieldDefinition.getFieldNames();
+        List<String> names = compositeFieldDefinition.getFieldNames();
 
         // THEN
-        assertThat(names, is(Arrays.asList("a", "b")));
+        assertThat(names, hasItems("a", "b"));
     }
 
     @Test
     public void doNotAddNonVisibleField() {
         // GIVEN
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, mock(I18NAuthoringSupport.class));
+        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         SwitchableField field = (SwitchableField) factory.createField();
         AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
@@ -291,30 +290,30 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         return res;
     }
 
-    private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
-        FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();
+    private FieldTypeDefinitionRegistry createFieldTypeRegistry() {
+        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
 
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(CodeFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(CodeFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
         ConfiguredFieldTypeDefinition selectFieldDefinition = new ConfiguredFieldTypeDefinition();
         selectFieldDefinition.setDefinitionClass(OptionGroupFieldDefinition.class);
         selectFieldDefinition.setFactoryClass(OptionGroupFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
 
         ConfiguredFieldTypeDefinition hiddenFieldDefinition = new ConfiguredFieldTypeDefinition();
         hiddenFieldDefinition.setDefinitionClass(HiddenFieldDefinition.class);
         hiddenFieldDefinition.setFactoryClass(HiddenFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("hidden", hiddenFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("hidden", hiddenFieldDefinition));
 
-        return registery;
+        return registry;
     }
 
     @Override
@@ -333,11 +332,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
         option3.setLabel("Hidden");
         option3.setValue("hidden");
-        definition.getOptions().add(option3);
-        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        options.add(option1);
-        options.add(option2);
-        options.add(option3);
+
+        List<SelectFieldOptionDefinition> options = newArrayList(option1, option2, option3);
         definition.setOptions(options);
 
         // Set fields
@@ -345,17 +341,16 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         textFieldDefinition = (TextFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(textFieldDefinition, propertyName);
         textFieldDefinition.setRows(0);
         textFieldDefinition.setName("text");
+
         CodeFieldDefinition codeFieldDefinition = new CodeFieldDefinition();
         codeFieldDefinition.setLanguage("java");
         codeFieldDefinition.setName(propertyName);
         codeFieldDefinition.setName("code");
+
         HiddenFieldDefinition hiddenFieldDefinition = new HiddenFieldDefinition();
-        hiddenFieldDefinition = new HiddenFieldDefinition();
         hiddenFieldDefinition.setName("hidden");
-        ArrayList<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-        fields.add(textFieldDefinition);
-        fields.add(codeFieldDefinition);
-        fields.add(hiddenFieldDefinition);
+
+        List<ConfiguredFieldDefinition> fields = newArrayList(textFieldDefinition, codeFieldDefinition, hiddenFieldDefinition);
         definition.setFields(fields);
 
         this.definition = definition;
