@@ -309,9 +309,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(addDownloadAsYamlActionTask)
                 .addTask(new NodeExistsDelegateTask("", "/modules/ui-admincentral/messageViews/longRunning",
                         new PartialBootstrapTask("Add exception field to longRunning messageView", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning/form/tabs/message/fields/exception"))));
-
         register(DeltaBuilder.update("5.4.4", "")
                 .addTask(new RemoveNodeTask("Remove Website Jcr Browser app from App Launcher", "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser")));
+        register(DeltaBuilder.update("5.5", "")
+                .addTask(new ArrayDelegateTask("Bulk actions", "Add configuration for bulk actions to footer.",
+                        new PartialBootstrapTask("", "Register task action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml", "/pulse/presenters/tasks/bulkActions"),
+                        new PartialBootstrapTask("", "Register message action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml", "/pulse/presenters/messages/bulkActions"))));
     }
 
     @Override

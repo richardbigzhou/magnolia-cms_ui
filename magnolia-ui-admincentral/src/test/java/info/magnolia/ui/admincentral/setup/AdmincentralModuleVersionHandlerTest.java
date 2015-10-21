@@ -669,4 +669,21 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertThat(session.getRootNode().getNode("modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps"), not(hasNode("websiteJcrBrowser")));
     }
+
+    @Test
+    public void updateFrom544AddsBulkActionsConfigToFooterOfPulseView() throws Exception {
+        // GIVEN
+        Node pulseTask = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/pulse/presenters/tasks", NodeTypes.ContentNode.NAME);
+        Node messageTask = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/pulse/presenters/messages", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.4"));
+
+        // THEN
+        assertThat(pulseTask, hasNode("bulkActions"));
+        assertThat(pulseTask, hasNode("bulkActions/archive"));
+        assertThat(pulseTask, hasNode("bulkActions/claim"));
+        assertThat(messageTask, hasNode("bulkActions"));
+        assertThat(messageTask, hasNode("bulkActions/delete"));
+    }
 }

@@ -41,6 +41,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
+import info.magnolia.task.TasksManager;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -84,7 +85,7 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -104,7 +105,7 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -125,7 +126,7 @@ public class TaskAvailabilityRuleTest {
         task.setStatus(Status.InProgress);
         task.setActorId("qux");
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -141,7 +142,7 @@ public class TaskAvailabilityRuleTest {
         List<Status> status = new LinkedList<Status>();
         status.add(Status.InProgress);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         // WHEN
         boolean available = rule.isAvailableForItem(null);
@@ -157,7 +158,7 @@ public class TaskAvailabilityRuleTest {
         List<Status> status = new LinkedList<Status>();
         Collections.addAll(status, Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         Task task = new Task();
         task.setStatus(Status.InProgress);
@@ -177,7 +178,7 @@ public class TaskAvailabilityRuleTest {
         List<Status> status = new LinkedList<Status>();
         Collections.addAll(status, Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, mock(TasksManager.class));
 
         Task task = new Task();
         task.setStatus(Status.Removed);
