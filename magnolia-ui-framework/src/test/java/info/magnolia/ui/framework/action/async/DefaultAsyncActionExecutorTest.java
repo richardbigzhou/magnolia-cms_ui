@@ -44,7 +44,9 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.module.scheduler.CommandJob.JobResult;
 import info.magnolia.module.scheduler.SchedulerModule;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
@@ -52,6 +54,8 @@ import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -64,11 +68,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerListener;
 
 import com.google.common.collect.Lists;
 
@@ -85,6 +92,11 @@ public class DefaultAsyncActionExecutorTest {
     private Provider<SchedulerModule> schedulerModuleProvider;
     private MockContext ctx;
     private JcrItemAdapter item;
+
+    private MessagesManager messagesManager;
+    // current trigger and listener for TriggerListener tests
+    private Trigger trigger;
+    private TriggerListener triggerListener;
 
     @Before
     public void setUp() throws Exception {
@@ -108,6 +120,35 @@ public class DefaultAsyncActionExecutorTest {
         definition = new CommandActionDefinition();
         i18n = mock(SimpleTranslator.class, new ReturnsArgumentAt(0));
         item = new JcrNodeAdapter(session.getRootNode());
+    }
+
+    private void setUpForTriggerListenerTests() throws Exception {
+        messagesManager = mock(MessagesManager.class);
+        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+
+        // mock system context
+        MockContext sysCtx = new MockContext();
+        User sysUser = mock(User.class);
+        doReturn("superuser").when(sysUser).getName();
+        sysCtx.setUser(sysUser);
+        ComponentsTestUtil.setInstance(SystemContext.class, sysCtx);
+
+        // mock scheduler to get a handle on trigger/triggerListener created by action
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                triggerListener = (TriggerListener) invocation.getArguments()[0];
+                return null;
+            }
+        }).when(scheduler).addTriggerListener(any(TriggerListener.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                trigger = (Trigger) invocation.getArguments()[1];
+                return null;
+            }
+        }).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
     }
 
     @After
@@ -169,5 +210,49 @@ public class DefaultAsyncActionExecutorTest {
                 executor.execute(item, params);
             }
         }, throwsAnException(instanceOf(AsyncActionExecutor.ParallelExecutionException.class)));
+    }
+
+    @Test
+    public void triggerListenerSendsSuccessMessageToCurrentUser() throws Exception {
+        // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+
+        setUpForTriggerListenerTests();
+
+        JobExecutionContext jec = mock(JobExecutionContext.class);
+        doReturn(new JobResult(true)).when(jec).getResult();
+
+        AsyncActionExecutor executor = new DefaultAsyncActionExecutor<>(definition, schedulerModuleProvider, ctx, null, i18n);
+
+        // WHEN
+        executor.execute(item, null);
+        // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
+        triggerListener.triggerComplete(trigger, jec, -1);
+
+        // THEN we only want to make sure message is sent with current user (not system user)
+        verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
+    }
+
+    @Test
+    public void triggerListenerSendsErrorMessageToCurrentUser() throws Exception {
+        // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+
+        setUpForTriggerListenerTests();
+
+        JobExecutionContext jec = mock(JobExecutionContext.class);
+        doReturn(new JobResult(false)).when(jec).getResult();
+
+        AsyncActionExecutor executor = new DefaultAsyncActionExecutor<>(definition, schedulerModuleProvider, ctx, null, i18n);
+
+        // WHEN
+        executor.execute(item, null);
+        // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
+        triggerListener.triggerComplete(trigger, jec, -1);
+
+        // THEN we only want to make sure message is sent with current user (not system user)
+        verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
     }
 }
