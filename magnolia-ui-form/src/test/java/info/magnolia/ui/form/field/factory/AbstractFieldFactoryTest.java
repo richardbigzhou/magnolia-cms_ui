@@ -37,9 +37,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+import java.util.Locale;
+
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.converter.StringToCalendarConverter;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -84,7 +85,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
             @Override
             public Object answer(InvocationOnMock inv) throws Throwable {
                 Object[] args = inv.getArguments();
-                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3], mock(I18NAuthoringSupport.class));
+                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3]);
             }
         }).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         componentProvider.setInstance(BasicTransformer.class, mock(BasicTransformer.class));
@@ -258,6 +259,23 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     }
 
     @Test
+    public void correctLocaleCodeTest() {
+        // GIVEN
+        when(i18NAuthoringSupport.deriveLocalisedPropertyName(any(String.class), any(Locale.class))).thenReturn(Locale.CHINA.toString());
+        definition.setLabel("label");
+        definition.setI18n(true);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory.setLocale(Locale.CHINA);
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field<Object> field = fieldFactory.createField();
+
+        // THEN
+        assertEquals("label (zh_CN)", field.getCaption());
+    }
+
+    @Test
     public void requiredFieldIsMarkedByAsteriskTest() {
         // GIVEN
         definition.setRequired(true);
@@ -424,9 +442,16 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
          */
         private class TestTextField extends TextField {
 
+            private Locale locale;
+
             @Override
             protected VaadinSession getSession() {
                 return Components.getComponentProvider().getComponent(VaadinSession.class);
+            }
+
+            @Override
+            public void setLocale(Locale locale) {
+                this.locale = locale;
             }
         }
     }
