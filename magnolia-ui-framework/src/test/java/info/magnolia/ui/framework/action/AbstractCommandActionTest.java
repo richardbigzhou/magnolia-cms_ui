@@ -43,6 +43,7 @@ import info.magnolia.commands.MgnlCommand;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
@@ -52,6 +53,8 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -65,9 +68,13 @@ import javax.jcr.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
+import org.quartz.Trigger;
+import org.quartz.TriggerListener;
 
 public class AbstractCommandActionTest {
 
@@ -82,6 +89,11 @@ public class AbstractCommandActionTest {
     private CommandActionDefinition definition;
     private CommandsManager commandsManager;
     private SimpleTranslator i18n;
+    private MessagesManager messagesManager;
+
+    // current trigger and listener for TriggerListener tests
+    private Trigger trigger;
+    private TriggerListener triggerListener;
 
     @Before
     public void setUp() throws Exception {
@@ -113,11 +125,43 @@ public class AbstractCommandActionTest {
         i18n = mock(SimpleTranslator.class);
     }
 
+    private void setUpForTriggerListenerTests() throws Exception {
+        messagesManager = mock(MessagesManager.class);
+        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+
+        // mock system context
+        MockContext sysCtx = new MockContext();
+        User sysUser = mock(User.class);
+        doReturn("superuser").when(sysUser).getName();
+        sysCtx.setUser(sysUser);
+        ComponentsTestUtil.setInstance(SystemContext.class, sysCtx);
+
+        // mock scheduler to get a handle on trigger/triggerListener created by action
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                triggerListener = (TriggerListener) invocation.getArguments()[0];
+                return null;
+            }
+        }).when(scheduler).addTriggerListener(any(TriggerListener.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                trigger = (Trigger) invocation.getArguments()[1];
+                return null;
+            }
+        }).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
+    }
+
     @After
     public void tearDown() throws Exception {
         MgnlContext.setInstance(null);
         session = null;
         ComponentsTestUtil.clear();
+
+        trigger = null;
+        triggerListener = null;
     }
 
     @Test
@@ -263,6 +307,52 @@ public class AbstractCommandActionTest {
 
         // THEN
         assertEquals("ui-framework.abstractcommand.asyncaction.long", definition.getSuccessMessage());
+    }
+
+    @Test
+    public void triggerListenerSendsSuccessMessageToCurrentUser() throws Exception {
+        // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+
+        setUpForTriggerListenerTests();
+
+        JobExecutionContext jec = mock(JobExecutionContext.class);
+        doReturn(1).when(jec).getResult(); // 1 means command job completed successfully
+
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, i18n);
+
+        // WHEN
+        action.execute();
+        // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
+        triggerListener.triggerComplete(trigger, jec, -1);
+
+        // THEN we only want to make sure message is sent with current user (not system user)
+        verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
+    }
+
+    @Test
+    public void triggerListenerSendsErrorMessageToCurrentUser() throws Exception {
+        // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+
+        setUpForTriggerListenerTests();
+
+        JobExecutionContext jec = mock(JobExecutionContext.class);
+        doReturn(0).when(jec).getResult(); // 0 means an error occurred
+
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, i18n);
+
+        // WHEN
+        action.execute();
+        // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
+        triggerListener.triggerComplete(trigger, jec, -1);
+
+        // THEN we only want to make sure message is sent with current user (not system user)
+        verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
     }
 
     private static final class QuxCommand extends MgnlCommand {
