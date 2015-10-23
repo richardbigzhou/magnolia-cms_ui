@@ -26,6 +26,10 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-module-imaging</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
