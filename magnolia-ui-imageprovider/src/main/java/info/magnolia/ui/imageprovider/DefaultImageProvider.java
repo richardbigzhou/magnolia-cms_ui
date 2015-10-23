@@ -34,11 +34,11 @@
 package info.magnolia.ui.imageprovider;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.link.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.link.LinkUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -62,188 +62,105 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 
 /**
- * This implementation of image provider, is able to provide portrait or thumbnail images only for objects of mime
- * type image/*. It will not store preview of image under the image node itself, instead it relies on imaging module
- * to generate and store the preview.
+ * This implementation of {@link ImageProvider} provides portrait or thumbnail images for JCR-based content.
+ * <p>
+ * It expects a given Node to have a binary sub-node named according to {@link ImageProviderDefinition#getOriginalImageNodeName()},
+ * and will only resolve images when the binary is of mime-type image/*.
+ * It also relies on imaging module to generate and store the preview images.
+ *
+ * @see ImageProviderDefinition
  */
-public class DefaultImageProvider implements ImageProvider {
-
-    private ImageProviderDefinition definition;
-
-    private ContentConnector contentConnector;
-
-    @Inject
-    public DefaultImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
-        this.definition = definition;
-        this.contentConnector = contentConnector;
-    }
+public class DefaultImageProvider extends AbstractImageProvider {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
 
-    public final String ICON_CLASS_DEFAULT = "file";
+    private final ImageProviderDefinition definition;
 
-    @Override
-    public String getPortraitPath(Object itemId) {
-        Item item = contentConnector.getItem(itemId);
-        if (item instanceof JcrNodeAdapter) {
-            JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
-            return getGeneratorImagePath(jcrAdapter.getWorkspace(), jcrAdapter.getJcrItem(), PORTRAIT_GENERATOR);
-        }
-        log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
-        return null;
+    @Inject
+    public DefaultImageProvider(ImageProviderDefinition definition, ContentConnector contentConnector) {
+        super(contentConnector);
+        this.definition = definition;
     }
 
     @Override
-    public String getThumbnailPath(Object itemId) {
-        Item item = contentConnector.getItem(itemId);
+    protected String resolveImagePath(Item item, String generator) {
+        String imagePath = null;
+
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();
-            return getGeneratorImagePath(jcrAdapter.getWorkspace(), node, THUMBNAIL_GENERATOR);
-        }
-        log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
-        return null;
-    }
+            String workspace = jcrAdapter.getWorkspace();
 
-    protected String getGeneratorImagePath(String workspace, Node node, String generator) {
-        String imagePath = null;
+            if (node != null) {
+                try {
+                    Node imageNode = node.getNode(definition.getOriginalImageNodeName());
 
-        if (node != null) {
-            try {
-                Node imageNode = node.getNode(definition.getOriginalImageNodeName());
+                    String imageName;
+                    if (imageNode.hasProperty(FileProperties.PROPERTY_FILENAME)) {
+                        imageName = imageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString();
+                    } else {
+                        imageName = node.getName();
+                    }
+                    imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
 
-                String imageName;
-                if (imageNode.hasProperty(FileProperties.PROPERTY_FILENAME)) {
-                    imageName = imageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString();
-                } else {
-                    imageName = node.getName();
+                    // Add cache fingerprint so that browser caches asset only until asset is modified.
+                    Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+                    imagePath = LinkUtil.addFingerprintToLink(imagePath, lastModified);
+
+                } catch (RepositoryException e) {
+                    log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
                 }
-                imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
-
-                // Add cache fingerprint so that browser caches asset only until asset is modified.
-                Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-                imagePath = LinkUtil.addFingerprintToLink(imagePath, lastModified);
-
-            } catch (RepositoryException e) {
-                log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
             }
+        } else {
+            log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
         }
 
         return imagePath;
     }
 
     @Override
-    public Object getThumbnailResource(Object itemId, String generator) {
-        Item item = contentConnector.getItem(itemId);
+    protected Object resolveImageResource(Item item, String generator) {
+        Object resource = null;
+
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();
+            String workspace = jcrAdapter.getWorkspace();
 
-            Object resource = null;
-            if (node != null) {
-                resource = getThumbnailResource(node, jcrAdapter.getWorkspace(), generator);
-            }
-            return resource;
-        }
-        return null;
-    }
+            try {
+                final Node imageNode = node.getNode(definition.getOriginalImageNodeName());
+                String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
 
-    private Object getThumbnailResource(Node node, String workspace, String generator) {
-        Object resource = null;
-        try {
-            final Node imageNode = node.getNode(definition.getOriginalImageNodeName());
-            String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
-
-            if (isImage(mimeType)) {
-                if(MediaType.SVG_UTF_8.is(MediaType.parse(mimeType))) {
-                    ImageStreamSource iss = new ImageStreamSource(imageNode.getIdentifier(), workspace);
-                    // By default a StreamResource is cached for one year - filename contains the last modified date so that image is cached by the browser until changed.
-                    String filename = imageNode.getIdentifier() + LastModified.getLastModified(imageNode).getTimeInMillis();
-                    StreamResource streamResource = new StreamResource(iss, filename);
-                    streamResource.setMIMEType(mimeType);
-                    resource = streamResource;
-                } else {
-                    String path = getGeneratorImagePath(workspace, node, generator);
-                    if (StringUtils.isNotBlank(path)) {
-                        resource = new ExternalResource(path, MediaType.PNG.toString());
+                if (isImage(mimeType)) {
+                    if (MediaType.SVG_UTF_8.is(MediaType.parse(mimeType))) {
+                        ImageStreamSource iss = new ImageStreamSource(imageNode.getIdentifier(), workspace);
+                        // By default a StreamResource is cached for one year - filename contains the last modified date so that image is cached by the browser until changed.
+                        String filename = imageNode.getIdentifier() + LastModified.getLastModified(imageNode).getTimeInMillis();
+                        StreamResource streamResource = new StreamResource(iss, filename);
+                        streamResource.setMIMEType(mimeType);
+                        resource = streamResource;
+                    } else {
+                        String path = resolveImagePath(item, generator);
+                        if (StringUtils.isNotBlank(path)) {
+                            resource = new ExternalResource(path, MediaType.PNG.toString());
+                        }
                     }
+                } else {
+                    resource = resolveIconClassName(mimeType);
                 }
-            } else {
-                resource = createIconFontResource(mimeType);
+            } catch (RepositoryException e) {
+                log.debug("Could not get name or identifier from imageNode: {}", e.getMessage());
             }
-        } catch (RepositoryException e) {
-            log.debug("Could not get name or identifier from imageNode: {}", e.getMessage());
+        } else {
+            log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
         }
+
         return resource;
     }
 
-    /**
-     * Create a Icon Resource.
-     */
-    private String createIconFontResource(String mimeType) {
-        return resolveIconClassName(mimeType);
-    }
-
-    /**
-     * Simple MimeType to Icon Class Mapping.
-     */
-    @Override
-    public String resolveIconClassName(String mimeType) {
-
-        String fileType = resolveFileTypeFromMimeType(mimeType);
-
-        if (!"".equals(fileType)) {
-            return "file-" + fileType;
-        }
-
-        return ICON_CLASS_DEFAULT;
-    }
-
-    /**
-     * Simple MimeType to FileType Mapping.
-     */
-    private String resolveFileTypeFromMimeType(String mimeType) {
-        if (StringUtils.isBlank(mimeType)) {
-            return StringUtils.EMPTY;
-        }
-        if (mimeType.contains("application/pdf")) {
-            return "pdf";
-        }
-        if (mimeType.matches("application.*(msword)")) {
-            return "word";
-        }
-        if (mimeType.matches("application.*(excel|xls)")) {
-            return "excel";
-        }
-        if (mimeType.matches("application.*(powerpoint)")) {
-            return "powerpoint";
-        }
-        if (mimeType.contains("text/")) {
-            return "text";
-        }
-        if (mimeType.contains("image/")) {
-            return "image";
-        }
-        if (mimeType.contains("video/")) {
-            return "video";
-        }
-        if (mimeType.contains("audio/")) {
-            return "audio";
-        }
-        if (mimeType.matches(".*(zip|compress)")) {
-            return StringUtils.EMPTY;
-        }
-
-        return StringUtils.EMPTY;
-    }
-
-    protected boolean isImage(String mimeType) {
-        return mimeType != null && mimeType.matches("image.*");
-    }
-
     private static class ImageStreamSource implements StreamSource {
-        private String id;
-        private String workspace;
+        private final String id;
+        private final String workspace;
 
         public ImageStreamSource(String id, String workspace) {
             this.id = id;
@@ -254,7 +171,7 @@ public class DefaultImageProvider implements ImageProvider {
         public InputStream getStream() {
             try {
                 Node node = NodeUtil.getNodeByIdentifier(workspace, id);
-                if(node != null && node.hasProperty(JcrConstants.JCR_DATA)) {
+                if (node != null && node.hasProperty(JcrConstants.JCR_DATA)) {
                     return node.getProperty(JcrConstants.JCR_DATA).getBinary().getStream();
                 }
             } catch (RepositoryException e) {
