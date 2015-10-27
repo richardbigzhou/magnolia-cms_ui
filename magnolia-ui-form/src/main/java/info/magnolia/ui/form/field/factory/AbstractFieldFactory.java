@@ -165,10 +165,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
 
     private void setFieldCaption() {
-        // Set label and required marker
+        // Set field caption and append locale indicator if needed
         if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
-            String caption = getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : "");
-
+            String caption = getFieldDefinition().getLabel();
 
             if (locale != null && definition.isI18n()) {
                 caption = String.format("%s (%s)", caption, locale.getLanguage());

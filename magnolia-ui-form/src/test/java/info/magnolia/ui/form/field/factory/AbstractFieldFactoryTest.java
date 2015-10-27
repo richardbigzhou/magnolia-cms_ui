@@ -258,22 +258,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     }
 
     @Test
-    public void requiredFieldIsMarkedByAsteriskTest() {
-        // GIVEN
-        definition.setRequired(true);
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
-        fieldFactory.setComponentProvider(this.componentProvider);
-
-        // WHEN
-        Field<Object> field = fieldFactory.createField();
-        field.setRequired(definition.isRequired());
-
-        // THEN
-        assertEquals(true, field.isRequired());
-        assertTrue(field.getCaption().contains("*"));
-    }
-
-    @Test
     public void testPlainBeanItemSupport() throws Exception {
         // GIVEN
         baseItem = new BeanItem<TestBean>(new TestBean("bar"));
@@ -318,22 +302,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         Property<?> p = field.getPropertyDataSource();
         assertNotNull(p);
-    }
-
-    @Test
-    public void testLabelRequired() throws Exception {
-        // GIVEN
-        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        def.setRequired(true);
-
-        fieldFactory = new TestTextFieldFactory(def, baseItem);
-        fieldFactory.setComponentProvider(this.componentProvider);
-
-        // WHEN
-        Field<?> field = fieldFactory.createField();
-
-        // THEN
-        assertTrue(field.getCaption().contains("<span class=\"requiredfield\">*</span>"));
     }
 
     @Test

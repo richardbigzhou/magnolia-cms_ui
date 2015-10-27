@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -49,6 +50,7 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
+import com.vaadin.shared.AbstractFieldState;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
@@ -135,7 +137,13 @@ public class FormSectionConnector extends AbstractLayoutConnector {
 
     @Override
     public void updateCaption(ComponentConnector connector) {
-        getWidget().setFieldCaption(connector.getWidget(), connector.getState().caption);
+        final Widget fieldWidget = connector.getWidget();
+
+        String caption = connector.getState().caption;
+        getWidget().setFieldCaption(fieldWidget, caption);
+
+        boolean isRequired = ((AbstractFieldState) connector.getState()).required;
+        getWidget().setFieldRequired(fieldWidget, isRequired);
     }
 
     @Override
