@@ -45,8 +45,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,17 +58,15 @@ public class FormSectionWidget extends FlowPanel {
 
     private final Map<Widget, FormFieldWrapper> sections = new LinkedHashMap<Widget, FormFieldWrapper>();
 
-    private final Element fieldSet = DOM.createElement("fieldset");
-
     private final Element legend = DOM.createElement("legend");
 
-    private final Element horizontalRule = DOM.createElement("hr");
+    private final Element fieldSet = DOM.createElement("fieldset");
 
     public FormSectionWidget() {
         super();
         getElement().appendChild(fieldSet);
         fieldSet.appendChild(legend);
-        fieldSet.appendChild(horizontalRule);
+        fieldSet.appendChild(DOM.createElement("hr"));
     }
 
     @Override
@@ -144,7 +142,7 @@ public class FormSectionWidget extends FlowPanel {
             if ("dialogDescriptionHeader".equals(element.getAttribute("role"))) {
                 return true;
             }
-            element = (Element) element.getParentElement();
+            element = element.getParentElement();
         }
         return false;
     }
@@ -157,6 +155,13 @@ public class FormSectionWidget extends FlowPanel {
         final FormFieldWrapper wrapper = sections.get(widget);
         if (wrapper != null) {
             wrapper.setCaption(caption);
+        }
+    }
+
+    public void setFieldRequired(Widget fieldWidget, boolean isRequired) {
+        final FormFieldWrapper wrapper = sections.get(fieldWidget);
+        if (wrapper != null) {
+            wrapper.setRequired(isRequired);
         }
     }
 
@@ -183,7 +188,7 @@ public class FormSectionWidget extends FlowPanel {
 
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select((Element) getElement().getParentElement().cast())
+        JQueryWrapper.select((com.google.gwt.user.client.Element)getElement().getParentElement())
                 .animate(300, new AnimationSettings() {
                     {
                         setProperty("scrollTop", top - 30);

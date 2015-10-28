@@ -35,6 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.InlineMessageWidget;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +47,6 @@ import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,6 +63,8 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     private Element fieldWrapper = DOM.createDiv();
 
     private Element root;
+
+    private Element requirementAsterisk = null;
 
     private final HelpIconWidget helpButton = new HelpIconWidget();
 
@@ -136,11 +139,22 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void setCaption(String caption) {
-        label.setInnerHTML(caption);
+        label.setInnerText(caption);
         if (caption != null) {
-            // let's show the caption as tooltip, too. This helps if the label is too long. it may contain <span class="requiredfield">*</span>
-            String toolTip = caption.replaceAll("\\<.*?\\>", "");
-            label.setTitle(toolTip);
+            label.setTitle(caption);
+        }
+    }
+
+    public void setRequired(boolean required) {
+        if (required) {
+            if (requirementAsterisk == null) {
+                requirementAsterisk = SpanElement.as(DOM.createSpan());
+                requirementAsterisk.setClassName("requiredfield");
+                requirementAsterisk.setInnerText("*");
+            }
+            label.appendChild(requirementAsterisk);
+        } else if (requirementAsterisk != null && label.isOrHasChild(requirementAsterisk)) {
+            label.removeChild(requirementAsterisk);
         }
     }
 
