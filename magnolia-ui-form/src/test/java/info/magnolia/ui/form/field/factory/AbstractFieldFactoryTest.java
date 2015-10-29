@@ -85,7 +85,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
             @Override
             public Object answer(InvocationOnMock inv) throws Throwable {
                 Object[] args = inv.getArguments();
-                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3]);
+                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3], i18NAuthoringSupport);
             }
         }).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         componentProvider.setInstance(BasicTransformer.class, mock(BasicTransformer.class));
