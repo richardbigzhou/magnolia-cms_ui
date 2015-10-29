@@ -34,22 +34,39 @@
 package info.magnolia.ui.imageprovider;
 
 /**
- * Defines a provider for Thumbnail images.
+ * The {@link ImageProvider} provides portrait or thumbnail images for arbitrary content.
+ * It is primarily used to streamline preview images across the Magnolia UI.
  */
 public interface ImageProvider {
 
-    static final String PORTRAIT_GENERATOR = "portrait";
+    String PORTRAIT_GENERATOR = "portrait";
+    String THUMBNAIL_GENERATOR = "thumbnail";
 
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
-
-    String getPortraitPath(Object itemId);
-
-    String getThumbnailPath(Object itemId);
-
-    String resolveIconClassName(String mimeType);
     /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
+     * Gets an image preview for the content represented by the given itemId.
+     * This preview may be an image or an icon related to the content type.
+     *
+     * @param itemId the id of an {@link com.vaadin.data.Item Item}
+     * @param generator the name of a registered {@link info.magnolia.imaging.ImageGenerator ImageGenerator} of the imaging module
+     * @return a Vaadin {@link com.vaadin.server.Resource Resource} or a String corresponding to an icon class name
      */
     Object getThumbnailResource(Object itemId, String generator);
+
+    /**
+     * Gets an icon class name for the given media type.
+     *
+     * @param mimeType a MIME type
+     * @return a String corresponding to an icon class name
+     */
+    String resolveIconClassName(String mimeType);
+
+    /**
+     * @return a link to the generated "portrait" preview for the content represented by the given itemId.
+     */
+    String getPortraitPath(Object itemId);
+
+    /**
+     * @return a link to the generated "thumbnail" preview for the content represented by the given itemId.
+     */
+    String getThumbnailPath(Object itemId);
 }
