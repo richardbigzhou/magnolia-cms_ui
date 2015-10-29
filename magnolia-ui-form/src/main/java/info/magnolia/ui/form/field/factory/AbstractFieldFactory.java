@@ -170,7 +170,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             String caption = getFieldDefinition().getLabel();
 
             if (locale != null && definition.isI18n()) {
-                caption = String.format("%s (%s)", caption, locale.getLanguage());
+                caption = String.format("%s (%s)", caption, locale.toString());
             }
 
             this.field.setCaption(caption);

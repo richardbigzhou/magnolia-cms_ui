@@ -78,6 +78,8 @@ public class DefaultI18nAuthoringSupportTest {
         i18n = new DefaultI18nContentSupport();
         i18n.addLocale(createLocaleDefinition(Locale.FRENCH));
         i18n.addLocale(createLocaleDefinition(Locale.JAPANESE));
+        i18n.addLocale(createLocaleDefinition(Locale.CHINESE));
+        i18n.addLocale(createLocaleDefinition(Locale.TAIWAN));
         ComponentsTestUtil.setInstance(I18nContentSupport.class, i18n);
 
         i18nAuthoringSupport = new DefaultI18NAuthoringSupport();
@@ -116,6 +118,22 @@ public class DefaultI18nAuthoringSupportTest {
 
         // THEN
         assertThat(locales, empty());
+    }
+
+    @Test
+    public void testLocalisedPropertyContainsCountryIfNotEmpty() throws Exception {
+        // GIVEN
+        i18nAuthoringSupport.setEnabled(true);
+
+        // WHEN
+        String localisedPropertyEnglish = i18nAuthoringSupport.deriveLocalisedPropertyName("propertyName", Locale.ENGLISH);
+        String localisedPropertyChina = i18nAuthoringSupport.deriveLocalisedPropertyName("propertyName", Locale.SIMPLIFIED_CHINESE);
+        String localisedPropertyTaiwan = i18nAuthoringSupport.deriveLocalisedPropertyName("propertyName", Locale.TAIWAN);
+
+        // THEN
+        assertEquals("propertyName_en", localisedPropertyEnglish);
+        assertEquals("propertyName_zh_CN", localisedPropertyChina);
+        assertEquals("propertyName_zh_TW", localisedPropertyTaiwan);
     }
 
     @Test

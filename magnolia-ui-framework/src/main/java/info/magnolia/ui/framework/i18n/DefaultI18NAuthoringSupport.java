@@ -48,6 +48,7 @@ import java.util.Locale;
 import javax.jcr.Node;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +95,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     @Override
     public String deriveLocalisedPropertyName(String base, Locale locale) {
-        return String.format("%s_%s", base, locale.getLanguage());
+        return String.format("%s_%s", base, locale.toString());
     }
 
     @Override
