@@ -52,6 +52,10 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang3.StringUtils;
@@ -120,27 +124,43 @@ public class AboutPresenter {
         String dbDriverInfo = null;
         Connection connection = null;
         try {
-
             String connectionString[] = getConnectionString();
 
             String repoHome = magnoliaProperties.getProperty("magnolia.repositories.home");
             String repoName = getRepoName();
             connectionString[0] = StringUtils.replace(connectionString[0], "${wsp.home}", repoHome + "/" + repoName + "/workspaces/default");
-            connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
-            DatabaseMetaData meta = connection.getMetaData();
-            dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
-            if (dbInfo.toLowerCase().indexOf("mysql") != -1) {
-                String engine = getMySQLEngineInfo(connection, connectionString);
-                if (engine != null) {
-                    dbInfo += engine;
+            if (connectionString[0].startsWith("jdbc:")) {
+                // JDBC url
+                connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
+            } else if (connectionString[0].startsWith("java:")) {
+                // JNDI url
+                Context initialContext = new InitialContext();
+                DataSource datasource = (DataSource) initialContext.lookup(connectionString[0]);
+                if (datasource != null) {
+                    connection = datasource.getConnection();
+                } else {
+                    log.debug("Failed to lookup datasource.");
                 }
             }
-            dbDriverInfo = meta.getDriverName() + " " + meta.getDriverVersion();
-
+            if (connection != null) {
+                DatabaseMetaData meta = connection.getMetaData();
+                dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
+                if (dbInfo.toLowerCase().contains("mysql")) {
+                    String engine = getMySQLEngineInfo(connection, connectionString);
+                    if (engine != null) {
+                        dbInfo += engine;
+                    }
+                }
+                dbDriverInfo = meta.getDriverName() + " " + meta.getDriverVersion();
+            } else {
+                dbInfo = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
+            }
+        } catch (NamingException e) {
+            log.debug("Failed obtain DB connection through JNDI with {}", e.getMessage(), e);
         } catch (SQLException e) {
             log.debug("Failed to read DB and driver info from connection with {}", e.getMessage(), e);
-            dbInfo = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
-            dbDriverInfo = dbInfo;
+        } catch (IllegalArgumentException e) {
+            log.debug("Failed to understand DB connection URL with {}", e.getMessage(), e);
         } finally {
             if (connection != null) {
                 try {
@@ -234,7 +254,7 @@ public class AboutPresenter {
         // No special handling here if the config (file) is null or not existing.
         // If the path is wrong or not set, Magnolia won't start up properly and it won't be possible to launch the About-app.
 
-       final String[] connectionString = new String[3];
+        final String[] connectionString = new String[] { "", "", "" };
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
                 private boolean inPM;
@@ -270,7 +290,7 @@ public class AboutPresenter {
         } catch (Exception e) {
             log.debug("Failed to obtain DB connection info with {}", e.getMessage(), e);
         }
-        return null;
+        return connectionString;
     }
 
     String getRepoName() {

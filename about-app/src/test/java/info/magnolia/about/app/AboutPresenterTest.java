@@ -134,6 +134,25 @@ public class AboutPresenterTest {
     }
 
     @Test
+    public void testConnectionStringNotNull() {
+        // GIVEN
+        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
+        // AboutPresenter expects a an absolute path (when it's not starting with WEB-INF)
+        String configFilePathAbsPath = getAbsPathOfTestResource("jackrabbit-bundle-invalid-derby-search.xml");
+        when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFilePathAbsPath);
+        AboutPresenter presenter = new AboutPresenter(view, serverConfiguration, properties, i18n);
+
+        // WHEN
+        String[] connection = presenter.getConnectionString();
+
+        // THEN
+        assertTrue(connection.length > 0);
+        assertEquals("", connection[0]);
+        assertEquals("", connection[1]);
+        assertEquals("", connection[2]);
+    }
+
+    @Test
     public void testConnectionWithRelativePathForConfFile() {
         // GIVEN
         MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
