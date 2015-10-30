@@ -37,7 +37,7 @@ import static info.magnolia.about.app.AboutPresenter.*;
 import static info.magnolia.about.app.AboutView.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
@@ -129,6 +129,25 @@ public class AboutPresenterTest {
         // THEN
         assertThat(connection.length, greaterThan(0));
         assertThat(connection[0], is("jdbc:derby:${rep.home}/version/db;create=true"));
+    }
+
+    @Test
+    public void testConnectionStringNotNull() {
+        // GIVEN
+        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
+        // AboutPresenter expects a an absolute path (when it's not starting with WEB-INF)
+        String configFilePathAbsPath = getAbsPathOfTestResource("jackrabbit-bundle-invalid-derby-search.xml");
+        when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFilePathAbsPath);
+        AboutPresenter presenter = new AboutPresenter(view, serverConfiguration, properties, i18n, productDescriptorExtractor);
+
+        // WHEN
+        String[] connection = presenter.getConnectionString();
+
+        // THEN
+        assertTrue(connection.length > 0);
+        assertEquals("", connection[0]);
+        assertEquals("", connection[1]);
+        assertEquals("", connection[2]);
     }
 
     @Test
