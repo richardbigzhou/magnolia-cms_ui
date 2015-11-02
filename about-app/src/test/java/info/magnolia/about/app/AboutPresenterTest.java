@@ -33,8 +33,8 @@
  */
 package info.magnolia.about.app;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
@@ -71,7 +71,7 @@ public class AboutPresenterTest {
         String repoName = presenter.getRepoName();
 
         // THEN
-        assertEquals("magnolia", repoName);
+        assertThat(repoName, is("magnolia"));
     }
 
     @Test
@@ -85,8 +85,8 @@ public class AboutPresenterTest {
         String[] connection = presenter.getConnectionString();
 
         // THEN
-        assertTrue(connection.length > 0);
-        assertEquals("jdbc:derby:${rep.home}/version/db;create=true", connection[0]);
+        assertThat(connection.length, greaterThan(0));
+        assertThat(connection[0], is("jdbc:derby:${rep.home}/version/db;create=true"));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class AboutPresenterTest {
         String[] connection = presenter.getConnectionString();
 
         // THEN
-        assertTrue(connection.length > 0);
-        assertEquals("jdbc:derby:${rep.home}/version/db;create=true", connection[0]);
+        assertThat(connection.length, greaterThan(0));
+        assertThat(connection[0], is("jdbc:derby:${rep.home}/version/db;create=true"));
     }
 
     private String getAbsPathOfTestResource(String relPathInResources) {
