@@ -35,19 +35,17 @@ package info.magnolia.ui.framework.app;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.event.SystemEventBus;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -56,12 +54,13 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppLifecycleEvent;
+import info.magnolia.ui.api.app.SubAppLifecycleEventHandler;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
@@ -71,78 +70,174 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.stub.FailedAppStub;
 import info.magnolia.ui.framework.app.stub.FailedSubAppStub;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
 
-import java.util.Collections;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+import com.google.common.collect.Maps;
+import com.google.inject.TypeLiteral;
 import com.vaadin.ui.CssLayout;
 
-/**
- * {@link info.magnolia.ui.framework.app.AppInstanceControllerImpl} tests.
- */
 public class AppInstanceControllerImplTest {
 
     public static final String TEST_APP = "testApp";
-    public static final String TEST_SUB_APP = "testSubApp";
-    public static final String USER = "user";
+    public static final String FAILING_SUB_APP = "testSubApp";
+
+    public static final String SUB_APP_FOO = "foo";
+    public static final String SUB_APP_BAR = "bar";
+
+
     private MessagesManager messagesManager;
     private AppInstanceControllerImpl appInstanceControllerImpl;
     private SimpleTranslator i18n;
-    private MockWebContext ctx = new MockWebContext();
-    private ModuleRegistry moduleRegistry;
-    private AppController appController;
+
     private ConfiguredAppDescriptor appDescriptor;
     private AppContext appContext;
-    private ConfiguredSubAppDescriptor subAppDescriptor;
-    private I18nizer i18nizer = new I18nizer() {
-        @Override
-        public <C> C decorate(C child) {
-            return child;
-        }
-    };
+    private ConfiguredSubAppDescriptor failingSubAppDescriptor;
+
+    private ComponentProvider componentProvider;
+
+    private Map<String, SubAppContext> subAppNamesToContexts = Maps.newHashMap();
 
     @Before
     public void setUp() throws Exception {
         messagesManager = mock(MessagesManager.class);
         i18n = mock(SimpleTranslator.class);
-        ctx.setUser(new MgnlUser(USER, "", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP));
 
-        moduleRegistry = mock(ModuleRegistry.class);
-        appController = mock(AppController.class);
+        final MockWebContext ctx = new MockWebContext();
+        ctx.setUser(mock(User.class));
+
         appDescriptor = new ConfiguredAppDescriptor();
         appContext = mock(AppContext.class);
 
         appDescriptor.setName(TEST_APP);
-        subAppDescriptor = new ConfiguredSubAppDescriptor();
-        subAppDescriptor.setName(TEST_SUB_APP);
-        subAppDescriptor.setSubAppClass(FailingToStartSubApp.class);
 
-        appDescriptor.addSubApp(subAppDescriptor);
+        failingSubAppDescriptor = new ConfiguredSubAppDescriptor();
+        failingSubAppDescriptor.setName(FAILING_SUB_APP);
+        failingSubAppDescriptor.setSubAppClass(FailingToStartSubApp.class);
+
+        final ConfiguredSubAppDescriptor fooDescriptor = new ConfiguredSubAppDescriptor();
+        fooDescriptor.setSubAppClass(SelfContextRegisteringSubApp.class);
+        fooDescriptor.setName(SUB_APP_FOO);
+
+        final ConfiguredSubAppDescriptor barDescriptor = new ConfiguredSubAppDescriptor();
+        barDescriptor.setSubAppClass(SelfContextRegisteringSubApp.class);
+        barDescriptor.setName(SUB_APP_BAR);
+
+        appDescriptor.addSubApp(fooDescriptor);
+        appDescriptor.addSubApp(barDescriptor);
+        appDescriptor.addSubApp(failingSubAppDescriptor);
+
         MgnlContext.setInstance(ctx);
 
         appInstanceControllerImpl = new AppInstanceControllerImpl(
-                moduleRegistry,
-                appController,
+                mock(ModuleRegistry.class),
+                mock(AppController.class),
                 mock(LocationController.class),
                 mock(Shell.class),
                 messagesManager,
                 appDescriptor,
                 mock(AppLauncherLayoutManager.class),
                 mock(SystemMonitor.class),
-                i18nizer,
+                mock(I18nizer.class, new ReturnsArgumentAt(0)),
                 i18n,
                 ctx);
-        appInstanceControllerImpl.setAppComponentProvider(initComponentProvider());
 
+        componentProvider = initComponentProvider();
+        appInstanceControllerImpl.setAppComponentProvider(componentProvider);
+
+        final App app = new BaseApp(appContext, new DefaultAppView() {
+            @Override
+            public String addSubAppView(View view, String caption, boolean closable) {
+                return StringUtils.isBlank(caption) ? super.addSubAppView(view, caption, closable) : caption;
+            }
+        });
+
+        appInstanceControllerImpl.setApp(app);
+    }
+
+    @Test
+    public void subAppStartedEventIsFiredOnSubAppCreation() throws Exception {
+        // WHEN
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_FOO));
+
+        final SelfContextRegisteringSubApp foo = getSubAppByName(SUB_APP_FOO);
+
+        // THEN
+        verify(foo.subAppLifecycleEventHandler, only()).onSubAppStarted(any(SubAppLifecycleEvent.class));
+    }
+
+    @Test
+    public void subAppStoppedEventFiredOnSubAppTermination() throws Exception {
+        // WHEN
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_FOO));
+        appInstanceControllerImpl.onClose(SUB_APP_FOO);
+
+        final SelfContextRegisteringSubApp foo = getSubAppByName(SUB_APP_FOO);
+
+        // THEN
+        verify(foo.subAppLifecycleEventHandler).onSubAppStarted(any(SubAppLifecycleEvent.class));
+        verify(foo.subAppLifecycleEventHandler).onSubAppStopped(any(SubAppLifecycleEvent.class));
+        verifyNoMoreInteractions(foo.subAppLifecycleEventHandler);
+    }
+
+    @Test
+    public void switchingBetweenSubAppsTriggersBlurAndFocusEventsForCorrespondingSubApps() throws Exception {
+        // WHEN sub-apps are created
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_FOO));
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_BAR));
+
+        final SelfContextRegisteringSubApp foo = getSubAppByName(SUB_APP_FOO);
+        final SelfContextRegisteringSubApp bar = getSubAppByName(SUB_APP_BAR);
+
+        // THEN listeners of each of the sub-apps get notified of corresponding sub-app start
+        verify(foo.subAppLifecycleEventHandler).onSubAppStarted(any(SubAppLifecycleEvent.class));
+        verify(bar.subAppLifecycleEventHandler).onSubAppStarted(any(SubAppLifecycleEvent.class));
+
+        // WHEN a sub-apps which is not active is focused
+        appInstanceControllerImpl.onFocus(SUB_APP_FOO);
+
+        // THEN the previous active sub-app listeners get notified with 'blur' event and the new
+        // sub-apps listeners get notified with 'focus' event
+        verify(bar.subAppLifecycleEventHandler).onSubAppBlurred(any(SubAppLifecycleEvent.class));
+        verify(foo.subAppLifecycleEventHandler).onSubAppFocused(any(SubAppLifecycleEvent.class));
+
+        // and after that no other interactions actually happen
+        verifyNoMoreInteractions(foo.subAppLifecycleEventHandler);
+        verifyNoMoreInteractions(bar.subAppLifecycleEventHandler);
+
+    }
+
+    @Test
+    public void subAppLifecycleEventsAreDispatchedAccordingly() throws Exception {
+
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_FOO));
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_BAR));
+
+
+        appInstanceControllerImpl.onFocus(SUB_APP_FOO);
+        appInstanceControllerImpl.onClose(SUB_APP_FOO);
+
+        final SelfContextRegisteringSubApp foo = getSubAppByName(SUB_APP_FOO);
+        final SelfContextRegisteringSubApp bar = getSubAppByName(SUB_APP_BAR);
+
+        verify(foo.subAppLifecycleEventHandler).onSubAppStarted(any(SubAppLifecycleEvent.class));
+        verify(bar.subAppLifecycleEventHandler).onSubAppBlurred(any(SubAppLifecycleEvent.class));
+        verify(foo.subAppLifecycleEventHandler).onSubAppFocused(any(SubAppLifecycleEvent.class));
+        verify(foo.subAppLifecycleEventHandler).onSubAppStopped(any(SubAppLifecycleEvent.class));
+    }
+
+    private SelfContextRegisteringSubApp getSubAppByName(String name) {
+        return (SelfContextRegisteringSubApp) subAppNamesToContexts.get(name).getSubApp();
     }
 
     @After
@@ -152,18 +247,13 @@ public class AppInstanceControllerImplTest {
 
     @Test
     public void testStubSubAppLaunchedInCaseOfStartUpFailure() throws Exception {
-        // GIVEN
-
-        final App app = new BaseApp(appContext, new DefaultAppView());
-        appInstanceControllerImpl.setApp(app);
-
         // WHEN
-        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP));
+        appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, FAILING_SUB_APP));
 
         // THEN
         SubAppContext activeSubAppContext = appInstanceControllerImpl.getActiveSubAppContext();
         assertThat(activeSubAppContext.getSubApp(), instanceOf(FailedSubAppStub.class));
-        verify(messagesManager).sendLocalMessage(org.mockito.Matchers.any(Message.class));
+        verify(messagesManager).sendLocalMessage(any(Message.class));
     }
 
     @Test
@@ -172,17 +262,16 @@ public class AppInstanceControllerImplTest {
         appDescriptor.setAppClass(FailingToStartApp.class);
 
         // WHEN
-        appInstanceControllerImpl.start(new DefaultLocation("app", TEST_APP));
+        appInstanceControllerImpl.start(new DefaultLocation("app", TEST_APP, FAILING_SUB_APP));
 
         // THEN
         assertThat(appInstanceControllerImpl.getApp(), instanceOf(FailedAppStub.class));
-        verify(messagesManager).sendLocalMessage(org.mockito.Matchers.any(Message.class));
+        verify(messagesManager).sendLocalMessage(any(Message.class));
     }
 
     @Test
     public void testSendGroupMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final String testGroup = "test";
         final Message message = mock(Message.class);
 
@@ -196,7 +285,6 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendUserMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final String testUser = "test";
         final Message message = mock(Message.class);
 
@@ -210,7 +298,6 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendLocalMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final Message message = mock(Message.class);
 
         // WHEN
@@ -223,7 +310,6 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testBroadcastMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final Message message = mock(Message.class);
 
         // WHEN
@@ -234,49 +320,38 @@ public class AppInstanceControllerImplTest {
     }
 
     public GuiceComponentProvider initComponentProvider() {
-
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
-
-        components.registerImplementation(AppController.class, AppControllerImpl.class);
-        components.registerImplementation(AppView.class, DefaultAppView.class);
-        components.registerImplementation(LocationController.class);
-
-        components.registerInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
-
-        components.registerInstance(Shell.class, mock(Shell.class));
-        components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
-
-        components.registerInstance(I18nizer.class, i18nizer);
         components.registerInstance(SimpleTranslator.class, i18n);
         components.registerInstance(AppContext.class, appContext);
 
-        components.registerInstance(TranslationService.class, mock(TranslationService.class));
-        components.registerInstance(LocaleProvider.class, mock(LocaleProvider.class));
-        components.registerInstance(info.magnolia.cms.i18n.MessagesManager.class, mock(info.magnolia.cms.i18n.MessagesManager.class));
-
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-
-        TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(new SimpleEventBus());
-
         builder.withConfiguration(components);
         builder.exposeGlobally();
-        return builder.build(eventBusConfigurer);
+        return builder.build(new AbstractGuiceComponentConfigurer() {
+            @Override
+            protected void configure() {
+                // Allow the sub-apps to register themselves se that their contexts can be retrieved by name
+                bind(new TypeLiteral<Map<String, SubAppContext>>() {}).toInstance(subAppNamesToContexts);
+            }
+        });
     }
 
-    private class TestEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+    public static class SelfContextRegisteringSubApp extends BaseSubApp {
 
-        private final EventBus eventBus;
+        SubAppLifecycleEventHandler subAppLifecycleEventHandler;
 
-        private TestEventBusConfigurer(EventBus eventbus) {
-            this.eventBus = eventbus;
+        @Inject
+        public SelfContextRegisteringSubApp(SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus, Map<String, SubAppContext> subAppNamesToContext) {
+            super(subAppContext, mock(View.class));
+            subAppLifecycleEventHandler = mock(SubAppLifecycleEventHandler.class);
+            eventBus.addHandler(SubAppLifecycleEvent.class, subAppLifecycleEventHandler);
+            subAppNamesToContext.put(subAppContext.getSubAppDescriptor().getName(), subAppContext);
         }
 
         @Override
-        protected void configure() {
-            bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(eventBus));
-            bind(EventBus.class).annotatedWith(Names.named(SystemEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+        public String getCaption() {
+            return getSubAppContext().getSubAppDescriptor().getName();
         }
-
     }
 
     /**

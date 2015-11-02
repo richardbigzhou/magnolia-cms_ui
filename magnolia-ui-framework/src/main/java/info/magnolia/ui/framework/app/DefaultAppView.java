@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
@@ -137,15 +138,7 @@ public class DefaultAppView implements AppView {
 
     @Override
     public View getSubAppViewContainer(final String instanceId) {
-
-        return new View(){
-
-            @Override
-            public Component asVaadinComponent() {
-                return mapper.get(instanceId);
-            }
-
-        };
+        return new ViewAdapter(mapper.get(instanceId));
     }
 
     @Override
