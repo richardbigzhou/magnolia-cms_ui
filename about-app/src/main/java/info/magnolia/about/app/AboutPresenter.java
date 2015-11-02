@@ -74,7 +74,8 @@ public class AboutPresenter {
     private final AboutView view;
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
-    private final SimpleTranslator i18n;
+
+    protected final SimpleTranslator i18n;
 
     // Object to transport data prepared in the presenter to the view
     protected Item viewData = new PropertysetItem();
