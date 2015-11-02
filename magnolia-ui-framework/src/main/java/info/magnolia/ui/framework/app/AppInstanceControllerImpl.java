@@ -58,6 +58,7 @@ import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppLifecycleEvent;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
@@ -107,6 +108,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         private SubAppContext context;
         private EventBusProtector eventBusProtector;
         private GuiceComponentProvider componentProvider;
+        private EventBus eventBus;
     }
 
     private Map<String, SubAppDetails> subApps = new ConcurrentHashMap<String, SubAppDetails>();
@@ -253,9 +255,24 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     @Override
     public void onFocus(String instanceId) {
         if (subApps.containsKey(instanceId)) {
+            /**
+             * If some other sub-app is in focus at the moment - fire a blur event for it.
+             */
+            if (currentSubAppContext != null) {
+                sendSubAppLifecycleEvent(currentSubAppContext, SubAppLifecycleEvent.Type.BLURRED);
+            }
             SubAppContext subAppContext = subApps.get(instanceId).context;
             locationController.goTo(subAppContext.getLocation());
+            sendSubAppLifecycleEvent(subAppContext, SubAppLifecycleEvent.Type.FOCUSED);
         }
+    }
+
+    private void sendSubAppLifecycleEvent(SubAppContext ctx, SubAppLifecycleEvent.Type type) {
+        getSubAppEventBus(ctx).fireEvent(new SubAppLifecycleEvent(ctx.getSubAppDescriptor(), type));
+    }
+
+    private EventBus getSubAppEventBus(SubAppContext subAppContext) {
+        return subApps.get(subAppContext.getInstanceId()).eventBus;
     }
 
     @Override
@@ -284,9 +301,12 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private void stopSubAppInstance(String instanceId) {
         SubAppDetails subAppDetails = subApps.get(instanceId);
-        if (subAppDetails == null) {
-            return;
-        }
+
+        /**
+         * Notify listeners of sub-app stopping before breaking it down.
+         */
+        sendSubAppLifecycleEvent(subAppDetails.context, SubAppLifecycleEvent.Type.STOPPED);
+
         subAppDetails.context.getSubApp().stop();
         subAppDetails.componentProvider.destroy();
         subAppDetails.eventBusProtector.resetEventBuses();
@@ -336,7 +356,6 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
             subAppContext.setLocation(location);
             // update the caption
             getView().updateCaption(subAppContext.getInstanceId(), subAppContext.getSubApp().getCaption());
-
             // set active subApp view if it isn't already active
             if (!subAppContext.getInstanceId().equals(app.getView().getActiveSubAppView())) {
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
@@ -403,6 +422,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
             subAppContext.setInstanceId(instanceId);
 
             subApps.put(instanceId, subAppDetails);
+
+            sendSubAppLifecycleEvent(subAppContext, SubAppLifecycleEvent.Type.STARTED);
         }
         return subAppContext;
     }
@@ -513,18 +534,19 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         // Add the SubAppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
         configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, subAppContext));
-
+        final EventBus eventBus = new SimpleEventBus();
         configuration.addConfigurer(new AbstractGuiceComponentConfigurer() {
 
             @Override
             protected void configure() {
-                bind(EventBus.class).annotatedWith(Names.named(SubAppEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+                bind(EventBus.class).annotatedWith(Names.named(SubAppEventBus.NAME)).toProvider(Providers.of(eventBus));
             }
         });
 
         EventBusProtector eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
         subAppDetails.eventBusProtector = eventBusProtector;
+        subAppDetails.eventBus = eventBus;
 
         log.debug("Creating component provider for sub app " + subAppName);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
