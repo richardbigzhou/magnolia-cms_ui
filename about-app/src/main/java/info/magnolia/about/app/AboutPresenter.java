@@ -72,11 +72,9 @@ public class AboutPresenter {
     private static final Logger log = LoggerFactory.getLogger(AboutPresenter.class);
 
     private final AboutView view;
-
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
-
-    protected final SimpleTranslator i18n;
+    private final SimpleTranslator i18n;
 
     // Object to transport data prepared in the presenter to the view
     protected Item viewData = new PropertysetItem();
@@ -122,7 +120,7 @@ public class AboutPresenter {
             connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
             DatabaseMetaData meta = connection.getMetaData();
             dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
-            if (dbInfo.toLowerCase().indexOf("mysql") != -1) {
+            if (dbInfo.toLowerCase().contains("mysql")) {
                 String engine = getMySQLEngineInfo(connection, connectionString);
                 if (engine != null) {
                     dbInfo += engine;
@@ -156,15 +154,15 @@ public class AboutPresenter {
         }
 
         // Prepare information for the view
-        viewData.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<String>(mgnlEdition));
-        viewData.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<String>(mgnlVersion));
-        viewData.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<String>(authorInstance));
-        viewData.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<String>(osInfo));
-        viewData.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<String>(javaInfo));
-        viewData.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<String>(serverInfo));
-        viewData.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<String>(jcrInfo));
-        viewData.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<String>(dbInfo));
-        viewData.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<String>(dbDriverInfo));
+        viewData.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<>(mgnlEdition));
+        viewData.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<>(mgnlVersion));
+        viewData.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<>(authorInstance));
+        viewData.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<>(osInfo));
+        viewData.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<>(javaInfo));
+        viewData.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<>(serverInfo));
+        viewData.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<>(jcrInfo));
+        viewData.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<>(dbInfo));
+        viewData.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<>(dbDriverInfo));
         view.setDataSource(viewData);
 
         return view;
@@ -198,7 +196,7 @@ public class AboutPresenter {
                 if (statement != null) {
                     statement.close();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
         }
         return null;
@@ -209,17 +207,17 @@ public class AboutPresenter {
         // Assuming, the path to the repository-config.-file is configured relative, starting with WEB-INF.
         // Otherwise, assuming it's an absolute path for this config. (See JIRA MGNLUI-3163)
         String configuredPath = magnoliaProperties.getProperty("magnolia.repositories.jackrabbit.config");
-        if(configuredPath!=null){
-            if(configuredPath.startsWith("WEB-INF")){
-                config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" +configuredPath);
-            }else {
+        if (configuredPath != null) {
+            if (configuredPath.startsWith("WEB-INF")) {
+                config = new File(magnoliaProperties.getProperty("magnolia.app.rootdir") + "/" + configuredPath);
+            } else {
                 config = new File(configuredPath);
             }
         }
         // No special handling here if the config (file) is null or not existing.
         // If the path is wrong or not set, Magnolia won't start up properly and it won't be possible to launch the About-app.
 
-       final String[] connectionString = new String[3];
+        final String[] connectionString = new String[3];
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
                 private boolean inPM;

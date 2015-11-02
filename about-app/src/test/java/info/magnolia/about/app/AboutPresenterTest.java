@@ -44,6 +44,7 @@ import info.magnolia.init.MagnoliaConfigurationProperties;
 import java.io.File;
 import java.net.URL;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -51,13 +52,20 @@ import org.junit.Test;
  */
 public class AboutPresenterTest {
 
+    private MagnoliaConfigurationProperties properties;
+    private AboutPresenter presenter;
+
+    @Before
+    public void setUp() {
+        properties = mock(MagnoliaConfigurationProperties.class);
+        presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
+    }
+
     @Test
     public void testRepoName() {
         // GIVEN
-        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
         when(properties.getProperty("magnolia.repositories.config")).thenReturn("repositories.xml");
         when(properties.getProperty("magnolia.app.rootdir")).thenReturn(new File("target/test-classes").getAbsolutePath());
-        AboutPresenter presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
 
         // WHEN
         String repoName = presenter.getRepoName();
@@ -69,11 +77,9 @@ public class AboutPresenterTest {
     @Test
     public void testConnectionWithAbsolutePathForConfFile() {
         // GIVEN
-        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
         // AboutPresenter expects a an absolute path (when it's not starting with WEB-INF)
         String configFilePathAbsPath = getAbsPathOfTestResource("jackrabbit-bundle-derby-search.xml");
         when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFilePathAbsPath);
-        AboutPresenter presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
 
         // WHEN
         String[] connection = presenter.getConnectionString();
@@ -86,13 +92,11 @@ public class AboutPresenterTest {
     @Test
     public void testConnectionWithRelativePathForConfFile() {
         // GIVEN
-        MagnoliaConfigurationProperties properties = mock(MagnoliaConfigurationProperties.class);
         // AboutPresenter expects a relative path starting with "WEB-INF" (or an absolute path)
         String configFileRelPath = "WEB-INF/jackrabbit-bundle-derby-search.xml";
         when(properties.getProperty("magnolia.repositories.jackrabbit.config")).thenReturn(configFileRelPath);
         String fakedMagnoliaAppRootDir = getAbsPathOfTestResource(".");
         when(properties.getProperty("magnolia.app.rootdir")).thenReturn(fakedMagnoliaAppRootDir);
-        AboutPresenter presenter = new AboutPresenter(mock(AboutView.class), mock(ServerConfiguration.class), properties, mock(SimpleTranslator.class));
 
         // WHEN
         String[] connection = presenter.getConnectionString();
