@@ -77,8 +77,9 @@ import com.vaadin.ui.Field;
 public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<SwitchableFieldDefinition, PropertysetItem> {
 
     private static final Logger log = LoggerFactory.getLogger(SwitchableFieldFactory.class);
-    private FieldFactoryFactory fieldFactoryFactory;
-    private ComponentProvider componentProvider;
+
+    private final FieldFactoryFactory fieldFactoryFactory;
+    private final ComponentProvider componentProvider;
     private final I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
@@ -107,8 +108,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             definition.addField(createSelectFieldDefinition());
         }
 
-        SwitchableField field = new SwitchableField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
-        return field;
+        return new SwitchableField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
     }
 
     /**
@@ -144,7 +144,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
      */
     protected ConfiguredFieldDefinition createSelectFieldDefinition() {
         try {
-            SelectFieldDefinition selectDefinition = null;
+            SelectFieldDefinition selectDefinition;
             // Create the correct definition class
             String layout = "horizontal";
             if (definition.getSelectionType().equals("radio")) {

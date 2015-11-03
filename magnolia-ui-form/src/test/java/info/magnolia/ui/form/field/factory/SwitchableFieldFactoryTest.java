@@ -83,7 +83,6 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     private SwitchableField field;
     private TextFieldDefinition textFieldDefinition;
     private CodeFieldDefinition codeFieldDefinition;
-    private HiddenFieldDefinition hiddenFieldDefinition;
 
     @Override
     @Before
@@ -421,7 +420,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         codeFieldDefinition.setLanguage("java");
         codeFieldDefinition.setName("code");
 
-        hiddenFieldDefinition = new HiddenFieldDefinition();
+        HiddenFieldDefinition hiddenFieldDefinition = new HiddenFieldDefinition();
         hiddenFieldDefinition.setName("hidden");
 
         List<ConfiguredFieldDefinition> fields = newArrayList(textFieldDefinition, codeFieldDefinition, hiddenFieldDefinition);
