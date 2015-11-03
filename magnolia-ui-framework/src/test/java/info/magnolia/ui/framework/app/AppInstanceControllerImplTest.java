@@ -45,7 +45,6 @@ import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -102,9 +101,6 @@ public class AppInstanceControllerImplTest {
 
     private ConfiguredAppDescriptor appDescriptor;
     private AppContext appContext;
-    private ConfiguredSubAppDescriptor failingSubAppDescriptor;
-
-    private ComponentProvider componentProvider;
 
     private Map<String, SubAppContext> subAppNamesToContexts = Maps.newHashMap();
 
@@ -121,6 +117,7 @@ public class AppInstanceControllerImplTest {
 
         appDescriptor.setName(TEST_APP);
 
+        ConfiguredSubAppDescriptor failingSubAppDescriptor;
         failingSubAppDescriptor = new ConfiguredSubAppDescriptor();
         failingSubAppDescriptor.setName(FAILING_SUB_APP);
         failingSubAppDescriptor.setSubAppClass(FailingToStartSubApp.class);
@@ -152,8 +149,7 @@ public class AppInstanceControllerImplTest {
                 i18n,
                 ctx);
 
-        componentProvider = initComponentProvider();
-        appInstanceControllerImpl.setAppComponentProvider(componentProvider);
+        appInstanceControllerImpl.setAppComponentProvider(initComponentProvider());
 
         final App app = new BaseApp(appContext, new DefaultAppView() {
             @Override
@@ -330,13 +326,13 @@ public class AppInstanceControllerImplTest {
         return builder.build(new AbstractGuiceComponentConfigurer() {
             @Override
             protected void configure() {
-                // Allow the sub-apps to register themselves se that their contexts can be retrieved by name
+                // Allow the sub-apps to register themselves so that their contexts can be retrieved by name
                 bind(new TypeLiteral<Map<String, SubAppContext>>() {}).toInstance(subAppNamesToContexts);
             }
         });
     }
 
-    public static class SelfContextRegisteringSubApp extends BaseSubApp {
+    static class SelfContextRegisteringSubApp extends BaseSubApp {
 
         SubAppLifecycleEventHandler subAppLifecycleEventHandler;
 

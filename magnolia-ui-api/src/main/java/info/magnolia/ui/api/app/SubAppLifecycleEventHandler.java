@@ -49,7 +49,7 @@ public interface SubAppLifecycleEventHandler extends EventHandler {
     void onSubAppStarted(SubAppLifecycleEvent event);
 
     /**
-     * Simple stub so in case not all the methods need to be implemented.
+     * Simple stub so that only required methods need to be implemented in an actual listener.
      */
     class Adapter implements SubAppLifecycleEventHandler {
 

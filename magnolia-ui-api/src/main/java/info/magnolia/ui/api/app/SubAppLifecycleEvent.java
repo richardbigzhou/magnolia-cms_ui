@@ -63,7 +63,7 @@ public class SubAppLifecycleEvent implements Event<SubAppLifecycleEventHandler> 
     private final SubAppDescriptor subAppDescriptor;
     private final Type eventType;
 
-    public SubAppLifecycleEvent(SubAppDescriptor app,  Type eventType) {
+    public SubAppLifecycleEvent(SubAppDescriptor app, Type eventType) {
         this.subAppDescriptor = app;
         this.eventType = eventType;
     }
