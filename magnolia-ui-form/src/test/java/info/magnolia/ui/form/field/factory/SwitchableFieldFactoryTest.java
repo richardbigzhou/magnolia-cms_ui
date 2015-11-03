@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -64,6 +64,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.aceeditor.AceEditor;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterators;
 import com.vaadin.data.Property;
@@ -113,22 +114,18 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         Field<PropertysetItem> field = factory.createField();
 
         // THEN
-        assertNotNull(field);
-        assertTrue(field instanceof SwitchableField);
+        assertThat(field, instanceOf(SwitchableField.class));
     }
 
     @Test
     public void selectHasNoDefaultValueIfNotConfigured() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        SwitchableField field = (SwitchableField) factory.createField();
+        createField();
 
         // THEN
-        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
-        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
         assertTrue(select.isNullSelectionAllowed());
         assertNull(select.getValue());
     }
@@ -138,15 +135,12 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.getOptions().get(1).setSelected(true);
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        SwitchableField field = (SwitchableField) factory.createField();
+        createField();
 
         // THEN
-        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
-        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
         assertTrue(select.isNullSelectionAllowed());
         assertEquals("code", select.getValue());
     }
@@ -156,11 +150,9 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.setTransformerClass(DelegatingCompositeFieldTransformer.class);
         definition.setI18n(true);
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        factory.createField();
+        createField();
 
         // THEN
         assertTrue(definition.getFields().get(3).isI18n());
@@ -171,11 +163,9 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.setTransformerClass(SwitchableTransformer.class);
         definition.setI18n(true);
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        factory.createField();
+        createField();
 
         // THEN
         assertFalse(definition.getFields().get(2).isI18n());
@@ -190,11 +180,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
                 return super.addItemProperty(propertyId, property);
             }
         };
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
-        SwitchableField field = (SwitchableField) factory.createField();
-        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
-        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        createField();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
 
         // WHEN
         select.setValue("text");
@@ -212,11 +199,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         // GIVEN
         definition.getFields().get(0).setDefaultValue("hop!");
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
-        SwitchableField field = (SwitchableField) factory.createField();
-        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
-        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        createField();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
 
         // WHEN
         select.setValue("text");
@@ -232,9 +216,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void fieldNamesAndFieldsStayInSynch() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
-        factory.createField();
+        createField();
         assertEquals(4, definition.getFields().size());
         assertEquals(4, definition.getFieldNames().size());
         assertTrue(definition.getFieldNames().contains(definition.getName()));
@@ -276,21 +258,18 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void doNotAddNonVisibleField() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
-        factory.setComponentProvider(componentProvider);
-        SwitchableField field = (SwitchableField) factory.createField();
-        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
-        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        createField();
+        AbstractSelect select = getSubFieldWithType(AbstractSelect.class);
 
         // WHEN
         select.setValue("text");
-        assertEquals("has the select field and the selected textfield", 2, getVisibleFieldNb(layout));
+        assertEquals("has the select field and the selected textfield", 2, getVisibleFieldNb());
 
         // WHEN
         select.setValue("hidden");
 
         // THEN
-        assertEquals("has only the select field as the hidden is not visible", 1, getVisibleFieldNb(layout));
+        assertEquals("has only the select field as the hidden is not visible", 1, getVisibleFieldNb());
     }
 
     @Test
@@ -376,16 +355,15 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         return filteredIterator.hasNext() ? (F) filteredIterator.next() : null;
     }
 
-    private int getVisibleFieldNb(AbstractOrderedLayout layout) {
-        Iterator<Component> iterator = layout.iterator();
-        int res = 0;
-        while (iterator.hasNext()) {
-            Field<?> field = (Field<?>) iterator.next();
-            if (field.isVisible()) {
-                res += 1;
+    private int getVisibleFieldNb() {
+        AbstractOrderedLayout rootLayout = (AbstractOrderedLayout) field.iterator().next();
+        Iterator<Component> filteredIterator = Iterators.filter(rootLayout.iterator(), new Predicate<Component>() {
+            @Override
+            public boolean apply(Component component) {
+                return component.isVisible();
             }
-        }
-        return res;
+        });
+        return Iterators.size(filteredIterator);
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistry() {
