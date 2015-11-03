@@ -62,10 +62,11 @@ import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
 
 /**
- * Creates a @ link SwitchableField} based on definition.<br>
- * {@ link SwitchableField} has two components: <br>
- * - A select section configured based on the Options list of the definition<br>
- * - A field section configured based on the Fields list of the definition<br>
+ * Creates a {@link SwitchableField} based on a {@link SwitchableFieldDefinition}.
+ *
+ * <p>The {@link SwitchableField} has two components: <br>
+ * - A select section configured based on the {@linkplain SwitchableFieldDefinition#getOptions() options} list of the definition<br>
+ * - A field section configured based on the {@linkplain SwitchableFieldDefinition#getFields() fields} list of the definition<br>
  * The link between select and fields is based on the association of: <br>
  * - The String property defined into the value property of the definition (value = date) <br>
  * and<br>
@@ -167,7 +168,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             }
             return selectDefinition;
         } catch (Exception e) {
-            log.warn("Coudn't create the select field.", e.getMessage());
+            log.warn("Couldn't create the select field.", e.getMessage());
             StaticFieldDefinition definition = new StaticFieldDefinition();
             definition.setName(this.definition.getName());
             definition.setValue("Select definition not correctly initialised. Please check your field configuration");

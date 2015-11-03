@@ -46,13 +46,10 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
 
-
 /**
- * Creates and initializes an multi value field based on a field definition.<br>
- * Multi-field basicaly handle: <br>
- * - Add remove Fields <br>
- * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
- * Field property datasource.
+ * Creates a {@linkplain MultiField multi-value field} based on a {@link MultiValueFieldDefinition}.
+ *
+ * <p>The {@link MultiField} supports adding/removing entries of a sub-field definition.
  *
  * @param <T>
  */

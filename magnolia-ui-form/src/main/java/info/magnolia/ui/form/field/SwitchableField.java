@@ -41,13 +41,19 @@ import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.server.AbstractErrorMessage;
+import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
@@ -64,7 +70,8 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
     // - key : Field name. Should be the same as the related select value.<br>
     // - value : Related Field. Created based on the definition coming from the Fields Definition list.
-    private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
+    private final Map<String, Field<?>> fieldMap = new HashMap<>();
+    private Field<?> selectField;
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
@@ -118,14 +125,14 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // set select field at the first position
             if (StringUtils.equals(fieldDefinition.getName(), definition.getName())) {
                 root.addComponentAsFirst(field);
-            }else {
+            } else {
                 root.addComponent(field);
             }
 
         }
 
         // add listener to the select field
-        Field<?> selectField = fieldMap.get(definition.getName());
+        selectField = fieldMap.get(definition.getName());
         selectField.setCaption(null);
         selectField.addValueChangeListener(createSelectValueChangeListener());
         selectField.addValueChangeListener(selectionListener);
@@ -156,13 +163,13 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
      */
     private void switchField(String fieldName) {
         // Check
-        if (root.getComponentCount() < 2 && StringUtils.equals(((Field<?>) root.getComponent(0)).getId(), definition.getName())) {
+        if (root.getComponentCount() < 2 && StringUtils.equals(root.getComponent(0).getId(), definition.getName())) {
             log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
             root.addComponent(new Label("No field configured for this switchable field "), 1);
             return;
         }
 
-        for(String innerFieldName:fieldMap.keySet()) {
+        for (String innerFieldName : fieldMap.keySet()) {
             Field<?> field = fieldMap.get(innerFieldName);
             // Set the select component visible and the selected field
             if (StringUtils.equals(innerFieldName, fieldName) || StringUtils.equals(innerFieldName, definition.getName())) {
@@ -178,4 +185,89 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         return PropertysetItem.class;
     }
 
+    /**
+     * Validates only fields which are actually visible, that is those which have been selected.
+     */
+    @Override
+    public void validate() throws Validator.InvalidValueException {
+        // always validate field itself (conversion, custom validators)
+        super.validate();
+        // then validate the switch select first
+        selectField.validate();
+
+        // finally any visible field
+        for (Field<?> field : fieldMap.values()) {
+            if (field.isVisible() && field != selectField) {
+                field.validate();
+            }
+        }
+    }
+
+    /**
+     * A switchable field is empty when no choice has been made yet. This method is called by Vaadin framework to perform a basic isRequired check.
+     */
+    @Override
+    public boolean isEmpty() {
+        return selectField.isEmpty();
+    }
+
+    /**
+     * For now, replicate {@link com.vaadin.ui.AbstractField#isValid}.
+     * Cannot invoke it via super since {@link AbstractCustomMultiField} doesn't honor it.
+     * Ideally, this can go as soon as MGNLUI-3313 is fixed.
+     */
+    @Override
+    public boolean isValid() {
+        try {
+            validate();
+            return true;
+        } catch (InvalidValueException e) {
+            return false;
+        }
+    }
+
+    /**
+     * For now, replicate {@link com.vaadin.ui.AbstractField#getErrorMessage()}.
+     * Cannot invoke it via super since {@link AbstractCustomMultiField} doesn't honor it.
+     * Ideally, this can go as soon as MGNLUI-3313 is fixed.
+     */
+    @Override
+    public ErrorMessage getErrorMessage() {
+
+        /*
+         * Check validation errors only if automatic validation is enabled.
+         * Empty, required fields will generate a validation error containing
+         * the requiredError string. For these fields the exclamation mark will
+         * be hidden but the error must still be sent to the client.
+         */
+        Validator.InvalidValueException validationError = null;
+        if (isValidationVisible()) {
+            try {
+                validate();
+            } catch (Validator.InvalidValueException e) {
+                if (!e.isInvisible()) {
+                    validationError = e;
+                }
+            }
+        }
+
+        // Check if there are any systems errors
+        // override here because, again, AbstractCustomMultiField doesn't honor getErrorMessage() very well
+        final ErrorMessage superError = getComponentError();
+
+        // Return if there are no errors at all
+        if (superError == null && validationError == null
+                && getCurrentBufferedSourceException() == null) {
+            return null;
+        }
+
+        // Throw combination of the error types
+        return new CompositeErrorMessage(
+                new ErrorMessage[] {
+                        superError,
+                        AbstractErrorMessage
+                                .getErrorMessageForException(validationError),
+                        AbstractErrorMessage
+                                .getErrorMessageForException(getCurrentBufferedSourceException()) });
+    }
 }
