@@ -678,7 +678,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.4"));
-
+        
         // THEN
         assertThat(pulseTask, hasNode("bulkActions"));
         assertThat(pulseTask, hasNode("bulkActions/archive"));

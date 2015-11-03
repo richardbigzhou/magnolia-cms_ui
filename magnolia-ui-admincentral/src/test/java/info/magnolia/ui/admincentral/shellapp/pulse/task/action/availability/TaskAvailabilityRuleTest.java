@@ -56,6 +56,7 @@ import org.junit.Test;
 public class TaskAvailabilityRuleTest {
 
     private TasksManager tasksManager;
+    private Context context;
 
     @Before
     public void setUp() {
@@ -64,7 +65,7 @@ public class TaskAvailabilityRuleTest {
         User user = mock(User.class);
         when(user.getName()).thenReturn("foo");
 
-        Context context = mock(Context.class);
+        context = mock(Context.class);
         when(context.getUser()).thenReturn(user);
 
         MgnlContext.setInstance(context);
@@ -86,7 +87,7 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -105,7 +106,7 @@ public class TaskAvailabilityRuleTest {
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -125,7 +126,7 @@ public class TaskAvailabilityRuleTest {
         task.setStatus(Status.InProgress);
         task.setActorId("qux");
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -140,7 +141,7 @@ public class TaskAvailabilityRuleTest {
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
         List<Status> status = newArrayList(Status.InProgress);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(null);
@@ -155,7 +156,7 @@ public class TaskAvailabilityRuleTest {
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
         List<Status> status = newArrayList(Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager, context);
 
         Task task = new Task();
         task.setStatus(Status.InProgress);
@@ -174,7 +175,7 @@ public class TaskAvailabilityRuleTest {
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
         List<Status> status = newArrayList(Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         Task task = new Task();
         task.setStatus(Status.Removed);

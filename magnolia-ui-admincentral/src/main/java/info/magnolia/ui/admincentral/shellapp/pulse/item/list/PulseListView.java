@@ -74,7 +74,7 @@ public interface PulseListView extends View {
 
         void onItemClicked(String itemId);
 
-        void onSelectionChanged(Set<String> itemIds);
+        void onSelectionChanged(Set<Object> itemIds);
 
         void setGrouping(boolean checked);
 

@@ -47,9 +47,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-/**
- * Tests for {@link ClaimTasksAction}.
- */
 public class ClaimTasksActionTest extends BaseHumanTaskActionTest {
 
     private ClaimTasksAction action;
@@ -61,7 +58,7 @@ public class ClaimTasksActionTest extends BaseHumanTaskActionTest {
         super.setUp();
         List<String> taskIds = Lists.newArrayList("1", "2", "3");
         tasksManager = mock(TasksManager.class);
-        action = new ClaimTasksAction(mock(ClaimTasksActionDefinition.class), taskIds, tasksManager, mock(UiContext.class));
+        action = new ClaimTasksAction(mock(ClaimTasksActionDefinition.class), taskIds, tasksManager, mock(UiContext.class), context);
     }
 
     @Test

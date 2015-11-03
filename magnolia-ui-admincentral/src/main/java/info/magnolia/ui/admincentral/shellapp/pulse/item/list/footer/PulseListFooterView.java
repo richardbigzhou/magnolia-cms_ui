@@ -36,15 +36,18 @@ package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 import info.magnolia.ui.api.view.View;
 
 /**
- * Footer view.
+ * {@linkplain PulseListFooterView} is a Pulse UI interface typically accompanying the tree/list views.
+ * <p>
+ * It responsible for displaying the status information (e.g. selection info) and for triggering the bulk actions
+ * for the selected items.
  */
 public interface PulseListFooterView extends View {
 
     void setListener(Listener listener);
 
-    void addActionItem(String name, String label, String icon);
+    void addAction(String actionId, String label, String icon);
 
-    void setActionEnabled(String action, boolean enabled);
+    void setActionEnabled(String actionId, boolean isEnabled);
 
     void updateStatus(long totalAmount, int totalSelected);
 
@@ -53,11 +56,6 @@ public interface PulseListFooterView extends View {
      */
     interface Listener {
 
-        /**
-         * Event handler invoked on clicking an item.
-         *
-         * @param actionToken the action token
-         */
-        void onBulkActionItemClicked(String actionToken);
+        void onBulkActionTriggered(String actionId);
     }
 }

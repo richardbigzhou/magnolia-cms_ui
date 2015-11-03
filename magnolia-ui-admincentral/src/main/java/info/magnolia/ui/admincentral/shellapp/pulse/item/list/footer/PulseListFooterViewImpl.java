@@ -114,7 +114,7 @@ public class PulseListFooterViewImpl extends CustomComponent implements PulseLis
                 ContextMenuItem obj = (ContextMenuItem) event.getSource();
                 String eventActionName = (String) obj.getData();
                 if (listener != null) {
-                    listener.onBulkActionItemClicked(eventActionName);
+                    listener.onBulkActionTriggered(eventActionName);
                 }
             }
         });
@@ -141,20 +141,20 @@ public class PulseListFooterViewImpl extends CustomComponent implements PulseLis
     }
 
     @Override
-    public void setActionEnabled(String actionName, boolean enabled) {
+    public void setActionEnabled(String actionName, boolean isEnabled) {
         ContextMenuItem item = menuItems.get(actionName);
         if (item != null) {
-            item.setEnabled(enabled);
+            item.setEnabled(isEnabled);
         }
     }
 
     @Override
-    public void addActionItem(String name, String label, String icon) {
+    public void addAction(String actionId, String label, String icon) {
         ExternalResource iconFontResource = new ExternalResource(ActionPopup.ICON_FONT_CODE + icon);
         ContextMenu.ContextMenuItem menuItem = contextMenu.addItem(label, iconFontResource);
         // Set data variable so that the event handler can determine which action to launch.
-        menuItem.setData(name);
-        menuItems.put(name, menuItem);
+        menuItem.setData(actionId);
+        menuItems.put(actionId, menuItem);
     }
 
 }

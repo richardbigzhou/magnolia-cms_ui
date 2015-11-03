@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.context.Context;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -48,28 +48,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node or property from the repository.
+ * {@linkplain DeleteMessagesAction} removes a set of messages related to the current {@linkplain info.magnolia.cms.security.User user} via {@link MessagesManager}.
  *
  * @see DeleteMessagesActionDefinition
+ * @see MessagesManager
  */
 public class DeleteMessagesAction extends AbstractAction<DeleteMessagesActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(DeleteMessagesAction.class);
 
     private final UiContext uiContext;
+    private final Context context;
     private final List<String> messageIds;
     private final MessagesManager messagesManager;
 
     @Inject
-    public DeleteMessagesAction(DeleteMessagesActionDefinition definition, List<String> messageIds, MessagesManager messagesManager, UiContext uiContext) {
+    public DeleteMessagesAction(DeleteMessagesActionDefinition definition, List<String> messageIds, MessagesManager messagesManager, UiContext uiContext, Context context) {
         super(definition);
         this.messageIds = messageIds;
         this.messagesManager = messagesManager;
         this.uiContext = uiContext;
+        this.context = context;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        String userId = MgnlContext.getUser().getName();
+        String userId = context.getUser().getName();
         for (String messageId : messageIds) {
             log.debug("About to delete message [{}]", messageId);
             messagesManager.removeMessage(userId, messageId);

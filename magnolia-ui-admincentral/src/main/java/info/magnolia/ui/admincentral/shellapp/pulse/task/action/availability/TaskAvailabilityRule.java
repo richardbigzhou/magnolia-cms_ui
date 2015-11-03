@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.task.Task;
@@ -47,7 +48,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Availability rule used for task actions.
+ * Availability rule used for {@link Task task} related actions. Based on the {@link TaskAvailabilityRuleDefinition definition}
+ * the following criteria normally applies:
+ * <ul>
+ * <li>{@link Task.Status status} of the considered task matches the one configured in definition</li>
+ * <li>task's actor id matches the current user or definition claims the action should be available not for assignee only (see {@link TaskAvailabilityRuleDefinition#isAssignee})</li>
+ * </ul>
  */
 public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
@@ -55,19 +61,21 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
     private final TaskAvailabilityRuleDefinition definition;
     private final TasksManager tasksManager;
+    private final Context context;
 
     /**
-     * @deprecated since 5.4.3, use {@link TaskAvailabilityRule#TaskAvailabilityRule(TaskAvailabilityRuleDefinition, TasksManager)} instead.
+     * @deprecated since 5.4.3, use {@link TaskAvailabilityRule#TaskAvailabilityRule(TaskAvailabilityRuleDefinition, TasksManager, Context)} instead.
      */
     @Deprecated
     public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
-        this(definition, Components.getComponent(TasksManager.class));
+        this(definition, Components.getComponent(TasksManager.class), MgnlContext.getInstance());
     }
 
     @Inject
-    public TaskAvailabilityRule(final TaskAvailabilityRuleDefinition definition, final TasksManager tasksManager) {
+    public TaskAvailabilityRule(final TaskAvailabilityRuleDefinition definition, final TasksManager tasksManager, Context context) {
         this.definition = definition;
         this.tasksManager = tasksManager;
+        this.context = context;
     }
 
     @Override
@@ -83,21 +91,25 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
         } else {
             task = tasksManager.getTaskById(itemId.toString());
         }
+
         if (task != null) {
             boolean statusMatches = false;
 
             for (Status status : definition.getStatus()) {
-                statusMatches = statusMatches | status.equals(task.getStatus());
+                statusMatches = status == task.getStatus();
+                if (statusMatches) {
+                    break;
+                }
             }
 
-            return isVisibleToUser(task) && statusMatches;
+            return statusMatches && isVisibleToUser(task);
         }
 
         return false;
     }
 
     protected boolean isVisibleToUser(Task task) {
-        return !definition.isAssignee() || MgnlContext.getUser().getName().equals(task.getActorId());
+        return !definition.isAssignee() || context.getUser().getName().equals(task.getActorId());
     }
 
 }

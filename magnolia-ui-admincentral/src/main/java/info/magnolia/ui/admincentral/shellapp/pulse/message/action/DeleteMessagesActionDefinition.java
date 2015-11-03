@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Used to configure a {@link DeleteMessagesAction}.
+ * Used for configuring the {@link DeleteMessagesAction}.
  * 
  * @see DeleteMessagesAction
  */

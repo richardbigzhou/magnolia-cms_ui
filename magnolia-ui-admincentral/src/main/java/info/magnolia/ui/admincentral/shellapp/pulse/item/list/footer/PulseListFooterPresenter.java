@@ -40,9 +40,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Footer presenter.
+ * {@linkplain PulseListFooterPresenter} initialises the {@link PulseListFooterView} and binds it with other Pulse components
+ * via {@link Listener} interface.
  */
-
 public class PulseListFooterPresenter implements PulseListFooterView.Listener {
 
     private final PulseListFooterView view;
@@ -63,20 +63,20 @@ public class PulseListFooterPresenter implements PulseListFooterView.Listener {
             String label = actionDefinition.getLabel();
             String icon = actionDefinition.getIcon();
 
-            view.addActionItem(actionDefinition.getName(), label, icon);
+            view.addAction(actionDefinition.getName(), label, icon);
         }
         view.updateStatus(totalAmount, 0);
         return view;
     }
 
     @Override
-    public void onBulkActionItemClicked(String actionToken) {
-        listener.onBulkActionItemClicked(actionToken);
+    public void onBulkActionTriggered(String actionId) {
+        listener.onBulkActionTriggered(actionId);
     }
 
-    public void toggleActionEnable(String actionName, boolean enabled) {
+    public void setActionEnabled(String actionId, boolean isEnabled) {
         if (view != null) {
-            view.setActionEnabled(actionName, enabled);
+            view.setActionEnabled(actionId, isEnabled);
         }
     }
 
@@ -87,10 +87,10 @@ public class PulseListFooterPresenter implements PulseListFooterView.Listener {
     }
 
     /**
-     * Listener interface for the footer action.
+     * Bulk action triggering listener interface.
      */
     public interface Listener {
 
-        void onBulkActionItemClicked(String itemName);
+        void onBulkActionTriggered(String actionId);
     }
 }

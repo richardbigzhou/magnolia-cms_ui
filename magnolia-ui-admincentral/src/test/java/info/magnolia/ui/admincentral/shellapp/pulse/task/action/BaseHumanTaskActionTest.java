@@ -48,14 +48,15 @@ import org.junit.Before;
 public class BaseHumanTaskActionTest {
 
     protected static final String CURRENT_USER = "currentUser";
+    protected Context context;
 
     @Before
     public void setUp() {
-        Context ctx = mock(Context.class);
+        context = mock(Context.class);
         User user = mock(User.class);
         when(user.getName()).thenReturn(CURRENT_USER);
-        when(ctx.getUser()).thenReturn(user);
-        MgnlContext.setInstance(ctx);
+        when(context.getUser()).thenReturn(user);
+        MgnlContext.setInstance(context);
     }
 
     @After

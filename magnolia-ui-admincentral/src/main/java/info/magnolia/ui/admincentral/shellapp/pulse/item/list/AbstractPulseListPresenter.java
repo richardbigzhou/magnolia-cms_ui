@@ -125,12 +125,12 @@ public abstract class AbstractPulseListPresenter implements PulseListPresenter, 
     protected abstract List<Object> getSelectedItemIds();
 
     @Override
-    public void onSelectionChanged(Set<String> itemIds) {
+    public void onSelectionChanged(Set<Object> itemIds) {
         pulseListFooterPresenter.updateStatus(getTotalEntriesAmount(), itemIds.size());
         // Evaluate availability of each action within the section
         for (ActionDefinition actionDefinition : definition.getBulkActions()) {
             AvailabilityDefinition availability = actionDefinition.getAvailability();
-            pulseListFooterPresenter.toggleActionEnable(actionDefinition.getName(), availabilityChecker.isAvailable(availability, getSelectedItemIds()));
+            pulseListFooterPresenter.setActionEnabled(actionDefinition.getName(), availabilityChecker.isAvailable(availability, getSelectedItemIds()));
         }
 
     }
@@ -143,8 +143,8 @@ public abstract class AbstractPulseListPresenter implements PulseListPresenter, 
     }
 
     @Override
-    public void onBulkActionItemClicked(String itemName) {
-        executeAction(itemName);
+    public void onBulkActionTriggered(String actionId) {
+        executeAction(actionId);
     }
 
     protected void executeAction(String actionName) {

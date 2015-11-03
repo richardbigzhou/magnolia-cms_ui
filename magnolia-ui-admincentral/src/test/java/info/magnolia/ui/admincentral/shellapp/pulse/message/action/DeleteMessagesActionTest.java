@@ -59,7 +59,7 @@ public class DeleteMessagesActionTest extends BaseHumanTaskActionTest {
         super.setUp();
         List<String> messageIds = Lists.newArrayList("1", "2", "3");
         messagesManager = mock(MessagesManager.class);
-        action = new DeleteMessagesAction(new DeleteMessagesActionDefinition(), messageIds, messagesManager, mock(UiContext.class));
+        action = new DeleteMessagesAction(new DeleteMessagesActionDefinition(), messageIds, messagesManager, mock(UiContext.class), context);
     }
 
     @Test

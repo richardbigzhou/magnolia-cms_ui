@@ -87,7 +87,7 @@ public abstract class AbstractPulseListView implements PulseListView {
     private Property.ValueChangeListener selectionListener = new Property.ValueChangeListener() {
         @Override
         public void valueChange(ValueChangeEvent event) {
-            listener.onSelectionChanged((Set<String>) event.getProperty().getValue());
+            listener.onSelectionChanged((Set<Object>) event.getProperty().getValue());
         }
     };
 

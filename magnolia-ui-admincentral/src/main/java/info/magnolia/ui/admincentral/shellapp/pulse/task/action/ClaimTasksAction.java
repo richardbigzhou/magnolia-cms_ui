@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.context.Context;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -44,34 +44,33 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Action for claiming tasks.
+ * {@link ClaimTasksAction} allows the current {@link info.magnolia.cms.security.User user} for claiming
+ * a set of tasks for himself via {@link TasksManager}. Should the operation be executed successfully for
+ * all the tasks - a corresponding notification message is displayed.
+ *
+ * @see TasksManager
  */
 public class ClaimTasksAction extends AbstractAction<ClaimTasksActionDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(ClaimTasksAction.class);
-
     private final UiContext uiContext;
     private final List<String> taskIds;
+    private final Context context;
     private final TasksManager tasksManager;
 
     @Inject
-    public ClaimTasksAction(final ClaimTasksActionDefinition definition, final List<String> taskIds, final TasksManager taskManager, final UiContext uiContext) {
+    public ClaimTasksAction(final ClaimTasksActionDefinition definition, final List<String> taskIds, final TasksManager taskManager, final UiContext uiContext, Context context) {
         super(definition);
         this.tasksManager = taskManager;
         this.uiContext = uiContext;
         this.taskIds = taskIds;
+        this.context = context;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        final String userId = MgnlContext.getUser().getName();
+        final String userId = context.getUser().getName();
         for (String taskId : taskIds) {
-            log.debug("User [{}] is claiming workflow human task id [{}]", userId, taskId);
-
             tasksManager.claim(taskId, userId);
         }
 

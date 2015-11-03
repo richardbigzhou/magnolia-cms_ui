@@ -40,11 +40,13 @@ import java.util.List;
 
 /**
  * Key generator for {@link PulseListDefinition}.
+ *
+ * @param <DT> list view definition type
  */
-public class PulseDefinitionKeyGenerator extends AbstractI18nKeyGenerator<PulseListDefinition> {
+public class PulseDefinitionKeyGenerator<DT extends PulseListDefinition> extends AbstractI18nKeyGenerator<DT> {
 
     @Override
-    protected void keysFor(final List<String> keys, final PulseListDefinition definition, final AnnotatedElement el) {
+    protected void keysFor(final List<String> keys, final DT definition, final AnnotatedElement el) {
         addKey(keys, definition.getName(), fieldOrGetterName(el));
     }
 }

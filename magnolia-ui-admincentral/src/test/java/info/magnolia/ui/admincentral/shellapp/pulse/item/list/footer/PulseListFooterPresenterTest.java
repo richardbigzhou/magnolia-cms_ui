@@ -72,7 +72,8 @@ public class PulseListFooterPresenterTest {
     private ConfiguredPulseListDefinition definition;
     private PulseListFooterPresenter pulseListFooterPresenter;
     private MessagesListPresenter messagesListPresenter;
-    private Set<String> selectedItems;
+    private Set<Object> selectedItems;
+    private MockContext context;
 
     @Before
     public void setUp() throws Exception {
@@ -87,7 +88,7 @@ public class PulseListFooterPresenterTest {
 
         AvailabilityChecker availabilityChecker = new AvailabilityCheckerImpl(componentProvider, mock(ContentConnector.class));
 
-        MockContext context = new MockContext();
+        context = new MockContext();
         MgnlContext.setInstance(context);
         User user = mock(User.class);
         when(user.getName()).thenReturn("username");
@@ -116,7 +117,7 @@ public class PulseListFooterPresenterTest {
         pulseListFooterPresenter.start(bulkActions, 0);
 
         // THEN
-        verify(view, times(2)).addActionItem(anyString(), anyString(), anyString());
+        verify(view, times(2)).addAction(anyString(), anyString(), anyString());
     }
 
     @Test
