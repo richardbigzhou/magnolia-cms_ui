@@ -42,10 +42,11 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
 import java.util.Locale;
@@ -56,11 +57,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for {@link SystemLanguagesFieldDefinition}.
+ * Tests for {@link SystemLanguagesFieldFactory}.
  */
-public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
+public class SystemLanguagesFieldFactoryTest extends AbstractFieldFactoryTestCase<SystemLanguagesFieldDefinition> {
 
-    private SystemLanguagesFieldDefinition definition;
+    private SystemLanguagesFieldFactory<SystemLanguagesFieldDefinition> systemLanguagesFieldFactory;
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        this.definition = new SystemLanguagesFieldDefinition();
+    }
 
     @Override
     @Before
@@ -70,7 +76,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         MockSession session = new MockSession(RepositoryConstants.CONFIG);
 
         Node configRoot = session.getRootNode();
-        Node systemLanguages = NodeUtil.createPath(configRoot, SystemLanguagesFieldDefinition.SYSTEM_LANGUAGES_PATH.substring(1), NodeTypes.ContentNode.NAME);
+        Node systemLanguages = NodeUtil.createPath(configRoot, SystemLanguagesFieldFactory.SYSTEM_LANGUAGES_PATH.substring(1), NodeTypes.ContentNode.NAME);
         // English
         Node english = NodeUtil.createPath(systemLanguages, "en", NodeTypes.ContentNode.NAME);
         PropertyUtil.setProperty(english, "language", "en");
@@ -88,8 +94,8 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         ctx.addSession(RepositoryConstants.CONFIG, session);
         ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
-        // definition
-        definition = new SystemLanguagesFieldDefinition();
+        JcrNodeAdapter item = new JcrNodeAdapter(session.getRootNode());
+        systemLanguagesFieldFactory = new SystemLanguagesFieldFactory<>(definition, item, MgnlContext.getInstance());
     }
 
     @Test
@@ -98,7 +104,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         MgnlContext.setLocale(Locale.ENGLISH);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = definition.getOptions();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
 
         // THEN
         assertEquals(2, options.size());
@@ -115,7 +121,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         MgnlContext.setLocale(Locale.GERMAN);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = definition.getOptions();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
 
         // THEN
         assertEquals(2, options.size());
@@ -132,7 +138,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         MgnlContext.setLocale(Locale.GERMAN);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = definition.getOptions();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
 
         // THEN
         assertTrue(options.get(1).isSelected());

@@ -281,6 +281,15 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.4.2", "")
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree", "sortable", "true"))
         );
+        register(DeltaBuilder.update("5.4.4", "")
+                .addTask(new NodeExistsDelegateTask("Reconfigure factory class of System Languages field ", "/modules/security-app/fieldTypes/systemLanguagesField",
+                        new CheckAndModifyPropertyValueTask(
+                                "/modules/security-app/fieldTypes/systemLanguagesField",
+                                "factoryClass",
+                                "info.magnolia.ui.form.field.factory.SelectFieldFactory",
+                                "info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory")
+                ))
+        );
     }
 
     @Override
