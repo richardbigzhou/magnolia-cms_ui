@@ -33,11 +33,14 @@
  */
 package info.magnolia.about.app;
 
+import static info.magnolia.about.app.AboutView.*;
+
 import info.magnolia.cms.beans.config.ServerConfiguration;
-import info.magnolia.cms.license.LicenseFileExtractor;
+import info.magnolia.cms.pddescriptor.ProductDescriptorExtractor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.objectfactory.Components;
 
 import java.io.File;
 import java.sql.Connection;
@@ -50,6 +53,10 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,32 +78,46 @@ public class AboutPresenter {
 
     private static final Logger log = LoggerFactory.getLogger(AboutPresenter.class);
 
+    static final String COMMUNITY_EDITION_I18N_KEY = "about.app.main.communityEdition";
+    static final String INSTANCE_AUTHOR_I18N_KEY = "about.app.main.instance.author";
+    static final String INSTANCE_PUBLIC_I18N_KEY = "about.app.main.instance.public";
+    static final String UNKNOWN_PROPERTY_I18N_KEY = "about.app.main.unknown";
+
     private final AboutView view;
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
     protected final SimpleTranslator i18n;
+    private final ProductDescriptorExtractor productDescriptorExtractor;
 
     // Object to transport data prepared in the presenter to the view
     protected Item viewData = new PropertysetItem();
 
     @Inject
-    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n) {
+    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n, ProductDescriptorExtractor productDescriptorExtractor) {
         this.view = view;
         this.serverConfiguration = serverConfiguration;
         this.magnoliaProperties = magnoliaProperties;
         this.i18n = i18n;
+        this.productDescriptorExtractor = productDescriptorExtractor;
+    }
+
+    /**
+     * @deprecated Since 5.4.3, use {@link #AboutPresenter(AboutView, ServerConfiguration, MagnoliaConfigurationProperties, SimpleTranslator, ProductDescriptorExtractor)}
+     */
+    @Deprecated
+    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n) {
+        this(view, serverConfiguration, magnoliaProperties, i18n, Components.getComponent(ProductDescriptorExtractor.class));
     }
 
     public AboutView start() {
 
         // magnolia information
-        LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
         String mgnlEdition = getEditionName();
-        String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
+        String mgnlVersion = productDescriptorExtractor.get(ProductDescriptorExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ?
-                i18n.translate("about.app.main.instance.author") :
-                i18n.translate("about.app.main.instance.public");
+                i18n.translate(INSTANCE_AUTHOR_I18N_KEY) :
+                i18n.translate(INSTANCE_PUBLIC_I18N_KEY);
 
         // system information
         String osInfo = String.format("%s %s (%s)",
@@ -108,31 +129,47 @@ public class AboutPresenter {
                 magnoliaProperties.getProperty("java.runtime.version"));
         String serverInfo = MgnlContext.getWebContext().getServletContext().getServerInfo();
 
-        String dbInfo;
-        String dbDriverInfo;
+        String dbInfo = null;
+        String dbDriverInfo = null;
         Connection connection = null;
         try {
-
             String connectionString[] = getConnectionString();
 
             String repoHome = magnoliaProperties.getProperty("magnolia.repositories.home");
             String repoName = getRepoName();
             connectionString[0] = StringUtils.replace(connectionString[0], "${wsp.home}", repoHome + "/" + repoName + "/workspaces/default");
-            connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
-            DatabaseMetaData meta = connection.getMetaData();
-            dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
-            if (dbInfo.toLowerCase().contains("mysql")) {
-                String engine = getMySQLEngineInfo(connection, connectionString);
-                if (engine != null) {
-                    dbInfo += engine;
+            if (connectionString[0].startsWith("jdbc:")) {
+                // JDBC url
+                connection = DriverManager.getConnection(connectionString[0], connectionString[1], connectionString[2]);
+            } else if (connectionString[0].startsWith("java:")) {
+                // JNDI url
+                Context initialContext = new InitialContext();
+                DataSource datasource = (DataSource) initialContext.lookup(connectionString[0]);
+                if (datasource != null) {
+                    connection = datasource.getConnection();
+                } else {
+                    log.debug("Failed to lookup datasource.");
                 }
             }
-            dbDriverInfo = meta.getDriverName() + " " + meta.getDriverVersion();
-
+            if (connection != null) {
+                DatabaseMetaData meta = connection.getMetaData();
+                dbInfo = meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion();
+                if (dbInfo.toLowerCase().contains("mysql")) {
+                    String engine = getMySQLEngineInfo(connection, connectionString);
+                    if (engine != null) {
+                        dbInfo += engine;
+                    }
+                }
+                dbDriverInfo = meta.getDriverName() + " " + meta.getDriverVersion();
+            } else {
+                dbInfo = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
+            }
+        } catch (NamingException e) {
+            log.debug("Failed obtain DB connection through JNDI with {}", e.getMessage(), e);
         } catch (SQLException e) {
             log.debug("Failed to read DB and driver info from connection with {}", e.getMessage(), e);
-            dbInfo = i18n.translate("about.app.main.unknown");
-            dbDriverInfo = dbInfo;
+        } catch (IllegalArgumentException e) {
+            log.debug("Failed to understand DB connection URL with {}", e.getMessage(), e);
         } finally {
             if (connection != null) {
                 try {
@@ -155,18 +192,26 @@ public class AboutPresenter {
         }
 
         // Prepare information for the view
-        viewData.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<>(mgnlEdition));
-        viewData.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<>(mgnlVersion));
-        viewData.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<>(authorInstance));
-        viewData.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<>(osInfo));
-        viewData.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<>(javaInfo));
-        viewData.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<>(serverInfo));
-        viewData.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<>(jcrInfo));
-        viewData.addItemProperty(AboutView.DB_INFO_KEY, new ObjectProperty<>(dbInfo));
-        viewData.addItemProperty(AboutView.DB_DRIVER_INFO_KEY, new ObjectProperty<>(dbDriverInfo));
+        addViewProperty(MAGNOLIA_EDITION_KEY, mgnlEdition);
+        addViewProperty(MAGNOLIA_VERSION_KEY, mgnlVersion);
+        addViewProperty(MAGNOLIA_INSTANCE_KEY, authorInstance);
+        addViewProperty(OS_INFO_KEY, osInfo);
+        addViewProperty(JAVA_INFO_KEY, javaInfo);
+        addViewProperty(SERVER_INFO_KEY, serverInfo);
+        addViewProperty(JCR_INFO_KEY, jcrInfo);
+        addViewProperty(DB_INFO_KEY, dbInfo);
+        addViewProperty(DB_DRIVER_INFO_KEY, dbDriverInfo);
         view.setDataSource(viewData);
 
         return view;
+    }
+
+    /**
+     * Adds a property to the view's Item data-source; blank values will be translated as 'unknown'.
+     */
+    protected void addViewProperty(String key, String value) {
+        String unknownProperty = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
+        viewData.addItemProperty(key, new ObjectProperty<>(StringUtils.defaultIfBlank(value, unknownProperty)));
     }
 
     /**
@@ -174,7 +219,7 @@ public class AboutPresenter {
      */
     protected String getEditionName() {
         // Hard code this in CE edition - value will be correctly populated for EE in EnterpriseAboutPresenter
-        return i18n.translate("about.app.main.communityEdition");
+        return i18n.translate(COMMUNITY_EDITION_I18N_KEY);
     }
 
     private String getMySQLEngineInfo(Connection connection, String[] connectionString) {
@@ -218,7 +263,7 @@ public class AboutPresenter {
         // No special handling here if the config (file) is null or not existing.
         // If the path is wrong or not set, Magnolia won't start up properly and it won't be possible to launch the About-app.
 
-        final String[] connectionString = new String[3];
+        final String[] connectionString = new String[] { "", "", "" };
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(config, new DefaultHandler() {
                 private boolean inPM;
@@ -254,7 +299,7 @@ public class AboutPresenter {
         } catch (Exception e) {
             log.debug("Failed to obtain DB connection info with {}", e.getMessage(), e);
         }
-        return null;
+        return connectionString;
     }
 
     String getRepoName() {
