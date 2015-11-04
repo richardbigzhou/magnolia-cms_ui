@@ -42,21 +42,21 @@ import com.vaadin.data.Item;
  */
 public interface AboutView extends View {
 
-    static final String MAGNOLIA_EDITION_KEY = "mgnlEdition";
-    static final String MAGNOLIA_VERSION_KEY = "mgnlVersion";
-    static final String MAGNOLIA_INSTANCE_KEY = "mgnlInstance";
+    String MAGNOLIA_EDITION_KEY = "mgnlEdition";
+    String MAGNOLIA_VERSION_KEY = "mgnlVersion";
+    String MAGNOLIA_INSTANCE_KEY = "mgnlInstance";
 
-    static final String MAGNOLIA_LICENSE_OWNER_KEY = "mgnlLicenseOwner";
-    static final String MAGNOLIA_LICENSE_EXPIRATION_DATE_KEY = "mgnlLicenseExpirationDate";
+    String MAGNOLIA_LICENSE_OWNER_KEY = "mgnlLicenseOwner";
+    String MAGNOLIA_LICENSE_EXPIRATION_DATE_KEY = "mgnlLicenseExpirationDate";
 
-    static final String JAVA_INFO_KEY = "javaInfo";
-    static final String OS_INFO_KEY = "osInfo";
-    static final String SERVER_INFO_KEY = "serverInfo";
-    static final String JCR_INFO_KEY = "jcrInfo";
-    static final String DB_INFO_KEY = "dbInfo";
-    static final String DB_DRIVER_INFO_KEY = "dbDriverInfo";
+    String JAVA_INFO_KEY = "javaInfo";
+    String OS_INFO_KEY = "osInfo";
+    String SERVER_INFO_KEY = "serverInfo";
+    String JCR_INFO_KEY = "jcrInfo";
+    String DB_INFO_KEY = "dbInfo";
+    String DB_DRIVER_INFO_KEY = "dbDriverInfo";
 
-    static final String MESSAGES_BASENAME = "mgnl-i18n.about-app-messages";
+    String MESSAGES_BASENAME = "mgnl-i18n.about-app-messages";
 
     void setDataSource(Item dataSource);
 
