@@ -27,9 +27,9 @@
     <additionalReleaseProfiles>enable-clover,gwt-compile-production</additionalReleaseProfiles>
   </properties>
   <scm>
-    <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
-    <developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
-    <url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
+    <connection>scm:git:ssh://git@git.magnolia-cms.com/PLATFORM/ui</connection>
+    <developerConnection>scm:git:ssh://git@git.magnolia-cms.com/PLATFORM/ui</developerConnection>
+    <url>https://git.magnolia-cms.com/projects/PLATFORM/repos/ui</url>
     <tag>HEAD</tag>
   </scm>
 
