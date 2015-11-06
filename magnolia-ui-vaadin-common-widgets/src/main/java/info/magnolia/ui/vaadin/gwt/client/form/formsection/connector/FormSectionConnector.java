@@ -142,8 +142,10 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         String caption = connector.getState().caption;
         getWidget().setFieldCaption(fieldWidget, caption);
 
-        boolean isRequired = ((AbstractFieldState) connector.getState()).required;
-        getWidget().setFieldRequired(fieldWidget, isRequired);
+        if (connector.getState() instanceof AbstractFieldState) {
+            boolean isRequired = ((AbstractFieldState) connector.getState()).required;
+            getWidget().setFieldRequired(fieldWidget, isRequired);
+        }
     }
 
     @Override
