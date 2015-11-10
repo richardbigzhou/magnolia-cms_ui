@@ -33,55 +33,34 @@
  */
 package info.magnolia.ui.framework.action;
 
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultMessagesManager;
-import info.magnolia.cms.i18n.MessagesManager;
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.MgnlCommand;
+import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.Node2BeanTransformer;
-import info.magnolia.jcr.node2bean.TypeMapping;
-import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
-import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
-import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.Item;
 import javax.jcr.Property;
-import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
@@ -89,36 +68,33 @@ import org.junit.Test;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 
-/**
- * Tests.
- */
 public class AbstractCommandActionTest {
-    private String website =
-            "/parent.uuid=1\n" +
-                    "/parent/sub.uuid=2";
-
-    private MockSession session;
-
-    private CommandsManager commandsManager;
-    private Scheduler scheduler;
-    private SimpleTranslator i18n;
 
     public static final String TEST_USER = "phantomas";
 
+    private static final String WEBSITE_CONTENT =
+            "/parent.uuid=1\n" +
+                    "/parent/sub.uuid=2";
+
+    private Session session;
+    private Scheduler scheduler;
+    private CommandActionDefinition definition;
+    private CommandsManager commandsManager;
+    private SimpleTranslator i18n;
+
     @Before
     public void setUp() throws Exception {
-        session = SessionTestUtil.createSession("website", website);
-        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
-        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        // Init context
+        session = SessionTestUtil.createSession(RepositoryConstants.WEBSITE, WEBSITE_CONTENT);
+        MockContext ctx = new MockContext();
+        ctx.addSession(RepositoryConstants.WEBSITE, session);
 
-        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
-        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
-        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(TEST_USER);
+        ctx.setUser(user);
+        MgnlContext.setInstance(ctx);
+
         // Init scheduler
         ModuleRegistry moduleRegistry = mock(ModuleRegistryImpl.class);
         SchedulerModule schedulerModule = mock(SchedulerModule.class);
@@ -129,23 +105,11 @@ public class AbstractCommandActionTest {
 
         ComponentsTestUtil.setInstance(ModuleRegistry.class, moduleRegistry);
 
-        MockWebContext webContext = new MockWebContext();
-        webContext.setContextPath("/foo");
-        webContext.addSession("website", session);
-        final User user = mock(User.class);
-        when(user.getName()).thenReturn(TEST_USER);
-        final SecuritySupportImpl sec = new info.magnolia.cms.security.SecuritySupportImpl();
-        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
-        webContext.setUser(user);
-        MgnlContext.setInstance(webContext);
-
-        SystemContext systemContext = mock(SystemContext.class);
-        when(systemContext.getJCRSession("website")).thenReturn(session);
-        ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
-
-
-
+        definition = new CommandActionDefinition();
         commandsManager = mock(CommandsManager.class);
+        QuxCommand quxCommand = new QuxCommand();
+        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
+
         i18n = mock(SimpleTranslator.class);
     }
 
@@ -157,114 +121,102 @@ public class AbstractCommandActionTest {
     }
 
     @Test
-    public void testGetParamsReturnsBasicContextParamsFromNode() throws Exception {
-
+    public void getParamsReturnsBasicContextParamsFromNode() throws Exception {
         // GIVEN
-        AbstractCommandAction<CommandActionDefinition> action =
-                new AbstractCommandAction<CommandActionDefinition>(
-                        new CommandActionDefinition(),
-                        new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                        commandsManager,
-                        null,
-                        null);
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
 
         // WHEN
-        action.setCurrentItem(action.getItems().get(0));
-        action.onPreExecute();
+        action.execute();
         Map<String, Object> params = action.getParams();
 
         // THEN
-        assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
-
-        assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
-        assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
-        assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REPOSITORY, (Object) RepositoryConstants.WEBSITE));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
     }
 
     @Test
-    public void testGetParamsReturnsBasicContextParamsFromProperty() throws Exception {
+    public void getParamsReturnsBasicContextParamsFromProperty() throws Exception {
         // GIVEN
-        Property jcrProperty = MgnlContext.getJCRSession("website").getNode("/parent/sub").setProperty("property1", "property1");
-        AbstractCommandAction<CommandActionDefinition> action =
-                new AbstractCommandAction<CommandActionDefinition>(
-                        new CommandActionDefinition(),
-                        new JcrPropertyAdapter(jcrProperty),
-                        commandsManager,
-                        null,
-                        null);
+        Property jcrProperty = session.getNode("/parent/sub").setProperty("property1", "value1");
+        JcrItemAdapter item = new JcrPropertyAdapter(jcrProperty);
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
 
         // WHEN
-        action.setCurrentItem(action.getItems().get(0));
-        action.onPreExecute();
+        action.execute();
         Map<String, Object> params = action.getParams();
 
         // THEN
-        assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
-        assertTrue(params.containsKey(Context.ATTRIBUTE_REQUESTOR));
-
-        assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
-        assertEquals(jcrProperty.getPath(), params.get(Context.ATTRIBUTE_PATH));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REPOSITORY, (Object) RepositoryConstants.WEBSITE));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub/property1"));
         // In case of property, the Identifier is the parent Node ID
-        assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
     }
 
     @Test
-    public void testGetParamsReturnsOtherParamsFromDefinition() throws Exception {
-
+    public void getParamsReturnsOtherParamsFromDefinition() throws Exception {
         // GIVEN
-        CommandActionDefinition definition = new CommandActionDefinition();
         definition.getParams().put("abc", "bar");
         definition.getParams().put("def", "baz");
         definition.getParams().put("ghi", "456");
-
-        AbstractCommandAction<CommandActionDefinition> action =
-                new AbstractCommandAction<CommandActionDefinition>(
-                        definition,
-                        new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                        commandsManager,
-                        null,
-                        i18n);
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
 
         // WHEN
-        action.setCurrentItem(action.getItems().get(0));
-        action.onPreExecute();
+        action.execute();
         Map<String, Object> params = action.getParams();
 
         // THEN
-        assertEquals("bar", params.get("abc"));
-        assertEquals("baz", params.get("def"));
-        assertEquals("456", params.get("ghi"));
-
+        assertThat(params, hasEntry("abc", (Object) "bar"));
+        assertThat(params, hasEntry("def", (Object) "baz"));
+        assertThat(params, hasEntry("ghi", (Object) "456"));
         // ensure the default params are returned as well.
-        assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
-        assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
-        assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
-        assertEquals(TEST_USER, params.get(Context.ATTRIBUTE_REQUESTOR));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REPOSITORY, (Object) RepositoryConstants.WEBSITE));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void getParamsReturnsImmutableMap() throws Exception {
+        // GIVEN
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
+
+        // WHEN
+        action.execute();
+        Map<String, Object> params = action.getParams();
+        params.put("foo", "bar");
+        // THEN exception
+    }
+
+    // Do we really need this?? what else could be expected from two separate action instances??
+    @Test
+    public void getParamsTwiceReturnsNewParamsMap() throws Exception {
+        // GIVEN
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
+        AbstractCommandAction<CommandActionDefinition> action2 = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
+
+        // WHEN
+        action.execute();
+        action2.execute();
+
+        // THEN
+        assertNotSame(action.getParams(), action2.getParams());
     }
 
     @Test
-    public void testExecute() throws Exception {
+    public void executeSynchronously() throws Exception {
         // GIVEN
-        CommandActionDefinition definition = new CommandActionDefinition();
         definition.setCommand("qux");
+        Command quxCommand = commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux");
 
-        QuxCommand quxCommand = new QuxCommand();
-        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
-        when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
-
-        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                definition,
-                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
-                commandsManager,
-                null,
-                i18n);
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, null);
 
         // WHEN
         action.execute();
@@ -273,114 +225,41 @@ public class AbstractCommandActionTest {
         verify(commandsManager, times(1)).executeCommand(quxCommand, action.getParams());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetParamsReturnsImmutableMap() throws Exception {
-        // GIVEN
-        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
-        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                new CommandActionDefinition(), item, commandsManager, null, null);
-        action.setCurrentItem(action.getItems().get(0));
-        action.buildParams(item.getJcrItem());
-
-        action.onPreExecute();
-        Map<String, Object> params = action.getParams();
-
-        // WHEN
-        params.put("foo", "bar");
-
-        // THEN exception
-    }
-
     @Test
-    public void testExecuteTwiceReturnsNewMap() throws Exception {
+    public void executeAsynchronously() throws Exception {
         // GIVEN
-        CommandActionDefinition definition = new CommandActionDefinition();
-        definition.setCommand("qux");
-        Map<String, Object> params1 = new HashMap<String, Object>();
-        params1.put("param1", "some parameter1");
-
-        Map<String, Object> params2 = new HashMap<String, Object>();
-        params2.put("param2", "some parameter2");
-
-        QuxCommand quxCommand = new QuxCommand();
-        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
-        when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
-
-        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
-                definition,
-                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
-                commandsManager,
-                null, i18n, params1);
-
-        action.execute();
-        // WHEN
-        AbstractCommandAction<CommandActionDefinition> action2 = new TestAbstractCommandAction(
-                definition,
-                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
-                commandsManager,
-                null, i18n, params2);
-
-        action2.execute();
-
-        // THEN
-        assertNull(action2.getParams().get("param1"));
-        assertEquals(action2.getParams().get("param2"), params2.get("param2"));
-    }
-
-    @Test
-    public void testInvokeAsynchronously() throws RepositoryException, ActionExecutionException {
-        // GIVEN
-        CommandActionDefinition definition = new CommandActionDefinition();
-        definition.setCommand("asynchronous");
-        QuxCommand quxCommand = new QuxCommand();
-        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "asynchronous")).thenReturn(quxCommand);
-
         definition.setAsynchronous(true);
+        definition.setCommand("qux");
 
-        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
-
-        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
-                definition,
-                item,
-                commandsManager,
-                null, i18n, new HashMap<String, Object>());
-
-        action.setCurrentItem(item);
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, i18n);
 
         // WHEN
-        action.executeOnItem(item);
+        action.execute();
 
         // THEN
         assertFalse("Stop Processing = false as it's invoke asynchronously", (Boolean) MgnlContext.getAttribute(AbstractCommandAction.COMMAND_RESULT, Context.LOCAL_SCOPE));
     }
 
     @Test
-    public void testInvokeAsynchronouslyActionThatTakesLongerThanFiveSeconds() throws RepositoryException, ActionExecutionException, SchedulerException {
+    public void executeAsynchronouslyAndTakesLongerThanTimeToWait() throws Exception {
         // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+        definition.setTimeToWait(500);
+        definition.setParallel(false); // parallel execution messes up with job names depending on test-order
+
         JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
         JobDetail jobDetail = new JobDetail();
-        jobDetail.setName("UI Action triggered execution of [default:asynchronous] by user ["+TEST_USER+"]. (0)");
+        jobDetail.setName("UI Action triggered execution of [default:qux] by user [" + TEST_USER + "].");
         when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
-        CommandActionDefinition definition = new CommandActionDefinition();
-        definition.setCommand("asynchronous");
-        QuxCommand quxCommand = new QuxCommand();
-        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "asynchronous")).thenReturn(quxCommand);
         when(scheduler.getCurrentlyExecutingJobs()).thenReturn(Arrays.asList(jobExecutionContext));
 
-        definition.setAsynchronous(true);
-
-        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
-
-        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
-                definition,
-                item,
-                commandsManager,
-                null, i18n, new HashMap<String, Object>());
-
-        action.setCurrentItem(item);
+        JcrItemAdapter item = new JcrNodeAdapter(session.getNode("/parent/sub"));
+        AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(definition, item, commandsManager, null, i18n);
 
         // WHEN
-        action.executeOnItem(item);
+        action.execute();
 
         // THEN
         assertEquals("ui-framework.abstractcommand.asyncaction.long", definition.getSuccessMessage());
@@ -394,28 +273,10 @@ public class AbstractCommandActionTest {
         }
     }
 
-    private class TestAbstractCommandAction extends AbstractCommandAction<CommandActionDefinition> {
-
-        private Map<String, Object> parameter;
-
-        public TestAbstractCommandAction(CommandActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, Map<String, Object> parameter) {
-            super(definition, item, commandsManager, uiContext, i18n);
-            this.parameter = parameter;
-        }
-
-        @Override
-        protected Map<String, Object> buildParams(Item jcrItem) {
-            Map<String, Object> params = super.buildParams(jcrItem);
-            params.putAll(parameter);
-            return params;
-        }
-    }
-
     private class SchedulerModule extends ModuleDefinition {
 
         public Scheduler getScheduler() {
             return null;
         }
     }
-
 }

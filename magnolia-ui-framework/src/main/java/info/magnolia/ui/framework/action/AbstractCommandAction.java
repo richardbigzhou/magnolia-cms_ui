@@ -86,38 +86,32 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private static AtomicInteger idx = new AtomicInteger();
 
-    private CommandsManager commandsManager;
-
-    private Command command;
-
-    private Map<String, Object> params;
-
-    private SimpleTranslator i18n;
-
-    private Object schedulerModule;
+    private final CommandsManager commandsManager;
+    private final SimpleTranslator i18n;
 
     private String commandName;
-
     private String catalogName;
+    private Command command;
+    private Object schedulerModule;
+    private Map<String, Object> params;
 
     private String failureMessage;
 
-    private int timeToWait;
-
-
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, uiContext);
-        init(commandsManager, i18n);
+        this.commandsManager = commandsManager;
+        this.i18n = i18n;
+        init();
     }
 
     public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
-        init(commandsManager, i18n);
-    }
-
-    private void init(final CommandsManager commandsManager, final SimpleTranslator i18n) {
         this.commandsManager = commandsManager;
         this.i18n = i18n;
+        init();
+    }
+
+    private void init() {
         // Init Command.
         commandName = getDefinition().getCommand();
         catalogName = getDefinition().getCatalog();
@@ -128,7 +122,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             schedulerModule = registry.getModuleInstance("scheduler");
         }
     }
-
 
     /**
      * Builds a map of parameters which will be passed to the current command
@@ -221,7 +214,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     cal.add(Calendar.SECOND, getDefinition().getDelay());
 
                     // init waiting time before job is started to avoid issues (when job is finished before timeToWait is initialized)
-                    timeToWait = getDefinition().getTimeToWait();
+                    int timeToWait = getDefinition().getTimeToWait();
 
                     String appName = getUiContext() instanceof SubAppContext ? ((SubAppContext) getUiContext()).getSubAppDescriptor().getLabel() : null;
                     String userName = MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName();
