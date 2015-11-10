@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
@@ -86,38 +87,35 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private static AtomicInteger idx = new AtomicInteger();
 
-    private CommandsManager commandsManager;
-
-    private Command command;
-
-    private Map<String, Object> params;
-
-    private SimpleTranslator i18n;
-
-    private Object schedulerModule;
+    private final CommandsManager commandsManager;
+    private final User user;
+    private final SimpleTranslator i18n;
 
     private String commandName;
-
     private String catalogName;
+    private Command command;
+    private Object schedulerModule;
+    private Map<String, Object> params;
 
     private String failureMessage;
 
-    private int timeToWait;
-
-
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, uiContext);
-        init(commandsManager, i18n);
+        this.commandsManager = commandsManager;
+        this.i18n = i18n;
+        this.user = MgnlContext.getUser();
+        init();
     }
 
     public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
-        init(commandsManager, i18n);
-    }
-
-    private void init(final CommandsManager commandsManager, final SimpleTranslator i18n) {
         this.commandsManager = commandsManager;
         this.i18n = i18n;
+        this.user = MgnlContext.getUser();
+        init();
+    }
+
+    private void init() {
         // Init Command.
         commandName = getDefinition().getCommand();
         catalogName = getDefinition().getCatalog();
@@ -128,7 +126,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             schedulerModule = registry.getModuleInstance("scheduler");
         }
     }
-
 
     /**
      * Builds a map of parameters which will be passed to the current command
@@ -166,7 +163,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             // really only the identifier should be used to identify a piece of content and nothing else
             params.put(Context.ATTRIBUTE_UUID, identifier);
             params.put(Context.ATTRIBUTE_PATH, path);
-            params.put(Context.ATTRIBUTE_REQUESTOR, MgnlContext.getUser().getName());
+            params.put(Context.ATTRIBUTE_REQUESTOR, user.getName());
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -221,10 +218,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     cal.add(Calendar.SECOND, getDefinition().getDelay());
 
                     // init waiting time before job is started to avoid issues (when job is finished before timeToWait is initialized)
-                    timeToWait = getDefinition().getTimeToWait();
+                    int timeToWait = getDefinition().getTimeToWait();
 
                     String appName = getUiContext() instanceof SubAppContext ? ((SubAppContext) getUiContext()).getSubAppDescriptor().getLabel() : null;
-                    String userName = MgnlContext.getUser() == null ? null : MgnlContext.getUser().getName();
+                    String userName = user == null ? null : user.getName();
                     String jobName = "UI Action triggered execution of [" + (StringUtils.isNotEmpty(catalogName) ? (catalogName + ":") : "") + commandName + "] by user [" + StringUtils.defaultIfEmpty(userName, "") + "].";
                     // allowParallel jobs false/true => remove index, or keep index
                     if (getDefinition().isParallel()) {
@@ -393,12 +390,12 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
                     MessagesManager messagesManager = Components.getComponent(MessagesManager.class);
                     // result 1 stands for success, 0 for error - see info.magnolia.module.scheduler.CommandJob
                     if ((Integer) jobExecutionContext.getResult() == 1) {
-                        messagesManager.sendLocalMessage(new Message(MessageType.INFO, successMessageTitle, successMessage));
+                        messagesManager.sendMessage(user.getName(), new Message(MessageType.INFO, successMessageTitle, successMessage));
                     } else if ((Integer) jobExecutionContext.getResult() == 0) {
                         Message msg = new Message(MessageType.WARNING, errorMessageTitle, errorMessage);
                         msg.setView("ui-admincentral:longRunning");
                         msg.addProperty("comment", i18n.translate("ui-framework.abstractcommand.asyncaction.errorComment"));
-                        messagesManager.sendLocalMessage(msg);
+                        messagesManager.sendMessage(user.getName(), msg);
                     }
                 }
             });
