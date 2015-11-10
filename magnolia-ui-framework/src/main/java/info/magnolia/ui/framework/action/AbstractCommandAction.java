@@ -60,6 +60,8 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 /**
  * Base action supporting execution of commands. Will delegate execution to {@link AsyncActionExecutor} if {@link CommandActionDefinition#asynchronous}
  * is set.
@@ -74,33 +76,28 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     public static final String LONG_RUNNING_ACTION_NOTIFICATION = "ui-framework.abstractcommand.asyncaction.long";
     public static final String PARALLEL_EXECUTION_NOT_ALLOWED_NOTIFICATION = "ui-framework.abstractcommand.parallelExecutionNotAllowed";
 
-    private CommandsManager commandsManager;
-    private Command command;
-    private SimpleTranslator i18n;
-    private User user;
-    private AsyncActionExecutor asyncExecutor;
+    private final CommandsManager commandsManager;
+    private final SimpleTranslator i18n;
+    private final User user;
+    private final Command command;
+    private final AsyncActionExecutor asyncExecutor;
 
     private Map<String, Object> params;
-    private String failureMessage;
     private String successMessage;
+    private String failureMessage;
 
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, uiContext);
-        init(commandsManager, i18n);
+        this(definition, Lists.newArrayList(item), commandsManager, uiContext, i18n);
     }
 
     public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
-        init(commandsManager, i18n);
-    }
-
-    private void init(final CommandsManager commandsManager, final SimpleTranslator i18n) {
-        this.user = MgnlContext.getUser();
         this.commandsManager = commandsManager;
         this.i18n = i18n;
-        this.asyncExecutor = Components.getComponentProvider().newInstance(AsyncActionExecutor.class, getDefinition(), getUiContext());
+        this.user = MgnlContext.getUser();
         // Init Command.
         this.command = commandsManager.getCommand(getDefinition().getCatalog(), getDefinition().getCommand());
+        this.asyncExecutor = Components.getComponentProvider().newInstance(AsyncActionExecutor.class, getDefinition(), getUiContext());
     }
 
     /**

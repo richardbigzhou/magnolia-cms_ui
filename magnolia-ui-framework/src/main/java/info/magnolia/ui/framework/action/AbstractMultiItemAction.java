@@ -41,7 +41,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,6 +52,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
 /**
@@ -71,10 +71,7 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     private JcrItemAdapter currentItem;
 
     protected AbstractMultiItemAction(D definition, JcrItemAdapter item, UiContext uiContext) {
-        super(definition);
-        this.items = new ArrayList<JcrItemAdapter>(1);
-        this.items.add(item);
-        this.uiContext = uiContext;
+        this(definition, Lists.newArrayList(item), uiContext);
     }
 
     protected AbstractMultiItemAction(D definition, List<JcrItemAdapter> items, UiContext uiContext) {
