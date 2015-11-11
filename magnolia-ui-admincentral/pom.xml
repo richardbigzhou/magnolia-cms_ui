@@ -11,6 +11,7 @@
   <name>magnolia-ui-admincentral</name>
   <properties>
     <cloverCoverageThreshold>12</cloverCoverageThreshold>
+    <skipTestJar>false</skipTestJar>
   </properties>
   <dependencies>
     <dependency>
@@ -95,17 +96,6 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>groovy-maven-plugin</artifactId>

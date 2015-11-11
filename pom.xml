@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>info.magnolia</groupId>
-    <artifactId>magnolia-parent-pom-ce</artifactId>
-    <version>29</version>
+    <groupId>info.magnolia.maven.poms</groupId>
+    <artifactId>magnolia-parent-pom-community</artifactId>
+    <version>31</version>
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
@@ -24,6 +24,10 @@
     <!-- The gwt-compile-production profile is defined in magnolia-ui-vaadin-widgetset but this needs to be configured here:
          the release-plugin is configured "once" with the reactor, and profiles enabled then. -->
     <additionalReleaseProfiles>enable-clover,gwt-compile-production</additionalReleaseProfiles>
+
+    <!-- This project is in "maintenance mode". See http://www.magnolia-cms.com/services/support/maintenance-policy.html for details -->
+    <distribRepoPrefix>magnolia.public.maintenance</distribRepoPrefix>
+    <nexusStagingProfileId>6617f277f4ee2</nexusStagingProfileId>
   </properties>
   <scm>
     <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>

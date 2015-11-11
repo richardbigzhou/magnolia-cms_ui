@@ -14,10 +14,7 @@
     <draftCompile>false</draftCompile>
     <enableClosure>false</enableClosure>
     <disableCastChecking>false</disableCastChecking>
-    <!-- We want to disable Clover for this module, so we removed enable-clover from the release-profiles. Unfortunately,
-         this doesn't work, and would need to be done at parent level (reactor). So we still have to reconfigure the
-         Clover plugin for this module.
-         Additionally, gwt-compile-production had to be added to the parent pom for the same reason. Leaving it here for reference. -->
+    <skipClover>true</skipClover>
     <additionalReleaseProfiles>gwt-compile-production</additionalReleaseProfiles>
   </properties>
 
@@ -104,18 +101,6 @@
         </executions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <!-- We're doing this here because the trick implemented for BUILD-110 actually does not work with submodules of reactors. -->
-          <groupId>com.atlassian.maven.plugins</groupId>
-          <artifactId>maven-clover2-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
   <profiles>
     <profile>
