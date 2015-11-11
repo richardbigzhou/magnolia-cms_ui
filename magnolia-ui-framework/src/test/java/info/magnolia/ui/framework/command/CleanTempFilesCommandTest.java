@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.framework.command;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import info.magnolia.cms.core.SystemProperty;
 
@@ -75,38 +76,17 @@ public class CleanTempFilesCommandTest {
 
     @Test
     public void testCleanTempFilesOlderThan12HoursTmpDirPathIsSetRelatively() throws Exception {
-        //GIVEN
-        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, "tmp");
-
-        File file1 = new File(PATH_TO_TMP + File.separator + "file1");
-        file1.createNewFile();
-        file1.setLastModified(lastModified);
-
-        File file2 = new File(PATH_TO_TMP + File.separator + "file2");
-        file2.createNewFile();
-
-        File file3 = new File(PATH_TO_TMP + File.separator + "file3");
-        file3.createNewFile();
-
-        File file4 = new File(PATH_TO_TMP + File.separator + "file4");
-        file4.createNewFile();
-        file4.setLastModified(lastModified);
-
-        //WHEN
-        cleanTempFilesCommand.execute(null);
-        List<File> files = Arrays.asList(tmpDir.listFiles());
-
-        //THEN
-        assertFalse(files.contains(file1));
-        assertTrue(files.contains(file2));
-        assertTrue(files.contains(file3));
-        assertFalse(files.contains(file4));
+        testCleanTempFiles("tmp");
     }
 
     @Test
     public void testCleanTempFilesOlderThan12HoursTmpDirPathIsSetAbsolutely() throws Exception {
+        testCleanTempFiles(tmpDir.getAbsolutePath());
+    }
+
+    private void testCleanTempFiles(String pathToTmpDir) throws Exception {
         //GIVEN
-        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, tmpDir.getAbsolutePath());
+        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, pathToTmpDir);
 
         File file1 = new File(PATH_TO_TMP + File.separator + "file1");
         file1.createNewFile();
@@ -131,6 +111,7 @@ public class CleanTempFilesCommandTest {
         assertTrue(files.contains(file2));
         assertTrue(files.contains(file3));
         assertFalse(files.contains(file4));
+
     }
 
 }
