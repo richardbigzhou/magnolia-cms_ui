@@ -11,6 +11,7 @@
   <name>magnolia-ui-contentapp</name>
   <properties>
     <cloverCoverageThreshold>35</cloverCoverageThreshold>
+    <skipTestJar>false</skipTestJar>
   </properties>
 
   <dependencies>
@@ -75,19 +76,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
