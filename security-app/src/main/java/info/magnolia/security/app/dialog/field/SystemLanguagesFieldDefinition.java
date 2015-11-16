@@ -33,76 +33,16 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.cms.security.SilentSessionOp;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Field definition that returns the languages defined under <code>CONFIG:/server/i18n/system/languages</code> as options.
+ * Defines a select field displaying configured system languages.
  */
 public class SystemLanguagesFieldDefinition extends SelectFieldDefinition {
-
-    public static final String SYSTEM_LANGUAGES_PATH = "/server/i18n/system/languages";
-    private static final Logger log = LoggerFactory.getLogger(SystemLanguagesFieldDefinition.class);
-
-    @Override
-    public List<SelectFieldOptionDefinition> getOptions() {
-        List<SelectFieldOptionDefinition> options = new LinkedList<SelectFieldOptionDefinition>();
-
-        Node systemLanguages = MgnlContext.doInSystemContext(new SilentSessionOp<Node>(RepositoryConstants.CONFIG) {
-
-            @Override
-            public Node doExec(Session session) throws RepositoryException {
-                return SessionUtil.getNode(session, SYSTEM_LANGUAGES_PATH);
-            }
-        });
-
-
-        if (systemLanguages == null) {
-            log.error("Cannot load system languages definition from [{}], check the system configuration.", SYSTEM_LANGUAGES_PATH);
-        } else {
-            try {
-                Locale currentLocale = MgnlContext.getLocale();
-                for (Node language : NodeUtil.getNodes(systemLanguages)) {
-                    if (language.hasProperty("enabled") && language.getProperty("enabled").getBoolean()) {
-                        SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-                        option.setValue(language.getName());
-                        // get either the language code from property, or first two characters from the node name
-                        String langCode = language.hasProperty("language") ? language.getProperty("language").getString() : language.getName().substring(0, 2);
-                        String countryCode = language.hasProperty("country") ? language.getProperty("country").getString() : "";
-                        Locale locale = new Locale(langCode, countryCode);
-                        String label = locale.getDisplayLanguage(currentLocale);
-                        if (!"".equals(countryCode)) {
-                            label += " (" + locale.getDisplayCountry(currentLocale) + ")";
-                        }
-                        option.setLabel(label);
-                        if (currentLocale.equals(locale) || currentLocale.getLanguage().equals(locale.getLanguage())) {
-                            option.setSelected(true);
-                        }
-                        options.add(option);
-                    }
-                }
-            } catch (RepositoryException e) {
-                log.error("Cannot load system languages from [{}]: {}", SYSTEM_LANGUAGES_PATH, e.getMessage());
-            }
-        }
-
-        return options;
-    }
+    /**
+     * @deprecated since 5.4.4
+     */
+    @Deprecated
+    public static final String SYSTEM_LANGUAGES_PATH = SystemLanguagesFieldFactory.SYSTEM_LANGUAGES_PATH;
 
 }

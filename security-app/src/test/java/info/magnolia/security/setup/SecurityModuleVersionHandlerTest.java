@@ -34,6 +34,7 @@
 package info.magnolia.security.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -49,7 +50,6 @@ import info.magnolia.security.app.action.DeleteFolderActionDefinition;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
 
@@ -235,7 +235,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertTrue(fieldTypesNode.hasNode("systemLanguagesField"));
         assertEquals(SystemLanguagesFieldDefinition.class.getName(), fieldTypesNode.getNode("systemLanguagesField").getProperty("definitionClass").getString());
-        assertEquals(SelectFieldFactory.class.getName(), fieldTypesNode.getNode("systemLanguagesField").getProperty("factoryClass").getString());
+        assertThat(fieldTypesNode.getNode("systemLanguagesField"), hasProperty("factoryClass"));
     }
 
     @Test
@@ -584,5 +584,18 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         //THEN
         assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree/sortable"));
+    }
+
+    @Test
+    public void updateFrom543ReconfiguresFactoryClassOfSystemLanguagesField() throws Exception {
+        // GIVEN
+        Node systemLanguagesNode = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/fieldTypes/systemLanguagesField", NodeTypes.ContentNode.NAME);
+        systemLanguagesNode.setProperty("factoryClass", "info.magnolia.ui.form.field.factory.SelectFieldFactory");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.3"));
+
+        // THEN
+        assertThat(systemLanguagesNode, hasProperty("factoryClass", "info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory"));
     }
 }

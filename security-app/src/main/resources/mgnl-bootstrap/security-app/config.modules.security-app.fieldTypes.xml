@@ -189,7 +189,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.SelectFieldFactory</sv:value>
+      <sv:value>info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition</sv:value>
