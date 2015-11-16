@@ -96,6 +96,12 @@ public class DelegatingMultiValueSubnodeTransformer extends DelegatingMultiValue
             try {
                 if (rootJcrItem.hasNode(definition.getName())) {
                     subNode = new JcrNodeAdapter(rootJcrItem.getNode(definition.getName()));
+                } else if (rootItem.getChildren().containsKey(definition.getName())) {
+                    // Initialize an intermediate sub-node when the child item has been create already but hasn't persisted yet.
+                    Object childItem = rootItem.getChildren().get(definition.getName());
+                    if (childItem instanceof JcrNodeAdapter) {
+                        subNode = (JcrNodeAdapter) childItem;
+                    }
                 } else {
                     subNode = new JcrNewNodeAdapter(rootJcrItem, NodeTypes.ContentNode.NAME, definition.getName());
                 }
@@ -106,5 +112,4 @@ public class DelegatingMultiValueSubnodeTransformer extends DelegatingMultiValue
         }
         return subNode;
     }
-
 }

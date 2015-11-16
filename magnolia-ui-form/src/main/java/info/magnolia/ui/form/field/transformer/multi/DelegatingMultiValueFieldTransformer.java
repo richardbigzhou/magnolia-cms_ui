@@ -147,7 +147,15 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     @Override
     public Property<?> createProperty() {
         final String newItemName = createNewItemName();
-        final JcrNodeAdapter child = new JcrNewNodeAdapter(getRootItem().getJcrItem(), childNodeType, newItemName);
+
+        final JcrNodeAdapter child;
+
+        // Should check the new Item Name existed because it can be created already from other language form.
+        if (getRootItem().getChild(newItemName) instanceof JcrNodeAdapter) {
+            child = (JcrNodeAdapter) getRootItem().getChild(newItemName);
+        } else {
+            child = new JcrNewNodeAdapter(getRootItem().getJcrItem(), childNodeType, newItemName);
+        }
 
         child.setParent(getRootItem());
         child.getParent().addChild(child);

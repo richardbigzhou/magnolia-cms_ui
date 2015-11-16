@@ -45,12 +45,13 @@ import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Arrays;
 import java.util.Locale;
+
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,6 +61,7 @@ import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
@@ -67,19 +69,19 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class DelegatingMultiValueFieldTransformerTest {
 
-    private MultiValueFieldDefinition definition = new MultiValueFieldDefinition();
-    private Item rootItem;
-    private MockNode rootNode;
-    private String fieldName = "multi";
-    private I18nContentSupport i18nContentSupport;
-    private Locale defaultLocal = Locale.ENGLISH;
+    protected MultiValueFieldDefinition definition;
+    protected JcrNodeAdapter rootItem;
+    protected MockNode rootNode;
+    protected String fieldName = "multi";
+    protected I18nContentSupport i18nContentSupport;
+    protected Locale defaultLocal = Locale.ENGLISH;
+    protected I18NAuthoringSupport i18NAuthoringSupport;
 
     @Before
     public void setUp() throws Exception {
         MockUtil.initMockContext();
         // Init definition
-        TextFieldDefinition text = new TextFieldDefinition();
-        text.setName("text");
+        definition = new MultiValueFieldDefinition();
         definition.setName(fieldName);
         definition.setI18n(false);
 
@@ -97,6 +99,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         i18nContentSupport = mock(I18nContentSupport.class);
         when(i18nContentSupport.getDefaultLocale()).thenReturn(defaultLocal);
         when(i18nContentSupport.isEnabled()).thenReturn(false);
+        i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
 
     }
 
@@ -108,7 +111,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void readFromItem() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
 
         // WHEN
         PropertysetItem res = transformer.readFromItem();
@@ -120,13 +123,13 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0"));
+        assertEquals(subItem, rootItem.getChild("multi0"));
     }
 
     @Test
     public void readFromItemTwice() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
 
         // WHEN
         PropertysetItem res1 = transformer.readFromItem();
@@ -153,7 +156,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0"));
+        assertEquals(subItem, rootItem.getChild("multi0"));
     }
 
     @Test
@@ -177,7 +180,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         Item subItem = (Item) res.getItemProperty(0).getValue();
         assertTrue(subItem instanceof JcrNodeAdapter);
         assertEquals(rootItem, ((JcrNodeAdapter) subItem).getParent());
-        assertEquals(subItem, ((JcrNodeAdapter) rootItem).getChild("multi0_de"));
+        assertEquals(subItem, rootItem.getChild("multi0_de"));
     }
 
     private I18NAuthoringSupport createI18AuthoringSupportMock() {
@@ -197,7 +200,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void createNewElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
         transformer.readFromItem();
         // WHEN
         Property<?> res = transformer.createProperty();
@@ -207,7 +210,7 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
         assertEquals("multi1", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
         assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
-        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1"));
+        assertEquals(res.getValue(), rootItem.getChild("multi1"));
     }
 
     @Test
@@ -227,13 +230,13 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
         assertEquals("multi1_de", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
         assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
-        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1_de"));
+        assertEquals(res.getValue(), rootItem.getChild("multi1_de"));
     }
 
     @Test
     public void removeElement() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
         PropertysetItem initialElements = transformer.readFromItem();
 
         // WHEN
@@ -249,7 +252,7 @@ public class DelegatingMultiValueFieldTransformerTest {
     @Test
     public void removeElementAndCreate() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
         PropertysetItem initialElements = transformer.readFromItem();
         transformer.removeProperty(initialElements.getItemPropertyIds().iterator().next());
 
@@ -261,13 +264,13 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
         assertEquals("multi1", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
         assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
-        assertEquals(res.getValue(), ((JcrNodeAdapter) rootItem).getChild("multi1"));
+        assertEquals(res.getValue(), rootItem.getChild("multi1"));
     }
 
     @Test
     public void coherenceOfMultisetItemIds() {
         // GIVEN
-        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, mock(I18NAuthoringSupport.class));
+        DelegatingMultiValueFieldTransformer transformer = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
         PropertysetItem res = transformer.readFromItem();
         // create two elements
         transformer.createProperty();
@@ -285,4 +288,49 @@ public class DelegatingMultiValueFieldTransformerTest {
         assertEquals(2, res.getItemPropertyIds().size());
     }
 
+    @Test
+    public void createNewElementWhenItemExistedBefore() throws RepositoryException {
+        // GIVEN
+        // This is transformer for en form
+        DelegatingMultiValueFieldTransformer transformer_en = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
+        transformer_en.readFromItem();
+
+        // WHEN
+        Property<?> res = transformer_en.createProperty();
+
+        // THEN
+        assertNotNull(res);
+        assertTrue(res.getValue() instanceof JcrNewNodeAdapter);
+        assertEquals("multi1", ((JcrNewNodeAdapter) res.getValue()).getNodeName());
+        assertEquals(rootItem, ((JcrNewNodeAdapter) res.getValue()).getParent());
+        assertEquals(res.getValue(), rootItem.getChild("multi1"));
+
+        // This is transformer for de form
+        DelegatingMultiValueFieldTransformer transformer_de = new DelegatingMultiValueFieldTransformer(rootItem, definition, PropertysetItem.class, i18NAuthoringSupport);
+        transformer_de.readFromItem();
+
+        // Create new field for de form
+        Property<?> res_de = transformer_de.createProperty();
+
+        assertNotNull(res_de);
+        assertTrue(res_de.getValue() instanceof JcrNewNodeAdapter);
+        assertEquals("multi2", ((JcrNewNodeAdapter) res_de.getValue()).getNodeName());
+        assertEquals(rootItem, ((JcrNewNodeAdapter) res_de.getValue()).getParent());
+        assertEquals(res_de.getValue(), rootItem.getChild("multi2"));
+
+        // Assume that we are inputting data to the field
+        ((JcrNewNodeAdapter) res_de.getValue()).addItemProperty("text", new ObjectProperty<>("a"));
+
+        // WHEN
+        // Continue to add another field for en form
+        res = transformer_en.createProperty();
+
+        // THEN
+        assertNotNull(res);
+        assertTrue(res.getValue() instanceof JcrNodeAdapter);
+        assertEquals("multi2", ((JcrNodeAdapter) res.getValue()).getNodeName());
+        assertEquals(rootItem, ((JcrNodeAdapter) res.getValue()).getParent());
+        assertEquals(res.getValue(), rootItem.getChild("multi2"));
+        assertNotNull(((JcrNodeAdapter) res.getValue()).getItemProperty("text"));
+    }
 }
