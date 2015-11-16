@@ -46,11 +46,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
@@ -64,13 +67,13 @@ import com.vaadin.ui.Field;
 public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectFieldDefinition> {
 
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
+    private Node remoteSelectOptionsNode;
 
     @Test
     public void createField() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -88,8 +91,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -101,8 +103,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void createFieldSelectsFirstOptionIfNoDefaultConfigured() throws Exception {
         // GIVEN
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -119,8 +120,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
             option.setValue(null);
             option.setName(option.getLabel().toLowerCase());
         }
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         dialogSelect.createField();
@@ -139,8 +139,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         option.setSelected(true);
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -152,21 +151,15 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void createFieldWorksWithRemoteOptions() throws Exception {
         // GIVEN
-        // Create a Options node.
-        Node options = session.getRootNode().addNode("options");
-        Node optionEn = options.addNode("en");
-        optionEn.setProperty("value", "en");
-        optionEn.setProperty("label", "English");
-        Node optionFr = options.addNode("fr");
-        optionFr.setProperty("value", "fr");
-        optionFr.setProperty("label", "Francais");
+        // Initialize a Options node.
+        initRemoteOptionsNode();
+
         // Set remote Options in configuration
-        definition.setPath(options.getPath());
+        definition.setPath(remoteSelectOptionsNode.getPath());
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -175,6 +168,35 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Collection<String> items = ((Collection<String>) ((ComboBox) field).getItemIds());
         assertThat(items, contains("en", "fr"));
         assertThat(field.getValue().toString(), is("en"));
+    }
+
+    @Test
+    public void remoteOptionsGetRebuiltUponFieldRecreation() throws Exception {
+        // GIVEN
+        // Initialize a Options node.
+        initRemoteOptionsNode();
+
+        // Set remote Options in configuration
+        definition.setOptions(Collections.<SelectFieldOptionDefinition>emptyList());
+        definition.setPath(remoteSelectOptionsNode.getPath());
+        definition.setRepository(workspaceName);
+
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+
+        initializeSelectFieldFactory();
+
+        // WHEN we initially create a select field
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+        // THEN initially pre-created options from the remote location are present
+        assertThat(field.getItemIds(), Matchers.<Object>contains("en", "fr"));
+
+        // WHEN we add another 'remote' option and re-create a field
+        addRemoteSelectOption("Qux", "qux");
+        initializeSelectFieldFactory();
+        field = (AbstractSelect) dialogSelect.createField();
+
+        // THEN initially pre-created options from the remote location are present
+        assertThat(field.getItemIds(), Matchers.<Object>contains("en", "fr", "qux"));
     }
 
     @Test
@@ -193,8 +215,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -226,8 +247,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setLabelProperty("z");
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
 
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -260,8 +280,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         definition.setOptions(options);
 
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
@@ -295,9 +314,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setOptions(options);
         definition.setSortOptions(false);
 
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
@@ -311,8 +328,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void testCreateDefaultValueFromLong() throws Exception {
         // GIVEN
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
         field.removeAllItems();
         field.addItem(1L); // long value
@@ -425,8 +441,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         options.add(blankOption);
 
         definition.setOptions(options);
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
+        initializeSelectFieldFactory();
 
         // WHEN
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
@@ -436,6 +451,24 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         assertThat(items, contains("1", "2", "3"));
         assertThat(field.getValue().toString(), is("1"));
+    }
+
+    protected void initRemoteOptionsNode() throws RepositoryException {
+        remoteSelectOptionsNode = session.getRootNode().addNode("options");
+
+        addRemoteSelectOption("English", "en");
+        addRemoteSelectOption("Francais", "fr");
+    }
+
+    private void addRemoteSelectOption(String label, String value) throws RepositoryException {
+        Node optionNode = remoteSelectOptionsNode.addNode(label);
+        optionNode.setProperty("label", label);
+        optionNode.setProperty("value", value);
+    }
+
+    private void initializeSelectFieldFactory() {
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setComponentProvider(componentProvider);
     }
 
     public static class TestComparator implements Comparator<SelectFieldOptionDefinition> {
@@ -448,8 +481,8 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         }
 
         @Override
-            public int compare(SelectFieldOptionDefinition o1, SelectFieldOptionDefinition o2) {
-                return col.compare(o1.getLabel(), o2.getLabel());
-            }
+        public int compare(SelectFieldOptionDefinition o1, SelectFieldOptionDefinition o2) {
+            return col.compare(o1.getLabel(), o2.getLabel());
         }
+    }
 }
