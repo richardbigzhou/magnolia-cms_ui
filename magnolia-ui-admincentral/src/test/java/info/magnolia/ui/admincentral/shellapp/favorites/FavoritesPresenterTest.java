@@ -53,6 +53,8 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -67,6 +69,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -83,6 +86,7 @@ public class FavoritesPresenterTest {
     private MockSession session;
     private MockWebContext ctx;
     private FavoritesPresenter presenter;
+    private LocationController locationController;
 
     @Before
     public void setUp() throws RegistrationException, URISyntaxException {
@@ -114,6 +118,7 @@ public class FavoritesPresenterTest {
          * We do not set the name/title for sake of testing the i18n functionality.
          */
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
+        locationController = mock(LocationController.class);
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName("favoritesRandomApp");
         doReturn(descriptor).when(registry).getAppDescriptor(anyString());
@@ -129,7 +134,7 @@ public class FavoritesPresenterTest {
             }
         }).when(i18nizer).decorate(any());
 
-        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer);
+        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer, locationController);
     }
 
     @After
@@ -249,6 +254,22 @@ public class FavoritesPresenterTest {
 
         // THEN
         assertThat(result, equalTo(webAppUri + fragment));
+    }
+
+    @Test
+    public void goToLocationUsesLocationControllerWithFragmentWithNoStartingHashChar() throws Exception {
+        // GIVEN
+        initializeVaadinUI();
+
+        // WHEN
+        presenter.goToLocation("#app:pages:browser;/:treeview:");
+
+        // THEN
+        ArgumentCaptor<Location> argCaptor = ArgumentCaptor.forClass(Location.class);
+
+        verify(locationController, times(1)).goTo(argCaptor.capture());
+
+        assertThat(argCaptor.getValue().toString(), equalTo("app:pages:browser;/:treeview:"));
     }
 
     private void initializeVaadinUI() throws URISyntaxException {

@@ -40,6 +40,7 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.net.URI;
@@ -68,13 +69,15 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     private FavoritesManager favoritesManager;
     private AppDescriptorRegistry appDescriptorRegistry;
     private String currentEditedItemId;
+    private LocationController locationController;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, I18nizer i18nizer) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, I18nizer i18nizer, LocationController locationController) {
         this.view = view;
         this.favoritesManager = favoritesManager;
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.i18nizer = i18nizer;
+        this.locationController = locationController;
     }
 
     public FavoritesView start() {
@@ -169,8 +172,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void goToLocation(final String location) {
-        final String completeLocation = getCompleteURIFromFragment(location);
-        Page.getCurrent().setLocation(completeLocation);
+        locationController.goTo(new DefaultLocation(StringUtils.removeStart(location, "#")));
     }
 
     public JcrNewNodeAdapter determinePreviousLocation() {
@@ -283,6 +285,10 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         return urlFragment;
     }
 
+    /**
+     * @deprecated since 5.4.4. Even though the method has package visibility only, it is no longer used and will be removed in a next version. See MGNLUI-3539.
+     */
+    @Deprecated
     String getCompleteURIFromFragment(final String fragment) {
         URI uri = null;
         try {
