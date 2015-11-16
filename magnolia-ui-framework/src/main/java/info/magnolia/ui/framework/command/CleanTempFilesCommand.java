@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.command;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.commands.MgnlCommand;
 import info.magnolia.context.Context;
 import info.magnolia.init.MagnoliaConfigurationProperties;
@@ -40,8 +41,6 @@ import info.magnolia.init.MagnoliaConfigurationProperties;
 import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
-
-import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -53,17 +52,20 @@ import org.apache.commons.lang3.time.DateUtils;
 public class CleanTempFilesCommand extends MgnlCommand {
 
     public static final int TIME_OFFSET_IN_HOURS = -12;
-    private final MagnoliaConfigurationProperties configurationProperties;
 
-    @Inject
+    public CleanTempFilesCommand() {}
+
+    /**
+     * @deprecated since 5.3.12, use {@link #CleanTempFilesCommand()} instead.
+     */
+    @Deprecated
     public CleanTempFilesCommand(MagnoliaConfigurationProperties configurationProperties) {
-        this.configurationProperties = configurationProperties;
+        this();
     }
 
     @Override
     public boolean execute(final Context context) throws Exception {
-        String tmpDirPath = configurationProperties.getProperty("magnolia.upload.tmpdir");
-        File tmpDir = new File(tmpDirPath);
+        File tmpDir = Path.getTempDirectory();
         Date date = DateUtils.addHours(new Date(), TIME_OFFSET_IN_HOURS); // current time minus 12 hours
         Iterator<File> files = FileUtils.iterateFiles(tmpDir, FileFilterUtils.ageFileFilter(date), FileFilterUtils.ageFileFilter(date));
         while (files.hasNext()) {

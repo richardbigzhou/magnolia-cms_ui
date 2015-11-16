@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.framework.command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.cms.core.SystemProperty;
 
 import java.io.File;
 import java.util.Arrays;
@@ -52,39 +52,53 @@ import org.junit.Test;
  */
 public class CleanTempFilesCommandTest {
 
+    private static final String MAGNOLIA_APP_ROOTDIR = "magnoliaAppRootDir";
+    private static final String PATH_TO_TMP = MAGNOLIA_APP_ROOTDIR + File.separator + "tmp";
+
     private CleanTempFilesCommand cleanTempFilesCommand;
-    private MagnoliaConfigurationProperties configurationProperties;
     private File tmpDir;
+    private long lastModified;
 
     @Before
     public void setUp() throws Exception {
-        configurationProperties = mock(MagnoliaConfigurationProperties.class);
-        when(configurationProperties.getProperty("magnolia.upload.tmpdir")).thenReturn("tmp");
-        cleanTempFilesCommand = new CleanTempFilesCommand(configurationProperties);
-        tmpDir = new File("tmp");
-        tmpDir.mkdir();
+        cleanTempFilesCommand = new CleanTempFilesCommand();
+        tmpDir = new File(PATH_TO_TMP);
+        tmpDir.mkdirs();
+        SystemProperty.setProperty(SystemProperty.MAGNOLIA_APP_ROOTDIR, MAGNOLIA_APP_ROOTDIR);
+        lastModified = System.currentTimeMillis() - 13 * 60 * 60 * 1000;
     }
 
     @After
     public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(tmpDir);
+        FileUtils.deleteDirectory(tmpDir.getParentFile());
+        SystemProperty.clear();
     }
 
     @Test
-    public void testCleanTempFilesOlderThan12Hours() throws Exception {
+    public void testCleanTempFilesOlderThan12HoursTmpDirPathIsSetRelatively() throws Exception {
+        testCleanTempFiles("tmp");
+    }
+
+    @Test
+    public void testCleanTempFilesOlderThan12HoursTmpDirPathIsSetAbsolutely() throws Exception {
+        testCleanTempFiles(tmpDir.getAbsolutePath());
+    }
+
+    private void testCleanTempFiles(String pathToTmpDir) throws Exception {
         //GIVEN
-        long lastModified = System.currentTimeMillis() - 13 * 60 * 60 * 1000;
-        File file1 = new File("tmp/file1");
+        SystemProperty.setProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR, pathToTmpDir);
+
+        File file1 = new File(PATH_TO_TMP + File.separator + "file1");
         file1.createNewFile();
         file1.setLastModified(lastModified);
 
-        File file2 = new File("tmp/file2");
+        File file2 = new File(PATH_TO_TMP + File.separator + "file2");
         file2.createNewFile();
 
-        File file3 = new File("tmp/file3");
+        File file3 = new File(PATH_TO_TMP + File.separator + "file3");
         file3.createNewFile();
 
-        File file4 = new File("tmp/file4");
+        File file4 = new File(PATH_TO_TMP + File.separator + "file4");
         file4.createNewFile();
         file4.setLastModified(lastModified);
 
