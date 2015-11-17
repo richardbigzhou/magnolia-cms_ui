@@ -33,114 +33,266 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.MultiField;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.fieldType.registry.FieldTypeDefinitionRegistryTest.TestFieldTypeDefinitionProvider;
+import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
+import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 
 import java.util.Iterator;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.ui.AbstractField;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterators;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-/**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiValueFieldFactory}.
- */
+
 public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiValueFieldDefinition> {
 
-    private MultiValueFieldFactory multiFieldFactory;
+    private static final EmailValidator EMAIL_VALIDATOR = new EmailValidator("Not a valid email");
+    private MultiValueFieldFactory<MultiValueFieldDefinition> factory;
+    private FieldFactoryFactory subfieldFactory;
+    private I18NAuthoringSupport i18nAuthoringSupport;
+    private MultiField multiField;
+    private TextFieldDefinition textFieldDefinition;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
-        FieldFactoryFactory fieldFactoryFactory = mock(FieldFactoryFactory.class);
-        ConfiguredFieldDefinition fieldDefinition = new ConfiguredFieldDefinition();
+        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        componentProvider.registerInstance(ComponentProvider.class, componentProvider);
 
-        final FieldFactory fieldFactory = mock(FieldFactory.class);
-        final AbstractField field = mock(AbstractField.class);
+        FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
+        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
+    }
 
-
-        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, fieldFactoryFactory, componentProvider, i18NAuthoringSupport);
-        baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
-
-        definition.setDefaultValue("defaultValue");
-        definition.setField(fieldDefinition);
-
-        doReturn(fieldFactory).when(fieldFactoryFactory).createFieldFactory(eq(fieldDefinition), anyVararg());
-        doReturn(field).when(fieldFactory).createField();
+    @Override
+    @After
+    public void tearDown() {
+        super.tearDown();
+        multiField = null;
+        factory = null;
     }
 
     @Test
-    public void testGetField() throws Exception {
+    public void createFieldComponentTest() throws Exception {
         // GIVEN
+        factory = new MultiValueFieldFactory<MultiValueFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
+        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        Field field = multiFieldFactory.createField();
+        Field<PropertysetItem> field = factory.createField();
 
         // THEN
-        assertEquals(true, field instanceof MultiField);
+        assertThat(field, instanceOf(MultiField.class));
     }
 
     @Test
-    public void areButtonsInvisibleWhenReadOnly() {
-
+    public void validationFailsIfRequiredMultiFieldIsEmpty() throws Exception {
         // GIVEN
-        definition.setReadOnly(true);
+        definition.setRequired(true);
+
+        createField();
 
         // WHEN
-        MultiField multiField = (MultiField) multiFieldFactory.createField();
+        boolean isValid = multiField.isValid();
 
         // THEN
-        assertTrue(multiField.isReadOnly());
-        assertTrue(definition.getField().isReadOnly());
-        assertFalse(isExistButtons(multiField));
+        assertFalse(isValid);
     }
 
     @Test
-    public void areButtonsVisibleWhenEditable() {
-
+    public void validationFailsIfRequiredSubFieldIsEmpty() throws Exception {
         // GIVEN
-        definition.setReadOnly(false);
+        definition.setRequired(true);
+
+        createField();
+
+        // add new mandatory text field
+        TextField textField = new TextField();
+        textField.setValue("");
+        addSubField(textField);
 
         // WHEN
-        MultiField multiField = (MultiField) multiFieldFactory.createField();
+        boolean isValid = multiField.isValid();
 
         // THEN
-        assertFalse(multiField.isReadOnly());
-        assertFalse(definition.getField().isReadOnly());
-        assertTrue(isExistButtons(multiField));
+        assertFalse(isValid);
     }
 
-    private boolean isExistButtons(MultiField multiField) {
-        VerticalLayout root = (VerticalLayout) multiField.iterator().next();
-        Iterator<Component> it = root.iterator();
-        boolean isExistButtons = false;
-        while (it.hasNext()) {
-            Component component = it.next();
-            if (component instanceof NativeButton || component instanceof Button) {
-                isExistButtons = true;
-            }
-        }
+    @Test
+    public void validationSuccedsIfRequiredSubFieldIsNotEmpty() throws Exception {
+        // GIVEN
+        definition.setRequired(true);
 
-        return isExistButtons;
+        createField();
+
+        // add new mandatory text field
+        TextField textField = new TextField();
+        textField.setValue("foo");
+        addSubField(textField);
+
+        // WHEN
+        boolean isValid = multiField.isValid();
+
+        // THEN
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void validationSuccedsIfNotRequiredSubFieldIsEmpty() throws Exception {
+        // GIVEN
+        createField();
+
+        // add new non mandatory text field
+        TextField textField = new TextField();
+        textField.setValue("");
+        addSubField(textField);
+
+        // WHEN
+        boolean isValid = multiField.isValid();
+
+        // THEN
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void validationFailsIfSubFieldValidatorFails() throws Exception {
+        // GIVEN
+        createField();
+
+        // add required text field with invalid email text
+        TextField textField = new TextField();
+        textField.setRequired(true);
+        textField.addValidator(EMAIL_VALIDATOR);
+        textField.setValue("foo");
+        addSubField(textField);
+
+        // WHEN
+        boolean isValid = multiField.isValid();
+
+        // THEN
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void validationSuccedsIfSubFieldValidatorPasses() throws Exception {
+        // GIVEN
+        createField();
+
+        // add text field with invalid email text
+        TextField textField = new TextField();
+        textField.addValidator(EMAIL_VALIDATOR);
+        textField.setValue("foo@magnolia-cms.com");
+        addSubField(textField);
+
+        // WHEN
+        boolean isValid = multiField.isValid();
+
+        // THEN
+        assertTrue(isValid);
+    }
+
+    private void createField() {
+        factory = new MultiValueFieldFactory<MultiValueFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory.setComponentProvider(componentProvider);
+        multiField = (MultiField) factory.createField();
+    }
+
+    private <F extends Component> F getSubFieldWithType(final Class<F> fieldClass) {
+        AbstractOrderedLayout rootLayout = (AbstractOrderedLayout) multiField.iterator().next();
+        Iterator<Component> filteredIterator = Iterators.filter(rootLayout.iterator(), Predicates.instanceOf(fieldClass));
+        return filteredIterator.hasNext() ? (F) filteredIterator.next() : null;
+    }
+
+    private void addSubField(final Component component) {
+        AbstractOrderedLayout rootLayout = (AbstractOrderedLayout) multiField.iterator().next();
+        rootLayout.addComponent(component);
+    }
+
+    private FieldTypeDefinitionRegistry createFieldTypeRegistry() {
+        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
+
+        ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
+        textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
+        textFieldDefinition.setFactoryClass(TextFieldFactory.class);
+        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+
+        return registry;
     }
 
     @Override
     protected void createConfiguredFieldDefinition() {
-        MultiValueFieldDefinition fieldDefinition = new MultiValueFieldDefinition();
-        fieldDefinition.setName(propertyName);
-        this.definition = fieldDefinition;
+        MultiValueFieldDefinition definition = new MultiValueFieldDefinition();
+        definition = (MultiValueFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(definition, propertyName);
+        definition.setDefaultValue(null);
+
+        // Set fields
+        textFieldDefinition = new TextFieldDefinition();
+        textFieldDefinition.setRows(0);
+        textFieldDefinition.setName("text");
+
+        definition.setField(textFieldDefinition);
+
+        this.definition = definition;
     }
 
+    @Test
+    public void areButtonsInvisibleWhenReadOnly() {
+        // GIVEN
+        definition.setReadOnly(true);
+
+        // WHEN
+        createField();
+
+        // THEN
+        assertTrue(multiField.isReadOnly());
+        assertTrue(definition.getField().isReadOnly());
+        assertFalse(buttonsExist(multiField));
+    }
+
+    @Test
+    public void areButtonsVisibleWhenEditable() {
+        // GIVEN
+        definition.setReadOnly(false);
+
+        // WHEN
+        createField();
+
+        // THEN
+        assertFalse(multiField.isReadOnly());
+        assertFalse(definition.getField().isReadOnly());
+        assertTrue(buttonsExist(multiField));
+    }
+
+    private boolean buttonsExist(MultiField multiField) {
+        VerticalLayout root = (VerticalLayout) multiField.iterator().next();
+        Iterator<Component> it = root.iterator();
+        boolean buttonsExist = false;
+        while (it.hasNext()) {
+            Component component = it.next();
+            if (component instanceof Button) {
+                buttonsExist = true;
+            }
+        }
+        return buttonsExist;
+    }
 }

@@ -241,13 +241,21 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
-     * Validate all fields from the root container.
+     * Validate all fields from the root container. Fields which are not visible are skipped. Stops at the first error encountered.
      */
     @Override
     public boolean isValid() {
+        // first validate self
+        if (!super.isValid()) {
+            return false;
+        }
+
         boolean isValid = true;
         List<AbstractField<T>> fields = getFields(this, false);
         for (AbstractField<T> field : fields) {
+            if (!field.isVisible()) {
+                continue;
+            }
             isValid = field.isValid();
             if (!isValid) {
                 return isValid;
@@ -257,13 +265,20 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
-     * Get the error message.
+     * Get the error message, if any. Stops at the first error message found either in the custom multi-field itself or in one of its sub-fields.
      */
     @Override
     public ErrorMessage getErrorMessage() {
-        ErrorMessage errorMessage = null;
+        ErrorMessage errorMessage = super.getErrorMessage();
+        if (errorMessage != null) {
+            return errorMessage;
+        }
         List<AbstractField<T>> fields = getFields(this, false);
         for (AbstractField<T> field : fields) {
+            // skip non visible fields or validation will pass (see this class isValid() method) but an annoying error message will display just for a moment (e.g. before a form is closed).
+            if (!field.isVisible()) {
+                continue;
+            }
             errorMessage = field.getErrorMessage();
             if (errorMessage != null) {
                 return errorMessage;
@@ -272,17 +287,23 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         return errorMessage;
     }
 
+    /**
+     * For a custom multi field <em>empty</em> means it contains no sub-fields <em>OR</em> at least one of its sub-fields <code>isEmpty()</code> method returns <code>true</code>.
+     */
     @Override
     public boolean isEmpty() {
-        boolean isEmpty = false;
         List<AbstractField<T>> fields = getFields(this, false);
+        if (fields.isEmpty()) {
+            return true;
+        }
         for (AbstractField<T> field : fields) {
-            isEmpty = field.getValue() == null;
-            if (isEmpty) {
-                return isEmpty;
+            if (!field.isVisible()) {
+                continue;
+            }
+            if (field.isEmpty()) {
+                return true;
             }
         }
-        return isEmpty;
+        return false;
     }
-
 }
