@@ -79,16 +79,17 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
-    private I18NAuthoringSupport i18nAuthoringSupport;
     private SwitchableField field;
     private TextFieldDefinition textFieldDefinition;
     private BasicTextCodeFieldDefinition codeFieldDefinition;
+    private I18NAuthoringSupport i18nAuthoringSupport;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
@@ -106,7 +107,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void createFieldComponentTest() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -343,7 +344,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     private void createField() {
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         field = (SwitchableField) factory.createField();
     }

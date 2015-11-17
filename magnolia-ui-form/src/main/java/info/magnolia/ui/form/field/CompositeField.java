@@ -86,18 +86,19 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     @Override
     protected void initFields(PropertysetItem fieldValues) {
         root.removeAllComponents();
+
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             // Only propagate read only if the parent definition is read only
             if (definition.isReadOnly()) {
                 fieldDefinition.setReadOnly(true);
             }
-            Field<?> field = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
+            Field<?> compositeField = createLocalField(fieldDefinition, fieldValues.getItemProperty(fieldDefinition.getName()), false);
             if (fieldValues.getItemProperty(fieldDefinition.getName()) == null) {
-                fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
+                fieldValues.addItemProperty(fieldDefinition.getName(), compositeField.getPropertyDataSource());
             }
-            field.setWidth(100, Unit.PERCENTAGE);
+            compositeField.setWidth(100, Unit.PERCENTAGE);
 
-            root.addComponent(field);
+            root.addComponent(compositeField);
         }
     }
 
@@ -105,5 +106,4 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     public Class<? extends PropertysetItem> getType() {
         return PropertysetItem.class;
     }
-
 }
