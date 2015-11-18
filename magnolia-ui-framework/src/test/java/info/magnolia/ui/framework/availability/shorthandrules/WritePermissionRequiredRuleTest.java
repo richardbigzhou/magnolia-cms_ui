@@ -33,23 +33,18 @@
  */
 package info.magnolia.ui.framework.availability.shorthandrules;
 
-import static info.magnolia.cms.security.SecurityConstants.NODE_ROLES;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.Permission;
-import info.magnolia.cms.security.Realm;
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.SecuritySupportImpl;
-import info.magnolia.cms.security.UserManager;
-import info.magnolia.context.Context;
+import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
@@ -62,37 +57,35 @@ import org.junit.Test;
 /**
  * Tests for {@link WritePermissionRequiredRule}.
  */
-public class WritePermissionRequiredRuleTest extends RepositoryTestCase {
+public class WritePermissionRequiredRuleTest {
 
     private WritePermissionRequiredRule rule;
-    private Session webSiteSession;
+    private Session session;
     private AccessManager accessManager;
-    private UserManager userManager;
+    private User user;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
 
-        webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
+        session = new MockSession(RepositoryConstants.WEBSITE);
+        MockContext ctx = new MockContext();
+        ctx.addSession(RepositoryConstants.WEBSITE, session);
+        MgnlContext.setInstance(ctx);
+
         rule = new WritePermissionRequiredRule();
         rule.setWritePermissionRequired(true);
 
-        SecuritySupportImpl security = new SecuritySupportImpl();
-        ComponentsTestUtil.setInstance(SecuritySupport.class, security);
-        userManager = mock(UserManager.class);
-        security.addUserManager(Realm.REALM_ALL.getName(), userManager);
-
         accessManager = mock(AccessManager.class);
-        Context ctx = spy(MgnlContext.getInstance());
-        doReturn(accessManager).when(ctx).getAccessManager(anyString());
-        MgnlContext.setInstance(ctx);
+        ctx.setAccessManager(accessManager);
+
+        user = mock(User.class);
+        ctx.setUser(user);
     }
 
     @Test
     public void isAvailableForItemReturnsFalseIfNodeIsNotWritable() throws RepositoryException {
         // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node1", NodeTypes.Page.NAME);
+        Node node = session.getRootNode().addNode("node1", NodeTypes.Page.NAME);
         when(accessManager.isGranted("/node1", Permission.WRITE)).thenReturn(false);
 
         // WHEN
@@ -106,9 +99,8 @@ public class WritePermissionRequiredRuleTest extends RepositoryTestCase {
     @Test
     public void isAvailableForItemAlsoReturnsFalseForSuperuserIfNodeIsNotWritable() throws RepositoryException {
         // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node2", NodeTypes.Page.NAME);
-        node.addMixin(NodeTypes.Deleted.NAME);
-        when(userManager.hasAny(anyString(), matches("superuser"), matches(NODE_ROLES))).thenReturn(true);
+        Node node = session.getRootNode().addNode("node2", NodeTypes.Page.NAME);
+        when(user.hasRole(eq("superuser"))).thenReturn(true);
         when(accessManager.isGranted("/node2", Permission.WRITE)).thenReturn(false);
 
         // WHEN
@@ -122,8 +114,7 @@ public class WritePermissionRequiredRuleTest extends RepositoryTestCase {
     @Test
     public void isAvailableForItemReturnsTrueIfNodeIsWritable() throws RepositoryException {
         // GIVEN
-        Node node = webSiteSession.getRootNode().addNode("node3", NodeTypes.Page.NAME);
-        webSiteSession.save();
+        Node node = session.getRootNode().addNode("node3", NodeTypes.Page.NAME);
         when(accessManager.isGranted("/node3", Permission.WRITE)).thenReturn(true);
 
         // WHEN
