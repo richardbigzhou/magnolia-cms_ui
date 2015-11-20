@@ -35,7 +35,6 @@ package info.magnolia.ui.imageprovider;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.link.LinkUtil;
@@ -72,6 +71,12 @@ import com.vaadin.server.StreamResource.StreamSource;
  */
 public class DefaultImageProvider extends AbstractImageProvider {
 
+    /**
+     * @deprecated since 5.4.3, not used anymore; default icon for unknown type is provided by {@link AbstractImageProvider#resolveIconClassName(String)}.
+     */
+    @Deprecated
+    public final String ICON_CLASS_DEFAULT = "file";
+
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
 
     private final ImageProviderDefinition definition;
@@ -91,30 +96,43 @@ public class DefaultImageProvider extends AbstractImageProvider {
             Node node = jcrAdapter.getJcrItem();
             String workspace = jcrAdapter.getWorkspace();
 
-            if (node != null) {
-                try {
-                    Node imageNode = node.getNode(definition.getOriginalImageNodeName());
-
-                    String imageName;
-                    if (imageNode.hasProperty(FileProperties.PROPERTY_FILENAME)) {
-                        imageName = imageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString();
-                    } else {
-                        imageName = node.getName();
-                    }
-                    imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
-
-                    // Add cache fingerprint so that browser caches asset only until asset is modified.
-                    Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-                    imagePath = LinkUtil.addFingerprintToLink(imagePath, lastModified);
-
-                } catch (RepositoryException e) {
-                    log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
-                }
-            }
+            // TODO when deprecated method is removed, inline #getGeneratorImagePath logic here
+            imagePath = getGeneratorImagePath(workspace, node, generator);
         } else {
             log.debug("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
         }
 
+        return imagePath;
+    }
+
+    /**
+     * Resolves the image path from a JCR Node. This is kept for backwards compatibility.
+     *
+     * @deprecated Since 5.4.3, implement {@link #resolveImagePath(Item, String)} instead. Also consider extending {@link AbstractImageProvider}.
+     */
+    @Deprecated
+    protected String getGeneratorImagePath(String workspace, Node node, String generator) {
+        String imagePath = null;
+        if (node != null) {
+            try {
+                Node imageNode = node.getNode(definition.getOriginalImageNodeName());
+
+                String imageName;
+                if (imageNode.hasProperty(FileProperties.PROPERTY_FILENAME)) {
+                    imageName = imageNode.getProperty(FileProperties.PROPERTY_FILENAME).getString();
+                } else {
+                    imageName = node.getName();
+                }
+                imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
+
+                // Add cache fingerprint so that browser caches asset only until asset is modified.
+                Calendar lastModified = LastModified.getLastModified(node);
+                imagePath = LinkUtil.addFingerprintToLink(imagePath, lastModified);
+
+            } catch (RepositoryException e) {
+                log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
+            }
+        }
         return imagePath;
     }
 
