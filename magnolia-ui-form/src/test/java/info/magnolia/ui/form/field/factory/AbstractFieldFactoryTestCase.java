@@ -46,8 +46,11 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -76,6 +79,7 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     protected Node baseNode;
     protected Item baseItem;
     protected D definition;
+    protected MockComponentProvider componentProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -109,6 +113,9 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);
+        componentProvider = new MockComponentProvider();
+        componentProvider.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
+        componentProvider.setInstance(UiContext.class, mock(UiContext.class));
     }
 
     @After
