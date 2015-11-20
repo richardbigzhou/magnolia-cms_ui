@@ -172,7 +172,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
             remove(errorSection);
             errorSection = null;
         }
-        fieldWrapper.removeClassName("validation-hilight");
+        fieldWrapper.removeClassName("validation-highlight");
         errorAction.setVisible(false);
         if (helpDescription != null && !"".equals(helpDescription)) {
             helpButton.setVisible(true);

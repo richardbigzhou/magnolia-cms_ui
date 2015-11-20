@@ -42,6 +42,7 @@ import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.server.ErrorMessageUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,7 +57,10 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.server.AbstractErrorMessage.ContentMode;
+import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractOrderedLayout;
@@ -282,15 +286,17 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
-     * Get the error message, if any. Stops at the first error message found either in the custom multi-field itself or in one of its sub-fields.
+     * Get the error message, if any. Aggregates all errors for all fields in this custom multi field.
      */
     @Override
     public ErrorMessage getErrorMessage() {
+        List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
         ErrorMessage errorMessage = super.getErrorMessage();
         if (errorMessage != null) {
-            return errorMessage;
+            errors.add(errorMessage);
         }
         List<AbstractField<T>> fields = getFields(this, false);
+
         for (AbstractField<T> field : fields) {
             // skip non visible fields or validation will pass (see this class isValid() method) but an annoying error message will display just for a moment (e.g. before a form is closed).
             if (!field.isVisible()) {
@@ -298,10 +304,11 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
             }
             errorMessage = field.getErrorMessage();
             if (errorMessage != null) {
-                return errorMessage;
+                String errorAsString = getFormattedHtmlAggregatedErrorMessage(errorMessage, field.getCaption());
+                errors.add(new UserError(errorAsString, ContentMode.HTML, errorMessage.getErrorLevel()));
             }
         }
-        return errorMessage;
+        return errors.isEmpty() ? null : new CompositeErrorMessage(errors);
     }
 
     /**
@@ -325,4 +332,9 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         }
         return false;
     }
+
+    private String getFormattedHtmlAggregatedErrorMessage(final ErrorMessage message, final String caption) {
+        return (StringUtils.isNotBlank(caption) ? caption + ": " : "") + StringUtils.join(ErrorMessageUtil.getCausesMessages(message), ", ");
+    }
+
 }
