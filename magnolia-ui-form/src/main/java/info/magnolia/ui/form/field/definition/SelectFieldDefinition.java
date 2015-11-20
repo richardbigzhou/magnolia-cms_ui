@@ -42,7 +42,14 @@ import java.util.List;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 
 /**
- * Field definition for a select field.
+ * Basic definition class for various types of select fields.
+ * <p>
+ * Offers two distinct ways of populating selection options:
+ * <ul>
+ * <li>an explicit set of {@link SelectFieldOptionDefinition option definitions} can be provided via {@link #setOptions(List)}</li>
+ * <li><strong>if no explicit options are specified</strong> - option set can be resolved from a remote path in JCR repository by means of 
+ * {@link #setPath(String)}, {@link #setLabelProperty(String)} and {@link #setValueProperty(String)} methods</li>
+ * </ul>
  */
 public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 

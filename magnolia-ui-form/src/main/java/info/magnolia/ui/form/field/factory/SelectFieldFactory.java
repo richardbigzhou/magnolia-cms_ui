@@ -165,10 +165,11 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     /**
      * Get the list of SelectFieldOptionDefinition.
-     * If options is not empty, took the options defined in this field definition.
-     * Else, if path is not empty, build an options list based on the node refereed by
+     *
+     * If there is an explicitly configured option list in the definition - use it.
+     * Else, if path is not empty, build an option list based on the node referred to
      * the path and property value.
-     * Else nothing is define, return an empty option.
+     * Else, if nothing is defined, return an empty list.
      * <b>Default value and i18n of the Label is also part of the responsibility of this method.</b>
      */
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
@@ -319,7 +320,6 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                     }
                     res.add(option);
                 }
-                definition.setOptions(res);
             } catch (Exception e) {
                 log.warn("Not able to build options based on option node " + parent.toString(), e);
             }
