@@ -44,6 +44,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
@@ -55,6 +58,7 @@ import com.vaadin.ui.Field;
  */
 public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends AbstractFieldFactory<D, PropertysetItem> {
 
+    private static final Logger log = LoggerFactory.getLogger(CompositeFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
     private ComponentProvider componentProvider;
     private final I18NAuthoringSupport i18nAuthoringSupport;
@@ -80,6 +84,11 @@ public class CompositeFieldFactory<D extends CompositeFieldDefinition> extends A
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
+        // we do not support composite fields themselves to be required. Definition is overwritten here. Can't set it on the field after its creation cause otherwise the required asterisk is displayed.
+        if (definition.isRequired()) {
+            log.warn("Definition of the composite field named [{}] is configured as required which is not supported (it is possible to configure the sub-fields as required though).", definition.getName());
+            definition.setRequired(false);
+        }
         CompositeField field = new CompositeField(definition, fieldFactoryFactory, componentProvider, item, i18nAuthoringSupport);
         return field;
     }
