@@ -52,8 +52,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterators;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.ui.AbstractOrderedLayout;
@@ -198,7 +196,7 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
         // GIVEN
         createField();
 
-        // add text field with invalid email text
+        // add text field with valid email text
         TextField textField = new TextField();
         textField.addValidator(EMAIL_VALIDATOR);
         textField.setValue("foo@magnolia-cms.com");
@@ -215,12 +213,6 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
         factory = new MultiValueFieldFactory<MultiValueFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
         factory.setComponentProvider(componentProvider);
         multiField = (MultiField) factory.createField();
-    }
-
-    private <F extends Component> F getSubFieldWithType(final Class<F> fieldClass) {
-        AbstractOrderedLayout rootLayout = (AbstractOrderedLayout) multiField.iterator().next();
-        Iterator<Component> filteredIterator = Iterators.filter(rootLayout.iterator(), Predicates.instanceOf(fieldClass));
-        return filteredIterator.hasNext() ? (F) filteredIterator.next() : null;
     }
 
     private void addSubField(final Component component) {
