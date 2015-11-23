@@ -42,12 +42,14 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
@@ -65,6 +67,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     // - key : Field name. Should be the same as the related select value.<br>
     // - value : Related Field. Created based on the definition coming from the Fields Definition list.
     private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
+    private Field<?> selectField;
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, Item relatedFieldItem, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, fieldFactoryFactory, componentProvider, relatedFieldItem, i18nAuthoringSupport);
@@ -125,7 +128,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         }
 
         // add listener to the select field
-        Field<?> selectField = fieldMap.get(definition.getName());
+        selectField = fieldMap.get(definition.getName());
         selectField.setCaption(null);
         selectField.addValueChangeListener(createSelectValueChangeListener());
         selectField.addValueChangeListener(selectionListener);
@@ -176,6 +179,19 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     public Class<? extends PropertysetItem> getType() {
         return PropertysetItem.class;
+    }
+
+    /**
+     * A switchable field is empty when no choice has been made yet. This method is called by Vaadin framework to perform a basic isRequired check.
+     */
+    @Override
+    public boolean isEmpty() {
+        // Need to resort to this cause AbstractField.isEmpty() is not public in the version of Vaadin used here
+        String convertedValue = ObjectUtils.toString(((AbstractField<PropertysetItem>) selectField).getConvertedValue(), null);
+        if (StringUtils.isEmpty(convertedValue)) {
+            return true;
+        }
+        return false;
     }
 
 }
