@@ -173,10 +173,11 @@ button.btn-form-wide {
   display: block;
 }
 
-.validation-hilight {
+.validation-highlight {
     border: 2px solid $c70;
-    padding: 3px 0px;
     background-color: white;
+    margin-top: 3px;
+    margin-bottom:3px;
 }
 
 .v-form-field-section {
@@ -188,11 +189,6 @@ button.btn-form-wide {
     margin-bottom: 10px;
     padding-top: 5px;
     position: relative;
-}
-
-/*vaadin delivers error message in html form - here we make sure it is at least inlined*/
-.validation-message-inline span > div {
-  display: inline-block;
 }
 
 .validation-message,.help-message {
@@ -233,6 +229,7 @@ button.btn-form-wide {
     padding: 1px;
     vertical-align: middle;
     width: 20px;
+    float: left;
 }
 
 .action-jump-to-next-error {
