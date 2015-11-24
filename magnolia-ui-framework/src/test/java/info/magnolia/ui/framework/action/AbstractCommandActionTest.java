@@ -178,6 +178,7 @@ public class AbstractCommandActionTest {
         assertThat(params, hasEntry(Context.ATTRIBUTE_REPOSITORY, (Object) RepositoryConstants.WEBSITE));
         assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub"));
         assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_USERNAME, (Object) TEST_USER));
         assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
     }
 
@@ -197,6 +198,7 @@ public class AbstractCommandActionTest {
         assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub/property1"));
         // In case of property, the Identifier is the parent Node ID
         assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_USERNAME, (Object) TEST_USER));
         assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
     }
 
@@ -221,6 +223,7 @@ public class AbstractCommandActionTest {
         assertThat(params, hasEntry(Context.ATTRIBUTE_REPOSITORY, (Object) RepositoryConstants.WEBSITE));
         assertThat(params, hasEntry(Context.ATTRIBUTE_PATH, (Object) "/parent/sub"));
         assertThat(params, hasEntry(Context.ATTRIBUTE_UUID, (Object) "2"));
+        assertThat(params, hasEntry(Context.ATTRIBUTE_USERNAME, (Object) TEST_USER));
         assertThat(params, hasEntry(Context.ATTRIBUTE_REQUESTOR, (Object) TEST_USER));
     }
 
