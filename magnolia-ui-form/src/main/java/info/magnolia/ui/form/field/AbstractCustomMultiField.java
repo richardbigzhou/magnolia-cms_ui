@@ -87,7 +87,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     /** @deprecated since 5.3.5 (actually unused way before that). Besides, fields should use i18nAuthoringSupport for internationalization. */
     @Deprecated
     protected final I18nContentSupport i18nContentSupport = null;
-    private final I18NAuthoringSupport i18nAuthoringSupport;
 
     protected final ComponentProvider componentProvider;
     protected final D definition;
@@ -99,7 +98,6 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.relatedFieldItem = relatedFieldItem;
-        this.i18nAuthoringSupport = i18nAuthoringSupport;
     }
 
     /**
@@ -230,11 +228,11 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     @SuppressWarnings("unchecked")
     protected List<AbstractField<T>> getFields(HasComponents root, boolean onlyValid) {
         Iterator<Component> it = root.iterator();
-        List<AbstractField<T>> fields = new ArrayList<AbstractField<T>>();
+        List<AbstractField<T>> fields = new ArrayList<>();
         while (it.hasNext()) {
             Component c = it.next();
             if (c instanceof AbstractField) {
-                if (!onlyValid || (onlyValid && ((AbstractField<T>) c).isValid())) {
+                if (!onlyValid || (((AbstractField<T>) c).isValid())) {
                     fields.add((AbstractField<T>) c);
                 }
             } else if (c instanceof HasComponents) {
@@ -254,18 +252,16 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
             return false;
         }
 
-        boolean isValid = true;
         List<AbstractField<T>> fields = getFields(this, false);
         for (AbstractField<T> field : fields) {
             if (!field.isVisible()) {
                 continue;
             }
-            isValid = field.isValid();
-            if (!isValid) {
-                return isValid;
+            if (!field.isValid()) {
+                return false;
             }
         }
-        return isValid;
+        return true;
     }
 
     /**
