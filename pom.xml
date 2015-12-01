@@ -7,7 +7,7 @@
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.4.3-MGNLUI-3656-SNAPSHOT</version>
+  <version>5.4.3-MGNLUI-3656</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
@@ -30,7 +30,7 @@
     <connection>scm:git:ssh://git@git.magnolia-cms.com/PLATFORM/ui</connection>
     <developerConnection>scm:git:ssh://git@git.magnolia-cms.com/PLATFORM/ui</developerConnection>
     <url>https://git.magnolia-cms.com/projects/PLATFORM/repos/ui</url>
-    <tag>magnolia-ui-5.4.3</tag>
+    <tag>magnolia-ui-5.4.3-MGNLUI-3656</tag>
   </scm>
 
   <modules>
