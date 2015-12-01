@@ -7,7 +7,7 @@
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.4.3</version>
+  <version>5.4.3-MGNLUI-3656-SNAPSHOT</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
@@ -21,6 +21,9 @@
     <imagingVersion>3.2</imagingVersion>
     <vaadinVersion>7.4.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
+    <!-- This project is in "maintenance mode". See http://www.magnolia-cms.com/services/support/maintenance-policy.html for details -->
+    <distribRepoPrefix>magnolia.public.maintenance</distribRepoPrefix>
+    <nexusStagingProfileId>6617f277f4ee2</nexusStagingProfileId>
   </properties>
 
   <scm>
