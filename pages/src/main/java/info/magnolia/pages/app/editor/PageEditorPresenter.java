@@ -43,10 +43,13 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,6 +57,8 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.CaseFormat;
 
 /**
  * Presenter for the server side {@link PageEditorView}.
@@ -110,6 +115,22 @@ public class PageEditorPresenter implements PageEditorListener {
     public void onElementSelect(AbstractElement selectedElement) {
         this.selectedElement = selectedElement;
         subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
+    }
+
+    @Override
+    public void onError(ErrorType errorType, String... parameters) {
+        if (errorType == null) {
+            throw new IllegalArgumentException("ErrorType must be one of ErrorType.values().");
+        }
+
+        String key = String.format("pages.templateErrorAlert.%s.message", CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, errorType.name()));
+        String message = i18n.translate(key, parameters);
+        subAppContext.openAlert(MessageStyleTypeEnum.WARNING, i18n.translate("pages.templateErrorAlert.title"), message, i18n.translate("button.ok"), new AlertCallback() {
+            @Override
+            public void onOk() {
+                // Do nothing.
+            }
+        });
     }
 
     @Override

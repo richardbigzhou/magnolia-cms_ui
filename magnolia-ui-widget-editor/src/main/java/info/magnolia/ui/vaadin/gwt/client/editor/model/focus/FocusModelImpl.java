@@ -63,7 +63,6 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void selectElement(Element element) {
 
-
         MgnlElement mgnlElement = model.getMgnlElement(element);
 
         if (model.isMoving()) {
@@ -235,7 +234,9 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void select(MgnlElement mgnlElement) {
         mgnlElement = (mgnlElement != null) ? mgnlElement : model.getRootPage();
-        eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
+        if (mgnlElement != null) {
+            eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
+        }
     }
 
 }

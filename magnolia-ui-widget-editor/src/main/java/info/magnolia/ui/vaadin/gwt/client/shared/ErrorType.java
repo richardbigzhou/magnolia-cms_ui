@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.rpc;
-
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
-
-import com.vaadin.shared.communication.ServerRpc;
+package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * PageEditorServerRpc.
+ * This type uses for determining the error on page editor.
  */
-public interface PageEditorServerRpc extends ServerRpc {
-
-    void selectPage(PageElement element);
-
-    void selectArea(AreaElement element);
-
-    void selectComponent(ComponentElement element);
-
-    void editComponent(ComponentElement element);
-
-    void editArea(AreaElement element);
-
-    void newArea(AreaElement areaElement);
-
-    void newComponent(AreaElement areaElement);
-
-    void sortComponent(AreaElement areaElement);
-
-    void startMoveComponent();
-
-    void stopMoveComponent();
-
-    void onError(ErrorType errorType, String... parameters);
+public enum ErrorType {
+    TAG_OUTSIDE_DOCUMENT,
+    EXPECTED_PAGE_TAG,
+    EXPECTED_AREA_TAG,
+    UNMATCHED_CLOSING_TAG
 }

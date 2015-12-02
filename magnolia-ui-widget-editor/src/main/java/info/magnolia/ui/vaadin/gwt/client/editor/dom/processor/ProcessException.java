@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.rpc;
+package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
-
-import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * PageEditorServerRpc.
+ * Thrown to indicate that processing a comment has problems.
  */
-public interface PageEditorServerRpc extends ServerRpc {
+public class ProcessException extends Exception {
 
-    void selectPage(PageElement element);
+    private ErrorType errorType;
+    private String tagName;
 
-    void selectArea(AreaElement element);
+    public ProcessException() {
+    }
 
-    void selectComponent(ComponentElement element);
+    public ProcessException(ErrorType errorType, String tagName) {
+        this.tagName = tagName;
+        this.errorType = errorType;
+    }
 
-    void editComponent(ComponentElement element);
+    public String getTagName() {
+        return tagName;
+    }
 
-    void editArea(AreaElement element);
-
-    void newArea(AreaElement areaElement);
-
-    void newComponent(AreaElement areaElement);
-
-    void sortComponent(AreaElement areaElement);
-
-    void startMoveComponent();
-
-    void stopMoveComponent();
-
-    void onError(ErrorType errorType, String... parameters);
+    public ErrorType getErrorType() {
+        return errorType;
+    }
 }

@@ -39,16 +39,20 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * Processor for comment elements. This processor builds a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode}-tree
  * based on {@link Comment} elements in the DOM structure. <br />
@@ -58,7 +62,7 @@ import com.google.gwt.regexp.shared.RegExp;
  */
 public class CommentProcessor {
 
-    public MgnlElement process(Model model, EventBus eventBus, Node node, MgnlElement currentElement) throws IllegalArgumentException {
+    public MgnlElement process(Model model, EventBus eventBus, Node node, MgnlElement currentElement) throws ProcessException {
 
         CMSComment comment = getCmsComment(node);
 
@@ -66,30 +70,38 @@ public class CommentProcessor {
         MgnlElement mgnlElement = currentElement;
 
         if (!comment.isClosing()) {
+            // just validate the open comment of area and component
+            validateAreaAndComponentComments(node, comment);
 
-            try {
+            mgnlElement = createMgnlElement(comment, currentElement, eventBus);
+            mgnlElement.setStartComment((Element) node.cast());
 
-                mgnlElement = createMgnlElement(comment, currentElement, eventBus);
-                mgnlElement.setStartComment((Element) node.cast());
-
-                if (mgnlElement.getParent() == null) {
-                    model.setRootPage((MgnlPage) mgnlElement);
-                } else if (mgnlElement.getParent().asMgnlElement().isPage()) {
-                    model.addRootArea((MgnlArea) mgnlElement);
-                    mgnlElement.getParent().getChildren().add(mgnlElement);
-                } else {
-                    mgnlElement.getParent().getChildren().add(mgnlElement);
+            // validate and set page element
+            if (mgnlElement.getParent() == null) {
+                if (!(mgnlElement instanceof MgnlPage)) {
+                    throw new ProcessException(ErrorType.EXPECTED_PAGE_TAG, comment.getTagName());
                 }
+                model.setRootPage((MgnlPage) mgnlElement);
 
-            } catch (IllegalArgumentException e) {
-                GWT.log("Not MgnlElement, skipping: " + e.toString());
+            } else {
+                // validate and add area and component elements
+                if (mgnlElement.getParent().asMgnlElement().isPage()) {
+                    if (!(mgnlElement instanceof MgnlArea)) {
+                        throw new ProcessException(ErrorType.EXPECTED_AREA_TAG, comment.getTagName());
+                    }
+                    model.addRootArea((MgnlArea) mgnlElement);
+                }
+                mgnlElement.getParent().getChildren().add(mgnlElement);
             }
-
         }
         // the cms:page tag should span throughout the page, but doesn't: kind of a hack.
-        else if (currentElement != null && !currentElement.isPage()) {
-            currentElement.setEndComment((Element) node.cast());
-            mgnlElement = currentElement.getParent().asMgnlElement();
+        else if (!comment.getTagName().equals(Model.CMS_PAGE)) {
+            if (currentElement != null && !currentElement.isPage()) {
+                currentElement.setEndComment((Element) node.cast());
+                mgnlElement = currentElement.getParent().asMgnlElement();
+            } else {
+                throw new ProcessException(ErrorType.UNMATCHED_CLOSING_TAG, comment.getTagName());
+            }
         }
 
         return mgnlElement;
@@ -129,11 +141,22 @@ public class CommentProcessor {
             cmsComment.setClosing(isClosing);
 
         } else {
-
             throw new IllegalArgumentException("Tagname must start with +'" + Model.CMS_TAG + "'.");
         }
         return cmsComment;
+    }
 
+    /**
+     * Check if the given <code>cms.area, cms.component</code> is in <code>head/body</code> tag or not.
+     */
+    private void validateAreaAndComponentComments(Node node, CMSComment comment) throws ProcessException {
+        String tagName = comment.getTagName();
+        boolean isAreaOrComponentTag = tagName.startsWith(Model.CMS_AREA) || tagName.startsWith(Model.CMS_COMPONENT);
+        BodyElement body = BodyElement.as(node.getOwnerDocument().getElementsByTagName("body").getItem(0));
+        HeadElement head = HeadElement.as(node.getOwnerDocument().getElementsByTagName("head").getItem(0));
+        if (isAreaOrComponentTag && !(head.isOrHasChild(node) || body.isOrHasChild(node))) {
+            throw new ProcessException(ErrorType.TAG_OUTSIDE_DOCUMENT, tagName);
+        }
     }
 
     /**

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.editor;
 
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
 
 /**
  * Listener interface for handling events coming from the client side.
@@ -57,4 +58,6 @@ public interface PageEditorListener {
     void onElementSelect(AbstractElement nodeSelection);
 
     void onAction(String actionName, Object... args);
+
+    void onError(ErrorType errorType, String... parameters);
 }

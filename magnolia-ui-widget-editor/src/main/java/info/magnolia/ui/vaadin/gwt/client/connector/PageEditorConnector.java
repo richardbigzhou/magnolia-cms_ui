@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlEleme
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ProcessException;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStartMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStopMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEvent;
@@ -286,7 +287,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     public void selectElement(Element element) {
         final MgnlComponent currentlySelected = model.getSelectedComponent();
         final MgnlElement elementToSelect = model.getMgnlElement(element);
-        final MgnlComponent componentToPreserve = elementToSelect.isComponent() ? (MgnlComponent) elementToSelect : currentlySelected;
+        final MgnlComponent componentToPreserve = (elementToSelect != null && elementToSelect.isComponent()) ? (MgnlComponent) elementToSelect : currentlySelected;
 
         ElementScrollPositionPreserver scrollPositionPreserver = null;
         if (componentToPreserve != null) {
@@ -302,11 +303,17 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     }
 
     private void process(final Document document) {
-        injectEditorStyles(document);
-        long startTime = System.currentTimeMillis();
-        processDocument(document.getDocumentElement(), null);
-        processMgnlElements();
-        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
+        try {
+            injectEditorStyles(document);
+            long startTime = System.currentTimeMillis();
+            processDocument(document, null);
+            processMgnlElements();
+            GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
+        } catch (ProcessException e) {
+            rpc.onError(e.getErrorType(), e.getTagName());
+            GWT.log("Error while processing comment: " + e.getTagName() + " due to " + e.getErrorType());
+            consoleLog("Error while processing comment: " + e.getTagName() + " due to " + e.getErrorType()); // log also into browser console
+        }
     }
 
     private void injectEditorStyles(final Document document) {
@@ -318,7 +325,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         head.insertFirst(cssLink);
     }
 
-    private void processDocument(Node node, MgnlElement mgnlElement) {
+    private void processDocument(Node node, MgnlElement mgnlElement) throws ProcessException {
         if (mgnlElement == null && model.getRootPage() != null) {
             mgnlElement = model.getRootPage();
         }
@@ -327,6 +334,8 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
                 try {
                     mgnlElement = commentProcessor.process(model, eventBus, childNode, mgnlElement);
+                } catch (ProcessException e) {
+                    throw e;
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
@@ -338,13 +347,16 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 elementProcessor.process(element, mgnlElement, getState().parameters.isPreview());
             }
             processDocument(childNode, mgnlElement);
-
         }
-
     }
 
     private void processMgnlElements() {
         CmsNode root = model.getRootPage();
+        if (model.getRootPage() == null) {
+            log.warning("Could not find any Magnolia cms:page tag, this might be a static page; not injecting page-editor bars.");
+            return;
+        }
+
         List<CmsNode> elements = root.getDescendants();
         elements.add(root);
         for (CmsNode element : elements) {
