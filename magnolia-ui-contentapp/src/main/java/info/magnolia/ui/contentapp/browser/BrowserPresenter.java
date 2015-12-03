@@ -158,21 +158,27 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId())) {
+                Object itemId = event.getItemId();
+                if (contentConnector.canHandleItem(itemId)) {
 
                     workbenchPresenter.refresh();
 
-                    List<Object> existingSelectedItemIds = new ArrayList<Object>(getSelectedItemIds());
-                    Iterator<Object> it = existingSelectedItemIds.iterator();
-                    while (it.hasNext()) {
-                        if (!verifyItemExists(it.next())) {
-                            it.remove();
+                    List<Object> existingSelectedItemIds = new ArrayList<Object>();
+                    if (verifyItemExists(itemId)) {
+                        existingSelectedItemIds.add(itemId);
+                    } else {
+                        existingSelectedItemIds.addAll(getSelectedItemIds());
+                        Iterator<Object> it = existingSelectedItemIds.iterator();
+                        while (it.hasNext()) {
+                            if (!verifyItemExists(it.next())) {
+                                it.remove();
+                            }
                         }
                     }
                     workbenchPresenter.select(existingSelectedItemIds);
 
                     if (event.isItemContentChanged()) {
-                        workbenchPresenter.expand(event.getItemId());
+                        workbenchPresenter.expand(itemId);
                     }
 
                     // use just the first selected item to show the preview image
