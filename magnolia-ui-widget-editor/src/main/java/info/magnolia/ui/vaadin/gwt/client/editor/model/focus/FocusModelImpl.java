@@ -103,7 +103,7 @@ public class FocusModelImpl implements FocusModel {
         for (MgnlArea root : model.getRootAreas()) {
             root.setVisible(true);
 
-            if(root.getComponents().isEmpty()) {
+            if (root.getComponents().isEmpty()) {
                 root.setPlaceHolderVisible(true);
             }
         }
@@ -124,7 +124,7 @@ public class FocusModelImpl implements FocusModel {
             return;
         }
         if (currentComponent != null) {
-                currentComponent.removeFocus();
+            currentComponent.removeFocus();
         }
         if (component != null) {
             component.setFocus();

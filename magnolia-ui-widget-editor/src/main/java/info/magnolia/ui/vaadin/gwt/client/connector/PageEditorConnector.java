@@ -59,11 +59,11 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEventHandler
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.jsni.scroll.ElementScrollPositionPreserver;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.ModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
-import info.magnolia.ui.vaadin.gwt.client.editor.jsni.scroll.ElementScrollPositionPreserver;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
@@ -176,8 +176,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 if (!getState().parameters.isPreview()) {
                     view.initDomEventListeners();
                     focusModel.init();
-                }
-                else {
+                } else {
                     focusModel.select(model.getRootPage());
                 }
             }
@@ -205,11 +204,9 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 AbstractElement element = selectElementEvent.getElement();
                 if (element instanceof PageElement) {
                     rpc.selectPage((PageElement) selectElementEvent.getElement());
-                }
-                else if (element instanceof AreaElement) {
+                } else if (element instanceof AreaElement) {
                     rpc.selectArea((AreaElement) selectElementEvent.getElement());
-                }
-                else if (element instanceof ComponentElement) {
+                } else if (element instanceof ComponentElement) {
                     rpc.selectComponent((ComponentElement) selectElementEvent.getElement());
                 }
                 view.resetScrollTop();
@@ -289,7 +286,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     public void selectElement(Element element) {
         final MgnlComponent currentlySelected = model.getSelectedComponent();
         final MgnlElement elementToSelect = model.getMgnlElement(element);
-        final MgnlComponent componentToPreserve = elementToSelect.isComponent() ? (MgnlComponent)elementToSelect : currentlySelected;
+        final MgnlComponent componentToPreserve = elementToSelect.isComponent() ? (MgnlComponent) elementToSelect : currentlySelected;
 
         ElementScrollPositionPreserver scrollPositionPreserver = null;
         if (componentToPreserve != null) {
@@ -304,6 +301,14 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         }
     }
 
+    private void process(final Document document) {
+        injectEditorStyles(document);
+        long startTime = System.currentTimeMillis();
+        processDocument(document.getDocumentElement(), null);
+        processMgnlElements();
+        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
+    }
+
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
@@ -311,14 +316,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         cssLink.setRel("stylesheet");
         cssLink.setHref(getState().parameters.getContextPath() + PAGE_EDITOR_CSS);
         head.insertFirst(cssLink);
-    }
-
-    private void process(final Document document) {
-        injectEditorStyles(document);
-        long startTime = System.currentTimeMillis();
-        processDocument(document.getDocumentElement(), null);
-        processMgnlElements();
-        GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
@@ -368,6 +365,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
 
     void consoleLog(String message) {
         log.info("PageEditor: " + message);
-    };
+    }
 
 }
