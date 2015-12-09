@@ -72,6 +72,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.Resource;
@@ -158,21 +160,27 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId())) {
+                Object itemId = event.getItemId();
+                if (contentConnector.canHandleItem(itemId)) {
 
                     workbenchPresenter.refresh();
-
-                    List<Object> existingSelectedItemIds = new ArrayList<Object>(getSelectedItemIds());
-                    Iterator<Object> it = existingSelectedItemIds.iterator();
-                    while (it.hasNext()) {
-                        if (!verifyItemExists(it.next())) {
-                            it.remove();
-                        }
+                    // if item passed in the event exists, mark it as selected (see MGNLUI-2919)
+                    // otherwise preserve previous selection
+                    List<Object> existingSelectedItemIds = new ArrayList<Object>();
+                    if (verifyItemExists(itemId)) {
+                        existingSelectedItemIds.add(itemId);
+                    } else {
+                        existingSelectedItemIds = FluentIterable.from(getSelectedItemIds()).filter(new Predicate<Object>() {
+                            @Override
+                            public boolean apply(final Object input) {
+                                return verifyItemExists(input);
+                            }
+                        }).toList();
                     }
                     workbenchPresenter.select(existingSelectedItemIds);
 
                     if (event.isItemContentChanged()) {
-                        workbenchPresenter.expand(event.getItemId());
+                        workbenchPresenter.expand(itemId);
                     }
 
                     // use just the first selected item to show the preview image

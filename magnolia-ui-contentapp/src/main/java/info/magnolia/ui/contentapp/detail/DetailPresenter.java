@@ -234,7 +234,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void onSuccess(String actionName) {
-        eventBus.fireEvent(new ContentChangedEvent(itemId));
+        eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(item)));
         // initDetailView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }

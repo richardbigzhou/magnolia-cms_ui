@@ -87,7 +87,6 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
 
         }
 
-        final Object itemId = contentConnector.getItemId(itemToEdit);
         final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
         if(formDialogPresenter == null){
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
@@ -97,7 +96,7 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemId));
+                eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(itemToEdit)));
                 formDialogPresenter.closeDialog();
             }
 

@@ -133,9 +133,6 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
                 child.applyChanges();
             }
         }
-
-        // Update itemId to new node
-        setItemId(JcrItemUtil.getItemId(node));
         // Update parent
         if (!appliedChanges) {
             setParent(new JcrNodeAdapter(parent));
@@ -143,19 +140,25 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
 
         appliedChanges = true;
 
+        // Update itemId to new node
+        setItemId(JcrItemUtil.getItemId(node));
         return node;
     }
 
     @Override
     public void setNodeName(String nodeName) {
         super.setNodeName(nodeName);
-        ((JcrNewNodeItemId)getItemId()).setName(nodeName);
+        if (getItemId() instanceof JcrNewNodeItemId) {
+            ((JcrNewNodeItemId) getItemId()).setName(nodeName);
+        }
     }
 
     @Override
     public void setItemId(JcrItemId itemId) {
-        JcrItemId actualItemId = itemId;
-        if (!(actualItemId instanceof JcrNewNodeItemId)) {
+        JcrItemId actualItemId;
+        if (appliedChanges) {
+            actualItemId = new JcrNodeItemId(itemId.getUuid(), itemId.getWorkspace());
+        } else {
             actualItemId = new JcrNewNodeItemId(itemId.getUuid(), itemId.getWorkspace(), getPrimaryNodeTypeName(), getNodeName());
         }
         super.setItemId(actualItemId);
