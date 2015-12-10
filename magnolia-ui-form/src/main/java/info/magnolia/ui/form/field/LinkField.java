@@ -60,21 +60,10 @@ import com.vaadin.ui.VerticalLayout;
  * For example, display can be the Item path and value stored is the identifier of the Item.
  */
 public class LinkField extends CustomField<String> {
-
-    /**
-     * Normal {@link TextField} only exposing the fireValueChange(... that is by default protected.
-     */
-    private final class LinkFieldTextBox extends TextField {
-        @Override
-        public void fireValueChange(boolean repaintIsNotNeeded) {
-            super.fireValueChange(repaintIsNotNeeded);
-        }
-    }
-
     // Define layout and component
     private final VerticalLayout rootLayout = new VerticalLayout();
     private final HorizontalLayout linkLayout = new HorizontalLayout();
-    private final LinkFieldTextBox textField = new LinkFieldTextBox();
+    private final TextField textField = new TextField();
     private final Button selectButton = new NativeButton();
 
     private final IdentifierToPathConverter converter;
@@ -216,12 +205,12 @@ public class LinkField extends CustomField<String> {
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 String itemReference = event.getProperty().getValue().toString();
                 contentPreviewComponent.onValueChange(itemReference);
+                contentPreviewComponent.setVisible(StringUtils.isNotBlank(itemReference));
             }
         });
+        contentPreviewComponent.onValueChange(textField.getValue());
+        contentPreviewComponent.setVisible(StringUtils.isNotBlank(textField.getValue()));
         rootLayout.addComponentAsFirst(contentPreviewComponent);
-        if (StringUtils.isNotBlank(textField.getValue())) {
-            textField.fireValueChange(false);
-        }
     }
 
     /**
