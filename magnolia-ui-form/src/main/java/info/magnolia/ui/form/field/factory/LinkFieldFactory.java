@@ -38,6 +38,8 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.LinkField;
+import info.magnolia.ui.form.field.component.ContentPreviewComponent;
+import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
@@ -52,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Field;
@@ -87,12 +90,35 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
 
     @Override
     protected Field<String> createFieldComponent() {
-        linkField = new LinkField(definition, componentProvider);
+        linkField = new LinkField();
         // Set Caption
         linkField.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
         linkField.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
         // Add a callback listener on the select button
         linkField.getSelectButton().addClickListener(createButtonClickListener());
+        linkField.setFieldEditable(definition.isFieldEditable());
+
+        IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
+        if (converter != null) {
+            converter.setWorkspaceName(definition.getTargetWorkspace());
+        }
+        linkField.setTextFieldConverter(converter);
+
+        // Register the content preview if it's defined.
+        if (definition.getContentPreviewDefinition() != null && definition.getContentPreviewDefinition().getContentPreviewClass() != null) {
+            final ContentPreviewComponent<?> contentPreviewComponent = componentProvider.newInstance(definition.getContentPreviewDefinition().getContentPreviewClass(), definition.getTargetWorkspace());
+            linkField.getTextField().addValueChangeListener(new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                    String itemReference = event.getProperty().getValue().toString();
+                    contentPreviewComponent.onValueChange(itemReference);
+                    contentPreviewComponent.setVisible(StringUtils.isNotBlank(itemReference));
+                }
+            });
+            contentPreviewComponent.onValueChange(linkField.getValue());
+            contentPreviewComponent.setVisible(StringUtils.isNotBlank(linkField.getValue()));
+            linkField.setContentPreview(contentPreviewComponent);
+        }
         return linkField;
     }
 
