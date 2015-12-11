@@ -66,6 +66,7 @@ public class BrowserLocationTest {
 
     @Test
     public void testToString() {
+        assertEquals("app:someContentApp:browser", new BrowserLocation("someContentApp", "browser", null).toString());
         assertEquals("app:someContentApp:browser;/some/node:treeview", new BrowserLocation("someContentApp", "browser", "/some/node:treeview").toString());
         assertEquals("app:someContentApp;/some/node:searchview:hideandseek", new BrowserLocation("someContentApp", "", "/some/node:searchview:hideandseek").toString());
         assertEquals("app:someContentApp;/some/node:treeview", new BrowserLocation("someContentApp", "", "/some/node:treeview").toString());
@@ -205,7 +206,7 @@ public class BrowserLocationTest {
     }
 
     @Test
-         public void testGetNullViewType() {
+    public void testGetNullViewType() {
         // GIVEN
         BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:");
 
