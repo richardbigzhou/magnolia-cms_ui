@@ -101,12 +101,11 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
                 return;
             }
 
-            final Item item = contentConnector.getItem(itemId);
-            formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+            formDialogPresenter.start(contentConnector.getItem(itemId), getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(item), true));
+                    eventBus.fireEvent(new ContentChangedEvent(itemId, true));
                     formDialogPresenter.closeDialog();
                 }
 
