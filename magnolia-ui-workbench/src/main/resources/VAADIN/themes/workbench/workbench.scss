@@ -10,9 +10,17 @@
       height: 47px;
     }
 
+    // Make any tool component/layout to be moderate about the space they consume by default.
+    // this is mostly related to CSSLayouts which override a standard Vaadin display value for layouts and
+    // set it to 'block' - which makes the tool (div) to stretch the content regardless of expand ratios and
+    // 'undefined' sizes set from the server-side.
+    .toolbar .v-slot > * {
+      display: inline-block;
+    }
+
     div.v-csslayout-view-modes {
       display: inline-block;
-      float: left;
+      white-space: nowrap;
       padding-left: 21px;
       padding-bottom: 20px;
     }
@@ -71,13 +79,12 @@
     }
 
   .searchbox {
-      float: right;
-      position:relative;
       overflow:visible;
+      // Searchbox contains some absolutely positioned elements - make sure they'd appear relatively to the box itself
+      position: relative;
     }
 
     .v-textfield-searchfield {
-      float: right;
       width: 254px;
       height: 29px !important;
       margin: 0;
@@ -90,7 +97,7 @@
       background-color: $c80;
 
       &.v-textfield-prompt {
-    background-color: $c16;
+        background-color: $c16;
         color: $c11;
       }
     }
@@ -113,11 +120,10 @@
       &:hover { color: $c10 !important; }
       &:active { color: $c12 !important; }
     }
-    .v-textfield-prompt ~ .searchbox-clearbutton
-    {
+
+    .v-textfield-prompt ~ .searchbox-clearbutton {
       display:none;
     }
-
 
     .searchbox-icon {
       position: absolute;
@@ -131,8 +137,8 @@
       width: 15px;
       height: 15px;
     }
-    .v-textfield-prompt ~ .searchbox-icon
-    {
+
+    .v-textfield-prompt ~ .searchbox-icon {
       color: $c11;
     }
 
