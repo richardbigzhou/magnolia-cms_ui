@@ -71,7 +71,7 @@ public interface WorkbenchView extends View {
     /**
      * Use this method to add content tools.
      */
-    public void addContentTool(View view);
+    void addContentTool(View view);
 
     void setViewType(String type);
 

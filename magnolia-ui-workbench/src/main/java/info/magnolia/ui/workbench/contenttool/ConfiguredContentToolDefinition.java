@@ -40,6 +40,8 @@ public class ConfiguredContentToolDefinition implements ContentToolDefinition {
 
     private Class<? extends ContentToolPresenter> presenterClass;
     private boolean enabled = true;
+    private Alignment alignment = Alignment.RIGHT;
+    private float expandRatio = 1;
 
     public void setPresenterClass(Class<? extends ContentToolPresenter> presenterClass) {
         this.presenterClass = presenterClass;
@@ -59,4 +61,19 @@ public class ConfiguredContentToolDefinition implements ContentToolDefinition {
         this.enabled = enabled;
     }
 
+    public Alignment getAlignment() {
+        return this.alignment;
+    }
+
+    public float getExpandRatio() {
+        return this.expandRatio;
+    }
+
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+    }
+
+    public void setExpandRatio(float expandRatio) {
+        this.expandRatio = expandRatio;
+    }
 }

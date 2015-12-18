@@ -39,7 +39,16 @@ package info.magnolia.ui.workbench.contenttool;
  */
 public interface ContentToolDefinition {
 
-    public Class<? extends ContentToolPresenter> getPresenterClass();
+    /**
+     * Possible options of a content tool alignment.
+     */
+    enum Alignment {
+        RIGHT,
+        LEFT,
+        CENTER
+    }
 
-    public boolean isEnabled();
+    Class<? extends ContentToolPresenter> getPresenterClass();
+
+    boolean isEnabled();
 }

@@ -38,6 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.workbench.contenttool.ConfiguredContentToolDefinition;
 import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
 import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
 import info.magnolia.ui.workbench.contenttool.search.SearchContentToolPresenter;
@@ -134,12 +135,17 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         // add content tools
         final List<ContentToolDefinition> contentTools = this.workbenchDefinition.getContentTools();
-        for (ContentToolDefinition entry : contentTools) {
-            Class<? extends ContentToolPresenter> presenterClass = entry.getPresenterClass();
+        for (ContentToolDefinition toolDefinition : contentTools) {
+            Class<? extends ContentToolPresenter> presenterClass = toolDefinition.getPresenterClass();
             if (presenterClass != null) {
-                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, entry, eventBus, this);
+                ContentToolPresenter contentToolPresenter = componentProvider.newInstance(presenterClass, toolDefinition, eventBus, this);
                 View contentToolView = contentToolPresenter.start();
-                view.addContentTool(contentToolView);
+
+                if ((toolDefinition instanceof ConfiguredContentToolDefinition) && (view instanceof WorkbenchViewImpl)) {
+                    final ConfiguredContentToolDefinition configuredContentToolDefinition = (ConfiguredContentToolDefinition) toolDefinition;
+                    // the following methods should become the parts of WorkbenchView/ContentTool inetrfaces as a part of MGNLUI-3709
+                    ((WorkbenchViewImpl)view).addContentTool(contentToolView, configuredContentToolDefinition.getAlignment(), configuredContentToolDefinition.getExpandRatio());
+                }
             }
         }
 
@@ -177,7 +183,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     protected void addSearchContentTool() {
         SearchContentToolPresenter searchPresenter = componentProvider.newInstance(SearchContentToolPresenter.class, this, eventBus);
         View searchView = searchPresenter.start();
-        this.view.addContentTool(searchView);
+        ((WorkbenchViewImpl) this.view).addContentTool(searchView, ContentToolDefinition.Alignment.RIGHT, 0);
     }
 
 
