@@ -6,9 +6,6 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>6c6c0e05-0db1-4a95-9e7d-7060a2599f9c</sv:value>
   </sv:property>
-  <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-04-26T11:51:59.806+02:00</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -34,14 +31,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>08e32ca4-5352-4b1b-8f4e-1bf1db9d6812</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.TextFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.808+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.TextFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -69,14 +63,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>764df6fd-864d-4282-98dd-e9b85ca1b1e7</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.DateFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.DateFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.809+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.DateFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -104,14 +95,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>61c2384c-e385-4f57-947e-c8eee4bd4673</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.SelectFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.SelectFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.811+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.SelectFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -139,14 +127,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>b7bbb718-ddcb-43a3-9f58-2187b0221dbf</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.OptionGroupFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.813+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.OptionGroupFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -174,14 +159,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>b31d17f6-ae3f-4c49-841a-cf1e827fda02</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.LinkFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.LinkFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.816+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.LinkFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -209,14 +191,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>831b34b8-7a64-4899-a7a3-263eaed46f69</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.817+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -244,14 +223,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>d8a7d0c3-12dc-45b8-bfbc-7822a2ee3523</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.RichTextFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.RichTextFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.819+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.dam.app.ui.field.factory.AssetsEnabledRichTextFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -263,7 +239,7 @@
       <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2012-08-21T13:39:09.948+02:00</sv:value>
+      <sv:value>2015-12-03T16:22:19.500+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
@@ -279,14 +255,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>214965fd-8e2a-493e-8eb7-078040884e7a</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.StaticFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.StaticFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.822+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.StaticFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -314,14 +287,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>b0548e09-69d4-42ba-9713-744ff9b88e95</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.CheckBoxFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.CheckboxFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.824+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.CheckBoxFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -349,14 +319,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>7d7c0b31-aa0e-476d-9a02-1e505b3c9304</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.HiddenFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.HiddenFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.826+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.HiddenFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -384,14 +351,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>048f56f2-76bc-4a66-a542-ea7b23847350</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.PasswordFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.PasswordFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.828+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.PasswordFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -419,14 +383,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>a2058d45-556d-4252-8e86-02260388c629</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.830+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -454,14 +415,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>0f4c5a98-c64f-4c07-9ec5-695cfed55aab</sv:value>
     </sv:property>
-    <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.BasicUploadFieldFactory</sv:value>
-    </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-26T11:51:59.832+02:00</sv:value>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.BasicUploadFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -517,7 +475,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="basicTextCodeField" >
+  <sv:node sv:name="basicTextCodeField">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -555,7 +513,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="switchableField" >
+  <sv:node sv:name="switchableField">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -593,9 +551,9 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="multiField" >
-   <sv:property sv:name="jcr:primaryType" sv:type="Name">
-    <sv:value>mgnl:contentNode</sv:value>
+  <sv:node sv:name="multiField">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
       <sv:value>mix:lockable</sv:value>
@@ -631,9 +589,9 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="compositeField" >
+  <sv:node sv:name="compositeField">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
-    <sv:value>mgnl:contentNode</sv:value>
+      <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
       <sv:value>mix:lockable</sv:value>
@@ -664,6 +622,117 @@
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
       <sv:value>2013-07-23T08:18:26.386+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="workbenchField">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>50e8399d-70cd-4f38-922a-207ea7543282</sv:value>
+    </sv:property>
+    <sv:property sv:name="definitionClass" sv:type="String">
+      <sv:value>info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.contentapp.field.WorkbenchFieldFactory</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+      <sv:value>2013-08-28T23:23:28.670+03:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-09-03T20:24:59.104+03:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="formStaticField">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>3daeb495-9ce0-43ee-a859-72f8a36d4f37</sv:value>
+    </sv:property>
+    <sv:property sv:name="definitionClass" sv:type="String">
+      <sv:value>info.magnolia.module.form.fields.definition.StaticFormFieldDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.module.form.fields.factory.StaticFormFieldFactory</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-06-28T15:09:27.503+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="nodeTypeField">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>2fc71bce-875a-48a3-a6fe-3e828edccfa9</sv:value>
+    </sv:property>
+    <sv:property sv:name="definitionClass" sv:type="String">
+      <sv:value>info.magnolia.ui.framework.field.nodetype.NodeTypeSelectFieldDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.framework.field.nodetype.NodeTypeSelectFieldFactory</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2015-12-03T16:32:49.578+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:createdBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+      <sv:value>2015-12-03T16:32:49.595+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2015-12-03T16:34:24.129+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
