@@ -50,6 +50,7 @@ public class BrowserLocation extends DefaultLocation {
     public BrowserLocation(String appName, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appName, subAppId, parameter);
 
+        parameter = StringUtils.defaultString(parameter);
         setNodePath(extractNodePath(parameter));
         setViewType(extractView(parameter));
         setQuery(extractQuery(parameter));
