@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -657,4 +658,15 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertThat(longRunning, hasNode("form/tabs/message/fields/exception"));
     }
 
+    @Test
+    public void updateFrom543EliminatesWebsiteJcrBrowserAppFromAppLauncher() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.3"));
+
+        // THEN
+        assertThat(session.getRootNode().getNode("modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps"), not(hasNode("websiteJcrBrowser")));
+    }
 }

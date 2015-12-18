@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.jcrbrowser.setup;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.Task;
+import info.magnolia.ui.admincentral.setup.AppLauncherReorderingTask;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * Jcr Browser App module version handler.
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public class JcrBrowserAppModuleVersionHandler extends DefaultModuleVersionHandler {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
-
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
-    }
-
-    /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
-     */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
-    }
-
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
+    @Override
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        return Collections.<Task>singletonList(new AppLauncherReorderingTask("jcr-browser", "tools", AppLauncherReorderingTask.Order.FIRST, null));
     }
 }

@@ -33,24 +33,15 @@
  */
 package info.magnolia.ui.framework.action;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
 import static org.junit.Assert.*;
 
-import info.magnolia.cms.i18n.DefaultMessagesManager;
-import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
-import info.magnolia.i18nsystem.LocaleProvider;
-import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -63,10 +54,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Tests covering execution of {@link info.magnolia.ui.framework.action.AddNodeAction}.
- */
-public class AddNodeActionTest extends MgnlTestCase {
+public class AddNodeActionTest {
 
     private final static String WORKSPACE = "workspace";
 
@@ -74,20 +62,16 @@ public class AddNodeActionTest extends MgnlTestCase {
 
     private final static String NEW_NODE_NAME = AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME;
 
-    private static AddNodeActionDefinition definition;
+    private AddNodeActionDefinition definition;
 
     private RecordingEventBus eventBus;
 
     private MockSession session;
 
+    private Node root;
+
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
-        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
-        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
         definition = new AddNodeActionDefinition();
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
@@ -96,18 +80,18 @@ public class AddNodeActionTest extends MgnlTestCase {
         MgnlContext.setInstance(ctx);
 
         eventBus = new RecordingEventBus();
+
+        root = session.getRootNode();
     }
 
-    @Override
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
     }
 
     @Test
-    public void testCanAddNodeToRootNode() throws Exception {
+    public void canAddNodeToRootNode() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
         long nodeCountBefore = root.getNodes().getSize();
         AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(root), eventBus);
 
@@ -119,9 +103,8 @@ public class AddNodeActionTest extends MgnlTestCase {
     }
 
     @Test
-    public void testCanAddChildNode() throws Exception {
+    public void canAddChildNode() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long nodeCountBefore = node.getNodes().getSize();
         AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(node), eventBus);
@@ -134,9 +117,8 @@ public class AddNodeActionTest extends MgnlTestCase {
     }
 
     @Test
-    public void testUsesConfiguredNodeType() throws Exception {
+    public void usesConfiguredNodeType() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long nodeCountBefore = node.getNodes().getSize();
         AddNodeActionDefinition definition = new AddNodeActionDefinition();
@@ -151,9 +133,8 @@ public class AddNodeActionTest extends MgnlTestCase {
     }
 
     @Test
-    public void testGivesNodeUniqueName() throws Exception {
+    public void givesNodeUniqueName() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         node.addNode(NEW_NODE_NAME);
         long nodeCountBefore = node.getNodes().getSize();
@@ -163,14 +144,13 @@ public class AddNodeActionTest extends MgnlTestCase {
         action.execute();
 
         // THEN
-        assertTrue(node.hasNode(AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME));
+        assertThat(node, hasNode(AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME));
         assertAddedNewNode(node, AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME + "0", NodeTypes.Content.NAME, nodeCountBefore + 1);
     }
 
     @Test
-    public void testDoesNothingGivenProperty() throws Exception {
+    public void doesNothingGivenProperty() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         node.setProperty("propertyName", "propertyValue");
         long nodeCountBefore = node.getNodes().getSize();
@@ -185,9 +165,25 @@ public class AddNodeActionTest extends MgnlTestCase {
         assertTrue(eventBus.isEmpty());
     }
 
+    @Test
+    public void customBaseNameIsApplied() throws Exception {
+        // GIVEN
+        this.definition.setBaseName("fooBar");
+        AddNodeAction firstAction = new AddNodeAction(definition, new JcrNodeAdapter(root), eventBus);
+        AddNodeAction secondAction = new AddNodeAction(definition, new JcrNodeAdapter(root), eventBus);
+
+        // WHEN
+        firstAction.execute();
+        secondAction.execute();
+
+        // THEN
+        assertThat(root, hasNode("fooBar"));
+        assertThat(root, hasNode("fooBar0"));
+    }
+
     private void assertAddedNewNode(Node parent, String nodeName, String nodeType, long expectedNumberOfChildNodes) throws RepositoryException {
         assertEquals(expectedNumberOfChildNodes, parent.getNodes().getSize());
-        assertTrue(parent.hasNode(nodeName));
+        assertThat(parent, hasNode(nodeName));
         Node newNode = parent.getNode(nodeName);
         assertEquals(nodeType, newNode.getPrimaryNodeType().getName());
         assertFalse(eventBus.isEmpty());

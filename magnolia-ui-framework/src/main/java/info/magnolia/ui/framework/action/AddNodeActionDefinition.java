@@ -44,6 +44,8 @@ public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
     private String nodeType = NodeTypes.Content.NAME;
 
+    private String baseName;
+
     public AddNodeActionDefinition() {
         setImplementationClass(AddNodeAction.class);
     }
@@ -54,5 +56,13 @@ public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
+    }
+
+    public String getBaseName() {
+        return baseName;
+    }
+
+    public void setBaseName(String baseName) {
+        this.baseName = baseName;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.ui.framework.availability;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * {@linkplain IsNotSystemProperty} rule verifies that the inspected property is not a system property
+ * (i.e. is not a <i>jcr:<...></i> or <i>mgnl:<...></i> property).
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public class IsNotSystemProperty extends AbstractAvailabilityRule {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
-
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
-    }
-
-    /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
-     */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
-    }
-
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
+    @Override
+    protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof JcrPropertyItemId) {
+            final JcrPropertyItemId jcrPropertyItemId = (JcrPropertyItemId) itemId;
+            final String propertyName = jcrPropertyItemId.getPropertyName();
+            return !propertyName.startsWith(NodeTypes.MGNL_PREFIX) && !propertyName.startsWith(NodeTypes.JCR_PREFIX);
+        }
+        return true;
     }
 }

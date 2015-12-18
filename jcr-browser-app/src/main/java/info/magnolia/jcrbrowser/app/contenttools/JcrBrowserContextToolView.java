@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.jcrbrowser.app.contenttools;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.view.View;
+
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * {@linkplain View} interface which corresponds to the {@link JcrBrowserContextTool}.
+ *
+ * @see JcrBrowserContextTool
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public interface JcrBrowserContextToolView extends View {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
+    void setWorkspaceOptions(Container options);
 
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
-    }
+    void setSystemPropertiesInclusionProperty(Property<Boolean> systemPropertiesInclusionProperty);
 
-    /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
-     */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
-    }
+    void setWorkspaceNameProperty(Property<String> workspaceNameProperty);
 
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
-    }
+    void setEnabled(boolean isEnabled);
 }

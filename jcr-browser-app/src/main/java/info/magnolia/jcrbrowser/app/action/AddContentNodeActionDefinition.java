@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.jcrbrowser.app.action;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * Definition class for the {@link AddContentNodeAction AddContentNodeActions}. Allows for specifying a {@code dialogName} property
+ * which points to a node properties specification dialog.
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public class AddContentNodeActionDefinition extends ConfiguredActionDefinition {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
+    private String dialogName;
 
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
+    public AddContentNodeActionDefinition() {
+        setImplementationClass(AddContentNodeAction.class);
     }
 
-    /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
-     */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
+    public String getDialogName() {
+        return dialogName;
     }
 
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
     }
 }

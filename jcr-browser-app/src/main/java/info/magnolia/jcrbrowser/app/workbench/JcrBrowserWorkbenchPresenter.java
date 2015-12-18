@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.jcrbrowser.app.workbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
+import info.magnolia.ui.workbench.WorkbenchStatusBarPresenter;
+import info.magnolia.ui.workbench.WorkbenchView;
+
+import javax.inject.Inject;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * Simple {@link WorkbenchPresenter} extension which exposes the information whether the current presenter operates in a dialog scope.
+ *
+ * @see info.magnolia.jcrbrowser.app.contenttools.JcrBrowserContextTool
  */
-public abstract class AbstractContentConnector implements ContentConnector {
+public class JcrBrowserWorkbenchPresenter extends WorkbenchPresenter {
 
-    private ContentConnectorDefinition contentConnectorDefinition;
-
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
+    @Inject
+    public JcrBrowserWorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, ContentConnector contentConnector) {
+        super(view, componentProvider, statusBarPresenter, contentConnector);
     }
 
-    /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
-     */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
-    }
-
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
+    public boolean isHostedInDialog() {
+        return getWorkbenchDefinition().isDialogWorkbench();
     }
 }

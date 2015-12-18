@@ -309,6 +309,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(addDownloadAsYamlActionTask)
                 .addTask(new NodeExistsDelegateTask("", "/modules/ui-admincentral/messageViews/longRunning",
                         new PartialBootstrapTask("Add exception field to longRunning messageView", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning/form/tabs/message/fields/exception"))));
+
+        register(DeltaBuilder.update("5.4.4", "")
+                .addTask(new RemoveNodeTask("Remove Website Jcr Browser app from App Launcher", "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser")));
     }
 
     @Override
@@ -329,8 +332,6 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         "/.resources/defaultMagnoliaLoginForm")));
         list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
-        list.add(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
-                new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")));
         list.add(new IsModuleInstalledOrRegistered("Configure recursive activation and deletion as asynchronous", "scheduler", new ArrayDelegateTask("",
                 new NodeExistsDelegateTask("Configure recursive activation as asynchronous", "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activateRecursive", "asynchronous", "true")),

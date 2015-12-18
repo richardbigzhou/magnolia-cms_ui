@@ -66,18 +66,19 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     private VersionManager versionManager;
 
-    private JcrItemId defaultItemId;
-
     @Inject
-    public JcrContentConnector(final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
-        super(definition, componentProvider);
+    public JcrContentConnector(final VersionManager versionManager, JcrContentConnectorDefinition definition) {
+        super(definition);
         this.versionManager = versionManager;
-        try {
-            this.defaultItemId = JcrItemUtil.getItemId(getWorkspace(), getRootPath());
-        } catch (RepositoryException e) {
-            log.error("Failed to retrieve default id: " + e.getMessage(), e);
-            this.defaultItemId = null;
-        }
+    }
+
+    /**
+     * @deprecated since 5.4.4 - use {@link #JcrContentConnector(VersionManager, JcrContentConnectorDefinition)}.
+     * instead.
+     */
+    @Deprecated
+    public JcrContentConnector(final VersionManager versionManager, JcrContentConnectorDefinition definition, ComponentProvider componentProvider) {
+        this(versionManager, definition);
     }
 
     @Override
@@ -165,7 +166,12 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
 
     @Override
     public Object getDefaultItemId() {
-        return defaultItemId;
+        try {
+            return  JcrItemUtil.getItemId(getWorkspace(), getRootPath());
+        } catch (RepositoryException e) {
+            log.error("Failed to retrieve default id: " + e.getMessage() + ", returning null.", e);
+            return null;
+        }
     }
 
     @Override
@@ -228,15 +234,15 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     /**
      * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
      */
-    private  String parseNodePath(final String urlFragment) {
+    protected final String parseNodePath(final String urlFragment) {
         return isPropertyItemId(urlFragment) ? urlFragment.substring(0, urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR)) : urlFragment;
     }
 
-    private  String parsePropertyName(final String urlFragment) {
+    protected final String parsePropertyName(final String urlFragment) {
         return urlFragment.substring(urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR) + 1);
     }
 
-    private  boolean isPropertyItemId(final String urlFragment) {
+    protected final boolean isPropertyItemId(final String urlFragment) {
         return urlFragment != null && urlFragment.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
     }
 }

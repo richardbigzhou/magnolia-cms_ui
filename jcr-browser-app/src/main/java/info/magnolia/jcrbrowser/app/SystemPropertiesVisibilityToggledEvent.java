@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.contentconnector;
+package info.magnolia.jcrbrowser.app;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector}.
+ * {@linkplain SystemPropertiesVisibilityToggledEvent} notifies the handlers that the system properties (with names startting with <i>jcr:<...></i> or <i>mgnl:<...></i>) should
+ * be included in/excluded from the JCR browser view.
+ *
+ * @see info.magnolia.jcrbrowser.app.contenttools.JcrBrowserContextTool
+ * @see info.magnolia.jcrbrowser.app.contentviews.JcrBrowserTreePresenter
  */
-public abstract class AbstractContentConnector implements ContentConnector {
-
-    private ContentConnectorDefinition contentConnectorDefinition;
-
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
-        this.contentConnectorDefinition = contentConnectorDefinition;
-    }
+public class SystemPropertiesVisibilityToggledEvent implements Event<SystemPropertiesVisibilityToggledEvent.Handler> {
 
     /**
-     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
+     * Event handler interface corresponding to {@link SystemPropertiesVisibilityToggledEvent}.
      */
-    @Deprecated
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
-        this(contentConnectorDefinition);
+    public interface Handler extends EventHandler {
+
+        void onSystemPropertiesVisibilityToggled(SystemPropertiesVisibilityToggledEvent event);
     }
 
-    public ContentConnectorDefinition getContentConnectorDefinition() {
-        return contentConnectorDefinition;
+    private final boolean displaySystemProperties;
+
+    public SystemPropertiesVisibilityToggledEvent(boolean displaySystemProperties) {
+        this.displaySystemProperties = displaySystemProperties;
+    }
+
+    public boolean isDisplaySystemProperties() {
+        return displaySystemProperties;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onSystemPropertiesVisibilityToggled(this);
     }
 }
