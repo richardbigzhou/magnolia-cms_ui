@@ -131,10 +131,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         }
 
-        if (hasViewType(ListPresenterDefinition.VIEW_TYPE) && hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
-            // always include search component in the toolbar search component
-            addSearchContentTool();
-        }
 
         // add content tools
         final List<ContentToolDefinition> contentTools = this.workbenchDefinition.getContentTools();
@@ -145,6 +141,11 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 View contentToolView = contentToolPresenter.start();
                 view.addContentTool(contentToolView);
             }
+        }
+
+        if (hasViewType(ListPresenterDefinition.VIEW_TYPE) && hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
+            // always include search component in the toolbar search component
+            addSearchContentTool();
         }
 
         // add status bar
