@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.workbench.contenttool.ContentToolDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
@@ -48,6 +49,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -87,8 +89,12 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         toolBar.addStyleName("toolbar");
         toolBar.setWidth(100.0F, Sizeable.Unit.PERCENTAGE);
+
+        toolBar.setSpacing(true);
+        toolBar.setDefaultComponentAlignment(Alignment.TOP_CENTER);
+
         toolBar.addComponent(viewModes);
-        toolBar.setExpandRatio(viewModes, 1f);
+        toolBar.setComponentAlignment(viewModes, Alignment.TOP_LEFT);
 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0.0F);
@@ -160,8 +166,9 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // display search-box only if both list and search content presenters are configured
         if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {
-            if (toolBar.getComponentCount() > 1) { // components > 1 because first component in the toolbar is switcher between tree/list view
-                toolBar.getComponent(1).setVisible(true);
+            int contentToolsCount = toolBar.getComponentCount();
+            if (contentToolsCount > 1) { // components > 1 because first component in the toolbar is switcher between tree/list view
+                toolBar.getComponent(contentToolsCount - 1).setVisible(true);
             }
         }
 
@@ -256,6 +263,31 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     @Override
     public void addContentTool(View view) {
-        toolBar.addComponent(view.asVaadinComponent(), toolBar.getComponentCount());
+        addContentTool(view, ContentToolDefinition.Alignment.RIGHT, 0);
+    }
+
+    public void addContentTool(View view, ContentToolDefinition.Alignment alignment, float expandRatio) {
+
+        final Component toolComponent = view.asVaadinComponent();
+
+        toolBar.addComponent(toolComponent, toolBar.getComponentCount());
+        toolBar.setExpandRatio(toolComponent, expandRatio);
+
+        Alignment vaadinAlignment;
+        switch (alignment) {
+        case RIGHT:
+            vaadinAlignment = Alignment.TOP_RIGHT;
+            break;
+        case LEFT:
+            vaadinAlignment = Alignment.TOP_LEFT;
+            break;
+        case CENTER:
+            vaadinAlignment = Alignment.TOP_CENTER;
+            break;
+        default:
+            vaadinAlignment = Alignment.TOP_RIGHT;
+        }
+
+        toolBar.setComponentAlignment(toolComponent, vaadinAlignment);
     }
 }

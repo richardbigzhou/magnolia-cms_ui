@@ -42,11 +42,16 @@ public abstract class AbstractContentConnector implements ContentConnector {
 
     private ContentConnectorDefinition contentConnectorDefinition;
 
-    private ComponentProvider componentProvider;
-
-    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
+    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition) {
         this.contentConnectorDefinition = contentConnectorDefinition;
-        this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.4.4 - use {@link #AbstractContentConnector(ContentConnectorDefinition)} instead.
+     */
+    @Deprecated
+    public AbstractContentConnector(ContentConnectorDefinition contentConnectorDefinition, ComponentProvider componentProvider) {
+        this(contentConnectorDefinition);
     }
 
     public ContentConnectorDefinition getContentConnectorDefinition() {

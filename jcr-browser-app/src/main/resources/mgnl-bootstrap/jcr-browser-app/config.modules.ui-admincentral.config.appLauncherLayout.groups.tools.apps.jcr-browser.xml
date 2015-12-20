@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="websiteJcrBrowser" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="jcr-browser" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>65e74cd1-d821-4a8e-995f-2a7730fa14e8</sv:value>
-  </sv:property>
-  <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-06-13T16:46:16.497+02:00</sv:value>
+    <sv:value>36618519-b24a-4b7f-9810-9bb447c13c37</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:created" sv:type="Date">
-    <sv:value>2013-06-13T16:46:16.499+02:00</sv:value>
+    <sv:value>2015-12-01T13:48:42.346+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:createdBy" sv:type="String">
     <sv:value>superuser</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-    <sv:value>2013-06-13T16:46:40.991+02:00</sv:value>
+    <sv:value>2015-12-01T14:24:21.369+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
     <sv:value>superuser</sv:value>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -46,6 +47,7 @@
     <module>sample-app</module>
     <module>messages-app</module>
     <module>security-app</module>
+    <module>jcr-browser-app</module>
     <module>magnolia-ui-mediaeditor</module>
     <module>magnolia-ui-vaadin-theme</module>
     <module>magnolia-ui-vaadin-widgetset-maven-relocate</module>
@@ -86,6 +88,11 @@
       <dependency>
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.jcrbrowser</groupId>
+        <artifactId>magnolia-jcr-browser-app</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

@@ -35,7 +35,8 @@ package info.magnolia.ui.framework.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
@@ -67,6 +68,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -445,6 +447,21 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
         //THEN
         assertThat(session.getRootNode(), not(hasNode("modules/scheduler/config/jobs/cleanTempFiles")));
+    }
+
+    @Test
+    public void updateFrom543BringsInNodeTypeSelectField() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/ui-framework/fieldTypes");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.3"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes"), hasNodeWithName(equalTo("nodeTypeField")));
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes/nodeTypeField"), Matchers.allOf(
+                hasProperty("factoryClass", "info.magnolia.ui.framework.field.nodetype.NodeTypeSelectFieldFactory"),
+                hasProperty("definitionClass", "info.magnolia.ui.framework.field.nodetype.NodeTypeSelectFieldDefinition")));
     }
 
 }

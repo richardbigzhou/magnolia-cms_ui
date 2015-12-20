@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+  <name>jcr-browser-app</name>
+  <displayName>JCR Browser App</displayName>
+  <description>JCR Browser App</description>
+  <versionHandler>info.magnolia.jcrbrowser.setup.JcrBrowserAppModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+
+  <components>
+    <id>app-jcr-browser-browser</id>
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
+      <implementation>info.magnolia.jcrbrowser.app.workbench.JcrBrowserWorkbenchPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.jcrbrowser.app.contenttools.JcrBrowserContextToolView</type>
+      <implementation>info.magnolia.jcrbrowser.app.contenttools.JcrBrowserContextToolViewImpl</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>core</name>
+      <version>5.4.4/*</version>
+    </dependency>
+
+    <dependency>
+      <name>ui-contentapp</name>
+      <version>5.4.4/*</version>
+    </dependency>
+  </dependencies>
+</module>

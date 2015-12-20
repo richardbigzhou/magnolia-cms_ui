@@ -174,6 +174,10 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                                 new PropertyValueDelegateTask("Check if 'class' property of 'cleanTempFiles' command has required value 'info.magnolia.ui.framework.command.CleanTempFilesCommand'.", "/modules/ui-framework/commands/default/cleanTempFiles", "class", CleanTempFilesCommand.class.getName(), false,
                                         new NodeExistsDelegateTask("Configure 'CleanTempFiles' job if does not exist.", "/modules/scheduler/config/jobs/cleanTempFiles", null,
                                                 new BootstrapSingleResource("", "Configure 'CleanTempFiles' job.", "/info/magnolia/module/ui-framework/setup/scheduler/config.modules.scheduler.config.jobs.cleanTempFiles.xml")))))));
+
+        register(DeltaBuilder.update("5.4.4", "")
+            .addTask(new PartialBootstrapTask("Add JCR node-type selector field", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.fieldTypes.xml", "fieldTypes/nodeTypeField"))
+        );
     }
 
     @Override

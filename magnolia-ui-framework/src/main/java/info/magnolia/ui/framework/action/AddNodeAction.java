@@ -43,6 +43,8 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Action for adding a new node.
  *
@@ -58,7 +60,12 @@ public class AddNodeAction extends AbstractRepositoryAction<AddNodeActionDefinit
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
-            String name = getUniqueNewItemName(node);
+            String baseName = getDefinition().getBaseName();
+            if (StringUtils.isBlank(baseName)) {
+                baseName = AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME;
+            }
+
+            String name = getUniqueNewItemName(node, baseName);
             node.addNode(name, getDefinition().getNodeType());
             // Pass the item which had the node added to it.
             JcrItemId itemId = JcrItemUtil.getItemId(node);

@@ -80,7 +80,10 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     private boolean sortable;
 
+    private boolean isIncludingSystemProperties = false;
+
     private static class ItemNameComparator implements Comparator<Item> {
+
         @Override
         public int compare(Item lhs, Item rhs) {
             try {
@@ -91,7 +94,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             }
         }
     }
-
     public HierarchicalJcrContainer(JcrContentConnectorDefinition definition) {
         super(definition);
     }
@@ -187,9 +189,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                     final PropertyIterator propertyIterator = node.getProperties();
                     while (propertyIterator.hasNext()) {
                         final Property property = propertyIterator.nextProperty();
-                        if (!isJcrOrMgnlProperty(property)) {
+                        if (isIncludingSystemProperties || !isJcrOrMgnlProperty(property))
                             return true;
-                        }
                     }
                 } catch (RepositoryException e) {
                     log.warn("Failed to get child nodes of {}", NodeUtil.getPathIfPossible((node)));
@@ -209,6 +210,20 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             }
         }
         fireItemSetChange();
+    }
+
+    public void setIncludeSystemProperties(boolean includingSystemProperties) {
+        boolean currentlyIncludingSystemProperties = this.isIncludingSystemProperties;
+        this.isIncludingSystemProperties = includingSystemProperties;
+
+        if (currentlyIncludingSystemProperties != includingSystemProperties) {
+            refresh();
+        }
+
+    }
+
+    public boolean isIncludingSystemProperties() {
+        return isIncludingSystemProperties;
     }
 
     private boolean isJcrOrMgnlProperty(Property property) throws RepositoryException {
@@ -260,7 +275,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
                     final Property property = propertyIterator.nextProperty();
-                    if (!isJcrOrMgnlProperty(property)) {
+                    if (isIncludingSystemProperties || !isJcrOrMgnlProperty(property)) {
                         properties.add(property);
                     }
                 }
