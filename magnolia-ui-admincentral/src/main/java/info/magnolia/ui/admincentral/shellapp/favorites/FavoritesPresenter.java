@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.location.DefaultLocation;
@@ -72,12 +73,20 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     private LocationController locationController;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, I18nizer i18nizer, LocationController locationController) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, final I18nizer i18nizer, final LocationController locationController) {
         this.view = view;
         this.favoritesManager = favoritesManager;
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.i18nizer = i18nizer;
         this.locationController = locationController;
+    }
+
+    /**
+     * @deprecated since 5.4.4, please use {@link FavoritesPresenter#FavoritesPresenter(FavoritesView, FavoritesManager, AppDescriptorRegistry, I18nizer, LocationController)} instead.
+     */
+    @Deprecated
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, final I18nizer i18nizer) {
+        this(view, favoritesManager, appDescriptorRegistry, i18nizer, Components.getComponent(LocationController.class));
     }
 
     public FavoritesView start() {
