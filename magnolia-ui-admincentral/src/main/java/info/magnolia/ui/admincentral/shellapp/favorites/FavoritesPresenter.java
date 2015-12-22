@@ -69,7 +69,6 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     private FavoritesView view;
     private FavoritesManager favoritesManager;
     private AppDescriptorRegistry appDescriptorRegistry;
-    private String currentEditedItemId;
     private LocationController locationController;
 
     @Inject
@@ -167,11 +166,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     @Override
     public boolean itemsAreEditable() {
         List<EditableFavoriteItem> editableFavoriteItemList = view.getEditableFavoriteItemList();
-        if (editableFavoriteItemList.size() == 0) {
-            return false;
-        } else {
-            return editableFavoriteItemList.get(0).iconsAreVisible();
-        }
+        return !editableFavoriteItemList.isEmpty() && editableFavoriteItemList.get(0).iconsAreVisible();
     }
 
     @Override
@@ -264,10 +259,9 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void setCurrentEditedItemId(String itemId) {
-        currentEditedItemId = itemId;
         // when somebody starts to edit a EditableFavoriteItem, make sure that all the other items are set to the not-editable-state
         for (EditableFavoriteItem editableItem : view.getEditableFavoriteItemList()) {
-            if (!currentEditedItemId.equals(editableItem.getItemId())) {
+            if (!itemId.equals(editableItem.getItemId())) {
                 editableItem.setToNonEditableState();
             }
         }
@@ -290,8 +284,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         final String url = location.toString();
         String instancePrefix = getWebAppRootURI();
 
-        final String urlFragment = url.contains(instancePrefix) ? url.substring(url.indexOf(instancePrefix) + instancePrefix.length(), url.length()) : url;
-        return urlFragment;
+        return url.contains(instancePrefix) ? url.substring(url.indexOf(instancePrefix) + instancePrefix.length(), url.length()) : url;
     }
 
     /**
