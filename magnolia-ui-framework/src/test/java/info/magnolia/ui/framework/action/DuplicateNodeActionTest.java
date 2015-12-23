@@ -53,6 +53,7 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeTypes.Activatable;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
@@ -191,5 +192,23 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         assertEquals(nodeCountBefore, node.getNodes().getSize());
         assertFalse(node.hasNode("nodeName0"));
         assertTrue(eventBus.isEmpty());
+    }
+    
+    @Test
+    public void duplicatedNodeShouldAddedRightAfterTheNode() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node node = root.addNode("first");
+        root.addNode("second");
+        root.addNode("third");
+        session.save();
+        DuplicateNodeAction action = new DuplicateNodeAction(definition, new JcrNodeAdapter(node), eventBus);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertTrue(root.hasNode("first0"));
+        assertEquals("first0", NodeUtil.getSiblingAfter(node).getName());
     }
 }
