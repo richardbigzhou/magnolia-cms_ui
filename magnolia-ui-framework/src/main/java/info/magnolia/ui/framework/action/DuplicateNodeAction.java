@@ -82,6 +82,7 @@ public class DuplicateNodeAction extends AbstractRepositoryAction<DuplicateNodeA
 
             // Update metadata
             Node duplicateNode = node.getSession().getNode(newPath);
+            NodeUtil.orderAfter(duplicateNode, node.getName());
 
             activatableUpdate(duplicateNode, MgnlContext.getUser().getName());
             // Set item of the new node for the ContentChangedEvent
