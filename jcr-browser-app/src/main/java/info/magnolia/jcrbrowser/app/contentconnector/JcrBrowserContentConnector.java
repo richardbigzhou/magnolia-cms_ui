@@ -78,7 +78,7 @@ public class JcrBrowserContentConnector extends JcrContentConnector {
     @Override
     public String getItemUrlFragment(Object itemId) {
         String urlFragment = super.getItemUrlFragment(itemId);
-        if (itemId instanceof JcrPropertyItemId) {
+        if (urlFragment != null && itemId instanceof JcrPropertyItemId) {
             if (unEscapedSystemPropertyPattern.matcher(urlFragment).matches()) {
                 return urlFragment.replaceFirst(":", URL_FRAGMENT_COLON_ESCAPE_SEQUENCE);
             }
