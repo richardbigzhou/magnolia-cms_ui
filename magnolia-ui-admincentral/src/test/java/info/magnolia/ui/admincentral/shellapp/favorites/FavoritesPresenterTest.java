@@ -46,15 +46,12 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -63,13 +60,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -78,18 +72,15 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-/**
- * Tests for the {@link FavoritesPresenter}.
- */
+
 public class FavoritesPresenterTest {
 
     private MockSession session;
     private MockWebContext ctx;
     private FavoritesPresenter presenter;
-    private LocationController locationController;
 
     @Before
-    public void setUp() throws RegistrationException, URISyntaxException {
+    public void setUp() throws Exception {
 
         ctx = new MockWebContext();
         MgnlContext.setInstance(ctx);
@@ -118,7 +109,6 @@ public class FavoritesPresenterTest {
          * We do not set the name/title for sake of testing the i18n functionality.
          */
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
-        locationController = mock(LocationController.class);
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName("favoritesRandomApp");
         doReturn(descriptor).when(registry).getAppDescriptor(anyString());
@@ -134,11 +124,11 @@ public class FavoritesPresenterTest {
             }
         }).when(i18nizer).decorate(any());
 
-        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer, locationController);
+        presenter = new FavoritesPresenter(view, favoritesManager, registry, i18nizer);
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         ComponentsTestUtil.clear();
         MgnlContext.setInstance(null);
     }
@@ -148,7 +138,7 @@ public class FavoritesPresenterTest {
      * we do not put the "null" string in the beginning (see http://jira.magnolia-cms.com/browse/MGNLUI-2175).
      */
     @Test
-    public void testDeterminePreviousLocationDoesNotContainNull() throws RepositoryException, URISyntaxException {
+    public void determinePreviousLocationDoesNotContainNull() throws Exception {
         // GIVEN
         initializeVaadinUI();
 
@@ -162,7 +152,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetWebAppRootURI() throws Exception {
+    public void getWebAppRootURI() throws Exception {
         // GIVEN
         initializeVaadinUI();
 
@@ -174,7 +164,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetCompleteURIFromFragment() throws Exception {
+    public void getCompleteURIFromFragment() throws Exception {
         // GIVEN
         initializeVaadinUI();
 
@@ -186,7 +176,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetCompleteURIFromFragmentWithAbsoluteURI() throws URISyntaxException {
+    public void getCompleteURIFromFragmentWithAbsoluteURI() throws URISyntaxException {
         // GIVEN
         initializeVaadinUI();
 
@@ -200,7 +190,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetUrlFragmentFrom() throws Exception {
+    public void getUrlFragmentFrom() throws Exception {
         // GIVEN
         initializeVaadinUI();
 
@@ -227,7 +217,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetUrlFragmentWithQueryParameter() throws URISyntaxException {
+    public void getUrlFragmentWithQueryParameter() throws Exception {
         // GIVEN
         String webAppUri = "https://localhost/myWebApp/.magnolia/admincentral?restartApplication";
         initializeVaadinUI(new URI(webAppUri));
@@ -242,7 +232,7 @@ public class FavoritesPresenterTest {
     }
 
     @Test
-    public void testGetCompleteUriFromFragmentWithInitialQueryParameter() throws URISyntaxException {
+    public void getCompleteUriFromFragmentWithInitialQueryParameter() throws Exception {
         // GIVEN
         String webAppUri = "https://localhost:443/myWebApp/.magnolia/admincentral?restartApplication";
         initializeVaadinUI(new URI(webAppUri));
@@ -254,22 +244,6 @@ public class FavoritesPresenterTest {
 
         // THEN
         assertThat(result, equalTo(webAppUri + fragment));
-    }
-
-    @Test
-    public void goToLocationUsesLocationControllerWithFragmentWithNoStartingHashChar() throws Exception {
-        // GIVEN
-        initializeVaadinUI();
-
-        // WHEN
-        presenter.goToLocation("#app:pages:browser;/:treeview:");
-
-        // THEN
-        ArgumentCaptor<Location> argCaptor = ArgumentCaptor.forClass(Location.class);
-
-        verify(locationController, times(1)).goTo(argCaptor.capture());
-
-        assertThat(argCaptor.getValue().toString(), equalTo("app:pages:browser;/:treeview:"));
     }
 
     private void initializeVaadinUI() throws URISyntaxException {
