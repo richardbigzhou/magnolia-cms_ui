@@ -36,12 +36,10 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.i18nsystem.I18nizer;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.net.URI;
@@ -69,23 +67,13 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     private FavoritesView view;
     private FavoritesManager favoritesManager;
     private AppDescriptorRegistry appDescriptorRegistry;
-    private LocationController locationController;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, final I18nizer i18nizer, final LocationController locationController) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, final I18nizer i18nizer) {
         this.view = view;
         this.favoritesManager = favoritesManager;
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.i18nizer = i18nizer;
-        this.locationController = locationController;
-    }
-
-    /**
-     * @deprecated since 5.4.4, please use {@link FavoritesPresenter#FavoritesPresenter(FavoritesView, FavoritesManager, AppDescriptorRegistry, I18nizer, LocationController)} instead.
-     */
-    @Deprecated
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, final I18nizer i18nizer) {
-        this(view, favoritesManager, appDescriptorRegistry, i18nizer, Components.getComponent(LocationController.class));
     }
 
     public FavoritesView start() {
@@ -176,7 +164,10 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void goToLocation(final String location) {
-        locationController.goTo(new DefaultLocation(StringUtils.removeStart(location, "#")));
+        // MGNLUI-3539 Can't use Page.setLocation(..) anymore due to https://dev.vaadin.com/ticket/12925
+        // Need to use Page.open(..) cause other more apt methods such as Page.setUriFragment(..) seem not to re-sync selection properly.
+        // Can't use LocationController#goTo() either because fragment-change has to be initiated from client-side for transitions to work properly.
+        Page.getCurrent().open(getCompleteURIFromFragment(location), null);
     }
 
     public JcrNewNodeAdapter determinePreviousLocation() {
@@ -288,9 +279,8 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     /**
-     * @deprecated since 5.4.4. Even though the method has package visibility only, it is no longer used and will be removed in a next version. See MGNLUI-3539.
+     * This method has package visibility for testing purposes only.
      */
-    @Deprecated
     String getCompleteURIFromFragment(final String fragment) {
         URI uri = null;
         try {
