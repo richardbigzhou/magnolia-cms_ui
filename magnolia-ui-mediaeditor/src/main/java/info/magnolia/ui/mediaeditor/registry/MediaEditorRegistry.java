@@ -38,6 +38,7 @@ import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.config.source.ConfigurationSourceType;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
