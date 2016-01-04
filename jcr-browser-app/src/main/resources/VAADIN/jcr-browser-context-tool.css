@@ -10,6 +10,23 @@
     padding-right: 10px;
 }
 
+.jcr-browser-context-tool .v-filterselect-button {
+    height: 14px;
+}
+
 .jcr-browser-context-tool {
     padding-top: 3px;
+    padding-left: 12px;
+}
+
+.jcr-browser-context-tool .v-filterselect-input {
+    padding-top: 2px !important;
+}
+
+.jcr-browser-context-tool .v-checkbox {
+    padding-left: 9px;
+}
+
+.jcr-browser-context-tool .v-checkbox > label {
+    padding-left: 4px;
 }

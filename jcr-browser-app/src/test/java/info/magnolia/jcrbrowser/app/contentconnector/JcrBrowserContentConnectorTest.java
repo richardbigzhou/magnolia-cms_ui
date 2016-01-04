@@ -33,12 +33,13 @@
  */
 package info.magnolia.jcrbrowser.app.contentconnector;
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
@@ -104,6 +105,20 @@ public class JcrBrowserContentConnectorTest {
         // THEN
         assertThat(barUrlFragment, equalTo("/foo@jcr---bar"));
         assertThat(bazUrlFragment, equalTo("/foo@mgnl---baz"));
+    }
+
+    @Test
+    public void urlFragmentConversionsDoNotFailForNonExistingPropertyIds() throws Exception {
+        final Node node = session.getRootNode().addNode("foo");
+        final JcrPropertyItemId propertyItemId = new JcrPropertyItemId(node.getIdentifier(), RepositoryConstants.CONFIG, "bar");
+
+        // WHEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                jcrBrowserContentConnector.getItemUrlFragment(propertyItemId);
+            }
+        }, throwsNothing());
     }
 
     @Test

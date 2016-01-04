@@ -42,8 +42,12 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.workbench.contenttool.ContentToolPresenter;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Inject;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -104,7 +108,10 @@ public class JcrBrowserContextTool implements ContentToolPresenter {
 
     private IndexedContainer populateWorkspaceNames() {
         final IndexedContainer container = new IndexedContainer();
-        for (final String workspaceName : repositoryManager.getWorkspaceNames()) {
+        final List<String> workspaceNames = Lists.newArrayList(repositoryManager.getWorkspaceNames());
+        Collections.sort(workspaceNames);
+
+        for (final String workspaceName : workspaceNames) {
             container.addItem(workspaceName);
         }
         return container;

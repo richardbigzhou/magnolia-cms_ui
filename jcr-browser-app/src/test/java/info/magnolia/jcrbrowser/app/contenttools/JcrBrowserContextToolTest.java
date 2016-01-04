@@ -119,13 +119,12 @@ public class JcrBrowserContextToolTest {
     }
 
     @Test
-    public void toolSuppliesViewWithWorkspaceNames() throws Exception {
+    public void toolSuppliesViewWithWorkspaceNamesSortedAlphabetically() throws Exception {
         // WHEN
         tool.start();
 
         // THEN
-        verify(view).setWorkspaceOptions(argThat(isContainerWithIds("foo", "bar", "baz", "qux")));
-        verify(view).setWorkspaceOptions(argThat(isContainerWithIds("foo", "bar", "baz", "qux")));
+        verify(view).setWorkspaceOptions(argThat(isContainerWithIds("bar", "baz", "foo", "qux")));
     }
 
     @Test
