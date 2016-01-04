@@ -37,7 +37,6 @@ import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
-import info.magnolia.config.source.ConfigurationSourceType;
 import info.magnolia.ui.api.app.AppDescriptor;
 
 import java.util.List;
@@ -56,11 +55,6 @@ public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescrip
         this.metadata = DefinitionMetadataBuilder.usingNameAsId().type(DefinitionTypes.APP).name(appName).module(moduleName).relativeLocation(relativeLocation).build();
         this.appDescriptor = appDescriptor;
         this.valid = valid;
-    }
-
-    @Override
-    public ConfigurationSourceType getSourceType() {
-        return null;
     }
 
     @Override

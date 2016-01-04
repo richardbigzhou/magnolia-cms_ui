@@ -40,10 +40,9 @@ import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
-import info.magnolia.config.source.ConfigurationSourceType;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.CodeFieldFactory;
@@ -143,9 +142,6 @@ public class FieldTypeDefinitionRegistryTest {
         assertNull(res);
     }
 
-    /**
-     * .
-     */
     public static class TestFieldTypeDefinitionProvider implements DefinitionProvider<FieldTypeDefinition> {
 
         private final DefinitionMetadata metadata;
@@ -159,11 +155,6 @@ public class FieldTypeDefinitionRegistryTest {
                     name(fieldId).module("module").
                     relativeLocation("/").
                     build();
-        }
-
-        @Override
-        public ConfigurationSourceType getSourceType() {
-            return null;
         }
 
         @Override
