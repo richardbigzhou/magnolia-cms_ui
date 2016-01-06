@@ -123,9 +123,9 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
 
             @Override
             public void onItemChosen(String actionName, final Object chosenValue) {
-                String propertyName = definition.getTargetPropertyToPopulate();
                 String newValue = null;
                 if (chosenValue instanceof JcrItemId) {
+                    String propertyName = definition.getTargetPropertyToPopulate();
                     try {
                         javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem((JcrItemId) chosenValue);
                         if (jcrItem.isNode()) {
@@ -136,6 +136,8 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
                     } catch (RepositoryException e) {
                         log.error("Not able to access the configured property. Value will not be set.", e);
                     }
+                } else {
+                    newValue = String.valueOf(chosenValue);
                 }
                 linkField.setValue(newValue);
             }
