@@ -159,6 +159,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                 @Override
                 public void itemClick(ItemClickEvent event) {
                     if (event.isDoubleClick()) {
+                        // always show item selection. See MGNLUI-3665
+                        tree.select(event.getItemId());
                         setEditing(event.getItemId(), event.getPropertyId());
                     }
                 }
