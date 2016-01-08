@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -68,6 +69,49 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         super.setUp();
         componentProvider.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
     }
+
+    /**
+     * The method tests whether ChooseDialogCallback#onItemChosen can handle String based item id.
+     */
+    @Test
+    public void chooseDialogCallbackCanHandleStringItemId() {
+        // GIVEN
+        String simpleStringItemId = "/app-tutorial/apps/products.yaml";
+        setFactory(null);
+        Field<String> field = linkFieldFactory.createField();
+        ChooseDialogCallback callback = linkFieldFactory.createChooseDialogCallback();
+
+        // WHEN
+        String initialValue = field.getValue();
+        callback.onItemChosen("action", simpleStringItemId);
+
+        // THEN
+        assertNull(initialValue);
+        assertEquals(simpleStringItemId, field.getValue());
+    }
+
+    /**
+     * The method tests whether ChooseDialogCallback#onItemChosen can handle an Object based item id using #toString.
+     */
+    @Test
+    public void chooseDialogCallbackCanHandleObjectItemIds() {
+        // GIVEN
+        Object itemId = mock(Object.class);
+        String itemIdStringified = "Oh yeah!";
+        when(itemId.toString()).thenReturn(itemIdStringified);
+        setFactory(null);
+        Field<String> field = linkFieldFactory.createField();
+        ChooseDialogCallback callback = linkFieldFactory.createChooseDialogCallback();
+
+        // WHEN
+        String initialValue = field.getValue();
+        callback.onItemChosen("action", itemId);
+
+        // THEN
+        assertNull(initialValue);
+        assertEquals(itemIdStringified, field.getValue());
+    }
+
 
     @Test
     public void simpleLinkFieldTest() throws Exception {
