@@ -58,6 +58,9 @@ import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -80,6 +83,11 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Override
     protected String getModuleDescriptorPath() {
         return "/META-INF/magnolia/ui-framework.xml";
+    }
+
+    @Override
+    protected List<String> getModuleDescriptorPathsForTests() {
+        return Arrays.asList("/META-INF/magnolia/core.xml");
     }
 
     @Override
