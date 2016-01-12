@@ -76,6 +76,10 @@
       <groupId>info.magnolia.scheduler</groupId>
       <artifactId>magnolia-module-scheduler</artifactId>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-i18n</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.vaadin</groupId>

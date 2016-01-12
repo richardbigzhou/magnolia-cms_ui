@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.core.version.VersionInfo;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.util.MessageFormatterUtils;
 import info.magnolia.jcr.util.VersionUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -50,7 +51,6 @@ import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnec
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -172,9 +172,9 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
     protected String getVersionLabel(VersionInfo versionInfo) {
         if (StringUtils.isEmpty(versionInfo.getVersionComment())) {
-            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser());
+            return MessageFormatterUtils.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL_NO_COMMENT, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser());
         } else {
-            return MessageFormat.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser(), i18n.translate(versionInfo.getVersionComment()));
+            return MessageFormatterUtils.format(MESSAGE_FORMAT_VERSION_OPTION_LABEL, versionInfo.getVersionName(), versionInfo.getVersionDate(), versionInfo.getVersionUser(), i18n.translate(versionInfo.getVersionComment()));
         }
     }
 
