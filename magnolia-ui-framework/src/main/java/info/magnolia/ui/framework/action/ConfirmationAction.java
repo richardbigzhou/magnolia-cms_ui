@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.util.MessageFormatterUtils;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -42,7 +43,6 @@ import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -164,7 +164,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
 
     private String formatMessage(final String message) throws RepositoryException {
         long howMany = items.size();
-        return MessageFormat.format(message, howMany, howMany);
+        return MessageFormatterUtils.format(message, howMany, howMany);
     }
 
     /**

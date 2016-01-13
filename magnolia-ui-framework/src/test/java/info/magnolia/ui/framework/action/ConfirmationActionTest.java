@@ -93,6 +93,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
     private SimpleTranslator i18n;
     private Session session;
     private ContentConnector contentConnector;
+    private ConfirmationAction confirmationAction;
 
     @Override
     @Before
@@ -121,6 +122,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         this.actionExecutor = new SimpleActionExecutor();
         ComponentsTestUtil.setInstance(ActionExecutor.class, actionExecutor);
+        confirmationAction = new ConfirmationAction(definition, new ArrayList<JcrItemAdapter>(), null, actionExecutor, i18n, contentConnector);
     }
 
     @Override
@@ -248,6 +250,19 @@ public class ConfirmationActionTest extends MgnlTestCase {
         assertTrue(actionExecutor.getArgument() instanceof List);
         assertEquals("/node1", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(0).getJcrItem()));
         assertEquals("/node1@property_long", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(1).getJcrItem()));
+    }
+
+    @Test
+    public void testConfirmationActionShouldNotFailOnInvalidI18nMessage() throws Exception {
+        //GIVEN
+        definition.setConfirmationHeader("There'{0,choice,0#re no files|1#s one file|1<re {0} files}.");
+
+        //WHEN
+        String s = confirmationAction.getConfirmationHeader();
+
+        //THEN
+        // should not throw IllegalArgumentException
+        assertEquals("There{0,choice,0#re no files|1#s one file|1<re {0} files}.", s);
     }
 
     /**
