@@ -51,10 +51,12 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
  * Creates and initializes a select field with system languages, as configured under <code>CONFIG:/server/i18n/system/languages</code>.
@@ -68,6 +70,8 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
     private static final Logger log = LoggerFactory.getLogger(SystemLanguagesFieldDefinition.class);
 
     private final Context context;
+
+    private String selectedLanguage;
 
     @Inject
     public SystemLanguagesFieldFactory(D definition, Item relatedFieldItem, Context context) {
@@ -110,6 +114,7 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
                         option.setLabel(label);
                         if (currentLocale.equals(locale) || currentLocale.getLanguage().equals(locale.getLanguage())) {
                             option.setSelected(true);
+                            selectedLanguage = option.getValue();
                         }
                         options.add(option);
                     }
@@ -119,5 +124,10 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
             }
         }
         return options;
+    }
+
+    @Override
+    protected Object createDefaultValue(Property<?> dataSource) {
+        return StringUtils.isNotBlank(selectedLanguage) ? selectedLanguage : super.createDefaultValue(dataSource);
     }
 }
