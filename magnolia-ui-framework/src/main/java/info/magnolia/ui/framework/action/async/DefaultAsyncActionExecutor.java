@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015 Magnolia International
+ * This file Copyright (c) 2015-2016 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -121,7 +121,8 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
         jd.getJobDataMap().put(SchedulerConsts.CONFIG_JOB_PARAMS, params);
 
         Scheduler scheduler = schedulerModuleProvider.get().getScheduler();
-        scheduler.addTriggerListener(getListener(jobName, item));
+        TriggerListener triggerListener = getListener(jobName, item);
+        scheduler.addTriggerListener(triggerListener);
         try {
             scheduler.scheduleJob(jd, trigger);
         }
@@ -143,8 +144,16 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
             timeToWait -= timeToSleep;
         }
 
-        // action execution is running in background
-        return (timeToWait == 0);
+        boolean isRunningInBackground = (timeToWait == 0);
+        // Throw error in case job completed and job result is unsuccessful
+        if (!isRunningInBackground && triggerListener instanceof DefaultAsyncActionExecutor.CommandActionTriggerListener) {
+            CommandActionTriggerListener commandActionTriggerListener = (CommandActionTriggerListener) triggerListener;
+
+            if (commandActionTriggerListener.getException() != null) {
+                throw commandActionTriggerListener.getException();
+            }
+        }
+        return isRunningInBackground;
     }
 
     protected TriggerListener getListener(String jobName, JcrItemAdapter item) throws RepositoryException {
@@ -172,6 +181,7 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
         private final String successMessage;
         private final String errorMessageTitle;
         private final String errorMessage;
+        private Exception exception = null;
 
         @Inject
         public CommandActionTriggerListener(D definition, String triggerName, UiContext uiContext, SimpleTranslator i18n, String path) {
@@ -203,6 +213,7 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
                     MessagesManager messagesManager = Components.getComponent(MessagesManager.class);
                     // result 1 stands for success, 0 for error - see info.magnolia.module.scheduler.CommandJob
                     CommandJob.JobResult result = (CommandJob.JobResult) jobExecutionContext.getResult();
+                    exception = result.getException();
                     if (result.isSuccess()) {
                         messagesManager.sendMessage(user.getName(), new Message(MessageType.INFO, successMessageTitle, successMessage));
                     } else {
@@ -214,6 +225,10 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
                     }
                 }
             });
+        }
+
+        public Exception getException() {
+            return exception;
         }
     }
 }
