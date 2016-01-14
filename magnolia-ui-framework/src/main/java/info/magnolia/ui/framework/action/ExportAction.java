@@ -33,31 +33,24 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
 
 /**
  * Action for exporting a node to XML format. Uses the export command to perform the serialization to XML then sends the
@@ -66,37 +59,39 @@ import com.vaadin.server.StreamResource;
  * @see ExportActionDefinition
  */
 public class ExportAction extends AbstractCommandAction<ExportActionDefinition> {
-    private static final Logger log = LoggerFactory.getLogger(ExportAction.class);
-    private File fileOutput;
-    private FileOutputStream fileOutputStream;
+
+    private final static Logger log = LoggerFactory.getLogger(ExportAction.class);
+
+    private TempFileStreamResource tempFileStreamResource;
 
     @Inject
     public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext, i18n);
-        try {
-            // Create a temporary file that will hold the data created by the export command.
-            fileOutput = File.createTempFile(item.getItemId().getUuid(), ".xml", Path.getTempDirectory());
-            // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
-            fileOutputStream = new FileOutputStream(fileOutput);
-        } catch (Exception e) {
-            throw new ActionExecutionException("Not able to create a temporary file.", e);
-        }
+    }
+
+    @Override
+    protected void onPreExecute() throws Exception {
+        tempFileStreamResource = new TempFileStreamResource();
+        tempFileStreamResource.setTempFileName(getCurrentItem().getItemId().getUuid());
+        tempFileStreamResource.setTempFileExtension("xml");
+
+        super.onPreExecute();
     }
 
     /**
      * After command execution we push the created XML to the client browser.<br>
      * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export command.<br>
-     * This temporary file is the used to create a {@link DeleteOnCloseFileInputStream} that ensure that this temporary file is removed once the <br>
+     * This temporary file is the used to create a {@code FileInputStream} that ensure that this temporary file is removed once the <br>
      * fileInputStream is closed by Vaadin resource component.
+     * Directs the created XML file to the user.
      */
     @Override
     protected void onPostExecute() throws Exception {
-        try {
-            ExportCommand exportCommand = (ExportCommand) getCommand();
-            openFileInBlankWindow(exportCommand.getFileName(), exportCommand.getMimeExtension());
-        } finally {
-            IOUtils.closeQuietly(fileOutputStream);
-        }
+        final ExportCommand exportCommand = (ExportCommand) getCommand();
+        tempFileStreamResource.setFilename(exportCommand.getFileName());
+        tempFileStreamResource.setMIMEType(exportCommand.getMimeExtension());
+        // Opens the resource for download
+        Page.getCurrent().open(tempFileStreamResource, "", true);
     }
 
     @Override
@@ -105,53 +100,19 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
         params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.FALSE);
-        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, fileOutputStream);
+        try {
+            params.put(ExportCommand.EXPORT_OUTPUT_STREAM, tempFileStreamResource.getTempFileOutputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to bind command to temp file output stream: ", e);
+        }
         return params;
     }
 
-    protected void openFileInBlankWindow(String fileName, String mimeType) {
-        StreamResource.StreamSource source = new StreamResource.StreamSource() {
-            @Override
-            public InputStream getStream() {
-                try {
-                    return new DeleteOnCloseFileInputStream(fileOutput);
-                } catch (IOException e) {
-                    log.warn("Not able to create an InputStream from the OutputStream. Return null", e);
-                    return null;
-                }
-            }
-        };
-        StreamResource resource = new StreamResource(source, fileName);
-        // Accessing the DownloadStream via getStream() will set its cacheTime to whatever is set in the parent
-        // StreamResource. By default it is set to 1000 * 60 * 60 * 24, thus we have to override it beforehand.
-        // A negative value or zero will disable caching of this stream.
-        resource.setCacheTime(-1);
-        resource.getStream().setParameter("Content-Disposition", "attachment; filename=" + fileName + "\"");
-        resource.setMIMEType(mimeType);
-
-        Page.getCurrent().open(resource, "", true);
-    }
-
     /**
-     * Implementation of {@link FileInputStream} that ensure that the {@link File} <br>
-     * used to construct this class is deleted on close() call.
+     * @deprecated Deprecated since 5.3.13 without replacement.
      */
-    private class DeleteOnCloseFileInputStream extends FileInputStream {
-        private File file;
-        private final Logger log = LoggerFactory.getLogger(DeleteOnCloseFileInputStream.class);
-
-        public DeleteOnCloseFileInputStream(File file) throws FileNotFoundException {
-            super(file);
-            this.file = file;
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-            if (file.exists() && !file.delete()) {
-                log.warn("Could not delete temporary export file {}", file.getAbsolutePath());
-            }
-        }
-
+    @Deprecated
+    protected void openFileInBlankWindow(String fileName, String mimeType) {
+        log.warn("ExportAction#openFileInBlankWindow() is deprecated will be removed in a future major release.");
     }
 }
