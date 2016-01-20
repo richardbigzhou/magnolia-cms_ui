@@ -33,11 +33,18 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.core.version.VersionedNode;
+import info.magnolia.cms.core.version.VersionedNodeChild;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 
@@ -49,6 +56,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
+import javax.jcr.version.Version;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -250,6 +258,70 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         // THEN
         assertTrue(res.getProperty("multiple").isMultiple());
         assertEquals(4, res.getProperty("multiple").getValues().length);
+    }
+
+    @Test
+    public void testGetJcrItemReturnWrappedVersionedNode() throws Exception {
+        //GIVEN
+        VersionManager versionMan = Components.getComponent(VersionManager.class);
+        Version version = versionMan.addVersion(node);
+        Node versionedNode = versionMan.getVersion(node, version.getName());
+
+        //WHEN
+        JcrNodeAdapter adapter = new JcrNodeAdapter(versionedNode);
+        Node item = adapter.getJcrItem();
+
+        //THEN
+        assertThat(item, instanceOf(VersionedNode.class));
+        assertThat(item.getPrimaryNodeType().getName(), equalTo(NodeTypes.Content.NAME));
+    }
+
+    @Test
+    public void testGetJcrItemReturnWrappedVersionedNodeChild() throws Exception {
+        //GIVEN
+        VersionManager versionMan = Components.getComponent(VersionManager.class);
+        String childNodeName = "childNode";
+        String dummyNodeName = "dummy1";
+        node.addNode(dummyNodeName, NodeTypes.ContentNode.NAME).addNode(childNodeName, NodeTypes.ContentNode.NAME).addNode("dummy2", NodeTypes.ContentNode.NAME);
+        node.getNode(dummyNodeName).addNode("dummy3", NodeTypes.ContentNode.NAME).addNode("dummy4", NodeTypes.ContentNode.NAME);
+        node.getSession().save();
+        Version version = versionMan.addVersion(node);
+        Node versionedNode = versionMan.getVersion(node, version.getName());
+        Node versionedDummy = versionedNode.getNode(dummyNodeName);
+        Node versionedNodeChild = versionedDummy.getNode(childNodeName);
+
+        //WHEN
+        JcrNodeAdapter adapter = new JcrNodeAdapter(versionedNodeChild);
+        Node item = adapter.getJcrItem();
+
+        //THEN
+        assertThat(item, instanceOf(VersionedNodeChild.class));
+        assertThat(item.getName(), equalTo(childNodeName));
+        assertThat(item.getPrimaryNodeType().getName(), equalTo(NodeTypes.ContentNode.NAME));
+    }
+
+    @Test
+    public void testGetJcrItemReturnWrappedVersionedNodeChildProperty() throws Exception {
+        //GIVEN
+        VersionManager versionMan = Components.getComponent(VersionManager.class);
+        String childNodeName = "childNode";
+        String testPropertyName = "testProperty";
+        String testPropertyValue = "testPropertyValue";
+        node.addNode(childNodeName, NodeTypes.ContentNode.NAME).setProperty(testPropertyName, testPropertyValue);
+        node.getSession().save();
+        Version version = versionMan.addVersion(node);
+        Node versionedNode = versionMan.getVersion(node, version.getName());
+        Node versionedNodeChild = versionedNode.getNode(childNodeName);
+        node.getNode(childNodeName).getProperty(testPropertyName).remove();
+        node.getSession().save();
+
+        //WHEN
+        JcrNodeAdapter adapter = new JcrNodeAdapter(versionedNodeChild);
+        Property item = adapter.getItemProperty(testPropertyName);
+
+        //THEN
+        assertThat(node, not(hasProperty(testPropertyName, testPropertyValue)));
+        assertEquals(item.getValue(), testPropertyValue);
     }
 
 }

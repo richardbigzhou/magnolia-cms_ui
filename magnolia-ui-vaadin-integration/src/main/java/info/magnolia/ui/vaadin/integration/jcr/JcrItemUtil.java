@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.core.version.VersionedNode;
+import info.magnolia.cms.core.version.VersionedNodeChild;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +96,12 @@ public class JcrItemUtil {
         String workspaceName = itemId.getWorkspace();
         try {
             node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(itemId.getUuid());
+            if (itemId instanceof VersionedChildJcrItemId) {
+                Node parent = Components.getComponent(VersionManager.class).getVersion(node, ((VersionedChildJcrItemId) itemId).getParent().getVersionName());
+                node = parent.getNode(((VersionedChildJcrItemId) itemId).getRelPath());
+            } else if (itemId instanceof VersionedJcrItemId) {
+                node = Components.getComponent(VersionManager.class).getVersion(node, ((VersionedJcrItemId) itemId).getVersionName());
+            }
         } catch (ItemNotFoundException e) {
             log.debug("Couldn't find item with id {} in workspace {}.", itemId, workspaceName);
             return null;
@@ -101,7 +111,7 @@ public class JcrItemUtil {
             return node;
         }
 
-        final String propertyName = ((JcrPropertyItemId)itemId).getPropertyName();
+        final String propertyName = ((JcrPropertyItemId) itemId).getPropertyName();
         if (node.hasProperty(propertyName)) {
             return node.getProperty(propertyName);
         }
@@ -112,13 +122,42 @@ public class JcrItemUtil {
         return getJcrItem(itemId) != null;
     }
 
+    /**
+     * Returns the ItemId for given JCR Item or return null if given null.
+     *
+     * returns JcrItemId for Node
+     * returns VersionedJcrItemId for VersionedNode
+     * returns VersionedChildJcrItemId for VersionedNodeChild
+     */
     public static JcrItemId getItemId(final Item jcrItem) throws RepositoryException {
         if (jcrItem == null) {
             return null;
         }
 
         if (jcrItem.isNode()) {
-            return new JcrNodeItemId(((Node) jcrItem).getIdentifier(), jcrItem.getSession().getWorkspace().getName());
+            String identifier = ((Node) jcrItem).getIdentifier();
+            String workspace = jcrItem.getSession().getWorkspace().getName();
+            if (jcrItem instanceof VersionedNode) {
+                identifier = ((VersionedNode) jcrItem).getBaseNode().getIdentifier();
+                workspace = jcrItem.getSession().getWorkspace().getName();
+                return new VersionedJcrItemId(identifier, workspace, ((VersionedNode) jcrItem).unwrap().getName());
+            } else if (jcrItem instanceof VersionedNodeChild) {
+                Node parent = jcrItem.getParent();
+                String relpath = jcrItem.getName();
+
+                while (parent instanceof VersionedNodeChild) {
+                    relpath = parent.getName() + "/" + relpath;
+                    parent = parent.getParent();
+                }
+
+                identifier = ((VersionedNode) parent).getBaseNode().getIdentifier();
+                workspace = parent.getSession().getWorkspace().getName();
+                VersionedJcrItemId parentItemId = new VersionedJcrItemId(identifier, workspace, ((VersionedNode) parent).unwrap().getName());
+
+                return new VersionedChildJcrItemId(parentItemId, relpath);
+            }
+
+            return new JcrNodeItemId(identifier, workspace);
         } else {
             return new JcrPropertyItemId((jcrItem.getParent()).getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName());
         }
