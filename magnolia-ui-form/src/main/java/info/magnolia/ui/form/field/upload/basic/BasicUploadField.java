@@ -558,7 +558,7 @@ public class BasicUploadField<T extends UploadReceiver> extends AbstractUploadFi
 
     @Override
     protected void displayUploadFailedNote(String fileName) {
-        uiContext.openAlert(MessageStyleTypeEnum.ERROR, "ERROR", getCaption(errorNoteCaption, new String[] { fileName }), "ok", null);
+        uiContext.openAlert(MessageStyleTypeEnum.ERROR, "ERROR", getCaption(errorNoteCaption, new String[] { fileName }), i18n.translate("button.ok"), null);
     }
 
     public void setEditFileName(boolean editFileName) {

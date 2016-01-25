@@ -63,7 +63,6 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void selectElement(Element element) {
 
-
         MgnlElement mgnlElement = model.getMgnlElement(element);
 
         if (model.isMoving()) {
@@ -103,7 +102,7 @@ public class FocusModelImpl implements FocusModel {
         for (MgnlArea root : model.getRootAreas()) {
             root.setVisible(true);
 
-            if(root.getComponents().isEmpty()) {
+            if (root.getComponents().isEmpty()) {
                 root.setPlaceHolderVisible(true);
             }
         }
@@ -124,7 +123,7 @@ public class FocusModelImpl implements FocusModel {
             return;
         }
         if (currentComponent != null) {
-                currentComponent.removeFocus();
+            currentComponent.removeFocus();
         }
         if (component != null) {
             component.setFocus();
@@ -235,7 +234,9 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void select(MgnlElement mgnlElement) {
         mgnlElement = (mgnlElement != null) ? mgnlElement : model.getRootPage();
-        eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
+        if (mgnlElement != null) {
+            eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
+        }
     }
 
 }

@@ -10,10 +10,17 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-widget-editor</name>
   <properties>
-    <cloverCoverageThreshold>8</cloverCoverageThreshold>
+    <cloverCoverageThreshold>5</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
+      <!-- To get gwt debugger working in intellij you need to add a GWT
+        Facet to this project. Otherwise it won't recognize it as a GWT project.
+        Use the gwt-maven-plugin to tell the Facet which GWT SDK to use. -->
+      <plugin>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>

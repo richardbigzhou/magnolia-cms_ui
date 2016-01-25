@@ -52,14 +52,10 @@ import com.google.gwt.dom.client.Node;
  */
 public class ModelImpl implements Model {
 
-    private Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
-
-    private Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
-
     public MgnlPage rootPage;
-
     public List<MgnlArea> rootAreas = new LinkedList<MgnlArea>();
-
+    private Map<MgnlElement, List<Element>> elements = new HashMap<MgnlElement, List<Element>>();
+    private Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
     private MgnlArea selectedMgnlAreaElement = null;
 
     private MgnlComponent selectedMgnlComponentElement = null;
@@ -126,13 +122,13 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void setSelectedArea(MgnlArea selectedMgnlAreaElement) {
-        this.selectedMgnlAreaElement = selectedMgnlAreaElement;
+    public MgnlArea getSelectedArea() {
+        return selectedMgnlAreaElement;
     }
 
     @Override
-    public MgnlArea getSelectedArea() {
-        return selectedMgnlAreaElement;
+    public void setSelectedArea(MgnlArea selectedMgnlAreaElement) {
+        this.selectedMgnlAreaElement = selectedMgnlAreaElement;
     }
 
     @Override

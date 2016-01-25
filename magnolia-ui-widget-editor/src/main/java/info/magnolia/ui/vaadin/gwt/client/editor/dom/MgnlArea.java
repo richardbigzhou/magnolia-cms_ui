@@ -240,12 +240,20 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
     public void toggleInitFocus(boolean visible) {
         if (visible) {
-            getControlBar().addStyleName(EDITOR_INIT_CLASS_NAME);
-            getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
-            getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+            if (getControlBar() != null) {
+                getControlBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+            }
+            if (getAreaEndBar() != null) {
+                getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+                getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+            }
         } else {
-            getControlBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
-            getAreaEndBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
+            if (getControlBar() != null) {
+                getControlBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
+            }
+            if (getAreaEndBar() != null) {
+                getAreaEndBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
+            }
         }
     }
 

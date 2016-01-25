@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ErrorType;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
@@ -108,6 +109,11 @@ public class PageEditor extends AbstractComponent {
             @Override
             public void stopMoveComponent() {
                 listener.onAction(PageEditorListener.ACTION_STOP_MOVE_COMPONENT);
+            }
+
+            @Override
+            public void onError(ErrorType errorType, String... parameters) {
+                listener.onError(errorType, parameters);
             }
         });
     }
