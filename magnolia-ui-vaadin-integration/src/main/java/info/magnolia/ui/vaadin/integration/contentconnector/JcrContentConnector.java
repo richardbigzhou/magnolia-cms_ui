@@ -188,7 +188,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
         try {
             Node node = (Node) JcrItemUtil.getJcrItem((JcrItemId) itemId);
             Version version = versionManager.getVersion(node, versionName);
-            return JcrItemUtil.getItemId(version.getFrozenNode());
+            return JcrItemUtil.getItemId(version);
         } catch (RepositoryException e) {
             log.error("Failed to find item version for id: " + itemId, e.getMessage());
         }
