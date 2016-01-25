@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.AbstractMapBasedContext;
 import info.magnolia.context.Context;
+import info.magnolia.objectfactory.annotation.LocalScoped;
 import info.magnolia.test.model.Color;
 import info.magnolia.test.model.Pair;
 
@@ -93,6 +94,28 @@ public class DefinitionClonerTest {
         assertNotSame(b1, b2);
         assertEquals(b1.ctx, b2.ctx);
         assertSame("Context should not be cloned, ie same instance should be referenced on both sides", b1.ctx, b2.ctx);
+    }
+
+    @Test
+    public void referencesToMagnoliaComponentsAreNotCloned() {
+        // GIVEN
+        final DummyClassWithMagnoliaComponentField foo1 = new DummyClassWithMagnoliaComponentField();
+
+        // WHEN
+        final DummyClassWithMagnoliaComponentField foo2 = new DefinitionCloner().deepClone(foo1);
+
+        // THEN
+        final Object b1 = foo1.dummyLocalScopedComponent;
+        final Object b2 = foo2.dummyLocalScopedComponent;
+        assertSame("Magnolia components should not be cloned, ie same instance should be referenced on both sides", b1, b2);
+    }
+
+    private class DummyClassWithMagnoliaComponentField {
+        Object dummyLocalScopedComponent = new DummyLocalScopedComponent();
+    }
+
+    @LocalScoped
+    private static class DummyLocalScopedComponent {
     }
 
     @Ignore("We're cloning form definitions in some corner cases and afterwards modify those. Introduce decorators for this.")
