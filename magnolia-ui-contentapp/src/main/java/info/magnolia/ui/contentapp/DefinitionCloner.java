@@ -34,6 +34,13 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.context.Context;
+import info.magnolia.objectfactory.annotation.LazySingleton;
+import info.magnolia.objectfactory.annotation.LocalScoped;
+import info.magnolia.objectfactory.annotation.SessionScoped;
+
+import java.util.Map;
+
+import javax.inject.Singleton;
 
 import com.rits.cloning.Cloner;
 
@@ -47,15 +54,21 @@ import com.rits.cloning.Cloner;
  * use extensively in the i18n mechanism. But that leads to the cloned object to still delegate method calls to the original
  * due to proxy specifics.
  */
-public class DefinitionCloner {
-    private final Cloner cloner;
+public class DefinitionCloner extends Cloner {
 
     public DefinitionCloner() {
-        this.cloner = new Cloner();
-        cloner.dontCloneInstanceOf(Context.class);
+        this.dontCloneInstanceOf(Context.class); //not every context is marked with an annotation, e.g. info.magnolia.context.WebContextFactoryImpl.createWebContext(), so we need to exclude all implementations
     }
 
-    public <T> T deepClone(final T definition) {
-        return cloner.deepClone(definition);
+    /**
+     * Doesn't clone classes with {@link Singleton}, {@link LazySingleton}, {@link SessionScoped} or {@link LocalScoped} annotation.
+     */
+    @Override
+    protected <T> T cloneInternal(T o, Map<Object, Object> clones) throws IllegalAccessException {
+        if (o == null) return null;
+        if (o.getClass().getAnnotation(Singleton.class) != null || o.getClass().getAnnotation(LazySingleton.class) != null || o.getClass().getAnnotation(SessionScoped.class) != null || o.getClass().getAnnotation(LocalScoped.class) != null) {
+            return o; //do not clone Magnolia components, this expect annotation to be set on the component and does not cover the cases when annotation on the component is not present.
+        }
+        return super.cloneInternal(o, clones);
     }
 }
