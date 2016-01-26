@@ -103,10 +103,10 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         // THEN
         assertEquals(2, options.size());
         assertEquals("en", options.get(0).getValue());
-        assertEquals((new Locale("en")).getDisplayLanguage(Locale.ENGLISH), options.get(0).getLabel());
+        assertEquals((new Locale("en")).getDisplayName(Locale.ENGLISH), options.get(0).getLabel());
         assertEquals("de_CH", options.get(1).getValue());
         Locale swissGerman = new Locale("de", "CH");
-        assertEquals(swissGerman.getDisplayLanguage(Locale.ENGLISH) + " (" + swissGerman.getDisplayCountry(Locale.ENGLISH) + ")", options.get(1).getLabel());
+        assertEquals(swissGerman.getDisplayName(swissGerman), options.get(1).getLabel());
     }
 
     @Test
@@ -120,10 +120,10 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         // THEN
         assertEquals(2, options.size());
         assertEquals("en", options.get(0).getValue());
-        assertEquals((new Locale("en")).getDisplayLanguage(Locale.GERMAN), options.get(0).getLabel());
+        assertEquals((new Locale("en")).getDisplayName(Locale.ENGLISH), options.get(0).getLabel());
         assertEquals("de_CH", options.get(1).getValue());
         Locale swissGerman = new Locale("de", "CH");
-        assertEquals(swissGerman.getDisplayLanguage(Locale.GERMAN) + " (" + swissGerman.getDisplayCountry(Locale.GERMAN) + ")", options.get(1).getLabel());
+        assertEquals(swissGerman.getDisplayName(swissGerman), options.get(1).getLabel());
     }
 
     @Test

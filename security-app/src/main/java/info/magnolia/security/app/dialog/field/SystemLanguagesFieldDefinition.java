@@ -49,6 +49,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +87,8 @@ public class SystemLanguagesFieldDefinition extends SelectFieldDefinition {
                         String langCode = language.hasProperty("language") ? language.getProperty("language").getString() : language.getName().substring(0, 2);
                         String countryCode = language.hasProperty("country") ? language.getProperty("country").getString() : "";
                         Locale locale = new Locale(langCode, countryCode);
-                        String label = locale.getDisplayLanguage(currentLocale);
-                        if (!"".equals(countryCode)) {
-                            label += " (" + locale.getDisplayCountry(currentLocale) + ")";
-                        }
-                        option.setLabel(label);
+                        String label = locale.getDisplayName(locale);
+                        option.setLabel(WordUtils.capitalize(label));
                         if (currentLocale.equals(locale) || currentLocale.getLanguage().equals(locale.getLanguage())) {
                             option.setSelected(true);
                         }
