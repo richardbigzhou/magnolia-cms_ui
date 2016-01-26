@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.availability;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.context.MgnlContext;
@@ -42,6 +43,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.VersionedChildJcrItemId;
+import info.magnolia.ui.vaadin.integration.jcr.VersionedJcrItemId;
 
 import java.util.Arrays;
 
@@ -113,4 +116,27 @@ public class IsNotVersionedRuleTest extends RepositoryTestCase {
         assertFalse(isAvailable);
     }
 
+    @Test
+    public void testWithVersionedJcrItemId() {
+        // GIVEN
+        Object itemId = mock(VersionedJcrItemId.class);
+
+        // WHEN
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
+
+        // THEN
+        assertFalse(isAvailable);
+    }
+
+    @Test
+    public void testWithVersionedChildJcrItemId() {
+        // GIVEN
+        Object itemId = mock(VersionedChildJcrItemId.class);
+
+        // WHEN
+        boolean isAvailable = rule.isAvailable(Arrays.asList(itemId));
+
+        // THEN
+        assertFalse(isAvailable);
+    }
 }
