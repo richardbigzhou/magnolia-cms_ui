@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.transformer.composite;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +68,22 @@ public class SwitchableTransformer extends CompositeTransformer {
 
     @Override
     public void writeToItem(PropertysetItem newValues) {
-        super.writeToItem(newValues);
+        // Alter newsValues to clear all data that not belong to selections
+        String currentSelection = (String) newValues.getItemProperty(propertyPrefix).getValue();
+
+        // Get iterator.
+        Collection<String> propertyNames = (Collection<String>) newValues.getItemPropertyIds();
+        for (String propertyName : propertyNames) {
+
+            String compositePropertyName = getCompositePropertyName(propertyName);
+            if (!propertyName.equals(currentSelection) && !propertyName.equals(propertyPrefix)) {
+                relatedFormItem.removeItemProperty(compositePropertyName);
+            } else {
+                if (newValues.getItemProperty(propertyName) != null) {
+                    relatedFormItem.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
+                }
+            }
+        }
     }
 
     @Override

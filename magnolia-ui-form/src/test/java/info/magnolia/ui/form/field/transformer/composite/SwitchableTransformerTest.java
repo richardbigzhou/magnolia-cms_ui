@@ -153,8 +153,6 @@ public class SwitchableTransformerTest {
         assertEquals("hidden", jcrNode.getProperty("switch").getString());
         assertTrue(jcrNode.hasProperty("switchhidden"));
         assertTrue(jcrNode.getProperty("switchhidden").getBoolean());
-        assertTrue(jcrNode.hasProperty("switchtext"));
-        assertEquals("hop!", jcrNode.getProperty("switchtext").getString());
     }
 
     @Test
