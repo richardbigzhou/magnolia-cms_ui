@@ -41,6 +41,7 @@ import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.ui.vaadin.integration.jcr.VersionedJcrItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -58,6 +59,9 @@ public class IsNotVersionedRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Object itemId) {
+        if (itemId instanceof VersionedJcrItemId) {
+            return false;
+        }
         if (itemId instanceof JcrItemId && !(itemId instanceof JcrPropertyItemId)) {
             JcrItemId jcrItemId = (JcrItemId) itemId;
             Node node = SessionUtil.getNodeByIdentifier(jcrItemId.getWorkspace(), jcrItemId.getUuid());
