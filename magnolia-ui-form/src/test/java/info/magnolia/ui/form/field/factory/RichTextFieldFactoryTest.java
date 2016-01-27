@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -60,14 +60,15 @@ import com.vaadin.util.CurrentInstance;
 public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichTextFieldDefinition> {
 
     private RichTextFieldFactory richTextFieldFactory;
-    private AppController controller;
+    private AppController appController;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        controller = mock(AppController.class);
-        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, controller, mock(UiContext.class), mock(SimpleTranslator.class));
+        appController = mock(AppController.class);
+        SimpleTranslator i18n = mock(SimpleTranslator.class);
+        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport, appController, i18n);
         richTextFieldFactory.setComponentProvider(componentProvider);
 
         CurrentInstance.set(VaadinRequest.class, mock(VaadinRequest.class));
@@ -97,7 +98,7 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
         field.changeVariables(null, variables);
 
         // THEN
-        verify(controller, atLeastOnce()).openChooseDialog(anyString(), any(UiContext.class), eq("/travel"), any(ChooseDialogCallback.class));
+        verify(appController, atLeastOnce()).openChooseDialog(anyString(), any(UiContext.class), eq("/travel"), any(ChooseDialogCallback.class));
     }
 
     @Override

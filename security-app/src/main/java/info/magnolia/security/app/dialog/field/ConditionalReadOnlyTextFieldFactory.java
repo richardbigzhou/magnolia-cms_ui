@@ -33,7 +33,12 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.factory.TextFieldFactory;
+
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,8 +53,17 @@ import com.vaadin.ui.Field;
  */
 public class ConditionalReadOnlyTextFieldFactory extends TextFieldFactory {
 
+    @Inject
+    public ConditionalReadOnlyTextFieldFactory(ConditionalReadOnlyTextFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #ConditionalReadOnlyTextFieldFactory(ConditionalReadOnlyTextFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public ConditionalReadOnlyTextFieldFactory(ConditionalReadOnlyTextFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

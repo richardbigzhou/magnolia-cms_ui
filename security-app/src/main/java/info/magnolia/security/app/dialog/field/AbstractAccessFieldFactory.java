@@ -34,8 +34,11 @@
 package info.magnolia.security.app.dialog.field;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -52,8 +55,16 @@ import com.vaadin.data.Item;
  */
 public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<D, Object> {
 
+    protected AbstractAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #AbstractAccessFieldFactory(FieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     protected AbstractAccessFieldFactory(D definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     protected AbstractJcrNodeAdapter getOrAddAclItem(JcrNodeAdapter roleItem, String aclName) throws RepositoryException {

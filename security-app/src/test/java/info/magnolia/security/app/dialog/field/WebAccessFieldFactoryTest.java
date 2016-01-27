@@ -97,7 +97,7 @@ public class WebAccessFieldFactoryTest extends AbstractFieldFactoryTestCase<WebA
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
 
-        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, i18n);
+        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -132,7 +132,7 @@ public class WebAccessFieldFactoryTest extends AbstractFieldFactoryTestCase<WebA
         JcrNodeAdapter item = new JcrNodeAdapter(session.getNode("/role"));
 
         WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
-        WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item, i18n);
+        WebAccessFieldFactory builder = new WebAccessFieldFactory<>(definition, item, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();

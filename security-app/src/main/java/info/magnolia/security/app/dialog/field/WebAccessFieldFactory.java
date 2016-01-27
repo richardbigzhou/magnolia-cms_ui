@@ -37,11 +37,15 @@ import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -72,9 +76,18 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
     private final SimpleTranslator i18n;
 
-    public WebAccessFieldFactory(D definition, Item relatedFieldItem, SimpleTranslator i18n) {
-        super(definition, relatedFieldItem);
+    @Inject
+    public WebAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, SimpleTranslator i18n) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.i18n = i18n;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #WebAccessFieldFactory(WebAccessFieldDefinition, Item, UiContext, I18NAuthoringSupport, SimpleTranslator)} instead.
+     */
+    @Deprecated
+    public WebAccessFieldFactory(D definition, Item relatedFieldItem, SimpleTranslator i18n) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), i18n);
     }
 
     @Override

@@ -33,8 +33,13 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -45,8 +50,17 @@ import com.vaadin.ui.Field;
  */
 public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefinition, Boolean> {
 
+    @Inject
+    public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #CheckBoxFieldFactory(CheckboxFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public CheckBoxFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,13 +63,13 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void simpleTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
 
         // WHEN
         Field field = twinSelect.createField();
 
         // THEN
-        assertEquals(true, field instanceof TwinColSelect);
+        assertThat(field, instanceOf(TwinColSelect.class));
         Collection<?> items = ((TwinColSelect) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("[]", field.getValue().toString());
@@ -80,13 +80,13 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void multiSelectTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
         Field field = twinSelect.createField();
         // WHEN
-        ArrayList<String> selected = new ArrayList<String>();
+        ArrayList<String> selected = new ArrayList<>();
         selected.add("1");
         selected.add("3");
-        ((TwinColSelect) field).setValue(selected);
+        field.setValue(selected);
 
         // THEN
         assertEquals(2, ((Collection) field.getValue()).toArray().length);
@@ -99,16 +99,16 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void multiSelectTwinColField_ItemResult_Test() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
         Field field = twinSelect.createField();
         // WHEN
-        ArrayList<String> selected = new ArrayList<String>();
+        ArrayList<String> selected = new ArrayList<>();
         selected.add("1");
         selected.add("3");
-        ((TwinColSelect) field).setValue(selected);
+        field.setValue(selected);
 
         // THEN
-        Property res = ((JcrNodeAdapter) baseItem).getItemProperty("propertyName");
+        Property res = baseItem.getItemProperty("propertyName");
         ;
 
         assertEquals(2, ((LinkedHashSet<String>) res.getValue()).size());

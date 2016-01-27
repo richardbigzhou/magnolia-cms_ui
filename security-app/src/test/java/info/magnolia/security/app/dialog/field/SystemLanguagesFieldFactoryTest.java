@@ -95,7 +95,7 @@ public class SystemLanguagesFieldFactoryTest extends AbstractFieldFactoryTestCas
         ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
         JcrNodeAdapter item = new JcrNodeAdapter(session.getRootNode());
-        systemLanguagesFieldFactory = new SystemLanguagesFieldFactory<>(definition, item, MgnlContext.getInstance());
+        systemLanguagesFieldFactory = new SystemLanguagesFieldFactory<>(definition, item, null, null, MgnlContext.getInstance());
     }
 
     @Test

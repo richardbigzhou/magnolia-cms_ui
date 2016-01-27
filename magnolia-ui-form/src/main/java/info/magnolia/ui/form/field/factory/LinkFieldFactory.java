@@ -37,6 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -72,11 +73,19 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
     private ComponentProvider componentProvider;
 
     @Inject
-    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem);
+    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, AppController appController, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #LinkFieldFactory(LinkFieldDefinition, Item, UiContext, I18NAuthoringSupport, AppController, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, uiContext, componentProvider.getComponent(I18NAuthoringSupport.class), appController, componentProvider);
     }
 
     @Override

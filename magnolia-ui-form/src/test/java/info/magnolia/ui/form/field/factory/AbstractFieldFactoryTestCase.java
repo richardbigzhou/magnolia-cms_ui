@@ -81,13 +81,18 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     protected D definition;
     protected MockComponentProvider componentProvider;
     protected I18NAuthoringSupport i18NAuthoringSupport;
+    protected UiContext uiContext;
 
     @Before
     public void setUp() throws Exception {
-        // Init Message & Providers
+
+        uiContext = mock(UiContext.class);
+        ComponentsTestUtil.setInstance(UiContext.class, uiContext);
 
         i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
         ComponentsTestUtil.setInstance(I18NAuthoringSupport.class, i18NAuthoringSupport);
+
+        // Init Message & Providers
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);

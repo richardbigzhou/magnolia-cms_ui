@@ -39,6 +39,8 @@ import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -85,10 +87,18 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
     private ComponentProvider componentProvider;
 
     @Inject
-    public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem, componentProvider);
+    public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport, componentProvider);
         this.definition.setOptions(getSelectFieldOptionDefinition());
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #GroupManagementFieldFactory(GroupManagementFieldDefinition, Item, UiContext, I18NAuthoringSupport, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, null, componentProvider.getComponent(I18NAuthoringSupport.class), componentProvider);
     }
 
     @Override

@@ -79,17 +79,17 @@ import com.vaadin.ui.Label;
  * @param <T> field value type
  */
 public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends AbstractFormItem implements FieldFactory {
+
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldFactory.class);
-    protected Item item;
-    private UiContext uiContext;
-    private I18NAuthoringSupport i18NAuthoringSupport;
 
     protected Field<T> field;
-
     protected D definition;
-    private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
-    private ComponentProvider componentProvider;
+    protected Item item;
 
+    private FieldValidatorFactoryFactory fieldValidatorFactoryFactory;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+    private ComponentProvider componentProvider;
+    private UiContext uiContext;
     private Locale locale;
 
     @Inject
@@ -286,11 +286,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * This allows to add additional constructor parameter if needed.<br>
      */
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        /**
-         * I18NAuthoringSupport is passed through Components utility for test purposes
-         * since version 5.4.1 - otherwise all the existing field factory tests would have to be adapted.
-         */
-        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), i18NAuthoringSupport);
     }
 
     /**
