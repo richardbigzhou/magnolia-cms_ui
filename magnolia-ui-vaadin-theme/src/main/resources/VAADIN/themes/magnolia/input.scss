@@ -7,7 +7,6 @@
   .gwt-CheckBox {
     font-size: 12px;
     line-height: 15px;
-    padding-right: 15px;
 
     label {
       display: inline-block;
@@ -34,14 +33,12 @@
     }
   }
 
-
   .v-checkbox,
   .gwt-CheckBox {
 
     input[type="checkbox"] + label {
       background-image: url('img/icon-checkbox_off.png'); /* SVG with PNG fallback */
       background-image: none, url('img/icon-checkbox_off.svg');
-
     }
 
     input[type="checkbox"]:checked + label {
@@ -54,10 +51,18 @@
   .v-select-optiongroup {
     font-size: 12px;
     line-height: 15px;
-    padding-top: 3px;
 
     .v-select-option {
       padding-bottom: 3px;
+    }
+  }
+
+  .v-select-optiongroup-horizontal {
+    white-space: nowrap;
+
+    .v-select-option {
+      display: inline-block;
+      padding-right: 15px;
     }
   }
 

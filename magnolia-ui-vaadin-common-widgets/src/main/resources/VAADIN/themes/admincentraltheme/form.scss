@@ -171,6 +171,14 @@ button.btn-form-wide {
   padding-right: 40px;
   padding-left: 150px;
   display: block;
+
+  .v-select-optiongroup {
+    padding-top: 3px;
+  }
+
+  .v-datefield-button {
+    margin: 2px 0 0 3px;
+  }
 }
 
 .validation-highlight {
@@ -314,10 +322,6 @@ fieldset {
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {
     display: none !important;
-}
-
-.v-form-field-container .v-datefield-button {
-    margin: 2px 0 0 3px;
 }
 
 .v-form-field-label span.requiredfield,
