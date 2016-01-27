@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
@@ -55,9 +57,17 @@ public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> e
     private ComponentProvider componentProvider;
 
     @Inject
-    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem);
+    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #TwinColSelectFieldFactory(TwinColSelectFieldDefinition, Item, UiContext, I18NAuthoringSupport, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, null, componentProvider.getComponent(I18NAuthoringSupport.class), componentProvider);
     }
 
     @Override

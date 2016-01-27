@@ -39,7 +39,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.vaadin.aceeditor.AceMode.forFileEnding;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
+
+import javax.inject.Inject;
 
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
@@ -63,8 +68,17 @@ public class CodeFieldFactory extends AbstractFieldFactory<CodeFieldDefinition, 
 
     private AceEditor field;
 
+    @Inject
+    public CodeFieldFactory(CodeFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #CodeFieldFactory(CodeFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public CodeFieldFactory(CodeFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

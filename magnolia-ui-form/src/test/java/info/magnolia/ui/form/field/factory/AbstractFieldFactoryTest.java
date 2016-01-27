@@ -41,6 +41,8 @@ import java.util.Locale;
 
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.converter.StringToCalendarConverter;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -85,7 +87,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
             @Override
             public Object answer(InvocationOnMock inv) throws Throwable {
                 Object[] args = inv.getArguments();
-                return new BasicTransformer((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3], i18NAuthoringSupport);
+                return new BasicTransformer<>((Item)args[1], (ConfiguredFieldDefinition)args[2], (Class<?>)args[3], i18NAuthoringSupport);
             }
         }).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         componentProvider.setInstance(BasicTransformer.class, mock(BasicTransformer.class));
@@ -94,7 +96,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     @Test
     public void simpleInitializationTest() {
         // GIVEN
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<Object> field = fieldFactory.createField();
@@ -110,7 +112,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     @Test
     public void changePropertyValueTest() throws Exception {
         // GIVEN
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -135,7 +137,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNodeAdapter(baseNode);
         // Set do not change
         definition.setReadOnly(false);
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -155,7 +157,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void testValueForEmptyNewItem() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -171,7 +173,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -189,7 +191,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         definition.setDefaultValue("defaultValue");
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -207,7 +209,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName(), "newItem");
         baseItem.addItemProperty(propertyName, DefaultPropertyUtil.newDefaultProperty(String.class, "value"));
         definition.setDefaultValue("defaultValue");
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -224,7 +226,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         // Set property Type
         definition.setType("Double");
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         Field<Object> field = fieldFactory.createField();
 
@@ -247,7 +249,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void simpleI18NTest() {
         // GIVEN
         definition.setLabel("message.label");
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
@@ -264,7 +266,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         when(i18NAuthoringSupport.deriveLocalisedPropertyName(any(String.class), any(Locale.class))).thenReturn(Locale.CHINA.toString());
         definition.setLabel("label");
         definition.setI18n(true);
-        fieldFactory = new TestTextFieldFactory(definition, baseItem);
+        fieldFactory = new TestTextFieldFactory(definition, baseItem, null, null);
         fieldFactory.setLocale(Locale.CHINA);
         fieldFactory.setComponentProvider(this.componentProvider);
 
@@ -278,9 +280,9 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     @Test
     public void testPlainBeanItemSupport() throws Exception {
         // GIVEN
-        baseItem = new BeanItem<TestBean>(new TestBean("bar"));
+        baseItem = new BeanItem<>(new TestBean("bar"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
@@ -294,9 +296,9 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void testPropertysetItemSupport() throws Exception {
         // GIVEN
         baseItem = new PropertysetItem();
-        baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
+        baseItem.addItemProperty("foo", new ObjectProperty<>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
@@ -310,9 +312,9 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     public void testPropertysetItemSupportNonExistingProperty() throws Exception {
         // GIVEN
         baseItem = new PropertysetItem();
-        baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
+        baseItem.addItemProperty("foo", new ObjectProperty<>("fooValue"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "bar");
-        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
         // WHEN
         Field<?> field = fieldFactory.createField();
@@ -328,7 +330,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         def.setLabel("");
 
-        fieldFactory = new TestTextFieldFactory(def, baseItem);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, null);
         fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
@@ -352,7 +354,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
         def.setConverterClass(StringToCalendarConverter.class);
 
-        fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
+        fieldFactory = spy(new TestTextFieldFactory(def, baseItem, null, null));
         fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
@@ -368,7 +370,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new TextFieldDefinition(), "foo");
         def.setConverterClass(StringToCalendarConverter.class);
 
-        fieldFactory = spy(new TestTextFieldFactory(def, baseItem));
+        fieldFactory = spy(new TestTextFieldFactory(def, baseItem, null, null));
         fieldFactory.setComponentProvider(this.componentProvider);
 
         // WHEN
@@ -394,8 +396,8 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
      */
     public static class TestTextFieldFactory extends AbstractFieldFactory<FieldDefinition, Object> {
 
-        public TestTextFieldFactory(FieldDefinition definition, Item relatedFieldItem) {
-            super(definition, relatedFieldItem);
+        public TestTextFieldFactory(FieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+            super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         }
 
         @Override
@@ -410,8 +412,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
          */
         private class TestTextField extends TextField {
 
-            private Locale locale;
-
             @Override
             protected VaadinSession getSession() {
                 return Components.getComponentProvider().getComponent(VaadinSession.class);
@@ -419,7 +419,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
             @Override
             public void setLocale(Locale locale) {
-                this.locale = locale;
+                // do nothing
             }
         }
     }

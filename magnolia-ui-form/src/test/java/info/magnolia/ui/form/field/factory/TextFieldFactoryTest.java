@@ -53,7 +53,7 @@ public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextField
     @Test
     public void createSingleRowEditFieldTest() {
         // GIVEN
-        dialogEdit = new TextFieldFactory(definition, baseItem);
+        dialogEdit = new TextFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogEdit.setComponentProvider(componentProvider);
 
         // WHEN
@@ -69,7 +69,7 @@ public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextField
         // GIVEN
         definition.setRows(2);
         definition.setMaxLength(250);
-        dialogEdit = new TextFieldFactory(definition, baseItem);
+        dialogEdit = new TextFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogEdit.setComponentProvider(componentProvider);
 
         // WHEN

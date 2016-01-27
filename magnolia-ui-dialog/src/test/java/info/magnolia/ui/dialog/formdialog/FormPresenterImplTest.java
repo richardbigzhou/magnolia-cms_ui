@@ -154,7 +154,7 @@ public class FormPresenterImplTest {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 final TextFieldDefinition textFieldDefinition = (TextFieldDefinition) formDefinition.getTabs().get(0).getFields().get(0);
-                final TextFieldFactory fieldFactory = new TextFieldFactory(textFieldDefinition, item);
+                final TextFieldFactory fieldFactory = new TextFieldFactory(textFieldDefinition, item, null, null);
                 fieldFactory.setComponentProvider(componentProvider);
                 fieldFactory.setLocale(subAppContext.getAuthoringLocale());
                 return fieldFactory;

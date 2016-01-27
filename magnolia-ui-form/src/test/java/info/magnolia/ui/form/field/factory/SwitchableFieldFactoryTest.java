@@ -108,7 +108,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void createFieldComponentTest() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
+        factory = new SwitchableFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -343,7 +343,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     private void createField() {
-        factory = new SwitchableFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory = new SwitchableFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
         field = (SwitchableField) factory.createField();
     }

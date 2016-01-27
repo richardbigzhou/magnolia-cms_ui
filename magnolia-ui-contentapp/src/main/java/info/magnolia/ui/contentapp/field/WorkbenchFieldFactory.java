@@ -34,9 +34,12 @@
 package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.DefaultContentConnector;
@@ -63,15 +66,13 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
 
     @Inject
     public WorkbenchFieldFactory(
-
-            WorkbenchFieldDefinition definition,
-            Item relatedFieldItem,
+            WorkbenchFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport,
             WorkbenchPresenter workbenchPresenter,
             ContentConnector contentConnector,
             @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
 
-        super(definition, relatedFieldItem);
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
         this.contentConnector = contentConnector;
@@ -80,16 +81,20 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     }
 
     /**
-     * @deprecated since 5.3.4, replaced with {@link #WorkbenchFieldFactory(WorkbenchFieldDefinition, Item, WorkbenchPresenter, ContentConnector, EventBus, EventBus)}.
+     * @deprecated since 5.4.7 - use {@link #WorkbenchFieldFactory(WorkbenchFieldDefinition, Item, UiContext, I18NAuthoringSupport, WorkbenchPresenter, ContentConnector, EventBus, EventBus)} instead.
+     */
+    @Deprecated
+    public WorkbenchFieldFactory(WorkbenchFieldDefinition definition, Item relatedFieldItem, WorkbenchPresenter workbenchPresenter, ContentConnector contentConnector, @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), workbenchPresenter, contentConnector, chooseDialogEventBus, admincentralEventBus);
+    }
+
+    /**
+     * @deprecated since 5.3.4 - use {@link #WorkbenchFieldFactory(WorkbenchFieldDefinition, Item, UiContext, I18NAuthoringSupport, WorkbenchPresenter, ContentConnector, EventBus, EventBus)} instead.
      * Constructor should not be called explicitly, but rather use IoC anyway.
      */
     @Deprecated
-    public WorkbenchFieldFactory(
-            WorkbenchFieldDefinition definition,
-            Item relatedFieldItem,
-            WorkbenchPresenter workbenchPresenter,
-            @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
-        this(definition, relatedFieldItem, workbenchPresenter, new DefaultContentConnector(), eventBus, null);
+    public WorkbenchFieldFactory(WorkbenchFieldDefinition definition, Item relatedFieldItem, WorkbenchPresenter workbenchPresenter, @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), workbenchPresenter, new DefaultContentConnector(), eventBus, null);
     }
 
     @Override

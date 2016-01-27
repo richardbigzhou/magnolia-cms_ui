@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import static info.magnolia.ui.vaadin.integration.jcr.ModelConstants.JCR_NAME;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
@@ -57,7 +58,7 @@ public class CodeFieldFactoryTest extends AbstractFieldFactoryTestCase<CodeField
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        factory = new CodeFieldFactory(definition, baseItem);
+        factory = new CodeFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         factory.setComponentProvider(componentProvider);
     }
 
@@ -68,7 +69,7 @@ public class CodeFieldFactoryTest extends AbstractFieldFactoryTestCase<CodeField
         Field<String> field = factory.createField();
 
         // THEN
-        assertTrue(field instanceof AceEditor);
+        assertThat(field, instanceOf(AceEditor.class));
     }
 
     @Test

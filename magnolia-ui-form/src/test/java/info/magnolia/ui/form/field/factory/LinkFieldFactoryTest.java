@@ -48,11 +48,10 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.Field;
 
@@ -171,7 +170,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         Field<String> field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
-        ((LinkField) field).setValue(null);
+        field.setValue(null);
         ErrorMessage errorMessage = ((LinkField) field).getErrorMessage();
 
         // THEN
@@ -192,25 +191,22 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         when(validatorFactory.createFieldValidatorFactory(regexpValidator, baseItem)).thenReturn(regExpValidator);
 
         definition.setName(propertyName);
-        definition.setValidators(Arrays.asList((FieldValidatorDefinition) regexpValidator));
+        definition.setValidators(Lists.newArrayList((FieldValidatorDefinition) regexpValidator));
         definition.setRequired(true);
 
         setFactory(validatorFactory);
         Field<String> field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
-        ((LinkField) field).setValue("someValue");
+        field.setValue("someValue");
         ErrorMessage errorMessage = ((LinkField) field).getErrorMessage();
 
         // THEN
         assertNotNull(errorMessage);
     }
 
-    /**
-     * @param validatorFactory
-     */
     protected void setFactory(FieldValidatorFactoryFactory validatorFactory) {
-        linkFieldFactory = new LinkFieldFactory<LinkFieldDefinition>(definition, baseItem, null, null, null);
+        linkFieldFactory = new LinkFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport, null, null);
         linkFieldFactory.setFieldValidatorFactoryFactory(validatorFactory);
         linkFieldFactory.setComponentProvider(componentProvider);
     }

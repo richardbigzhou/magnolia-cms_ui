@@ -56,7 +56,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         checkBoxField.setComponentProvider(componentProvider);
 
         // WHEN
@@ -72,7 +72,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         checkBoxField.setComponentProvider(componentProvider);
         definition.setDefaultValue("false");
 
@@ -88,7 +88,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     public void testDefaultValue() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
-        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         checkBoxField.setComponentProvider(componentProvider);
         definition.setDefaultValue("true");
 

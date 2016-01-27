@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.PasswordFields;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 
@@ -44,8 +47,16 @@ import com.vaadin.ui.Field;
  */
 public class PasswordFieldFactory extends AbstractFieldFactory<PasswordFieldDefinition, String> {
 
+    public PasswordFieldFactory(PasswordFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #PasswordFieldFactory(PasswordFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public PasswordFieldFactory(PasswordFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override
