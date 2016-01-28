@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015 Magnolia International
+ * This file Copyright (c) 2015-2016 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -134,21 +134,8 @@ public class DefaultAsyncActionExecutorTest {
         ComponentsTestUtil.setInstance(SystemContext.class, sysCtx);
 
         // mock scheduler to get a handle on trigger/triggerListener created by action
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                triggerListener = (TriggerListener) invocation.getArguments()[0];
-                return null;
-            }
-        }).when(scheduler).addTriggerListener(any(TriggerListener.class));
-
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                trigger = (Trigger) invocation.getArguments()[1];
-                return null;
-            }
-        }).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
+        doAnswer(new TriggerListenerTracker()).when(scheduler).addTriggerListener(any(TriggerListener.class));
+        doAnswer(new TriggerTracker()).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
     }
 
     @After
@@ -254,5 +241,59 @@ public class DefaultAsyncActionExecutorTest {
 
         // THEN we only want to make sure message is sent with current user (not system user)
         verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
+    }
+
+    @Test
+    public void executorThrowsExceptionWhenJobCompletedBeforeDelayTimeButTheResultIsError() throws Exception {
+        // GIVEN
+        definition.setAsynchronous(true);
+        definition.setCommand("qux");
+
+        setUpForTriggerListenerTests();
+
+        doAnswer(new TriggerTracker() {
+                     @Override
+                     public Void answer(InvocationOnMock invocation) throws Throwable {
+                         Void answer = super.answer(invocation);
+                         // simulate triggerComplete immediately with error+exception, last parameter (-1) is scheduler internals, we don't use it.
+                         JobExecutionContext jec = mock(JobExecutionContext.class);
+                         doReturn(new JobResult(false, new QuxException())).when(jec).getResult();
+                         triggerListener.triggerComplete(trigger, jec, -1);
+                         return answer;
+                     }
+                 }
+        ).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
+
+        final AsyncActionExecutor executor = new DefaultAsyncActionExecutor<>(definition, schedulerModuleProvider, ctx, null, i18n);
+
+        // WHEN / THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                executor.execute(item, null);
+            }
+        }, throwsAnException(instanceOf(QuxException.class)));
+    }
+
+    /**
+     * Marker exception to make sure we catch expected exception in tests.
+     */
+    private static class QuxException extends Exception {
+    }
+
+    private class TriggerListenerTracker implements Answer<Void> {
+        @Override
+        public Void answer(InvocationOnMock invocation) throws Throwable {
+            triggerListener = (TriggerListener) invocation.getArguments()[0];
+            return null;
+        }
+    }
+
+    private class TriggerTracker implements Answer<Void> {
+        @Override
+        public Void answer(InvocationOnMock invocation) throws Throwable {
+            trigger = (Trigger) invocation.getArguments()[1];
+            return null;
+        }
     }
 }
