@@ -61,6 +61,7 @@ import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +69,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +94,13 @@ import com.vaadin.server.Resource;
 public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
+
+    private final Predicate<Object> itemExistsPredicate = new Predicate<Object>() {
+        @Override
+        public boolean evaluate(final Object object) {
+            return verifyItemExists(object);
+        }
+    };
 
     private final WorkbenchPresenter workbenchPresenter;
 
@@ -158,28 +168,32 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (contentConnector.canHandleItem(event.getItemId())) {
-
-                    workbenchPresenter.refresh();
-
-                    List<Object> existingSelectedItemIds = new ArrayList<Object>(getSelectedItemIds());
-                    Iterator<Object> it = existingSelectedItemIds.iterator();
-                    while (it.hasNext()) {
-                        if (!verifyItemExists(it.next())) {
-                            it.remove();
-                        }
+                List<Object> itemIds = new ArrayList<>();
+                if (event.getItemId() instanceof Collection) {
+                    for (Object itemId : (Collection<?>) event.getItemId()) {
+                        itemIds.add(itemId);
                     }
-                    workbenchPresenter.select(existingSelectedItemIds);
+                } else {
+                    itemIds.add(event.getItemId());
+                }
+                workbenchPresenter.refresh();
+                // filter out items that can't be handled or doesn't exist
+                // if an item passed in the event exists, mark it as selected (see MGNLUI-2919)
+                // otherwise preserve previous selection
+                List<Object> existingSelectedItemIds = ListUtils.select(itemIds, itemExistsPredicate);
+                if (existingSelectedItemIds.isEmpty()) {
+                    existingSelectedItemIds = ListUtils.select(getSelectedItemIds(), itemExistsPredicate);
+                }
 
-                    if (event.isItemContentChanged()) {
-                        workbenchPresenter.expand(event.getItemId());
-                    }
+                workbenchPresenter.select(existingSelectedItemIds);
 
-                    // use just the first selected item to show the preview image
-                    if (!existingSelectedItemIds.isEmpty() && verifyItemExists(existingSelectedItemIds.get(0))) {
-                        refreshActionbarPreviewImage(existingSelectedItemIds.get(0));
-                    }
+                if (event.isItemContentChanged() && !existingSelectedItemIds.isEmpty()) {
+                    workbenchPresenter.expand(existingSelectedItemIds.get(0));
+                }
 
+                // use just the first selected item to show the preview image
+                if (!existingSelectedItemIds.isEmpty()) {
+                    refreshActionbarPreviewImage(existingSelectedItemIds.get(0));
                 }
             }
         });

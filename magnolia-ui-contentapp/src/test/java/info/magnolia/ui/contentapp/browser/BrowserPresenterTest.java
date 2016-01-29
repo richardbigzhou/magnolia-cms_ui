@@ -402,8 +402,8 @@ public class BrowserPresenterTest {
     @Test
     public void contentChangedEventCheckIfItemCanBeHandledByContentConnector() throws Exception {
         // GIVEN
-        given(contentConnector.canHandleItem(node.getIdentifier())).willReturn(false);
-        given(contentConnector.canHandleItem(node.getParent().getIdentifier())).willReturn(true);
+        given(contentConnector.canHandleItem(node.getIdentifier())).willReturn(true);
+        given(contentConnector.getItem(anyObject())).willReturn(null);
         given(presenter.getSelectedItemIds()).willReturn(Lists.<Object>newArrayList(node.getIdentifier()));
 
         // Save the deletion request.
@@ -411,7 +411,7 @@ public class BrowserPresenterTest {
         session.save();
 
         // WHEN
-        admincentralEventBus.fireEvent(new ContentChangedEvent(node.getParent().getIdentifier()));
+        admincentralEventBus.fireEvent(new ContentChangedEvent(node.getIdentifier()));
 
         // THEN
         verify(workbenchPresenter).select(eq(Collections.emptyList()));

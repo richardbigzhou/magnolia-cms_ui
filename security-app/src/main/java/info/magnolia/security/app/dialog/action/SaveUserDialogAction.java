@@ -51,8 +51,10 @@ import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeItemId;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -133,6 +135,16 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
                 userNode = session.getNodeByIdentifier(user.getIdentifier());
+                // workaround that updates item id of the userItem so we can use it in OpenCreateDialogAction to fire ContentChangedEvent
+                try {
+                    Field f = userItem.getClass().getDeclaredField("appliedChanges");
+                    f.setAccessible(true);
+                    f.setBoolean(userItem, true);
+                    f.setAccessible(false);
+                    userItem.setItemId(new JcrNodeItemId(userNode.getIdentifier(), RepositoryConstants.USERS));
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    log.warn("Unable to set new JcrItemId for adapter {}", userItem, e);
+                }
             } else {
                 userNode = userItem.getJcrItem();
                 String existingUserName = userNode.getName();

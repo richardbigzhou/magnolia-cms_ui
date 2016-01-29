@@ -34,7 +34,9 @@
 package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.DummyUser;
@@ -49,6 +51,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -125,7 +128,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
         // THEN
         assertFalse(root.hasNode("node"));
         assertFalse(eventBus.isEmpty());
-        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
+        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(node)));
     }
 
     @Test
@@ -133,6 +136,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
         // GIVEN
         Node root = session.getRootNode();
         Property property = root.setProperty("property", "value");
+        JcrItemId propertyItemId = JcrItemUtil.getItemId(property);
         JcrPropertyAdapter propertyAdapter = new JcrPropertyAdapter(property);
 
         DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), propertyAdapter, eventBus, subAppContext, i18n);
@@ -147,7 +151,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
         // THEN
         assertFalse(root.hasProperty("property"));
         assertFalse(eventBus.isEmpty());
-        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
+        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(propertyItemId));
     }
 
     @Test

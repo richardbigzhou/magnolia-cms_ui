@@ -56,6 +56,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
+import java.lang.reflect.Field;
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,8 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -74,6 +77,8 @@ import com.vaadin.data.Property;
  * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory} to its final representation.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
+
+    private static final Logger log = LoggerFactory.getLogger(SaveRoleDialogAction.class);
 
     private final SecuritySupport securitySupport;
 
@@ -122,10 +127,19 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                 role = roleManager.createRole(parentPath, newRoleName);
                 roleNode = parentNode.getNode(role.getName());
-
                 // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
-                roleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode);
-                roleNode = roleItem.applyChanges();
+                JcrNodeAdapter newRoleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode);
+                roleNode = newRoleItem.applyChanges();
+                // workaround that updates item id of the roleItem so we can use it in OpenAddRoleDialogAction to fire ContentChangedEvent
+                try {
+                    Field f = roleItem.getClass().getDeclaredField("appliedChanges");
+                    f.setAccessible(true);
+                    f.setBoolean(roleItem, true);
+                    f.setAccessible(false);
+                    roleItem.setItemId(newRoleItem.getItemId());
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    log.warn("Unable to set new JcrItemId for adapter {}", roleItem, e);
+                }
             } else {
                 // First fetch the initial name (changes not applied yet here).
                 String existingRoleName = roleItem.getJcrItem().getName();
@@ -174,7 +188,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             }
 
             roleNode.getSession().save();
-        } catch (final Exception e) {
+        } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
         }
     }
@@ -212,7 +226,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             }
             adapter.addChild(child);
         }
-
         return adapter;
     }
 

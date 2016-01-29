@@ -45,15 +45,18 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Named;
-import javax.jcr.Item;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 /**
  * Deletes a node from the repository using the delete command.
@@ -65,37 +68,28 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected final UiContext uiContext;
-    protected final Item jcrItem;
+    protected final List<JcrItemAdapter> items;
     protected final EventBus eventBus;
-    private JcrItemId changedItemId;
+    private final Set<JcrItemId> changedItemIds = new HashSet<>();;
     private final SimpleTranslator i18n;
 
     public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, commandsManager, uiContext, i18n);
-        this.jcrItem = item.getJcrItem();
-        this.uiContext = uiContext;
-        this.eventBus = eventBus;
-        this.i18n = i18n;
-
-        try {
-            changedItemId = JcrItemUtil.getItemId(jcrItem.getParent());
-        } catch (RepositoryException e) {
-            log.error("Could not execute repository operation.", e);
-            onError(e);
-        }
+        this(definition, Lists.newArrayList(item), commandsManager, eventBus, uiContext, i18n);
     }
 
     public DeleteAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, commandsManager, uiContext, i18n);
-        this.jcrItem = items.get(0).getJcrItem();
+        this.items = items;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
         this.i18n = i18n;
-        try {
-            changedItemId = JcrItemUtil.getItemId(jcrItem.getParent());
-        } catch (RepositoryException e) {
-            log.error("Could not execute repository operation.", e);
-            onError(e);
+        for (JcrItemAdapter itemAdapter : items) {
+            try {
+                changedItemIds.add(JcrItemUtil.getItemId(itemAdapter.getJcrItem()));
+            } catch (RepositoryException e) {
+                log.warn("Unable to obtain item id", e.getMessage());
+                onError(e);
+            }
         }
     }
 
@@ -111,7 +105,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     @Override
     protected void onPostExecute() throws Exception {
         // Propagate event
-        eventBus.fireEvent(new ContentChangedEvent(changedItemId));
+        eventBus.fireEvent(new ContentChangedEvent(changedItemIds));
     }
 
     @Override

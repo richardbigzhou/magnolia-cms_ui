@@ -128,7 +128,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
                 // cannot delete root node
                 throw new IllegalArgumentException(i18n.translate("ui-framework.actions.deleteItem.cannotDeleteRootItem"));
             }
-            JcrItemId itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+            JcrItemId itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem);
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
