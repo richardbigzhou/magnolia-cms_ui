@@ -205,11 +205,11 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.4/*</version>
+      <version>5.4.5/*</version>
     </dependency>
     <dependency>
       <name>config</name>
-      <version>5.4/*</version>
+      <version>5.4.5/*</version>
     </dependency>
     <dependency>
       <name>imaging</name>

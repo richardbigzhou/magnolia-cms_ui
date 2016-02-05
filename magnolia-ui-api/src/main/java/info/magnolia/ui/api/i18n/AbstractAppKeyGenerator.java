@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2015 Magnolia International
+ * This file Copyright (c) 2016 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.definition;
+package info.magnolia.ui.api.i18n;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.List;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 /**
- * An {@link info.magnolia.i18nsystem.I18nKeyGenerator} for {@link FormDefinition}.
+ * {@link AbstractI18nKeyGenerator} for apps and their parts.
+ * @param <T> the type of Object this {@link info.magnolia.i18nsystem.I18nKeyGenerator} generates keys for.
  */
-public class FormDefinitionKeyGenerator extends AbstractFormKeyGenerator<FormDefinition> {
+public abstract class AbstractAppKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
-    @Override
-    protected void keysFor(List<String> list, FormDefinition form, AnnotatedElement el) {
-        final String dialogId = getIdOrNameForUnknownRoot(form, false);
-        final String moduleName = getModuleName(dialogId);
-        final String fieldOrGetterName = fieldOrGetterName(el);
-        if (moduleName == null) {
-            addKey(list, DIALOGS, dialogId, fieldOrGetterName);
-        } else {
-            addKey(list, false, moduleName, DIALOGS, getIdWithoutModuleName(dialogId), fieldOrGetterName);
-            addKey(list, false, DIALOGS, getIdWithoutModuleName(dialogId), fieldOrGetterName);
-        }
-        addKey(list, keyify(dialogId), fieldOrGetterName); //deprecated
-    }
+    public static final String CHOOSE_DIALOG = "chooseDialog";
+    public static final String APPS = "apps";
 
+    protected static final String SUB_APPS = "subApps";
 }

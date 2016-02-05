@@ -36,12 +36,19 @@ package info.magnolia.ui.form.definition;
 import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 /**
- * Abstract base class for Form based key generators. Offers a {@link #getParentId(FormDefinition)} method to obtain the ID of the Dialog or the MessageView the Form is part of.
- * 
- * @param <T>
+ * {@link AbstractI18nKeyGenerator} for dialogs and their parts.
+ * @param <T> the type of Object this {@link info.magnolia.i18nsystem.I18nKeyGenerator} generates keys for.
  */
 public abstract class AbstractFormKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
+    protected static final String DIALOGS = "dialogs";
+    protected static final String FORM = "form";
+    protected static final String TABS = "tabs";
+
+    /**
+     * @deprecated since 5.4.5. Use {@link #getIdOrNameForUnknownRoot(Object)} instead.
+     */
+    @Deprecated
     protected String getParentId(FormDefinition formDef) {
         return getIdOrNameForUnknownRoot(formDef);
     }
