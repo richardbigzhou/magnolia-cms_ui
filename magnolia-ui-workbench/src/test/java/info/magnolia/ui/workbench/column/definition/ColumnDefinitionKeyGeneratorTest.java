@@ -81,7 +81,7 @@ public class ColumnDefinitionKeyGeneratorTest {
         };
         column.setName("<column-name>");
         view = new ConfiguredContentPresenterDefinition();
-        view.setViewType("<view-name>");
+        view.setViewType("<view-type>");
         wb = new ConfiguredWorkbenchDefinition();
         subapp = new TestSubAppDef();
         subapp.setName("<subapp>");
@@ -113,18 +113,18 @@ public class ColumnDefinitionKeyGeneratorTest {
 
         // THEN
         assertThat(keys, arrayContaining(
-                "<app>.<subapp>.views.<view-name>.<column-name>.label",
-                "<app>.<subapp>.views.<view-name>.<column-name>",
+                "<app>.<subapp>.views.<view-type>.<column-name>.label",
+                "<app>.<subapp>.views.<view-type>.<column-name>",
                 "<app>.<subapp>.views.<column-name>.label",
                 "<app>.<subapp>.views.<column-name>",
 
-                "<app>.views.<view-name>.<column-name>.label",
-                "<app>.views.<view-name>.<column-name>",
+                "<app>.views.<view-type>.<column-name>.label",
+                "<app>.views.<view-type>.<column-name>",
                 "<app>.views.<column-name>.label",
                 "<app>.views.<column-name>",
 
-                "views.<view-name>.<column-name>.label",
-                "views.<view-name>.<column-name>",
+                "views.<view-type>.<column-name>.label",
+                "views.<view-type>.<column-name>",
                 "views.<column-name>.label",
                 "views.<column-name>"
         ));
@@ -145,13 +145,13 @@ public class ColumnDefinitionKeyGeneratorTest {
 
         // THEN
         assertThat(keys, arrayContaining(
-                "<app>.views.<view-name>.<column-name>.label",
-                "<app>.views.<view-name>.<column-name>",
+                "<app>.views.<view-type>.<column-name>.label",
+                "<app>.views.<view-type>.<column-name>",
                 "<app>.views.<column-name>.label",
                 "<app>.views.<column-name>",
 
-                "views.<view-name>.<column-name>.label",
-                "views.<view-name>.<column-name>",
+                "views.<view-type>.<column-name>.label",
+                "views.<view-type>.<column-name>",
                 "views.<column-name>.label",
                 "views.<column-name>"
         ));

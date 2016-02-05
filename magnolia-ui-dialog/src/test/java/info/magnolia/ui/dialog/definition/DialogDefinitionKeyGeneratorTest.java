@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.collection.IsArrayContainingInOrder.arrayContaining;
+import static org.junit.Assert.assertThat;
 
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
@@ -72,9 +73,12 @@ public class DialogDefinitionKeyGeneratorTest {
         generator.keysFor(keys, dialog, dialog.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals("test-module.testFolder.testDialog.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog", keys.get(1));
+        assertThat(keys.toArray(new String[]{}), arrayContaining(
+                "test-module.testFolder.testDialog.label",
+                "test-module.testFolder.testDialog",
+                "dialogs.testFolder.testDialog.label",
+                "dialogs.testFolder.testDialog"
+        ));
     }
 
     @Test
@@ -93,8 +97,10 @@ public class DialogDefinitionKeyGeneratorTest {
         generator.keysFor(keys, dialog, dialog.getClass().getMethod("getDescription"));
 
         // THEN
-        assertEquals(1, keys.size());
-        assertEquals("test-module.testFolder.testDialog.description", keys.get(0));
+        assertThat(keys.toArray(new String[]{}), arrayContaining(
+                "test-module.testFolder.testDialog.description",
+                "dialogs.testFolder.testDialog.description"
+        ));
     }
 
     @Test
@@ -116,9 +122,10 @@ public class DialogDefinitionKeyGeneratorTest {
         generator.keysFor(keys, app.getChooseDialog(), chooseDialog.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals("test-app.chooseDialog.label", keys.get(0));
-        assertEquals("test-app.chooseDialog", keys.get(1));
+        assertThat(keys.toArray(new String[]{}), arrayContaining(
+                "test-app.chooseDialog.label",
+                "test-app.chooseDialog"
+        ));
     }
 
     /**

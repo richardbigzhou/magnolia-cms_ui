@@ -76,18 +76,21 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
                 "some configured value",
                 "test-module.testDialog.testTab.testField.validation.errorMessage",
                 "test-module.testDialog.testField.validation.errorMessage",
-                "testField.validation.errorMessage"
-                ));
+                "testField.validation.errorMessage",
+                "validators.validatorName.errorMessage"
+        ));
     }
 
     private TestDialogDef setupDialogDefinition() {
-        TestDialogDef dialog = new TestDialogDef("test-module/testDialog");
+        TestDialogDef dialog = new TestDialogDef("test-module:testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
         ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
         field.setName("testField");
-        field.addValidator(new ConfiguredFieldValidatorDefinition());
+        ConfiguredFieldValidatorDefinition validatorDefinition = new ConfiguredFieldValidatorDefinition();
+        validatorDefinition.setName("validatorName");
+        field.addValidator(validatorDefinition);
         dialog.setForm(form);
         form.addTab(tab);
         tab.addField(field);

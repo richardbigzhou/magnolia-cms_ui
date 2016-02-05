@@ -86,7 +86,10 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
                 "test-app.actionbar.sections.test-section.label",
                 "test-app.actionbar.sections.test-section",
                 "test-app.actionbar.test-section.label",
-                "test-app.actionbar.test-section"));
+                "test-app.actionbar.test-section",
+                "actionbar.sections.test-section.label",
+                "actionbar.sections.test-section"
+        ));
     }
 
     @Test
@@ -121,8 +124,10 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
                 "testMessageView.actionbar.sections.test-section.label",
                 "testMessageView.actionbar.sections.test-section",
                 "testMessageView.actionbar.test-section.label",
-                "testMessageView.actionbar.test-section"
-                ));
+                "testMessageView.actionbar.test-section",
+                "actionbar.sections.test-section.label",
+                "actionbar.sections.test-section"
+        ));
     }
 
     /**

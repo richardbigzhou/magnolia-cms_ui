@@ -46,16 +46,20 @@ public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<Dialo
 
     @Override
     protected void keysFor(List<String> keys, DialogDefinition definition, AnnotatedElement el) {
+        final String fieldOrGetterName = fieldOrGetterName(el);
+
         if (definition instanceof ChooseDialogDefinition) {
             AppDescriptor app = (AppDescriptor) getRoot(definition);
             if (app == null) {
-                addKey(keys, "chooseDialog", fieldOrGetterName(el));
+                addKey(keys, CHOOSE_DIALOG, fieldOrGetterName);
             } else {
-                addKey(keys, app.getName(), "chooseDialog", fieldOrGetterName(el));
+                addKey(keys, app.getName(), CHOOSE_DIALOG, fieldOrGetterName);
             }
         } else {
-            addKey(keys, definition.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
+            final String idWithoutModuleName = getIdWithoutModuleName(definition.getId());
+            final String module = getModuleName(definition.getId());
+            addKey(keys, module, idWithoutModuleName, fieldOrGetterName);
+            addKey(keys, DIALOGS, idWithoutModuleName, fieldOrGetterName);
         }
     }
-
 }
