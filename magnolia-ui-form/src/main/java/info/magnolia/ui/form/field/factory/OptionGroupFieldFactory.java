@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -72,6 +73,9 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
             // In case of MultiSelect, type will be set by the getDefaultFieldType().
             // In any case it should be set to a simple type (String, Long...)
             definition.setType(null);
+        }
+        if (definition.getLayout() == Layout.horizontal) {
+            select.addStyleName("horizontal");
         }
         return select;
     }
