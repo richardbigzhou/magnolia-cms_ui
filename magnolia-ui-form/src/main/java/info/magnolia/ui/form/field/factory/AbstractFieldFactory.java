@@ -51,6 +51,7 @@ import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.converter.ConverterUtil;
 import com.vaadin.server.Sizeable.Unit;
@@ -287,18 +289,33 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     @SuppressWarnings("unchecked")
     protected Property<T> initializeProperty() {
-        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+        // exclude selectively for now; ultimately we might reduce that to JCR adapters only.
+        boolean useTransformers = !(item instanceof BeanItem);
 
-        if (transformerClass == null) {
-            // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
-            // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
-            // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
-            // At runtime it all works due to type erasure.
-            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+        if (useTransformers) {
+            Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+            if (transformerClass == null) {
+                // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
+                // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
+                // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
+                // At runtime it all works due to type erasure.
+                transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+            }
+            Transformer<?> transformer = initializeTransformer(transformerClass);
+            transformer.setLocale(locale);
+            return new TransformedProperty(transformer);
+
+        } else {
+            // return property straight from the Item for the field binding, no assumption on conversion/saving strategy here.
+            Property property = item.getItemProperty(definition.getName());
+            if (property == null) {
+                log.warn(String.format("BeanItem doesn't have any property for id %s, returning default property", definition.getName()));
+                Class<?> propertyType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+                property = new DefaultProperty(propertyType, null);
+                item.addItemProperty(definition.getName(), property);
+            }
+            return property;
         }
-        Transformer<?> transformer = initializeTransformer(transformerClass);
-        transformer.setLocale(locale);
-        return new TransformedProperty(transformer);
     }
 
     /**
