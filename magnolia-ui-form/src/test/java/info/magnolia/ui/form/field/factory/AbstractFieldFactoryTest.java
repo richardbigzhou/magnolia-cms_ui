@@ -45,6 +45,8 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.ListToSetTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -275,6 +277,43 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     }
 
     @Test
+    public void supportsBeanItemWithEnumMemberAndDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new BeanItem<>(new TestBean(null));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "breakfast");
+        def.setType("info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest$Breakfast");
+        def.setDefaultValue(Breakfast.BAKED_BEANS.name());
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, i18NAuthoringSupport);
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field field = fieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals(Breakfast.BAKED_BEANS, p.getValue());
+    }
+
+    @Test
+    public void supportsBeanItemWithEnumMemberViaListToSetTransformer() throws Exception {
+        // GIVEN
+        baseItem = new BeanItem<>(new TestBean(null));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "breakfast");
+        def.setType("info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest$Breakfast");
+        def.setDefaultValue(Breakfast.BAKED_BEANS.name());
+        def.setTransformerClass((Class<? extends Transformer<?>>) (Object) ListToSetTransformer.class);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, i18NAuthoringSupport);
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field field = fieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals(Breakfast.BAKED_BEANS, p.getValue());
+    }
+
+    @Test
     public void supportsPropertysetItem() throws Exception {
         // GIVEN
         baseItem = new PropertysetItem();
@@ -370,6 +409,27 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         Property<?> p = field.getPropertyDataSource();
         assertEquals(0.86f, p.getValue());
+    }
+
+    @Test
+    public void supportsEnumPropertyAndDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new PropertysetItem();
+        ObjectProperty<Breakfast> preTypedProperty = new ObjectProperty<>(Breakfast.EGGS_AND_BACON);
+        preTypedProperty.setValue(null); // resetting actual value, so that defaultValue mechanism kicks in
+        baseItem.addItemProperty("breakfast", preTypedProperty);
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "breakfast");
+        def.setType("info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest$Breakfast");
+        def.setDefaultValue(Breakfast.BAKED_BEANS.name());
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, i18NAuthoringSupport);
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field field = fieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals(Breakfast.BAKED_BEANS, p.getValue());
     }
 
     @Test
@@ -475,6 +535,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
     public class TestBean {
         private String foo;
+        private Breakfast breakfast;
 
         public TestBean(String foo) {
             this.foo = foo;
@@ -483,6 +544,18 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         public String getFoo() {
             return foo;
         }
+
+        public Breakfast getBreakfast() {
+            return breakfast;
+        }
+
+        public void setBreakfast(Breakfast breakfast) {
+            this.breakfast = breakfast;
+        }
+    }
+
+    enum Breakfast {
+        EGGS_AND_BACON, BAKED_BEANS
     }
 
     @Override
