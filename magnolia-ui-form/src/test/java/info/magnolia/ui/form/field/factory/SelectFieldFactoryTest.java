@@ -344,7 +344,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void createFieldSortsOptionsByComparator() throws Exception {
         // GIVEN
-        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<>();
 
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("aa");
@@ -395,7 +395,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void createFieldSortsOptionsByNullSafeLabelComparator() throws Exception {
         // GIVEN
-        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<>();
 
         SelectFieldOptionDefinition nullOption = new SelectFieldOptionDefinition();
         nullOption.setLabel(null);
