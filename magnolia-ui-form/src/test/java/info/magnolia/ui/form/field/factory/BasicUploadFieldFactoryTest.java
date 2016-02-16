@@ -36,12 +36,12 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
@@ -76,8 +76,8 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         SimpleTranslator translator = mock(SimpleTranslator.class);
         ComponentsTestUtil.setInstance(SimpleTranslator.class, translator);
         ComponentProvider componentProvider = new MockComponentProvider();
-        EventBus eventBus = mock(EventBus.class);
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, imageProvider, uiContext, translator, componentProvider, eventBus);
+        I18NAuthoringSupport authoringSupport = mock(I18NAuthoringSupport.class);
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, uiContext, authoringSupport, imageProvider, translator, componentProvider);
     }
 
     @Test
