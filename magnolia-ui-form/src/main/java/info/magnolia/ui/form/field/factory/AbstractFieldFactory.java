@@ -198,10 +198,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     protected void setPropertyDataSourceDefaultValue(Property property) {
         Object defaultValue = createDefaultValue(property);
         if (defaultValue != null && !definition.isReadOnly()) {
-            if (defaultValue.getClass().isAssignableFrom(property.getType())) {
+            if (property.getType().isAssignableFrom(defaultValue.getClass())) {
                 property.setValue(defaultValue);
             } else {
-                log.warn("Default value {} is not assignable to the field of type {}.", defaultValue, field.getPropertyDataSource().getType().getName());
+                log.warn("Default value {} cannot be assigned to property of type {}.", defaultValue, property.getType());
             }
         }
     }
