@@ -79,7 +79,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldFactory.class);
 
-    private List<String> initialSelectedKey = new ArrayList<String>();
+    private List<String> initialSelectedKey = new ArrayList<>();
     private String optionValueName;
     private String optionLabelName;
     private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;

@@ -37,8 +37,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-import java.util.Locale;
-
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
@@ -52,6 +50,8 @@ import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -126,7 +126,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals(PropertyType.STRING, res.getProperty(propertyName).getType());
         Property p = baseItem.getItemProperty(propertyName);
         assertEquals(field.getPropertyDataSource().getValue(), p.getValue());
-        assertEquals("new Value", p.getValue().toString());
+        assertEquals("new Value", p.getValue());
         assertEquals(String.class, p.getValue().getClass());
     }
 
@@ -149,7 +149,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals("new Value", res.getProperty(propertyName).getString());
         Property p = baseItem.getItemProperty(propertyName);
-        assertEquals("new Value", p.getValue().toString());
+        assertEquals("new Value", p.getValue());
 
     }
 
@@ -278,7 +278,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
     }
 
     @Test
-    public void testPlainBeanItemSupport() throws Exception {
+    public void supportsBeanItem() throws Exception {
         // GIVEN
         baseItem = new BeanItem<>(new TestBean("bar"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
@@ -289,11 +289,11 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
-        assertEquals("bar", p.getValue().toString());
+        assertEquals("bar", p.getValue());
     }
 
     @Test
-    public void testPropertysetItemSupport() throws Exception {
+    public void supportsPropertysetItem() throws Exception {
         // GIVEN
         baseItem = new PropertysetItem();
         baseItem.addItemProperty("foo", new ObjectProperty<>("fooValue"));
@@ -305,11 +305,11 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
-        assertEquals("fooValue", p.getValue().toString());
+        assertEquals("fooValue", p.getValue());
     }
 
     @Test
-    public void testPropertysetItemSupportNonExistingProperty() throws Exception {
+    public void supportsPropertysetItemWithNonExistingProperty() throws Exception {
         // GIVEN
         baseItem = new PropertysetItem();
         baseItem.addItemProperty("foo", new ObjectProperty<>("fooValue"));
@@ -348,6 +348,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         assertNull(field.getCaption());
     }
+
     @Test
     public void testFieldConverterInitialized() throws Exception {
         // GIVEN
@@ -419,12 +420,12 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
             @Override
             public void setLocale(Locale locale) {
-                // do nothing
+                // override this since locale-backing Vaadin components are not available here
             }
         }
     }
 
-    public static class TestBean {
+    public class TestBean {
         private String foo;
 
         public TestBean(String foo) {
@@ -441,5 +442,4 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition configureFieldDefinition = new ConfiguredFieldDefinition();
         this.definition = createConfiguredFieldDefinition(configureFieldDefinition, propertyName);
     }
-
 }
