@@ -51,7 +51,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and configures a Basic UploadField.
+ * Creates and configures a {@link BasicUploadField}.
  */
 public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFieldDefinition, UploadReceiver> {
 
@@ -87,7 +87,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
 
     @Override
     protected Field<UploadReceiver> createFieldComponent() {
-        return new BasicUploadField<UploadReceiver>(imageProvider, uiContext, definition, i18n);
+        return new BasicUploadField<>(imageProvider, uiContext, definition, i18n);
     }
 
     /**
