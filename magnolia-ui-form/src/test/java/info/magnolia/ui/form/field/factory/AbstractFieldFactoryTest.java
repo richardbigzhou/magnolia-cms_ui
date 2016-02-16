@@ -63,6 +63,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
@@ -302,6 +303,51 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         Property<?> p = field.getPropertyDataSource();
         assertNotNull(p);
+    }
+
+    @Test
+    public void supportsDefaultValueWithAssignableType() throws Exception {
+        // GIVEN a factory/field backed by a Number property, assigning concrete default value of -1 (int)
+        baseItem = new PropertysetItem();
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "number");
+        def.setType(null);
+        AbstractFieldFactory<FieldDefinition, Number> fieldFactory = new AbstractFieldFactory<FieldDefinition, Number>(def, baseItem, null, i18NAuthoringSupport) {
+
+            @Override
+            protected Class<?> getDefaultFieldType() {
+                return Number.class;
+            }
+
+            @Override
+            protected Number createDefaultValue(Property<?> property) {
+                return -1;
+            }
+
+            @Override
+            protected Field<Number> createFieldComponent() {
+                return new AbstractField<Number>() {
+                    @Override
+                    public Class<? extends Number> getType() {
+                        return Number.class;
+                    }
+                };
+            }
+        };
+
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field<Number> field = fieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals(-1, p.getValue());
+
+        // WHEN
+        field.setValue(6d);
+
+        // THEN
+        assertEquals(6d, p.getValue());
     }
 
     @Test
