@@ -60,11 +60,19 @@ public class ConfiguredFormDefinition implements FormDefinition {
         this.label = label;
     }
 
+    /**
+     * @deprecated since 5.4.5. I18nBasename is deprecated and will be removed in a future version.
+     */
+    @Deprecated
     @Override
     public String getI18nBasename() {
         return i18nBasename;
     }
 
+    /**
+     * @deprecated since 5.4.5. I18nBasename is deprecated and will be removed in a future version.
+     */
+    @Deprecated
     public void setI18nBasename(String i18nBasename) {
         this.i18nBasename = i18nBasename;
     }

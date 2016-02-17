@@ -53,7 +53,9 @@ public interface FieldValidatorDefinition {
 
     /**
      * Message bundle for localized field labels.
+     * @deprecated since 5.4.5. Will be removed in a future version.
      */
+    @Deprecated
     String getI18nBasename();
 
     Class<? extends FieldValidatorFactory> getFactoryClass();

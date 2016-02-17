@@ -33,27 +33,43 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
-import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
+import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
+
 /**
  * Generates a key in the form <code> [app-name | dialog-name].tab-name.field-name.validation.[name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
  */
-public class FieldValidatorDefinitionKeyGenerator extends AbstractI18nKeyGenerator<FieldValidatorDefinition> {
+public class FieldValidatorDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldValidatorDefinition> {
+
+    protected static final String VALIDATORS = "validators";
 
     @Override
     protected void keysFor(List<String> keys, FieldValidatorDefinition object, AnnotatedElement el) {
         ConfiguredFieldDefinition fieldDefinition = getParentViaCast(object);
         ConfiguredTabDefinition tabDefinition = getConfiguredTabDefinition(fieldDefinition);
-        String idOrName = getIdOrNameForUnknownRoot(object);
+        final String rawIdOrName = getIdOrNameForUnknownRoot(object, false);
+        final String moduleName = getModuleName(rawIdOrName);
+        final String idWithoutModuleName = getIdWithoutModuleName(rawIdOrName);
+        final String idOrName = keyify(rawIdOrName);
+        final String validatorName = getValidatorName(object);
+        final String suffix = fieldOrGetterName(el);
+        if (moduleName != null) {
+            addKey(keys, false, moduleName, DIALOGS, idWithoutModuleName, FORM, TABS, tabDefinition.getName(), FIELDS, fieldDefinition.getName(), VALIDATORS, validatorName, suffix);
+        }
+        addKey(keys, false, DIALOGS, idWithoutModuleName, FORM, TABS, tabDefinition.getName(), FIELDS, fieldDefinition.getName(), VALIDATORS, validatorName, suffix);
+        addKey(keys, false, FORM, TABS, tabDefinition.getName(), FIELDS, fieldDefinition.getName(), VALIDATORS, validatorName, suffix);
+        addKey(keys, false, FIELDS, fieldDefinition.getName(), VALIDATORS, validatorName, suffix);
+        addKey(keys, false, VALIDATORS, validatorName, suffix);
 
-        addKey(keys, idOrName, tabDefinition.getName(), fieldDefinition.getName(), "validation", fieldOrGetterName(el));
-        addKey(keys, idOrName, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
-        addKey(keys, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
+        //deprecated:
+        addKey(keys, idOrName, tabDefinition.getName(), fieldDefinition.getName(), "validation", suffix);
+        addKey(keys, idOrName, fieldDefinition.getName(), "validation", suffix);
+        addKey(keys, fieldDefinition.getName(), "validation", suffix);
     }
 
     /**
@@ -65,6 +81,13 @@ public class FieldValidatorDefinitionKeyGenerator extends AbstractI18nKeyGenerat
             return (ConfiguredTabDefinition) def;
         } else if (def instanceof ConfiguredFieldDefinition) {
             return getConfiguredTabDefinition((ConfiguredFieldDefinition) def);
+        }
+        return null;
+    }
+
+    private String getValidatorName(FieldValidatorDefinition definition) {
+        if (definition instanceof ConfiguredFieldValidatorDefinition) {
+            return ((ConfiguredFieldValidatorDefinition) definition).getName();
         }
         return null;
     }

@@ -101,12 +101,18 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         // THEN
         assertThat(keys, arrayContaining(
                 "undecorated",
+                "test-module.dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                "dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                "form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                //deprecated:
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
                 "testTab.mgnl-testField.options.testOption",
                 "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
                 "testDialog.mgnl-testField.options.testOption",
-                "testDialog.testTab.mgnl-testField.options.testOption"
-                ));
+                "testDialog.testTab.mgnl-testField.options.testOption",
+                //end of deprecated keys
+                "fields.mgnl-testField.options.testOption"
+        ));
     }
 
     @Test
@@ -135,11 +141,17 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         // THEN
         assertThat(keys, arrayContaining(
                 "undecorated",
+                "test-module.dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                "dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                "form.tabs.testTab.fields.mgnl-testField.options.testOption",
+                //deprecated:
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption",
                 "testTab.mgnl-testField.options.testOption",
                 "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
                 "testDialog.mgnl-testField.options.testOption",
-                "testDialog.testTab.mgnl-testField.options.testOption"
-                ));
+                "testDialog.testTab.mgnl-testField.options.testOption",
+                //end of deprecated keys
+                "fields.mgnl-testField.options.testOption"
+        ));
     }
 }

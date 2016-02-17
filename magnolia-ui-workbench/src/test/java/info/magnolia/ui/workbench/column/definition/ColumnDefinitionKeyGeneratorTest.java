@@ -81,7 +81,8 @@ public class ColumnDefinitionKeyGeneratorTest {
         };
         column.setName("<column-name>");
         view = new ConfiguredContentPresenterDefinition();
-        view.setViewType("<view-name>");
+        view.setViewType("<view-type>");
+        view.setName("<view-name>");
         wb = new ConfiguredWorkbenchDefinition();
         subapp = new TestSubAppDef();
         subapp.setName("<subapp>");
@@ -113,20 +114,30 @@ public class ColumnDefinitionKeyGeneratorTest {
 
         // THEN
         assertThat(keys, arrayContaining(
-                "<app>.<subapp>.views.<view-name>.<column-name>.label",
-                "<app>.<subapp>.views.<view-name>.<column-name>",
+                "apps.<app>.subApps.<subapp>.workbench.contentViews.<view-name>.columns.<column-name>.label",
+                "subApps.<subapp>.workbench.contentViews.<view-name>.columns.<column-name>.label",
+                "workbench.contentViews.<view-name>.columns.<column-name>.label",
+
+                //deprecated:
+                "<app>.<subapp>.views.<view-type>.<column-name>.label",
+                "<app>.<subapp>.views.<view-type>.<column-name>",
                 "<app>.<subapp>.views.<column-name>.label",
                 "<app>.<subapp>.views.<column-name>",
+                //end of deprecated keys
 
-                "<app>.views.<view-name>.<column-name>.label",
-                "<app>.views.<view-name>.<column-name>",
+                "columns.<column-name>.label",
+
+                //deprecated:
+                "<app>.views.<view-type>.<column-name>.label",
+                "<app>.views.<view-type>.<column-name>",
                 "<app>.views.<column-name>.label",
                 "<app>.views.<column-name>",
 
-                "views.<view-name>.<column-name>.label",
-                "views.<view-name>.<column-name>",
+                "views.<view-type>.<column-name>.label",
+                "views.<view-type>.<column-name>",
                 "views.<column-name>.label",
                 "views.<column-name>"
+                //end of deprecated keys
         ));
     }
 
@@ -145,13 +156,18 @@ public class ColumnDefinitionKeyGeneratorTest {
 
         // THEN
         assertThat(keys, arrayContaining(
-                "<app>.views.<view-name>.<column-name>.label",
-                "<app>.views.<view-name>.<column-name>",
+                "apps.<app>.contentViews.<view-name>.columns.<column-name>.label",
+                "contentViews.<view-name>.columns.<column-name>.label",
+                "columns.<column-name>.label",
+
+                //deprecated:
+                "<app>.views.<view-type>.<column-name>.label",
+                "<app>.views.<view-type>.<column-name>",
                 "<app>.views.<column-name>.label",
                 "<app>.views.<column-name>",
 
-                "views.<view-name>.<column-name>.label",
-                "views.<view-name>.<column-name>",
+                "views.<view-type>.<column-name>.label",
+                "views.<view-type>.<column-name>",
                 "views.<column-name>.label",
                 "views.<column-name>"
         ));

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2016 Magnolia International
+ * This file Copyright (c) 2016 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.definition;
+package info.magnolia.ui.api.i18n;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.I18nText;
-import java.util.List;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 /**
- * Defines a form.
- *
- * @see TabDefinition
- * @see info.magnolia.ui.form.field.definition.FieldDefinition
+ * {@link AbstractI18nKeyGenerator} for apps and their parts.
+ * @param <T> the type of Object this {@link info.magnolia.i18nsystem.I18nKeyGenerator} generates keys for.
  */
-@I18nable(keyGenerator = FormDefinitionKeyGenerator.class)
-public interface FormDefinition {
+public abstract class AbstractAppKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
-    @I18nText
-    String getLabel();
+    public static final String CHOOSE_DIALOG = "chooseDialog";
+    public static final String APPS = "apps";
 
-    /**
-     * This is support for old I18n mechanism where you need to provide keys for {@link #getLabel()} ()} and {@link #getDescription()}.
-     * The new i18n mechanism generates the keys via {@link FormDefinitionKeyGenerator} automatically.
-     *
-     * @deprecated since 5.4.5. I18nBasename is deprecated and will be removed in a future version.
-     */
-    @Deprecated
-    String getI18nBasename();
-
-    @I18nText
-    String getDescription();
-
-    List<TabDefinition> getTabs();
-
+    protected static final String SUB_APPS = "subApps";
 }
