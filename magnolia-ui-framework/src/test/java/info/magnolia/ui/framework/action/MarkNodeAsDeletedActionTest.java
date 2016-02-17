@@ -51,6 +51,7 @@ import info.magnolia.commands.impl.MarkNodeAsDeletedCommand;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -126,6 +127,8 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
         ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, AbstractCommandActionTest.DummyAsyncExecutor.class);
+
+        ComponentsTestUtil.setImplementation(EventBus.class, SimpleEventBus.class);
 
         MgnlContext.setLocale(Locale.ENGLISH);
         // Init Command
