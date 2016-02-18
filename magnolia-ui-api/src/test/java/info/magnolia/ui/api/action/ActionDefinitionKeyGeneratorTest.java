@@ -107,14 +107,11 @@ public class ActionDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", contentApp.getChooseDialog().getActions().get("chooseDialogAction"));
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
-                "apps.contentApp.chooseDialog.actions.chooseDialogAction.label",
-                "chooseDialog.actions.chooseDialogAction.label",
-                //deprecated:
                 "contentApp.chooseDialog.actions.chooseDialogAction.label",
                 "contentApp.chooseDialog.actions.chooseDialogAction",
                 "actions.chooseDialogAction.label",
                 "actions.chooseDialogAction"
-        ));
+                ));
     }
 
     @Test
@@ -126,14 +123,11 @@ public class ActionDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", appDescriptor.getSubApps().get("1").getActions().get("1"));
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
-                "apps.myapp.subApps.browser.actions.myaction.label",
-                "subApps.browser.actions.myaction.label",
-                //deprecated:
                 "myapp.browser.actions.myaction.label",
                 "myapp.browser.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-        ));
+                ));
     }
 
     @Test
@@ -150,11 +144,10 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "parent-keygen.actions.myaction.label",
-                //deprecated:
                 "parent-keygen.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-        ));
+                ));
     }
 
     @Test
@@ -171,9 +164,8 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
                 "actions.myaction.label",
-                //deprecated:
                 "actions.myaction"
-        ));
+                ));
     }
 
     @Test
@@ -190,13 +182,11 @@ public class ActionDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
-                "dialogs.foo.actions.myaction.label",
-                //deprecated
                 "foo.actions.myaction.label",
                 "foo.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-        ));
+                ));
     }
 
     @Test
@@ -213,16 +203,13 @@ public class ActionDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
-                "foo.dialogs.bar.actions.myaction.label",
-                "dialogs.bar.actions.myaction.label",
-                //deprecated:
                 "foo.bar.actions.myaction.label",
                 "foo.bar.actions.myaction",
                 "bar.actions.myaction.label",
                 "bar.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-        ));
+                ));
     }
 
     @Test
@@ -239,16 +226,13 @@ public class ActionDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
         assertThat(generatedKeys, arrayContaining(
                 "some configured value",
-                "baz.dialogs.qux.actions.myaction.label",
-                "dialogs.qux.actions.myaction.label",
-                //deprecated:
                 "baz.qux.actions.myaction.label",
                 "baz.qux.actions.myaction",
                 "qux.actions.myaction.label",
                 "qux.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-        ));
+                ));
     }
 
     /**

@@ -44,18 +44,9 @@ public class TabDefinitionKeyGenerator extends AbstractFormKeyGenerator<TabDefin
     @Override
     protected void keysFor(List<String> list, TabDefinition tab, AnnotatedElement el) {
         final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogId = getIdOrNameForUnknownRoot(formDef, false);
-        final String moduleName = getModuleName(dialogId);
-        final String suffix = fieldOrGetterName(el);
-        final String idWithoutModuleName = getIdWithoutModuleName(dialogId);
-        if (moduleName != null) {
-            addKey(list, false, moduleName, DIALOGS, idWithoutModuleName, FORM, TABS, tab.getName(), suffix);
-        }
-        addKey(list, false, DIALOGS, idWithoutModuleName, FORM, TABS, tab.getName(), suffix);
-        addKey(list, false, FORM, TABS, tab.getName(), suffix);
-
-        //deprecated:
-        addKey(list, keyify(dialogId), tab.getName(), suffix);
-        addKey(list, tab.getName(), suffix);
+        final String dialogId = getParentId(formDef);
+        addKey(list, dialogId, tab.getName(), fieldOrGetterName(el));
+        addKey(list, tab.getName(), fieldOrGetterName(el));
     }
+
 }

@@ -49,13 +49,6 @@ public interface FormDefinition {
     @I18nText
     String getLabel();
 
-    /**
-     * This is support for old I18n mechanism where you need to provide keys for {@link #getLabel()} ()} and {@link #getDescription()}.
-     * The new i18n mechanism generates the keys via {@link FormDefinitionKeyGenerator} automatically.
-     *
-     * @deprecated since 5.4.5. I18nBasename is deprecated and will be removed in a future version.
-     */
-    @Deprecated
     String getI18nBasename();
 
     @I18nText

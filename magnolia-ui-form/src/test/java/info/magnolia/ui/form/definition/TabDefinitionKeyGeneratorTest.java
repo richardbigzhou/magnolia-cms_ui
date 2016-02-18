@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.form.definition;
 
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
@@ -71,16 +70,11 @@ public class TabDefinitionKeyGeneratorTest {
         generator.keysFor(keys, dialog.getForm().getTabs().get(0), tab.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys.toArray(new String[]{}), arrayContaining(
-                "test-module.dialogs.testFolder.testDialog.form.tabs.testTab.label",
-                "dialogs.testFolder.testDialog.form.tabs.testTab.label",
-                "form.tabs.testTab.label",
-                //deprecated:
-                "test-module.testFolder.testDialog.testTab.label",
-                "test-module.testFolder.testDialog.testTab",
-                "testTab.label",
-                "testTab"
-        ));
+        assertEquals(4, keys.size());
+        assertEquals("test-module.testFolder.testDialog.testTab.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.testTab", keys.get(1));
+        assertEquals("testTab.label", keys.get(2));
+        assertEquals("testTab", keys.get(3));
     }
 
 }

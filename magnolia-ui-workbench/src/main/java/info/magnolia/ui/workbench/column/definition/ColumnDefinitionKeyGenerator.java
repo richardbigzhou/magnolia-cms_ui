@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
-import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 import java.lang.reflect.AnnotatedElement;
@@ -45,11 +44,7 @@ import java.util.List;
 /**
  * Key generator for {@link ColumnDefinition}. Generates key in form &lt;app-name&gt;.&lt;sub-app-name&gt;.views.&lt;view-name&gt;.&lt;column-name&gt;.&lt;property-name&gt;.
  */
-public class ColumnDefinitionKeyGenerator extends AbstractAppKeyGenerator<ColumnDefinition> {
-
-    private static final String WORKBENCH = "workbench";
-    private static final String CONTENT_VIEWS = "contentViews";
-    private static final String COLUMNS = "columns";
+public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ColumnDefinition> {
 
     @Override
     protected void keysFor(List<String> keys, ColumnDefinition columnDefinition, AnnotatedElement el) {
@@ -73,40 +68,21 @@ public class ColumnDefinitionKeyGenerator extends AbstractAppKeyGenerator<Column
             }
         }
         final String appName = appDescriptor.getName();
-        final String viewName = this.getViewName(contentPresenterDefinition);
+        final String viewName = contentPresenterDefinition != null ? contentPresenterDefinition.getViewType() : "";
         final String columnName = columnDefinition.getName();
-        final String fieldOrGetterName = fieldOrGetterName(el);
         if (subAppDescriptor != null) {
             // sub-app specific, view-specific
-            addKey(keys, false, APPS, appName, SUB_APPS, subAppDescriptor.getName(), WORKBENCH, CONTENT_VIEWS, viewName, COLUMNS, columnName, fieldOrGetterName);
-            addKey(keys, false, SUB_APPS, subAppDescriptor.getName(), WORKBENCH, CONTENT_VIEWS, viewName, COLUMNS, columnName, fieldOrGetterName);
-            addKey(keys, false, WORKBENCH, CONTENT_VIEWS, viewName, COLUMNS, columnName, fieldOrGetterName);
-
-            // app specific, view-specific
-            addKey(keys, appName, subAppDescriptor.getName(), "views", contentPresenterDefinition.getViewType(), columnName, fieldOrGetterName); //deprecated
-            addKey(keys, appName, subAppDescriptor.getName(), "views", columnName, fieldOrGetterName); //deprecated
-        } else {
-            addKey(keys, false, APPS, appName, CONTENT_VIEWS, viewName, COLUMNS, columnName, fieldOrGetterName);
-            addKey(keys, false, CONTENT_VIEWS, viewName, COLUMNS, columnName, fieldOrGetterName);
+            addKey(keys, appName, subAppDescriptor.getName(), "views", viewName, columnName, fieldOrGetterName(el));
+            // sub-app specific, all views
+            addKey(keys, appName, subAppDescriptor.getName(), "views", columnName, fieldOrGetterName(el));
         }
-        addKey(keys, false, COLUMNS, columnName, fieldOrGetterName(el));
-
-        //deprecated:
-        // sub-app specific, all views
-        addKey(keys, appName, "views", contentPresenterDefinition.getViewType(), columnName, fieldOrGetterName); //deprecated
+        // app specific, view-specific
+        addKey(keys, appName, "views", viewName, columnName, fieldOrGetterName(el));
         // app specific, all views
         addKey(keys, appName, "views", columnName, fieldOrGetterName(el));
         // all apps, view-specific
-        addKey(keys, "views", contentPresenterDefinition.getViewType(), columnName, fieldOrGetterName);
+        addKey(keys, "views", viewName, columnName, fieldOrGetterName(el));
         // all apps, all views
         addKey(keys, "views", columnName, fieldOrGetterName(el));
-        //end of deprecated keys
-    }
-
-    private String getViewName(ContentPresenterDefinition definition) {
-        if (definition instanceof ConfiguredContentPresenterDefinition) {
-            return ((ConfiguredContentPresenterDefinition) definition).getName();
-        }
-        return null;
     }
 }

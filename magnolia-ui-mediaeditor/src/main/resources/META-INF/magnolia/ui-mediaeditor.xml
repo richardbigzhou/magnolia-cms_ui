@@ -71,7 +71,7 @@
   <dependencies>
     <dependency>
       <name>config</name>
-      <version>5.4.5/*</version>
+      <version>5.4/*</version>
     </dependency>
     <dependency>
       <name>ui-framework</name>

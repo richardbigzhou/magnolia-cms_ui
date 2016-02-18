@@ -33,16 +33,15 @@
  */
 package info.magnolia.ui.api.app;
 
-import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 /**
  * Test for {@link AppDescriptorKeyGenerator}.
@@ -70,13 +69,9 @@ public class AppDescriptorKeyGeneratorTest {
         generator.keysFor(keys, app, method);
 
         // THEN
-        assertThat(keys, hasItems(
-                "apps.test-app.label",
-                //deprecated:
-                "test-app.app.label",
-                "test-app.app"
-        ));
-
+        assertEquals(2, keys.size());
+        assertEquals(TEST_APP + ".app.label", keys.get(0));
+        assertEquals(TEST_APP + ".app", keys.get(1));
     }
 
     @Test
@@ -89,11 +84,7 @@ public class AppDescriptorKeyGeneratorTest {
         generator.keysFor(keys, app, method);
 
         // THEN
-        assertThat(keys, hasItems(
-                "apps.test-app.icon",
-                //deprecated:
-                "test-app.app.icon"
-        ));
-
+        assertEquals(1, keys.size());
+        assertEquals(TEST_APP + ".app.icon", keys.get(0));
     }
 }

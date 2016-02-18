@@ -33,15 +33,12 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.definition.TestDialogDef;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -52,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -63,8 +59,9 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
     @Test
     public void addKeysForCompositFields() throws SecurityException, NoSuchMethodException {
         // GIVEN
+        TestProxytoysI18nizer i18nizer = new TestProxytoysI18nizer(null, null);
+
         EmailValidatorDefinition validator = new EmailValidatorDefinition();
-        validator.setName("emailValidator");
         ConfiguredFieldDefinition textFieldDefinition = new TextFieldDefinition();
         textFieldDefinition.setValidators(Arrays.asList((FieldValidatorDefinition) validator));
         textFieldDefinition.setName("textFieldDefinition");
@@ -73,17 +70,13 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
         compositeFieldDefinition.setFields(Arrays.asList(textFieldDefinition));
         ConfiguredTabDefinition configuredTabDefinition = new ConfiguredTabDefinition();
         configuredTabDefinition.setName("configuredTabDefinition");
-        configuredTabDefinition.setFields(Arrays.<FieldDefinition>asList(compositeFieldDefinition));
-        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        form.setTabs(Arrays.<TabDefinition>asList(configuredTabDefinition));
-        TestDialogDef dialog = new TestDialogDef("test-module:testDialog");
-        dialog.setForm(form);
+        configuredTabDefinition.setFields(Arrays.asList((FieldDefinition) compositeFieldDefinition));
 
         // 18n
-        TestProxytoysI18nizer i18nizer = new TestProxytoysI18nizer(null, null);
-        dialog = i18nizer.decorate(dialog);
-        compositeFieldDefinition = (CompositeFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0);
-
+        configuredTabDefinition = i18nizer.decorate(configuredTabDefinition);
+        compositeFieldDefinition = i18nizer.decorateChild(compositeFieldDefinition, configuredTabDefinition);
+        textFieldDefinition = i18nizer.decorateChild(textFieldDefinition, compositeFieldDefinition);
+        validator = i18nizer.decorateChild(validator, textFieldDefinition);
 
         // init generator
         FieldValidatorDefinitionKeyGenerator generator = new FieldValidatorDefinitionKeyGenerator();
@@ -91,19 +84,12 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
         AnnotatedElement el = validator.getClass().getMethod("getErrorMessage");
 
         // WHEN
-        generator.keysFor(keys, compositeFieldDefinition.getFields().get(0).getValidators().get(0), el);
+        generator.keysFor(keys, validator, el);
         // THEN
-        assertThat(keys.toArray(new String[]{}), Matchers.arrayContaining(
-                "test-module.dialogs.testDialog.form.tabs.configuredTabDefinition.fields.textFieldDefinition.validators.emailValidator.errorMessage",
-                "dialogs.testDialog.form.tabs.configuredTabDefinition.fields.textFieldDefinition.validators.emailValidator.errorMessage",
-                "form.tabs.configuredTabDefinition.fields.textFieldDefinition.validators.emailValidator.errorMessage",
-                "fields.textFieldDefinition.validators.emailValidator.errorMessage",
-                "validators.emailValidator.errorMessage",
-                //deprecated:
-                "test-module.testDialog.configuredTabDefinition.textFieldDefinition.validation.errorMessage",
-                "test-module.testDialog.textFieldDefinition.validation.errorMessage",
-                "textFieldDefinition.validation.errorMessage"
-        ));
+        assertEquals(3, keys.size());
+        assertEquals("configuredTabDefinition.configuredTabDefinition.textFieldDefinition.validation.errorMessage", keys.get(0));
+        assertEquals("configuredTabDefinition.textFieldDefinition.validation.errorMessage", keys.get(1));
+        assertEquals("textFieldDefinition.validation.errorMessage", keys.get(2));
     }
 
     private class TestProxytoysI18nizer extends ProxytoysI18nizer {

@@ -43,20 +43,15 @@ import java.util.List;
  */
 public class AppLauncherGroupDefinitionKeyGenerator extends AbstractI18nKeyGenerator<AppLauncherGroupDefinition> {
 
-    /**
-     * @deprecated since 5.4.5. Should not be exposed.
-     */
-    @Deprecated
     public static final String APPLAUNCHER_PREFIX = "app-launcher";
-    private static final String APP_LAUNCHER_LAYOUT = "appLauncherLayout";
-    private static final String GROUPS = "groups";
 
     @Override
     protected void keysFor(List<String> list, AppLauncherGroupDefinition group, AnnotatedElement el) {
         String groupName = group.getName();
-        addKey(list, false, APP_LAUNCHER_LAYOUT, GROUPS, groupName, fieldOrGetterName(el));
-        addKey(list, APPLAUNCHER_PREFIX, groupName, fieldOrGetterName(el)); //deprecated
-
+        addKey(list, APPLAUNCHER_PREFIX, groupName, fieldOrGetterName(el));
+        if ("label".equals(fieldOrGetterName(el))) {
+            addKey(list, APPLAUNCHER_PREFIX, groupName);
+        }
     }
 
 }

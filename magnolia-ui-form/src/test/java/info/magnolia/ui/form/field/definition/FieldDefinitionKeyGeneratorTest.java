@@ -79,9 +79,6 @@ public class FieldDefinitionKeyGeneratorTest {
         // THEN
         assertThat(keys, arrayContaining(
                 "undecorated",
-                "apps.test-app.chooseDialog.fields.mgnl-testField.label",
-                "chooseDialog.fields.mgnl-testField.label",
-                //deprecated:
                 "test-app.chooseDialog.fields.mgnl-testField.label",
                 "test-app.chooseDialog.fields.mgnl-testField"));
     }
@@ -112,10 +109,6 @@ public class FieldDefinitionKeyGeneratorTest {
         // THEN
         assertThat(keys, arrayContaining(
                 "undecorated",
-                "test-module.dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.label",
-                "dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl-testField.label",
-                "form.tabs.testTab.fields.mgnl-testField.label",
-                //deprecated:
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.label",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField",
                 "testTab.mgnl-testField.label",
@@ -125,10 +118,7 @@ public class FieldDefinitionKeyGeneratorTest {
                 "testDialog.mgnl-testField.label",
                 "testDialog.mgnl-testField",
                 "testDialog.testTab.mgnl-testField.label",
-                "testDialog.testTab.mgnl-testField",
-                //end of deprecated keys
-                "fields.mgnl-testField.label"
-        ));
+                "testDialog.testTab.mgnl-testField"));
     }
 
     @Test
@@ -158,20 +148,15 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-        String[] keys = generator.keysFor("undecorated",
+       String[] keys = generator.keysFor("undecorated",
                 ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
                 field.getClass().getMethod("getLabel"));
 
         // THEN
         assertThat(keys, arrayContaining(
                 "undecorated",
-                "test-module.dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl:parentField1.fields.mgnl:parentField2.fields.mgnl-testField.label",
-                "dialogs.testFolder.testDialog.form.tabs.testTab.fields.mgnl:parentField1.fields.mgnl:parentField2.fields.mgnl-testField.label",
-                "form.tabs.testTab.fields.mgnl:parentField1.fields.mgnl:parentField2.fields.mgnl-testField.label",
-                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label", //deprecated
-                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField", //deprecated
-                "form.tabs.testTab.fields.mgnl-testField.label",
-                //deprecated:
+                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label",
+                "test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField.label",
                 "test-module.testFolder.testDialog.testTab.mgnl-testField",
                 "testTab.mgnl-testField.label",
@@ -181,10 +166,8 @@ public class FieldDefinitionKeyGeneratorTest {
                 "testDialog.mgnl-testField.label",
                 "testDialog.mgnl-testField",
                 "testDialog.testTab.mgnl-testField.label",
-                "testDialog.testTab.mgnl-testField",
-                //end of deprecated keys
-                "fields.mgnl-testField.label"
-        ));
+                "testDialog.testTab.mgnl-testField"
+                ));
     }
 
     @Test
@@ -199,19 +182,12 @@ public class FieldDefinitionKeyGeneratorTest {
         // WHEN
         FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
         List<String> keys = Arrays.asList(generator.keysFor(
-                (String) null,
+                (String)null,
                 i18nFieldDef,
                 i18nFieldDef.getClass().getMethod("getLabel")));
 
         // THEN
-        assertThat(keys.toArray(new String[]{}), arrayContaining(
-                "dummy.fields.dummyField.label",
-                //deprecated:
-                "dummy.dummyField.label",
-                "dummy.dummyField",
-                //end of deprecated keys
-                "fields.dummyField.label"
-        ));
+        assertTrue(keys.contains("dummy.dummyField.label"));
     }
 
     /**

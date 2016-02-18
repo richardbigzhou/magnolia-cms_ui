@@ -40,8 +40,6 @@ import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
  */
 public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinition {
 
-    private String name;
-
     private String errorMessage;
 
     private String i18nBasename;
@@ -73,13 +71,5 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
 
     public void setFactoryClass(Class<? extends FieldValidatorFactory> factoryClass) {
         this.factoryClass = factoryClass;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

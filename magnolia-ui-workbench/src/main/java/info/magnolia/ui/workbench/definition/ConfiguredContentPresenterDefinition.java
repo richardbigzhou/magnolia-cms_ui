@@ -44,8 +44,6 @@ import java.util.List;
  */
 public class ConfiguredContentPresenterDefinition implements ContentPresenterDefinition {
 
-    private String name;
-
     private String viewType;
 
     private Class<? extends ContentPresenter> implementationClass;
@@ -105,11 +103,4 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
         this.columns = columns;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

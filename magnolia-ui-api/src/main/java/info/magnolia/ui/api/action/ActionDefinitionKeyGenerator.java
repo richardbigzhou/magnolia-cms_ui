@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.i18nsystem.I18nKeyGenerator;
 import info.magnolia.i18nsystem.NullKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
@@ -53,10 +53,7 @@ import com.google.common.collect.Collections2;
 /**
  * An I18n key generator for the actionbar actions (labels, descriptions, errors, etc.).
  */
-public class ActionDefinitionKeyGenerator extends AbstractAppKeyGenerator<ActionDefinition> {
-
-    private static final String ACTIONS = "actions";
-    private static final String DIALOGS = "dialogs";
+public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionDefinition> {
 
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
@@ -76,44 +73,35 @@ public class ActionDefinitionKeyGenerator extends AbstractAppKeyGenerator<Action
             Object parent = getParentViaCast(actionDefinition);
             if (parent instanceof SubAppDescriptor) {
                 final SubAppDescriptor subAppDescriptor = (SubAppDescriptor) parent;
-                addKey(keys, false, APPS, appDescriptor.getName(), SUB_APPS, subAppDescriptor.getName(), ACTIONS, actionName, fieldOrGetterName);
-                addKey(keys, false, SUB_APPS, subAppDescriptor.getName(), ACTIONS, actionName, fieldOrGetterName);
-                addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), ACTIONS, actionName, fieldOrGetterName); //deprecated
+                addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionName, fieldOrGetterName);
             } else {
-                addKey(keys, false, APPS, appDescriptor.getName(), CHOOSE_DIALOG, ACTIONS, actionName, fieldOrGetterName);
-                addKey(keys, false, CHOOSE_DIALOG, ACTIONS, actionName, fieldOrGetterName);
-                addKey(keys, appDescriptor.getName(), CHOOSE_DIALOG, ACTIONS, actionName, fieldOrGetterName); //deprecated
+                addKey(keys, appDescriptor.getName(), "chooseDialog", "actions", actionName, fieldOrGetterName);
             }
         } else {
-            final List<String> ancestorKeys = getKeysFromAncestors(actionDefinition, el, root);
+            final List<String> ancestorKeys = getKeysfromAncestors(actionDefinition, el, root);
             if (ancestorKeys.isEmpty()) {
-                final String rawIdOrName = getIdOrNameForUnknownRoot(actionDefinition, false);
-                final String moduleName = getModuleName(rawIdOrName);
-                final String idOrNameNoModuleName = getIdWithoutModuleName(rawIdOrName);
-                final String idOrName = keyify(rawIdOrName);
+                String idOrName = getIdOrNameForUnknownRoot(actionDefinition);
                 if (idOrName != null) {
-                    if (moduleName != null) {
-                        addKey(keys, false, moduleName, DIALOGS, idOrNameNoModuleName, ACTIONS, actionName, fieldOrGetterName);
-                    }
-                    addKey(keys, false, DIALOGS, idOrNameNoModuleName, ACTIONS, actionName, fieldOrGetterName);
-                    addKey(keys, idOrName, ACTIONS, actionName, fieldOrGetterName); //deprecated
-                    if (StringUtils.isNotEmpty(idOrNameNoModuleName)) {
-                        addKey(keys, idOrNameNoModuleName, ACTIONS, actionName, fieldOrGetterName); //deprecated
+                    addKey(keys, idOrName, "actions", actionName, fieldOrGetterName);
+
+                    String[] parts = StringUtils.split(idOrName, ".");
+                    if (parts.length > 1) {
+                        String idOrNameNoModuleName = parts[parts.length - 1];
+                        addKey(keys, idOrNameNoModuleName, "actions", actionName, fieldOrGetterName);
                     }
                 }
             } else {
-                addKey(keys, false, StringUtils.join(ancestorKeys, '.'), ACTIONS, actionName, fieldOrGetterName);
-                addKey(keys, StringUtils.join(ancestorKeys, '.'), ACTIONS, actionName, fieldOrGetterName); //deprecated
+                addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionName, fieldOrGetterName);
             }
         }
         // add a fallback key for all actions
-        addKey(keys, ACTIONS, actionName, fieldOrGetterName);
+        addKey(keys, "actions", actionName, fieldOrGetterName);
     }
 
-    private List<String> getKeysFromAncestors(final ActionDefinition actionDefinition, final AnnotatedElement el, final Object root) {
+    private List<String> getKeysfromAncestors(final ActionDefinition actionDefinition, final AnnotatedElement el, final Object root) {
         final List<I18nKeyGenerator> keyGenerators = getAncestorKeyGenerators(actionDefinition);
 
-        final List<String> ancestorKeys = new ArrayList<>();
+        final List<String> ancestorKeys = new ArrayList<String>();
 
         for (I18nKeyGenerator keygen : keyGenerators) {
             if (keygen instanceof NullKeyGenerator) {
@@ -125,7 +113,7 @@ public class ActionDefinitionKeyGenerator extends AbstractAppKeyGenerator<Action
 
                 @Override
                 public boolean apply(String input) {
-                    if (StringUtils.isNotBlank(input)) {
+                    if (StringUtils.isNotBlank(input) && !input.endsWith(".label")) {
                         return true;
                     }
                     return false;
@@ -135,7 +123,7 @@ public class ActionDefinitionKeyGenerator extends AbstractAppKeyGenerator<Action
                 continue;
             }
             final String key = ancestorGeneratedKeys.iterator().next();
-            ancestorKeys.add(StringUtils.substringBefore(key, ".label"));
+            ancestorKeys.add(key);
         }
         return ancestorKeys;
     }

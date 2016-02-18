@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.form.definition;
 
-import static org.hamcrest.collection.IsArrayContainingInOrder.arrayContaining;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
@@ -68,13 +67,9 @@ public class FormDefinitionKeyGeneratorTest {
         generator.keysFor(keys, dialog.getForm(), form.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys.toArray(new String[]{}), arrayContaining(
-                "test-module.dialogs.testFolder.testDialog.label",
-                "dialogs.testFolder.testDialog.label",
-                //deprecated:
-                "test-module.testFolder.testDialog.label",
-                "test-module.testFolder.testDialog"
-        ));
+        assertEquals(2, keys.size());
+        assertEquals("test-module.testFolder.testDialog.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog", keys.get(1));
     }
 
 }

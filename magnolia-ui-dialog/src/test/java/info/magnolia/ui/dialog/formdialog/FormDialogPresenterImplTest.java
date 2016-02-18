@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.LocaleProvider;
@@ -135,10 +134,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getLabel(), allOf(
-                containsString("translated with key "),
-                containsString("[" + Locale.ENGLISH.toString() + "]")
-        ));
+        assertEquals("translated with key [dialogID.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
     }
 
     @Test
@@ -158,10 +154,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getLabel());
     }
 
     @Test
@@ -185,11 +178,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
     @Test
@@ -213,11 +202,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.description] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getDescription());
     }
 
     @Test
@@ -245,12 +230,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + field.getI18nBasename() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameField] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
     @Test
@@ -277,12 +257,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + tab.getI18nBasename() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameT] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
     @Test
@@ -308,12 +283,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + form.getI18nBasename() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameF] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
     @Test
@@ -338,12 +308,7 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel(), allOf(
-                containsString("." + tab.getName() + "."),
-                containsString("." + field.getName() + "."),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + def.getI18nBasename() + "]")
-        ));
+        assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameD] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
     @Test
@@ -361,16 +326,8 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
-        assertThat(decoratedDialogDefinition.getLabel(), allOf(
-                containsString("[" + def.getLabel() + "]"),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + def.getI18nBasename() + "]")
-        ));
-        assertThat(decoratedDialogDefinition.getForm().getLabel(), allOf(
-                containsString("[" + form.getLabel() + "]"),
-                containsString("[" + Locale.ENGLISH.toString() + "]"),
-                containsString("[" + form.getI18nBasename() + "]")
-        ));
+        assertEquals("translated with key [foo.bar] and basename [null] and locale [en]", decoratedDialogDefinition.getLabel());
+        assertEquals("translated with key [baz.qux] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
     }
 
     @Test
@@ -412,7 +369,7 @@ public class FormDialogPresenterImplTest {
 
     private ConfiguredFormDialogDefinition getBasicDialogDefinition() {
         ConfiguredFormDialogDefinition cdd = new ConfiguredFormDialogDefinition();
-        cdd.setId("moduleName:dialogID");
+        cdd.setId("dialogID");
         return cdd;
     }
 

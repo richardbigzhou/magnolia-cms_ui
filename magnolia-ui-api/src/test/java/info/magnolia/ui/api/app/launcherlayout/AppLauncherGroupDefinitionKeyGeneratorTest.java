@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
-import static org.hamcrest.collection.IsArrayContainingInOrder.arrayContaining;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 
@@ -62,10 +62,9 @@ public class AppLauncherGroupDefinitionKeyGeneratorTest {
         generator.keysFor(keys, definition, definition.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys.toArray(new String[3]), arrayContaining(
-                "appLauncherLayout.groups.groupName.label",
-                //deprecated:
+        assertThat(keys.toArray(new String[3]), Matchers.arrayContaining(
                 "app-launcher.groupName.label",
+                "app-launcher.groupName",
                 "app-launcher.groupName"
         ));
     }

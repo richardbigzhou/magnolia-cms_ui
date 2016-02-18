@@ -74,28 +74,20 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", dialog.getForm().getTabs().get(0).getFields().get(0).getValidators().get(0));
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
-                "test-module.dialogs.testDialog.form.tabs.testTab.fields.testField.validators.validatorName.errorMessage",
-                "dialogs.testDialog.form.tabs.testTab.fields.testField.validators.validatorName.errorMessage",
-                "form.tabs.testTab.fields.testField.validators.validatorName.errorMessage",
-                "fields.testField.validators.validatorName.errorMessage",
-                "validators.validatorName.errorMessage",
-                //deprecated:
                 "test-module.testDialog.testTab.testField.validation.errorMessage",
                 "test-module.testDialog.testField.validation.errorMessage",
                 "testField.validation.errorMessage"
-        ));
+                ));
     }
 
     private TestDialogDef setupDialogDefinition() {
-        TestDialogDef dialog = new TestDialogDef("test-module:testDialog");
+        TestDialogDef dialog = new TestDialogDef("test-module/testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
         ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
         field.setName("testField");
-        ConfiguredFieldValidatorDefinition validatorDefinition = new ConfiguredFieldValidatorDefinition();
-        validatorDefinition.setName("validatorName");
-        field.addValidator(validatorDefinition);
+        field.addValidator(new ConfiguredFieldValidatorDefinition());
         dialog.setForm(form);
         form.addTab(tab);
         tab.addField(field);

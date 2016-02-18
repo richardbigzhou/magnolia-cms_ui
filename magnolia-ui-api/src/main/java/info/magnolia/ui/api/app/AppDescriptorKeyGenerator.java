@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
@@ -41,12 +41,11 @@ import java.util.List;
 /**
  * Key generator for {@link AppDescriptor}.
  */
-public class AppDescriptorKeyGenerator extends AbstractAppKeyGenerator<AppDescriptor> {
+public class AppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<AppDescriptor> {
 
     @Override
     protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
-        addKey(list, false, APPS, app.getName(), fieldOrGetterName(el));
-        addKey(list, app.getName(), "app", fieldOrGetterName(el)); //deprecated
+        addKey(list, app.getName(), "app", fieldOrGetterName(el));
     }
 
 }
