@@ -36,12 +36,12 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
@@ -59,9 +59,6 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FinishedEvent;
 
-/**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.BasicUploadFieldFactory}.
- */
 public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<BasicUploadFieldDefinition> {
 
     protected BasicUploadFieldFactory basicUploadBuilder;
@@ -70,18 +67,18 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
+        // no need to initialize a specific temp dir for tests, it'll be target/tmp by default
         UiContext uiContext = mock(UiContext.class);
         ImageProvider imageProvider = mock(ImageProvider.class);
         SimpleTranslator translator = mock(SimpleTranslator.class);
         ComponentsTestUtil.setInstance(SimpleTranslator.class, translator);
         ComponentProvider componentProvider = new MockComponentProvider();
-        EventBus eventBus = mock(EventBus.class);
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, imageProvider, uiContext, translator, componentProvider, eventBus);
+        I18NAuthoringSupport authoringSupport = mock(I18NAuthoringSupport.class);
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, uiContext, authoringSupport, imageProvider, translator, componentProvider);
     }
 
     @Test
-    public void testGetField() throws Exception {
+    public void getField() throws Exception {
         // GIVEN
 
         // WHEN
@@ -92,11 +89,11 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
     }
 
     @Test
-    public void testEmptyLayout() throws Exception {
+    public void emptyLayout() throws Exception {
         // GIVEN
         BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
-        FailedEvent event = new FailedEvent(upload, "filename", "MIMEType", 0l);
+        FailedEvent event = new FailedEvent(upload, "filename", "MIMEType", 0L);
 
         // WHEN
         field.uploadFinished(event);
@@ -106,18 +103,18 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         assertEquals(2, layout.getComponentCount());
         assertTrue(layout.getComponent(0) instanceof Upload);
         assertTrue(layout.getComponent(1) instanceof Label);
-        assertTrue(((Label) layout.getComponent(1)).getStyleName().contains("upload-text"));
+        assertTrue(layout.getComponent(1).getStyleName().contains("upload-text"));
     }
 
     @Test
-    public void testCompletedLayout() throws Exception {
+    public void completedLayout() throws Exception {
         // GIVEN
         BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
         UploadReceiver receiver = mock(UploadReceiver.class);
         when(receiver.getFileName()).thenReturn("filename.jpg");
         upload.setReceiver(receiver);
-        FinishedEvent event = new FinishedEvent(upload, "filename.jpg", "MIMEType", 0l);
+        FinishedEvent event = new FinishedEvent(upload, "filename.jpg", "MIMEType", 0L);
 
         // WHEN
         field.uploadFinished(event);
@@ -126,13 +123,13 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         CssLayout layout = field.getCssLayout();
         assertEquals(3, layout.getComponentCount());
         assertTrue(layout.getComponent(0) instanceof FormLayout);
-        assertTrue(((FormLayout) layout.getComponent(0)).getStyleName().contains("file-details"));
+        assertTrue(layout.getComponent(0).getStyleName().contains("file-details"));
         assertTrue(layout.getComponent(1) instanceof HorizontalLayout);
         HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(1);
         assertEquals(2, horizontalLayout.getComponentCount());
         assertTrue(horizontalLayout.getComponent(0) instanceof Upload);
         assertTrue(layout.getComponent(2) instanceof Label);
-        assertTrue(((Label) layout.getComponent(2)).getStyleName().contains("preview-image"));
+        assertTrue(layout.getComponent(2).getStyleName().contains("preview-image"));
     }
 
     @Override

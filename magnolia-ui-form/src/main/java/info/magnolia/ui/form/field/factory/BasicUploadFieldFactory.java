@@ -36,10 +36,9 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.AppLifecycleEvent;
-import info.magnolia.ui.api.app.AppLifecycleEventHandler;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
@@ -47,61 +46,48 @@ import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and configures a Basic UploadField.
+ * Creates and configures a {@link BasicUploadField}.
  */
 public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFieldDefinition, UploadReceiver> {
-
-    private static final Logger log = LoggerFactory.getLogger(BasicUploadFieldFactory.class);
 
     private final ImageProvider imageProvider;
     private final UiContext uiContext;
     private final SimpleTranslator i18n;
     private final ComponentProvider componentProvider;
-    private final EventBus admincentralEventBus;
 
     @Inject
-    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
-        super(definition, relatedFieldItem);
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport, ImageProvider imageProvider, SimpleTranslator i18n, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
         this.imageProvider = imageProvider;
         this.uiContext = uiContext;
         this.i18n = i18n;
         this.componentProvider = componentProvider;
-        this.admincentralEventBus = admincentralEventBus;
     }
 
     /**
-     * @deprecated since 5.4.3. Use {@link #BasicUploadFieldFactory(info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition, com.vaadin.data.Item, info.magnolia.ui.imageprovider.ImageProvider, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator, info.magnolia.objectfactory.ComponentProvider, info.magnolia.event.EventBus)} instead.
+     * @deprecated since 5.4.5. Use {@link #BasicUploadFieldFactory(BasicUploadFieldDefinition, Item, UiContext, I18NAuthoringSupport, ImageProvider, SimpleTranslator, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider, EventBus admincentralEventBus) {
+        this(definition, relatedFieldItem, uiContext, Components.getComponent(I18NAuthoringSupport.class), imageProvider, i18n, componentProvider);
+    }
+
+    /**
+     * @deprecated since 5.4.3. Use {@link #BasicUploadFieldFactory(BasicUploadFieldDefinition, Item, UiContext, I18NAuthoringSupport, ImageProvider, SimpleTranslator, ComponentProvider)} instead.
      */
     @Deprecated
     public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n, ComponentProvider componentProvider) {
-        this(definition, relatedFieldItem, imageProvider, uiContext, i18n, componentProvider, null);
-        log.warn("Using deprecated constructor for BasicUploadFieldFactory (via {}); temporary uploaded files will not be deleted when closing the app. See MGNLUI-3542 for more details.", getClass().getName());
+        this(definition, relatedFieldItem, uiContext, Components.getComponent(I18NAuthoringSupport.class), imageProvider, i18n, componentProvider);
     }
 
     @Override
     protected Field<UploadReceiver> createFieldComponent() {
-        // Create Upload Filed.
-        BasicUploadField<UploadReceiver> uploadField = new BasicUploadField<UploadReceiver>(imageProvider, uiContext, definition, i18n);
-        if (this.admincentralEventBus != null) {
-            this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
-                @Override
-                public void onAppStopped(AppLifecycleEvent event) {
-                    if (field.getValue().getFile() != null) {
-                        field.getValue().getFile().delete();
-                    }
-                }
-            });
-        }
-        return uploadField;
+        return new BasicUploadField<>(imageProvider, uiContext, definition, i18n);
     }
 
     /**
