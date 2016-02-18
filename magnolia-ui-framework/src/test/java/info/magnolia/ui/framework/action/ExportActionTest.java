@@ -45,8 +45,6 @@ import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -105,8 +103,6 @@ public class ExportActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
         ComponentsTestUtil.setImplementation(AsyncActionExecutor.class, AbstractCommandActionTest.DummyAsyncExecutor.class);
-
-        ComponentsTestUtil.setImplementation(EventBus.class, SimpleEventBus.class);
 
         // Init Command
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
