@@ -149,7 +149,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
             String layout = "horizontal";
             if (definition.getSelectionType().equals("radio")) {
                 selectDefinition = new OptionGroupFieldDefinition();
-                if (definition.getLayout().equals(Layout.vertical)) {
+                if (definition.getLayout() == Layout.vertical) {
                     layout = "vertical";
                 }
             } else {

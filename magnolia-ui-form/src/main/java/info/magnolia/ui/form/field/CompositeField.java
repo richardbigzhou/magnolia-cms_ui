@@ -72,7 +72,7 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     protected Component initContent() {
         // Init root layout
         addStyleName("linkfield");
-        if (definition.getLayout().equals(Layout.horizontal)) {
+        if (definition.getLayout() == Layout.horizontal) {
             root = new HorizontalLayout();
         } else {
             root = new VerticalLayout();

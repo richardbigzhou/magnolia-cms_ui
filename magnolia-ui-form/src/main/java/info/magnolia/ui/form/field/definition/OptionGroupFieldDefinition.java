@@ -42,6 +42,7 @@ import info.magnolia.ui.form.field.transformer.basic.ListToSetTransformer;
 public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
     private boolean multiselect = false;
+    private Layout layout = Layout.vertical;
 
     /**
      * Option group need a specific {@link Transformer} in order to handle the conversion between Set and List.
@@ -59,4 +60,17 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
         this.multiselect = multiple;
     }
 
+    /**
+     * Defines whether options should be displayed horizontally or vertically.
+     *
+     * @return a <code>Layout</code> enum value corresponding to current orientation. Defaults to <code>Layout.vertical</code>.
+     * @see Layout
+     */
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 }
