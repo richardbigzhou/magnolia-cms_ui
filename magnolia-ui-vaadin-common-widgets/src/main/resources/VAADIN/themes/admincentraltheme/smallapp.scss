@@ -46,6 +46,40 @@
 
   .smallapp-section {
     border-bottom: 5px solid $c15 !important;
+    padding: 10px 45px 10px 15px;
+    width: 100%;
+
+    .v-formlayout-captioncell .v-caption {
+      display: inline-block;
+      vertical-align: top;
+      width: 155px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .v-formlayout-contentcell {
+      min-width: 320px;
+    }
+
+    .v-label {
+      font-size: 12px;
+      line-height: 1.6;
+      vertical-align: top;
+    }
+
+    .spacer {
+      margin-top: 12px;
+    }
+
+    .section-title {
+      font-family: DINWebPro;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .fieldset-title {
+      font-weight: bold;
+    }
   }
 
   .v-csslayout.smallapp-section {
