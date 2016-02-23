@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -223,5 +225,31 @@ public class UploadReceiverTest {
 
         // THEN
         assertEquals("foo", res);
+    }
+
+    @Test
+    public void escapingPotentialXssAttack() throws Exception {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("<script>alert('foo')</script>", null);
+
+        // WHEN
+        String fileName = uploadReceiver.getFileName();
+
+        // THEN
+        assertThat(fileName, is(not("<script>alert('foo')</script>")));
+    }
+
+    @Test
+    public void notAffectingNonHtml() throws Exception {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.setFileName("foo-bar");
+
+        // WHEN
+        String fileName = uploadReceiver.getFileName();
+
+        // THEN
+        assertThat(fileName, is("foo-bar"));
     }
 }
