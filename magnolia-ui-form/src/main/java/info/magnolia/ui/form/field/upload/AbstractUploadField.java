@@ -38,6 +38,7 @@ import info.magnolia.cms.beans.config.MIMEMapping;
 import java.io.OutputStream;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -381,7 +382,7 @@ public abstract class AbstractUploadField<T extends UploadReceiver> extends Cust
             uploadFailed(newEvent);
             return;
         }
-        displayUploadFinishedNote(event.getFilename());
+        displayUploadFinishedNote(StringEscapeUtils.escapeHtml4(event.getFilename()));
         this.getPropertyDataSource().setValue(event.getUpload().getReceiver());
         buildCompletedLayout();
         fireValueChange(false);
