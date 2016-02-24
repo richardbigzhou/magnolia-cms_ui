@@ -341,31 +341,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         assertThat(defaultValue.toString(), is("1"));
     }
 
-    @Override
-    protected void createConfiguredFieldDefinition() {
-        SelectFieldDefinition fieldDefinition = new SelectFieldDefinition();
-        fieldDefinition = (SelectFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
-        fieldDefinition.setDefaultValue(null);
-        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
-        option1.setLabel("One");
-        option1.setValue("1");
-
-        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
-        option2.setLabel("Two");
-        option2.setValue("2");
-
-        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
-        option3.setLabel("Three");
-        option3.setValue("3");
-
-        fieldDefinition.addOption(option1);
-        fieldDefinition.addOption(option2);
-        fieldDefinition.addOption(option3);
-
-        this.definition = fieldDefinition;
-    }
-
-
     @Test
     public void createFieldSortsOptionsByComparator() throws Exception {
         // GIVEN
@@ -408,7 +383,6 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         componentProvider.setImplementation(TestComparator.class, TestComparator.class.getName());
         dialogSelect.setComponentProvider(componentProvider);
 
-
         // WHEN
         AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
@@ -449,6 +423,51 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         assertThat(items, contains("1", "2", "3"));
         assertThat(field.getValue().toString(), is("1"));
+    }
+
+    @Test
+    public void labelsForOptionsAreNotTranslatedWithOldI18n() throws Exception {
+        // GIVEN
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<>();
+
+        SelectFieldOptionDefinition nullOption = new SelectFieldOptionDefinition();
+        nullOption.setLabel(null);
+        nullOption.setValue("1");
+        options.add(nullOption);
+
+        definition.setOptions(options);
+        initializeSelectFieldFactory();
+
+        // WHEN
+        List<SelectFieldOptionDefinition> optionDefinition = dialogSelect.getSelectFieldOptionDefinition();
+
+        // THEN
+        assertThat(optionDefinition, hasSize(1));
+        assertNull(optionDefinition.get(0).getLabel());
+    }
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        SelectFieldDefinition fieldDefinition = new SelectFieldDefinition();
+        fieldDefinition = (SelectFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition.setDefaultValue(null);
+        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
+        option1.setLabel("One");
+        option1.setValue("1");
+
+        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
+        option2.setLabel("Two");
+        option2.setValue("2");
+
+        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
+        option3.setLabel("Three");
+        option3.setValue("3");
+
+        fieldDefinition.addOption(option1);
+        fieldDefinition.addOption(option2);
+        fieldDefinition.addOption(option3);
+
+        this.definition = fieldDefinition;
     }
 
     protected void initRemoteOptionsNode() throws RepositoryException {

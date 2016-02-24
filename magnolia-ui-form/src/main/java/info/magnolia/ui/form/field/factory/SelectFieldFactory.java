@@ -178,7 +178,6 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
             for (SelectFieldOptionDefinition option : definition.getOptions()) {
                 option.setValue(getValue(option));
-                option.setLabel(getMessage(getLabel(option)));
                 if (option.isSelected()) {
                     initialSelectedKey.add(getValue(option));
                 }
@@ -215,22 +214,10 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             if (StringUtils.isNotBlank(option.getName())) {
                 return option.getName();
             } else {
-                return getMessage(getLabel(option));
+                return option.getLabel();
             }
         } else {
             return option.getValue();
-        }
-    }
-
-    /**
-     * Backward compatibility.
-     * If label is null, get the Value.
-     */
-    private String getLabel(SelectFieldOptionDefinition option) {
-        if (StringUtils.isBlank(option.getLabel())) {
-            return option.getValue();
-        } else {
-            return option.getLabel();
         }
     }
 
@@ -304,7 +291,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                     // Get Label and Value
                     String label = getRemoteOptionsName(child, optionLabelName);
                     String value = getRemoteOptionsValue(child, optionValueName);
-                    option.setLabel(getMessage(label));
+                    option.setLabel(label);
                     option.setValue(value);
 
                     if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
