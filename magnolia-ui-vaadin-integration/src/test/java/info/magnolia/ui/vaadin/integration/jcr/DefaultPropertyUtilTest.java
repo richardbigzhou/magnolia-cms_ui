@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
@@ -45,6 +46,8 @@ import javax.jcr.Binary;
 import javax.jcr.PropertyType;
 
 import org.junit.Test;
+
+import com.vaadin.server.Sizeable;
 
 public class DefaultPropertyUtilTest {
 
@@ -83,6 +86,17 @@ public class DefaultPropertyUtilTest {
 
         // THEN
         assertNull(result);
+    }
+
+    @Test
+    public void canConvertStringValue() throws Exception {
+        assertThat(DefaultPropertyUtil.canConvertStringValue(String.class), is(true));
+        assertThat(DefaultPropertyUtil.canConvertStringValue(Long.class), is(true));
+        assertThat(DefaultPropertyUtil.canConvertStringValue(Double.class), is(true));
+        assertThat(DefaultPropertyUtil.canConvertStringValue(Date.class), is(true));
+        assertThat(DefaultPropertyUtil.canConvertStringValue(List.class), is(true));
+
+        assertThat(DefaultPropertyUtil.canConvertStringValue(Sizeable.Unit.class), is(false));
     }
 
     @Test

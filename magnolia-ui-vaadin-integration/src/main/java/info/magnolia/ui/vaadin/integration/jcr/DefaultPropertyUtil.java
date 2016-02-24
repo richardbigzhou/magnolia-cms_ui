@@ -159,6 +159,28 @@ public class DefaultPropertyUtil {
     }
 
     /**
+     * DefaultPropertyUtil mainly provides string-based conversion to JCR common property types.
+     * In some cases, client may want to know in advance if this will apply to a given type, to implement alternative
+     * strategies of creating/parsing property values.
+     *
+     * @see #createTypedValue(Class, String)
+     */
+    public static boolean canConvertStringValue(Class<?> type) {
+        // basically mirroring conditions in impl above (as fishy as it is)
+        if (type.getName().equals(String.class.getName())
+                || type.getName().equals(Long.class.getName())
+                || type.isAssignableFrom(Binary.class)
+                || type.getName().equals(Double.class.getName())
+                || type.getName().equals(Date.class.getName())
+                || type.getName().equals(Boolean.class.getName())
+                || type.getName().equals(BigDecimal.class.getName())
+                || type.isAssignableFrom(List.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Return the related Class for a desired Type by String. Using {@link PropertyType} to read the type from the String.
      * If no fieldType is defined, the default is String.
      *
