@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
@@ -45,18 +46,15 @@ import javax.jcr.PropertyType;
 
 import org.junit.Test;
 
-/**
- * Test of {@link DefaultPropertyUtil}.
- */
 public class DefaultPropertyUtilTest {
 
     @Test
-    public void testCreateTypedValueForDate() throws Exception {
+    public void createTypedValueForDate() throws Exception {
         // GIVEN
         final String value = "1970-07-04";
 
         // WHEN
-        Date result = (Date) DefaultPropertyUtil.createTypedValue(PropertyType.TYPENAME_DATE, value);
+        Date result = (Date) DefaultPropertyUtil.createTypedValue(Date.class, value);
 
         // THEN
         Calendar cal = Calendar.getInstance();
@@ -67,7 +65,7 @@ public class DefaultPropertyUtilTest {
     }
 
     @Test
-    public void testCreateTypedValueForList() throws Exception {
+    public void createTypedValueForList() throws Exception {
         // GIVEN
         final String value = "a,b,c";
 
@@ -75,15 +73,13 @@ public class DefaultPropertyUtilTest {
         List<String> result = (List<String>) DefaultPropertyUtil.createTypedValue(List.class, value);
 
         // THEN
-        assertTrue(result.contains("a"));
-        assertTrue(result.contains("b"));
-        assertTrue(result.contains("c"));
+        assertThat(result, contains("a", "b", "c"));
     }
 
     @Test
-    public void testCreateTypedValueForDateWithoutDefault() throws Exception {
+    public void createTypedValueForDateWithoutDefault() throws Exception {
         // WHEN
-        Date result = (Date) DefaultPropertyUtil.createTypedValue(PropertyType.TYPENAME_DATE, null);
+        Date result = (Date) DefaultPropertyUtil.createTypedValue(Date.class, null);
 
         // THEN
         assertNull(result);
@@ -92,17 +88,17 @@ public class DefaultPropertyUtilTest {
     @Test
     public void createDefaultPropertyByPropertyType() {
         //WHEN
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(PropertyType.LONG, 123l);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(Long.class, "123");
 
         //THEN
-        assertEquals(123l, property.getValue());
+        assertEquals(123L, property.getValue());
         assertEquals(Long.class, property.getType());
     }
 
     @Test
     public void createDefaultPropertyByPropertyTypeWithNullValue() {
         //WHEN
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(PropertyType.LONG, null);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(Long.class, null);
 
         //THEN
         assertEquals(null, property.getValue());
@@ -110,7 +106,7 @@ public class DefaultPropertyUtilTest {
     }
 
     @Test
-    public void testGetFieldTypeClass() {
+    public void getFieldTypeClass() {
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(""));
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(null));
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_STRING));
@@ -123,7 +119,7 @@ public class DefaultPropertyUtilTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetFieldTypeClassForNotSupportedTypeBinary() {
+    public void getFieldTypeClassForNotSupportedTypeBinary() {
         DefaultPropertyUtil.getFieldTypeClass("SOME_RANDOM_STRING");
     }
 
