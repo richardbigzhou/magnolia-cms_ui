@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.util.converter.ConverterUtil;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
@@ -211,8 +212,26 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected Object createDefaultValue(Property property) {
         String defaultValue = definition.getDefaultValue();
-        if (StringUtils.isNotBlank(defaultValue)) {
-            return DefaultPropertyUtil.createTypedValue(property.getType(), defaultValue);
+
+        // favor JCR conversions first via DefaultPropertyUtil
+        if (DefaultPropertyUtil.canConvertStringValue(property.getType())) {
+            return DefaultPropertyUtil.createTypedValue(property.getType(), (String) defaultValue);
+
+        } else if (defaultValue != null && definition.getConverterClass() != null && field instanceof AbstractField) {
+            // Mirror AbstractField#convertToModel
+            // - expect converter to be already set by #createField upfront
+            // - expect configured value in english locale (resp. number format), no i18n in config
+            Converter converter = ((AbstractField) field).getConverter();
+            Class<?> modelType = property != null ? property.getType() : converter.getModelType();
+            Locale locale = Locale.ENGLISH;
+            try {
+                return ConverterUtil.convertToModel(defaultValue, modelType, converter, locale);
+            } catch (Converter.ConversionException e) {
+                log.error("Default value {} could not be converted to property type {}.", defaultValue, property.getType(), e);
+            }
+        }
+        if (StringUtils.isNotEmpty(defaultValue)) {
+            log.warn("Default value {} cannot be assigned to property of type {}.", defaultValue, property.getType());
         }
         return null;
     }

@@ -62,6 +62,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.data.util.converter.StringToFloatConverter;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Field;
@@ -348,6 +349,27 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         // THEN
         assertEquals(6d, p.getValue());
+    }
+
+    @Test
+    public void supportsDefaultValueWithConfiguredConverter() throws Exception {
+        // GIVEN a factory/field backed by a Float property, with a converter explicitly configured
+        baseItem = new PropertysetItem();
+        ObjectProperty<Float> preTypedProperty = new ObjectProperty<>(null, Float.class);
+        baseItem.addItemProperty("floaty", preTypedProperty);
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "floaty");
+        def.setType(null);
+        def.setDefaultValue("0.86");
+        def.setConverterClass(StringToFloatConverter.class);
+        fieldFactory = new TestTextFieldFactory(def, baseItem, null, i18NAuthoringSupport);
+        fieldFactory.setComponentProvider(this.componentProvider);
+
+        // WHEN
+        Field<?> field = fieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals(0.86f, p.getValue());
     }
 
     @Test
