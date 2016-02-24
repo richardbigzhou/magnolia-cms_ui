@@ -74,7 +74,7 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
      * Make sure default value is always used for input hidden if current value is null.
      */
     @Override
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         super.setPropertyDataSourceAndDefaultValue(property);
 
         if (property.getValue() == null) {

@@ -112,7 +112,7 @@ public class NodeTypeSelectFieldFactory extends SelectFieldFactory<NodeTypeSelec
     }
 
     @Override
-    protected String createDefaultValue(Property<?> dataSource) {
+    protected String createDefaultValue(Property dataSource) {
         return definition.getDefaultValue();
     }
 }

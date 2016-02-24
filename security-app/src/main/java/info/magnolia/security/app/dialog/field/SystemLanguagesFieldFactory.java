@@ -136,7 +136,7 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
     }
 
     @Override
-    protected Object createDefaultValue(Property<?> dataSource) {
+    protected Object createDefaultValue(Property dataSource) {
         return StringUtils.isNotBlank(selectedLanguage) ? selectedLanguage : super.createDefaultValue(dataSource);
     }
 }
