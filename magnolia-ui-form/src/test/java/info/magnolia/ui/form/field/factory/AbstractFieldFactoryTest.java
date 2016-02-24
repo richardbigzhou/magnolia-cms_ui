@@ -319,7 +319,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
             }
 
             @Override
-            protected Number createDefaultValue(Property<?> property) {
+            protected Number createDefaultValue(Property property) {
                 return -1;
             }
 

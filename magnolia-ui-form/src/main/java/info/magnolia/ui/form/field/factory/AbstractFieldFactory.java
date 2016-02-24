@@ -184,7 +184,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * - the item is not an instance of {@link ItemAdapter}.<br>
      * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.<br>
      */
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         this.field.setPropertyDataSource(property);
 
         if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew() && property.getValue() == null) || (!(item instanceof ItemAdapter) && property.getValue() == null)) {
@@ -209,7 +209,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     /**
      * Create a typed default value.
      */
-    protected Object createDefaultValue(Property<?> property) {
+    protected Object createDefaultValue(Property property) {
         String defaultValue = definition.getDefaultValue();
         if (StringUtils.isNotBlank(defaultValue)) {
             return DefaultPropertyUtil.createTypedValue(property.getType(), defaultValue);

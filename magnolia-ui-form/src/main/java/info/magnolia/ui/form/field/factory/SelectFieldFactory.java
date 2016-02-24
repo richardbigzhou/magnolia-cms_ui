@@ -237,7 +237,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
      */
     @Override
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
             setPropertyDataSourceDefaultValue(property);
         }
@@ -251,7 +251,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * Else, set the first element of the list.
      */
     @Override
-    protected Object createDefaultValue(Property<?> dataSource) {
+    protected Object createDefaultValue(Property dataSource) {
         Object selectedValue = null;
         Object datasourceValue = dataSource.getValue();
 
