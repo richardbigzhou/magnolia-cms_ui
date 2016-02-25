@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
@@ -138,7 +139,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // RED, not activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-red\" title=\"not-activated\"></span>" + "<span class=\"hidden-for-aria\">not-activated</span>", res.toString());
+        assertEquals("<span class=\"" + StatusColumnFormatter.ActivationStatus.NOT_ACTIVATED.getStyleName() + "\" title=\"not-activated\"></span>" + "<span class=\"hidden-for-aria\">not-activated</span>", res.toString());
     }
 
     @Test
@@ -155,7 +156,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // GREEN, was activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-green\" title=\"activated\"></span>" + "<span class=\"hidden-for-aria\">activated</span>", res.toString());
+        assertEquals("<span class=\"" + StatusColumnFormatter.ActivationStatus.ACTIVATED.getStyleName() + "\" title=\"activated\"></span>" + "<span class=\"hidden-for-aria\">activated</span>", res.toString());
     }
 
     @Test
@@ -175,7 +176,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // YELLOW, was activated and then modified
-        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\" title=\"modified\"></span>" + "<span class=\"hidden-for-aria\">modified</span>", res.toString());
+        assertEquals("<span class=\"" + StatusColumnFormatter.ActivationStatus.MODIFIED.getStyleName() + "\" title=\"modified\"></span>" + "<span class=\"hidden-for-aria\">modified</span>", res.toString());
     }
 
     @Test
