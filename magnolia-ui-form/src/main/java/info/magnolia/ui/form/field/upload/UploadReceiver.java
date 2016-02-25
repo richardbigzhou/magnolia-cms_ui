@@ -41,7 +41,6 @@ import java.io.OutputStream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
@@ -70,9 +69,8 @@ public class UploadReceiver extends FileBuffer {
 
     @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
-        String escapedName = StringEscapeUtils.escapeHtml4(filename);
-        setFileName(escapedName);
-        return super.receiveUpload(escapedName, MIMEType);
+        setFileName(filename);
+        return super.receiveUpload(filename, MIMEType);
     }
 
     @Override
