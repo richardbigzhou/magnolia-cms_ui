@@ -37,7 +37,9 @@ import info.magnolia.cms.util.PathUtil;
 import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
+import java.io.OutputStream;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.vaadin.easyuploads.FileBuffer;
 import org.vaadin.easyuploads.FileFactory;
 import org.vaadin.easyuploads.UploadField.FieldType;
@@ -61,12 +63,18 @@ public class UploadReceiver extends FileBuffer {
     }
 
     @Override
+    public OutputStream receiveUpload(String filename, String MIMEType) {
+        String escapedName = StringEscapeUtils.escapeHtml(filename);
+        return super.receiveUpload(escapedName, MIMEType);
+    }
+
+    @Override
     public FileFactory getFileFactory() {
         return new DefaultFileFactory(directory, i18n);
     }
 
     public String getFileName() {
-        return this.getLastFileName();
+        return StringEscapeUtils.escapeHtml(this.getLastFileName());
     }
 
     public long getFileSize() {
@@ -80,5 +88,4 @@ public class UploadReceiver extends FileBuffer {
     public String getExtension() {
         return PathUtil.getExtension(getFileName());
     }
-
 }

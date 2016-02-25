@@ -38,6 +38,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import java.io.File;
 import java.io.OutputStream;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,7 +311,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
                 public synchronized boolean isInterrupted() {
                     return isDragAndDropUploadInterrupted();
                 }
-
             });
         }
     }
@@ -380,7 +380,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
             uploadFailed(newEvent);
             return;
         }
-        displayUploadFinishedNote(event.getFilename());
+        displayUploadFinishedNote(StringEscapeUtils.escapeHtml(event.getFilename()));
         this.fileWrapper.populateFromReceiver(receiver);
         buildCompletedLayout();
         fireValueChange(false);
@@ -415,7 +415,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     @Override
     public void setAllowedMimeTypePattern(String allowedMimeTypePattern) {
         this.allowedMimeTypePattern = allowedMimeTypePattern;
-
     }
 
     @Override
@@ -458,5 +457,4 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
             });
         }
     }
-
 }
