@@ -58,13 +58,12 @@ public class AppLauncherGroupDefinitionKeyGeneratorTest {
         definition.setPermanent(false);
 
         // WHEN
-        List<String> keys = new ArrayList<String>(3);
+        List<String> keys = new ArrayList<>(3);
         generator.keysFor(keys, definition, definition.getClass().getMethod("getLabel"));
 
         // THEN
-        assertThat(keys.toArray(new String[3]), Matchers.arrayContaining(
+        assertThat(keys.toArray(new String[]{}), Matchers.arrayContaining(
                 "app-launcher.groupName.label",
-                "app-launcher.groupName",
                 "app-launcher.groupName"
         ));
     }
