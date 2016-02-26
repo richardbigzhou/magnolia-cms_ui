@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -76,7 +79,6 @@ public class UploadReceiverTest {
         }
     }
 
-
     @Test
     public void testGetFileFactory() {
         // GIVEN
@@ -104,7 +106,6 @@ public class UploadReceiverTest {
 
         assertTrue(uploadReceiver.getFile().getPath().startsWith(directory.getPath()));
         assertTrue(uploadReceiver.getFile().getName().startsWith("me"));
-
     }
 
     @Test
@@ -180,5 +181,32 @@ public class UploadReceiverTest {
         // THEN
         assertNotNull(res);
         assertEquals("jpg", res);
+    }
+
+    @Test
+    public void escapingPotentialXssAttack() throws Exception {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("<script>", null);
+
+        // WHEN
+        String fileName = uploadReceiver.getFileName();
+
+        // THEN
+        assertThat(fileName, is(not("<script>")));
+        assertThat(fileName, notNullValue());
+    }
+
+    @Test
+    public void notAffectingNonHtml() throws Exception {
+        // GIVEN
+        uploadReceiver = new UploadReceiver(directory, i18n);
+        uploadReceiver.receiveUpload("foo-bar", null);
+
+        // WHEN
+        String fileName = uploadReceiver.getFileName();
+
+        // THEN
+        assertThat(fileName, is("foo-bar"));
     }
 }
