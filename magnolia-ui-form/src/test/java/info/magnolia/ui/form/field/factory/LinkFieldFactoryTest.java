@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
@@ -66,7 +67,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        componentProvider.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
+        ComponentsTestUtil.setInstance(ContentConnector.class, mock(JcrContentConnector.class));
     }
 
     /**
