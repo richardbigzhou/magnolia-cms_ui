@@ -42,8 +42,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.CompositeField;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -79,7 +78,6 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
 
     private CompositeFieldFactory<CompositeFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
-    private I18NAuthoringSupport i18nAuthoringSupport;
     private CompositeField compositeField;
     private TextFieldDefinition textFieldDefinition;
     private DateFieldDefinition dateFieldDefinition;
@@ -94,10 +92,8 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
         when(context.getUser()).thenReturn(mock(User.class));
         when(context.getLocale()).thenReturn(Locale.ENGLISH);
 
-        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
-        componentProvider.registerInstance(Context.class, context);
-        componentProvider.registerInstance(ComponentProvider.class, componentProvider);
-        componentProvider.registerInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
+        ComponentsTestUtil.setInstance(Context.class, context);
+        ComponentsTestUtil.setInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
         subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
@@ -118,7 +114,7 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
     @Test
     public void createFieldComponentTest() throws Exception {
         // GIVEN
-        factory = new CompositeFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
+        factory = new CompositeFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN

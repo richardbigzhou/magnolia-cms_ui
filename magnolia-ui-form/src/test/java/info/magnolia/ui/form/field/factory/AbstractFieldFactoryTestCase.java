@@ -45,8 +45,9 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.context.UiContext;
@@ -79,7 +80,7 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     protected Node baseNode;
     protected Item baseItem;
     protected D definition;
-    protected MockComponentProvider componentProvider;
+    protected ComponentProvider componentProvider;
     protected I18NAuthoringSupport i18NAuthoringSupport;
     protected UiContext uiContext;
 
@@ -121,9 +122,10 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);
-        componentProvider = new MockComponentProvider();
-        componentProvider.setInstance(I18NAuthoringSupport.class, mock(I18NAuthoringSupport.class));
-        componentProvider.setInstance(UiContext.class, mock(UiContext.class));
+        ComponentsTestUtil.setInstance(UiContext.class, mock(UiContext.class));
+        // get ComponentProvider from ComponentsTestUtil
+        componentProvider = Components.getComponentProvider();
+        ComponentsTestUtil.setInstance(ComponentProvider.class, componentProvider);
     }
 
     @After

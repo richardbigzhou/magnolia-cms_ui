@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -380,7 +381,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setComparatorClass(TestComparator.class);
 
         dialogSelect = new SelectFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport);
-        componentProvider.setImplementation(TestComparator.class, TestComparator.class.getName());
+        ComponentsTestUtil.setImplementation(TestComparator.class, TestComparator.class.getName());
         dialogSelect.setComponentProvider(componentProvider);
 
         // WHEN
