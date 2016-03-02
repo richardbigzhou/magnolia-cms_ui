@@ -274,15 +274,6 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         return selectedValue;
     }
 
-    @Override
-    protected Class<?> getDefinitionType() {
-        Class<?> res = super.getDefinitionType();
-        if (res == null) {
-            res = String.class;
-        }
-        return res;
-    }
-
     /**
      * Build options based on a remote Node.
      * Simply get the remote Node, Iterate his child nodes and for every child
