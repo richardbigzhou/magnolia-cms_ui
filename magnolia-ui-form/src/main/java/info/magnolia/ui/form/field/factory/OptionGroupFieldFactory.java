@@ -42,7 +42,7 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -97,7 +97,7 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
     /**
      * Override in order to define the field property type.<br>
      * In case of single select, use the default mechanism.<br>
-     * In case of multi select, set property type as {@link HashSet}, type used by the Vaadin MultiSelect field.
+     * In case of multi select, set property type as {@link Set}, type used by the Vaadin MultiSelect field.
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
@@ -110,7 +110,7 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
         if (!select.isMultiSelect()) {
             return getFieldType();
         } else {
-            return HashSet.class;
+            return Set.class;
         }
     }
 
