@@ -40,11 +40,9 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -234,44 +232,32 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
-     * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
+     * If value is null but single-select field mandates a non-null value, then pick the first value as default.
      */
     @Override
     public void setPropertyDataSourceAndDefaultValue(Property property) {
-        if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
-            setPropertyDataSourceDefaultValue(property);
-        }
         super.setPropertyDataSourceAndDefaultValue(property);
+
+        // whenever previous value is null (i.e. not just for new node adapters)
+        boolean shouldPreselectFirstValue = !select.isNullSelectionAllowed() && !select.isMultiSelect() && property.getValue() == null;
+        if (shouldPreselectFirstValue) {
+            // sanity check — make sure there's a first value up for grabs
+            if (select.getItemIds() != null && !select.getItemIds().isEmpty()) {
+                property.setValue(select.getItemIds().iterator().next());
+            }
+        }
     }
 
-    /**
-     * Set the value selected.
-     * Set selectedItem to the last stored value.
-     * If not yet stored, set initialSelectedKey as selectedItem
-     * Else, set the first element of the list.
-     */
     @Override
-    protected Object createDefaultValue(Property dataSource) {
-        Object selectedValue = null;
-        Object datasourceValue = dataSource.getValue();
-
-        if (!initialSelectedKey.isEmpty()) {
-            if (select.isMultiSelect()) {
-                return new HashSet(initialSelectedKey);
-            }
-            selectedValue = initialSelectedKey.get(0);
-        } else if (!select.isNullSelectionAllowed() && select.getItemIds() != null && !select.getItemIds().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
-            selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
+    protected Object getConfiguredDefaultValue() {
+        if (initialSelectedKey.isEmpty()) {
+            return null;
         }
-
-        // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
-        // Set the selected value (if not null)
-        if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
-            ((Collection) datasourceValue).add(selectedValue);
-            selectedValue = datasourceValue;
+        if (select.isMultiSelect()) {
+            return new HashSet<>(initialSelectedKey);
+        } else {
+            return initialSelectedKey.get(0);
         }
-        return selectedValue;
     }
 
     /**

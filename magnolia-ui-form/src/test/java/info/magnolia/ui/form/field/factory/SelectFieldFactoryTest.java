@@ -39,7 +39,6 @@ import static org.junit.Assert.*;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -51,12 +50,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
@@ -328,18 +327,21 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void testCreateDefaultValueFromLong() throws Exception {
         // GIVEN
-        initializeSelectFieldFactory();
-        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
-        field.removeAllItems();
-        field.addItem(1L); // long value
-
-        Property<Long> dataSource = new DefaultProperty<Long>(1L);
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        definition.setType(PropertyType.TYPENAME_LONG);
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem, uiContext, i18NAuthoringSupport) {
+            @Override
+            protected Object getConfiguredDefaultValue() {
+                return 2L;
+            }
+        };
+        dialogSelect.setComponentProvider(componentProvider);
 
         // WHEN
-        Object defaultValue = dialogSelect.createDefaultValue(dataSource);
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
         // THEN
-        assertThat(defaultValue.toString(), is("1"));
+        assertThat(field.getValue(), equalTo((Object) 2L));
     }
 
     @Test
