@@ -211,10 +211,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * Create a typed default value.
      */
     protected Object createDefaultValue(Property property) {
-        String defaultValue = definition.getDefaultValue();
+        Object defaultValue = getConfiguredDefaultValue();
 
         // favor JCR conversions first via DefaultPropertyUtil
-        if (DefaultPropertyUtil.canConvertStringValue(property.getType())) {
+        if (defaultValue instanceof String && DefaultPropertyUtil.canConvertStringValue(property.getType())) {
             return DefaultPropertyUtil.createTypedValue(property.getType(), (String) defaultValue);
 
         } else if (defaultValue != null && definition.getConverterClass() != null && field instanceof AbstractField) {
@@ -225,15 +225,16 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             Class<?> modelType = property != null ? property.getType() : converter.getModelType();
             Locale locale = Locale.ENGLISH;
             try {
-                return ConverterUtil.convertToModel(defaultValue, modelType, converter, locale);
+                defaultValue = ConverterUtil.convertToModel(defaultValue, modelType, converter, locale);
             } catch (Converter.ConversionException e) {
                 log.error("Default value {} could not be converted to property type {}.", defaultValue, property.getType(), e);
             }
         }
-        if (StringUtils.isNotEmpty(defaultValue)) {
-            log.warn("Default value {} cannot be assigned to property of type {}.", defaultValue, property.getType());
-        }
-        return null;
+        return defaultValue;
+    }
+
+    protected Object getConfiguredDefaultValue() {
+        return definition.getDefaultValue();
     }
 
     @Override
