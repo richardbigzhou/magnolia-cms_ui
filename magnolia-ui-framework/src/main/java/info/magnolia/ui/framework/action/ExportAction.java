@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.importexport.DataTransporter;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.util.TempFileStreamResource;
@@ -83,7 +84,8 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     @Override
     protected void onPostExecute() throws Exception {
         final ExportCommand exportCommand = (ExportCommand) getCommand();
-        tempFileStreamResource.setFilename(exportCommand.getFileName());
+        // We need to decode UTF8 the file name due to MGNLUI-3787
+        tempFileStreamResource.setFilename(DataTransporter.decodePath(exportCommand.getFileName(), DataTransporter.UTF8));
         tempFileStreamResource.setMIMEType(exportCommand.getMimeExtension());
         // Opens the resource for download
         Page.getCurrent().open(tempFileStreamResource, "", true);
