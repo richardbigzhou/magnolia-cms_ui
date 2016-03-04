@@ -130,7 +130,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                 continue;
             }
 
-            List<AppLauncherGroupEntry> entries = new ArrayList<AppLauncherGroupEntry>();
+            List<AppLauncherGroupEntry> entries = new ArrayList<>();
             for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
                 AppDescriptor appDescriptor;
                 try {
@@ -140,8 +140,11 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                         continue;
                     }
                     appDescriptor = i18nizerProvider.get().decorate(definitionProvider.get());
-                } catch (Registry.NoSuchDefinitionException | IllegalStateException e) {
-                    log.warn(e.getMessage());
+                } catch (Registry.NoSuchDefinitionException e) {
+                    log.warn("Definition not found: {}", e.getMessage());
+                    continue;
+                } catch (IllegalStateException e) {
+                    log.warn("Encountered IllegalStateException while getting appDescriptor: ", e.getMessage(), e);
                     continue;
                 }
 
