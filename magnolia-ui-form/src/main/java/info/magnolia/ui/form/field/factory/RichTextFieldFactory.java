@@ -203,7 +203,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     protected List<ToolbarGroup> initializeToolbarConfig() {
-        List<ToolbarGroup> toolbars = new ArrayList<>();
+        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basicstyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
         toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock", "Image", "Table"}));
         toolbars.add(new ToolbarGroup("links", new String[]{"Link", "InternalLink", "DamLink", "Unlink"}));
@@ -225,7 +225,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     private void openLinkDialog(String path, String workspace) {
-        appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, null, new ChooseDialogCallback() {
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, path, new ChooseDialogCallback() {
             @Override
             public void onItemChosen(String actionName, Object chosenValue) {
                 if (!(chosenValue instanceof JcrItemId)) {
