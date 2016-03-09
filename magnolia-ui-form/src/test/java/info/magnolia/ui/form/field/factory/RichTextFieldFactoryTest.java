@@ -38,10 +38,14 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.server.VaadinRequest;
@@ -52,14 +56,20 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
 
     private RichTextFieldFactory richTextFieldFactory;
 
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, mock(AppController.class), mock(UiContext.class), mock(SimpleTranslator.class));
+        richTextFieldFactory.setComponentProvider(componentProvider);
+
+        CurrentInstance.set(VaadinRequest.class, mock(VaadinRequest.class));
+    }
+
     @Test
     public void getField() throws Exception {
-
-        VaadinRequest request = mock(VaadinRequest.class);
-        CurrentInstance.set(VaadinRequest.class, request);
         // GIVEN
-        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null, null);
-        richTextFieldFactory.setComponentProvider(componentProvider);
+
         // WHEN
         Field field = richTextFieldFactory.createField();
 
