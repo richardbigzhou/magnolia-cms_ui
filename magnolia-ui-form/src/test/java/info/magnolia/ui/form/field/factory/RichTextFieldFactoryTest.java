@@ -46,15 +46,12 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Field;
 import com.vaadin.util.CurrentInstance;
 
-/**
- * Tests.
- */
 public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichTextFieldDefinition> {
 
     private RichTextFieldFactory richTextFieldFactory;
 
     @Test
-    public void testGetField() throws Exception {
+    public void getField() throws Exception {
 
         VaadinRequest request = mock(VaadinRequest.class);
         CurrentInstance.set(VaadinRequest.class, request);
