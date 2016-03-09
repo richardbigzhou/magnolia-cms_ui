@@ -203,7 +203,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     protected List<ToolbarGroup> initializeToolbarConfig() {
-        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
+        List<ToolbarGroup> toolbars = new ArrayList<>();
         toolbars.add(new ToolbarGroup("basicstyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
         toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock", "Image", "Table"}));
         toolbars.add(new ToolbarGroup("links", new String[]{"Link", "InternalLink", "DamLink", "Unlink"}));
