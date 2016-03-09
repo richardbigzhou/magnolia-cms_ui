@@ -37,6 +37,8 @@ import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorConnector;
 
+import com.vaadin.client.StyleConstants;
+import com.vaadin.shared.AbstractFieldState;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -54,5 +56,17 @@ public class RichTextConnector extends CKEditorConnector {
     public void layout() {
         super.layout();
         getWidget().doResize();
+    }
+
+    @Override
+    protected void updateWidgetStyleNames() {
+        super.updateWidgetStyleNames();
+
+        getWidget().setStyleName(StyleConstants.REQUIRED, getState().required);
+    }
+
+    @Override
+    public AbstractFieldState getState() {
+        return (AbstractFieldState) super.getState();
     }
 }
