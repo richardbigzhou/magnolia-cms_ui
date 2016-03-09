@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.test.mock.MockComponentProvider;
@@ -63,10 +65,9 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
         Field field = richTextFieldFactory.createField();
 
         // THEN
-        assertEquals(true, field instanceof MagnoliaRichTextField);
-        assertEquals(0, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
+        assertThat(field, instanceOf(MagnoliaRichTextField.class));
+        assertThat(((AbstractJcrNodeAdapter) baseItem).getChildren().size(), is(0));
     }
-
 
     @Override
     protected void createConfiguredFieldDefinition() {
