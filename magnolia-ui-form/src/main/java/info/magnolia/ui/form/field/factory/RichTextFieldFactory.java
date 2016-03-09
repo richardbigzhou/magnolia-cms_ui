@@ -225,7 +225,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     private void openLinkDialog(String path, String workspace) {
-        appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, null, new ChooseDialogCallback() {
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, path, new ChooseDialogCallback() {
             @Override
             public void onItemChosen(String actionName, Object chosenValue) {
                 if (!(chosenValue instanceof JcrItemId)) {

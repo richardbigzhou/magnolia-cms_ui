@@ -36,14 +36,19 @@ package info.magnolia.ui.form.field.factory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,12 +60,14 @@ import com.vaadin.util.CurrentInstance;
 public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichTextFieldDefinition> {
 
     private RichTextFieldFactory richTextFieldFactory;
+    private AppController controller;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, mock(AppController.class), mock(UiContext.class), mock(SimpleTranslator.class));
+        controller = mock(AppController.class);
+        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, controller, mock(UiContext.class), mock(SimpleTranslator.class));
         richTextFieldFactory.setComponentProvider(componentProvider);
 
         CurrentInstance.set(VaadinRequest.class, mock(VaadinRequest.class));
@@ -76,6 +83,21 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
         // THEN
         assertThat(field, instanceOf(MagnoliaRichTextField.class));
         assertThat(((AbstractJcrNodeAdapter) baseItem).getChildren().size(), is(0));
+    }
+
+    @Test
+    public void openChooseDialogWithPreviouslyStoredPath() throws Exception {
+        // GIVEN
+        MagnoliaRichTextField field = (MagnoliaRichTextField) richTextFieldFactory.createFieldComponent();
+        Map<String, Object> variables = new HashMap<String, Object>() {{
+            put(VMagnoliaRichTextField.VAR_EVENT_PREFIX + "mgnlGetLink", "{'workspace' :'website', 'path': '/travel'}");
+        }};
+
+        // WHEN
+        field.changeVariables(null, variables);
+
+        // THEN
+        verify(controller, atLeastOnce()).openChooseDialog(anyString(), any(UiContext.class), eq("/travel"), any(ChooseDialogCallback.class));
     }
 
     @Override
