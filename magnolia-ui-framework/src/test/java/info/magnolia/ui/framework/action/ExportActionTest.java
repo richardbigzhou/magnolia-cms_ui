@@ -65,8 +65,10 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.action.async.AsyncActionExecutor;
+import info.magnolia.ui.framework.util.TempFileStreamResource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,10 +86,12 @@ public class ExportActionTest extends RepositoryTestCase {
 
     private CommandsManager commandsManager;
     private ExportActionDefinition definition;
-    private Map<String, Object> params = new HashMap<String, Object>();
+    private Map<String, Object> params = new HashMap<>();
     private ExportCommand exportCommand;
     private Node toCopyNode;
     private ByteArrayOutputStream outputStream;
+    private UiContext uiContext;
+    private SimpleTranslator i18n;
 
     @Override
     @Before
@@ -137,6 +141,9 @@ public class ExportActionTest extends RepositoryTestCase {
         commandsManager = spy(commandsManagerTmp);
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "export")).thenReturn(exportCommand);
         when(commandsManager.getCommand("export")).thenReturn(exportCommand);
+
+        uiContext = mock(UiContext.class);
+        i18n = mock(SimpleTranslator.class);
     }
 
     @Override
@@ -146,9 +153,9 @@ public class ExportActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testExportActionGetParam() throws Exception {
+    public void exportActionGetParam() throws Exception {
         // GIVEN
-        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, mock(UiContext.class), mock(SimpleTranslator.class));
+        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, uiContext, i18n);
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
 
@@ -162,5 +169,24 @@ public class ExportActionTest extends RepositoryTestCase {
         assertEquals(Boolean.TRUE, param.get("format"));
         assertEquals(Boolean.FALSE, param.get("keepHistory"));
         assertEquals(toCopyNode.getPath(), param.get("path"));
+    }
+
+    @Test
+    public void supportsUtf8CharactersInNodeName() throws Exception {
+        // GIVEN
+        Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
+        toCopyNode = webSiteSession.getRootNode().addNode("ÜüÖöÄä");
+        ExportAction exportAction = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, uiContext, i18n);
+        doReturn(true).when(exportCommand).checkPermissions(RepositoryConstants.WEBSITE, toCopyNode.getPath(), Permission.READ);
+
+        // WHEN
+        exportAction.execute();
+
+        // THEN
+        // Get private field by reflection
+        Field tempFileField = ExportAction.class.getDeclaredField("tempFileStreamResource");
+        tempFileField.setAccessible(true);
+        TempFileStreamResource tempFileStreamResource = (TempFileStreamResource) tempFileField.get(exportAction);
+        assertEquals("website.ÜüÖöÄä.xml", tempFileStreamResource.getFilename());
     }
 }
