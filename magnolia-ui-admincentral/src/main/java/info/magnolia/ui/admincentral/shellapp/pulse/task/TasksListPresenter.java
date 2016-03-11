@@ -160,9 +160,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
             tasksManager.archiveTask(taskId);
         }
 
-        refreshData();
-        // refresh the view
-        updateView();
+        refresh();
     }
 
     @Override
@@ -179,8 +177,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
             }
             tasksManager.claim(taskId, userId);
         }
-        // refresh the view
-        updateView();
+        refresh();
     }
 
     @Override
@@ -190,26 +187,26 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
 
     @Override
     public void taskClaimed(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
     }
 
     @Override
     public void taskAdded(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
         listener.updateView(PulseItemCategory.TASKS);
         view.setTabActive(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
     public void taskResolved(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
         listener.updateView(PulseItemCategory.TASKS);
         view.setTabActive(PulseItemCategory.UNCLAIMED);
     }
 
     @Override
     public void taskFailed(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
         listener.updateView(PulseItemCategory.TASKS);
         view.setTabActive(PulseItemCategory.FAILED);
     }
@@ -222,14 +219,15 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
 
     @Override
     public void taskScheduled(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
         listener.updateView(PulseItemCategory.TASKS);
         view.setTabActive(PulseItemCategory.SCHEDULED);
     }
 
-    private void refreshData() {
+    private void refresh() {
         listener.updatePulseCounter();
         container.refresh();
+        updateView();
     }
 
     @Override
