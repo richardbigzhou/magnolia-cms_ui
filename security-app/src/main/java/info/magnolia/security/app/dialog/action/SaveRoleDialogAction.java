@@ -213,14 +213,11 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                 if (node.hasNode(child.getNodeName())) {
                     if (child.getNodeName().startsWith("acl_")) {
                         child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()));
-                        adapter.addChild(child);
                     } else {
                         child.setNodeName(getUniqueNodeNameForChild(child.getParent()));
-                        child.setParent(adapter);
                         child.setItemId(adapter.getItemId());
                     }
                 } else {
-                    child.setParent(adapter);
                     child.setItemId(adapter.getItemId());
                 }
             }

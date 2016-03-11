@@ -331,10 +331,10 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
         Node node = ((JcrNodeAdapter) relatedFormItem).getJcrItem();
         if (node.hasNode(childNodeName) && !(relatedFormItem instanceof JcrNewNodeAdapter)) {
             child = new JcrNodeAdapter(node.getNode(childNodeName));
-            child.setParent(((JcrNodeAdapter) relatedFormItem));
+            ((JcrNodeAdapter) relatedFormItem).addChild(child);
         } else {
             child = new JcrNewNodeAdapter(node, childNodeType, childNodeName);
-            child.setParent(((JcrNodeAdapter) relatedFormItem));
+            ((JcrNodeAdapter) relatedFormItem).addChild(child);
         }
         return child;
     }

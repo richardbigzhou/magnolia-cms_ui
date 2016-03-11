@@ -257,8 +257,7 @@ public class FileTransformer<T extends UploadReceiver> implements Transformer<T>
         List<Node> childNodes = getStoredChildNodes(rootItem);
         for (Node child : childNodes) {
             JcrNodeAdapter item = new JcrNodeAdapter(child);
-            item.setParent(rootItem);
-            item.getParent().addChild(item);
+            rootItem.addChild(item);
         }
     }
 
