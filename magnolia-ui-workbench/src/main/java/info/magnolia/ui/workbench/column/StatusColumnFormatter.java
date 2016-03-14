@@ -51,10 +51,10 @@ import com.vaadin.ui.Table;
  * Column formatter for displaying the activation status of an item. Creates icons that represents the activation and
  * permission status. Use the definition to configure which icons should be included.
  */
-public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {    
+public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {
 
     protected final SimpleTranslator i18n;
-    
+
     @Inject
     public StatusColumnFormatter(StatusColumnDefinition definition, SimpleTranslator i18n) {
         super(definition);
@@ -69,13 +69,12 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             Node node = (Node) jcrItem;
 
             String activationStatus = "";
+            ActivationStatus activationType;
             String activationStatusMessage = "";
             String permissionStatus = "";
-            
+
             // activation status
             if (definition.isActivation()) {
-                activationStatus += "icon-shape-circle activation-status ";
-
                 Integer status;
                 try {
                     status = NodeTypes.Activatable.getActivationStatus(node);
@@ -85,18 +84,18 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
 
                 switch (status) {
                 case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                    activationStatus += "color-yellow";
-                    activationStatusMessage =  i18n.translate("activation-status.columns.modified");
+                    activationType = ActivationStatus.MODIFIED;
+                    activationStatusMessage = i18n.translate("activation-status.columns.modified");
                     break;
                 case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
-                    activationStatus += "color-green";
-                    activationStatusMessage =  i18n.translate("activation-status.columns.activated");
+                    activationType = ActivationStatus.ACTIVATED;
+                    activationStatusMessage = i18n.translate("activation-status.columns.activated");
                     break;
                 default:
-                    activationStatus += "color-red";
-                    activationStatusMessage =  i18n.translate("activation-status.columns.not-activated");
+                    activationType = ActivationStatus.NOT_ACTIVATED;
+                    activationStatusMessage = i18n.translate("activation-status.columns.not-activated");
                 }
-                activationStatus = "<span class=\"" + activationStatus + "\" title=\"" + activationStatusMessage + "\"></span>";
+                activationStatus = "<span class=\"" + activationType.getStyleName() + "\" title=\"" + activationStatusMessage + "\"></span>";
                 activationStatus = activationStatus + "<span class=\"hidden-for-aria\">" + activationStatusMessage + "</span>";
             }
 
@@ -110,10 +109,43 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     throw new RuntimeException("Could not access the JCR permissions for the following node identifier " + itemId, e);
                 }
             }
-
             return activationStatus + permissionStatus;
         }
         return null;
     }
 
+    /**
+     * Helper for representing activation status in the UI.
+     */
+    public enum ActivationStatus {
+
+        ACTIVATED("icon-status-green", "color-green"),
+        MODIFIED("icon-status-orange", "color-yellow"),
+        NOT_ACTIVATED("icon-status-red", "color-red");
+
+        private final String baseStyleName = "activation-status";
+        private String icon;
+        private String color;
+
+        ActivationStatus(String icon, String color) {
+            this.icon = icon;
+            this.color = color;
+        }
+
+        public String getStyleName() {
+            return baseStyleName + " " + icon + " " + color;
+        }
+
+        public String getBaseStyleName() {
+            return baseStyleName;
+        }
+
+        public String getIcon() {
+            return icon;
+        }
+
+        public String getColor() {
+            return color;
+        }
+    }
 }

@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.workbench.column;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static info.magnolia.ui.workbench.column.StatusColumnFormatter.ActivationStatus;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
@@ -126,7 +126,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testActivationStatusNotActivated() throws Exception {
+    public void activationStatusNotActivated() throws Exception {
         // GIVEN
         SimpleTranslator i18n = mock(SimpleTranslator.class);
         when(i18n.translate("activation-status.columns.not-activated")).thenReturn("not-activated");
@@ -138,11 +138,11 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // RED, not activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-red\" title=\"not-activated\"></span>" + "<span class=\"hidden-for-aria\">not-activated</span>", res.toString());
+        assertEquals("<span class=\"" + ActivationStatus.NOT_ACTIVATED.getStyleName() + "\" title=\"not-activated\"></span>" + "<span class=\"hidden-for-aria\">not-activated</span>", res.toString());
     }
 
     @Test
-    public void testActivationStatusActivated() throws Exception {
+    public void activationStatusActivated() throws Exception {
         // GIVEN
         SimpleTranslator i18n = mock(SimpleTranslator.class);
         when(i18n.translate("activation-status.columns.activated")).thenReturn("activated");
@@ -155,11 +155,11 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // GREEN, was activated
-        assertEquals("<span class=\"icon-shape-circle activation-status color-green\" title=\"activated\"></span>" + "<span class=\"hidden-for-aria\">activated</span>", res.toString());
+        assertEquals("<span class=\"" + ActivationStatus.ACTIVATED.getStyleName() + "\" title=\"activated\"></span>" + "<span class=\"hidden-for-aria\">activated</span>", res.toString());
     }
 
     @Test
-    public void testActivationStatusModified() throws Exception {
+    public void activationStatusModified() throws Exception {
         // GIVEN
         SimpleTranslator i18n = mock(SimpleTranslator.class);
         when(i18n.translate("activation-status.columns.modified")).thenReturn("modified");
@@ -175,11 +175,11 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         // YELLOW, was activated and then modified
-        assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\" title=\"modified\"></span>" + "<span class=\"hidden-for-aria\">modified</span>", res.toString());
+        assertEquals("<span class=\"" + ActivationStatus.MODIFIED.getStyleName() + "\" title=\"modified\"></span>" + "<span class=\"hidden-for-aria\">modified</span>", res.toString());
     }
 
     @Test
-    public void testReadPermissionsAreNotShown() throws Exception {
+    public void readPermissionsAreNotShown() throws Exception {
         // GIVEN
         SimpleTranslator i18n = mock(SimpleTranslator.class);
         when(i18n.translate("activation-status.columns.not-activated")).thenReturn("not-activated");
