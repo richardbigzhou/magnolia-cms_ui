@@ -31,13 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.transformer.composite;
+package info.magnolia.ui.form.field;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -52,49 +47,34 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.form.field.SwitchableField;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.form.field.factory.OptionGroupFieldFactory;
-import info.magnolia.ui.form.field.factory.SelectFieldFactory;
-import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
-import info.magnolia.ui.form.field.factory.TextFieldFactory;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.AbstractTextField;
 
-public class SwitchableTransformerIntegrationTest {
-
-    private Session session;
-    private ComponentProvider componentProvider;
-    private I18NAuthoringSupport i18nAuthoringSupport;
-    private UiContext uiContext;
-    private FieldFactoryFactory fieldFactoryFactory;
+/**
+ * An abstract JCR-to-Vaadin integration test for Magnolia fields, field factories and transformers.
+ */
+public class FieldIntegrationTestCase {
+    protected Session session;
+    protected ComponentProvider componentProvider;
+    protected I18NAuthoringSupport i18nAuthoringSupport;
+    protected MockFieldFactoryFactory fieldFactoryFactory;
+    protected UiContext uiContext;
 
     @Before
     public void setUp() throws Exception {
@@ -120,56 +100,32 @@ public class SwitchableTransformerIntegrationTest {
         MgnlContext.setInstance(null);
     }
 
-    @Test
-    public void writeDiscardsUnselectedOptions() throws Exception {
-        // GIVEN
-        SwitchableFieldDefinition definition = createSwitchableFieldDefinition("switchable");
-
-        Node node = session.getRootNode().addNode("node");
-        JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(node);
-
-        SwitchableFieldFactory<SwitchableFieldDefinition> factory = new SwitchableFieldFactory<>(definition, nodeAdapter, fieldFactoryFactory, componentProvider, i18nAuthoringSupport);
-        SwitchableField field = (SwitchableField) factory.createField();
-        Iterator<Component> componentIterator = field.iterator();
-        // CustomField#getContent is lazy, we trigger it via ComponentIterator#next()
-        VerticalLayout layout = (VerticalLayout) componentIterator.next();
-
-        OptionGroup options = (OptionGroup) layout.getComponent(0);
-        TextField t1 = (TextField) layout.getComponent(1);
-        TextField t2 = (TextField) layout.getComponent(2);
-
-        // WHEN
-        options.setValue("t1");
-        t1.setValue("v1");
-        options.setValue("t2");
-        t2.setValue("v2");
-        nodeAdapter.applyChanges();
-
-        // THEN
-        assertThat(node, hasProperty("switchable", "t2"));
-        assertThat(node, hasProperty("switchablet2", "v2"));
-        assertThat(node, not(hasProperty("switchablet1")));
+    /**
+     * Simulates receiving a text change from the client, via #changeVariables instead of #setValue (performs additional null-conversion)
+     */
+    protected static void enterText(AbstractTextField field, String text) {
+        field.changeVariables(null, ImmutableMap.<String, Object>of("text", text));
     }
 
-    private SwitchableFieldDefinition createSwitchableFieldDefinition(String name) {
-        SwitchableFieldDefinition switchable = new SwitchableFieldDefinition();
-        switchable.setName(name);
-
-        TextFieldDefinition t1 = new TextFieldDefinition();
-        t1.setName("t1");
-        TextFieldDefinition t2 = new TextFieldDefinition();
-        t2.setName("t2");
-        switchable.setFields(Lists.<ConfiguredFieldDefinition>newArrayList(t1, t2));
-
-        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
-        option1.setName("t1");
-        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
-        option2.setName("t2");
-        switchable.setOptions(newArrayList(option1, option2));
-        return switchable;
+    /**
+     * Registers a fieldType mapping for the fake FieldFactoryFactory. This is only needed for complex fields, i.e. where the fieldFactoryFactory is used to create sub-fields.
+     */
+    protected void registerFieldType(Class<? extends FieldDefinition> definitionClass, Class<? extends FieldFactory> factoryClass) {
+        fieldFactoryFactory.registerFieldType(definitionClass, factoryClass);
     }
 
-    private static class MockFieldFactoryFactory extends FieldFactoryFactory {
+    private static void mockMessagesManager() {
+        MockMessagesManager messagesManager = mock(MockMessagesManager.class);
+        Messages messages = mock(Messages.class);
+        doAnswer(new ReturnsArgumentAt(0)).when(messages).get(anyString());
+        doReturn(messages).when(messagesManager).getMessagesInternal(anyString(), any(Locale.class));
+        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+    }
+
+    /**
+     * A fake FieldFactoryFactory replacing the field-type registry with fixed definition/factory mappings.
+     */
+    protected static class MockFieldFactoryFactory extends FieldFactoryFactory {
 
         private final Map<Class<? extends FieldDefinition>, Class<? extends FieldFactory>> fieldTypes = Maps.newHashMap();
         private final ComponentProvider componentProvider;
@@ -177,9 +133,6 @@ public class SwitchableTransformerIntegrationTest {
         public MockFieldFactoryFactory(ComponentProvider componentProvider) {
             super(null, null, null);
             this.componentProvider = componentProvider;
-            registerFieldType(TextFieldDefinition.class, TextFieldFactory.class);
-            registerFieldType(OptionGroupFieldDefinition.class, OptionGroupFieldFactory.class);
-            registerFieldType(SelectFieldDefinition.class, SelectFieldFactory.class);
         }
 
         public void registerFieldType(Class<? extends FieldDefinition> definitionClass, Class<? extends FieldFactory> factoryClass) {
@@ -199,19 +152,10 @@ public class SwitchableTransformerIntegrationTest {
         }
     }
 
-    private static void mockMessagesManager() {
-        MockMessagesManager messagesManager = mock(MockMessagesManager.class);
-        Messages messages = mock(Messages.class);
-        doAnswer(new ReturnsArgumentAt(0)).when(messages).get(anyString());
-        doReturn(messages).when(messagesManager).getMessagesInternal(anyString(), any(Locale.class));
-        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
-    }
-
     /**
      * Just exposing #getMessagesInternal() for mocking.
      */
     private abstract static class MockMessagesManager extends MessagesManager {
-
         @Override
         public abstract Messages getMessagesInternal(String basename, Locale locale);
     }
