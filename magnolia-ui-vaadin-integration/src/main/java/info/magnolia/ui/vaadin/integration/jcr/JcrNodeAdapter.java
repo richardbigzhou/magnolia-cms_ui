@@ -116,6 +116,9 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         // Store Property.
         getChangedProperties().put(propertyId.toString(), property);
 
+        // Remove a property from a removedProperties map
+        getRemovedProperties().remove(propertyId);
+
         return true;
     }
 

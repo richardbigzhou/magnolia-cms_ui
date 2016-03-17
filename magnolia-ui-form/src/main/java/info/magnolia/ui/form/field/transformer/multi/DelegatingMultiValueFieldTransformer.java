@@ -86,7 +86,6 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     private PropertysetItem delegateAggregatorItem = new PropertysetItem();
 
 
-
     /**
      * @deprecated since 5.4.2 - use {@link #DelegatingMultiValueFieldTransformer(Item, ConfiguredFieldDefinition, Class, I18NAuthoringSupport)} instead.
      */
@@ -157,8 +156,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
             child = new JcrNewNodeAdapter(getRootItem().getJcrItem(), childNodeType, newItemName);
         }
 
-        child.setParent(getRootItem());
-        child.getParent().addChild(child);
+        getRootItem().addChild(child);
         Property<?> res = new ObjectProperty<Item>(child);
         delegateAggregatorItem.addItemProperty(delegateAggregatorItem.getItemPropertyIds().size(), res);
 
@@ -226,8 +224,7 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
         List<Node> childNodes = getStoredChildNodes(rootItem);
         for (Node child : childNodes) {
             JcrNodeAdapter item = new JcrNodeAdapter(child);
-            item.setParent(rootItem);
-            item.getParent().addChild(item);
+            rootItem.addChild(item);
         }
     }
 

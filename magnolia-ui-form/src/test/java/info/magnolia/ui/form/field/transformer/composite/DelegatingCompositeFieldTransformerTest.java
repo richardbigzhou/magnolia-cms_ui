@@ -102,6 +102,7 @@ public class DelegatingCompositeFieldTransformerTest {
         assertEquals(rootItem, res.getItemProperty("text2").getValue());
     }
 
+    @Test
     public void readFromItemTwice() {
         // GIVEN
         DelegatingCompositeFieldTransformer transformer = new DelegatingCompositeFieldTransformer(rootItem, definition, PropertysetItem.class, definition.getFieldNames(), mock(I18NAuthoringSupport.class));
