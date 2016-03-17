@@ -105,8 +105,9 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
                 "testTab.mgnl-testField.options.testOption",
                 "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
                 "testDialog.mgnl-testField.options.testOption",
-                "testDialog.testTab.mgnl-testField.options.testOption"
-                ));
+                "testDialog.testTab.mgnl-testField.options.testOption",
+                "fields.mgnl-testField.options.testOption"
+        ));
     }
 
     @Test
@@ -139,7 +140,8 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
                 "testTab.mgnl-testField.options.testOption",
                 "test-module.testFolder.testDialog.mgnl-testField.options.testOption",
                 "testDialog.mgnl-testField.options.testOption",
-                "testDialog.testTab.mgnl-testField.options.testOption"
-                ));
+                "testDialog.testTab.mgnl-testField.options.testOption",
+                "fields.mgnl-testField.options.testOption"
+        ));
     }
 }

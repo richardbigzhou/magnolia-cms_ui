@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
@@ -45,7 +45,10 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * An I18n key generator for the actionbar section labels.
  */
-public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionbarSectionDefinition> {
+public class ActionbarSectionDefinitionKeyGenerator extends AbstractAppKeyGenerator<ActionbarSectionDefinition> {
+
+    private static final String ACTION_BAR = "actionbar";
+    private static final String SECTIONS = "sections";
 
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actionbar.sections.&lt;section-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
@@ -54,6 +57,7 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
     protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {
         Object root = getRoot(sectionDefinition);
         final String fieldOrGetterName = fieldOrGetterName(el);
+        final String sectionName = sectionDefinition.getName();
 
         if (root instanceof AppDescriptor) {
             // Action bar within an app
@@ -67,24 +71,25 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
                 }
             }
             final String appName = appDescriptor.getName();
-            final String sectionName = sectionDefinition.getName();
             final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
-            addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName);
-            addKey(keys, appName, subappName, "actionbar", sectionName, fieldOrGetterName);
-            addKey(keys, appName, "actionbar", "sections", sectionName, fieldOrGetterName);
-            addKey(keys, appName, "actionbar", sectionName, fieldOrGetterName);
+            addKey(keys, appName, subappName, ACTION_BAR, SECTIONS, sectionName, fieldOrGetterName);
+            addKey(keys, appName, subappName, ACTION_BAR, sectionName, fieldOrGetterName);
+            addKey(keys, appName, ACTION_BAR, SECTIONS, sectionName, fieldOrGetterName);
+            addKey(keys, appName, ACTION_BAR, sectionName, fieldOrGetterName);
 
         } else {
             // Action bar within e.g. a MessageView in the pulse
-            String idOrName = getIdOrNameForUnknownRoot(sectionDefinition);
-            addKey(keys, idOrName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
-            addKey(keys, idOrName, "actionbar", sectionDefinition.getName(), fieldOrGetterName);
-            String[] parts = StringUtils.split(idOrName, ".");
-            if (parts.length > 1) {
-                String noModuleName = parts[parts.length - 1];
-                addKey(keys, noModuleName, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName);
-                addKey(keys, noModuleName, "actionbar", sectionDefinition.getName(), fieldOrGetterName);
+            String rawIdOrName = getIdOrNameForUnknownRoot(sectionDefinition, false);
+            String idOrName = keyify(rawIdOrName);
+            String noModuleName = getIdWithoutModuleName(rawIdOrName);
+
+            addKey(keys, idOrName, ACTION_BAR, SECTIONS, sectionDefinition.getName(), fieldOrGetterName);
+            addKey(keys, idOrName, ACTION_BAR, sectionDefinition.getName(), fieldOrGetterName);
+            if (StringUtils.isNotEmpty(noModuleName)) {
+                addKey(keys, noModuleName, ACTION_BAR, SECTIONS, sectionDefinition.getName(), fieldOrGetterName);
+                addKey(keys, noModuleName, ACTION_BAR, sectionDefinition.getName(), fieldOrGetterName);
             }
         }
+        addKey(keys, ACTION_BAR, SECTIONS, sectionDefinition.getName(), fieldOrGetterName);
     }
 }

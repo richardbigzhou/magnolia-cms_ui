@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 import java.lang.reflect.AnnotatedElement;
@@ -44,7 +44,9 @@ import java.util.List;
 /**
  * Key generator for {@link ColumnDefinition}. Generates key in form &lt;app-name&gt;.&lt;sub-app-name&gt;.views.&lt;view-name&gt;.&lt;column-name&gt;.&lt;property-name&gt;.
  */
-public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ColumnDefinition> {
+public class ColumnDefinitionKeyGenerator extends AbstractAppKeyGenerator<ColumnDefinition> {
+
+    private static final String VIEWS = "views";
 
     @Override
     protected void keysFor(List<String> keys, ColumnDefinition columnDefinition, AnnotatedElement el) {
@@ -68,21 +70,27 @@ public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Colum
             }
         }
         final String appName = appDescriptor.getName();
-        final String viewName = contentPresenterDefinition != null ? contentPresenterDefinition.getViewType() : "";
+        final String viewType = contentPresenterDefinition != null ? contentPresenterDefinition.getViewType() : null;
         final String columnName = columnDefinition.getName();
+        final String fieldOrGetterName = fieldOrGetterName(el);
         if (subAppDescriptor != null) {
-            // sub-app specific, view-specific
-            addKey(keys, appName, subAppDescriptor.getName(), "views", viewName, columnName, fieldOrGetterName(el));
-            // sub-app specific, all views
-            addKey(keys, appName, subAppDescriptor.getName(), "views", columnName, fieldOrGetterName(el));
+            // app specific, view-specific
+            if (viewType != null) {
+                addKey(keys, appName, subAppDescriptor.getName(), VIEWS, viewType, columnName, fieldOrGetterName);
+            }
+            addKey(keys, appName, subAppDescriptor.getName(), VIEWS, columnName, fieldOrGetterName);
         }
-        // app specific, view-specific
-        addKey(keys, appName, "views", viewName, columnName, fieldOrGetterName(el));
+        if (viewType != null) {
+            // sub-app specific, all views
+            addKey(keys, appName, VIEWS, viewType, columnName, fieldOrGetterName);
+        }
         // app specific, all views
-        addKey(keys, appName, "views", columnName, fieldOrGetterName(el));
-        // all apps, view-specific
-        addKey(keys, "views", viewName, columnName, fieldOrGetterName(el));
+        addKey(keys, appName, VIEWS, columnName, fieldOrGetterName);
+        if (viewType != null) {
+            // all apps, view-specific
+            addKey(keys, VIEWS, viewType, columnName, fieldOrGetterName);
+        }
         // all apps, all views
-        addKey(keys, "views", columnName, fieldOrGetterName(el));
+        addKey(keys, VIEWS, columnName, fieldOrGetterName);
     }
 }

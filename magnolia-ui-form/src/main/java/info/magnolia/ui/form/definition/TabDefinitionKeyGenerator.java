@@ -41,12 +41,16 @@ import java.util.List;
  */
 public class TabDefinitionKeyGenerator extends AbstractFormKeyGenerator<TabDefinition> {
 
+    private static final String TABS = "tabs";
+
     @Override
     protected void keysFor(List<String> list, TabDefinition tab, AnnotatedElement el) {
         final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogId = getParentId(formDef);
-        addKey(list, dialogId, tab.getName(), fieldOrGetterName(el));
-        addKey(list, tab.getName(), fieldOrGetterName(el));
-    }
+        final String dialogId = getIdOrNameForUnknownRoot(formDef, false);
+        final String suffix = fieldOrGetterName(el);
 
+        addKey(list, keyify(dialogId), tab.getName(), suffix);
+        addKey(list, TABS, tab.getName(), suffix);
+        addKey(list, tab.getName(), suffix); //deprecated
+    }
 }

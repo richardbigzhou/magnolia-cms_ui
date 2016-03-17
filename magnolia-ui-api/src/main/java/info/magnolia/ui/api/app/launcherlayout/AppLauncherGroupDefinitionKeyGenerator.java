@@ -49,9 +49,6 @@ public class AppLauncherGroupDefinitionKeyGenerator extends AbstractI18nKeyGener
     protected void keysFor(List<String> list, AppLauncherGroupDefinition group, AnnotatedElement el) {
         String groupName = group.getName();
         addKey(list, APPLAUNCHER_PREFIX, groupName, fieldOrGetterName(el));
-        if ("label".equals(fieldOrGetterName(el))) {
-            addKey(list, APPLAUNCHER_PREFIX, groupName);
-        }
     }
 
 }

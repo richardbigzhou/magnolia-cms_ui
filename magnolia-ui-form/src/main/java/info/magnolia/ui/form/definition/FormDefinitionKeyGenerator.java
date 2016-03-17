@@ -43,8 +43,9 @@ public class FormDefinitionKeyGenerator extends AbstractFormKeyGenerator<FormDef
 
     @Override
     protected void keysFor(List<String> list, FormDefinition form, AnnotatedElement el) {
-        final String dialogId = getParentId(form);
-        addKey(list, dialogId, fieldOrGetterName(el));
+        final String dialogId = getIdOrNameForUnknownRoot(form, false);
+        final String fieldOrGetterName = fieldOrGetterName(el);
+        addKey(list, keyify(dialogId), fieldOrGetterName);
     }
 
 }

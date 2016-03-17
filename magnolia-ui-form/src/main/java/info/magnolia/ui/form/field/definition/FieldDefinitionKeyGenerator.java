@@ -61,56 +61,58 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
     @Override
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
         Object parent = getParentViaCast(field);
-        String fieldName = field.getName().replace(':', '-');
+        final String fieldName = field.getName().replace(':', '-');
+        final String fieldOrGetterName = fieldOrGetterName(el);
+
         if (parent != null && isChooseDialog(parent.getClass())) {
             // handle choose dialog
             final AppDescriptor app = (AppDescriptor) getRoot(field);
-            addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));
+            addKey(list, app.getName(), CHOOSE_DIALOG, FIELDS, fieldName, fieldOrGetterName);
         } else {
-            final Deque<String> parentNames = new LinkedList<String>();
-            while (parent != null  && !(parent instanceof TabDefinition)) {
+            final Deque<String> parentNames = new LinkedList<>();
+            while (parent != null && !(parent instanceof TabDefinition)) {
                 String parentName = getParentName(parent);
                 if (parentName != null) {
                     parentNames.addFirst(parentName);
                 }
                 parent = getParentViaCast(parent);
             }
-
-            final String property = fieldOrGetterName(el);
             final String parentKeyPart = StringUtils.join(parentNames, '.').replace(':', '-');
+
             if (parent instanceof TabDefinition) {
+
                 TabDefinition tab = (TabDefinition) parent;
                 final String tabName = tab.getName();
                 final FormDefinition formDef = getParentViaCast(tab);
-                final String dialogID = getParentId(formDef);
+                final String rawDialogID = getIdOrNameForUnknownRoot(formDef, false);
+                final String dialogID = keyify(rawDialogID);
 
                 // in case of a field in field
                 if (parentNames.size() > 0) {
                     // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName>.<property>
                     // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName> (in case of property==label)
-                    addKey(list, dialogID, tabName, parentKeyPart, fieldName, property);
+                    addKey(list, true, dialogID, tabName, parentKeyPart, fieldName, fieldOrGetterName);
                 }
                 // <dialogId>.<tabName>.<fieldName>.<property>
                 // <dialogId>.<tabName>.<fieldName> (in case of property==label)
-                addKey(list, dialogID, tabName, fieldName, property);
+                addKey(list, dialogID, tabName, fieldName, fieldOrGetterName);
                 // <tabName>.<fieldName> (in case of property==label)
-                addKey(list, tabName, fieldName, property);
+                addKey(list, tabName, fieldName, fieldOrGetterName);
                 // <dialogId>.<fieldName>.<property>
                 // <dialogId>.<fieldName> (in case property==label)
-                addKey(list, dialogID, fieldName, property);
-
+                addKey(list, dialogID, fieldName, fieldOrGetterName);
                 String[] parts = StringUtils.split(dialogID, ".");
                 if (parts.length > 1) {
                     String dialogIDNoModuleName = parts[parts.length - 1];
-                    addKey(list, dialogIDNoModuleName, fieldName, property);
-                    addKey(list, dialogIDNoModuleName, tabName, fieldName, property);
+                    addKey(list, dialogIDNoModuleName, fieldName, fieldOrGetterName);
+                    addKey(list, dialogIDNoModuleName, tabName, fieldName, fieldOrGetterName);
                 }
-
             } else {
                 // In case we didn't encounter parent tab definition - we simply generated a key based on dot-separated parent names
-                addKey(list, parentKeyPart, fieldName, property);
+                addKey(list, parentKeyPart, fieldName, fieldOrGetterName);
             }
         }
+        addKey(list, FIELDS, fieldName, fieldOrGetterName);
     }
 
     /**
@@ -128,6 +130,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
 
     /**
      * TODO - this method has to be considered to be added to the parent class API.
+     *
      * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-2824/>
      */
     private String getParentName(Object parent) {

@@ -111,7 +111,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "contentApp.chooseDialog.actions.chooseDialogAction",
                 "actions.chooseDialogAction.label",
                 "actions.chooseDialogAction"
-                ));
+        ));
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "myapp.browser.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "parent-keygen.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "some configured value",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "foo.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "bar.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     @Test
@@ -232,7 +232,7 @@ public class ActionDefinitionKeyGeneratorTest {
                 "qux.actions.myaction",
                 "actions.myaction.label",
                 "actions.myaction"
-                ));
+        ));
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013-2016 Magnolia International
+ * This file Copyright (c) 2016 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.app;
+package info.magnolia.ui.api.i18n;
 
-import info.magnolia.ui.api.i18n.AbstractAppKeyGenerator;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.List;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 /**
- * Key generator for {@link AppDescriptor}.
+ * {@link AbstractI18nKeyGenerator} for apps and their parts.
+ * @param <T> the type of Object this {@link info.magnolia.i18nsystem.I18nKeyGenerator} generates keys for.
  */
-public class AppDescriptorKeyGenerator extends AbstractAppKeyGenerator<AppDescriptor> {
+public abstract class AbstractAppKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
-    @Override
-    protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
-        addKey(list, app.getName(), APP, fieldOrGetterName(el));
-    }
-
+    protected static final String APP = "app";
 }

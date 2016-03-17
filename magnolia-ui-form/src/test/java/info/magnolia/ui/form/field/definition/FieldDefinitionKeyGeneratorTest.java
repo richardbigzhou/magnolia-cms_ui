@@ -80,11 +80,14 @@ public class FieldDefinitionKeyGeneratorTest {
         assertThat(keys, arrayContaining(
                 "undecorated",
                 "test-app.chooseDialog.fields.mgnl-testField.label",
-                "test-app.chooseDialog.fields.mgnl-testField"));
+                "test-app.chooseDialog.fields.mgnl-testField",
+                "fields.mgnl-testField.label",
+                "fields.mgnl-testField"
+        ));
     }
 
     @Test
-    public void keysForFieldLabel() throws SecurityException, NoSuchMethodException {
+    public void keysForFieldLabel() throws Exception {
         // GIVEN
         // generator
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
@@ -118,11 +121,14 @@ public class FieldDefinitionKeyGeneratorTest {
                 "testDialog.mgnl-testField.label",
                 "testDialog.mgnl-testField",
                 "testDialog.testTab.mgnl-testField.label",
-                "testDialog.testTab.mgnl-testField"));
+                "testDialog.testTab.mgnl-testField",
+                "fields.mgnl-testField.label",
+                "fields.mgnl-testField"
+        ));
     }
 
     @Test
-    public void keysForNestedFieldLabel() throws SecurityException, NoSuchMethodException {
+    public void keysForNestedFieldLabel() throws Exception {
         // GIVEN
         // generator
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
@@ -148,7 +154,7 @@ public class FieldDefinitionKeyGeneratorTest {
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
-       String[] keys = generator.keysFor("undecorated",
+        String[] keys = generator.keysFor("undecorated",
                 ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
                 field.getClass().getMethod("getLabel"));
 
@@ -166,8 +172,10 @@ public class FieldDefinitionKeyGeneratorTest {
                 "testDialog.mgnl-testField.label",
                 "testDialog.mgnl-testField",
                 "testDialog.testTab.mgnl-testField.label",
-                "testDialog.testTab.mgnl-testField"
-                ));
+                "testDialog.testTab.mgnl-testField",
+                "fields.mgnl-testField.label",
+                "fields.mgnl-testField"
+        ));
     }
 
     @Test
@@ -182,12 +190,17 @@ public class FieldDefinitionKeyGeneratorTest {
         // WHEN
         FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
         List<String> keys = Arrays.asList(generator.keysFor(
-                (String)null,
+                (String) null,
                 i18nFieldDef,
                 i18nFieldDef.getClass().getMethod("getLabel")));
 
         // THEN
-        assertTrue(keys.contains("dummy.dummyField.label"));
+        assertThat(keys.toArray(new String[]{}), arrayContaining(
+                "dummy.dummyField.label",
+                "dummy.dummyField",
+                "fields.dummyField.label",
+                "fields.dummyField"
+        ));
     }
 
     /**
