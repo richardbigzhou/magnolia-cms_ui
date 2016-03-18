@@ -36,16 +36,14 @@ package info.magnolia.ui.contentapp.browser.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
-import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -72,7 +70,7 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
     private final Property<?> propertyDataSource;
 
     @Inject
-    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus, ContentConnector contentConnector, Object... args) {
+    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(AdmincentralEventBus.NAME) EventBus eventBus, ContentConnector contentConnector, Object... args) {
         super(definition);
         this.eventBus = eventBus;
         this.contentConnector = contentConnector;
@@ -122,8 +120,7 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
 
                 // update workbench selection in case the property changed name
                 JcrPropertyItemId newItemId = propertyAdapter.getItemId();
-                eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(Arrays.asList(newItemId))));
-
+                eventBus.fireEvent(new ContentChangedEvent(newItemId));
             } catch (RepositoryException e) {
                 log.error("Could not save changes to property", e);
             }
