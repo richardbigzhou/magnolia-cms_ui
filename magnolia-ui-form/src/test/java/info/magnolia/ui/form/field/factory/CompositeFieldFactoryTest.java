@@ -38,6 +38,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.CompositeField;
@@ -185,7 +186,7 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistry() {
-        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
+        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry(mock(ModuleRegistry.class));
 
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);

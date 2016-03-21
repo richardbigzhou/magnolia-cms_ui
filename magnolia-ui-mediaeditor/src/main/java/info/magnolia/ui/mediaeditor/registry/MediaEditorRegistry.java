@@ -38,9 +38,12 @@ import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -59,6 +62,19 @@ public class MediaEditorRegistry extends AbstractRegistry<MediaEditorDefinition>
             return MediaEditorDefinition.class;
         }
     };
+
+    /**
+     * @deprecated since 5.4.6 - use {@link #MediaEditorRegistry(ModuleRegistry)} instead.
+     */
+    @Deprecated
+    public MediaEditorRegistry() {
+        this(Components.getComponent(ModuleRegistry.class));
+    }
+
+    @Inject
+    public MediaEditorRegistry(ModuleRegistry moduleRegistry) {
+        super(moduleRegistry);
+    }
 
     /**
      * @deprecated since 5.4 - use the {@link #getProvider(String)} method instead and fetch definition from the result.

@@ -40,6 +40,8 @@ import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionType;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppDescriptor;
 
 import java.util.ArrayList;
@@ -66,8 +68,17 @@ public class AppDescriptorRegistry extends AbstractRegistry<AppDescriptor> {
     private EventBus systemEventBus;
 
     @Inject
-    public AppDescriptorRegistry(@Named(SystemEventBus.NAME) EventBus systemEventBus) {
+    public AppDescriptorRegistry(@Named(SystemEventBus.NAME) EventBus systemEventBus, ModuleRegistry moduleRegistry) {
+        super(moduleRegistry);
         this.systemEventBus = systemEventBus;
+    }
+
+    /**
+     * @deprecated since 5.4.6 - use {@link #AppDescriptorRegistry(EventBus, ModuleRegistry)}
+     */
+    @Deprecated
+    public AppDescriptorRegistry(@Named(SystemEventBus.NAME) EventBus systemEventBus) {
+        this(systemEventBus, Components.getComponent(ModuleRegistry.class));
     }
 
     @Override

@@ -38,9 +38,12 @@ import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.definition.ItemViewDefinition;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -59,6 +62,19 @@ public class ItemViewDefinitionRegistry extends AbstractRegistry<ItemViewDefinit
             return ItemViewDefinition.class;
         }
     };
+
+    @Inject
+    public ItemViewDefinitionRegistry(ModuleRegistry moduleRegistry) {
+        super(moduleRegistry);
+    }
+
+    /**
+     * @deprecated since 5.4.6 - use {@link #ItemViewDefinitionRegistry(ModuleRegistry)} instead.
+     */
+    @Deprecated
+    public ItemViewDefinitionRegistry() {
+        this(Components.getComponent(ModuleRegistry.class));
+    }
 
     @Override
     public DefinitionType type() {
