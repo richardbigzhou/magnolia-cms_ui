@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.i18nsystem.I18nParentable;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -65,8 +66,6 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -143,7 +142,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
         this.uiContext = uiContext;
         // ChooseDialogDefinition is already enhanced as it is obtained via ContentAppDescriptor.getChooseDialog() at ContentApp.openChooseDialog(..)
-        if (Enhancer.isEnhanced(dialogDefinition.getClass())) {
+        if (dialogDefinition instanceof I18nParentable) {
             this.definition = dialogDefinition;
         } else {
             this.definition = i18nizer.decorate(dialogDefinition);
