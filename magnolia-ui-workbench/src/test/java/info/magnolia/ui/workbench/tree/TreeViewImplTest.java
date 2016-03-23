@@ -208,6 +208,29 @@ public class TreeViewImplTest {
         }, throwsNothing());
     }
 
+    @Test
+    public void valueListenerDoesntPropagateNullInSelection() throws Exception {
+        // GIVEN/WHEN
+        // listener will be called 3 times:
+        // 1. with ROOT_0 (but we don't care, it's just for producing 2.)
+        // 2. via #focusParent, triggering the set containing null
+        // 3. we select ROOT_0 again and expect single selection (not multiple with null + ROOT_O)
+        produceTableValueContainingNull(tree);
+        tree.select(ROOT_0);
+        ArgumentCaptor<Set> itemsCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(listener, times(3)).onItemSelection(itemsCaptor.capture());
+        verifyNoMoreInteractions(listener);
+
+        // THEN (2)
+        Set<Object> items = itemsCaptor.getAllValues().get(1);
+        assertThat(items, not(hasItem(nullValue())));
+
+        // THEN (3)
+        items = itemsCaptor.getAllValues().get(2);
+        assertThat(items, allOf(hasSize(1), contains(ROOT_0)));
+
+    }
+
     /**
      * Simulates receiving a focusParent event from the client, via #changeVariables
      */

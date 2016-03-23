@@ -124,6 +124,12 @@ public class ListViewImpl implements ListView {
                     Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
+                        // Container roots are expected to have null parent itemId.
+                        // Then, we remove it from table selection, so next multi-selection won't add to it, and let valueChangeListener kick in again
+                        if (items.size() == 1 && items.contains(null)) {
+                            table.setValue(null);
+                            return;
+                        }
                     } else if (value == null) {
                         items = Collections.emptySet();
                     } else {
