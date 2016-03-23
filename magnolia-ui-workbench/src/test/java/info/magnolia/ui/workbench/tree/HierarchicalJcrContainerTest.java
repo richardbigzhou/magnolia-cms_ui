@@ -335,7 +335,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         rootNode.setProperty(PROPERTY_2, "rootLevelProperty");
 
         // WHEN / THEN
-        assertTrue(container.isRoot(rootNode));
+        assertFalse(container.isRoot(rootNode)); // JCR root is not a root for the container, it's not even in the container
         assertTrue(container.isRoot(node));
         assertTrue(container.isRoot(rootNode.getProperty(PROPERTY_2)));
         assertFalse(container.isRoot(subNode));
