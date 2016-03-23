@@ -69,18 +69,19 @@ public class FieldTypeDefinitionRegistry extends AbstractRegistry<FieldTypeDefin
     }
 
     public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
-        // TODO hack: i18nizer proxies definition classes, so we have to unwrap them.
+        // Should the provided class be proxied by either i18n-mechanism or some other
+        // functionality - un-wrap the original type.
         while (Enhancer.isEnhanced(definitionClass)) {
             definitionClass = (Class<? extends FieldDefinition>)definitionClass.getSuperclass();
         }
+
         if (definitionClass.equals(ConfiguredFieldDefinition.class)) {
             // FIXME MGNLUI-829 Working around side effect of extend=override, can't do anything with ConfiguredFieldDefinition.
             return null;
         }
-        // TODO end hack.
 
         for (DefinitionProvider<FieldTypeDefinition> provider : getRegistryMap().values()) {
-            final FieldTypeDefinition fieldTypeDefinition = provider.get();
+            final FieldTypeDefinition fieldTypeDefinition = getDecoratedDefinitionProvider(provider).get();
             if (definitionClass.equals(fieldTypeDefinition.getDefinitionClass())) {
                 return fieldTypeDefinition;
             }
