@@ -33,15 +33,28 @@
  */
 package info.magnolia.ui.workbench.tree;
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
+
+import info.magnolia.test.hamcrest.Execution;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.TreeTable;
 
 public class TreeViewImplTest {
@@ -54,22 +67,30 @@ public class TreeViewImplTest {
     private static final Object NODE_121 = "NODE_121";
 
     private TreeView treeView;
+    private TreeView.Listener listener;
     private TreeTable tree;
 
     @Before
     public void setUp() throws Exception {
         // testing with a plain Vaadin TreeTable
-        TreeView treeView = new TreeViewImpl() {
+        setUp(new TreeViewImpl() {
             @Override
             protected TreeTable createTable(Container container) {
                 return new TreeTable(null, container);
             }
-        };
+        });
+    }
+
+    private void setUp(TreeView treeView) throws Exception {
         this.treeView = treeView;
 
         // #setContainer initializes Table and adds event listeners
         Container.Hierarchical container = buildContainer();
         treeView.setContainer(container);
+
+        // mock listener (i.e. TreePresenter) for interactions
+        listener = mock(TreeView.Listener.class);
+        treeView.setListener(listener);
 
         tree = (TreeTable) treeView.asVaadinComponent();
     }
@@ -129,5 +150,68 @@ public class TreeViewImplTest {
         assertThat(treeView.isDescendantOf(NODE_121, NODE_1), is(true));
         assertThat(treeView.isDescendantOf(NODE_121, NODE_12), is(true));
         assertThat(treeView.isDescendantOf(NODE_11, NODE_12), is(false));
+    }
+
+    /**
+     * Should this test start to fail right after focusParent, returning null selection instead of a Set containing null,
+     * then we'd consider it a Vaadin fix and remove the attached workaround in ListViewImpl.
+     */
+    @Test
+    public void proveVaadinTableValueCanBeASetContainingNull() throws Exception {
+        // when an itemId is selected and we process e.g. an itemClick, we want to unselect it
+        // make sure this doesn't fail if value ends up being a set containing null
+
+        // GIVEN
+        TreeTable tree = new TreeTable(null, buildContainer());
+        tree.setSelectable(true);
+        tree.setMultiSelect(true);
+        assertThat(tree.getValue(), anyOf(nullValue(), instanceOf(Set.class)));
+
+        // WHEN
+        produceTableValueContainingNull(tree);
+
+        // THEN
+        assertThat((Set<?>) tree.getValue(), contains((Object) null));
+    }
+
+    private void produceTableValueContainingNull(TreeTable tree) {
+        tree.select(ROOT_0);
+        assertThat((Set<?>) tree.getValue(), contains(ROOT_0));
+        focusParent(tree, ROOT_0); // using a random rowKey, doesn't matter here
+    }
+
+    @Test
+    public void clickListenerDoesntFailWhenValueContainsNull() throws Exception {
+        // GIVEN
+        final TreeTable tree = mock(TreeTable.class);
+        final ArgumentCaptor<ItemClickEvent.ItemClickListener> itemClickListener = ArgumentCaptor.forClass(ItemClickEvent.ItemClickListener.class);
+        setUp(new TreeViewImpl() {
+            @Override
+            protected TreeTable createTable(Container container) {
+                return tree;
+            }
+        });
+        verify(tree).addItemClickListener(itemClickListener.capture());
+
+        // we already proved above a null-only set could occur as value before
+        Set<Object> nullOnlySelection = new HashSet<>();
+        nullOnlySelection.add(null);
+        doReturn(nullOnlySelection).when(tree).getValue();
+
+        // WHEN/THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                // manually clicking sth else again (i.e. where our NPE originated from)
+                itemClickListener.getValue().itemClick(new ItemClickEvent(tree, null, "foo", null, mock(MouseEventDetails.class)));
+            }
+        }, throwsNothing());
+    }
+
+    /**
+     * Simulates receiving a focusParent event from the client, via #changeVariables
+     */
+    private static void focusParent(TreeTable treeTable, Object rowKey) {
+        treeTable.changeVariables(treeTable, ImmutableMap.of("focusParent", rowKey));
     }
 }

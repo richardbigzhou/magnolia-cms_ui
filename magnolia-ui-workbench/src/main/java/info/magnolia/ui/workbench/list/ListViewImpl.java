@@ -45,6 +45,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +158,7 @@ public class ListViewImpl implements ListView {
                             items = new LinkedHashSet<>();
                             items.add(value);
                         }
-                        if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
+                        if (items.size() == 1 && ObjectUtils.equals(items.iterator().next(), event.getItemId())) {
                             table.setValue(null);
                         }
                     }
