@@ -82,18 +82,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     private boolean isIncludingSystemProperties = false;
 
-    private static class ItemNameComparator implements Comparator<Item> {
-
-        @Override
-        public int compare(Item lhs, Item rhs) {
-            try {
-                return lhs.getName().compareTo(rhs.getName());
-            } catch (RepositoryException e) {
-                log.warn("Cannot compare item names: " + e);
-                return 0;
-            }
-        }
-    }
     public HierarchicalJcrContainer(JcrContentConnectorDefinition definition) {
         super(definition);
     }
@@ -231,8 +219,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return propertyName.startsWith(NodeTypes.JCR_PREFIX) || propertyName.startsWith(NodeTypes.MGNL_PREFIX);
     }
 
-    protected Collection<JcrItemId> createContainerIds(Collection <Item> children) {
-        ArrayList<JcrItemId> ids = new ArrayList<JcrItemId>();
+    protected Collection<JcrItemId> createContainerIds(Collection<Item> children) {
+        ArrayList<JcrItemId> ids = new ArrayList<>();
         for (Item child : children) {
             try {
                 JcrItemId itemId = JcrItemUtil.getItemId(child);
@@ -388,5 +376,18 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     public void setSortable(boolean sortable) {
         this.sortable = sortable;
+    }
+
+    private static class ItemNameComparator implements Comparator<Item> {
+
+        @Override
+        public int compare(Item lhs, Item rhs) {
+            try {
+                return lhs.getName().compareTo(rhs.getName());
+            } catch (RepositoryException e) {
+                log.warn("Cannot compare item names: " + e);
+                return 0;
+            }
+        }
     }
 }
