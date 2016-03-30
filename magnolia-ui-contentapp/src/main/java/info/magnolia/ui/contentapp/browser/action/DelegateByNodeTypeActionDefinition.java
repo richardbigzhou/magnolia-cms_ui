@@ -35,25 +35,52 @@ package info.magnolia.ui.contentapp.browser.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Defines an action which delegates to another action by specified type.
+ * Defines an action which delegates to another action by specified node type.
  */
 public class DelegateByNodeTypeActionDefinition extends ConfiguredActionDefinition {
 
-    private Map<String, String> actionByType = new HashMap<>();
+    private List<NodeTypeToActionMapping> nodeTypeToActionMappings = new ArrayList<>();
 
     public DelegateByNodeTypeActionDefinition() {
         setImplementationClass(DelegateByNodeTypeAction.class);
     }
 
-    public Map<String, String> getActionByType() {
-        return actionByType;
+    public List<NodeTypeToActionMapping> getNodeTypeToActionMappings() {
+        return nodeTypeToActionMappings;
     }
 
-    public void setActionByType(Map<String, String> actionByType) {
-        this.actionByType = actionByType;
+    public void setNodeTypeToActionMappings(List<NodeTypeToActionMapping> nodeTypeToActionMappings) {
+        this.nodeTypeToActionMappings = nodeTypeToActionMappings;
     }
+
+    /**
+     * Bean which maps node type to action.
+     */
+    public static class NodeTypeToActionMapping {
+
+        private String nodeType;
+        private String action;
+
+        public String getNodeType() {
+            return nodeType;
+        }
+
+        public void setNodeType(String nodeType) {
+            this.nodeType = nodeType;
+        }
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction(String action) {
+            this.action = action;
+        }
+
+    }
+
 }
