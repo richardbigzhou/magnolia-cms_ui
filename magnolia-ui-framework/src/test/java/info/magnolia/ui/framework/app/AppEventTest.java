@@ -201,7 +201,7 @@ public class AppEventTest {
      */
     private void initAppRegistry() {
 
-        this.appRegistry = new AppDescriptorRegistry(eventBus);
+        this.appRegistry = new AppDescriptorRegistry(eventBus, mock(ModuleRegistry.class));
 
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
