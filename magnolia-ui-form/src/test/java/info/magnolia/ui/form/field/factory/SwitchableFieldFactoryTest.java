@@ -38,6 +38,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.SwitchableField;
@@ -89,6 +90,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     public void setUp() throws Exception {
         super.setUp();
         i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        componentProvider.registerInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
@@ -364,7 +366,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistry() {
-        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
+        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry(mock(ModuleRegistry.class));
 
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);

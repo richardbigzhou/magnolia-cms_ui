@@ -40,12 +40,15 @@ import info.magnolia.config.registry.DefinitionProviderBuilder;
 import info.magnolia.config.registry.DefinitionProviderWrapper;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -53,6 +56,19 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class DialogDefinitionRegistry extends AbstractRegistry<DialogDefinition> {
+
+    @Inject
+    public DialogDefinitionRegistry(ModuleRegistry moduleRegistry) {
+        super(moduleRegistry);
+    }
+
+    /**
+     * @deprecated since 5.4.6 - use {@link #DialogDefinitionRegistry(ModuleRegistry)} instead.
+     */
+    @Deprecated
+    public DialogDefinitionRegistry() {
+        this(Components.getComponent(ModuleRegistry.class));
+    }
 
     @Override
     public DefinitionType type() {

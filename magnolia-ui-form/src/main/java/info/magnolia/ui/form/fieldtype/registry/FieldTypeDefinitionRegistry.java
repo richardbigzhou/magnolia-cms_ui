@@ -37,11 +37,14 @@ import info.magnolia.config.registry.AbstractRegistry;
 import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionType;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -52,19 +55,33 @@ import net.sf.cglib.proxy.Enhancer;
 @Singleton
 public class FieldTypeDefinitionRegistry extends AbstractRegistry<FieldTypeDefinition> {
 
+    @Inject
+    public FieldTypeDefinitionRegistry(ModuleRegistry moduleRegistry) {
+        super(moduleRegistry);
+    }
+
+    /**
+     * @deprecated since 5.4.6 - use {@link #FieldTypeDefinitionRegistry(ModuleRegistry)} instead.
+     */
+    @Deprecated
+    public FieldTypeDefinitionRegistry() {
+        this(Components.getComponent(ModuleRegistry.class));
+    }
+
     public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
-        // TODO hack: i18nizer proxies definition classes, so we have to unwrap them.
+        // Should the provided class be proxied by either i18n-mechanism or some other
+        // functionality - un-wrap the original type.
         while (Enhancer.isEnhanced(definitionClass)) {
             definitionClass = (Class<? extends FieldDefinition>)definitionClass.getSuperclass();
         }
+
         if (definitionClass.equals(ConfiguredFieldDefinition.class)) {
             // FIXME MGNLUI-829 Working around side effect of extend=override, can't do anything with ConfiguredFieldDefinition.
             return null;
         }
-        // TODO end hack.
 
         for (DefinitionProvider<FieldTypeDefinition> provider : getRegistryMap().values()) {
-            final FieldTypeDefinition fieldTypeDefinition = provider.get();
+            final FieldTypeDefinition fieldTypeDefinition = getDecoratedDefinitionProvider(provider).get();
             if (definitionClass.equals(fieldTypeDefinition.getDefinitionClass())) {
                 return fieldTypeDefinition;
             }

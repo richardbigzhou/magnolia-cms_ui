@@ -34,6 +34,7 @@
 package info.magnolia.ui.api.app.registry;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.DefinitionProvider;
@@ -46,6 +47,7 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.PreConfiguredBeanUtils;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -80,10 +82,11 @@ public class AppDescriptorRegistryTest {
         eventHandler = new EventCollectingAppRegistryEventHandler();
         eventBus.addHandler(AppRegistryEvent.class, eventHandler);
 
-        appDescriptorRegistry = new AppDescriptorRegistry(eventBus);
+        appDescriptorRegistry = new AppDescriptorRegistry(eventBus, mock(ModuleRegistry.class));
 
         TypeMappingImpl typeMapping = new TypeMappingImpl();
         Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl(new PreConfiguredBeanUtils());
+
         ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
     }

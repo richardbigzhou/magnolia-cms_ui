@@ -34,12 +34,15 @@
 package info.magnolia.ui.form.fieldType.registry;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.DefinitionMetadataBuilder;
 import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
+import info.magnolia.config.registry.decoration.DefinitionDecorator;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
@@ -52,6 +55,7 @@ import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.DefinitionTypes;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -66,7 +70,7 @@ public class FieldTypeDefinitionRegistryTest {
 
     @Before
     public void setUp() throws Exception {
-        registry = new FieldTypeDefinitionRegistry();
+        registry = new FieldTypeDefinitionRegistry(mock(ModuleRegistry.class));
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
@@ -155,6 +159,11 @@ public class FieldTypeDefinitionRegistryTest {
                     name(fieldId).module("module").
                     relativeLocation("/").
                     build();
+        }
+
+        @Override
+        public List<DefinitionDecorator<FieldTypeDefinition>> getDecorators() {
+            return Collections.emptyList();
         }
 
         @Override
