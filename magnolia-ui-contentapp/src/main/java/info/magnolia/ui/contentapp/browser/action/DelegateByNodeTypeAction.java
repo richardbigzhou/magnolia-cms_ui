@@ -42,8 +42,6 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -55,8 +53,6 @@ import java.util.List;
  * Action which delegates to another action by node type.
  */
 public class DelegateByNodeTypeAction extends AbstractAction<DelegateByNodeTypeActionDefinition> {
-
-    private static final Logger log = LoggerFactory.getLogger(DelegateByNodeTypeAction.class);
 
     private final JcrItemAdapter item;
     private final ActionExecutor actionExecutor;
@@ -77,10 +73,10 @@ public class DelegateByNodeTypeAction extends AbstractAction<DelegateByNodeTypeA
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
             try {
-                String nodeTypeName = node.getPrimaryNodeType().getName();
-                String actionName = getDefinition().getActionByType().get(nodeTypeName.replaceAll(":", "-"));
-                if (StringUtils.isNotBlank(actionName)) {
-                    executeAction(actionName);
+                String nodeType = node.getPrimaryNodeType().getName();
+                String action = resolveActionForNodeType(nodeType);
+                if (StringUtils.isNotBlank(action)) {
+                    executeAction(action);
                 }
             } catch (RepositoryException e) {
                 throw new ActionExecutionException("Failed to determine type of action for " + node + ".\n" + e.getMessage(), e);
@@ -98,6 +94,15 @@ public class DelegateByNodeTypeAction extends AbstractAction<DelegateByNodeTypeA
                 actionExecutor.execute(actionName, args);
             }
         }
+    }
+
+    private String resolveActionForNodeType(String nodeType) {
+        for (DelegateByNodeTypeActionDefinition.NodeTypeToActionMapping nodeTypeToActionMapping : getDefinition().getNodeTypeToActionMappings()) {
+            if (nodeType.equals(nodeTypeToActionMapping.getNodeType())) {
+                return nodeTypeToActionMapping.getAction();
+            }
+        }
+        return null;
     }
 
 }
