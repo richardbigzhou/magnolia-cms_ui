@@ -298,7 +298,7 @@ public class AppDescriptorRegistryTest {
         // second app gets registered
         DefinitionProvider<AppDescriptor> appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
-        Set<DefinitionMetadata> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(Arrays.<DefinitionMetadata>asList(), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
+        Set<DefinitionMetadata> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(Arrays.<DefinitionMetadata>asList(appDescriptorProvider1.getMetadata()), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
         // THEN
         assertNotNull(registeredNames2);
