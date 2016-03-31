@@ -102,6 +102,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             return;
         }
 
+        tree.focus();
+
         for (Object id : itemIds) {
             tree.select(id);
         }
@@ -319,22 +321,21 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             }
 
             if (target != tree && target instanceof Field) {
-                Field<?> field = (Field<?>) target;
-
+                Object editingItemId = fieldFactory.getEditingItemId();
+                Object editingPropertyId = fieldFactory.getEditingPropertyId();
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     saveItemProperty(fieldFactory.getField().getPropertyDataSource());
                     setEditing(null, null);
-
+                    tree.focus();
                 } else if (action == tabNext) {
                     saveItemProperty(fieldFactory.getField().getPropertyDataSource());
-                    editNextCell(fieldFactory.getEditingItemId(), fieldFactory.getEditingPropertyId());
-
+                    editNextCell(getSelectedItemId(editingItemId), editingPropertyId);
                 } else if (action == tabPrev) {
                     saveItemProperty(fieldFactory.getField().getPropertyDataSource());
-                    editPreviousCell(fieldFactory.getEditingItemId(), fieldFactory.getEditingPropertyId());
-
+                    editPreviousCell(getSelectedItemId(editingItemId), editingPropertyId);
                 } else if (action == escape) {
                     setEditing(null, null);
+                    tree.focus();
                 }
             } else if (target == tree) {
                 if (tree.getValue() == null) {
@@ -347,38 +348,56 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                 }
             }
         }
+
+        /**
+         * Return selected item id from the tree or default value.
+         */
+        private Object getSelectedItemId(Object defaultItemId) {
+            Object selectedItemId = null;
+            if (tree.getValue() instanceof Collection<?>) {
+                Collection<?> values = (Collection<?>) tree.getValue();
+                if (!values.isEmpty()) {
+                    selectedItemId = values.iterator().next();
+                }
+            } else {
+                selectedItemId = tree.getValue();
+            }
+            return selectedItemId != null ? selectedItemId: defaultItemId;
+        }
     }
 
     // EDITING API
 
     private void editNextCell(Object itemId, Object propertyId) {
-
         List<Object> visibleColumns = Arrays.asList(tree.getVisibleColumns());
         Object newItemId = itemId;
+        Object columnId;
         int newColumn = visibleColumns.indexOf(propertyId);
         do {
             if (newColumn == visibleColumns.size() - 1) {
                 newItemId = tree.nextItemId(newItemId);
             }
             newColumn = (newColumn + 1) % visibleColumns.size();
-        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+            columnId = visibleColumns.get(newColumn);
+        } while (newItemId != null && !(editableColumns.contains(columnId) && tree.getItem(newItemId).getItemProperty(columnId) != null));
 
-        setEditing(newItemId, visibleColumns.get(newColumn));
+        updateTreeEditingState(newItemId, columnId);
     }
 
     public void editPreviousCell(Object itemId, Object propertyId) {
-
         List<Object> visibleColumns = Arrays.asList(tree.getVisibleColumns());
         Object newItemId = itemId;
+        Object columnId;
         int newColumn = visibleColumns.indexOf(propertyId);
         do {
             if (newColumn == 0) {
                 newItemId = tree.prevItemId(newItemId);
             }
             newColumn = (newColumn + visibleColumns.size() - 1) % visibleColumns.size();
-        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+            columnId = visibleColumns.get(newColumn);
+        } while (newItemId != null && !(editableColumns.contains(columnId) && tree.getItem(newItemId).getItemProperty(columnId) != null));
 
-        setEditing(newItemId, visibleColumns.get(newColumn));
+        updateTreeEditingState(newItemId, columnId);
     }
 
     public void editFirstCell() {
@@ -400,5 +419,15 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         } else {
             setEditing(firstSelectedId, propertyId);
         }
+    }
+
+    private void updateTreeEditingState(Object itemId, Object columnId) {
+        if (!tree.isSelected(itemId) && itemId != null) {
+            select(Arrays.asList(itemId));
+        }
+        if (itemId == null) {
+            tree.focus();
+        }
+        setEditing(itemId, columnId);
     }
 }
