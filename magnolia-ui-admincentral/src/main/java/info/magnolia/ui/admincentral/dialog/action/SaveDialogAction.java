@@ -62,15 +62,14 @@ public class SaveDialogAction<T extends SaveDialogActionDefinition> extends Abst
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
     protected final Item item;
-
-    protected final EditorValidator validator;
     protected final EditorCallback callback;
+    protected final EditorValidator validator;
 
     public SaveDialogAction(T definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition);
         this.item = item;
-        this.validator = validator;
         this.callback = callback;
+        this.validator = validator;
     }
 
     @Override
@@ -78,10 +77,10 @@ public class SaveDialogAction<T extends SaveDialogActionDefinition> extends Abst
         // First Validate
         validator.showValidation(true);
         if (validator.isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+            final JcrNodeAdapter item = (JcrNodeAdapter) this.item;
             try {
-                final Node node = itemChanged.applyChanges();
-                setNodeName(node, itemChanged);
+                final Node node = item.applyChanges();
+                setNodeName(node, item);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
