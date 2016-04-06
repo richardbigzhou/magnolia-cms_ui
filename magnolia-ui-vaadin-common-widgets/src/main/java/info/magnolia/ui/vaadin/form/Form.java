@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
  */
 public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
 
-    private List<Field<?>> fields = new LinkedList<Field<?>>();
+    private List<Field<?>> fields = new LinkedList<>();
 
     private Item itemDataSource;
 
@@ -79,7 +79,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
                 doAddTab(tab);
                 return tab;
             }
-            throw new IllegalArgumentException("TabSheet inside a Form should only receive the FormSection objects as tab content."); //TODO-TRANSLATE-EXCEPTION
+            throw new IllegalArgumentException("TabSheet inside a Form should only receive the FormSection objects as tab content.");
         }
     };
 
@@ -157,6 +157,8 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
 
     @Override
     public void addField(Field<?> field) {
+        // This oddly simply connects the field to the error count
+        // field itself is added to the component tree by FormBuilder
         fields.add(field);
         field.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
@@ -176,6 +178,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     }
 
     @Override
+    @Deprecated
     public Collection<Field<?>> getFields() {
         return fields;
     }
@@ -190,9 +193,9 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         boolean res = true;
         getState().errorAmount = 0;
 
-        for (final FormSection formSection : getFormSections()) {
-            for (final Component fieldComponent : formSection) {
-                boolean isFieldValid = ((Field)fieldComponent).isValid();
+        for (FormSection formSection : getFormSections()) {
+            for (Component fieldComponent : formSection) {
+                boolean isFieldValid = ((Field) fieldComponent).isValid();
                 if(!isFieldValid){
                     ++getState().errorAmount;
                 }
@@ -207,7 +210,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         final Iterator<Component> it = tabSheet.iterator();
         final List<FormSection> formSections = Lists.newLinkedList();
         while (it.hasNext()) {
-            final MagnoliaFormTab tab = (MagnoliaFormTab) it.next();
+            MagnoliaFormTab tab = (MagnoliaFormTab) it.next();
             formSections.add(tab.getContent());
         }
         return formSections;
@@ -218,17 +221,15 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         isValidationVisible = isVisible;
         // validation count should already up-to-date, since #showValidation should always occur after #isValid/#validate
 
-        final Iterator<Component> it = tabSheet.iterator();
-        while (it.hasNext()) {
-            final Component c = it.next();
+        for (Component c : tabSheet) {
             if (c instanceof MagnoliaFormTab) {
                 ((MagnoliaFormTab) c).setValidationVisible(isVisible);
             }
         }
 
         // set validation visibility for all form fields (the Vaadin way)
-        for (final FormSection section : getFormSections()) {
-            for (final Component component : section) {
+        for (FormSection section : getFormSections()) {
+            for (Component component : section) {
                 if (component instanceof AbstractField) {
                     ((AbstractField) component).setValidationVisible(isVisible);
                 }
