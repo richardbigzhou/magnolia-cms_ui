@@ -67,6 +67,7 @@ import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
@@ -235,6 +236,11 @@ public class FormBuilder {
         final Field<?> field = formField.createField();
         if (field instanceof AbstractComponent) {
             ((AbstractComponent) field).setImmediate(true);
+        }
+
+        // Hide validation for all fields by default; it will be shown by the Form upon validation (if invalid)
+        if (field instanceof AbstractField) {
+            ((AbstractField) field).setValidationVisible(false);
         }
 
         if (field instanceof TextArea || field instanceof CKEditorTextField || field instanceof AceEditor) {

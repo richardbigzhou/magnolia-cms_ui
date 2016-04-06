@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -74,9 +74,7 @@ public class SaveDialogAction<T extends SaveDialogActionDefinition> extends Abst
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
+        if (validateForm()) {
             final JcrNodeAdapter item = (JcrNodeAdapter) this.item;
             try {
                 final Node node = item.applyChanges();
@@ -86,9 +84,16 @@ public class SaveDialogAction<T extends SaveDialogActionDefinition> extends Abst
                 throw new ActionExecutionException(e);
             }
             callback.onSuccess(getDefinition().getName());
-        } else {
+        }
+    }
+
+    protected boolean validateForm() {
+        boolean isValid = validator.isValid();
+        validator.showValidation(!isValid);
+        if (!isValid) {
             log.info("Validation error(s) occurred. No save performed.");
         }
+        return isValid;
     }
 
     /**

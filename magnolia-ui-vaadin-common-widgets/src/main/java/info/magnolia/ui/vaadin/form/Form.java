@@ -51,6 +51,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.shared.Connector;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -215,16 +216,22 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public void showValidation(boolean isVisible) {
         isValidationVisible = isVisible;
-
-        if (isVisible) {
-            invalidateErrorAmount();
-        }
+        // validation count should already up-to-date, since #showValidation should always occur after #isValid/#validate
 
         final Iterator<Component> it = tabSheet.iterator();
         while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof MagnoliaFormTab) {
                 ((MagnoliaFormTab) c).setValidationVisible(isVisible);
+            }
+        }
+
+        // set validation visibility for all form fields (the Vaadin way)
+        for (final FormSection section : getFormSections()) {
+            for (final Component component : section) {
+                if (component instanceof AbstractField) {
+                    ((AbstractField) component).setValidationVisible(isVisible);
+                }
             }
         }
     }

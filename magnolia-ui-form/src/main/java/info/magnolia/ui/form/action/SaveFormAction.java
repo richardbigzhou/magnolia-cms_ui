@@ -83,9 +83,7 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
+        if (validateForm()) {
             try {
                 final Node node = item.applyChanges();
                 setNodeName(node, item);
@@ -94,9 +92,16 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
                 throw new ActionExecutionException(e);
             }
             callback.onSuccess(getDefinition().getName());
-        } else {
+        }
+    }
+
+    protected boolean validateForm() {
+        boolean isValid = validator.isValid();
+        validator.showValidation(!isValid);
+        if (!isValid) {
             log.info("Validation error(s) occurred. No save performed.");
         }
+        return isValid;
     }
 
     /**
