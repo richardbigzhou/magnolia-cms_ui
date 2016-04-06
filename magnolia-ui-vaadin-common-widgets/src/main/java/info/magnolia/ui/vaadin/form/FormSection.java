@@ -40,9 +40,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.Connector;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
@@ -104,24 +102,6 @@ public class FormSection extends AbstractLayout {
 
     public void setValidationVisible(boolean isVisible) {
         getState().isValidationVisible = isVisible;
-    }
-
-    @Override
-    public ErrorMessage getErrorMessage() {
-        if (!getState(false).isValidationVisible) {
-            return null;
-        }
-        final Iterator<Component> it = getComponentIterator();
-        while (it.hasNext()) {
-            final Component c = it.next();
-            if (c instanceof AbstractComponent) {
-                final ErrorMessage errMsg = ((AbstractComponent) c).getErrorMessage();
-                if (errMsg != null) {
-                    return errMsg;
-                }
-            }
-        }
-        return super.getErrorMessage();
     }
 
     @Override
