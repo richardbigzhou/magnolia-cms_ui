@@ -33,163 +33,86 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import static org.junit.Assert.*;
-
-import info.magnolia.context.MgnlContext;
-import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
-
-import java.util.Arrays;
-
-import javax.jcr.Node;
-import javax.jcr.Session;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.vaadin.ui.Table;
+import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.ui.TreeTable;
 
-/**
- * Testing the default {@link TreeViewImpl} logic.
- */
-public class TreeViewImplTest extends RepositoryTestCase {
+public class TreeViewImplTest {
 
-    private static final String WORKSPACE = "config";
-    private static final String NODE_ROOT_ITEM_ID = "root-depth1";
-    private static final String NODE_PARENT = "parent-depth2";
-    private static final String NODE = "node-depth3";
-    private static final String NODE_CHILD = "child-depth4";
-    private static final String NODE_PROPERTY = "property-depth4";
+    // All first-level nodes are considered roots for Vaadin hierarchical containers, i.e. "visible roots"
+    private static final Object ROOT_0 = "ROOT_0";
+    private static final Object NODE_1 = "NODE_1";
+    private static final Object NODE_11 = "NODE_11";
+    private static final Object NODE_12 = "NODE_12";
+    private static final Object NODE_121 = "NODE_121";
 
-    private Session session;
+    private TreeView treeView;
+    private TreeTable tree;
 
-    private TreeViewImpl view;
-
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        session = MgnlContext.getJCRSession(WORKSPACE);
+        TreeView treeView = new TreeViewImpl();
+        this.treeView = treeView;
 
-        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        view = new TreeViewImpl();
+        // #setContainer initializes Table and adds event listeners
+        Container.Hierarchical container = buildContainer();
+        treeView.setContainer(container);
 
-        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
-        nodeTypeDefinition.setStrict(false);
-        nodeTypeDefinition.setName("nt:unstructured");
+        tree = (TreeTable) treeView.asVaadinComponent();
+    }
 
-        connectorDefinition.setNodeTypes(Arrays.asList((NodeTypeDefinition) nodeTypeDefinition));
-        connectorDefinition.setRootPath("/");
-        connectorDefinition.setWorkspace(WORKSPACE);
+    private Container.Hierarchical buildContainer() {
+        Container.Hierarchical container = new HierarchicalContainer();
+        addItem(container, ROOT_0, null);
+        addItem(container, NODE_1, ROOT_0);
+        addItem(container, NODE_11, NODE_1);
+        addItem(container, NODE_12, NODE_1);
+        addItem(container, NODE_121, NODE_12);
+        return container;
+    }
 
-        Table table = view.createTable(new HierarchicalJcrContainer(connectorDefinition));
-        view.initializeTable(table);
+    private static void addItem(Container.Hierarchical container, Object itemId, Object parentItemId) {
+        container.addItem(itemId);
+        container.setParent(itemId, parentItemId);
     }
 
     @Test
-    public void testSelectExpandsTreeToNode() throws Exception {
+    public void selectExpandsTreeToNodeButNotNodeItself() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        Node child = node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
-
         // initial state
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(child)));
+        assertThat(tree.isCollapsed(ROOT_0), is(true));
+        assertThat(tree.isCollapsed(NODE_1), is(true));
+        assertThat(tree.isCollapsed(NODE_12), is(true));
+        assertThat(tree.isCollapsed(NODE_121), is(true));
 
         // WHEN
-        view.select(Arrays.asList((Object)JcrItemUtil.getItemId(node)));
+        treeView.select(Lists.newArrayList(NODE_12));
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
+        assertThat(tree.isCollapsed(ROOT_0), is(false));
+        assertThat(tree.isCollapsed(NODE_1), is(false));
+        assertThat(tree.isCollapsed(NODE_12), is(true));
     }
 
     @Test
-    public void testSelectDoesNotExpandNodeItself() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
+    public void collapseNodeWithSelectedChildUnselectsChild() throws Exception {
+        // GIVEN same initial state
+        tree.setCollapsed(ROOT_0, false);
+        treeView.select(Lists.newArrayList(ROOT_0, NODE_121));
 
         // WHEN
-        Object itemId = JcrItemUtil.getItemId(node);
-        view.select(Arrays.asList(itemId));
+        tree.setCollapsed(ROOT_0, true);
 
         // THEN
-        assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
-    }
-
-    @Ignore("See ticket MGNLUI-2078 - Need to verify if test is still relevant.")
-    @Test
-    public void testSelectExpandsNodeAtRootLevel() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        visibleRoot.addNode(NODE_PARENT);
-
-        // WHEN
-        view.select(Arrays.asList((Object)visibleRoot.getIdentifier()));
-
-        // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
-    }
-
-    @Test
-    public void testSelectExpandsTreeToProperty() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
-
-        Object propertyFakeId = new JcrPropertyItemId(node.getIdentifier(), WORKSPACE, NODE_PROPERTY);
-
-        // WHEN
-        view.select(Arrays.asList((Object)propertyFakeId));
-
-        // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
-    }
-
-    @Test
-    public void testCollapseNodeWithSelectedChildUnselectsChild() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        Node child = node.addNode(NODE_CHILD);
-
-        Object visibleRootId = JcrItemUtil.getItemId(visibleRoot);
-        Object childId = JcrItemUtil.getItemId(child);
-
-        view.asVaadinComponent().setCollapsed(visibleRootId, false);
-        view.select(Arrays.asList((Object) visibleRootId, childId));
-
-        // WHEN
-        view.asVaadinComponent().setCollapsed(visibleRootId, true);
-
-        // THEN
-        assertTrue(view.asVaadinComponent().isCollapsed(visibleRootId));
-        assertTrue(view.asVaadinComponent().isSelected(visibleRootId));
-        assertFalse(view.asVaadinComponent().isSelected(childId));
+        assertThat(tree.isCollapsed(ROOT_0), is(true));
+        assertThat(tree.isSelected(ROOT_0), is(true));
+        assertThat(tree.isSelected(NODE_121), is(false));
     }
 }
