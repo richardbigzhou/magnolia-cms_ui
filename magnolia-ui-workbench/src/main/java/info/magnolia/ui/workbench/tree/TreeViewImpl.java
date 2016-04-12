@@ -42,9 +42,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
-import com.vaadin.event.Action.Container;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -74,13 +74,13 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private InplaceEditingFieldFactory fieldFactory;
     private ExpandListener expandListener;
     private CollapseListener collapseListener;
-    private Container shortcutActionManager;
+    private Action.Container shortcutActionManager;
     private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
     private TreeRowScroller rowScroller;
 
     @Override
-    protected TreeTable createTable(com.vaadin.data.Container container) {
+    protected TreeTable createTable(Container container) {
         return new MagnoliaTreeTable(container);
     }
 
@@ -239,7 +239,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     // KEYBOARD SHORTCUTS
 
     @Override
-    public void setActionManager(Container shortcutActionManager) {
+    public void setActionManager(Action.Container shortcutActionManager) {
         if (editable) {
             shortcutActionManager.addActionHandler(editingKeyboardHandler);
         }
