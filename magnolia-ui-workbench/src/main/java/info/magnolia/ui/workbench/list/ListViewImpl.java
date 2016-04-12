@@ -125,7 +125,7 @@ public class ListViewImpl implements ListView {
                     } else if (value == null) {
                         items = Collections.emptySet();
                     } else {
-                        items = new LinkedHashSet<Object>();
+                        items = new LinkedHashSet<>();
                         items.add(value);
                     }
                     listener.onItemSelection(items);
@@ -153,7 +153,7 @@ public class ListViewImpl implements ListView {
                         if (value instanceof Set) {
                             items = (Set<Object>) value;
                         } else {
-                            items = new LinkedHashSet<Object>();
+                            items = new LinkedHashSet<>();
                             items.add(value);
                         }
                         if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
@@ -227,7 +227,7 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void clearColumns() {
-        table.setVisibleColumns(new Object[]{});
+        table.setVisibleColumns(new Object[] {});
     }
 
     @Override
