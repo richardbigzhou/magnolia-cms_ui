@@ -58,7 +58,13 @@ public class TreeViewImplTest {
 
     @Before
     public void setUp() throws Exception {
-        TreeView treeView = new TreeViewImpl();
+        // testing with a plain Vaadin TreeTable
+        TreeView treeView = new TreeViewImpl() {
+            @Override
+            protected TreeTable createTable(Container container) {
+                return new TreeTable(null, container);
+            }
+        };
         this.treeView = treeView;
 
         // #setContainer initializes Table and adds event listeners
@@ -114,5 +120,14 @@ public class TreeViewImplTest {
         assertThat(tree.isCollapsed(ROOT_0), is(true));
         assertThat(tree.isSelected(ROOT_0), is(true));
         assertThat(tree.isSelected(NODE_121), is(false));
+    }
+
+    @Test
+    public void isDescendantOf() throws Exception {
+        TreeViewImpl treeView = (TreeViewImpl) this.treeView;
+        assertThat(treeView.isDescendantOf(NODE_121, ROOT_0), is(true));
+        assertThat(treeView.isDescendantOf(NODE_121, NODE_1), is(true));
+        assertThat(treeView.isDescendantOf(NODE_121, NODE_12), is(true));
+        assertThat(treeView.isDescendantOf(NODE_11, NODE_12), is(false));
     }
 }
