@@ -249,6 +249,8 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     public boolean isValid() {
         // first validate self
         if (!super.isValid()) {
+            // TODO: This is temporary and when MGNLUI-3668 is fixed, should be deleted.
+            markAsDirty();
             return false;
         }
 
@@ -258,6 +260,8 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
                 continue;
             }
             if (!field.isValid()) {
+                // TODO: This is temporary and when MGNLUI-3668 is fixed, should be deleted.
+                markAsDirty();
                 return false;
             }
         }
