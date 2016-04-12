@@ -40,6 +40,7 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -232,12 +233,19 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void select(List<Object> itemIds) {
-        table.setValue(null);
-        if (itemIds != null && !itemIds.isEmpty()) {
-            for (Object id : itemIds) {
-                table.select(id);
-            }
+        if (itemIds == null) {
+            table.setValue(null);
+            return;
         }
+
+        // convert to set before comparing with actual table selection (which is also a set underneath)
+        Set<Object> uniqueItemIds = new HashSet<>(itemIds);
+        if (uniqueItemIds.equals(table.getValue())) {
+            // selection already in sync, nothing to do
+            return;
+        }
+
+        table.setValue(uniqueItemIds);
         // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
