@@ -43,10 +43,6 @@ import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiTransformer;
 
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,8 +116,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         addButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-
-                int newPropertyId = -1;
+                int newPropertyId;
                 Property<?> property = null;
 
                 Transformer<?> transformer = ((TransformedProperty<?>) getPropertyDataSource()).getTransformer();
@@ -158,9 +153,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
     @Override
     protected void initFields(PropertysetItem newValue) {
         root.removeAllComponents();
-        Iterator<?> it = newValue.getItemPropertyIds().iterator();
-        while (it.hasNext()) {
-            Object propertyId = it.next();
+        for (Object propertyId : newValue.getItemPropertyIds()) {
             Property<?> property = newValue.getItemProperty(propertyId);
             root.addComponent(createEntryComponent(propertyId, property));
         }
@@ -176,7 +169,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      * - a remove Button<br>
      */
     private Component createEntryComponent(Object propertyId, Property<?> property) {
-
         final HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
         layout.setHeight(-1, Unit.PIXELS);
@@ -276,13 +268,12 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
      */
     private void removeValueProperty(int fromIndex) {
         getValue().removeItemProperty(fromIndex);
-        int toIndex = fromIndex;
         int valuesSize = getValue().getItemPropertyIds().size();
         if (fromIndex == valuesSize) {
             return;
         }
         while (fromIndex < valuesSize) {
-            toIndex = fromIndex;
+            int toIndex = fromIndex;
             fromIndex +=1;
             getValue().addItemProperty(toIndex, getValue().getItemProperty(fromIndex));
             getValue().removeItemProperty(fromIndex);
@@ -327,7 +318,7 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         if (transformer instanceof MultiTransformer) {
             ((MultiTransformer) transformer).removeProperty(propertyId);
         } else {
-            if (propertyId != null && propertyId.getClass().isAssignableFrom(Integer.class)) {
+            if (propertyId.getClass().isAssignableFrom(Integer.class)) {
                 removeValueProperty((Integer) propertyId);
             } else {
                 log.error("Property id {} is not an integer and as such property can't be removed", propertyId);
@@ -345,7 +336,6 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         int switchPosition = currentPosition + (moveUp ? -1 : 1);
 
         Field[] fields = Iterators.toArray(Iterators.filter(Iterators.transform(root.iterator(), new Function<Component, Field>() {
-            @Nullable
             @Override
             public Field apply(Component input) {
                 if (input instanceof HasComponents) {
@@ -359,14 +349,12 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         }), Predicates.notNull()), Field.class);
 
         if (moveUp && currentPosition != 0 || (!moveUp && currentPosition != fields.length - 1)) {
-
             Field switchField = fields[switchPosition];
-            Object currentPropertyId =  MultiField.this.findPropertyId(getValue(), propertyReference);
+            Object currentPropertyId = MultiField.this.findPropertyId(getValue(), propertyReference);
             Object switchPropertyId = MultiField.this.findPropertyId(getValue(), switchField.getPropertyDataSource());
 
             root.replaceComponent(root.getComponent(currentPosition), root.getComponent(switchPosition));
             switchItemProperties(currentPropertyId, switchPropertyId);
         }
     }
-
 }
