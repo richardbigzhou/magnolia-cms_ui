@@ -98,7 +98,6 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         select = createSelectionField();
         select.setContainerDataSource(buildOptions());
         select.setNullSelectionAllowed(false);
-        select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
         if (select instanceof ComboBox) {
