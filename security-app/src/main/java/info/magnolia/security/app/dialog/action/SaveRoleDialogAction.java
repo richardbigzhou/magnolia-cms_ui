@@ -96,17 +96,11 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-
         final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
 
-        // First validate
-        validator.showValidation(true);
-        if (validator.isValid() && validateAccessControlLists(nodeAdapter)) {
+        if (validateForm() && validateAccessControlLists(nodeAdapter)) {
             createOrUpdateRole(nodeAdapter);
             callback.onSuccess(getDefinition().getName());
-
-        } else {
-            // validation errors are displayed in the UI.
         }
     }
 

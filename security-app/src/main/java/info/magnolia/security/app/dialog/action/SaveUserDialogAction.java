@@ -89,16 +89,10 @@ public class SaveUserDialogAction extends SaveDialogAction<SaveUserDialogActionD
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
-
+        if (validateForm()) {
             final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
             createOrUpdateUser(nodeAdapter);
             callback.onSuccess(getDefinition().getName());
-
-        } else {
-            // validation errors are displayed in the UI.
         }
     }
 
