@@ -72,9 +72,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.TextField;
 
-/**
- * Tests for the {@link RestoreVersionAction}.
- */
 public class RestoreVersionActionTest extends RepositoryTestCase {
 
     private final String CREATED_VERSION_BEFORE_RESTORE = "ui-contentapp.actions.restoreVersion.comment.restore";
@@ -119,7 +116,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testRestoreVersion() throws Exception {
+    public void restoreVersion() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -144,7 +141,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testCheckVersionCreatedBeforeRestore() throws Exception {
+    public void checkVersionCreatedBeforeRestore() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -170,7 +167,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testDoNotCreateVersionBeforeRestoreIfNotAllowed() throws Exception {
+    public void doNotCreateVersionBeforeRestoreIfNotAllowed() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -200,7 +197,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
      * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-3220">MGNLUI-3220</a>
      */
     @Test
-    public void testRestoreVersionWhenMultipleVersionsExistsAndRestoreOldest() throws Exception {
+    public void restoreVersionWhenMultipleVersionsExistsAndRestoreOldest() throws Exception {
         // GIVEN
 
         // This Version will go as the version store will be full
@@ -254,7 +251,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
      * We expect the second confirmation to not be shown, as we're not restoring the oldest version.
      */
     @Test
-    public void testRestoreVersionWhenMultipleVersionsExistsAndRestoreMiddle() throws Exception {
+    public void restoreVersionWhenMultipleVersionsExistsAndRestoreMiddle() throws Exception {
         // GIVEN
 
         // This Version will go as the version store will be full
