@@ -48,6 +48,7 @@ import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -74,21 +75,29 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
 
     private final VersionConfig versionConfig;
 
-    /**
-     * @deprecated since 5.3.5 - use {@link RestoreVersionAction(RestoreVersionActionDefinition, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, VersionManager, EventBus, VersionConfig)} instead.
-     */
-    @Deprecated
-    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
-        this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, Components.getComponent(VersionConfig.class));
-    }
-
     @Inject
-    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig) {
-        super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
+    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig, ContentConnector contentConnector) {
+        super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, contentConnector);
         this.versionManager = versionManager;
         this.eventBus = eventBus;
         this.versionConfig = versionConfig;
         this.dialogID = "ui-contentapp:code:RestoreVersionAction.selectVersion";
+    }
+
+    /**
+     * @deprecated since 5.4.6 - use {@link RestoreVersionAction(RestoreVersionActionDefinition, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, VersionManager, EventBus, VersionConfig, ContentConnector)} instead.
+     */
+    @Deprecated
+    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig) {
+        this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, versionConfig, getContentConnectorForDeprecations(uiContext));
+    }
+
+    /**
+     * @deprecated since 5.3.5 - use {@link RestoreVersionAction(RestoreVersionActionDefinition, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, VersionManager, EventBus, VersionConfig, ContentConnector)} instead.
+     */
+    @Deprecated
+    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+        this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, Components.getComponent(VersionConfig.class), getContentConnectorForDeprecations(uiContext));
     }
 
     @Override

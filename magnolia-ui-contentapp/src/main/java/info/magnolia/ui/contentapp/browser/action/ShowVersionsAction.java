@@ -34,14 +34,18 @@
 package info.magnolia.ui.contentapp.browser.action;
 
 import info.magnolia.cms.core.version.VersionInfo;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.contentapp.contentconnector.ContentConnectorProvider;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
@@ -53,6 +57,7 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.framework.action.AbstractVersionAction;
 import info.magnolia.ui.framework.action.EditorCallbackActionDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -61,30 +66,54 @@ import javax.jcr.RepositoryException;
 
 /**
  * Opens a dialog with list of versions.
- * 
+ *
  * @param <D> {@link ActionDefinition}.
  */
 public class ShowVersionsAction<D extends ActionDefinition> extends AbstractVersionAction<D> {
 
-    private final AppContext appContext;
     protected final AbstractJcrNodeAdapter nodeAdapter;
+    private final ContentConnector contentConnector;
+    private final AppContext appContext;
 
     protected String dialogID;
 
     @Inject
-    public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
+    public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, ContentConnector contentConnector) {
         super(definition, locationController, uiContext, formDialogPresenter, i18n);
-
         this.nodeAdapter = nodeAdapter;
         this.appContext = appContext;
         this.dialogID = "ui-contentapp:code:ShowVersionsAction.selectVersion";
+        this.contentConnector = contentConnector;
     }
 
     /**
-     * @deprecated since 5.3.5 - use {@link ShowVersionsAction(D, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator)} instead.
+     * @deprecated since 5.4.6 - use {@link ShowVersionsAction(D, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, ContentConnector)} instead.
      */
+    @Deprecated
+    public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
+        this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, getContentConnectorForDeprecations(uiContext));
+    }
+
+    /**
+     * @deprecated since 5.3.5 - use {@link ShowVersionsAction(D, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, ContentConnector)} instead.
+     */
+    @Deprecated
     public ShowVersionsAction(ShowVersionsActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
-        this((D) definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
+        this((D) definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, getContentConnectorForDeprecations(uiContext));
+    }
+
+    /**
+     * Gets {@link ContentConnector} for deprecations from {@link UiContext}.
+     * Cannot get by {@link Components#getComponent(Class)} due to the scope of {@link ContentConnector} is sub-app.
+     * @see ContentConnectorProvider
+     */
+    protected static ContentConnector getContentConnectorForDeprecations(UiContext uiContext) {
+        if (uiContext instanceof SubAppContext) {
+            ContentConnectorProvider contentConnectorProvider = new ContentConnectorProvider((SubAppContext) uiContext, Components.getComponentProvider(), new SimpleEventBus());
+            return contentConnectorProvider.get();
+        } else {
+            throw new IllegalStateException("Cannot get ContentConnector from " + uiContext);
+        }
     }
 
     @Override
@@ -138,14 +167,11 @@ public class ShowVersionsAction<D extends ActionDefinition> extends AbstractVers
     @Override
     protected Location getLocation() throws ActionExecutionException {
         try {
-            final Node node = getNode();
-            final String path = node.getPath();
-            final String appName = appContext.getName();
-            final String versionName = getVersionName();
-
-            return new DetailLocation(appName, "detail", DetailView.ViewType.VIEW, path, versionName);
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException("Could not get node from nodeAdapter " + nodeAdapter.getItemId());
+            Object itemId = contentConnector.getItemId(nodeAdapter);
+            String path = contentConnector.getItemUrlFragment(itemId);
+            return new DetailLocation(appContext.getName(), "detail", DetailView.ViewType.VIEW, path, getVersionName());
+        } catch (Exception e) {
+            throw new ActionExecutionException("Could not get location from nodeAdapter " + nodeAdapter.getItemId());
         }
     }
 

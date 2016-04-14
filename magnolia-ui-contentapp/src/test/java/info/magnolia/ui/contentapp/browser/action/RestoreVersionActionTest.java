@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.browser.action;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.beans.config.VersionConfig;
 import info.magnolia.cms.core.version.VersionManager;
@@ -45,6 +45,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
@@ -55,6 +56,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -72,25 +74,19 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.TextField;
 
-/**
- * Tests for the {@link RestoreVersionAction}.
- */
 public class RestoreVersionActionTest extends RepositoryTestCase {
 
     private final String CREATED_VERSION_BEFORE_RESTORE = "ui-contentapp.actions.restoreVersion.comment.restore";
 
-    private Node node;
-
     private RestoreVersionActionDefinition definition;
-
     private FormDialogPresenter formDialogPresenter;
-    private UiContext uiContext;
-
-    private EventBus eventBus;
-    private SimpleTranslator i18n;
-
+    private ContentConnector contentConnector;
     private VersionManager versionManager;
     private VersionConfig versionConfig;
+    private SimpleTranslator i18n;
+    private UiContext uiContext;
+    private EventBus eventBus;
+    private Node node;
 
     @Override
     @Before
@@ -100,9 +96,12 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
-        versionManager = VersionManager.getInstance();
+        versionManager = Components.getComponent(VersionManager.class);
         versionConfig = new VersionConfig();
         definition = new RestoreVersionActionDefinition();
+
+        contentConnector = mock(ContentConnector.class);
+        ComponentsTestUtil.setInstance(ContentConnector.class, contentConnector);
 
         formDialogPresenter = mock(FormDialogPresenter.class);
         uiContext = mock(UiContext.class);
@@ -119,7 +118,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testRestoreVersion() throws Exception {
+    public void restoreVersion() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -131,7 +130,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         assertEquals("section", node.getProperty("mgnl:template").getString());
         assertFalse(node.hasNode("areaSubNode"));
 
-        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig);
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig, contentConnector);
         restoreVersionAction.execute();
 
         // WHEN
@@ -144,7 +143,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testCheckVersionCreatedBeforeRestore() throws Exception {
+    public void checkVersionCreatedBeforeRestore() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -155,7 +154,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
 
         assertEquals(2, versionManager.getAllVersions(node).getSize());
 
-        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig);
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig, contentConnector);
         restoreVersionAction.execute();
 
         // WHEN
@@ -170,7 +169,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testDoNotCreateVersionBeforeRestoreIfNotAllowed() throws Exception {
+    public void doNotCreateVersionBeforeRestoreIfNotAllowed() throws Exception {
         // GIVEN
         versionManager.addVersion(node);
 
@@ -183,7 +182,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
 
         definition.setCreateVersionBeforeRestore(false);
 
-        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig);
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig, contentConnector);
         restoreVersionAction.execute();
 
         // WHEN
@@ -200,7 +199,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
      * @see <a href="http://jira.magnolia-cms.com/browse/MGNLUI-3220">MGNLUI-3220</a>
      */
     @Test
-    public void testRestoreVersionWhenMultipleVersionsExistsAndRestoreOldest() throws Exception {
+    public void restoreVersionWhenMultipleVersionsExistsAndRestoreOldest() throws Exception {
         // GIVEN
 
         // This Version will go as the version store will be full
@@ -219,7 +218,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         Version version1_3 = createVersion(node, "prop", "test 4"); // 1.3
         assertThat(versionManager.getAllVersions(node).getSize(), is(4L));
 
-        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig);
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig, contentConnector);
         restoreVersionAction.setSelectedVersion(version1_1.getName());
         restoreVersionAction.execute();
 
@@ -254,7 +253,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
      * We expect the second confirmation to not be shown, as we're not restoring the oldest version.
      */
     @Test
-    public void testRestoreVersionWhenMultipleVersionsExistsAndRestoreMiddle() throws Exception {
+    public void restoreVersionWhenMultipleVersionsExistsAndRestoreMiddle() throws Exception {
         // GIVEN
 
         // This Version will go as the version store will be full
@@ -273,7 +272,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         Version version1_3 = createVersion(node, "prop", "test 4"); // 1.3
         assertThat(versionManager.getAllVersions(node).getSize(), is(4L));
 
-        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig);
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(node), i18n, versionManager, eventBus, versionConfig, contentConnector);
         restoreVersionAction.setSelectedVersion(version1_2.getName());
         restoreVersionAction.execute();
 
@@ -304,8 +303,8 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
 
         private String version = "1.0";
 
-        public MockRestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig) {
-            super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, versionConfig);
+        public MockRestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig, ContentConnector contentConnector) {
+            super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, versionConfig, contentConnector);
         }
 
         @Override
