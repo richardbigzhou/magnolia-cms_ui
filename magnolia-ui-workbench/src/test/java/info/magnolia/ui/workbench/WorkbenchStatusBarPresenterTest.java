@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.workbench;
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -40,9 +42,14 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.Session;
 
@@ -103,6 +110,30 @@ public class WorkbenchStatusBarPresenterTest {
 
         // WHEN
         barPresenter.refresh();
+    }
+
+    @Test
+    public void supportsEmptySet() throws Exception {
+        // content-connectors may use null as default itemId, make sure comparison doesn't fail
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                barPresenter.setSelectedItems(Collections.emptySet());
+            }
+        }, throwsNothing());
+    }
+
+    @Test
+    public void supportsNullItemIdInSet() throws Exception {
+        // content-connectors may use null as default itemId, make sure comparison doesn't fail
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                Set<Object> itemIds = new HashSet<>();
+                itemIds.add(null);
+                barPresenter.setSelectedItems(itemIds);
+            }
+        }, throwsNothing());
     }
 
     @After

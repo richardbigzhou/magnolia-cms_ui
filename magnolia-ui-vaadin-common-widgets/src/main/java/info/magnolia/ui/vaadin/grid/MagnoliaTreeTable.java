@@ -134,8 +134,9 @@ public class MagnoliaTreeTable extends TreeTable {
     }
 
     /**
-     * @return <code>true</code> if itemId is a descendant of parentId, <code>false</code> otherwise.
+     * @deprecated since 5.4.6, use #isDescendantOf on the TreeView itself, not on the TreeTable.
      */
+    @Deprecated
     public boolean isDescendantOf(final Object itemId, final Object parentId) {
         Hierarchical container = getContainerDataSource();
         Object id = itemId;

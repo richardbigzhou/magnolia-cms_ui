@@ -42,9 +42,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
-import com.vaadin.event.Action.Container;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -67,27 +67,27 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private MagnoliaTreeTable tree;
+    private TreeTable tree;
 
     private boolean editable;
     private final List<Object> editableColumns = new ArrayList<Object>();
     private InplaceEditingFieldFactory fieldFactory;
     private ExpandListener expandListener;
     private CollapseListener collapseListener;
-    private Container shortcutActionManager;
+    private Action.Container shortcutActionManager;
     private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
     private TreeRowScroller rowScroller;
 
     @Override
-    protected TreeTable createTable(com.vaadin.data.Container container) {
+    protected TreeTable createTable(Container container) {
         return new MagnoliaTreeTable(container);
     }
 
     @Override
     protected void initializeTable(Table table) {
         super.initializeTable(table);
-        this.tree = (MagnoliaTreeTable) table;
+        this.tree = (TreeTable) table;
         rowScroller = new TreeRowScroller(tree);
         collapseListener = new CollapsedNodeListener();
         tree.addCollapseListener(collapseListener);
@@ -239,7 +239,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     // KEYBOARD SHORTCUTS
 
     @Override
-    public void setActionManager(Container shortcutActionManager) {
+    public void setActionManager(Action.Container shortcutActionManager) {
         if (editable) {
             shortcutActionManager.addActionHandler(editingKeyboardHandler);
         }
@@ -271,11 +271,26 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         if (tree.isMultiSelect()) {
             Set<Object> selectedIds = (Set<Object>) tree.getValue();
             for (Object id : selectedIds) {
-                if (tree.isDescendantOf(id, parentId)) {
+                if (isDescendantOf(id, parentId)) {
                     tree.unselect(id);
                 }
             }
         }
+    }
+
+    /**
+     * @return <code>true</code> if itemId is a descendant of parentId, <code>false</code> otherwise.
+     */
+    boolean isDescendantOf(final Object itemId, final Object parentId) {
+        Container.Hierarchical container = tree.getContainerDataSource();
+        Object id = itemId;
+        while (!container.isRoot(id)) {
+            id = container.getParent(id);
+            if (id.equals(parentId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

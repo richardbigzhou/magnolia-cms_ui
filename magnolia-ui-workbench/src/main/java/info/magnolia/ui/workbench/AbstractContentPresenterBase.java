@@ -54,6 +54,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
@@ -120,14 +121,9 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
         Object rootItemId = contentConnector.getDefaultItemId();
         if (itemIds == null || itemIds.isEmpty()) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            List<Object> ids = new ArrayList<Object>(1);
-
-            if (rootItemId != null) {
-                ids.add(rootItemId);
-            }
-            setSelectedItemIds(ids);
+            setSelectedItemIds(Lists.newArrayList(rootItemId));
         } else {
-            List<Object> selectedIds = new ArrayList<Object>(itemIds.size());
+            List<Object> selectedIds = new ArrayList<>(itemIds.size());
             boolean isMultipleSelection = itemIds.size() > 1;
 
             for (Object id : itemIds) {
@@ -141,7 +137,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
             setSelectedItemIds(selectedIds);
             log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedIds);
         }
-        eventBus.fireEvent(new SelectionChangedEvent(Collections.unmodifiableSet(new HashSet<Object>(selectedItemIds))));
+        eventBus.fireEvent(new SelectionChangedEvent(Collections.unmodifiableSet(new HashSet<>(selectedItemIds))));
 
     }
 

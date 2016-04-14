@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
@@ -76,24 +77,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     private static final String WHERE_CLAUSE_FOR_PATH = " ISCHILDNODE('%s')";
 
+    private int rootDepth = -1;
     private String nodePath;
 
     private boolean sortable;
 
     private boolean isIncludingSystemProperties = false;
 
-    private static class ItemNameComparator implements Comparator<Item> {
-
-        @Override
-        public int compare(Item lhs, Item rhs) {
-            try {
-                return lhs.getName().compareTo(rhs.getName());
-            } catch (RepositoryException e) {
-                log.warn("Cannot compare item names: " + e);
-                return 0;
-            }
-        }
-    }
     public HierarchicalJcrContainer(JcrContentConnectorDefinition definition) {
         super(definition);
     }
@@ -110,7 +100,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public JcrItemId getParent(Object itemId) {
         try {
             Item item = getJcrItem(itemId);
-            if (item.isNode() && item.getDepth() == 0) {
+            if (item.isNode() && item.getDepth() == getRootDepth() + 1) {
                 return null;
             }
             return JcrItemUtil.getItemId(item.getParent());
@@ -231,8 +221,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return propertyName.startsWith(NodeTypes.JCR_PREFIX) || propertyName.startsWith(NodeTypes.MGNL_PREFIX);
     }
 
-    protected Collection<JcrItemId> createContainerIds(Collection <Item> children) {
-        ArrayList<JcrItemId> ids = new ArrayList<JcrItemId>();
+    protected Collection<JcrItemId> createContainerIds(Collection<Item> children) {
+        ArrayList<JcrItemId> ids = new ArrayList<>();
         for (Item child : children) {
             try {
                 JcrItemId itemId = JcrItemUtil.getItemId(child);
@@ -320,13 +310,23 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public boolean isRoot(Item item) throws RepositoryException {
         if (item != null) {
             try {
-                int rootDepth = getRootNode().getDepth();
-                return item.getDepth() <= rootDepth + 1;
+                return item.getDepth() == getRootDepth() + 1;
             } catch (RepositoryException e) {
                 handleRepositoryException(log, "Cannot determine depth of jcr item", e);
             }
         }
         return true;
+    }
+
+    private int getRootDepth() {
+        if (rootDepth == -1) {
+            try {
+                rootDepth = getRootNode().getDepth();
+            } catch (RepositoryException e) {
+                throw new RuntimeRepositoryException(e);
+            }
+        }
+        return rootDepth;
     }
 
     @Override
@@ -388,5 +388,18 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     public void setSortable(boolean sortable) {
         this.sortable = sortable;
+    }
+
+    private static class ItemNameComparator implements Comparator<Item> {
+
+        @Override
+        public int compare(Item lhs, Item rhs) {
+            try {
+                return lhs.getName().compareTo(rhs.getName());
+            } catch (RepositoryException e) {
+                log.warn("Cannot compare item names: " + e);
+                return 0;
+            }
+        }
     }
 }

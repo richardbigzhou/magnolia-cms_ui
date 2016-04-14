@@ -74,7 +74,7 @@ import org.junit.Test;
  */
 public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
-    private HierarchicalJcrContainer hierarchicalJcrContainer;
+    private HierarchicalJcrContainer container;
 
     private ConfiguredJcrContentConnectorDefinition connectorDefinition;
 
@@ -122,7 +122,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         connectorDefinition.setRootPath("/");
         connectorDefinition.setWorkspace(WORKSPACE);
         connectorDefinition.addNodeType(nodeTypeDefinition);
-        hierarchicalJcrContainer = new HierarchicalJcrContainer(connectorDefinition);
+        container = new HierarchicalJcrContainer(connectorDefinition);
 
         // Init session
         session = MgnlContext.getJCRSession(WORKSPACE);
@@ -138,7 +138,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         JcrItemId containerItemId = JcrItemUtil.getItemId(node1);
 
         // WHEN
-        com.vaadin.data.Item item = hierarchicalJcrContainer.getItem(containerItemId);
+        com.vaadin.data.Item item = container.getItem(containerItemId);
 
         // THEN
         assertTrue(item instanceof JcrNodeAdapter);
@@ -156,7 +156,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         JcrItemId containerItemId = JcrItemUtil.getItemId(node1);
 
         // WHEN
-        boolean res = hierarchicalJcrContainer.areChildrenAllowed(containerItemId);
+        boolean res = container.areChildrenAllowed(containerItemId);
 
         // THEN
         assertTrue(res);
@@ -170,7 +170,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId = node1.getIdentifier() + AbstractJcrContainer.PROPERTY_NAME_AND_UUID_SEPARATOR + PROPERTY_1;
 
         // WHEN
-        boolean res = hierarchicalJcrContainer.areChildrenAllowed(containerItemId);
+        boolean res = container.areChildrenAllowed(containerItemId);
 
         // THEN
         assertFalse(res);
@@ -186,7 +186,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getIdentifier();
 
         // WHEN
-        boolean res = hierarchicalJcrContainer.isRoot(containerItemId1);
+        boolean res = container.isRoot(containerItemId1);
 
         // THEN
         assertTrue(res);
@@ -202,7 +202,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         JcrItemId containerItemId1_1 = JcrItemUtil.getItemId(node11);
 
         // WHEN
-        boolean res = hierarchicalJcrContainer.isRoot(containerItemId1_1);
+        boolean res = container.isRoot(containerItemId1_1);
 
         // THEN
         assertFalse(res);
@@ -242,20 +242,13 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         final JcrItemId containerItemId4 = JcrItemUtil.getItemId(node4);
         final JcrItemId containerItemId5 = JcrItemUtil.getItemId(node5);
 
-        // WHEN
-        boolean res1 = hierarchicalJcrContainer.hasChildren(containerItemId1);
-        boolean res2 = hierarchicalJcrContainer.hasChildren(containerItemId2);
-        boolean res3 = hierarchicalJcrContainer.hasChildren(containerItemId3);
-        boolean res4 = hierarchicalJcrContainer.hasChildren(containerItemId4);
-        boolean res5 = hierarchicalJcrContainer.hasChildren(containerItemId5);
+        // WHEN / THEN
+        assertTrue(container.hasChildren(containerItemId1));
+        assertTrue(container.hasChildren(containerItemId2));
 
-        // THEN
-        assertTrue(res1);
-        assertTrue(res2);
-
-        assertFalse(res3);
-        assertFalse(res4);
-        assertFalse(res5);
+        assertFalse(container.hasChildren(containerItemId3));
+        assertFalse(container.hasChildren(containerItemId4));
+        assertFalse(container.hasChildren(containerItemId5));
     }
 
     @Test
@@ -270,7 +263,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         JcrItemId containerItemId1 = JcrItemUtil.getItemId(node1);
 
         // WHEN
-        Collection<JcrItemId> res = hierarchicalJcrContainer.getChildren(containerItemId1);
+        Collection<JcrItemId> res = container.getChildren(containerItemId1);
 
         // THEN
         assertEquals(1, res.size());
@@ -289,7 +282,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         JcrItemId containerItemId1 = JcrItemUtil.getItemId(node1);
 
         // WHEN
-        JcrItemId res = hierarchicalJcrContainer.getParent(JcrItemUtil.getItemId(node1_1));
+        JcrItemId res = container.getParent(JcrItemUtil.getItemId(node1_1));
 
         // THEN
         assertEquals(containerItemId1, res);
@@ -305,7 +298,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         // WHEN
-        Collection<JcrItemId> res = hierarchicalJcrContainer.rootItemIds();
+        Collection<JcrItemId> res = container.rootItemIds();
 
         // THEN
         assertEquals(2, res.size());
@@ -321,13 +314,13 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Node node21 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         node1.getSession().save();
         // Initial check
-        Collection<Item> res = hierarchicalJcrContainer.getRootItemIds();
+        Collection<Item> res = container.getRootItemIds();
         assertEquals(1, res.size());
         assertEquals(node2.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
 
         // WHEN
         connectorDefinition.setRootPath("/node2");
-        res = hierarchicalJcrContainer.getRootItemIds();
+        res = container.getRootItemIds();
 
         // THEN
         assertEquals(1, res.size());
@@ -338,22 +331,15 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     public void isRoot() throws RepositoryException {
         // GIVEN
         Node node = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, PROPERTY_1, "name2");
-        Node subnode = AbstractJcrContainerTest.createNode(node, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
+        Node subNode = AbstractJcrContainerTest.createNode(node, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         rootNode.setProperty(PROPERTY_2, "rootLevelProperty");
 
-        // WHEN
-        boolean rootNodeIsRoot = hierarchicalJcrContainer.isRoot(rootNode);
-        boolean nodeIsRoot = hierarchicalJcrContainer.isRoot(node);
-        boolean subnodeIsRoot = hierarchicalJcrContainer.isRoot(subnode);
-        boolean rootNodePropertyIsRoot = hierarchicalJcrContainer.isRoot(rootNode.getProperty(PROPERTY_2));
-        boolean nodePropertyIsRoot = hierarchicalJcrContainer.isRoot(node.getProperty(PROPERTY_1));
-
-        // THEN
-        assertTrue(rootNodeIsRoot);
-        assertTrue(nodeIsRoot);
-        assertTrue(rootNodePropertyIsRoot);
-        assertFalse(subnodeIsRoot);
-        assertFalse(nodePropertyIsRoot);
+        // WHEN / THEN
+        assertFalse(container.isRoot(rootNode)); // JCR root is not a root for the container, it's not even in the container
+        assertTrue(container.isRoot(node));
+        assertTrue(container.isRoot(rootNode.getProperty(PROPERTY_2)));
+        assertFalse(container.isRoot(subNode));
+        assertFalse(container.isRoot(node.getProperty(PROPERTY_1)));
     }
 
     @Test
@@ -363,7 +349,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         // WHEN
-        Item res = hierarchicalJcrContainer.getJcrItem(JcrItemUtil.getItemId(node1));
+        Item res = container.getJcrItem(JcrItemUtil.getItemId(node1));
 
         // THEN
         assertNotNull(res);
@@ -378,7 +364,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // WHEN
         JcrPropertyItemId propertyId = new JcrPropertyItemId(node1.getIdentifier(), workspace, PROPERTY_1);
-        Item res = hierarchicalJcrContainer.getJcrItem(propertyId);
+        Item res = container.getJcrItem(propertyId);
 
         // THEN
         assertNotNull(res);
@@ -394,7 +380,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         // WHEN
-        Collection<Item> res = hierarchicalJcrContainer.getChildren(rootNode);
+        Collection<Item> res = container.getChildren(rootNode);
 
         // THEN
         assertEquals(1, res.size());
@@ -417,7 +403,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         connectorDefinition.setIncludeProperties(true);
 
         // WHEN
-        Collection<Item> res = hierarchicalJcrContainer.getChildren(rootNode);
+        Collection<Item> res = container.getChildren(rootNode);
 
         // THEN
         assertEquals(3, res.size());
@@ -432,13 +418,13 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         node1.getSession().save();
         // Initial Check
-        assertEquals("/node1", hierarchicalJcrContainer.getPathInTree(node1));
+        assertEquals("/node1", container.getPathInTree(node1));
 
         // WHEN
         connectorDefinition.setRootPath("/node1");
 
         // THEN
-        assertEquals("", hierarchicalJcrContainer.getPathInTree(node1));
+        assertEquals("", container.getPathInTree(node1));
     }
 
     @Test
@@ -449,7 +435,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // WHEN
         connectorDefinition.setRootPath("/node1");
-        Item res = hierarchicalJcrContainer.getJcrItem(JcrItemUtil.getItemId(node1));
+        Item res = container.getJcrItem(JcrItemUtil.getItemId(node1));
 
         // THEN
         assertNotNull(res);
@@ -471,7 +457,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         connectorDefinition.setIncludeProperties(true);
 
         // WHEN
-        Collection<Item> res = hierarchicalJcrContainer.getChildren(node1);
+        Collection<Item> res = container.getChildren(node1);
 
         // THEN
         assertEquals(3, res.size());
@@ -487,7 +473,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Session session = SessionTestUtil.createSession("config", "/server/filters/zzz", "/server/filters/abc", "/server/filters/aaa", "/server/filters/foo", "/server/filters/qux");
 
         // WHEN
-        Collection<Item> res = hierarchicalJcrContainer.getChildren(session.getNode("/server/filters"));
+        Collection<Item> res = container.getChildren(session.getNode("/server/filters"));
 
         // THEN
         Item[] items = res.toArray(new Item[]{});
@@ -510,12 +496,12 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         nodeTypeDefinition.setHideInList(false);
         nodeTypeDefinition.setName(NodeTypes.Content.NAME);
         connectorDefinition.addNodeType(nodeTypeDefinition);
-        hierarchicalJcrContainer.setSortable(true);
-        hierarchicalJcrContainer.addSortableProperty("jcrName");
-        hierarchicalJcrContainer.sort(new Object[] {"jcrName"}, new boolean[] {true});
+        container.setSortable(true);
+        container.addSortableProperty("jcrName");
+        container.sort(new Object[] {"jcrName"}, new boolean[] {true});
 
         // WHEN
-        Collection<Item> items = hierarchicalJcrContainer.getChildren(session.getNode("/foo"));
+        Collection<Item> items = container.getChildren(session.getNode("/foo"));
 
         // THEN
         Collections.sort(paths);
@@ -533,14 +519,14 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         connectorDefinition.setIncludeProperties(true);
 
         // WHEN
-        Collection<JcrItemId> children = hierarchicalJcrContainer.getChildren(JcrItemUtil.getItemId(session.getItem("/foo")));
+        Collection<JcrItemId> children = container.getChildren(JcrItemUtil.getItemId(session.getItem("/foo")));
 
         // THEN
         assertThat(children, not(hasItem(isJcrSystemPropertyId())));
 
         // WHEN
-        hierarchicalJcrContainer.setIncludeSystemProperties(true);
-        children = hierarchicalJcrContainer.getChildren(JcrItemUtil.getItemId(session.getItem("/foo")));
+        container.setIncludeSystemProperties(true);
+        children = container.getChildren(JcrItemUtil.getItemId(session.getItem("/foo")));
 
         // THEN
         assertThat(children, hasItem(isJcrSystemPropertyId()));

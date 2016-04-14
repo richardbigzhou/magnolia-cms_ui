@@ -40,10 +40,12 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,10 +124,16 @@ public class ListViewImpl implements ListView {
                     Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
+                        // Container roots are expected to have null parent itemId.
+                        // Then, we remove it from table selection, so next multi-selection won't add to it, and let valueChangeListener kick in again
+                        if (items.size() == 1 && items.contains(null)) {
+                            table.setValue(null);
+                            return;
+                        }
                     } else if (value == null) {
                         items = Collections.emptySet();
                     } else {
-                        items = new LinkedHashSet<Object>();
+                        items = new LinkedHashSet<>();
                         items.add(value);
                     }
                     listener.onItemSelection(items);
@@ -153,10 +161,10 @@ public class ListViewImpl implements ListView {
                         if (value instanceof Set) {
                             items = (Set<Object>) value;
                         } else {
-                            items = new LinkedHashSet<Object>();
+                            items = new LinkedHashSet<>();
                             items.add(value);
                         }
-                        if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
+                        if (items.size() == 1 && ObjectUtils.equals(items.iterator().next(), event.getItemId())) {
                             table.setValue(null);
                         }
                     }
@@ -227,17 +235,24 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void clearColumns() {
-        table.setVisibleColumns(new Object[]{});
+        table.setVisibleColumns(new Object[] {});
     }
 
     @Override
     public void select(List<Object> itemIds) {
-        table.setValue(null);
-        if (itemIds != null && !itemIds.isEmpty()) {
-            for (Object id : itemIds) {
-                table.select(id);
-            }
+        if (itemIds == null) {
+            table.setValue(null);
+            return;
         }
+
+        // convert to set before comparing with actual table selection (which is also a set underneath)
+        Set<Object> uniqueItemIds = new HashSet<>(itemIds);
+        if (uniqueItemIds.equals(table.getValue())) {
+            // selection already in sync, nothing to do
+            return;
+        }
+
+        table.setValue(uniqueItemIds);
         // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 

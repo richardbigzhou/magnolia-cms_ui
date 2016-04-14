@@ -33,163 +33,208 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import static org.junit.Assert.*;
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
+import info.magnolia.test.hamcrest.Execution;
 
-import java.util.Arrays;
-
-import javax.jcr.Node;
-import javax.jcr.Session;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
-import com.vaadin.ui.Table;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.ui.TreeTable;
 
-/**
- * Testing the default {@link TreeViewImpl} logic.
- */
-public class TreeViewImplTest extends RepositoryTestCase {
+public class TreeViewImplTest {
 
-    private static final String WORKSPACE = "config";
-    private static final String NODE_ROOT_ITEM_ID = "root-depth1";
-    private static final String NODE_PARENT = "parent-depth2";
-    private static final String NODE = "node-depth3";
-    private static final String NODE_CHILD = "child-depth4";
-    private static final String NODE_PROPERTY = "property-depth4";
+    // All first-level nodes are considered roots for Vaadin hierarchical containers, i.e. "visible roots"
+    private static final Object ROOT_0 = "ROOT_0";
+    private static final Object NODE_1 = "NODE_1";
+    private static final Object NODE_11 = "NODE_11";
+    private static final Object NODE_12 = "NODE_12";
+    private static final Object NODE_121 = "NODE_121";
 
-    private Session session;
+    private TreeView treeView;
+    private TreeView.Listener listener;
+    private TreeTable tree;
 
-    private TreeViewImpl view;
-
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        session = MgnlContext.getJCRSession(WORKSPACE);
+        // testing with a plain Vaadin TreeTable
+        setUp(new TreeViewImpl() {
+            @Override
+            protected TreeTable createTable(Container container) {
+                return new TreeTable(null, container);
+            }
+        });
+    }
 
-        ConfiguredJcrContentConnectorDefinition connectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        view = new TreeViewImpl();
+    private void setUp(TreeView treeView) throws Exception {
+        this.treeView = treeView;
 
-        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
-        nodeTypeDefinition.setStrict(false);
-        nodeTypeDefinition.setName("nt:unstructured");
+        // #setContainer initializes Table and adds event listeners
+        Container.Hierarchical container = buildContainer();
+        treeView.setContainer(container);
 
-        connectorDefinition.setNodeTypes(Arrays.asList((NodeTypeDefinition) nodeTypeDefinition));
-        connectorDefinition.setRootPath("/");
-        connectorDefinition.setWorkspace(WORKSPACE);
+        // mock listener (i.e. TreePresenter) for interactions
+        listener = mock(TreeView.Listener.class);
+        treeView.setListener(listener);
 
-        Table table = view.createTable(new HierarchicalJcrContainer(connectorDefinition));
-        view.initializeTable(table);
+        tree = (TreeTable) treeView.asVaadinComponent();
+    }
+
+    private Container.Hierarchical buildContainer() {
+        Container.Hierarchical container = new HierarchicalContainer();
+        addItem(container, ROOT_0, null);
+        addItem(container, NODE_1, ROOT_0);
+        addItem(container, NODE_11, NODE_1);
+        addItem(container, NODE_12, NODE_1);
+        addItem(container, NODE_121, NODE_12);
+        return container;
+    }
+
+    private static void addItem(Container.Hierarchical container, Object itemId, Object parentItemId) {
+        container.addItem(itemId);
+        container.setParent(itemId, parentItemId);
     }
 
     @Test
-    public void testSelectExpandsTreeToNode() throws Exception {
+    public void selectExpandsTreeToNodeButNotNodeItself() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        Node child = node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
-
         // initial state
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
-        assertTrue(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(child)));
+        assertThat(tree.isCollapsed(ROOT_0), is(true));
+        assertThat(tree.isCollapsed(NODE_1), is(true));
+        assertThat(tree.isCollapsed(NODE_12), is(true));
+        assertThat(tree.isCollapsed(NODE_121), is(true));
 
         // WHEN
-        view.select(Arrays.asList((Object)JcrItemUtil.getItemId(node)));
+        treeView.select(Lists.newArrayList(NODE_12));
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
+        assertThat(tree.isCollapsed(ROOT_0), is(false));
+        assertThat(tree.isCollapsed(NODE_1), is(false));
+        assertThat(tree.isCollapsed(NODE_12), is(true));
     }
 
     @Test
-    public void testSelectDoesNotExpandNodeItself() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
+    public void collapseNodeWithSelectedChildUnselectsChild() throws Exception {
+        // GIVEN same initial state
+        tree.setCollapsed(ROOT_0, false);
+        treeView.select(Lists.newArrayList(ROOT_0, NODE_121));
 
         // WHEN
-        Object itemId = JcrItemUtil.getItemId(node);
-        view.select(Arrays.asList(itemId));
+        tree.setCollapsed(ROOT_0, true);
 
         // THEN
-        assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
-    }
-
-    @Ignore("See ticket MGNLUI-2078 - Need to verify if test is still relevant.")
-    @Test
-    public void testSelectExpandsNodeAtRootLevel() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        visibleRoot.addNode(NODE_PARENT);
-
-        // WHEN
-        view.select(Arrays.asList((Object)visibleRoot.getIdentifier()));
-
-        // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
+        assertThat(tree.isCollapsed(ROOT_0), is(true));
+        assertThat(tree.isSelected(ROOT_0), is(true));
+        assertThat(tree.isSelected(NODE_121), is(false));
     }
 
     @Test
-    public void testSelectExpandsTreeToProperty() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        node.addNode(NODE_CHILD);
-        node.setProperty(NODE_PROPERTY, "112");
+    public void isDescendantOf() throws Exception {
+        TreeViewImpl treeView = (TreeViewImpl) this.treeView;
+        assertThat(treeView.isDescendantOf(NODE_121, ROOT_0), is(true));
+        assertThat(treeView.isDescendantOf(NODE_121, NODE_1), is(true));
+        assertThat(treeView.isDescendantOf(NODE_121, NODE_12), is(true));
+        assertThat(treeView.isDescendantOf(NODE_11, NODE_12), is(false));
+    }
 
-        Object propertyFakeId = new JcrPropertyItemId(node.getIdentifier(), WORKSPACE, NODE_PROPERTY);
+    /**
+     * Should this test start to fail right after focusParent, returning null selection instead of a Set containing null,
+     * then we'd consider it a Vaadin fix and remove the attached workaround in ListViewImpl.
+     */
+    @Test
+    public void proveVaadinTableValueCanBeASetContainingNull() throws Exception {
+        // when an itemId is selected and we process e.g. an itemClick, we want to unselect it
+        // make sure this doesn't fail if value ends up being a set containing null
+
+        // GIVEN
+        TreeTable tree = new TreeTable(null, buildContainer());
+        tree.setSelectable(true);
+        tree.setMultiSelect(true);
+        assertThat(tree.getValue(), anyOf(nullValue(), instanceOf(Set.class)));
 
         // WHEN
-        view.select(Arrays.asList((Object)propertyFakeId));
+        produceTableValueContainingNull(tree);
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(visibleRoot)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(parent)));
-        assertFalse(view.asVaadinComponent().isCollapsed(JcrItemUtil.getItemId(node)));
+        assertThat((Set<?>) tree.getValue(), contains((Object) null));
+    }
+
+    private void produceTableValueContainingNull(TreeTable tree) {
+        tree.select(ROOT_0);
+        assertThat((Set<?>) tree.getValue(), contains(ROOT_0));
+        focusParent(tree, ROOT_0); // using a random rowKey, doesn't matter here
     }
 
     @Test
-    public void testCollapseNodeWithSelectedChildUnselectsChild() throws Exception {
+    public void clickListenerDoesntFailWhenValueContainsNull() throws Exception {
         // GIVEN
-        Node root = session.getRootNode();
-        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
-        Node parent = visibleRoot.addNode(NODE_PARENT);
-        Node node = parent.addNode(NODE);
-        Node child = node.addNode(NODE_CHILD);
+        final TreeTable tree = mock(TreeTable.class);
+        final ArgumentCaptor<ItemClickEvent.ItemClickListener> itemClickListener = ArgumentCaptor.forClass(ItemClickEvent.ItemClickListener.class);
+        setUp(new TreeViewImpl() {
+            @Override
+            protected TreeTable createTable(Container container) {
+                return tree;
+            }
+        });
+        verify(tree).addItemClickListener(itemClickListener.capture());
 
-        Object visibleRootId = JcrItemUtil.getItemId(visibleRoot);
-        Object childId = JcrItemUtil.getItemId(child);
+        // we already proved above a null-only set could occur as value before
+        Set<Object> nullOnlySelection = new HashSet<>();
+        nullOnlySelection.add(null);
+        doReturn(nullOnlySelection).when(tree).getValue();
 
-        view.asVaadinComponent().setCollapsed(visibleRootId, false);
-        view.select(Arrays.asList((Object) visibleRootId, childId));
+        // WHEN/THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                // manually clicking sth else again (i.e. where our NPE originated from)
+                itemClickListener.getValue().itemClick(new ItemClickEvent(tree, null, "foo", null, mock(MouseEventDetails.class)));
+            }
+        }, throwsNothing());
+    }
 
-        // WHEN
-        view.asVaadinComponent().setCollapsed(visibleRootId, true);
+    @Test
+    public void valueListenerDoesntPropagateNullInSelection() throws Exception {
+        // GIVEN/WHEN
+        // listener will be called 3 times:
+        // 1. with ROOT_0 (but we don't care, it's just for producing 2.)
+        // 2. via #focusParent, triggering the set containing null
+        // 3. we select ROOT_0 again and expect single selection (not multiple with null + ROOT_O)
+        produceTableValueContainingNull(tree);
+        tree.select(ROOT_0);
+        ArgumentCaptor<Set> itemsCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(listener, times(3)).onItemSelection(itemsCaptor.capture());
+        verifyNoMoreInteractions(listener);
 
-        // THEN
-        assertTrue(view.asVaadinComponent().isCollapsed(visibleRootId));
-        assertTrue(view.asVaadinComponent().isSelected(visibleRootId));
-        assertFalse(view.asVaadinComponent().isSelected(childId));
+        // THEN (2)
+        Set<Object> items = itemsCaptor.getAllValues().get(1);
+        assertThat(items, not(hasItem(nullValue())));
+
+        // THEN (3)
+        items = itemsCaptor.getAllValues().get(2);
+        assertThat(items, allOf(hasSize(1), contains(ROOT_0)));
+
+    }
+
+    /**
+     * Simulates receiving a focusParent event from the client, via #changeVariables
+     */
+    private static void focusParent(TreeTable treeTable, Object rowKey) {
+        treeTable.changeVariables(treeTable, ImmutableMap.of("focusParent", rowKey));
     }
 }
