@@ -62,10 +62,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        // validation errors are displayed in the UI.
-        if (validator.isValid()) {
+        if (validateForm()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {

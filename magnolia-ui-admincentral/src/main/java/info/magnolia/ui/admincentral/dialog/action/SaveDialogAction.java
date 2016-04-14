@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -62,34 +62,38 @@ public class SaveDialogAction<T extends SaveDialogActionDefinition> extends Abst
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
     protected final Item item;
-
-    protected final EditorValidator validator;
     protected final EditorCallback callback;
+    protected final EditorValidator validator;
 
     public SaveDialogAction(T definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition);
         this.item = item;
-        this.validator = validator;
         this.callback = callback;
+        this.validator = validator;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
+        if (validateForm()) {
+            final JcrNodeAdapter item = (JcrNodeAdapter) this.item;
             try {
-                final Node node = itemChanged.applyChanges();
-                setNodeName(node, itemChanged);
+                final Node node = item.applyChanges();
+                setNodeName(node, item);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
             callback.onSuccess(getDefinition().getName());
-        } else {
+        }
+    }
+
+    protected boolean validateForm() {
+        boolean isValid = validator.isValid();
+        validator.showValidation(!isValid);
+        if (!isValid) {
             log.info("Validation error(s) occurred. No save performed.");
         }
+        return isValid;
     }
 
     /**

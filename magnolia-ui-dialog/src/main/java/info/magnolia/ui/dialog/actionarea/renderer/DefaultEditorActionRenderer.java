@@ -64,12 +64,15 @@ public class DefaultEditorActionRenderer implements ActionRenderer {
             ClickListener clickListener = new ClickListener() {
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    listener.onActionFired(name, new HashMap<String, Object>());
-                    // make sure we don't trigger useless validation for all form fields when the action is 'cancel'.
+                    // don't trigger validation for all fields when the action is 'cancel'
+                    // also check validity *before* firing the action, otherwise session can be saved and thus validators might be affected
+                    // TODO: well ideally, we shouldn't check validation at all here though (validation should be done only once in the save action)
                     if (!BaseDialog.CANCEL_ACTION_NAME.equals(name) && listener instanceof EditorValidator && !((EditorValidator) listener).isValid()) {
-                        // have to re-enable button since validation failed
+                        // validation will fail, so re-enable that button
                         button.setEnabled(true);
                     }
+
+                    listener.onActionFired(name, new HashMap<String, Object>());
                 }
             };
             this.button = new Button(label, clickListener);
@@ -83,6 +86,5 @@ public class DefaultEditorActionRenderer implements ActionRenderer {
         public Component asVaadinComponent() {
             return button;
         }
-
     }
 }

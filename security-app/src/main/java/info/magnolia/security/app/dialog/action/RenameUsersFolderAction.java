@@ -59,9 +59,7 @@ public class RenameUsersFolderAction extends SaveDialogAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
+        if (validateForm()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 String pathBefore = itemChanged.getJcrItem().getPath();

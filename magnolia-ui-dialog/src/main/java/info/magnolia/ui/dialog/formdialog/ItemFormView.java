@@ -138,6 +138,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     }
 
     @Override
+    @Deprecated
     public Collection<Field<?>> getFields() {
         return form.getFields();
     }

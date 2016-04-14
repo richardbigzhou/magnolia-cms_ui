@@ -64,11 +64,8 @@ public class EditorCallbackAction<D extends EditorCallbackActionDefinition> exte
     @Override
     public void execute() throws ActionExecutionException {
         // validate
-        if (getDefinition().isValidationEnabled()) {
-            validator.showValidation(true);
-            if (!validator.isValid()) {
-                return;
-            }
+        if (getDefinition().isValidationEnabled() && !validateForm()) {
+            return;
         }
 
         // invoke appropriate callback
@@ -77,5 +74,11 @@ public class EditorCallbackAction<D extends EditorCallbackActionDefinition> exte
         } else {
             callback.onCancel();
         }
+    }
+
+    protected boolean validateForm() {
+        boolean isValid = validator.isValid();
+        validator.showValidation(!isValid);
+        return isValid;
     }
 }

@@ -70,34 +70,38 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveFormAction.class);
 
-    protected EditorCallback callback;
-    protected final EditorValidator validator;
     protected final JcrNodeAdapter item;
+    protected final EditorCallback callback;
+    protected final EditorValidator validator;
 
     public SaveFormAction(SaveFormActionDefinition definition, JcrNodeAdapter item, EditorCallback callback, EditorValidator validator) {
         super(definition);
+        this.item = item;
         this.callback = callback;
         this.validator = validator;
-        this.item = item;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
+        if (validateForm()) {
             try {
                 final Node node = item.applyChanges();
-                // Set the Node name.
                 setNodeName(node, item);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
             callback.onSuccess(getDefinition().getName());
-        } else {
+        }
+    }
+
+    protected boolean validateForm() {
+        boolean isValid = validator.isValid();
+        validator.showValidation(!isValid);
+        if (!isValid) {
             log.info("Validation error(s) occurred. No save performed.");
         }
+        return isValid;
     }
 
     /**
@@ -116,6 +120,5 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
                 NodeUtil.renameNode(node, newNodeName);
             }
         }
-
     }
 }
