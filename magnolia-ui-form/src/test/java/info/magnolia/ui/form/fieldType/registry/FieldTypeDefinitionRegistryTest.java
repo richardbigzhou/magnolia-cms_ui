@@ -190,5 +190,10 @@ public class FieldTypeDefinitionRegistryTest {
         public List<String> getErrorMessages() {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public long getLastModified() {
+            return -1;
+        }
     }
 }

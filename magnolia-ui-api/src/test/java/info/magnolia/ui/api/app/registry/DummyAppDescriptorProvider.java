@@ -89,4 +89,9 @@ public class DummyAppDescriptorProvider implements DefinitionProvider<AppDescrip
     public List<String> getErrorMessages() {
         throw new IllegalStateException("not implemented yet");
     }
+
+    @Override
+    public long getLastModified() {
+        return -1;
+    }
 }
