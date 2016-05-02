@@ -39,7 +39,8 @@ import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.dialog.callback.ContentChangedEditorCallback;
+import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -81,6 +82,12 @@ public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Role.NAME);
 
-        formDialogPresenter.start(item, dialogDefinition, uiContext, new ContentChangedEditorCallback(formDialogPresenter, eventBus, item.getItemId()));
+        formDialogPresenter.start(item, dialogDefinition, uiContext, new DefaultEditorCallback(formDialogPresenter) {
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(item.getItemId(), true));
+                super.onSuccess(actionName);
+            }
+        });
     }
 }

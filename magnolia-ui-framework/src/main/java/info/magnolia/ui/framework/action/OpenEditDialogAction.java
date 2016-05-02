@@ -39,7 +39,8 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.dialog.callback.ContentChangedEditorCallback;
+import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
@@ -91,6 +92,12 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
             return;
         }
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new ContentChangedEditorCallback(formDialogPresenter, eventBus, itemToEdit, contentConnector));
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new DefaultEditorCallback(formDialogPresenter) {
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(itemToEdit), true));
+                super.onSuccess(actionName);
+            }
+        });
     }
 }
