@@ -38,10 +38,9 @@ import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.ContentChangedEditorCallback;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -74,18 +73,6 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
 
         FormDialogDefinition dialogDefinition = getDialogDefinition("role");
 
-        formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
-
-            @Override
-            public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
+        formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new ContentChangedEditorCallback(formDialogPresenter, eventBus, itemToEdit.getItemId()));
     }
 }

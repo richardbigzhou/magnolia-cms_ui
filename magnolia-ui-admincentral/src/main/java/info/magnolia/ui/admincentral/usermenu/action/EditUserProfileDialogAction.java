@@ -44,10 +44,9 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -95,18 +94,6 @@ public class EditUserProfileDialogAction extends AbstractAction<EditUserProfileD
             return;
         }
         final JcrNodeAdapter itemToEdit = new JcrNodeAdapter(SessionUtil.getNode(RepositoryConstants.USERS, ((MgnlUser)user).getPath()));
-        formDialogPresenter.start(itemToEdit, dialogName, uiContext, new EditorCallback() {
-
-            @Override
-            public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
+        formDialogPresenter.start(itemToEdit, dialogName, uiContext, new DefaultEditorCallback(formDialogPresenter));
     }
 }
