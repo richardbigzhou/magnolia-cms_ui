@@ -33,22 +33,23 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.context.Context;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 
 import java.util.Date;
+import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
 
@@ -57,23 +58,30 @@ import com.vaadin.ui.PopupDateField;
  */
 public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, Date> {
 
+    private static final String BROWSER_TIMEZONE = "browser";
+
+    private final SimpleTranslator simpleTranslator;
+    private final Context context;
+
     @Inject
-    public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
-        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport, SimpleTranslator simpleTranslator, Context context) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
+        this.simpleTranslator = simpleTranslator;
+        this.context = context;
     }
 
     /**
-     * @deprecated since 5.4.7 - use {@link #DateFieldFactory(DateFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     * @deprecated since 5.4.7. Use {@link #DateFieldFactory(info.magnolia.ui.form.field.definition.DateFieldDefinition, com.vaadin.data.Item, info.magnolia.ui.api.context.UiContext, info.magnolia.ui.api.i18n.I18NAuthoringSupport, info.magnolia.i18nsystem.SimpleTranslator, Context)} instead.
      */
     @Deprecated
     public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem) {
-        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
+        this(definition, relatedFieldItem, Components.getComponent(UiContext.class), Components.getComponent(I18NAuthoringSupport.class), Components.getComponent(SimpleTranslator.class), Components.getComponent(Context.class));
     }
 
     @Override
     public Field<Date> createField() {
         Field<Date> field = super.createField();
-        field.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        field.setWidthUndefined();
         return field;
     }
 
@@ -81,9 +89,8 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
     protected Field<Date> createFieldComponent() {
         DateFieldDefinition definition = getFieldDefinition();
         PopupDateField popupDateField = new PopupDateField();
-
         setTimeZone(popupDateField);
-        String dateFormat = "";
+        String dateFormat;
 
         // set Resolution
         if (definition.isTime()) {
@@ -93,9 +100,7 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
             popupDateField.setResolution(Resolution.DAY);
             dateFormat = definition.getDateFormat();
         }
-
         popupDateField.setDateFormat(dateFormat);
-
         return popupDateField;
     }
 
@@ -108,16 +113,26 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
      * When not explicitly setting the current time using {@link Field#setValue} the client side implementation will set
      * it to the browsers time, ignoring timezone differences and therefor making it impossible to get the UTC time.
      */
-    private void setTimeZone(DateField popupDateField) {
+    private void setTimeZone(PopupDateField popupDateField) {
 
-        TimeZone timeZone = TimeZone.getDefault();
-        try {
-            int offset = Page.getCurrent().getWebBrowser().getRawTimezoneOffset();
-            timeZone.setRawOffset(offset);
+        final String timeZoneId = context.getUser().getProperty(MgnlUserManager.PROPERTY_TIMEZONE);
+        final TimeZone timeZone;
+
+        if (timeZoneId == null || BROWSER_TIMEZONE.equals(timeZoneId)) {
+            if (Page.getCurrent() != null) {
+                int offset = Page.getCurrent().getWebBrowser().getTimezoneOffset(); //only offset, not raw offset since we don't know the  daylight settings of user timezone
+                timeZone = new SimpleTimeZone(offset, BROWSER_TIMEZONE);
+            } else {
+                timeZone = null;
+            }
+        } else {
+            timeZone = TimeZone.getTimeZone(timeZoneId);
         }
-        catch (NullPointerException e) {
-            // don't throw null pointer
+        if (timeZone != null) {
+            popupDateField.setTimeZone(timeZone);
+            //We have to show the timezone in which we're choosing/displaying the date:
+            popupDateField.setDescription(simpleTranslator.translate("ui-admincentral.dateField.timeZone.description", timeZone.getDisplayName(false, TimeZone.LONG, context.getLocale()), timeZone.getRawOffset() / 3600000));
+            popupDateField.setInputPrompt(simpleTranslator.translate("ui-admincentral.dateField.timeZone.description", timeZone.getDisplayName(false, TimeZone.SHORT, context.getLocale()), timeZone.getRawOffset() / 3600000));
         }
-        popupDateField.setTimeZone(timeZone);
     }
 }

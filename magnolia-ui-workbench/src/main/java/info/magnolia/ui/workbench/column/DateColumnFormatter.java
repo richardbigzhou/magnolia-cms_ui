@@ -33,18 +33,25 @@
  */
 package info.magnolia.ui.workbench.column;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.context.Context;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Table;
 
 /**
@@ -52,16 +59,47 @@ import com.vaadin.ui.Table;
  */
 public class DateColumnFormatter extends AbstractColumnFormatter<AbstractColumnDefinition> {
 
+    private static final String BROWSER_TIMEZONE = "browser";
+
     private final FastDateFormat dateFormatter;
     private final FastDateFormat timeFormatter;
+    private final TimeZone timeZone;
+
+    private final Context context;
 
     @Inject
-    public DateColumnFormatter(AbstractColumnDefinition definition) {
+    public DateColumnFormatter(AbstractColumnDefinition definition, Context context) {
         super(definition);
+        this.context = context;
 
-        final Locale locale = MgnlContext.getLocale();
-        dateFormatter = FastDateFormat.getDateInstance(FastDateFormat.MEDIUM, locale);
-        timeFormatter = FastDateFormat.getTimeInstance(FastDateFormat.SHORT, locale);
+        final Locale locale = context.getLocale();
+        final String timeZoneId = context.getUser().getProperty(MgnlUserManager.PROPERTY_TIMEZONE);
+        if (timeZoneId == null || BROWSER_TIMEZONE.equals(timeZoneId)) {
+            if (Page.getCurrent() != null) {
+                int offset = Page.getCurrent().getWebBrowser().getTimezoneOffset(); //only offset, not raw offset since we don't know the  daylight settings of user timezone
+                timeZone = new SimpleTimeZone(offset, BROWSER_TIMEZONE);
+            } else {
+                timeZone = null;
+            }
+        } else {
+            timeZone = TimeZone.getTimeZone(timeZoneId);
+        }
+        if (definition instanceof MetaDataColumnDefinition) {
+            MetaDataColumnDefinition metaDataColumnDefinition = (MetaDataColumnDefinition) definition;
+            dateFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getDateFormat(), timeZone, locale);
+            timeFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getTimeFormat(), timeZone, locale);
+        } else {
+            dateFormatter = FastDateFormat.getDateInstance(FastDateFormat.MEDIUM, timeZone, locale);
+            timeFormatter = FastDateFormat.getTimeInstance(FastDateFormat.SHORT, timeZone, locale);
+        }
+    }
+
+    /**
+     * @deprecated since 5.4.7. Use {@link #DateColumnFormatter(info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition, Context)} instead.
+     */
+    @Deprecated
+    public DateColumnFormatter(AbstractColumnDefinition definition) {
+        this(definition, Components.getComponent(Context.class));
     }
 
     @Override
@@ -69,13 +107,15 @@ public class DateColumnFormatter extends AbstractColumnFormatter<AbstractColumnD
         Item item = source.getItem(itemId);
         Property prop = (item == null) ? null : item.getItemProperty(columnId);
 
-        // Need to check prop.getValue() before prop.getType() to avoid nullpointerexception if value is null.
-        if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
+        // Need to check prop.getValue() before prop.getType() to avoid NPE if value is null.
+        if (prop != null && prop.getValue() != null && Date.class.equals(prop.getType())) {
             String date = dateFormatter.format(prop.getValue());
             String time = timeFormatter.format(prop.getValue());
-            return String.format("<span class=\"datetimefield\"><span class=\"datefield\">%s</span><span class=\"timefield\">%s</span></span>", date, time);
+            String dateHtml = StringUtils.isEmpty(date) ? StringUtils.EMPTY : String.format("<span class=\"datefield\">%s</span>", date);
+            String timeHtml = StringUtils.isEmpty(time) ? StringUtils.EMPTY : String.format("<span class=\"timefield\">%s</span>", time);
+            String tooltip = timeZone == null ? StringUtils.EMPTY : "title=\"" + date + " " + time + "  (" + timeZone.getDisplayName(context.getLocale()) + ")" + "\"";
+            return String.format("<span class=\"datetimefield\" %s>%s%s</span>", tooltip, dateHtml, timeHtml);
         }
-
         return null;
     }
 }

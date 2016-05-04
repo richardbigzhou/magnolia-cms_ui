@@ -38,9 +38,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.context.WebContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
@@ -70,7 +70,7 @@ public class TasksListViewImplTest {
         when(user.getAllRoles()).thenReturn(Collections.EMPTY_LIST);
         ctx.setUser(user);
         MgnlContext.setInstance(ctx);
-        ComponentsTestUtil.setInstance(WebContext.class, ctx);
+        ComponentsTestUtil.setInstance(Context.class, ctx);
         ComponentsTestUtil.setImplementation(SystemContext.class, MockContext.class);
     }
 
