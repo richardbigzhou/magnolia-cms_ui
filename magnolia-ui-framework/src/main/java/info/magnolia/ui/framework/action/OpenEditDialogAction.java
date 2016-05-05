@@ -40,9 +40,9 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -92,17 +92,11 @@ public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDef
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
             return;
         }
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
-
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new DefaultEditorCallback(formDialogPresenter) {
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(itemToEdit)));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
+                eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(itemToEdit), true));
+                super.onSuccess(actionName);
             }
         });
     }

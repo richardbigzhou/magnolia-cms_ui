@@ -40,6 +40,8 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
@@ -85,10 +87,10 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
         Object parentId = contentConnector.getItemId(parentItem);
 
         if (contentConnector instanceof SupportsCreation) {
-            final Object itemId = ((SupportsCreation)contentConnector).getNewItemId(parentId, getDefinition().getNodeType());
+            final Object itemId = ((SupportsCreation) contentConnector).getNewItemId(parentId, getDefinition().getNodeType());
 
             final String dialogName = getDefinition().getDialogName();
-            if(StringUtils.isBlank(dialogName)){
+            if (StringUtils.isBlank(dialogName)) {
                 uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.no.dialog.definition", getDefinition().getName()));
                 return;
 
@@ -96,25 +98,27 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
 
             final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogName);
 
-            if(formDialogPresenter == null){
+            if (formDialogPresenter == null) {
                 uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, i18n.translate("ui-framework.actions.dialog.not.registered", dialogName));
                 return;
             }
 
             final Item item = contentConnector.getItem(itemId);
-            formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
-
-                @Override
-                public void onSuccess(String actionName) {
-                    eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(item), true));
-                    formDialogPresenter.closeDialog();
-                }
-
-                @Override
-                public void onCancel() {
-                    formDialogPresenter.closeDialog();
-                }
-            });
+            formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, createEditorCallback(formDialogPresenter, item, eventBus));
         }
+    }
+
+    protected EditorCallback createEditorCallback(final DialogPresenter dialogPresenter, final Item item, final EventBus eventBus) {
+        return new DefaultEditorCallback(dialogPresenter) {
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(contentConnector.getItemId(item), true));
+                super.onSuccess(actionName);
+            }
+        };
+    }
+
+    protected ContentConnector getContentConnector() {
+        return contentConnector;
     }
 }
