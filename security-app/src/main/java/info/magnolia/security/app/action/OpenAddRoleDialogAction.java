@@ -38,11 +38,11 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.FormDialogDefinition;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.callback.DefaultEditorCallback;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -82,17 +82,11 @@ public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Role.NAME);
 
-        formDialogPresenter.start(item, dialogDefinition, uiContext, new EditorCallback() {
-
+        formDialogPresenter.start(item, dialogDefinition, uiContext, new DefaultEditorCallback(formDialogPresenter) {
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
+                eventBus.fireEvent(new ContentChangedEvent(item.getItemId(), true));
+                super.onSuccess(actionName);
             }
         });
     }
