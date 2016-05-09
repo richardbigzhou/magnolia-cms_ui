@@ -46,7 +46,7 @@ public class DefaultProperty<T> extends ObjectProperty<T> {
     @SuppressWarnings("unchecked")
     // the cast is safe, because an object of type T has class Class<T>
     public DefaultProperty(T value) {
-        this((value != null?(Class<T>) value.getClass():null), value);
+        this((value != null ? (Class<T>) value.getClass() : null), value);
     }
 
     /**
