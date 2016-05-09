@@ -179,6 +179,8 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         if (connector.getWidget() instanceof MagnoliaTabWidget) {
             MagnoliaTabWidget tab = (MagnoliaTabWidget) connector.getWidget();
             tab.getLabel().updateCaption(caption);
+            // rearrange tabs after caption update (here we know exact width of the tab)
+            view.getTabContainer().reArrangeTabVisibility();
         }
     }
 
