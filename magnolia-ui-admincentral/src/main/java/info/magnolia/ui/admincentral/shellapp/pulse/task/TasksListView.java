@@ -44,7 +44,7 @@ import java.util.Set;
 public interface TasksListView extends PulseListView {
 
     /**
-     * @deprecated since 5.4.3, bulk actions are now configurable in footer.
+     * @deprecated since 5.5, bulk actions are now configurable in footer.
      */
     @Deprecated
     void setTaskListener(Listener listener);
@@ -52,7 +52,7 @@ public interface TasksListView extends PulseListView {
     /**
      * Listener.
      *
-     * @deprecated since 5.4.3, bulk actions are now configurable in footer.
+     * @deprecated since 5.5, bulk actions are now configurable in footer.
      */
     @Deprecated
     interface Listener extends PulseListView.Listener {

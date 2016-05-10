@@ -86,7 +86,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
     private final String userId;
 
     /**
-     * @deprecated since 5.4.3, use {@link TasksListPresenter#TasksListPresenter(TasksContainer, TasksListView, ShellImpl, TasksManager, TaskDefinitionRegistry,
+     * @deprecated since 5.5, use {@link TasksListPresenter#TasksListPresenter(TasksContainer, TasksListView, ShellImpl, TasksManager, TaskDefinitionRegistry,
      * ComponentProvider, SimpleTranslator, Context, EventBus, ConfiguredPulseListDefinition, AvailabilityChecker, PulseListActionExecutor, PulseListFooterPresenter, I18nizer)} instead.
      */
     @Deprecated
@@ -231,7 +231,7 @@ public final class TasksListPresenter extends AbstractPulseListPresenter impleme
 
     @Override
     public void taskArchived(TaskEvent taskEvent) {
-        refreshData();
+        refresh();
     }
 
     @Override

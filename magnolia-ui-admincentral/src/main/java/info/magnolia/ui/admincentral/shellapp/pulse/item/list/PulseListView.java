@@ -52,7 +52,7 @@ public interface PulseListView extends View {
     void setListener(Listener listener);
 
     /**
-     * @deprecated since 5.4.3.
+     * @deprecated since 5.5.
      */
     @Deprecated
     void refresh();
@@ -79,7 +79,7 @@ public interface PulseListView extends View {
         void setGrouping(boolean checked);
 
         /**
-         * @deprecated since 5.4.3. Bulk actions on footer now configurable. So, this function moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.message.action.DeleteMessagesAction}.
+         * @deprecated since 5.5 Bulk actions on footer now configurable. So, this function moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.message.action.DeleteMessagesAction}.
          */
         @Deprecated
         void deleteItems(Set<String> itemsIds);

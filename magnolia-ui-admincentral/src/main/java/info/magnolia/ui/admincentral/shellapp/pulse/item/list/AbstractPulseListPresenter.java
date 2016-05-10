@@ -68,7 +68,7 @@ public abstract class AbstractPulseListPresenter implements PulseListPresenter, 
     protected Listener listener;
 
     /**
-     * @deprecated since 5.4.3, use {@link AbstractPulseListPresenter#AbstractPulseListPresenter(PulseListContainer, ConfiguredPulseListDefinition, AvailabilityChecker, PulseListActionExecutor, PulseListFooterPresenter)} instead.
+     * @deprecated since 5.5, use {@link AbstractPulseListPresenter#AbstractPulseListPresenter(PulseListContainer, ConfiguredPulseListDefinition, AvailabilityChecker, PulseListActionExecutor, PulseListFooterPresenter)} instead.
      */
     @Deprecated
     protected AbstractPulseListPresenter(PulseListContainer container) {

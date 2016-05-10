@@ -69,7 +69,7 @@ public final class MessagesListPresenter extends AbstractPulseListPresenter impl
     private final String userId;
 
     /**
-     * @deprecated since 5.4.3, use {@link MessagesListPresenter#MessagesListPresenter(MessagesContainer, EventBus, MessagesListView, MessagesManager, ComponentProvider,
+     * @deprecated since 5.5, use {@link MessagesListPresenter#MessagesListPresenter(MessagesContainer, EventBus, MessagesListView, MessagesManager, ComponentProvider,
      * Context, ConfiguredPulseListDefinition, AvailabilityChecker, PulseListActionExecutor, PulseListFooterPresenter, I18nizer)} instead.
      */
     @Deprecated

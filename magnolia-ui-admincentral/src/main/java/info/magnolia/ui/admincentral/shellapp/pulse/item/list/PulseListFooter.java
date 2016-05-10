@@ -60,8 +60,8 @@ import com.vaadin.ui.Table;
 
 /**
  * Footer view implementation displayed underneath the items list.
- * 
- * @deprecated since 5.4.3. Moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter}.
+ *
+ * @deprecated since 5.5. Moved to {@link info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter}.
  */
 @Deprecated
 public final class PulseListFooter extends CustomComponent {
