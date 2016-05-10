@@ -76,7 +76,8 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
         configuredTabDefinition.setFields(Arrays.<FieldDefinition>asList(compositeFieldDefinition));
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         form.setTabs(Arrays.<TabDefinition>asList(configuredTabDefinition));
-        TestDialogDef dialog = new TestDialogDef("test-module:testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testDialog");
         dialog.setForm(form);
 
         // 18n

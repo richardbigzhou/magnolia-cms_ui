@@ -101,7 +101,8 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         ConfiguredActionbarSectionDefinition section = new ConfiguredActionbarSectionDefinition();
         section.setName("test-section");
         ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
-        TestMessageView messageView = new TestMessageView("test-module:testMessageView");
+        TestMessageView messageView = new TestMessageView();
+        messageView.setId("test-module:testMessageView");
         // hierarchy
         messageView.setActionbar(actionbar);
         actionbar.addSection(section);
@@ -138,7 +139,6 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         private ActionbarDefinition actionbar;
 
         public TestSubApp() {
-            super();
         }
 
         public ActionbarDefinition getActionbar() {
@@ -159,8 +159,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
         private String id;
         private ActionbarDefinition actionbar;
 
-        public TestMessageView(String id) {
-            this.id = id;
+        public TestMessageView() {
         }
 
         public ActionbarDefinition getActionbar() {

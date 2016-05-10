@@ -55,7 +55,8 @@ public class TabDefinitionKeyGeneratorTest {
         // generator
         TabDefinitionKeyGenerator generator = new TabDefinitionKeyGenerator();
         // structure
-        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testFolder/testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");

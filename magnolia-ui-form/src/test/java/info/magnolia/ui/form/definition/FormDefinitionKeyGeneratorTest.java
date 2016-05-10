@@ -55,7 +55,8 @@ public class FormDefinitionKeyGeneratorTest {
         // generator
         FormDefinitionKeyGenerator generator = new FormDefinitionKeyGenerator();
         // structure
-        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testFolder/testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         // hierarchy
         dialog.setForm(form);

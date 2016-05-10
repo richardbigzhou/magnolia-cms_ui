@@ -82,7 +82,8 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
     }
 
     private TestDialogDef setupDialogDefinition() {
-        TestDialogDef dialog = new TestDialogDef("test-module:testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");

@@ -66,7 +66,8 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
         // structure
         FieldDefinitionKeyGeneratorTest.TestContentAppDescriptor app = new FieldDefinitionKeyGeneratorTest.TestContentAppDescriptor();
         app.setName("test-app");
-        dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        dialog = new TestDialogDef();
+        dialog.setId("test-module:testFolder/testDialog");
         form = new ConfiguredFormDefinition();
         tab = new ConfiguredTabDefinition();
         tab.setName("testTab");

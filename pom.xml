@@ -14,7 +14,7 @@
   <properties>
     <magnoliaEdition>Community Edition</magnoliaEdition>
     <magnoliaLicenseStyle>dual</magnoliaLicenseStyle>
-    <javaVersion>1.7</javaVersion>
+    <javaVersion>1.8</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.5-SNAPSHOT</magnoliaVersion>
