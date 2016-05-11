@@ -34,16 +34,14 @@
 package info.magnolia.ui.form.field;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.form.field.component.ContentPreviewComponent;
-import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -65,27 +63,26 @@ public class LinkField extends CustomField<String> {
     private final HorizontalLayout linkLayout = new HorizontalLayout();
     private final TextField textField = new TextField();
     private final Button selectButton = new NativeButton();
-
-    private final IdentifierToPathConverter converter;
-    private final LinkFieldDefinition definition;
+    private Component contentPreview;
     private String buttonCaptionNew;
     private String buttonCaptionOther;
+    private boolean isFieldEditable;
 
-    private final ComponentProvider componentProvider;
-
-    public LinkField(LinkFieldDefinition linkFieldDefinition, ComponentProvider componentProvider) {
-        this.definition = linkFieldDefinition;
-        this.converter = definition.getIdentifierToPathConverter();
-        if (this.converter != null) {
-            this.converter.setWorkspaceName(definition.getTargetWorkspace());
-        }
-        this.componentProvider = componentProvider;
+    public LinkField() {
         setImmediate(true);
+    }
+
+    /**
+     * @deprecated since 5.5, use {@link #LinkField()} instead, none of arguments are required.
+     */
+    @Deprecated
+    public LinkField(LinkFieldDefinition linkFieldDefinition, ComponentProvider componentProvider) {
+        this();
     }
 
     @Deprecated
     public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
-        this(linkFieldDefinition, componentProvider);
+        this();
     }
 
     @Override
@@ -114,10 +111,6 @@ public class LinkField extends CustomField<String> {
         setButtonCaption(StringUtils.EMPTY);
         rootLayout.addComponent(linkLayout);
 
-        // Register the content preview if it's define.
-        if (definition.getContentPreviewDefinition() != null && definition.getContentPreviewDefinition().getContentPreviewClass() != null) {
-            registerContentPreview();
-        }
         return rootLayout;
     }
 
@@ -145,7 +138,7 @@ public class LinkField extends CustomField<String> {
      * - If it is not read only. update the button label.
      */
     private void updateComponents(String currentValue) {
-        if (!definition.isFieldEditable() && StringUtils.isNotBlank(currentValue)) {
+        if (!isFieldEditable && StringUtils.isNotBlank(currentValue)) {
             textField.setReadOnly(true);
             if (linkLayout.getComponentIndex(selectButton) != -1) {
                 linkLayout.removeComponent(selectButton);
@@ -157,18 +150,14 @@ public class LinkField extends CustomField<String> {
 
     /**
      * Set propertyDatasource.
-     * If the translator is not null, set it as datasource.
      */
     @Override
     @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
-        if (converter != null) {
-            textField.setConverter(converter);
-        }
         textField.setPropertyDataSource(newDataSource);
         textField.addValueChangeListener(new ValueChangeListener() {
             @Override
-            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+            public void valueChange(Property.ValueChangeEvent event) {
                 String value = event.getProperty().getValue() != null ? event.getProperty().getValue().toString() : StringUtils.EMPTY;
                 updateComponents(value);
             }
@@ -198,19 +187,13 @@ public class LinkField extends CustomField<String> {
         }
     }
 
-    private void registerContentPreview() {
-        final ContentPreviewComponent<?> contentPreviewComponent = Components.newInstance(definition.getContentPreviewDefinition().getContentPreviewClass(), definition.getTargetWorkspace(), componentProvider);
-        textField.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                String itemReference = event.getProperty().getValue().toString();
-                contentPreviewComponent.onValueChange(itemReference);
-                contentPreviewComponent.setVisible(StringUtils.isNotBlank(itemReference));
-            }
-        });
-        contentPreviewComponent.onValueChange(textField.getValue());
+    public void setContentPreview(Component contentPreviewComponent) {
+        if (contentPreview != null) {
+            rootLayout.removeComponent(contentPreview);
+        }
         contentPreviewComponent.setVisible(StringUtils.isNotBlank(textField.getValue()));
         rootLayout.addComponentAsFirst(contentPreviewComponent);
+        contentPreview = contentPreviewComponent;
     }
 
     /**
@@ -224,4 +207,11 @@ public class LinkField extends CustomField<String> {
         this.buttonCaptionOther = buttonCaptionOther;
     }
 
+    public void setTextFieldConverter(Converter textFieldConverter) {
+        textField.setConverter(textFieldConverter);
+    }
+
+    public void setFieldEditable(boolean isFieldEditable) {
+        this.isFieldEditable = isFieldEditable;
+    }
 }
