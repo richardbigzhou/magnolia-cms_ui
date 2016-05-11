@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Configured {@link PulseListDefinition}.
+ * Used for configuring the {@link DeleteMessagesAction}.
+ * 
+ * @see DeleteMessagesAction
  */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+public class DeleteMessagesActionDefinition extends ConfiguredActionDefinition {
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
-
-    @Override
-    public String getName() {
-        return name;
+    public DeleteMessagesActionDefinition() {
+        setImplementationClass(DeleteMessagesAction.class);
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
-    }
-
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

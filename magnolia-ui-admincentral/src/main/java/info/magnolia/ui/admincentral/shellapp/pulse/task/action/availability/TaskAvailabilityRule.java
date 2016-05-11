@@ -33,46 +33,83 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
+import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.NullItem;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Availability rule used for task actions.
+ * Availability rule used for {@link Task task} related actions. Based on the {@link TaskAvailabilityRuleDefinition definition}
+ * the following criteria normally applies:
+ * <ul>
+ * <li>{@link Task.Status status} of the considered task matches the one configured in definition</li>
+ * <li>task's actor id matches the current user or definition claims the action should be available not for assignee only (see {@link TaskAvailabilityRuleDefinition#isAssignee})</li>
+ * </ul>
  */
 public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(TaskAvailabilityRule.class);
 
-    private TaskAvailabilityRuleDefinition definition;
+    private final TaskAvailabilityRuleDefinition definition;
+    private final TasksManager tasksManager;
+    private final Context context;
 
+    /**
+     * @deprecated since 5.4.3, use {@link TaskAvailabilityRule#TaskAvailabilityRule(TaskAvailabilityRuleDefinition, TasksManager, Context)} instead.
+     */
+    @Deprecated
     public TaskAvailabilityRule(TaskAvailabilityRuleDefinition definition) {
+        this(definition, Components.getComponent(TasksManager.class), MgnlContext.getInstance());
+    }
+
+    @Inject
+    public TaskAvailabilityRule(final TaskAvailabilityRuleDefinition definition, final TasksManager tasksManager, Context context) {
         this.definition = definition;
+        this.tasksManager = tasksManager;
+        this.context = context;
     }
 
     @Override
     public final boolean isAvailableForItem(Object itemId) {
-        if (itemId == null) {
+        if (itemId == null || itemId instanceof NullItem) {
             log.warn("Got a null task. Availability rule will return false");
             return false;
         }
-        Task task = (Task) itemId;
 
-        boolean statusMatches = false;
-
-        for (Status status : definition.getStatus()) {
-            statusMatches = statusMatches | status.equals(task.getStatus());
+        Task task;
+        if (itemId instanceof Task) {
+            task = (Task) itemId;
+        } else {
+            task = tasksManager.getTaskById(itemId.toString());
         }
 
-        return isVisibleToUser(task) && statusMatches;
+        if (task != null) {
+            boolean statusMatches = false;
+
+            for (Status status : definition.getStatus()) {
+                statusMatches = status == task.getStatus();
+                if (statusMatches) {
+                    break;
+                }
+            }
+
+            return statusMatches && isVisibleToUser(task);
+        }
+
+        return false;
     }
 
     protected boolean isVisibleToUser(Task task) {
-        return !definition.isAssignee() || MgnlContext.getUser().getName().equals(task.getActorId());
+        return !definition.isAssignee() || context.getUser().getName().equals(task.getActorId());
     }
 
 }

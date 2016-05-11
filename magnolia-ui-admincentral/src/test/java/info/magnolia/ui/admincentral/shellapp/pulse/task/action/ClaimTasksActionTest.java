@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.task.action;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import info.magnolia.task.TasksManager;
+import info.magnolia.ui.api.context.UiContext;
+
 import java.util.List;
 
-/**
- * Configured {@link PulseListDefinition}.
- */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+import org.junit.Before;
+import org.junit.Test;
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+import com.google.common.collect.Lists;
 
+public class ClaimTasksActionTest extends BaseHumanTaskActionTest {
+
+    private ClaimTasksAction action;
+    private TasksManager tasksManager;
+
+    @Before
     @Override
-    public String getName() {
-        return name;
+    public void setUp() {
+        super.setUp();
+        List<String> taskIds = Lists.newArrayList("1", "2", "3");
+        tasksManager = mock(TasksManager.class);
+        action = new ClaimTasksAction(mock(ClaimTasksActionDefinition.class), taskIds, tasksManager, mock(UiContext.class), context);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Test
+    public void testClaimActionCallsTasksManager() throws Exception {
+        // GIVEN // WHEN
+        action.execute();
 
-    @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
+        // THEN
+        verify(tasksManager, times(3)).claim(anyString(), eq(CURRENT_USER));
     }
-
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

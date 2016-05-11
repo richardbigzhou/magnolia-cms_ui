@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task.action.availability;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -41,9 +42,8 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.task.Task;
 import info.magnolia.task.Task.Status;
+import info.magnolia.task.TasksManager;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;
@@ -55,16 +55,20 @@ import org.junit.Test;
  */
 public class TaskAvailabilityRuleTest {
 
+    private TasksManager tasksManager;
+    private Context context;
+
     @Before
     public void setUp() {
+        tasksManager = mock(TasksManager.class);
+
         User user = mock(User.class);
         when(user.getName()).thenReturn("foo");
 
-        Context context = mock(Context.class);
+        context = mock(Context.class);
         when(context.getUser()).thenReturn(user);
 
         MgnlContext.setInstance(context);
-
     }
 
     @After
@@ -73,18 +77,17 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void taskIsAvailableWhenRuleDefinitionStatusIsSameAsTaskStatus() throws Exception {
+    public void taskIsAvailableWhenRuleDefinitionStatusIsSameAsTaskStatus() {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        status.add(Status.Created);
+        List<Status> status = newArrayList(Status.Created);
         definition.setStatus(status);
         definition.setAssignee(false);
 
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -94,17 +97,16 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void taskIsNotAvailableWhenRuleDefinitionStatusIsNotSameAsTaskStatus() throws Exception {
+    public void taskIsNotAvailableWhenRuleDefinitionStatusIsNotSameAsTaskStatus() {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        status.add(Status.InProgress);
+        List<Status> status = newArrayList(Status.InProgress);
         definition.setStatus(status);
 
         Task task = new Task();
         task.setStatus(Status.Created);
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -114,18 +116,17 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void taskIsNotAvailableWhenAssigneeIsNotCurrentUser() throws Exception {
+    public void taskIsNotAvailableWhenAssigneeIsNotCurrentUser() {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        status.add(Status.InProgress);
+        List<Status> status = newArrayList(Status.InProgress);
         definition.setStatus(status);
 
         Task task = new Task();
         task.setStatus(Status.InProgress);
         task.setActorId("qux");
 
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(task);
@@ -135,13 +136,12 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void taskIsNotAvailableIfNull() throws Exception {
+    public void taskIsNotAvailableIfNull() {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        status.add(Status.InProgress);
+        List<Status> status = newArrayList(Status.InProgress);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         // WHEN
         boolean available = rule.isAvailableForItem(null);
@@ -151,13 +151,12 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void testMultipleStatusesMatch() throws Exception {
+    public void testMultipleStatusesMatch() {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        Collections.addAll(status, Status.InProgress, Status.Created);
+        List<Status> status = newArrayList(Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition,tasksManager, context);
 
         Task task = new Task();
         task.setStatus(Status.InProgress);
@@ -171,13 +170,12 @@ public class TaskAvailabilityRuleTest {
     }
 
     @Test
-    public void testMultipleStatusesMisMatch() throws Exception {
+    public void testMultipleStatusesMisMatch()  {
         // GIVEN
         TaskAvailabilityRuleDefinition definition = new TaskAvailabilityRuleDefinition();
-        List<Status> status = new LinkedList<Status>();
-        Collections.addAll(status, Status.InProgress, Status.Created);
+        List<Status> status = newArrayList(Status.InProgress, Status.Created);
         definition.setStatus(status);
-        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition);
+        TaskAvailabilityRule rule = new TaskAvailabilityRule(definition, tasksManager, context);
 
         Task task = new Task();
         task.setStatus(Status.Removed);
@@ -189,5 +187,4 @@ public class TaskAvailabilityRuleTest {
         // THEN
         assertFalse(available);
     }
-
 }

@@ -38,7 +38,6 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 /**
  * Action definition for {@link ArchiveTaskAction}.
  */
-
 public class ArchiveTaskActionDefinition extends ConfiguredActionDefinition {
 
     public ArchiveTaskActionDefinition() {

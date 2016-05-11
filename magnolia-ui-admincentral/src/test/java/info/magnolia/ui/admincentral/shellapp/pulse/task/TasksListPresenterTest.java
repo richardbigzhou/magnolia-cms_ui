@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.task;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.task.Task;
@@ -47,8 +46,14 @@ import info.magnolia.task.TasksManager;
 import info.magnolia.task.definition.registry.TaskDefinitionRegistry;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.ConfiguredPulseListDefinition;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListActionExecutor;
+import info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer.PulseListFooterPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.task.definition.ConfiguredTaskUiDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityChecker;
 import info.magnolia.ui.framework.shell.ShellImpl;
+
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,11 +65,9 @@ public class TasksListPresenterTest {
 
     private TasksListPresenter presenter;
     private TaskDefinitionRegistry definitionRegistry;
-    private ConfiguredPulseListDefinition presenterDefinition;
     private TasksManager tasksManager;
     private ComponentProvider componentProvider;
     private Task task;
-    private EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
@@ -75,13 +78,16 @@ public class TasksListPresenterTest {
 
         this.task = new Task();
         this.definitionRegistry = mock(TaskDefinitionRegistry.class);
-        this.presenterDefinition = mock(ConfiguredPulseListDefinition.class);
+        ConfiguredPulseListDefinition presenterDefinition = mock(ConfiguredPulseListDefinition.class);
+        I18nizer i18nizer = mock(I18nizer.class);
+        when(presenterDefinition.getBulkActions()).thenReturn(new ArrayList<ActionDefinition>());
+        when(i18nizer.decorate(presenterDefinition)).thenReturn(presenterDefinition);
+
         this.tasksManager = mock(TasksManager.class);
-        this.eventBus = mock(EventBus.class);
         this.componentProvider = mock(ComponentProvider.class);
         this.presenter = new TasksListPresenter(mock(TasksContainer.class), mock(TasksListView.class), mock(ShellImpl.class),
-                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, eventBus, presenterDefinition);
-
+                tasksManager, definitionRegistry, componentProvider, mock(SimpleTranslator.class), context, mock(EventBus.class), presenterDefinition, mock(AvailabilityChecker.class),
+                mock(PulseListActionExecutor.class), mock(PulseListFooterPresenter.class), i18nizer);
         task.setName("testTask");
     }
 

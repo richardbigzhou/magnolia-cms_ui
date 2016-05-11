@@ -36,7 +36,11 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListView;
 
 /**
- * Messages Pulse tab UI.
+ * Messages Pulse tab UI interface, trivial extension of {@linkplain PulseListView} which helps to inject
+ * a correct implementation into a {@link MessagesListPresenter} via IoC.
+ *
+ * @see MessagesListViewImpl
+ * @see MessagesListPresenter
  */
 public interface MessagesListView extends PulseListView {
 

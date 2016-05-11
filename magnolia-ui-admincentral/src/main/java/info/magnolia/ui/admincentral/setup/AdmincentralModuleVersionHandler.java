@@ -94,7 +94,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
     protected static final String UI_ACTIONS_IMPORT = "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/import";
     protected static final String UI_IMPORT_FIELD = "/modules/ui-admincentral/dialogs/import/form/tabs/import/fields/name";
-    private final Task exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy = new ExcludeWorkspacesFromFlushCachePolicy("profiles", "messages");
+    private final Task excludeProfilesAndMessagesWorkspacesFromFlushCachePolicy = new ExcludeWorkspacesFromFlushCachePolicy("profiles", "messages");
 
     /**
      * Check if the activation module is install and correctly configured.
@@ -219,7 +219,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
                     @Override
                     public List<NodeTypeDefinition> getNodeTypesToRegister(NodeTypeManager nodeTypeManager) throws RepositoryException {
-                        List<NodeTypeDefinition> types = new ArrayList<NodeTypeDefinition>();
+                        List<NodeTypeDefinition> types = new ArrayList<>();
 
                         types.add(NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager,
                                         AdmincentralNodeTypes.Favorite.NAME,
@@ -301,7 +301,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         );
         register(DeltaBuilder.update("5.4", "")
                 .addTask(new BootstrapSingleResource("Bootstrap Pulse Presenters", "Bootstrap the new configuration for tasks and messages in Pulse.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml"))
-                .addTask(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy)
+                .addTask(excludeProfilesAndMessagesWorkspacesFromFlushCachePolicy)
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the location of the default login form.", RepositoryConstants.CONFIG, "/server/filters/securityCallback/clientCallbacks/form", "loginForm", "/mgnl-resources/defaultLoginForm/login.html", "/defaultMagnoliaLoginForm/login.html"))
                 .addTask(new CheckAndModifyPropertyValueTask("Fix default login form", "Fixes the permissions to enable access to the default login form.", RepositoryConstants.CONFIG, "/server/filters/uriSecurity/bypasses/login", "pattern", "/.resources/defaultLoginForm", "/.resources/defaultMagnoliaLoginForm"))
         );
@@ -309,14 +309,17 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(addDownloadAsYamlActionTask)
                 .addTask(new NodeExistsDelegateTask("", "/modules/ui-admincentral/messageViews/longRunning",
                         new PartialBootstrapTask("Add exception field to longRunning messageView", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning/form/tabs/message/fields/exception"))));
-
         register(DeltaBuilder.update("5.4.4", "")
                 .addTask(new RemoveNodeTask("Remove Website Jcr Browser app from App Launcher", "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser")));
+        register(DeltaBuilder.update("5.5", "")
+                .addTask(new ArrayDelegateTask("Bulk actions", "Add configuration for bulk actions to footer.",
+                        new PartialBootstrapTask("", "Register task action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml", "/pulse/presenters/tasks/bulkActions"),
+                        new PartialBootstrapTask("", "Register message action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml", "/pulse/presenters/messages/bulkActions"))));
     }
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        List<Task> list = new ArrayList<Task>();
+        List<Task> list = new ArrayList<>();
 
         list.add(new IsModuleInstalledOrRegistered(
                 "Replace login security pattern",
@@ -339,12 +342,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "asynchronous", "true")),
                 new PartialBootstrapTask("", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning"))));
 
-        list.add(exludeProfilesAndMessagesWorkspacesFromFlushCachePolicy);
+        list.add(excludeProfilesAndMessagesWorkspacesFromFlushCachePolicy);
         return list;
     }
 
     private Map<String, String[]> getAclsToAppsPermissionsMap() {
-        Map<String, String[]> permissionsMap = new HashMap<String, String[]>();
+        Map<String, String[]> permissionsMap = new HashMap<>();
 
         // DEV and TOOLS menu
         permissionsMap.put("/modules/adminInterface/config/menu/tools", new String[] { // old 'Tools' menu is in 5 is split into two

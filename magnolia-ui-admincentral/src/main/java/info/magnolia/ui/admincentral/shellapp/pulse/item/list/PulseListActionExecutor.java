@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
- * Configured {@link PulseListDefinition}.
+ * Action executor for pulse items.
  */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+public class PulseListActionExecutor extends AbstractActionExecutor {
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+    private List<ActionDefinition> actionDefinitions;
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    @Inject
+    public PulseListActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
     }
 
     @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
+    public ActionDefinition getActionDefinition(String actionName) {
+        for (ActionDefinition actionDef : actionDefinitions) {
+            if (actionDef.getName().equals(actionName)) {
+                return actionDef;
+            }
+        }
+        return null;
     }
 
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
+    public void setActionsDefinition(List<ActionDefinition> actionDefinitions) {
+        this.actionDefinitions = actionDefinitions;
     }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

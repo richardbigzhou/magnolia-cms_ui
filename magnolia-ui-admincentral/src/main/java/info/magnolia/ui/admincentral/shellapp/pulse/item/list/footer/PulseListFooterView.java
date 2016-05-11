@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.item.list.footer;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import java.util.ArrayList;
-import java.util.List;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Configured {@link PulseListDefinition}.
+ * {@linkplain PulseListFooterView} is a Pulse UI interface typically accompanying the tree/list views.
+ * <p>
+ * It responsible for displaying the status information (e.g. selection info) and for triggering the bulk actions
+ * for the selected items.
  */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+public interface PulseListFooterView extends View {
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+    void setListener(Listener listener);
 
-    @Override
-    public String getName() {
-        return name;
+    void addAction(String actionId, String label, String icon);
+
+    void setActionEnabled(String actionId, boolean isEnabled);
+
+    void updateStatus(long totalAmount, int totalSelected);
+
+    /**
+     * Base interface for an action listener.
+     */
+    interface Listener {
+
+        void onBulkActionTriggered(String actionId);
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
-    }
-
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
-    }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }

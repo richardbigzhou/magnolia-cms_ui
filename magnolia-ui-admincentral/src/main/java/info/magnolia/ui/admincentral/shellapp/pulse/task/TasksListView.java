@@ -38,15 +38,23 @@ import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListView;
 import java.util.Set;
 
 /**
- * Tasks Pulse tab UI.
+ * Tasks Pulse tab UI. This interface is needed for mapping to the actual implementation {@link TasksListViewImpl}
+ * and make it injectable in the {@link TasksListPresenter}.
  */
 public interface TasksListView extends PulseListView {
 
+    /**
+     * @deprecated since 5.5, bulk actions are now configurable in footer.
+     */
+    @Deprecated
     void setTaskListener(Listener listener);
 
     /**
      * Listener.
+     *
+     * @deprecated since 5.5, bulk actions are now configurable in footer.
      */
+    @Deprecated
     interface Listener extends PulseListView.Listener {
 
         void claimTask(Set<String> itemIds);

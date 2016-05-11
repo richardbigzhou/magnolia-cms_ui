@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2015-2016 Magnolia International
+ * This file Copyright (c) 2015 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.item;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.ui.admincentral.shellapp.pulse.item.list.PulseListPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import info.magnolia.ui.admincentral.shellapp.pulse.task.action.BaseHumanTaskActionTest;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.framework.message.MessagesManager;
+
 import java.util.List;
 
-/**
- * Configured {@link PulseListDefinition}.
- */
-public class ConfiguredPulseListDefinition implements PulseListDefinition {
+import org.junit.Before;
+import org.junit.Test;
 
-    private String name;
-    private Class<? extends PulseListPresenter> presenterClass;
-    private List<ActionDefinition> bulkActions = new ArrayList<>();
+import com.google.common.collect.Lists;
 
-    @Override
-    public String getName() {
-        return name;
-    }
+public class DeleteMessagesActionTest extends BaseHumanTaskActionTest {
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    private DeleteMessagesAction action;
+    private MessagesManager messagesManager;
 
     @Override
-    public Class<? extends PulseListPresenter> getPresenterClass() {
-        return presenterClass;
+    @Before
+    public void setUp() {
+        super.setUp();
+        List<String> messageIds = Lists.newArrayList("1", "2", "3");
+        messagesManager = mock(MessagesManager.class);
+        action = new DeleteMessagesAction(new DeleteMessagesActionDefinition(), messageIds, messagesManager, mock(UiContext.class), context);
     }
 
-    public void setPresenterClass(Class<? extends PulseListPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
+    @Test
+    public void testArchiveActionCallsTasksManager() throws Exception {
+        // GIVEN // WHEN
+        action.execute();
 
-    @Override
-    public List<ActionDefinition> getBulkActions() {
-        return bulkActions;
+        // THEN
+        verify(messagesManager, times(3)).removeMessage(eq(CURRENT_USER), anyString());
     }
-
-    public void setBulkActions(List<ActionDefinition> bulkActions) {
-        this.bulkActions = bulkActions;
-    }
-
 }
