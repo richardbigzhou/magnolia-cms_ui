@@ -94,7 +94,7 @@ public class TabBarWidget extends ComplexPanel {
         bindHandlers();
     }
 
-    void reArrangeTabVisibility() {
+    public void reArrangeTabVisibility() {
         if (tabLabels.isEmpty()) {
             return;
         }
@@ -231,7 +231,6 @@ public class TabBarWidget extends ComplexPanel {
             // Keep hidden-tabs toggle and show-all button last in the DOM when inserting labels.
             insert(label, tabContainer, tabLabels.size() - 1, true);
             updateSingleTabStyle();
-            reArrangeTabVisibility();
         }
     }
 
