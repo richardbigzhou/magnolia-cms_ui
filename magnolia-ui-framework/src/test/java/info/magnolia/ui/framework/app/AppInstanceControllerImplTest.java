@@ -35,7 +35,6 @@ package info.magnolia.ui.framework.app;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -319,6 +318,7 @@ public class AppInstanceControllerImplTest {
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerInstance(SimpleTranslator.class, i18n);
         components.registerInstance(AppContext.class, appContext);
+        components.addTypeMapping(SubAppContext.class, SubAppContextImpl.class);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(components);
