@@ -405,7 +405,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
                 return null;
             }
         }
-        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor, shell);
+        SubAppContext subAppContext = componentProvider.newInstance(SubAppContext.class, subAppDescriptor, shell);
 
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
