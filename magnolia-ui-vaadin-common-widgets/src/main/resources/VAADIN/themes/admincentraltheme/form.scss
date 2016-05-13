@@ -328,8 +328,14 @@ fieldset {
 .v-required-field-indicator {
   color: $c90;
   font-size: 18px;
-  vertical-align: -20%;
   margin-left: 3px;
+  margin-top: 3px;
+  float: right;
+}
+
+.v-form-field-label span.locale-label {
+  padding-left: 2px;
+  float: right;
 }
 
 /*

@@ -46,6 +46,8 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -57,6 +59,8 @@ import com.vaadin.client.ui.aria.AriaHelper;
  * Wrapper widget that provides help and error indication.
  */
 public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, HasBlurHandlers {
+
+    private final static RegExp localisedPropertyCaptionPattern = RegExp.compile("^(.+)\\s(\\([a-zA-Z]{2}\\))$");
 
     private Element label = DOM.createDiv();
 
@@ -139,7 +143,24 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void setCaption(String caption) {
-        label.setInnerText(caption);
+        final MatchResult localisedPropertyMatcher = localisedPropertyCaptionPattern.exec(caption);
+        if (localisedPropertyMatcher != null && localisedPropertyMatcher.getGroupCount() > 2) {
+            caption = localisedPropertyMatcher.getGroup(1);
+            label.setInnerText(caption);
+
+            final Element localeLabel = SpanElement.as(DOM.createSpan());
+            localeLabel.setClassName("locale-label");
+            localeLabel.setInnerText(localisedPropertyMatcher.getGroup(2));
+
+            if (requirementAsterisk != null  && label.isOrHasChild(requirementAsterisk)) {
+                label.insertAfter(localeLabel, requirementAsterisk);
+            } else {
+                label.insertFirst(localeLabel);
+            }
+        } else {
+            label.setInnerText(caption);
+        }
+
         if (caption != null) {
             label.setTitle(caption);
         }
@@ -152,7 +173,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
                 requirementAsterisk.setClassName("requiredfield");
                 requirementAsterisk.setInnerText("*");
             }
-            label.appendChild(requirementAsterisk);
+            label.insertFirst(requirementAsterisk);
         } else if (requirementAsterisk != null && label.isOrHasChild(requirementAsterisk)) {
             label.removeChild(requirementAsterisk);
         }
