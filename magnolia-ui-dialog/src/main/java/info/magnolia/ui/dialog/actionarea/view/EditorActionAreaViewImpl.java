@@ -62,7 +62,7 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
         footer.addComponent(toolbarContainer);
         footer.addComponent(secondaryActionsContainer);
         footer.addComponent(primaryActionsContainer);
-        footer.setExpandRatio(primaryActionsContainer, 1f);
+        footer.setExpandRatio(primaryActionsContainer, 2f);
         footer.setExpandRatio(secondaryActionsContainer, 1f);
 
 
