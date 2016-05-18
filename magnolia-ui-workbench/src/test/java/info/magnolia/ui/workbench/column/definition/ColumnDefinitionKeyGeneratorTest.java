@@ -76,9 +76,7 @@ public class ColumnDefinitionKeyGeneratorTest {
         // genrator
         generator = new ColumnDefinitionKeyGenerator();
         // initialize
-        column = new AbstractColumnDefinition() {
-            // nothing
-        };
+        column = new DummyColumnDefinition();
         column.setName("<column-name>");
         view = new ConfiguredContentPresenterDefinition();
         view.setViewType("<view-type>");
@@ -95,7 +93,7 @@ public class ColumnDefinitionKeyGeneratorTest {
         List<ContentPresenterDefinition> views = new ArrayList<ContentPresenterDefinition>(1);
         views.add(view);
         wb.addContentView(view);
-        List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>(1);
+        List<ColumnDefinition> columns = new ArrayList<>(1);
         columns.add(column);
         view.addColumn(column);
     }
@@ -134,14 +132,15 @@ public class ColumnDefinitionKeyGeneratorTest {
     public void keysForColumnLabelWithoutSubapp() throws SecurityException, NoSuchMethodException {
         // GIVEN
         Method method = column.getClass().getMethod("getLabel");
-        DummyTypeWithNoSubapp appDescriptor = new DummyTypeWithNoSubapp(wb);
+        DummyTypeWithNoSubapp appDescriptor = new DummyTypeWithNoSubapp();
+        appDescriptor.setWorkbench(wb);
         appDescriptor.setName("<app>");
         // decorate
         I18nizer i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), mock(LocaleProvider.class));
         appDescriptor = i18nizer.decorate(appDescriptor);
 
         // WHEN
-        String[] keys = generator.keysFor((String) null, appDescriptor.getWB().getContentViews().get(0).getColumns().get(0), method);
+        String[] keys = generator.keysFor((String) null, appDescriptor.getWorkbench().getContentViews().get(0).getColumns().get(0), method);
 
         // THEN
         assertThat(keys, arrayContaining(
@@ -160,8 +159,7 @@ public class ColumnDefinitionKeyGeneratorTest {
     private static class TestSubAppDef extends ConfiguredSubAppDescriptor {
         private WorkbenchDefinition wb;
 
-        public TestSubAppDef() {
-            super();
+        protected TestSubAppDef() {
         }
 
         public WorkbenchDefinition getWorkbench() {
@@ -174,14 +172,22 @@ public class ColumnDefinitionKeyGeneratorTest {
     }
 
     private static class DummyTypeWithNoSubapp extends ConfiguredAppDescriptor {
-        private final WorkbenchDefinition wb;
+        private WorkbenchDefinition workbench;
 
-        public DummyTypeWithNoSubapp(WorkbenchDefinition wb) {
-            this.wb = wb;
+        protected DummyTypeWithNoSubapp() {
         }
 
-        public WorkbenchDefinition getWB() {
-            return wb;
+        public WorkbenchDefinition getWorkbench() {
+            return workbench;
+        }
+
+        public void setWorkbench(WorkbenchDefinition workbench) {
+            this.workbench = workbench;
+        }
+    }
+
+    private static class DummyColumnDefinition extends AbstractColumnDefinition {
+        protected DummyColumnDefinition() {
         }
     }
 }

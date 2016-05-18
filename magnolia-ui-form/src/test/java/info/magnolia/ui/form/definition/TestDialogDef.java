@@ -40,10 +40,6 @@ public class TestDialogDef {
     private String id;
     private FormDefinition form;
 
-    public TestDialogDef(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
     }

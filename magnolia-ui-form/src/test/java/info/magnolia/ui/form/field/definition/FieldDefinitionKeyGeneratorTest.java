@@ -92,7 +92,8 @@ public class FieldDefinitionKeyGeneratorTest {
         // generator
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
         // structure
-        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testFolder/testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
@@ -133,7 +134,8 @@ public class FieldDefinitionKeyGeneratorTest {
         // generator
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
         // structure
-        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        TestDialogDef dialog = new TestDialogDef();
+        dialog.setId("test-module:testFolder/testDialog");
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
@@ -185,7 +187,9 @@ public class FieldDefinitionKeyGeneratorTest {
         fieldDefinition.setName("dummyField");
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);
-        DummyDefinition dummyDefinition = i18nizer.decorate(new DummyDefinition(fieldDefinition));
+        DummyDefinition dummyDefinition = new DummyDefinition();
+        dummyDefinition.setDummyField(fieldDefinition);
+        dummyDefinition = i18nizer.decorate(dummyDefinition);
 
         // WHEN
         FieldDefinition i18nFieldDef = dummyDefinition.getDummyField();
@@ -226,16 +230,16 @@ public class FieldDefinitionKeyGeneratorTest {
 
         private FieldDefinition dummyField;
 
-        public DummyDefinition(FieldDefinition dummyField) {
-            this.dummyField = dummyField;
-        }
-
         public String getName() {
             return "dummy";
         }
 
         public FieldDefinition getDummyField() {
             return dummyField;
+        }
+
+        public void setDummyField(final FieldDefinition dummyField) {
+            this.dummyField = dummyField;
         }
     }
 
