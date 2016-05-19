@@ -11,7 +11,7 @@
   <name>magnolia-about-app</name>
   <description>The about app shows an overview of the instance version, environment and license information.</description>
   <properties>
-    <cloverCoverageThreshold>50</cloverCoverageThreshold>
+    <cloverCoverageThreshold>25</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
