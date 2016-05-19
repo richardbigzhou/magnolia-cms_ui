@@ -4,6 +4,7 @@
   <name>about-app</name>
   <displayName>About app</displayName>
   <description>The about app shows an overview of the instance version, environment and license information.</description>
+  <versionHandler>info.magnolia.about.app.setup.AboutAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <!-- Components App definition. -->
@@ -29,6 +30,54 @@
     </component>
   </components>
 
+  <components>
+    <id>app-about-about</id>
+    <component>
+      <type>info.magnolia.about.app.AboutMainSubApp</type>
+      <implementation>info.magnolia.about.app.AboutMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.AboutPresenter</type>
+      <implementation>info.magnolia.about.app.AboutPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.AboutView</type>
+      <implementation>info.magnolia.about.app.AboutViewImpl</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-about-config</id>
+    <component>
+      <type>info.magnolia.about.app.config.ConfigInfoSubApp</type>
+      <implementation>info.magnolia.about.app.config.ConfigInfoSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.config.ConfigInfoPresenter</type>
+      <implementation>info.magnolia.about.app.config.ConfigInfoPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.config.ConfigInfoView</type>
+      <implementation>info.magnolia.about.app.config.ConfigInfoViewImpl</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-about-mapping</id>
+    <component>
+      <type>info.magnolia.about.app.mapping.VirtualURIMappingSubApp</type>
+      <implementation>info.magnolia.about.app.mapping.VirtualURIMappingSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.mapping.VirtualURIMappingPresenter</type>
+      <implementation>info.magnolia.about.app.mapping.VirtualURIMappingPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.mapping.VirtualURIMappingView</type>
+      <implementation>info.magnolia.about.app.mapping.VirtualURIMappingViewImpl</implementation>
+    </component>
+  </components>
+
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
@@ -39,6 +88,12 @@
     <dependency>
       <name>cache</name>
       <version>5.0/*</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <name>adminInterface</name>
+      <version>5.3.1/*</version>
       <optional>true</optional>
     </dependency>
   </dependencies>
