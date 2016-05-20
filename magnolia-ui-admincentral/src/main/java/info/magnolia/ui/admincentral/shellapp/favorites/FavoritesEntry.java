@@ -322,7 +322,7 @@ public final class FavoritesEntry extends CustomComponent implements EditableFav
     public static String createItemdId(AbstractJcrNodeAdapter nodeAdapter) {
         String id = null;
         try {
-            id = nodeAdapter.getJcrItem().getIdentifier();
+            id = nodeAdapter.getItemId().getUuid();
         } catch (Exception ex) {
             log.error("Failed to create an itemId from an AbstractJcrNodeAdapter", ex);
         } finally {
