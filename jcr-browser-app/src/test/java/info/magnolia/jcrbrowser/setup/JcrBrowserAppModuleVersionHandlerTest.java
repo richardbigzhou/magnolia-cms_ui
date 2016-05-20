@@ -33,17 +33,20 @@
  */
 package info.magnolia.jcrbrowser.setup;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
+import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 
 import java.util.Collections;
 import java.util.List;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 
@@ -86,6 +89,18 @@ public class JcrBrowserAppModuleVersionHandlerTest extends ModuleVersionHandlerT
         // THEN
         final NodeIterator toolApps = session.getRootNode().getNode("modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps").getNodes();
         assertThat(toolApps.nextNode().getName(), is("jcr-browser"));
+    }
 
+    @Test
+    public void updateFrom546UpdatesWorkspaceToWebsite() throws Exception {
+        // GIVEN
+        setupConfigProperty("/modules/jcr-browser-app/apps/jcr-browser/subApps/browser/contentConnector", "workspace", "config");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.6"));
+
+        // THEN
+        Node contentConnector = session.getRootNode().getNode("modules/jcr-browser-app/apps/jcr-browser/subApps/browser/contentConnector");
+        assertThat(contentConnector, hasProperty("workspace", "website"));
     }
 }
