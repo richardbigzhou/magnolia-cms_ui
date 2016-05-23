@@ -54,19 +54,13 @@ import static org.junit.Assert.assertThat;
 
 public class AboutAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
-    private static final String CONFIG_INFO = "configInfo";
-    private static final String ABOUT_PATH = "/modules/about-app/apps/about";
-
     private Session configSession;
-    private Node apps;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         this.configSession = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        setupConfigNode(AboutAppModuleVersionHandler.CONFIG_INFO_PATH);
-        this.apps = configSession.getNode(AboutAppModuleVersionHandler.APPS_PATH);
     }
 
     @Override
@@ -86,26 +80,19 @@ public class AboutAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
     @Test
     public void updateTo547RemovesOldConfigInfoFromAppLauncher() throws Exception {
-        // GIVEN
-        assertThat(apps, hasNode(CONFIG_INFO));
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.6"));
-
-        // THEN
-        assertThat(apps, not(hasNode(CONFIG_INFO)));
+        removeOldConfigInfoFromAppLauncher(Version.parseVersion("5.4.6"));
     }
 
     @Test
     public void updateTo547ConfigureAboutApp() throws Exception {
         // GIVEN
-        setupConfigNode(ABOUT_PATH);
+        setupConfigNode("/modules/about-app/apps/about");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.6"));
 
         // THEN
-        Node subApps = configSession.getNode(ABOUT_PATH);
+        Node subApps = configSession.getNode("/modules/about-app/apps/about");
         assertThat(subApps, hasNode("subApps/about"));
         assertThat(subApps, hasNode("subApps/config"));
         assertThat(subApps, hasNode("subApps/mapping"));
@@ -114,13 +101,23 @@ public class AboutAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
     @Test
     public void installRemovesOldConfigInfoFromAppLauncher() throws Exception {
+        removeOldConfigInfoFromAppLauncher(null);
+    }
+
+    private void removeOldConfigInfoFromAppLauncher(Version installedVersion) throws Exception{
         // GIVEN
-        assertThat(apps, hasNode(CONFIG_INFO));
+        setupConfigNode(AboutAppModuleVersionHandler.APP_LAUNCHER_APPS_PATH + AboutAppModuleVersionHandler.CONFIG_INFO);
+        setupConfigNode(AboutAppModuleVersionHandler.ADMIN_CENTRAL_APPS_PATH + AboutAppModuleVersionHandler.CONFIG_INFO);
+        Node apps = configSession.getNode(AboutAppModuleVersionHandler.APP_LAUNCHER_APPS_PATH);
+        Node admincentralApps = configSession.getNode(AboutAppModuleVersionHandler.ADMIN_CENTRAL_APPS_PATH);
+        assertThat(apps, hasNode(AboutAppModuleVersionHandler.CONFIG_INFO));
+        assertThat(admincentralApps, hasNode(AboutAppModuleVersionHandler.CONFIG_INFO));
 
         // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(installedVersion);
 
         // THEN
-        assertThat(apps, not(hasNode(CONFIG_INFO)));
+        assertThat(apps, not(hasNode(AboutAppModuleVersionHandler.CONFIG_INFO)));
+        assertThat(admincentralApps, not(hasNode(AboutAppModuleVersionHandler.CONFIG_INFO)));
     }
 }
