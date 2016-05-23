@@ -61,6 +61,6 @@ public class JcrBrowserAppModuleVersionHandler extends DefaultModuleVersionHandl
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        return Collections.<Task>singletonList(new AppLauncherReorderingTask("jcr-browser", "tools", AppLauncherReorderingTask.Order.FIRST, null));
+        return Collections.singletonList(new AppLauncherReorderingTask("jcr-browser", "tools", AppLauncherReorderingTask.Order.FIRST, null));
     }
 }
