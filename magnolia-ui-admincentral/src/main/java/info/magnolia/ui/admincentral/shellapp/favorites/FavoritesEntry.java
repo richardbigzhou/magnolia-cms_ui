@@ -91,7 +91,7 @@ public final class FavoritesEntry extends CustomComponent implements EditableFav
         this.listener = listener;
         this.shell = shell;
         this.i18n = i18n;
-        itemId = createItemdId(favorite);
+        itemId = createItemId(favorite);
         construct(favorite, listener);
     }
 
@@ -318,11 +318,20 @@ public final class FavoritesEntry extends CustomComponent implements EditableFav
 
     /**
      * Creates a unique ID to use for {@code EditableFavoriteItem}s.
+     * @deprecated since 5.4.7 - use {@link #createItemId(AbstractJcrNodeAdapter)} instead.
      */
+    @Deprecated
     public static String createItemdId(AbstractJcrNodeAdapter nodeAdapter) {
+        return createItemId(nodeAdapter);
+    }
+
+    /**
+     * Creates a unique ID to use for {@code EditableFavoriteItem}s.
+     */
+    public static String createItemId(AbstractJcrNodeAdapter nodeAdapter) {
         String id = null;
         try {
-            id = nodeAdapter.getJcrItem().getIdentifier();
+            id = nodeAdapter.getItemId().getUuid();
         } catch (Exception ex) {
             log.error("Failed to create an itemId from an AbstractJcrNodeAdapter", ex);
         } finally {

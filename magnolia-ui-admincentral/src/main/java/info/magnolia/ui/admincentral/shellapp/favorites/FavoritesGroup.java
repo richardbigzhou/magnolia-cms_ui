@@ -91,7 +91,7 @@ public final class FavoritesGroup extends CssLayout implements EditableFavoriteI
         this.i18n = i18n;
         this.editableFavoriteItems = editableFavoriteItems;
         this.listener = listener;
-        itemId = FavoritesEntry.createItemdId(favoritesGroup);
+        itemId = FavoritesEntry.createItemId(favoritesGroup);
 
         addStyleName("favorites-group");
         construct(favoritesGroup, listener);
