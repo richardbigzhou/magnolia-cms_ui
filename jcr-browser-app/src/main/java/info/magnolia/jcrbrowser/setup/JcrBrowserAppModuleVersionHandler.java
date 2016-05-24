@@ -35,6 +35,8 @@ package info.magnolia.jcrbrowser.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.Task;
 import info.magnolia.ui.admincentral.setup.AppLauncherReorderingTask;
 
@@ -46,8 +48,19 @@ import java.util.List;
  */
 public class JcrBrowserAppModuleVersionHandler extends DefaultModuleVersionHandler {
 
+    public JcrBrowserAppModuleVersionHandler() {
+        register(DeltaBuilder.update("5.5", "Making sure the workspace property is updated")
+                .addTask(new CheckAndModifyPropertyValueTask(
+                        "/modules/jcr-browser-app/apps/jcr-browser/subApps/browser/contentConnector/",
+                        "workspace",
+                        "config",
+                        "website"
+                ))
+        );
+    }
+
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        return Collections.<Task>singletonList(new AppLauncherReorderingTask("jcr-browser", "tools", AppLauncherReorderingTask.Order.FIRST, null));
+        return Collections.singletonList(new AppLauncherReorderingTask("jcr-browser", "tools", AppLauncherReorderingTask.Order.FIRST, null));
     }
 }
