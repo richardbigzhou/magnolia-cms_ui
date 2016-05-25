@@ -241,7 +241,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
             String current = sortedIdentifiers.get(pos);
             int nodePos = unsortedIdentifiers.indexOf(current);
 
-            if (nodePos != -1 || nodePos != pos) {
+            if (nodePos != -1 && nodePos != pos) {
                 Node nodeToMove = node.getSession().getNodeByIdentifier(current);
                 Node target = node.getSession().getNodeByIdentifier(unsortedIdentifiers.get(pos));
 
