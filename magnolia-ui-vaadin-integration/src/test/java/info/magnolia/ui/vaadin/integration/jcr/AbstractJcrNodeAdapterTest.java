@@ -33,13 +33,17 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockNodeType;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 
@@ -338,6 +342,40 @@ public class AbstractJcrNodeAdapterTest {
 
         // THEN
         assertTrue(parentAdapter.hasChildItemChanges());
+    }
+
+    @Test
+    public void updateSortableChildren() throws Exception {
+        // GIVEN
+        final MockNode underlyingNode = new MockNode(session);
+        // let node type def have orderable children
+        underlyingNode.setPrimaryNodeType(new MockNodeType("foo:bar", new String[] {}, true));
+
+        final AbstractJcrNodeAdapter nodeAdapter = new DummyJcrNodeAdapter(underlyingNode);
+
+        // Pre-created sub-node associated with the child JCR node adapter
+        final Node existingChild = underlyingNode.addNode("existing");
+        final AbstractJcrNodeAdapter existingChildNodeAdapter = new DummyJcrNodeAdapter(existingChild);
+        nodeAdapter.addChild(existingChildNodeAdapter);
+
+        // New node JCR node adapters
+        final JcrNewNodeAdapter newChildNodeAdapter0 = new JcrNewNodeAdapter(underlyingNode, NodeTypes.ContentNode.NAME, "newChild0");
+        nodeAdapter.addChild(newChildNodeAdapter0);
+
+        final JcrNewNodeAdapter newChildNodeAdapter1 = new JcrNewNodeAdapter(underlyingNode, NodeTypes.ContentNode.NAME, "newChild1");
+        nodeAdapter.addChild(newChildNodeAdapter1);
+
+        // WHEN
+        nodeAdapter.updateChildren(underlyingNode);
+
+        // THEN
+        // The new children nodes are created
+        assertThat(underlyingNode, hasNode("newChild0"));
+        assertThat(underlyingNode, hasNode("newChild1"));
+
+        // and sorted
+        assertThat(NodeUtil.asIterable(underlyingNode.getNodes()), contains(nodeName("existing"), nodeName("newChild0"), nodeName("newChild1")));
+
     }
 
     /**
