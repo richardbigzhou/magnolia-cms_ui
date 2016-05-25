@@ -33,8 +33,8 @@
  */
 package info.magnolia.security.setup;
 
-import static info.magnolia.test.hamcrest.NodeMatchers.hasNode;
-import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static info.magnolia.test.hamcrest.NodeMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -95,6 +95,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench");
 
         setupConfigNode("/modules/security-app/apps/security/subApps/users/workbench/contentViews/tree");
+
+        setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar");
+        setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar");
 
     }
 
@@ -335,7 +338,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
 
         // THEN
-        assertEquals("editUser", session.getProperty("/modules/security-app/apps/security/subApps/users/actionbar/defaultAction").getString());
+        assertEquals("delegateByNodeTypeAction", session.getProperty("/modules/security-app/apps/security/subApps/users/actionbar/defaultAction").getString());
+        assertEquals("editUser", session.getProperty("/modules/security-app/apps/security/subApps/users/actions/delegateByNodeTypeAction/nodeTypeToActionMappings/mgnl-user/action").getString());
     }
 
     @Test
@@ -597,5 +601,30 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         // THEN
         assertThat(systemLanguagesNode, hasProperty("factoryClass", "info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory"));
+    }
+
+    @Test
+    public void updateFrom546SetsDelegateActionForSecuritySubApps() throws Exception {
+        // GIVEN
+        String actionbarPath = "/modules/security-app/apps/security/subApps/%s/actionbar";
+        String actionsPath = "/modules/security-app/apps/security/subApps/%s/actions/%s";
+        List<String> subApps = Arrays.asList("users", "roles", "groups");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.6"));
+
+        // THEN
+        for (String subApp : subApps) {
+            // verify correct setup of defaultAction property
+            String path = String.format(actionbarPath, subApp);
+            assertThat(session.getNode(path), hasProperty("defaultAction", "delegateByNodeTypeAction"));
+
+            // verify that delegate action and expand folder actions were created
+            path = String.format(actionsPath, subApp, "expandNodeAction");
+            assertThat(session.nodeExists(path), is(true));
+
+            path = String.format(actionsPath, subApp, "delegateByNodeTypeAction");
+            assertThat(session.nodeExists(path), is(true));
+        }
     }
 }
