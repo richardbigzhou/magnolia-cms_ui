@@ -1,0 +1,36 @@
+.about-app {
+    font-size: 12px;
+}
+
+.about-app .v-grid-header th {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.about-app .about-app-grid-config-cell {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.about-app .about-app-grid-class-cell {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.about-app .about-app-grid-value-cell {
+    font-size: 12px;
+}
+
+.about-app .about-app-grid-uri-cell {
+    font-size: 12px;
+}
+
+.about-app .v-grid-cell-focused {
+    position: static;
+}
+
+.about-app .v-grid-cell-focused:before {
+    display: none !important;
+}
+
+
