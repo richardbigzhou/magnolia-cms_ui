@@ -63,6 +63,7 @@ public class NodeTypeSelectFieldFactoryTest extends AbstractFieldFactoryTestCase
 
     private NodeTypeSelectFieldDefinition definition;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -103,7 +104,7 @@ public class NodeTypeSelectFieldFactoryTest extends AbstractFieldFactoryTestCase
 
         this.definition = new NodeTypeSelectFieldDefinition();
 
-        this.nodeTypeSelectFieldFactory = new NodeTypeSelectFieldFactory(definition, mock(Item.class), context);
+        this.nodeTypeSelectFieldFactory = new NodeTypeSelectFieldFactory(definition, mock(Item.class), uiContext, i18NAuthoringSupport, context);
         this.nodeTypeSelectFieldFactory.setComponentProvider(componentProvider);
     }
 

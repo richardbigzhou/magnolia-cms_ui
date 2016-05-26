@@ -38,7 +38,10 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 
@@ -75,9 +78,17 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
     private String selectedLanguage;
 
     @Inject
-    public SystemLanguagesFieldFactory(D definition, Item relatedFieldItem, Context context) {
-        super(definition, relatedFieldItem);
+    public SystemLanguagesFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, Context context) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.context = context;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #SystemLanguagesFieldFactory(SystemLanguagesFieldDefinition, Item, UiContext, I18NAuthoringSupport, Context)} instead.
+     */
+    @Deprecated
+    public SystemLanguagesFieldFactory(D definition, Item relatedFieldItem, Context context) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), context);
     }
 
     /**

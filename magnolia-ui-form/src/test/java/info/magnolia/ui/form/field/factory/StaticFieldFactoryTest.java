@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
 
 import info.magnolia.ui.form.field.StaticField;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
@@ -47,20 +48,18 @@ import com.vaadin.ui.Field;
  */
 public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticFieldDefinition> {
 
-    private StaticFieldFactory staticFieldFactory;
-
     @Test
     public void testGetField() {
         // GIVEN
-        staticFieldFactory = new StaticFieldFactory(definition, baseItem);
+        StaticFieldFactory staticFieldFactory = new StaticFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport);
         staticFieldFactory.setComponentProvider(componentProvider);
 
         // WHEN
         Field field = staticFieldFactory.createField();
 
         // THEN
-        assertEquals(true, field instanceof StaticField);
-        assertEquals("value to display", ((StaticField) field).getValue());
+        assertThat(field, instanceOf(StaticField.class));
+        assertEquals("value to display", field.getValue());
     }
 
     @Override

@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -59,9 +60,17 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
     private ComponentProvider componentProvider;
 
     @Inject
-    public OptionGroupFieldFactory(OptionGroupFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem);
+    public OptionGroupFieldFactory(OptionGroupFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #OptionGroupFieldFactory(OptionGroupFieldDefinition, Item, UiContext, I18NAuthoringSupport, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public OptionGroupFieldFactory(OptionGroupFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, null, componentProvider.getComponent(I18NAuthoringSupport.class), componentProvider);
     }
 
     @Override

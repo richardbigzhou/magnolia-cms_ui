@@ -34,7 +34,10 @@
 package info.magnolia.ui.framework.field.nodetype;
 
 import info.magnolia.context.Context;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 
@@ -67,9 +70,17 @@ public class NodeTypeSelectFieldFactory extends SelectFieldFactory<NodeTypeSelec
     private final Context context;
 
     @Inject
-    public NodeTypeSelectFieldFactory(NodeTypeSelectFieldDefinition definition, Item relatedFieldItem, Context context) {
-        super(definition, relatedFieldItem);
+    public NodeTypeSelectFieldFactory(NodeTypeSelectFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, Context context) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.context = context;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #NodeTypeSelectFieldFactory(NodeTypeSelectFieldDefinition, Item, UiContext, I18NAuthoringSupport, Context)} instead.
+     */
+    @Deprecated
+    public NodeTypeSelectFieldFactory(NodeTypeSelectFieldDefinition definition, Item relatedFieldItem, Context context) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), context);
     }
 
     @Override

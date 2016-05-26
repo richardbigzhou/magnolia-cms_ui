@@ -56,7 +56,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
     public void testGetField() {
         // GIVEN
         definition.setVerification(false);
-        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
+        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         passwordFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         Field field = passwordFieldFactory.createField();
@@ -69,7 +69,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
     public void testVerificationPassword() {
         // GIVEN
         definition.setVerification(true);
-        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
+        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         passwordFieldFactory.setComponentProvider(componentProvider);
         // WHEN
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
@@ -85,7 +85,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
     public void testVerificationMatch() {
         // GIVEN
         definition.setVerification(true);
-        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
+        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         passwordFieldFactory.setComponentProvider(componentProvider);
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
@@ -103,7 +103,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
     public void testVerificationDoNotMatch() {
         // GIVEN
         definition.setVerification(true);
-        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
+        passwordFieldFactory = new PasswordFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         passwordFieldFactory.setComponentProvider(componentProvider);
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");

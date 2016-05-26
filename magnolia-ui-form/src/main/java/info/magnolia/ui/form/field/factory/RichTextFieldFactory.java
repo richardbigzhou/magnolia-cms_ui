@@ -34,10 +34,12 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -48,6 +50,7 @@ import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +58,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinService;
@@ -96,11 +98,19 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     protected MagnoliaRichTextField richTextEditor;
 
     @Inject
-    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, relatedFieldItem);
+    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport, AppController appController, SimpleTranslator i18n) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
         this.appController = appController;
         this.uiContext = uiContext;
         this.i18n = i18n;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #RichTextFieldFactory(RichTextFieldDefinition, Item, UiContext, I18NAuthoringSupport, AppController, SimpleTranslator)} instead.
+     */
+    @Deprecated
+    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
+        this(definition, relatedFieldItem, uiContext, Components.getComponent(I18NAuthoringSupport.class), appController, i18n);
     }
 
     @Override

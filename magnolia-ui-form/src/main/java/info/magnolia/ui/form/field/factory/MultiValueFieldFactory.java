@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -60,11 +61,19 @@ public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFi
     private I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18NAuthoringSupport i18nAuthoringSupport) {
-        super(definition, relatedFieldItem);
+    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nAuthoringSupport = i18nAuthoringSupport;
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #MultiValueFieldFactory(MultiValueFieldDefinition, Item, UiContext, I18NAuthoringSupport, FieldFactoryFactory, ComponentProvider)} instead.
+     */
+    @Deprecated
+    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18NAuthoringSupport i18nAuthoringSupport) {
+        this(definition, relatedFieldItem, null, i18nAuthoringSupport, fieldFactoryFactory, componentProvider);
     }
 
     /**
@@ -72,7 +81,7 @@ public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFi
      */
     @Deprecated
     public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
-        this(definition, relatedFieldItem, fieldFactoryFactory, componentProvider, null);
+        this(definition, relatedFieldItem, null, componentProvider.getComponent(I18NAuthoringSupport.class), fieldFactoryFactory, componentProvider);
     }
 
     @Override
