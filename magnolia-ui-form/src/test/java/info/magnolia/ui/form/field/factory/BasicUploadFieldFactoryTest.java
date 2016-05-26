@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -101,8 +102,8 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         // THEN
         CssLayout layout = field.getCssLayout();
         assertEquals(2, layout.getComponentCount());
-        assertTrue(layout.getComponent(0) instanceof Upload);
-        assertTrue(layout.getComponent(1) instanceof Label);
+        assertThat(layout.getComponent(0), instanceOf(Upload.class));
+        assertThat(layout.getComponent(1), instanceOf(Label.class));
         assertTrue(layout.getComponent(1).getStyleName().contains("upload-text"));
     }
 
@@ -122,13 +123,13 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         // THEN
         CssLayout layout = field.getCssLayout();
         assertEquals(3, layout.getComponentCount());
-        assertTrue(layout.getComponent(0) instanceof FormLayout);
-        assertTrue(layout.getComponent(0).getStyleName().contains("file-details"));
-        assertTrue(layout.getComponent(1) instanceof HorizontalLayout);
+        assertThat(layout.getComponent(0), instanceOf(FormLayout.class));
+        assertThat(layout.getComponent(0).getStyleName(), containsString("file-details"));
+        assertThat(layout.getComponent(1), instanceOf(HorizontalLayout.class));
         HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(1);
         assertEquals(2, horizontalLayout.getComponentCount());
-        assertTrue(horizontalLayout.getComponent(0) instanceof Upload);
-        assertTrue(layout.getComponent(2) instanceof Label);
+        assertThat(horizontalLayout.getComponent(0), instanceOf(Upload.class));
+        assertThat(layout.getComponent(2), instanceOf(Label.class));
         assertTrue(layout.getComponent(2).getStyleName().contains("preview-image"));
     }
 

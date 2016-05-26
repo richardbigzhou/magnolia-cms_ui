@@ -94,7 +94,7 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     @Test
     public void createFieldComponentTest() throws Exception {
         // GIVEN
-        factory = new MultiValueFieldFactory<>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
+        factory = new MultiValueFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -211,7 +211,7 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     }
 
     private void createField() {
-        factory = new MultiValueFieldFactory<MultiValueFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory = new MultiValueFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
         multiField = (MultiField) factory.createField();
     }

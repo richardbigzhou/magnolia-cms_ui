@@ -33,7 +33,12 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -45,8 +50,17 @@ import com.vaadin.ui.TextField;
  */
 public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefinition, String> {
 
+    @Inject
+    public HiddenFieldFactory(HiddenFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #HiddenFieldFactory(HiddenFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public HiddenFieldFactory(HiddenFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

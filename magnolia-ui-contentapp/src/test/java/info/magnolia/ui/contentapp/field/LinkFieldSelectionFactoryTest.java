@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -61,9 +62,6 @@ import org.junit.Test;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
-/**
- * Tests.
- */
 public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldSelectionDefinition> {
 
     private LinkFieldSelectionFactory builder;
@@ -79,7 +77,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         super.setUp();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
-        itemIds = new HashSet<Object>();
+        itemIds = new HashSet<>();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         WorkbenchView workbenchView = mock(WorkbenchView.class);
         doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
@@ -90,22 +88,22 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
     public void buildFieldSimpleTest() {
         // GIVEN
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
-        builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
+        builder = new LinkFieldSelectionFactory(definition, baseItem, uiContext, i18NAuthoringSupport, workbenchPresenter, eventBus);
         builder.setComponentProvider(componentProvider);
 
         // WHEN
         Field field = builder.createField();
 
         // THEN
-        assertEquals(true, field instanceof TextAndContentViewField);
-        assertEquals(true, ((TextAndContentViewField) field).getTextField().isVisible());
+        assertThat(field, instanceOf(TextAndContentViewField.class));
+        assertTrue(((TextAndContentViewField) field).getTextField().isVisible());
     }
 
     @Test
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
-        builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
+        builder = new LinkFieldSelectionFactory(definition, baseItem, uiContext, i18NAuthoringSupport, workbenchPresenter, eventBus);
         builder.setComponentProvider(componentProvider);
         Field field = builder.createField();
         itemIds.add(JcrItemUtil.getItemId(baseNode));
@@ -124,7 +122,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty(String.class, "initial"));
-        builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
+        builder = new LinkFieldSelectionFactory(definition, baseItem, uiContext, i18NAuthoringSupport, workbenchPresenter, eventBus);
         builder.setComponentProvider(componentProvider);
         Field field = builder.createField();
         itemIds.add(JcrItemUtil.getItemId(baseNode));

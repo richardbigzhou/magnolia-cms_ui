@@ -33,8 +33,13 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.factory.CheckBoxFieldFactory;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 
@@ -44,21 +49,16 @@ import com.vaadin.data.Item;
  */
 public class EnabledFieldFactory extends CheckBoxFieldFactory {
 
-    public EnabledFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    @Inject
+    public EnabledFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18NAuthoringSupport);
     }
 
-    // @Override
-    // public com.vaadin.data.Property getOrCreateProperty() {
-    // Property old = item.getItemProperty("enabled");
-    // String stringValue = "true";
-    // if (old != null) {
-    // stringValue = old.toString();
-    // }
-    // DefaultProperty prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
-    // item.removeItemProperty("enabled");
-    // item.addItemProperty("enabled", prop);
-    // return prop;
-    // }
-
+    /**
+     * @deprecated since 5.4.7 - use {@link #EnabledFieldFactory(CheckboxFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
+    public EnabledFieldFactory(CheckboxFieldDefinition definition, Item relatedFieldItem) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
+    }
 }

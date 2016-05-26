@@ -44,7 +44,7 @@ import java.util.List;
 public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     private String selectionType = "radio";
 
-    private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+    private List<SelectFieldOptionDefinition> options = new ArrayList<>();
 
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.

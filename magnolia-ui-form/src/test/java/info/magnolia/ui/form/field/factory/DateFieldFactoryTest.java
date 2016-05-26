@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
 
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -62,13 +63,13 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         cal.set(Calendar.YEAR, 2012);
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DateFieldFactory(definition, baseItem);
+        dialogDate = new DateFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogDate.setComponentProvider(componentProvider);
         // WHEN
         Field field = dialogDate.createField();
 
         // THEN
-        assertEquals(true, field instanceof PopupDateField);
+        assertThat(field, instanceOf(PopupDateField.class));
         assertEquals("yyyy-MM-dd", ((PopupDateField) field).getDateFormat());
         SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
         assertEquals("2012-03-02", sdf.format(field.getValue()));
@@ -83,7 +84,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         cal.set(Calendar.YEAR, 2012);
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DateFieldFactory(definition, baseItem);
+        dialogDate = new DateFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogDate.setComponentProvider(componentProvider);
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
@@ -94,7 +95,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         field.setValue(calNew.getTime());
 
         // THEN
-        assertEquals(true, field instanceof PopupDateField);
+        assertThat(field, instanceOf(PopupDateField.class));
         assertEquals("yyyy-MM-dd", ((PopupDateField) field).getDateFormat());
         SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
         assertEquals("2010-03-20", sdf.format(field.getValue()));
@@ -113,13 +114,13 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         definition.setTimeFormat("HH:mm");
         baseNode.setProperty(propertyName, cal);
         baseItem = new JcrNodeAdapter(baseNode);
-        dialogDate = new DateFieldFactory(definition, baseItem);
+        dialogDate = new DateFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogDate.setComponentProvider(componentProvider);
         // WHEN
         Field field = dialogDate.createField();
 
         // THEN
-        assertEquals(true, field instanceof PopupDateField);
+        assertThat(field, instanceOf(PopupDateField.class));
         assertEquals("yyyy-MM-dd HH:mm", ((PopupDateField) field).getDateFormat());
         SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
         assertEquals("2012-03-02 05:55", sdf.format(field.getValue()));

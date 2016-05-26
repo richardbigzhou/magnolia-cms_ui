@@ -54,7 +54,7 @@ public class HiddenFieldFactoryTest extends AbstractFieldFactoryTestCase<HiddenF
     public void testGetHiddenFieldPropertyDataSourceWhenItemNodeDoesNotIncludeHiddenProperty() throws Exception {
         // GIVEN
         definition.setDefaultValue("test");
-        factory = new HiddenFieldFactory(definition, baseItem);
+        factory = new HiddenFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -72,8 +72,8 @@ public class HiddenFieldFactoryTest extends AbstractFieldFactoryTestCase<HiddenF
     public void testGetHiddenFieldPropertyDataSourceWhenItemNodeIncludesHiddenProperty() throws Exception {
         // GIVEN
         definition.setDefaultValue("test2");
-        baseItem.addItemProperty("hiddenProperty", new ObjectProperty<String>("test1"));
-        factory = new HiddenFieldFactory(definition, baseItem);
+        baseItem.addItemProperty("hiddenProperty", new ObjectProperty<>("test1"));
+        factory = new HiddenFieldFactory(definition, baseItem, uiContext, i18NAuthoringSupport);
         factory.setComponentProvider(componentProvider);
 
         // WHEN

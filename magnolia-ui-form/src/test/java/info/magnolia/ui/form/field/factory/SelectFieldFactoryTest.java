@@ -379,7 +379,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setOptions(options);
         definition.setComparatorClass(TestComparator.class);
 
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect = new SelectFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport);
         componentProvider.setImplementation(TestComparator.class, TestComparator.class.getName());
         dialogSelect.setComponentProvider(componentProvider);
 
@@ -484,7 +484,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     private void initializeSelectFieldFactory() {
-        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect = new SelectFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport);
         dialogSelect.setComponentProvider(componentProvider);
     }
 

@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.field.factory;
 
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -41,7 +43,7 @@ import com.vaadin.data.Item;
 /**
  * Creates and initializes an Text code field definition.
  * 
- * @deprecated Since 5.4, use {@link CodeFieldFactory}.
+ * @deprecated since 5.4 - use {@link CodeFieldFactory} instead.
  * @param <D> type of definition
  */
 @Deprecated
@@ -49,6 +51,6 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
 
     @Deprecated
     public BasicTextCodeFieldFactory(D definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        super(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 }

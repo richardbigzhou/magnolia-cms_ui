@@ -33,10 +33,15 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 
 import java.util.Date;
 import java.util.TimeZone;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.Page;
@@ -52,8 +57,17 @@ import com.vaadin.ui.PopupDateField;
  */
 public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, Date> {
 
+    @Inject
+    public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #DateFieldFactory(DateFieldDefinition, Item, UiContext, I18NAuthoringSupport)} instead.
+     */
+    @Deprecated
     public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
     @Override

@@ -107,7 +107,7 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
     @Test
     public void createFieldComponentTest() throws Exception {
         // GIVEN
-        factory = new CompositeFieldFactory<CompositeFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18nAuthoringSupport);
+        factory = new CompositeFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN
@@ -174,7 +174,7 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
     }
 
     private void createField() {
-        factory = new CompositeFieldFactory<CompositeFieldDefinition>(definition, baseItem, subfieldFactory, componentProvider, i18NAuthoringSupport);
+        factory = new CompositeFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
         compositeField = (CompositeField) factory.createField();
     }

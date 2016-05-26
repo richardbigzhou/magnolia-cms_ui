@@ -89,7 +89,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * Deprecated since 5.3.9, please use {@link CompositeFieldDefinition#getFieldNames()} instead.
+     * @deprecated since 5.3.9 - use {@link CompositeFieldDefinition#getFieldNames()} instead.
      */
     @Deprecated
     public List<String> getFieldsName() {
@@ -97,7 +97,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * Deprecated since 5.3.9. It is not supported to add only a field name.
+     * @deprecated since 5.3.9. It is not supported to add only a field name.
      */
     @Deprecated
     public void addFieldName(String fieldName) {

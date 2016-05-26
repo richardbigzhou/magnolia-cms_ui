@@ -35,7 +35,10 @@ package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
@@ -75,10 +78,11 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionFactory(LinkFieldSelectionDefinition definition, Item relatedFieldItem, WorkbenchPresenter contentPresenter,
-                                     @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
-        super(definition, relatedFieldItem);
-        this.workbenchPresenter = contentPresenter;
+    public LinkFieldSelectionFactory(
+            LinkFieldSelectionDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport,
+            WorkbenchPresenter workbenchPresenter, @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
+        super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
+        this.workbenchPresenter = workbenchPresenter;
         this.chooseDialogEventBus = chooseDialogEventBus;
         // Item is build by the LinkFieldFactory and has only one property.
         // This property has the name of property we are supposed to propagate.
@@ -86,6 +90,14 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
         // This will allow to set the selected value to the desired property
         // name (handle by AbstractFieldFactory.getOrCreateProperty())
         definition.setName(propertyName);
+    }
+
+    /**
+     * @deprecated since 5.4.7 - use {@link #LinkFieldSelectionFactory(LinkFieldSelectionDefinition, Item, UiContext, I18NAuthoringSupport, WorkbenchPresenter, EventBus)} instead.
+     */
+    @Deprecated
+    public LinkFieldSelectionFactory(LinkFieldSelectionDefinition definition, Item relatedFieldItem, WorkbenchPresenter workbenchPresenter, @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), workbenchPresenter, chooseDialogEventBus);
     }
 
     @Override
