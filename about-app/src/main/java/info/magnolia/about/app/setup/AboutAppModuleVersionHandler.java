@@ -50,11 +50,9 @@ public class AboutAppModuleVersionHandler extends DefaultModuleVersionHandler {
 
     static final String CONFIG_INFO = "configInfo";
     static final String APP_LAUNCHER_APPS_PATH = "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/";
-    static final String ADMIN_CENTRAL_APPS_PATH = "/modules/ui-admincentral/apps/";
 
     public AboutAppModuleVersionHandler() {
         register(DeltaBuilder.update("5.4.7", "")
-                .addTask(new RemoveNodeTask("Remove old Config info app", ADMIN_CENTRAL_APPS_PATH + CONFIG_INFO))
                 .addTask(new RemoveNodeTask("Remove old Config info app from app launcher", APP_LAUNCHER_APPS_PATH + CONFIG_INFO))
                 .addTask(new BootstrapSingleResource("Configure about app", "", "/mgnl-bootstrap/about-app/config.modules.about-app.apps.about.xml"))
         );
@@ -63,7 +61,6 @@ public class AboutAppModuleVersionHandler extends DefaultModuleVersionHandler {
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new RemoveNodeTask("Remove old Config info app", ADMIN_CENTRAL_APPS_PATH + CONFIG_INFO));
         tasks.add(new RemoveNodeTask("Remove old Config info app from app launcher", APP_LAUNCHER_APPS_PATH + CONFIG_INFO));
         return tasks;
     }
