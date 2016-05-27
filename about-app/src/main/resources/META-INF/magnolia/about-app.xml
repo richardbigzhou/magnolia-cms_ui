@@ -31,22 +31,6 @@
   </components>
 
   <components>
-    <id>app-about-about</id>
-    <component>
-      <type>info.magnolia.about.app.AboutMainSubApp</type>
-      <implementation>info.magnolia.about.app.AboutMainSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.about.app.AboutPresenter</type>
-      <implementation>info.magnolia.about.app.AboutPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.about.app.AboutView</type>
-      <implementation>info.magnolia.about.app.AboutViewImpl</implementation>
-    </component>
-  </components>
-
-  <components>
     <id>app-about-config</id>
     <component>
       <type>info.magnolia.about.app.config.ConfigInfoSubApp</type>
