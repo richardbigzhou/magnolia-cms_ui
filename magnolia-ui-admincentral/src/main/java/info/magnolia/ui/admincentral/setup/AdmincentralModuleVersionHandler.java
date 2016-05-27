@@ -59,6 +59,7 @@ import info.magnolia.module.delta.OrderNodeBeforeTask;
 import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
+import info.magnolia.module.delta.PropertyValueDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
@@ -311,6 +312,18 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new PartialBootstrapTask("Add exception field to longRunning messageView", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.messageViews.xml", "/messageViews/longRunning/form/tabs/message/fields/exception"))));
         register(DeltaBuilder.update("5.4.4", "")
                 .addTask(new RemoveNodeTask("Remove Website Jcr Browser app from App Launcher", "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser")));
+
+        register(DeltaBuilder.update("5.4.7", "")
+                .addTask(new ArrayDelegateTask("Improve user profile dialog",
+                        new BootstrapSingleResource("", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.fieldTypes.xml"),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "dialogs/editUserProfile/form/tabs/preferences"),
+                        new PropertyValueDelegateTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/preferences/fields/language", "class", "info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition", true,
+                                new RemoveNodeTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/user/fields/language"),
+                                new MoveNodeTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/user/fields/language", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/preferences/fields/language", true)
+                        )
+                ))
+        );
+
         register(DeltaBuilder.update("5.5", "")
                 .addTask(new ArrayDelegateTask("Bulk actions", "Add configuration for bulk actions to footer.",
                         new PartialBootstrapTask("", "Register task action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.config.pulse.xml", "/pulse/presenters/tasks/bulkActions"),

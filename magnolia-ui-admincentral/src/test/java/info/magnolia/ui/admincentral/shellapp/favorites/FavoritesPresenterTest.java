@@ -131,6 +131,7 @@ public class FavoritesPresenterTest {
     public void tearDown() throws Exception {
         ComponentsTestUtil.clear();
         MgnlContext.setInstance(null);
+        UI.setCurrent(null);
     }
 
     /**

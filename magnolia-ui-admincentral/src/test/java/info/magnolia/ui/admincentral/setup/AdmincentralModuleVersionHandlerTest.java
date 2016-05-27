@@ -34,8 +34,7 @@
 package info.magnolia.ui.admincentral.setup;
 
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -678,12 +677,29 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.4"));
-        
+
         // THEN
         assertThat(pulseTask, hasNode("bulkActions"));
         assertThat(pulseTask, hasNode("bulkActions/archive"));
         assertThat(pulseTask, hasNode("bulkActions/claim"));
         assertThat(messageTask, hasNode("bulkActions"));
         assertThat(messageTask, hasNode("bulkActions/delete"));
+    }
+
+    @Test
+    public void updateFrom546() throws Exception {
+        // GIVEN
+        Node userProfileDialogTabs = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/", NodeTypes.ContentNode.NAME);
+        Node languageField = NodeUtil.createPath(userProfileDialogTabs, "/user/fields/language", NodeTypes.ContentNode.NAME);
+        languageField.setProperty("class", "info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.6"));
+
+        // THEN
+        assertThat(session.getRootNode(), hasNode("modules/ui-admincentral/fieldTypes/"));
+        assertThat(userProfileDialogTabs, hasNode("preferences/fields/language"));
+        assertThat(userProfileDialogTabs, hasNode("preferences/fields/timezone"));
+        assertThat(userProfileDialogTabs, not(hasNode("user/fields/language")));
     }
 }
