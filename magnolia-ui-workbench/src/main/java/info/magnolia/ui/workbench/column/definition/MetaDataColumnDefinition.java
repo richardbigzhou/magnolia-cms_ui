@@ -37,4 +37,23 @@ package info.magnolia.ui.workbench.column.definition;
  * Defines a column that displays the last modification date.
  */
 public class MetaDataColumnDefinition extends AbstractColumnDefinition {
+
+    private String dateFormat = "MMM d, yyyy";
+    private String timeFormat = "h:mm a";
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
 }

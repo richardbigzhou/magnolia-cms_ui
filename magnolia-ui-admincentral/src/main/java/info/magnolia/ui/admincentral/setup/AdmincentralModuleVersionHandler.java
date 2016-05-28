@@ -59,6 +59,7 @@ import info.magnolia.module.delta.OrderNodeBeforeTask;
 import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
+import info.magnolia.module.delta.PropertyValueDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
@@ -162,13 +163,13 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PartialBootstrapTask("Add renameItem dialog", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/renameItem"))
                 .addTask(new PartialBootstrapTask("Add rename action to Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/rename"))
 
-                // Update actionbars
+                        // Update actionbars
                 .addTask(new NodeExistsDelegateTask("Remove duplicateActions section from Configuration app.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/duplicateActions",
                         new RemoveNodeTask("Remove duplicateActions section from Configuration app", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/duplicateActions")))
                 .addTask(new PartialBootstrapTask("Add editActions section to Configuration app", "Adds editProperty, rename, and duplicate actions.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/editActions"))
                 .addTask(new OrderNodeAfterTask("Move editActions section after addingActions", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/editActions", "addingActions"))
 
-                // JCR App should extend Configuration App.
+                        // JCR App should extend Configuration App.
                 .addTask(new NodeExistsDelegateTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps",
                         new RemoveNodeTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps")))
                 .addTask(new PartialBootstrapTask("Add updated websiteJcrBrowser App subApps.", "It now extends Configuration app.", "/mgnl-bootstrap-prior-5_3/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps"))
@@ -186,7 +187,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PropertyExistsDelegateTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "icon",
                         new RemovePropertyTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", "icon")))
 
-                // update actionbar for confirmation
+                        // update actionbar for confirmation
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar",
                         new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME))));
 
@@ -200,7 +201,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NodeExistsDelegateTask("Conditional removal of the node /modules/ui-framework/config", "Removes the node /modules/ui-framework/config if it exists (it should empty)", RepositoryConstants.CONFIG, "/modules/ui-framework/config", new RemoveNodeTask("Removing the empty node /modules/ui-framework/config", "Removes the empty node /modules/ui-framework/config", RepositoryConstants.CONFIG, "/modules/ui-framework/config")))
                 .addTask(new RemoveHardcodedI18nPropertiesFromAdmincentralTask())
 
-                // update vaadin servlet params (we inject a custom UIProvider instead)
+                        // update vaadin servlet params (we inject a custom UIProvider instead)
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
 
@@ -222,11 +223,11 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         List<NodeTypeDefinition> types = new ArrayList<NodeTypeDefinition>();
 
                         types.add(NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager,
-                                        AdmincentralNodeTypes.Favorite.NAME,
-                                        Arrays.asList(
-                                                JcrConstants.NT_BASE,
-                                                NodeTypes.Created.NAME,
-                                                NodeTypes.LastModified.NAME))
+                                AdmincentralNodeTypes.Favorite.NAME,
+                                Arrays.asList(
+                                        JcrConstants.NT_BASE,
+                                        NodeTypes.Created.NAME,
+                                        NodeTypes.LastModified.NAME))
                         );
 
                         return types;
@@ -294,7 +295,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.3.4", "")
                 .addTask(new PartialBootstrapTask("Add restorePreviousVersion command", "Adds restorePreviousVersion command.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.commands.xml", "/commands/default/restorePreviousVersion")));
         register(DeltaBuilder.update("5.3.6", "")
-                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("","/modules/ui-admincentral/apps/"))
+                .addTask(new AddIsPublishedRuleToAllDeactivateActionsTask("", "/modules/ui-admincentral/apps/"))
         );
         register(DeltaBuilder.update("5.3.9", "")
                 .addTask(new PartialBootstrapTask("Add ConfigProtectedNodeRule rule to deactivation action.", "Add ConfigProtectedNodeRule rule to deactivation action.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/deactivate/availability/rules/ConfigProtectedNodeRule"))
@@ -312,6 +313,17 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         register(DeltaBuilder.update("5.4.4", "")
                 .addTask(new RemoveNodeTask("Remove Website Jcr Browser app from App Launcher", "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser")));
+
+        register(DeltaBuilder.update("5.4.7", "")
+                .addTask(new ArrayDelegateTask("Improve user profile dialog",
+                        new BootstrapSingleResource("", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.fieldTypes.xml"),
+                        new PartialBootstrapTask("", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "dialogs/editUserProfile/form/tabs/preferences"),
+                        new PropertyValueDelegateTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/preferences/fields/language", "class", "info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition", true,
+                                new RemoveNodeTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/user/fields/language"),
+                                new MoveNodeTask("", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/user/fields/language", "/modules/ui-admincentral/dialogs/editUserProfile/form/tabs/preferences/fields/language", true)
+                        )
+                ))
+        );
     }
 
     @Override
@@ -347,15 +359,15 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         Map<String, String[]> permissionsMap = new HashMap<String, String[]>();
 
         // DEV and TOOLS menu
-        permissionsMap.put("/modules/adminInterface/config/menu/tools", new String[] { // old 'Tools' menu is in 5 is split into two
+        permissionsMap.put("/modules/adminInterface/config/menu/tools", new String[]{ // old 'Tools' menu is in 5 is split into two
                 "/modules/ui-admincentral/config/appLauncherLayout/groups/tools", "/modules/ui-admincentral/config/appLauncherLayout/groups/dev"
         });
 
-        permissionsMap.put("/modules/adminInterface/config/menu/tools/websiteJCR", new String[] { "/modules/ui-admincentral/apps/websiteJcrBrowser" });
-        permissionsMap.put("/.magnolia/pages/configuration", new String[] { "/modules/ui-admincentral/apps/configuration" });
+        permissionsMap.put("/modules/adminInterface/config/menu/tools/websiteJCR", new String[]{"/modules/ui-admincentral/apps/websiteJcrBrowser"});
+        permissionsMap.put("/.magnolia/pages/configuration", new String[]{"/modules/ui-admincentral/apps/configuration"});
 
         // DATA menu
-        permissionsMap.put("/modules/adminInterface/config/menu/templating-kit/data", new String[] { "/modules/ui-admincentral/config/appLauncherLayout/groups/data" });
+        permissionsMap.put("/modules/adminInterface/config/menu/templating-kit/data", new String[]{"/modules/ui-admincentral/config/appLauncherLayout/groups/data"});
 
         return permissionsMap;
     }

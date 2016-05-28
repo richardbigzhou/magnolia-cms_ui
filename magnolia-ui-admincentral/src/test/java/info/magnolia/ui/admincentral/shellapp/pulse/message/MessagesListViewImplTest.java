@@ -37,9 +37,10 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.context.WebContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
@@ -62,9 +63,10 @@ public class MessagesListViewImplTest {
 
     @Before
     public void setUp() {
-        WebContext ctx = new MockWebContext();
+        MockWebContext ctx = new MockWebContext();
+        ctx.setUser(mock(User.class));
         MgnlContext.setInstance(ctx);
-        ComponentsTestUtil.setInstance(WebContext.class, ctx);
+        ComponentsTestUtil.setInstance(Context.class, ctx);
         ComponentsTestUtil.setImplementation(SystemContext.class, MockContext.class);
     }
 

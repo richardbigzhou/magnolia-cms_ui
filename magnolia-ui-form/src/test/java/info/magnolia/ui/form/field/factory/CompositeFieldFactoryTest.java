@@ -38,6 +38,9 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -52,6 +55,7 @@ import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
@@ -85,8 +89,15 @@ public class CompositeFieldFactoryTest extends AbstractFieldFactoryTestCase<Comp
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        final Context context = mock(Context.class);
+        when(context.getUser()).thenReturn(mock(User.class));
+        when(context.getLocale()).thenReturn(Locale.ENGLISH);
+
         i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
+        componentProvider.registerInstance(Context.class, context);
         componentProvider.registerInstance(ComponentProvider.class, componentProvider);
+        componentProvider.registerInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
         subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
