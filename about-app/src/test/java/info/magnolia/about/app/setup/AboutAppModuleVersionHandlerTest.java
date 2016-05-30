@@ -93,7 +93,7 @@ public class AboutAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
         // THEN
         Node subApps = configSession.getNode("/modules/about-app/apps/about");
-        assertThat(subApps, hasNode("subApps/about"));
+        assertThat(subApps, hasNode("subApps/main"));
         assertThat(subApps, hasNode("subApps/config"));
         assertThat(subApps, hasNode("subApps/mapping"));
         assertThat(subApps, hasProperty("appClass", AboutAppBaseApp.class.getName()));
@@ -107,17 +107,13 @@ public class AboutAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     private void removeOldConfigInfoFromAppLauncher(Version installedVersion) throws Exception{
         // GIVEN
         setupConfigNode(AboutAppModuleVersionHandler.APP_LAUNCHER_APPS_PATH + AboutAppModuleVersionHandler.CONFIG_INFO);
-        setupConfigNode(AboutAppModuleVersionHandler.ADMIN_CENTRAL_APPS_PATH + AboutAppModuleVersionHandler.CONFIG_INFO);
         Node apps = configSession.getNode(AboutAppModuleVersionHandler.APP_LAUNCHER_APPS_PATH);
-        Node admincentralApps = configSession.getNode(AboutAppModuleVersionHandler.ADMIN_CENTRAL_APPS_PATH);
         assertThat(apps, hasNode(AboutAppModuleVersionHandler.CONFIG_INFO));
-        assertThat(admincentralApps, hasNode(AboutAppModuleVersionHandler.CONFIG_INFO));
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(installedVersion);
 
         // THEN
         assertThat(apps, not(hasNode(AboutAppModuleVersionHandler.CONFIG_INFO)));
-        assertThat(admincentralApps, not(hasNode(AboutAppModuleVersionHandler.CONFIG_INFO)));
     }
 }
