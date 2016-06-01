@@ -22,12 +22,12 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.4.4/*</version>
+      <version>5.4.7/*</version>
     </dependency>
 
     <dependency>
       <name>ui-contentapp</name>
-      <version>5.4.4/*</version>
+      <version>5.4.7/*</version>
     </dependency>
   </dependencies>
 </module>

@@ -57,7 +57,7 @@
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
-      <version>5.4/*</version>
+      <version>5.4.7/*</version>
     </dependency>
   </dependencies>
 </module>

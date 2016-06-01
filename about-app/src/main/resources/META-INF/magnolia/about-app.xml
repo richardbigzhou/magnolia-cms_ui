@@ -65,7 +65,7 @@
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
-      <version>5.4/*</version>
+      <version>5.4.7/*</version>
     </dependency>
 
     <!-- Fake dependency to ensure the about app is last in the apps launcher's tools group. Should be replaced by another mechanism -->
