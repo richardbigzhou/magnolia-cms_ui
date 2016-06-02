@@ -35,9 +35,11 @@ package info.magnolia.ui.contentapp.browser.action;
 
 import info.magnolia.cms.beans.config.VersionConfig;
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.commands.impl.VersionCommand;
+import info.magnolia.context.Context;
+import info.magnolia.context.SimpleContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.VersionUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppContext;
@@ -57,6 +59,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +77,18 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
 
     private final VersionConfig versionConfig;
 
+    private final Context context;
+
+    @Inject
+    public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig, Context context) {
+        super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
+        this.versionManager = versionManager;
+        this.eventBus = eventBus;
+        this.versionConfig = versionConfig;
+        this.dialogID = "ui-contentapp:code:RestoreVersionAction.selectVersion";
+        this.context = context;
+    }
+
     /**
      * @deprecated since 5.3.5 - use {@link RestoreVersionAction(RestoreVersionActionDefinition, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, VersionManager, EventBus, VersionConfig)} instead.
      */
@@ -82,13 +97,12 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
         this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, Components.getComponent(VersionConfig.class));
     }
 
-    @Inject
+    /**
+     * @deprecated since 5.3.15 - use {@link RestoreVersionAction(RestoreVersionActionDefinition, AppContext, LocationController, UiContext, FormDialogPresenter, AbstractJcrNodeAdapter, SimpleTranslator, VersionManager, EventBus, VersionConfig, Context)}
+     */
+    @Deprecated
     public RestoreVersionAction(RestoreVersionActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n, VersionManager versionManager, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, VersionConfig versionConfig) {
-        super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
-        this.versionManager = versionManager;
-        this.eventBus = eventBus;
-        this.versionConfig = versionConfig;
-        this.dialogID = "ui-contentapp:code:RestoreVersionAction.selectVersion";
+        this(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus, versionConfig, Components.getComponent(Context.class));
     }
 
     @Override
@@ -158,12 +172,24 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
      * Creates a version with an extra comment before restoring.
      */
     protected Version createVersionBeforeRestore(Node node) throws RepositoryException {
-        NodeTypes.Versionable.set(node, "ui-contentapp.actions.restoreVersion.comment.restore");
-        node.getSession().save();
-        Version version = versionManager.addVersion(node);
-        NodeTypes.Versionable.set(node, null);
-        node.getSession().save();
-        return version;
+        VersionCommand versionCommand = new VersionCommand();
+        versionCommand.setRepository(node.getSession().getWorkspace().getName());
+        versionCommand.setPath(node.getPath());
+        versionCommand.setUuid(node.getIdentifier());
+        versionCommand.setComment("ui-contentapp.actions.restoreVersion.comment.restore");
+        versionCommand.setRecursive(false);
+        versionCommand.setUserName(context.getUser().getName());
+        try {
+            versionCommand.execute(new SimpleContext());
+        } catch (Exception e) {
+            throw new RepositoryException(e);
+        }
+        Version newestVersion = null;
+        VersionIterator versionIterator = versionManager.getAllVersions(node);
+        while (versionIterator.hasNext()) {
+            newestVersion = versionIterator.nextVersion();
+        }
+        return newestVersion;
     }
 
     /**
