@@ -63,18 +63,25 @@ import info.magnolia.security.app.container.RoleDropConstraint;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
+import info.magnolia.ui.contentapp.setup.DefaultActionToDelegateActionTask;
 import info.magnolia.ui.contentapp.setup.for5_3.ContentAppMigrationTask;
 import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.framework.setup.AddIsPublishedRuleToAllDeactivateActionsTask;
 import info.magnolia.ui.framework.setup.SetWritePermissionForActionsTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Version handler for Security app module.
  */
 public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    private final Task delegateActionForSecuritySubApps = new ArrayDelegateTask("Use delegate action for Security app", "Use delegate action as default action for Security app - double click on user/role will open edit dialog, double click on folder will expand it.",
+            new DefaultActionToDelegateActionTask("", "", "security", "users", new HashMap<String, String>() {{ put(NodeTypes.Folder.NAME, "expandNodeAction"); put(NodeTypes.User.NAME, "editUser"); }}),
+            new DefaultActionToDelegateActionTask("", "", "security", "groups", new HashMap<String, String>() {{ put(NodeTypes.Folder.NAME, "expandNodeAction"); put(NodeTypes.Group.NAME, "editGroup"); }}),
+            new DefaultActionToDelegateActionTask("", "", "security", "roles", new HashMap<String, String>() {{ put(NodeTypes.Folder.NAME, "expandNodeAction"); put(NodeTypes.Role.NAME, "editRole"); }}));
 
     public SecurityModuleVersionHandler() {
 
@@ -289,6 +296,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 "info.magnolia.ui.form.field.factory.SelectFieldFactory",
                                 "info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory")
                 ))
+        );
+        register(DeltaBuilder.update("5.4.7", "")
+            .addTask(delegateActionForSecuritySubApps)
         );
     }
 
