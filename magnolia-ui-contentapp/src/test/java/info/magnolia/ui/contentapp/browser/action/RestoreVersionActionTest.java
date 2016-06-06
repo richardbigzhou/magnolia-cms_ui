@@ -41,9 +41,12 @@ import info.magnolia.cms.beans.config.VersionConfig;
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
+import info.magnolia.cms.util.Rule;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.importexport.DataTransporter;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
@@ -61,14 +64,17 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Named;
+import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
+import org.apache.jackrabbit.api.JackrabbitNodeTypeManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.InputSource;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
@@ -95,6 +101,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
 
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        ComponentsTestUtil.setInstance(Context.class, MgnlContext.getInstance());
 
         versionManager = Components.getComponent(VersionManager.class);
         versionConfig = new VersionConfig();
@@ -114,6 +121,20 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         node.setProperty("mgnl:template", "home");
         node.addNode("areaSubNode", NodeTypes.Area.NAME);
         node.getNode("areaSubNode").setProperty("content", "version");
+
+        ((JackrabbitNodeTypeManager) webSiteSession.getWorkspace().getNodeTypeManager()).registerNodeTypes(new InputSource(getClass().getClassLoader().getResourceAsStream("mgnl-variants-nodetype.xml")));
+
+        DataTransporter.importXmlStream(
+                getClass().getClassLoader().getResourceAsStream("website.travel.tour-type.xml"),
+                "website",
+                "/",
+                "",
+                false,
+                ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW,
+                true,
+                true
+                );
+
         webSiteSession.save();
     }
 
@@ -288,6 +309,29 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         assertThat(versionIterator.nextVersion().getName(), is(version1_3.getName()));
         assertThat(versionIterator.nextVersion().getName(), is("1.4")); // Version created before restore
     }
+
+    @Test
+    public void restorePageWithVariantsDoesNotFailOnException() throws Exception {
+        // GIVEN
+        Node root = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE).getNode("/tour-type");
+
+        // Rule used by the publication command
+        Rule rule = new Rule();
+        rule.setAllowedTypes(new String[] {NodeTypes.ContentNode.NAME, NodeTypes.MetaData.NAME, NodeTypes.Resource.NAME});
+        versionManager.addVersion(root, rule);
+
+        versionManager.addVersion(root.getNode("variants"), rule);
+
+        MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, new JcrNodeAdapter(root), i18n, versionManager, eventBus, versionConfig, contentConnector);
+
+        // WHEN
+        Version restored = restoreVersionAction.createVersionBeforeRestore(root);
+
+        // THEN
+        // no exception occurs
+        assertNotNull(restored);
+    }
+
 
     private Version createVersion(final Node node, final String property, final String value) throws RepositoryException {
         node.setProperty(property, value);
