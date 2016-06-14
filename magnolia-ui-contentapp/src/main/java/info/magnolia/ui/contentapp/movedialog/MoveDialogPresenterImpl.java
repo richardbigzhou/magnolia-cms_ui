@@ -75,7 +75,6 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinitionMutator;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
-import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.HashMap;
@@ -201,32 +200,19 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             .setDialogWorkbench(true)
             .setEditable(false);
 
-        List<ContentPresenterDefinition> contentPresenters = workbenchDefinition.getContentViews();
-        Iterator<ContentPresenterDefinition> it = contentPresenters.iterator();
-        ContentPresenterDefinition treePresenterDef = null;
-        while (it.hasNext() && treePresenterDef == null) {
-            ContentPresenterDefinition contentPresenterDef = it.next();
-            if (TreePresenter.class.isAssignableFrom(contentPresenterDef.getImplementationClass())) {
-                treePresenterDef = prepareTreePresenter(contentPresenterDef);
-            }
-        }
-
-        if (treePresenterDef != null) {
-            contentPresenters.clear();
-            contentPresenters.add(treePresenterDef);
+        for (ContentPresenterDefinition contentPresenter : workbenchDefinition.getContentViews()) {
+            removeAllColumnsAfterFirst(contentPresenter);
         }
 
         return workbenchDefinition;
     }
 
-    private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
-        ContentPresenterDefinition def = MutableWrapper.wrap(treePresenter);
-        if (!def.getColumns().isEmpty()) {
-            ColumnDefinition column = def.getColumns().get(0);
-            def.getColumns().clear();
-            def.getColumns().add(column);
+    private void removeAllColumnsAfterFirst(ContentPresenterDefinition contentPresenter) {
+        if (!contentPresenter.getColumns().isEmpty()) {
+            ColumnDefinition column = contentPresenter.getColumns().get(0);
+            contentPresenter.getColumns().clear();
+            contentPresenter.getColumns().add(column);
         }
-        return def;
     }
 
     protected void initMovePossibilityPredicates() {
