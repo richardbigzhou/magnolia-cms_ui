@@ -140,6 +140,10 @@ public class SubAppContextImpl extends AbstractUIContext implements SubAppContex
         appContext.closeSubApp(instanceId);
     }
 
+    protected Shell getShell() {
+        return shell;
+    }
+
     @Override
     protected OverlayPresenter initializeOverlayPresenter() {
         return new OverlayPresenter() {

@@ -339,10 +339,10 @@
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
-    <!--<component>-->
-    <!--<type>info.magnolia.event.EventBus</type>-->
-    <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
-    <!--</component>-->
+    <type-mapping>
+      <type>info.magnolia.ui.api.app.SubAppContext</type>
+      <implementation>info.magnolia.ui.framework.app.SubAppContextImpl</implementation>
+    </type-mapping>
   </components>
 
   <components>
