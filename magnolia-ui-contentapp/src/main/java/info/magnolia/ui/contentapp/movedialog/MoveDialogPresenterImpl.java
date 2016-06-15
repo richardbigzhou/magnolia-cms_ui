@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.movedialog;
 
+import info.magnolia.config.MutableWrapper;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.ResettableEventBus;
@@ -44,7 +45,6 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
-import info.magnolia.ui.contentapp.DefinitionCloner;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -62,7 +62,7 @@ import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
-import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
@@ -70,8 +70,9 @@ import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinitionMutator;
 import info.magnolia.ui.workbench.tree.MoveHandler;
 import info.magnolia.ui.workbench.tree.MoveLocation;
 import info.magnolia.ui.workbench.tree.TreePresenter;
@@ -112,8 +113,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private final MoveHandler dropHandler;
 
-    private final DefinitionCloner cloner;
-
     private final Map<MoveLocation, ActionDefinition> actionMap = new HashMap<>();
 
     private final Map<MoveLocation, MovePossibilityPredicate> possibilityPredicates = new HashMap<>();
@@ -126,7 +125,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private Item currentHostCandidate;
 
-    private ConfiguredWorkbenchDefinition workbenchDefinition;
+    private WorkbenchDefinition workbenchDefinition;
 
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator, ContentConnector contentConnector) {
@@ -137,7 +136,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.i18nizer = i18nizer;
         this.contentConnector = contentConnector;
         this.dropHandler = componentProvider.newInstance(MoveHandler.class);
-        this.cloner = new DefinitionCloner();
     }
 
     @Override
@@ -148,7 +146,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     @Override
     public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<Item> nodesToMove, MoveActionCallback callback) {
 
-        final ConfiguredImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
+        final ImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
         this.workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
 
         this.nodesToMove = nodesToMove;
@@ -192,16 +190,16 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return dialogView;
     }
 
-    private ConfiguredImageProviderDefinition prepareImageProviderDefinition(BrowserSubAppDescriptor subAppDescriptor) {
-        return (ConfiguredImageProviderDefinition) cloner.deepClone(subAppDescriptor.getImageProvider());
+    private ImageProviderDefinition prepareImageProviderDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        return MutableWrapper.wrap(subAppDescriptor.getImageProvider());
     }
 
-    private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
-        final ConfiguredWorkbenchDefinition workbenchDefinition =
-                (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
+    private WorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        final WorkbenchDefinition workbenchDefinition = MutableWrapper.wrap(subAppDescriptor.getWorkbench());
 
-        workbenchDefinition.setDialogWorkbench(true);
-        workbenchDefinition.setEditable(false);
+        WorkbenchDefinitionMutator.accessMutable(workbenchDefinition)
+            .setDialogWorkbench(true)
+            .setEditable(false);
 
         List<ContentPresenterDefinition> contentPresenters = workbenchDefinition.getContentViews();
         Iterator<ContentPresenterDefinition> it = contentPresenters.iterator();
@@ -222,7 +220,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
-        ContentPresenterDefinition def = cloner.deepClone(treePresenter);
+        ContentPresenterDefinition def = MutableWrapper.wrap(treePresenter);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
             def.getColumns().clear();
