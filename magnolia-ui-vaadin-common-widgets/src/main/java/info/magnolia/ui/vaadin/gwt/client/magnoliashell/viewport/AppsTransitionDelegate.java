@@ -36,11 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.ShellState;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate.BaseTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.ZoomAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import java.util.logging.Logger;
 
@@ -56,7 +54,7 @@ import com.vaadin.client.Util;
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
  */
-public class AppsTransitionDelegate extends BaseTransitionDelegate {
+public class AppsTransitionDelegate implements TransitionDelegate {
 
     private static final Logger log = Logger.getLogger(AppsTransitionDelegate.class.getName());
 
@@ -70,8 +68,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int ZOOM_DURATION = 500;
 
-    private AppsViewportWidget viewport;
-
+    private final AppsViewportWidget viewport;
+    
     /**
      * Since we reveal the already loaded apps instantly - we could use a lock
      * that ensures the zooming animation is distracted with Vaadin layout.
@@ -88,7 +86,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         @Override
         protected void onComplete() {
             super.onComplete();
-            viewport.removeChildNoTransition(Util.<Widget>findWidget((Element) getElement(), null));
+            viewport.removeChildNoTransition(Util.<Widget>findWidget(getElement(), null));
         }
     };
 
@@ -140,8 +138,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     };
 
-    public AppsTransitionDelegate(final AppsViewportWidget viewport) {
-        this.viewport = viewport;
+    public AppsTransitionDelegate(final AppsViewportWidget viewportWidget) {
+        this.viewport = viewportWidget;
         curtainFadeOutAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper jq) {
@@ -149,8 +147,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             }
         });
 
-        Util.findConnectorFor(viewport).getConnection().addHandler(ApplicationConnection.ResponseHandlingStartedEvent.TYPE, communicationHandler);
-        Util.findConnectorFor(viewport).getConnection().addHandler(ApplicationConnection.ResponseHandlingEndedEvent.TYPE, communicationHandler);
+        Util.findConnectorFor(viewportWidget).getConnection().addHandler(ApplicationConnection.ResponseHandlingStartedEvent.TYPE, communicationHandler);
+        Util.findConnectorFor(viewportWidget).getConnection().addHandler(ApplicationConnection.ResponseHandlingEndedEvent.TYPE, communicationHandler);
     }
 
     /**
@@ -158,8 +156,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
      * closing an app doesn't zoom-in the next app, running apps are all hidden explicitly except current one.
      */
     @Override
-    public void setVisibleChild(final ViewportWidget viewport, final Widget app) {
-        if (!((AppsViewportWidget)viewport).isAppClosing() && isWidgetVisibilityHidden(app)) {
+    public void setVisibleChild(final Widget app) {
+        if (!viewport.isAppClosing() && isWidgetVisibilityHidden(app)) {
             viewport.showChildNoTransition(app);
             pendingAppZoomCommand = new Command() {
                 @Override
@@ -216,5 +214,10 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     @Override
     public boolean inProgress() {
         return zoomInAnimation.isRunning() || zoomOutAnimation.isRunning();
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        viewport.setVisible(active);
     }
 }
