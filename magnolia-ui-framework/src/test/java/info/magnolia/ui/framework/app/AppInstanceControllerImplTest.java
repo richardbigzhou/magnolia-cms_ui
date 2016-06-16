@@ -94,7 +94,6 @@ public class AppInstanceControllerImplTest {
     public static final String SUB_APP_FOO = "foo";
     public static final String SUB_APP_BAR = "bar";
 
-
     private MessagesManager messagesManager;
     private AppInstanceControllerImpl appInstanceControllerImpl;
     private SimpleTranslator i18n;
@@ -218,7 +217,6 @@ public class AppInstanceControllerImplTest {
         appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_FOO));
         appInstanceControllerImpl.openSubApp(new DefaultLocation("app", TEST_APP, SUB_APP_BAR));
 
-
         appInstanceControllerImpl.onFocus(SUB_APP_FOO);
         appInstanceControllerImpl.onClose(SUB_APP_FOO);
 
@@ -318,6 +316,7 @@ public class AppInstanceControllerImplTest {
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
         components.registerInstance(SimpleTranslator.class, i18n);
         components.registerInstance(AppContext.class, appContext);
+        components.addTypeMapping(SubAppContext.class, SubAppContextImpl.class);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(components);

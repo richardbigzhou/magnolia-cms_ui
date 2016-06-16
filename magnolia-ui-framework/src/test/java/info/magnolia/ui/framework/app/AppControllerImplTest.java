@@ -60,6 +60,7 @@ import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventHandler;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
 import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
@@ -541,6 +542,7 @@ public class AppControllerImplTest {
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
         components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
+        components.addTypeMapping(SubAppContext.class, SubAppContextImpl.class);
 
         components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
