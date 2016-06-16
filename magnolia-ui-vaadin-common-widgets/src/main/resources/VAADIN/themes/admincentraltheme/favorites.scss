@@ -28,7 +28,7 @@
 
 .favorites-group input[type="text"] {
   color:$c40;
-  font-family:DINWebPro, Verdana, sans-serif;
+  font-family:$heading;
   font-size:18px;
   width: 335px;
   height:31px;
@@ -140,7 +140,7 @@
 }
 
 .favorites-form .dialog-header .title {
-  font-family: DINWebPro, sans-serif;
+  font-family: $heading;
   font-size: 14px;
   line-height: 18px;
   height: 1em;
