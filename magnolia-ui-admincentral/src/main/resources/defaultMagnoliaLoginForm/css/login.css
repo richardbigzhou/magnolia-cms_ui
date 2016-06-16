@@ -45,7 +45,7 @@ a, a:focus {
 ::selection { background: #93BAC6; color: #fff; text-shadow: none; }
 
 .tagline {
-  font-family: DINWebPro;
+  font-family: DINWebPro, Verdana, sans-serif;
   text-transform:capitalize;
 }
 
@@ -71,7 +71,7 @@ button.btn-submit {
   background:#3E5900;
   color:white;
   border:none;
-  font-family:DINWebPro;
+  font-family:DINWebPro, Verdana, sans-serif;
   font-size:12px;
   margin-right: 20px;
   height: 23px;
@@ -94,7 +94,7 @@ button.btn-submit:active {
 
 .mgnl-form {
   background-color: #739821;
-  font-family: DINWebPro;
+  font-family: DINWebPro, Verdana, sans-serif;
   height: 154px;
   padding-bottom: 2px;
 }
@@ -104,7 +104,7 @@ button.btn-submit:active {
   display:inline-block;;
   width:80px;
   color:#3e5900;
-  font-family:DINWebPro;
+  font-family:DINWebPro, Verdana, sans-serif;
   font-size:12px;
   margin-top:7px;
   margin-left:20px;
