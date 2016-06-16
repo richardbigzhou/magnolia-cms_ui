@@ -157,7 +157,7 @@ public class AppsTransitionDelegate implements TransitionDelegate {
      */
     @Override
     public void setVisibleChild(final Widget app) {
-        if (!viewport.isAppClosing() && isWidgetVisibilityHidden(app)) {
+        if (ShellState.get().isAppStarting() && isWidgetVisibilityHidden(app)) {
             viewport.showChildNoTransition(app);
             pendingAppZoomCommand = new Command() {
                 @Override
