@@ -46,7 +46,7 @@ public class ShellState {
 
     private static Logger log = Logger.getLogger(ShellState.class.getName());
 
-    private static enum StateType {
+    private enum StateType {
 
         shellAppStarting,
 

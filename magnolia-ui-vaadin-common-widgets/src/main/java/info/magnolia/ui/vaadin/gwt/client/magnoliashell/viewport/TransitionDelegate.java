@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
-
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,31 +41,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface TransitionDelegate {
 
-    void setActive(ViewportWidget viewport, boolean active);
+    void setActive(boolean active);
 
-    void setVisibleChild(ViewportWidget viewport, Widget app);
+    void setVisibleChild(Widget app);
 
     boolean inProgress();
-
-    /**
-     * The Class BaseTransitionDelegate with the bypass mechanism.
-     */
-    static abstract class BaseTransitionDelegate implements TransitionDelegate {
-
-        @Override
-        public void setActive(ViewportWidget viewport, boolean active) {
-            viewport.setVisible(active);
-        }
-
-        @Override
-        public void setVisibleChild(ViewportWidget viewport, Widget app) {
-            viewport.showChildNoTransition(app);
-        }
-
-        @Override
-        public boolean inProgress() {
-            return false;
-        }
-    }
 
 }

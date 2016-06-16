@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.SlideAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
@@ -124,7 +123,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Slides down if active, fades out if inactive - except if the viewport is closing.
      */
     @Override
-    public void setActive(final ViewportWidget viewport, boolean active) {
+    public void setActive(boolean active) {
         final Element viewportElement = viewport.getElement();
         if (active) {
             boolean isViewportCurrentlyVisible = viewport.isVisible();
@@ -148,8 +147,8 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Cross-fades between shell apps.
      */
     @Override
-    public void setVisibleChild(final ViewportWidget viewport, final Widget visibleChild) {
-        if (viewport.getVisibleChild() == null || !((ShellAppsViewportWidget)viewport).isActive()) {
+    public void setVisibleChild(final Widget visibleChild) {
+        if (viewport.getVisibleChild() == null || !viewport.isActive()) {
             // do not fade if first widget or viewport not active yet
             viewport.showChildNoTransition(visibleChild);
         } else {
