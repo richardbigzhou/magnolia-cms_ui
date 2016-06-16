@@ -32,7 +32,7 @@
   height:1.2em;
   padding: 11px 0 6px 4px;
   color:$c50;
-  font-family:DINWebPro, Verdana;
+  font-family:$heading;
   font-size:15px;
   font-weight:normal;
 }
@@ -73,7 +73,7 @@
 }
 
 .v-action .v-text {
-  font-family:DINWebPro-Light, DINWebPro, Verdana;
+  font-family:$heading-light;
 }
 .v-actionbar .v-action .v-text {display:none;}
 .v-actionbar-open .v-action .v-text {display:inline;}
@@ -265,7 +265,7 @@
   color:$c80;
   padding-left:10px;
   font-size:14px;
-  font-family:DINWebPro-Light, DINWebPro, Verdana;
+  font-family:$heading-light;
   height: 24px;
   line-height: 23px;
 }
