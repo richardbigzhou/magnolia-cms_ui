@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
+
 import java.util.Iterator;
 
 import com.google.gwt.core.client.Scheduler;
@@ -48,7 +50,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 /**
  * Shell apps viewport client side.
  */
-public class ShellAppsViewportWidget extends ViewportWidget {
+public class ShellAppsViewportWidget extends ViewportWidget<ShellAppsTransitionDelegate> {
 
     private Listener listener;
 
@@ -106,7 +108,7 @@ public class ShellAppsViewportWidget extends ViewportWidget {
     }
 
     public void setActive(boolean active) {
-        getTransitionDelegate().setActive(this, active);
+        getTransitionDelegate().setActive(active);
         this.active = active;
     }
 

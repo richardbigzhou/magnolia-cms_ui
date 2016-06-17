@@ -70,7 +70,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 /**
  * Client side implementation of Apps viewport.
  */
-public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandlers {
+public class AppsViewportWidget extends ViewportWidget<AppsTransitionDelegate> implements HasSwipeHandlers {
 
     public static final String APP_INACTIVE_CLASS_NAME = "app-inactive";
 
@@ -209,7 +209,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     public void setCurtainVisible(boolean visible) {
         if (isCurtainVisible != visible) {
             this.isCurtainVisible = visible;
-            ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(isCurtainVisible);
+            getTransitionDelegate().setCurtainVisible(isCurtainVisible);
         }
     }
 
@@ -231,7 +231,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     @Override
     public void removeChild(Widget w) {
-        ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
+        getTransitionDelegate().removeWidget(w);
         getElement().removeChild(closeButton.getElement());
         getElement().removeChild(fullScreenButton.getElement());
     }

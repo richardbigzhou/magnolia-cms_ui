@@ -40,23 +40,25 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
+ *
+ * @param <T> type of {@link TransitionDelegate} which backs up a concrete viewport widget
  */
-public class ViewportWidget extends FlowPanel {
+public class ViewportWidget<T extends TransitionDelegate> extends FlowPanel {
 
     private Widget visibleChild;
 
-    private TransitionDelegate transitionDelegate;
+    private T transitionDelegate;
 
     public ViewportWidget() {
         super();
         addStyleName("v-viewport");
     }
 
-    public TransitionDelegate getTransitionDelegate() {
+    public T getTransitionDelegate() {
         return transitionDelegate;
     }
 
-    public void setTransitionDelegate(TransitionDelegate transitionDelegate) {
+    public void setTransitionDelegate(T transitionDelegate) {
         this.transitionDelegate = transitionDelegate;
     }
 
@@ -66,7 +68,7 @@ public class ViewportWidget extends FlowPanel {
 
     public void showChild(Widget w) {
         if (w != visibleChild) {
-            transitionDelegate.setVisibleChild(this, w);
+            transitionDelegate.setVisibleChild(w);
             visibleChild = w;
         }
     }
