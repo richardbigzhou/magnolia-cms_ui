@@ -172,6 +172,14 @@ button.btn-form-wide {
   padding-left: 150px;
   display: block;
 
+  &.validation-highlight {
+    border: 2px solid $c70;
+    background-color: white;
+    margin: 3px 4px 3px 0;
+    padding-right: 36px;
+    padding-left: 148px;
+  }
+
   .v-select-optiongroup {
     padding-top: 3px;
   }
@@ -179,13 +187,6 @@ button.btn-form-wide {
   .v-datefield-button {
     margin: 2px 0 0 3px;
   }
-}
-
-.validation-highlight {
-    border: 2px solid $c70;
-    background-color: white;
-    margin-top: 3px;
-    margin-bottom:3px;
 }
 
 .v-form-field-section {
