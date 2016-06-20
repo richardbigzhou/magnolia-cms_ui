@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
@@ -171,24 +174,6 @@ public class JcrNodeAdapterTest {
         // Create a new property
         DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty(propertyName, property);
-
-        // WHEN
-        boolean res = adapter.removeItemProperty(propertyName);
-
-        // THEN
-        assertTrue(res);
-        assertEquals(1, adapter.getItemPropertyIds().size());
-    }
-
-    @Test
-    public void removeItemPropertyWithNewPropertyModified() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode(nodeName);
-        node.setProperty(propertyName, "");
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Create a new property
-        DefaultProperty property = (DefaultProperty) adapter.getItemProperty(propertyName);
-        property.setValue("newValue");
         assertNotNull(property);
 
         // WHEN
@@ -196,7 +181,32 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(res);
-        assertEquals(1, adapter.getItemPropertyIds().size());
+        assertThat(adapter.getItemPropertyIds(), hasSize(0));
+        assertThat(adapter.getJcrItem(), not(hasProperty(propertyName)));
+        adapter.applyChanges();
+        assertThat(adapter.getJcrItem(), not(hasProperty(propertyName)));
+    }
+
+    @Test
+    public void removeItemPropertyWithNewPropertyModified() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode(nodeName);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        // Create a new property
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(String.class, "");
+        adapter.addItemProperty(propertyName, property);
+        property.setValue(modified);
+        assertNotNull(property);
+
+        // WHEN
+        boolean res = adapter.removeItemProperty(propertyName);
+
+        // THEN
+        assertTrue(res);
+        assertThat(adapter.getItemPropertyIds(), hasSize(0));
+        assertThat(adapter.getJcrItem(), not(hasProperty(propertyName)));
+        adapter.applyChanges();
+        assertThat(adapter.getJcrItem(), not(hasProperty(propertyName)));
     }
 
     @Test
@@ -208,14 +218,17 @@ public class JcrNodeAdapterTest {
         // Create a new property
         DefaultProperty property = (DefaultProperty) adapter.getItemProperty(propertyName);
         // Modify the new property
-        property.setValue(propertyValue);
+        property.setValue(modified);
 
         // WHEN
         boolean res = adapter.removeItemProperty(propertyName);
 
         // THEN
         assertTrue(res);
-        assertEquals(1, adapter.getItemPropertyIds().size());
+        assertThat(adapter.getItemPropertyIds(), hasSize(0));
+        assertThat(adapter.getJcrItem(), hasProperty(propertyName));
+        adapter.applyChanges();
+        assertThat(adapter.getJcrItem(), not(hasProperty(propertyName)));
     }
 
     @Test

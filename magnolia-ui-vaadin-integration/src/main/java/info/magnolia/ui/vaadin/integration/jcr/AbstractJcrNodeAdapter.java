@@ -306,10 +306,19 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                     log.error("Could not set JCR Property {}", propertyId, e);
                 }
             } else {
-                removeItemProperty(propertyId);
                 log.debug("Property '{}' has a null value: Will be removed", propertyId);
+                // too late to call #removeItemProperty, already processing changed properties, so we only mark it for deletion
+                markPropertyForDeletion(propertyId);
             }
         }
+    }
+
+    /**
+     * Marks the given property ID for removal upon next properties update (typically via #applyChanges).
+     */
+    protected void markPropertyForDeletion(String propertyId) {
+        // value doesn't matter in the removedProperties map, it should be just a set
+        getRemovedProperties().put(propertyId, null);
     }
 
     /**
