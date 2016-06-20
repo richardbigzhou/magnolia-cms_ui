@@ -54,7 +54,6 @@ import com.vaadin.data.Property;
  */
 public class JcrNodeAdapterTest {
 
-    private final String workspaceName = "workspace";
     private final String nodeName = "node";
     private final String propertyName = "property";
     private final String propertyValue = "value";
@@ -63,6 +62,7 @@ public class JcrNodeAdapterTest {
 
     @Before
     public void setUp() {
+        String workspaceName = "workspace";
         session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
         ctx.addSession(workspaceName, session);
@@ -75,7 +75,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testAddItemProperty() throws Exception {
+    public void addItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         DefaultProperty<String> property = new DefaultProperty<String>(String.class, propertyValue);
@@ -90,7 +90,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetItemPropertyWithUnknownProperty() throws Exception {
+    public void getItemPropertyWithUnknownProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -103,7 +103,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testIsNew() throws Exception {
+    public void isNew() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
 
@@ -115,7 +115,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetItemPropertyWithNewProperty() throws Exception {
+    public void getItemPropertyWithNewProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -130,7 +130,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetItemPropertyWithExistingProperty() throws Exception {
+    public void getItemPropertyWithExistingProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         node.setProperty(propertyName, propertyValue);
@@ -146,7 +146,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetItemPropertyWithModifiedProperty() throws Exception {
+    public void getItemPropertyWithModifiedProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -164,7 +164,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testRemoveItemPropertyWithNewProperty() throws Exception {
+    public void removeItemPropertyWithNewProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -181,7 +181,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testRemoveItemPropertyWithNewPropertyModified() throws Exception {
+    public void removeItemPropertyWithNewPropertyModified() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         node.setProperty(propertyName, "");
@@ -200,7 +200,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testRemoveItemPropertyWithPropertyModified() throws Exception {
+    public void removeItemPropertyWithPropertyModified() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         node.setProperty(propertyName, propertyValue);
@@ -219,7 +219,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testRemoveItemPropertyWithExistingProperty() throws Exception {
+    public void removeItemPropertyWithExistingProperty() throws Exception {
         // GIVEN
         // Create a empty node
         String nodeName = "nodeName";
@@ -239,7 +239,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testRemoveItemPropertyWithUnknownProperty() throws Exception {
+    public void removeItemPropertyWithUnknownProperty() throws Exception {
         // GIVEN
         // Create a empty node
         String nodeName = "nodeName";
@@ -259,7 +259,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithNewProperty() throws Exception {
+    public void getNodeUpdatesNodeWithNewProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -279,7 +279,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithExistingPropertyModified() throws Exception {
+    public void getNodeUpdatesNodeWithExistingPropertyModified() throws Exception {
         // GIVEN
         String id_2 = "propertyName_2";
         String value_2 = "value_2";
@@ -305,7 +305,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithMixedModifiedProperties() throws Exception {
+    public void getNodeUpdatesNodeWithMixedModifiedProperties() throws Exception {
         // GIVEN
         String id_2 = "propertyName_2";
         String value_2 = "value_2";
@@ -338,7 +338,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeExceptReadOnlyProperty() throws Exception {
+    public void getNodeUpdatesNodeExceptReadOnlyProperty() throws Exception {
         // GIVEN
         String id_2 = "propertyName_2";
         String value_2 = "value_2";
@@ -376,7 +376,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithPropertyRemoved() throws Exception {
+    public void getNodeUpdatesNodeWithPropertyRemoved() throws Exception {
         // GIVEN
         String id_2 = "propertyName_2";
         String value_2 = "value_2";
@@ -406,7 +406,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithMixedPropertiesRemoved() throws Exception {
+    public void getNodeUpdatesNodeWithMixedPropertiesRemoved() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         // Add three property (JCR)
@@ -446,7 +446,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithNewPropertyRemoved() throws Exception {
+    public void getNodeUpdatesNodeWithNewPropertyRemoved() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -476,7 +476,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testUpdatePropertyWithNullValue() throws Exception {
+    public void updatePropertyWithNullValue() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         node.setProperty(propertyName, propertyValue);
@@ -494,7 +494,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testReturnedPropertiesAreInSync() throws RepositoryException {
+    public void returnedPropertiesAreInSync() throws RepositoryException {
 
         // GIVEN
         Node parentNode = session.getRootNode().addNode("node");
@@ -512,7 +512,7 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
-    public void testReturnsPropertiesWithChangedValues() throws RepositoryException {
+    public void returnsPropertiesWithChangedValues() throws RepositoryException {
 
         Node parentNode = session.getRootNode().addNode("node");
         parentNode.setProperty("name", "");
