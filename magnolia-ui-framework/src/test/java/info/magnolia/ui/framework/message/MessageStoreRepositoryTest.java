@@ -59,6 +59,7 @@ import com.google.common.collect.Maps;
 public class MessageStoreRepositoryTest extends RepositoryTestCase {
 
     private static final String USER = "user";
+    private static final String USER_WITH_AT = "user@user.cz";
     public static final String WORKSPACE = "messages";
     public static final String REPOSITORY = "magnolia";
     public static final String NODE_TYPES = "/info/magnolia/ui/framework/message/test-system-messages-nodetypes.xml";
@@ -90,7 +91,7 @@ public class MessageStoreRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMessageAmount() throws Exception {
+    public void getMessageAmount() throws Exception {
         // WHEN
         long amountWithoutTypeSpecified = messageStore.getMessageAmount(USER, Lists.<MessageType>newArrayList());
         long amountWithAllTypesIncluded = messageStore.getMessageAmount(USER, Arrays.asList(MessageType.values()));
@@ -103,7 +104,7 @@ public class MessageStoreRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testFetchMessages() throws Exception {
+    public void fetchMessages() throws Exception {
         // GIVEN
         List<MessageType> noTypes = Lists.newArrayList();
         HashMap<String, Boolean> noSort = Maps.newHashMap();
@@ -125,7 +126,7 @@ public class MessageStoreRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNumberOfUnclearedMessagesForUser() throws Exception {
+    public void getNumberOfUnclearedMessagesForUser() throws Exception {
         //GIVEN
         error.setCleared(false);
         warning.setCleared(true);
@@ -139,6 +140,49 @@ public class MessageStoreRepositoryTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(1, count);
+    }
+
+    @Test
+    public void getNumberOfUnclearedMessagesForUserWithAtInName() throws Exception {
+        //GIVEN
+        messageStore.saveMessage(USER_WITH_AT, error);
+        messageStore.saveMessage(USER_WITH_AT, warning);
+        messageStore.saveMessage(USER_WITH_AT, info);
+
+        // WHEN
+        int count = messageStore.getNumberOfUnclearedMessagesForUser(USER_WITH_AT);
+
+        // THEN
+        assertEquals(3, count);
+    }
+
+    @Test
+    public void getMessageAmounForUserWithAtInName() throws Exception {
+        //GIVEN
+        messageStore.saveMessage(USER_WITH_AT, error);
+        messageStore.saveMessage(USER_WITH_AT, warning);
+        messageStore.saveMessage(USER_WITH_AT, info);
+
+        // WHEN
+        long amountWithoutTypeSpecified = messageStore.getMessageAmount(USER_WITH_AT, Lists.<MessageType>newArrayList());
+
+        // THEN
+        assertEquals(3, amountWithoutTypeSpecified);
+    }
+
+    @Test
+    public void fetchMessagesForUserWithAtInName() throws Exception {
+        //GIVEN
+        messageStore.saveMessage(USER_WITH_AT, error);
+        messageStore.saveMessage(USER_WITH_AT, warning);
+        messageStore.saveMessage(USER_WITH_AT, info);
+
+        // WHEN
+        final List<Message> allMessages = messageStore.getMessages(USER_WITH_AT, Lists.<MessageType>newArrayList(), Maps.<String, Boolean>newHashMap(), 3, 0);
+
+        // THEN
+        assertEquals(3, allMessages.size());
+        assertThat(allMessages, containsMessages(error, warning, info));
     }
 
     private Message createMessage(String id, MessageType type) {
