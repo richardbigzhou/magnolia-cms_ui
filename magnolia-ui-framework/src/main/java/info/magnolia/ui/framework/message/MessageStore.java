@@ -86,8 +86,8 @@ public class MessageStore {
     protected static final String ASCENDING_KEYWORD = " asc";
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    private static final String QUERY_MESSAGE_STATEMENT = "select * from [mgnl:systemMessage] where ISDESCENDANTNODE([/%s])";
-    private static final String UNCLEARED_MSG_QUERY = "select * from [mgnl:systemMessage] as t where isdescendantnode([/%s]) and t.[cleared] = %s";
+    private static final String QUERY_MESSAGE_STATEMENT = "select * from [mgnl:systemMessage] where ISDESCENDANTNODE(['/%s'])";
+    private static final String UNCLEARED_MSG_QUERY = "select * from [mgnl:systemMessage] as t where isdescendantnode(['/%s']) and t.[cleared] = %s";
 
     /**
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
