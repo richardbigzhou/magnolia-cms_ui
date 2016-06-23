@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser.action;
 
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.impl.RestorePreviousVersionCommand;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.CommandActionDefinition;
@@ -110,7 +111,8 @@ public class RestoreItemPreviousVersionAction<D extends CommandActionDefinition>
     @Override
     protected Map<String, Object> buildParams(Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
-        params.put("parentNodeTypeOnly", getDefinition().isParentNodeTypeOnly());
+        params.put(RestorePreviousVersionCommand.ATTRIBUTE_PARENT_NODE_TYPE_ONLY, getDefinition().isParentNodeTypeOnly());
+        params.put(RestorePreviousVersionCommand.ATTRIBUTE_RULE, getDefinition().getRule());
         return params;
     }
 }
