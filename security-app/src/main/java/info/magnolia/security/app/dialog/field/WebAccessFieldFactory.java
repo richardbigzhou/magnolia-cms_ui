@@ -33,46 +33,43 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import static info.magnolia.security.app.dialog.field.AccessControlListField.NewEntryHandler;
+
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.security.app.dialog.field.AccessControlListField.EntryFieldFactory;
+import info.magnolia.security.app.dialog.field.validator.WebAccessControlValidator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractOrderedLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * Field builder for the web access field.
+ * Field factory for the web access ACL field; unlike other field factories, it does not read ACLs straight from the JCR adapter.
+ *
+ * <p>First, reading and saving entries from/to the role node is delegated to an {@link AccessControlList}.
+ * This typed ACL is then carried over as a property of the dialog item to the save action,
+ * where it gets removed from the item, not to interfere with the JCR adapter.
  *
  * @see WebAccessFieldDefinition
+ * @see info.magnolia.security.app.dialog.action.SaveRoleDialogAction
  */
-public class WebAccessFieldFactory extends AbstractAccessFieldFactory<WebAccessFieldDefinition, Object> {
+public class WebAccessFieldFactory extends AbstractAccessFieldFactory<WebAccessFieldDefinition, AccessControlList> {
 
     private static final String ACL_NODE_NAME = "acl_uri";
-    private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
-    private static final String PATH_PROPERTY_NAME = "path";
-
     private final SimpleTranslator i18n;
 
     @Inject
@@ -90,139 +87,57 @@ public class WebAccessFieldFactory extends AbstractAccessFieldFactory<WebAccessF
     }
 
     @Override
-    protected Field<Object> createFieldComponent() {
+    protected Field<AccessControlList> createFieldComponent() {
+        final Map<Long, String> permissionItems = ImmutableMap.of(
+                Permission.ALL, i18n.translate("security.web.field.getPost"),
+                Permission.READ, i18n.translate("security.web.field.get"),
+                Permission.NONE, i18n.translate("security.web.field.deny"));
 
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setSpacing(true);
+        final String validatorErrorMessage = i18n.translate("security-app.role.web.errorMessage");
 
-        try {
-
-            final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
-
-            final VerticalLayout aclLayout = new VerticalLayout();
-
-            final Label emptyLabel = new Label(i18n.translate("security.web.field.noAccess"));
-
-            // Since JcrNewNodeAdapter.getJcrItem() returns the parent node we need to skip this step because we don't want to inspect the parent node
-            if (!(roleItem instanceof JcrNewNodeAdapter)) {
-                Node roleNode = roleItem.getJcrItem();
-                if (roleNode.hasNode(ACL_NODE_NAME)) {
-
-                    final Node aclNode = roleNode.getNode(ACL_NODE_NAME);
-                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                    roleItem.addChild(aclItem);
-
-                    for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-
-                        AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
-                        aclItem.addChild(entryItem);
-
-                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                        aclLayout.addComponent(ruleRow);
-                    }
-                }
-            }
-
-            if (aclLayout.getComponentCount() == 0) {
-                aclLayout.addComponent(emptyLabel);
-            }
-
-            final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button(i18n.translate("security.web.field.addNew"));
-            addButton.addClickListener(new Button.ClickListener() {
-
-                @Override
-                public void buttonClick(Button.ClickEvent event) {
-
-                    try {
-                        AbstractJcrNodeAdapter aclItem = getOrAddAclItem(roleItem, ACL_NODE_NAME);
-                        JcrNewNodeAdapter newItem = addAclEntryItem(aclItem);
-                        Component ruleRow = createRuleRow(aclLayout, newItem, emptyLabel);
-                        aclLayout.removeComponent(emptyLabel);
-                        aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
-
-                    } catch (RepositoryException e) {
-                        throw new RuntimeRepositoryException(e);
-                    }
-                }
-            });
-            buttons.addComponent(addButton);
-            aclLayout.addComponent(buttons);
-
-            layout.addComponent(aclLayout);
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-
-        return new CustomField<Object>() {
-
+        AccessControlListField aclField = new AccessControlListField(permissionItems, new NewEntryHandler() {
             @Override
-            protected Component initContent() {
-                return layout;
-            }
-
-            @Override
-            public Class<?> getType() {
-                return Object.class;
-            }
-        };
-    }
-
-    private Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
-
-        final HorizontalLayout ruleLayout = new HorizontalLayout();
-        ruleLayout.setSpacing(true);
-        ruleLayout.setWidth("100%");
-
-        NativeSelect accessRights = new NativeSelect();
-        accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, i18n.translate("security.web.field.getPost"));
-        accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, i18n.translate("security.web.field.get"));
-        accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, i18n.translate("security.web.field.deny"));
-        accessRights.setNullSelectionAllowed(false);
-        accessRights.setImmediate(true);
-        accessRights.setInvalidAllowed(false);
-        accessRights.setNewItemsAllowed(false);
-        Property permissionsProperty = ruleItem.getItemProperty(PERMISSIONS_PROPERTY_NAME);
-        if (permissionsProperty == null) {
-            permissionsProperty = new DefaultProperty<Long>(Long.class, Permission.ALL);
-            ruleItem.addItemProperty(PERMISSIONS_PROPERTY_NAME, permissionsProperty);
-        }
-        accessRights.setPropertyDataSource(permissionsProperty);
-        ruleLayout.addComponent(accessRights);
-
-        TextField path = new TextField();
-        path.setWidth("100%");
-        Property pathProperty = ruleItem.getItemProperty(PATH_PROPERTY_NAME);
-        if (pathProperty == null) {
-            pathProperty = new DefaultProperty<String>(String.class, "/*");
-            ruleItem.addItemProperty(PATH_PROPERTY_NAME, pathProperty);
-        }
-        path.setPropertyDataSource(pathProperty);
-        ruleLayout.addComponent(path);
-        ruleLayout.setExpandRatio(path, 1.0f);
-
-        final Button deleteButton = new Button();
-        deleteButton.setHtmlContentAllowed(true);
-        deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        deleteButton.addStyleName("inline");
-        deleteButton.setDescription(i18n.translate("security.web.field.delete"));
-        deleteButton.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                parentContainer.removeComponent(ruleLayout);
-                ruleItem.getParent().removeChild(ruleItem);
-                if (parentContainer.getComponentCount() == 1) {
-                    parentContainer.addComponent(emptyLabel, 0);
-                }
+            public AccessControlList.Entry createEntry() {
+                return new AccessControlList.Entry(Permission.ALL, "/*");
             }
         });
-        ruleLayout.addComponent(deleteButton);
+        aclField.setEntryFieldFactory(new EntryFieldFactory() {
+            @Override
+            public Field<AccessControlList.Entry> createField(AccessControlList.Entry entry) {
+                AccessControlField entryField = new AccessControlField(permissionItems);
+                entryField.setPropertyDataSource(new ObjectProperty<>(entry));
+                entryField.addValidator(new WebAccessControlValidator(validatorErrorMessage));
+                return entryField;
+            }
+        });
 
-        return ruleLayout;
+        aclField.setAddButtonCaption(i18n.translate("security.web.field.addNew"));
+        aclField.setRemoveButtonCaption(i18n.translate("security.web.field.delete"));
+        aclField.setEmptyPlaceholderCaption(i18n.translate("security.web.field.noAccess"));
+
+        return aclField;
+    }
+
+    @Override
+    protected Property<AccessControlList> initializeProperty() {
+        // prepare backing AccessControlList bean
+        JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
+        AccessControlList<AccessControlList.Entry> acl = new AccessControlList<>();
+        roleItem.addItemProperty(ACL_NODE_NAME, new ObjectProperty<>(acl));
+
+        // feed entries if role node exists
+        if (!roleItem.isNew()) {
+            try {
+                Node roleNode = roleItem.getJcrItem();
+                if (roleNode.hasNode(ACL_NODE_NAME)) {
+                    Node aclNode = roleNode.getNode(ACL_NODE_NAME);
+                    acl.readEntries(aclNode);
+                }
+            } catch (RepositoryException e) {
+                throw new RuntimeRepositoryException(e);
+            }
+        }
+
+        return new ObjectProperty<AccessControlList>(acl);
     }
 }

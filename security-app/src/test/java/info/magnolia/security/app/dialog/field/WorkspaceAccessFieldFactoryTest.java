@@ -38,15 +38,12 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
-import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.IOException;
@@ -63,7 +60,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -86,6 +82,12 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
         when(i18n.translate("security.workspace.field.delete")).thenReturn("Delete");
         when(i18n.translate("security.workspace.field.noAccess")).thenReturn("No access.");
         when(i18n.translate("security.workspace.field.addButton")).thenReturn("Add new");
+        when(i18n.translate("security.workspace.field.readWrite")).thenReturn("Read and write");
+        when(i18n.translate("security.workspace.field.readOnly")).thenReturn("Read-only");
+        when(i18n.translate("security.workspace.field.denyAccess")).thenReturn("Deny-access");
+        when(i18n.translate("security.workspace.field.selected")).thenReturn("Selected");
+        when(i18n.translate("security.workspace.field.subnodes")).thenReturn("Sub nodes");
+        when(i18n.translate("security.workspace.field.selectedSubnodes")).thenReturn("Selected and sub nodes");
 
         componentProvider = new MockComponentProvider();
     }
@@ -93,38 +95,6 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
     @Override
     protected void createConfiguredFieldDefinition() {
         this.definition = new WorkspaceAccessFieldDefinition();
-    }
-
-    @Test
-    public void testShowsAddButtonAndEmptyLabelWhenEmpty() {
-
-        // GIVEN
-        MockSession session = new MockSession(RepositoryConstants.CONFIG);
-        MockUtil.setSessionAndHierarchyManager(session);
-        JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
-
-
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
-
-        // WHEN
-        Field<Object> field = builder.createFieldComponent();
-
-        // THEN
-        VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
-        assertEquals(1, layout.getComponentCount());
-
-        VerticalLayout aclLayout = (VerticalLayout) layout.iterator().next();
-        assertEquals(2, aclLayout.getComponentCount());
-
-        Iterator<Component> aclLayoutIterator = aclLayout.iterator();
-        Label emptyLabel = (Label) aclLayoutIterator.next();
-        assertEquals("No access.", emptyLabel.getValue());
-
-        HorizontalLayout buttonLayout = (HorizontalLayout) aclLayoutIterator.next();
-        assertEquals(1, buttonLayout.getComponentCount());
-
-        Button addButton = (Button) buttonLayout.iterator().next();
-        assertEquals("Add new", addButton.getCaption());
     }
 
     @Test
@@ -145,23 +115,17 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
-        Field<Object> field = builder.createFieldComponent();
+        Field<AccessControlList> field = builder.createField();
 
         // THEN
-        VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
-        assertEquals(1, layout.getComponentCount());
-
-        VerticalLayout aclLayout = (VerticalLayout) layout.iterator().next();
+        VerticalLayout aclLayout = (VerticalLayout) ((HasComponents) field).iterator().next();
         assertEquals(2, aclLayout.getComponentCount());
 
         Iterator<Component> aclLayoutIterator = aclLayout.iterator();
 
-        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
+        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
 
-        HorizontalLayout buttonLayout = (HorizontalLayout) aclLayoutIterator.next();
-        assertEquals(1, buttonLayout.getComponentCount());
-
-        Button addButton = (Button) buttonLayout.iterator().next();
+        Button addButton = (Button) aclLayoutIterator.next();
         assertEquals("Add new", addButton.getCaption());
     }
 
@@ -183,23 +147,17 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
-        Field<Object> field = builder.createFieldComponent();
+        Field<AccessControlList> field = builder.createField();
 
         // THEN
-        VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
-        assertEquals(1, layout.getComponentCount());
-
-        VerticalLayout aclLayout = (VerticalLayout) layout.iterator().next();
+        VerticalLayout aclLayout = (VerticalLayout) ((HasComponents) field).iterator().next();
         assertEquals(2, aclLayout.getComponentCount());
 
         Iterator<Component> aclLayoutIterator = aclLayout.iterator();
 
-        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/foobar");
+        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/foobar");
 
-        HorizontalLayout buttonLayout = (HorizontalLayout) aclLayoutIterator.next();
-        assertEquals(1, buttonLayout.getComponentCount());
-
-        Button addButton = (Button) buttonLayout.iterator().next();
+        Button addButton = (Button) aclLayoutIterator.next();
         assertEquals("Add new", addButton.getCaption());
     }
 
@@ -218,33 +176,36 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
-        Field<Object> field = builder.createFieldComponent();
+        Field<AccessControlList> field = builder.createField();
 
         // THEN
-        VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
-        assertEquals(1, layout.getComponentCount());
-
-        VerticalLayout aclLayout = (VerticalLayout) layout.iterator().next();
+        VerticalLayout aclLayout = (VerticalLayout) ((HasComponents) field).iterator().next();
         assertEquals(2, aclLayout.getComponentCount());
 
         Iterator<Component> aclLayoutIterator = aclLayout.iterator();
 
-        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, AccessControlList.ACCESS_TYPE_NODE, "/foobar");
+        assertEntryLayout((HorizontalLayout) aclLayoutIterator.next(), Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE, "/foobar");
     }
 
     private void assertEntryLayout(HorizontalLayout entryLayout, long expectedPermissions, long expectedAccessType, String expectedPath) {
         Iterator<Component> entryLayoutIterator = entryLayout.iterator();
+        AccessControlField acField = (AccessControlField) entryLayoutIterator.next();
 
-        NativeSelect permissions = (NativeSelect) entryLayoutIterator.next();
+        Iterator<Component> acFieldLayoutIterator = acField.iterator();
+        HorizontalLayout acFieldHorizonLayout = (HorizontalLayout) acFieldLayoutIterator.next();
+
+        Iterator<Component> acFieldHorizonLayoutIterator = acFieldHorizonLayout.iterator();
+
+        NativeSelect permissions = (NativeSelect) acFieldHorizonLayoutIterator.next();
         assertEquals(expectedPermissions, permissions.getValue());
 
-        NativeSelect accessType = (NativeSelect) entryLayoutIterator.next();
+        NativeSelect accessType = (NativeSelect) acFieldHorizonLayoutIterator.next();
         assertEquals(expectedAccessType, accessType.getValue());
 
-        TextField path = (TextField) entryLayoutIterator.next();
+        TextField path = (TextField) acFieldHorizonLayoutIterator.next();
         assertEquals(expectedPath, path.getValue());
 
-        Button chooseButton = (Button) entryLayoutIterator.next();
+        Button chooseButton = (Button) acFieldHorizonLayoutIterator.next();
         assertEquals("Choose...", chooseButton.getCaption());
 
         Button deleteButton = (Button) entryLayoutIterator.next();
