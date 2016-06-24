@@ -36,6 +36,7 @@ package info.magnolia.security.app.dialog.field;
 import static info.magnolia.test.hamcrest.NodeMatchers.hasProperty;
 import static org.junit.Assert.*;
 
+import info.magnolia.security.app.dialog.field.AccessControlList.Entry;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 
@@ -44,19 +45,16 @@ import javax.jcr.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Tests for {@link AccessControlList}.
- */
 public class AccessControlListTest {
 
-    private AccessControlList accessControlList;
+    private AccessControlList<Entry> accessControlList;
     private Node aclNode;
     private static String ROOT_PATH = "/";
     private static String TEST_PATH = "/random";
 
     @Before
     public void setUp() {
-        accessControlList = new AccessControlList();
+        accessControlList = new AccessControlList<>();
         MockSession session = new MockSession("acl");
         aclNode = new MockNode(session);
     }
@@ -64,91 +62,33 @@ public class AccessControlListTest {
     @Test
     public void testGetEntryByNodeAccessTypeNodeWithRootPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE, ROOT_PATH));
+        accessControlList.addEntry(new Entry(0L, ROOT_PATH));
         accessControlList.saveEntries(aclNode);
 
         //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
+        Entry entry = accessControlList.createEntry(aclNode.getNode("0"));
 
         //THEN
         assertEquals(ROOT_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_NODE, entry.getAccessType());
     }
 
     @Test
     public void testGetEntryByNodeAccessTypeNodeWithTestPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE, TEST_PATH));
+        accessControlList.addEntry(new Entry(0L, TEST_PATH));
         accessControlList.saveEntries(aclNode);
 
         //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
+        Entry entry = accessControlList.createEntry(aclNode.getNode("0"));
 
         //THEN
         assertEquals(TEST_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_NODE, entry.getAccessType());
-    }
-
-    @Test
-    public void testGetEntryByNodeAccessTypeChildrenWithRootPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_CHILDREN, ROOT_PATH));
-        accessControlList.saveEntries(aclNode);
-
-        //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
-
-        //THEN
-        assertEquals(ROOT_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_CHILDREN, entry.getAccessType());
-    }
-
-    @Test
-    public void testGetEntryByNodeAccessTypeChildrenWithTestPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_CHILDREN, TEST_PATH));
-        accessControlList.saveEntries(aclNode);
-
-        //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
-
-        //THEN
-        assertEquals(TEST_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_CHILDREN, entry.getAccessType());
-    }
-
-    @Test
-    public void testGetEntryByNodeAccessTypeNodeAndChildrenWithRootPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, ROOT_PATH));
-        accessControlList.saveEntries(aclNode);
-
-        //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
-
-        //THEN
-        assertEquals(ROOT_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, entry.getAccessType());
-    }
-
-    @Test
-    public void testGetEntryByNodeAccessTypeNodeAndChildrenWithRTestPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, TEST_PATH));
-        accessControlList.saveEntries(aclNode);
-
-        //WHEN
-        AccessControlList.Entry entry = accessControlList.getEntryByNode(aclNode.getNode("0"));
-
-        //THEN
-        assertEquals(TEST_PATH, entry.getPath());
-        assertEquals(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, entry.getAccessType());
     }
 
     @Test
     public void testSaveEntriesAccessTypeNodeWithRootPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE, ROOT_PATH));
+        accessControlList.addEntry(new Entry(0L, ROOT_PATH));
 
         //WHEN
         accessControlList.saveEntries(aclNode);
@@ -161,7 +101,7 @@ public class AccessControlListTest {
     @Test
     public void testSaveEntriesAccessTypeNodeWithTestPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE, TEST_PATH));
+        accessControlList.addEntry(new Entry(0L, TEST_PATH));
 
         //WHEN
         accessControlList.saveEntries(aclNode);
@@ -172,56 +112,26 @@ public class AccessControlListTest {
     }
 
     @Test
-    public void testSaveEntriesAccessTypeChildrenWithRootPath() throws Exception {
+    public void saveEntriesWithNullPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_CHILDREN, ROOT_PATH));
+        accessControlList.addEntry(new Entry(0L, null));
 
         //WHEN
         accessControlList.saveEntries(aclNode);
 
         //THEN
-        assertTrue(aclNode.hasNodes());
-        assertThat(aclNode.getNode("0"), hasProperty("path", ROOT_PATH + "*"));
+        assertFalse(aclNode.hasNodes());
     }
 
     @Test
-    public void testSaveEntriesAccessTypeChildrenWithTestPath() throws Exception {
+    public void saveEntriesWithEmptyPath() throws Exception {
         //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_CHILDREN, TEST_PATH));
+        accessControlList.addEntry(new Entry(0L, ""));
 
         //WHEN
         accessControlList.saveEntries(aclNode);
 
         //THEN
-        assertTrue(aclNode.hasNodes());
-        assertThat(aclNode.getNode("0"), hasProperty("path", TEST_PATH + "/*"));
-    }
-
-    @Test
-    public void testSaveEntriesAccessTypeNodeAndChildrenWithRootPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, ROOT_PATH));
-
-        //WHEN
-        accessControlList.saveEntries(aclNode);
-
-        //THEN
-        assertTrue(aclNode.hasNodes());
-        assertThat(aclNode.getNode("0"), hasProperty("path", ROOT_PATH));
-        assertThat(aclNode.getNode("00"), hasProperty("path", ROOT_PATH + "*"));
-    }
-
-    @Test
-    public void testSaveEntriesAccessTypeNodeAndChildrenWithTestPath() throws Exception {
-        //GIVEN
-        accessControlList.addEntry(new AccessControlList.Entry(0, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, TEST_PATH));
-
-        //WHEN
-        accessControlList.saveEntries(aclNode);
-
-        //THEN
-        assertTrue(aclNode.hasNodes());
-        assertThat(aclNode.getNode("0"), hasProperty("path", TEST_PATH));
-        assertThat(aclNode.getNode("00"), hasProperty("path", TEST_PATH + "/*"));
+        assertFalse(aclNode.hasNodes());
     }
 }
