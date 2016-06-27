@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.config.MutableWrapper;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -46,7 +47,6 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.contentapp.DefinitionCloner;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -60,8 +60,8 @@ import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinitionMutator;
 import info.magnolia.ui.framework.app.SubAppActionExecutor;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector;
 
@@ -109,8 +109,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private FormPresenter formPresenter;
 
-    private final DefinitionCloner cloner;
-
     private EditorDefinition editorDefinition;
 
     private Item item;
@@ -143,7 +141,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.checker = checker;
         this.contentConnector = contentConnector;
         this.formPresenter = formPresenter;
-        this.cloner = new DefinitionCloner();
     }
 
     public DetailView start(EditorDefinition editorDefinition, DetailView.ViewType viewType, Object itemId) {
@@ -215,11 +212,11 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
      * @see ConfiguredFieldDefinition#setReadOnly(boolean)
      */
     private FormDefinition cloneFormDefinitionReadOnly(FormDefinition formDefinition) {
-        FormDefinition formDefinitionClone = cloner.deepClone(formDefinition);
+        final FormDefinition formDefinitionClone = MutableWrapper.wrap(formDefinition);
 
         for (TabDefinition tab : formDefinitionClone.getTabs()) {
             for (FieldDefinition field : tab.getFields()) {
-                ((ConfiguredFieldDefinition) field).setReadOnly(true);
+                FieldDefinitionMutator.accessMutable(field).setReadOnly(true);
             }
         }
 

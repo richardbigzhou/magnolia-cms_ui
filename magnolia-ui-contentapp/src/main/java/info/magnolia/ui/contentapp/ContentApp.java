@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp;
 
+import info.magnolia.config.MutableWrapper;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
@@ -46,13 +47,14 @@ import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionRendererDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinitionMutator;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinitionMutator;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinitionMutator;
 
 import java.util.Map;
 
@@ -72,7 +74,7 @@ public class ContentApp extends BaseApp {
     public static final String COMMIT_CHOOSE_DIALOG_ACTION = "commit";
 
     private final ComponentProvider componentProvider;
-    private final DefinitionCloner cloner = new DefinitionCloner();
+
     private ChooseDialogPresenter presenter;
 
     @Inject
@@ -135,37 +137,40 @@ public class ContentApp extends BaseApp {
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) appContext.getDefaultSubAppDescriptor();
 
         // work on cloned definition so that we don't spoil raw config
-        ConfiguredChooseDialogDefinition chooseDialogDefinition = (ConfiguredChooseDialogDefinition) cloner.deepClone(definition);
+
+        ChooseDialogDefinition chooseDialogDefinition = MutableWrapper.wrap(definition);
+        final ChooseDialogDefinitionMutator dialogDefinitionMutator = ChooseDialogDefinitionMutator.accessMutable(chooseDialogDefinition);
 
         // ensure contentConnector
         if (definition.getContentConnector() == null) {
-            ContentConnectorDefinition contentConnector = cloner.deepClone(subApp.getContentConnector());
+            ContentConnectorDefinition contentConnector = MutableWrapper.wrap(subApp.getContentConnector());
             if (StringUtils.isNotBlank(targetTreeRootPath) && contentConnector instanceof JcrContentConnectorDefinition) {
-                ((ConfiguredJcrContentConnectorDefinition) contentConnector).setRootPath(targetTreeRootPath);
+                JcrContentConnectorDefinitionMutator.accessMutable((JcrContentConnectorDefinition) contentConnector).setRootPath(targetTreeRootPath);
             }
-            chooseDialogDefinition.setContentConnector(contentConnector);
+
+            dialogDefinitionMutator.setContentConnector(contentConnector);
         }
+
 
         // ensure workbench field
         if (chooseDialogDefinition.getField() == null) {
             WorkbenchFieldDefinition workbenchField = new WorkbenchFieldDefinition();
             workbenchField.setName("workbenchField");
-            chooseDialogDefinition.setField(workbenchField);
+            dialogDefinitionMutator.setField(workbenchField);
         }
 
         if (chooseDialogDefinition.getField() instanceof WorkbenchFieldDefinition) {
-            WorkbenchFieldDefinition workbenchField = (WorkbenchFieldDefinition) chooseDialogDefinition.getField();
+            final WorkbenchFieldDefinition workbenchField = (WorkbenchFieldDefinition) chooseDialogDefinition.getField();
 
             if (workbenchField.getWorkbench() == null) {
-                ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) cloner.deepClone(subApp.getWorkbench());
+                WorkbenchDefinition workbench = MutableWrapper.wrap(subApp.getWorkbench());
                 // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
-                workbench.setDialogWorkbench(true);
+                WorkbenchDefinitionMutator.accessMutable(workbench).setDialogWorkbench(true);
                 workbenchField.setWorkbench(workbench);
             }
 
             if (workbenchField.getImageProvider() == null) {
-                ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
-                workbenchField.setImageProvider(imageProvider);
+                workbenchField.setImageProvider(subApp.getImageProvider());
             }
         }
 
