@@ -53,7 +53,10 @@ import com.rits.cloning.Cloner;
  * Note: Initially we wanted to avoid cloning all proxy {@link net.sf.cglib.proxy.Callback} fields of definitions, which we
  * use extensively in the i18n mechanism. But that leads to the cloned object to still delegate method calls to the original
  * due to proxy specifics.
+ *
+ * @deprecated since 5.4.8 - use {@link info.magnolia.config.MutableWrapper} instead (primarily due to the complications described above).
  */
+@Deprecated
 public class DefinitionCloner extends Cloner {
 
     public DefinitionCloner() {
