@@ -258,12 +258,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.14.8</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-server</artifactId>
         <version>${vaadinVersion}</version>
