@@ -25,7 +25,7 @@
 
 .form-error {
   padding: 10px 16px 10px 16px;
-  margin-top: 2px;
+  margin-bottom: 2px;
   background-color: $c70;
   color: $c80;
 }
@@ -42,7 +42,7 @@
 .v-form-layout {
   overflow-x: hidden;
   background-color: $c16;
-  margin-top: 25px;
+  margin-top: 21px;
   width: 100%;
 }
 
@@ -152,28 +152,24 @@ button.btn-form-wide {
 .v-form-field-label {
   text-align: right;
   width: 140px;
-  margin-right: 12px;
+  margin: 2px 5px;
+  padding: 2px 0px;
   color: $c10;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  vertical-align: top; /*needed by FF*/
   line-height: 25px;
   position: absolute;
 }
 
 .v-form-field-container {
-  margin-top: 1px;
-  padding-right: 40px;
-  padding-left: 150px;
-  display: block;
+  margin: 1px 3px;
+  padding: 2px 35px 2px 150px; /* 35 stands for 40 with margin and border */
+  border: 2px solid transparent;
 
   &.validation-highlight {
-    border: 2px solid $c70;
+    border-color: $c70;
     background-color: white;
-    margin: 3px 4px 3px 0;
-    padding-right: 36px;
-    padding-left: 148px;
   }
 
   .v-select-optiongroup {
@@ -187,11 +183,11 @@ button.btn-form-wide {
 
 .v-form-field-section {
   color: $c90;
-  margin-bottom: 11px;
+  margin-bottom: 3px;
 }
 
 .validation-message-inline, .help-message-inline {
-  margin-bottom: 10px;
+  margin: 0 3px 10px;
   padding-top: 5px;
   position: relative;
 }
@@ -281,6 +277,7 @@ button.btn-form-wide {
 fieldset {
   border: 0px none;
   padding: 0;
+  margin: 0;
 }
 
 .form-content .v-form-layout > fieldset {
