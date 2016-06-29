@@ -3,44 +3,47 @@
 @mixin form {
 
 .form-panel {
-    margin:0 auto;
-    padding:0;
-    width:100%;
-    max-width:100%;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .form-content {
-  overflow:hidden;
-  transition-property:height;
-  transition-duration:1s;
+  overflow: hidden;
+  transition-property: height;
+  transition-duration: 1s;
 }
 
 .form-content .v-shell-tabsheet-scroller {
-  position:static !important;
-  max-height:450px;
+  position: static !important;
+  max-height: 450px;
 }
-.tablet .form-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
+.tablet .form-content .v-shell-tabsheet-scroller {
+  max-height: 385px; /* Ensure form footer is visible on the iPad */
+}
 
-.form-error {padding:10px 16px 10px 16px;}
+.form-error {
+  padding: 10px 16px 10px 16px;
+  margin-bottom: 2px;
+  background-color: $c70;
+  color: $c80;
+}
 
-.form-error {margin-top:2px;}
-
-/*
-* Tabsheet color
-*/
+/* Tabsheet color */
 .form-panel .v-shell-tabsheet {
-    background-color: $c16;
+  background-color: $c16;
 }
 
 .form-panel .v-shell-tabsheet .nav li.active {
-    background-color: $c16;
+  background-color: $c16;
 }
 
 .v-form-layout {
-    overflow-x: hidden;
-    background-color: $c16;
-    margin-top:25px;
-    width: 100%;
+  overflow-x: hidden;
+  background-color: $c16;
+  margin-top: 21px;
+  width: 100%;
 }
 
 .v-form-field-label,
@@ -50,99 +53,92 @@
 }
 
 .v-form-layout .v-form-field {
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 .v-form-layout .v-form-field.textcodefield {
-  height : 200px;
-}
-
-.form-error {
-    background-color:$c70;
-    color:$c80;
+  height: 200px;
 }
 
 .form-help {
-    float: right;
-    margin-right: 0px;
+  float: right;
+  margin-right: 0px;
 }
 
 button.btn-form-select {
-    margin-left: 2px;
+  margin-left: 2px;
 }
 
 button.btn-form-help {
-    background: url("img/icon-help.png") no-repeat scroll center center transparent;
-    border: none;
-    float: right;
-    height: 18px;
-    margin: 0;
-    margin-right: 3px;
-    padding: 0;
-    width: 18px;
-    position: relative;
-    top:-1px;
-    cursor: pointer;
+  background: url("img/icon-help.png") no-repeat scroll center center transparent;
+  border: none;
+  float: right;
+  height: 18px;
+  margin: 0;
+  margin-right: 3px;
+  padding: 0;
+  width: 18px;
+  position: relative;
+  top: -1px;
+  cursor: pointer;
 
-    &:focus{
-      outline: $c22 solid 2px;
-    }
-    &::-moz-focus-inner {
-      border: 0;
+  &:focus {
+    outline: $c22 solid 2px;
+  }
+  &::-moz-focus-inner {
+    border: 0;
   }
 }
 
 button.btn-form-wide {
-    background:none;
-    border: none;
-    float: right;
-    margin: -8px -8px 0 8px;
-    padding: 8px;
-    position: relative;
-    cursor: pointer;
-    font-size:14px;
-    color: $c50;
+  background: none;
+  border: none;
+  float: right;
+  margin: -8px -8px 0 8px;
+  padding: 8px;
+  position: relative;
+  cursor: pointer;
+  font-size: 14px;
+  color: $c50;
 
-    &:hover,&:focus, &:active {
-      color: $c52;
-    }
-    &:focus{
-      outline: $c22 solid 2px;
-    }
-    &::-moz-focus-inner {
-      border: 0;
+  &:hover, &:focus, &:active {
+    color: $c52;
+  }
+  &:focus {
+    outline: $c22 solid 2px;
+  }
+  &::-moz-focus-inner {
+    border: 0;
   }
 }
 
 .wide textarea {
-    min-height:100px;
+  min-height: 100px;
 }
 
-  .help-icon {
-    position: absolute;
-    line-height: 1;
-    margin-top: -1px;
-  }
+.help-icon {
+  position: absolute;
+  line-height: 1;
+  margin-top: -1px;
+}
 
-  .help-icon .icon-help-l {
-    color: $c12;
-    font-size: 28px;
-  }
+.help-icon .icon-help-l {
+  color: $c12;
+  font-size: 28px;
+}
 
+.help-icon.highlighted .icon-shape-circle-plus, .help-icon.highlighted .icon-help-mark {
+  color: $c80;
+  font-size: 28px;
+}
 
-  .help-icon.highlighted .icon-shape-circle-plus, .help-icon.highlighted .icon-help-mark {
-    color: $c80;
-    font-size: 28px;
-  }
-
-  .icon.help-icon.highlighted .icon-shape-circle {
-    color: $c20;
-    font-size: 28px;
-  }
-
+.icon.help-icon.highlighted .icon-shape-circle {
+  color: $c20;
+  font-size: 28px;
+}
 
 .form-panel .field-container {
-    color: $c12;
+  color: $c12;
 }
 
 .v-customcomponent {
@@ -150,27 +146,31 @@ button.btn-form-wide {
 }
 
 .v-form-field.v-customcomponent.text-and-content {
-    width: auto !important;
+  width: auto !important;
 }
 
 .v-form-field-label {
-    text-align: right;
-    width: 140px;
-    margin-right: 12px;
-    color: $c10;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    vertical-align: top; /*needed by FF*/
-    line-height:25px;
-    position: absolute;
+  text-align: right;
+  width: 140px;
+  margin: 2px 5px;
+  padding: 2px 0px;
+  color: $c10;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 25px;
+  position: absolute;
 }
 
 .v-form-field-container {
-  margin-top: 1px;
-  padding-right: 40px;
-  padding-left: 150px;
-  display: block;
+  margin: 1px 3px;
+  padding: 2px 35px 2px 150px; /* 35 stands for 40 with margin and border */
+  border: 2px solid transparent;
+
+  &.validation-highlight {
+    border-color: $c70;
+    background-color: white;
+  }
 
   .v-select-optiongroup {
     padding-top: 3px;
@@ -181,113 +181,107 @@ button.btn-form-wide {
   }
 }
 
-.validation-highlight {
-    border: 2px solid $c70;
-    background-color: white;
-    margin-top: 3px;
-    margin-bottom:3px;
-}
-
 .v-form-field-section {
-    color: $c90;
-    margin-bottom: 11px;
+  color: $c90;
+  margin-bottom: 3px;
 }
 
-.validation-message-inline,.help-message-inline {
-    margin-bottom: 10px;
-    padding-top: 5px;
-    position: relative;
+.validation-message-inline, .help-message-inline {
+  margin: 0 3px 10px;
+  padding-top: 5px;
+  position: relative;
 }
 
-.validation-message,.help-message {
-    background: none repeat scroll 0px 0px $c70;
-    color: white;
-    display: block;
-    padding: 10px;
+.validation-message, .help-message {
+  background: none repeat scroll 0px 0px $c70;
+  color: white;
+  display: block;
+  padding: 10px;
 }
 
 .help-message {
-    background: none repeat scroll 0px 0px $c24;
-    color: black;
+  background: none repeat scroll 0px 0px $c24;
+  color: black;
 }
 
 .help-message span {
-    vertical-align: middle;
-    margin-left: 3px;
+  vertical-align: middle;
+  margin-left: 3px;
 }
 
 .triangle.red path {
-    fill: $c70;
+  fill: $c70;
 }
 
 .triangle.blue path {
-    fill: $c24;
+  fill: $c24;
 }
 
 .triangle {
-    text-align: center;
+  text-align: center;
 }
 
 .icon-error-white {
-    background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
-    border: medium none;
-    display: inline-block;
-    height: 20px;
-    margin: 0px 6px 0px 0px;
-    padding: 1px;
-    vertical-align: middle;
-    width: 20px;
-    float: left;
+  background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
+  border: medium none;
+  display: inline-block;
+  height: 20px;
+  margin: 0px 6px 0px 0px;
+  padding: 1px;
+  vertical-align: middle;
+  width: 20px;
+  float: left;
 }
 
 .action-jump-to-next-error {
-    -moz-user-select: text;
-    background: none repeat scroll 0% 0% transparent;
-    border: medium none;
-    color: $c12 !important;
-    display: inline-block;
-    margin-left: 10px;
-    cursor: pointer;
+  -moz-user-select: text;
+  background: none repeat scroll 0% 0% transparent;
+  border: medium none;
+  color: $c12 !important;
+  display: inline-block;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 .action-jump-to-next-error:hover {
-    color: $c80 ! important;
+  color: $c80 ! important;
 }
 
 .action-jump-to-next-error:focus {
-    outline-offset: -3px;
+  outline-offset: -3px;
 }
 
 .action-validation {
-    background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
-    border: medium none;
-    display: inline;
-    height: 18px;
-    margin: 3px 1px 0 2px;
-    position: absolute;
-    vertical-align: middle;
-    width: 20px;
+  background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+  border: medium none;
+  display: inline;
+  height: 18px;
+  margin: 3px 1px 0 2px;
+  position: absolute;
+  vertical-align: middle;
+  width: 20px;
 }
 
 .action-form-help {
-    background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
-    border: medium none;
-    display: inline-block;
-    height: 20px;
-    margin: 3px 1px 0 2px;
-    padding: 0;
-    position: absolute;
-    vertical-align: middle;
-    width: 20px;
+  background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+  border: medium none;
+  display: inline-block;
+  height: 20px;
+  margin: 3px 1px 0 2px;
+  padding: 0;
+  position: absolute;
+  vertical-align: middle;
+  width: 20px;
 }
 
 fieldset {
-    border: 0px none;
-    padding: 0;
+  border: 0px none;
+  padding: 0;
+  margin: 0;
 }
 
 .form-content .v-form-layout > fieldset {
-	& > legend {
+  & > legend {
     font-family: Verdana, Arial, sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -309,7 +303,7 @@ fieldset {
 }
 
 .form-content .show-all .v-form-layout > fieldset {
-	& > legend, & > hr {
+  & > legend, & > hr {
     display: block;
   }
 }
@@ -318,10 +312,9 @@ fieldset {
   display: none;
 }
 
-
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {
-    display: none !important;
+  display: none !important;
 }
 
 .v-form-field-label span.requiredfield,
@@ -341,7 +334,6 @@ fieldset {
 /*
 * styles for rendering views of the form
 */
-
 
 .field-view .v-caption {
   display: inline-block;
@@ -395,7 +387,6 @@ fieldset {
   margin-right: -15px;
 }
 
-
 .textarea-stretcher.simple.stretched {
   position: absolute;
   right: 1px;
@@ -406,7 +397,6 @@ fieldset {
   position: relative;
   top: 1px;
 }
-
 
 .v-magnolia-form.textarea-stretched .v-shell-tabsheet-tab-wrapper {
   position: static;
