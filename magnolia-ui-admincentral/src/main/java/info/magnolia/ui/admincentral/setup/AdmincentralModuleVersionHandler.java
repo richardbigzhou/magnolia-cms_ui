@@ -367,8 +367,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 "/modules/ui-admincentral/config/appLauncherLayout/groups/tools", "/modules/ui-admincentral/config/appLauncherLayout/groups/dev"
         });
 
-        permissionsMap.put("/modules/adminInterface/config/menu/tools/websiteJCR", new String[] { "/modules/ui-admincentral/apps/websiteJcrBrowser" });
-        permissionsMap.put("/.magnolia/pages/configuration", new String[] { "/modules/ui-admincentral/apps/configuration" });
+        permissionsMap.put("/modules/adminInterface/config/menu/tools/websiteJCR", new String[]{"/modules/ui-admincentral/apps/websiteJcrBrowser"});
+        permissionsMap.put("/.magnolia/trees/config", new String[]{"/modules/ui-admincentral/apps/configuration"});
 
         // DATA menu
         permissionsMap.put("/modules/adminInterface/config/menu/templating-kit/data", new String[] { "/modules/ui-admincentral/config/appLauncherLayout/groups/data" });

@@ -39,6 +39,7 @@ import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,11 @@ public class AboutAppModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new RemoveNodeTask("Remove old Config info app from app launcher", APP_LAUNCHER_APPS_PATH + CONFIG_INFO))
                 .addTask(new BootstrapSingleResource("Configure about app", "", "/mgnl-bootstrap/about-app/config.modules.about-app.apps.about.xml"))
         );
+
+        register(DeltaBuilder.update("5.4.8", "")
+                        .addTask(new ConvertAclToAppPermissionTask("Convert permissions for configInfo app", "Convert ACL permissions for old 'configInfo' menu to new 'about-app' permission",
+                                "/.magnolia/pages/configuration", "/modules/about-app/apps/about", false))
+                );
     }
 
     @Override

@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.cms.security.operations.VoterBasedConfiguredAccessDefinition;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractRepositoryTask;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.voting.voters.RoleBaseVoter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +61,13 @@ import org.slf4j.LoggerFactory;
  **/
 public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
 
-    protected static final String APP_PERMISSIONS_PATH = "permissions/roles/";
+    protected static final String APP_PERMISSIONS_PATH = "permissions/";
+    protected static final String APP_ROLES_PATH = "roles/";
+    protected static final String APP_PERMISSIONS_ROLES_PATH = APP_PERMISSIONS_PATH + APP_ROLES_PATH;
+    protected static final String APP_DENIED_ROLES_PATH = "deniedRoles/";
+    protected static final String APP_ALLOWED_ROLES_PATH = "allowedRoles/";
+    protected static final String PROPERTY_CLASS_NAME = "class";
+    protected static final String PROPERTY_NOT_NAME = "not";
     protected static final String SUPERUSER_ROLE = "superuser";
 
     private static final Logger log = LoggerFactory.getLogger(ConvertAclToAppPermissionTask.class);
@@ -81,7 +89,7 @@ public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
     }
 
     public ConvertAclToAppPermissionTask(String name, String description, String oldURL, String newApp, boolean removeOldPermissions) {
-        this(name, description, oldURL, new String[] { newApp }, removeOldPermissions);
+        this(name, description, oldURL, new String[]{newApp}, removeOldPermissions);
     }
 
     @Override
@@ -110,18 +118,70 @@ public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
                     Node newAppNode = config.getNode(newApp);
 
                     if (permissions == 0) {
-                        if (!newAppNode.hasNode(APP_PERMISSIONS_PATH)) { // any permissions defined yet?
-                            // we need to set permission at least to one role to deny access to others...superuser
-                            NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME).setProperty(SUPERUSER_ROLE, SUPERUSER_ROLE);
-                            log.info("Denying permission for '{}' app to any role except '{}'. Please add extra permissions to this app if required.", newApps, SUPERUSER_ROLE);
+                        if (!newAppNode.hasNode(APP_PERMISSIONS_ROLES_PATH)) { // any permissions defined yet?
+                            NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName());
+                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            deniedRoleNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
+                            deniedRoleNode.setProperty(PROPERTY_NOT_NAME, "true");
+                            NodeUtil.createPath(deniedRoleNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(userRoleName, userRoleName);
+                            log.info("Denying permission for '{}' app to role '{}'. Please add extra permissions to this app if required.", newApps, userRoleName);
+                        } else if (!newAppNode.getNode(APP_PERMISSIONS_PATH).hasProperty(PROPERTY_CLASS_NAME)) { // default implementation that needs to be changed to VoterBasedConfiguredAccessDefinition
+                            NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName());
+                            NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
+
+                            //move all already set roles to voter
+                            NodeUtil.moveNode(newAppNode.getNode(APP_PERMISSIONS_ROLES_PATH), newAppNode.getNode(APP_PERMISSIONS_PATH + APP_ALLOWED_ROLES_PATH));
+
+                            //create denying voter
+                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            deniedRoleNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
+                            deniedRoleNode.setProperty(PROPERTY_NOT_NAME, "true");
+                            NodeUtil.createPath(deniedRoleNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(userRoleName, userRoleName);
+                            log.info("Denying permission for '{}' app to role '{}'. Please add extra permissions to this app if required.", newApps, userRoleName);
+                        } else if (newAppNode.getNode(APP_PERMISSIONS_PATH).getProperty(PROPERTY_CLASS_NAME).getString().equals(VoterBasedConfiguredAccessDefinition.class.getName())) { // implementation of VoterBasedConfiguredAccessDefinition, add new denied role
+                            Node deniedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            if (!deniedRolesNode.hasProperty(PROPERTY_CLASS_NAME) || !deniedRolesNode.getProperty(PROPERTY_CLASS_NAME).getString().equals(RoleBaseVoter.class.getName())){
+                                final String warnMsg = "Unknown voter class implementation " + deniedRolesNode.getPath() + " . Cannot convert old permission '" + oldURL + "'.";
+                                installContext.warn(warnMsg);
+                                continue;
+                            }
+
+                            Node permissionsNode = NodeUtil.createPath(deniedRolesNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            if (!permissionsNode.hasProperty(userRoleName)) {
+                                permissionsNode.setProperty(userRoleName, userRoleName);
+                                log.info("Denying permission for '{}' app to '{}' role.", newApps, userRoleName);
+                            }
+                        } else {
+                            final String warnMsg = "Unknown access permissions class implementation " + newAppNode.getNode(APP_PERMISSIONS_PATH).getPath() + " . Cannot convert old permission '" + oldURL + "'.";
+                            installContext.warn(warnMsg);
                         }
 
                     } else {
-                        Node permissionsNode = NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME);
+                        if (newAppNode.hasNode(APP_PERMISSIONS_PATH) && newAppNode.getNode(APP_PERMISSIONS_PATH).hasProperty(PROPERTY_CLASS_NAME) && newAppNode.getNode(APP_PERMISSIONS_PATH).getProperty(PROPERTY_CLASS_NAME).getString().equals(VoterBasedConfiguredAccessDefinition.class.getName())) { // VoterBasedConfiguredAccessDefinition implementation used
+                            Node allowedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            if(!allowedRolesNode.hasProperty(PROPERTY_CLASS_NAME)) {
+                                allowedRolesNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
+                            } else if (!allowedRolesNode.getProperty(PROPERTY_CLASS_NAME).getString().equals(RoleBaseVoter.class.getName())){
+                                final String warnMsg = "Unknown voter class implementation " + allowedRolesNode.getPath() + " . Cannot convert old permission '" + oldURL + "'.";
+                                installContext.warn(warnMsg);
+                                continue;
+                            }
 
-                        if (!permissionsNode.hasProperty(userRoleName)) {
-                            permissionsNode.setProperty(userRoleName, userRoleName);
-                            log.info("Adding permission for '{}' app to '{}' role.", newApps, userRoleName);
+                            Node permissionsNode = NodeUtil.createPath(allowedRolesNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            if (!permissionsNode.hasProperty(userRoleName)) {
+                                permissionsNode.setProperty(userRoleName, userRoleName);
+                                log.info("Adding permission for '{}' app to '{}' role.", newApps, userRoleName);
+                            }
+                        } else if (!newAppNode.hasNode(APP_PERMISSIONS_PATH) || (newAppNode.hasNode(APP_PERMISSIONS_PATH) && !newAppNode.getNode(APP_PERMISSIONS_PATH).hasProperty(PROPERTY_CLASS_NAME))) { //use default implementation
+                            Node permissionsNode = NodeUtil.createPath(newAppNode, APP_PERMISSIONS_ROLES_PATH, NodeTypes.ContentNode.NAME);
+
+                            if (!permissionsNode.hasProperty(userRoleName)) {
+                                permissionsNode.setProperty(userRoleName, userRoleName);
+                                log.info("Adding permission for '{}' app to '{}' role.", newApps, userRoleName);
+                            }
+                        } else {
+                            final String warnMsg = "Unknown access permissions class implementation " + newAppNode.getNode(APP_PERMISSIONS_PATH).getPath() + " . Cannot convert old permission '" + oldURL + "'.";
+                            installContext.warn(warnMsg);
                         }
                     }
                 }
