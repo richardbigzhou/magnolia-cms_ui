@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser.action;
 
-import info.magnolia.cms.util.Rule;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 
@@ -50,8 +49,6 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 public class RestoreItemPreviousVersionActionDefinition extends CommandActionDefinition {
 
     private boolean parentNodeTypeOnly = false;
-
-    private Rule rule;
 
     public RestoreItemPreviousVersionActionDefinition() {
         setImplementationClass(RestoreItemPreviousVersionAction.class);
@@ -71,13 +68,5 @@ public class RestoreItemPreviousVersionActionDefinition extends CommandActionDef
      */
     public boolean isParentNodeTypeOnly() {
         return parentNodeTypeOnly;
-    }
-
-    public void setRule(Rule rule) {
-        this.rule = rule;
-    }
-
-    public Rule getRule() {
-        return rule;
     }
 }
