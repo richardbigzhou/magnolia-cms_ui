@@ -121,7 +121,7 @@ public class ConvertListAclToAppPermissionsTaskTest {
         task.execute(installContext);
 
         // THEN
-        assertTrue(config.itemExists("/newApp1/permissions/roles/superuser"));
+        assertTrue(config.itemExists("/newApp1/permissions/deniedRoles/roles/someUserRole1"));
         assertTrue(config.itemExists("/newApp2/permissions/roles/someUserRole2"));
     }
 
