@@ -98,9 +98,13 @@ public class TwinColSelectFieldBuilder extends OptionGroupFieldBuilder {
         return (TwinColSelectFieldBuilder) super.labelProperty(labelProperty);
     }
 
+    /**
+     * @deprecated since 5.3.15, filtering-mode does not make sense for the TwinColSelect field.
+     */
+    @Deprecated
     @Override
     public TwinColSelectFieldBuilder filteringMode(int filteringMode) {
-        return (TwinColSelectFieldBuilder) super.filteringMode(filteringMode);
+        return this;
     }
 
     @Override
