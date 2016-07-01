@@ -91,9 +91,13 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder {
         return (OptionGroupFieldBuilder) super.labelProperty(labelProperty);
     }
 
+    /**
+     * @deprecated since 5.3.15, filtering-mode does not make sense for the OptionGroup field.
+     */
+    @Deprecated
     @Override
     public OptionGroupFieldBuilder filteringMode(int filteringMode) {
-        return (OptionGroupFieldBuilder) super.filteringMode(filteringMode);
+        return this;
     }
 
     @Override

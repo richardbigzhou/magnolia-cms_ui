@@ -69,7 +69,7 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     private String labelProperty = OPTION_LABEL_PROPERTY_NAME;
 
-    private int filteringMode = 0;
+    private FilteringMode filteringMode = FilteringMode.OFF;
 
     private boolean sortOptions = true;
 
@@ -125,19 +125,34 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
         this.labelProperty = labelProperty;
     }
 
+    /**
+     * Defines the filtering mode (off, startswith, contains) of this select field. Additionally, mind that filtering
+     * mode is only enabled with paging, i.e. when the pageLength property is greater than 0.
+     *
+     * @return a member of the FilteringMode enum. Defaults to <code>off</code>.
+     * @see com.vaadin.shared.ui.combobox.FilteringMode
+     */
     public FilteringMode getFilteringMode() {
-        switch (filteringMode) {
-        case 1:
-            return FilteringMode.CONTAINS;
-        case 2:
-            return FilteringMode.STARTSWITH;
-        default:
-            return FilteringMode.OFF;
-        }
+        return filteringMode;
     }
 
-    public void setFilteringMode(int filteringMode) {
+    public void setFilteringMode(FilteringMode filteringMode) {
         this.filteringMode = filteringMode;
+    }
+
+    /**
+     * @deprecated since 5.3.15, use {@link #setFilteringMode(FilteringMode)} instead.
+     */
+    @Deprecated
+    public void setFilteringMode(int filteringMode) {
+        switch (filteringMode) {
+        case 1:
+            this.filteringMode = FilteringMode.CONTAINS;
+        case 2:
+            this.filteringMode = FilteringMode.STARTSWITH;
+        default:
+            this.filteringMode = FilteringMode.OFF;
+        }
     }
 
     /**
@@ -174,5 +189,4 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     public void setPageLength(int pageLength) {
         this.pageLength = pageLength;
     }
-
 }

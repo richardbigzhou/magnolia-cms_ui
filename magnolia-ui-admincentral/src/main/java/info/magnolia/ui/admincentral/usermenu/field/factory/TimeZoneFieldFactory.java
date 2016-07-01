@@ -50,6 +50,7 @@ import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.Page;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 
 /**
  * Creates and initializes a timezone field.
@@ -101,7 +102,7 @@ public class TimeZoneFieldFactory extends SelectFieldFactory<TimeZoneFieldFactor
     public static class Definition extends SelectFieldDefinition {
         public Definition() {
             setSortOptions(false); //We want to have the browser timezone at top
-            setFilteringMode(1);
+            setFilteringMode(FilteringMode.CONTAINS);
             setTextInputAllowed(true);
         }
     }
