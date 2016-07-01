@@ -513,6 +513,46 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         assertFailsWithActionExecutionException(roleItem);
     }
 
+    @Test
+    public void validRoleNameIsUsedWhenCreatingRole() throws Exception {
+        // GIVEN
+        JcrNewNodeAdapter roleItem = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Role.NAME);
+        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("test@test"));
+
+        // WHEN
+        createAction(roleItem).execute();
+
+        // THEN
+        assertNull(roleManager.getRole("test@test"));
+        assertNotNull(roleManager.getRole("test-test"));
+        assertRoleHasReadAccessToItself("test-test");
+    }
+
+    @Test
+    public void validRoleNameIsUsedWhenRenameRole() throws Exception {
+        // GIVEN
+        roleManager.createRole("testRole");
+        final Node testRoleNode = session.getRootNode().getNode("testRole");
+
+        JcrNodeAdapter roleItem = new JcrNodeAdapter(testRoleNode);
+        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("renamed@role"));
+
+        // WHEN
+        createAction(roleItem).execute();
+
+        // THEN
+        assertNull(roleManager.getRole("testRole"));
+        assertNotNull(roleManager.getRole("renamed-role"));
+        assertRoleHasReadAccessToItself("renamed-role");
+
+        // Assert that no other node present under '/renamedRole/acl_userroles/' except for the existing one,
+        // i.e there are no artifacts left after the action.
+        final Node userRoleAcls = session.getNode("/renamed-role/acl_userroles/");
+        assertEquals(userRoleAcls.getNodes().getSize(), 1);
+        // Make sure the ACL path is also updated after the action.
+        assertThat(userRoleAcls.getNode("0"), hasProperty("path", "/renamed-role"));
+    }
+
     private void assertFailsWithActionExecutionException(JcrNewNodeAdapter roleItem) {
         try {
             createAction(roleItem).execute();
