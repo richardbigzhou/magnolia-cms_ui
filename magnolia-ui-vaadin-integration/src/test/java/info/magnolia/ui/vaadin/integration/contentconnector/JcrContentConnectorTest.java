@@ -168,6 +168,17 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         assertEquals(itemId.getUuid(), node.getIdentifier());
     }
 
+    @Test
+    public void getItemIdByUrlFragmentDoesNotFailOnNPEWhenNodeIsMissing() {
+        // GIVEN
+        String urlFragment = "/x/y/z@property";
+
+        // WHEN
+        JcrItemId itemId = jcrContentConnector.getItemIdByUrlFragment(urlFragment);
+
+        // THEN - do not fail on NPE
+    }
+
     /**
      * This method tests JcrContentConnector#getItem.
      */

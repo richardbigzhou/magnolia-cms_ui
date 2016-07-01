@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -65,6 +66,7 @@ public class AddNodeAction extends AbstractRepositoryAction<AddNodeActionDefinit
                 baseName = AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME;
             }
 
+            baseName = Path.getValidatedLabel(baseName);
             String name = getUniqueNewItemName(node, baseName);
             Node newNode = node.addNode(name, getDefinition().getNodeType());
             // Resolve item id for the newly created node and pass it on as a modified one

@@ -181,6 +181,20 @@ public class AddNodeActionTest {
         assertThat(root, hasNode("fooBar0"));
     }
 
+    @Test
+    public void doesNotCreateNodeWithInvalidName() throws Exception {
+        // GIVEN
+        long nodeCountBefore = root.getNodes().getSize();
+        definition.setBaseName("pepa@pepa.cz");
+        AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(root), eventBus);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertAddedNewNode(root, "pepa-pepa.cz", NodeTypes.Content.NAME, nodeCountBefore + 1);
+    }
+
     private void assertAddedNewNode(Node parent, String nodeName, String nodeType, long expectedNumberOfChildNodes) throws RepositoryException {
         assertEquals(expectedNumberOfChildNodes, parent.getNodes().getSize());
         assertThat(parent, hasNode(nodeName));
