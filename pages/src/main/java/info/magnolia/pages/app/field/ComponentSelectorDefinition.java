@@ -35,12 +35,14 @@ package info.magnolia.pages.app.field;
 
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 
+import com.vaadin.shared.ui.combobox.FilteringMode;
+
 /**
  * ComponentSelectorDefinition.
  */
 public class ComponentSelectorDefinition extends SelectFieldDefinition {
 
     public ComponentSelectorDefinition() {
-        setFilteringMode(2);
+        setFilteringMode(FilteringMode.STARTSWITH);
     }
 }
