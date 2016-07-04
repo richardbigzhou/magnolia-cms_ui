@@ -39,10 +39,17 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.shared.ui.combobox.FilteringMode;
+
 /**
  * Builder for building a select field definition.
  */
 public class SelectFieldBuilder extends AbstractFieldBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger(SelectFieldBuilder.class);
 
     private final SelectFieldDefinition definition = new SelectFieldDefinition();
 
@@ -78,7 +85,16 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
+    /**
+     * @deprecated since 5.3.15, use {@link #filteringMode(FilteringMode)} instead.
+     */
+    @Deprecated
     public SelectFieldBuilder filteringMode(int filteringMode) {
+        log.warn("Cannot set filteringMode from int value; supported values are 'off', 'startswith' and 'contains'.");
+        return this;
+    }
+
+    public SelectFieldBuilder filteringMode(FilteringMode filteringMode) {
         definition().setFilteringMode(filteringMode);
         return this;
     }
@@ -179,5 +195,4 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
     public SelectFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
         return (SelectFieldBuilder) super.transformerClass(transformerClass);
     }
-
 }
