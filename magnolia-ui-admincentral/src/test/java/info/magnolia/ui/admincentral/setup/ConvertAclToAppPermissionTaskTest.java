@@ -99,10 +99,10 @@ public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
         // THEN
         assertThat(userRoles.getRootNode(), not(hasNode("someUser/acl_uri/0")));
         assertThat(config.getNode("/newApp/permissions"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName()));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_NOT_NAME, "true"));
-        assertThat(config.getRootNode(), hasNode("newApp/permissions/deniedRoles/roles"));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles/roles"), hasProperty("someUserRole"));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_NOT_NAME, "true"));
+        assertThat(config.getRootNode(), hasNode("newApp/permissions/voters/deniedRoles/roles"));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles/roles"), hasProperty("someUserRole"));
     }
 
     @Test
@@ -127,7 +127,8 @@ public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
         permission.setProperty("path", "oldURL");
         permission.setProperty("permissions", 0);
         NodeUtil.createPath(config.getRootNode(), "/newApp/permissions/", NodeTypes.ContentNode.NAME).setProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName());
-        NodeUtil.createPath(config.getRootNode(), "/newApp/permissions/deniedRoles/roles/", NodeTypes.ContentNode.NAME).setProperty("nameDoesntMatter", "someUserRole");
+        Node deniedRoles = NodeUtil.createPath(config.getRootNode(), "/newApp/permissions/voters/deniedRoles/roles/", NodeTypes.ContentNode.NAME);
+        deniedRoles.setProperty("nameDoesntMatter", "someUserRole");
         userRoles.save();
 
         // WHEN
@@ -135,9 +136,8 @@ public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
 
         // THEN
         assertThat(userRoles.getRootNode(), not(hasNode("someUser/acl_uri/0")));
-        assertThat(config.getRootNode(), hasNode("newApp/permissions/deniedRoles/roles"));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles/roles"), hasProperty("nameDoesntMatter"));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles/roles"), hasProperty("someUserRole"));
+        assertThat(deniedRoles, hasProperty("nameDoesntMatter"));
+        assertThat(deniedRoles, hasProperty("someUserRole"));
     }
 
     @Test
@@ -171,12 +171,12 @@ public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
         // THEN
         assertThat(userRoles.getRootNode(), not(hasNode("someUser/acl_uri/0")));
         assertThat(config.getNode("/newApp/permissions"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName()));
-        assertThat(config.getNode("/newApp/permissions/allowedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_NOT_NAME, "true"));
-        assertThat(config.getRootNode(), hasNode("newApp/permissions/allowedRoles/roles"));
-        assertThat(config.getNode("/newApp/permissions/allowedRoles/roles"), hasProperty("nameDoesntMatter"));
-        assertThat(config.getRootNode(), hasNode("newApp/permissions/deniedRoles/roles"));
-        assertThat(config.getNode("/newApp/permissions/deniedRoles/roles"), hasProperty("someUserRole"));
+        assertThat(config.getNode("/newApp/permissions/voters/allowedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName()));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles"), hasProperty(ConvertAclToAppPermissionTask.PROPERTY_NOT_NAME, "true"));
+        assertThat(config.getRootNode(), hasNode("newApp/permissions/voters/allowedRoles/roles"));
+        assertThat(config.getNode("/newApp/permissions/voters/allowedRoles/roles"), hasProperty("nameDoesntMatter"));
+        assertThat(config.getRootNode(), hasNode("newApp/permissions/voters/deniedRoles/roles"));
+        assertThat(config.getNode("/newApp/permissions/voters/deniedRoles/roles"), hasProperty("someUserRole"));
     }
 }
