@@ -64,6 +64,7 @@ public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
     protected static final String APP_PERMISSIONS_PATH = "permissions/";
     protected static final String APP_ROLES_PATH = "roles/";
     protected static final String APP_PERMISSIONS_ROLES_PATH = APP_PERMISSIONS_PATH + APP_ROLES_PATH;
+    protected static final String APP_VOTERS_PATH = "voters/";
     protected static final String APP_DENIED_ROLES_PATH = "deniedRoles/";
     protected static final String APP_ALLOWED_ROLES_PATH = "allowedRoles/";
     protected static final String PROPERTY_CLASS_NAME = "class";
@@ -120,26 +121,26 @@ public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
                     if (permissions == 0) {
                         if (!newAppNode.hasNode(APP_PERMISSIONS_ROLES_PATH)) { // any permissions defined yet?
                             NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName());
-                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_VOTERS_PATH + APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
                             deniedRoleNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
                             deniedRoleNode.setProperty(PROPERTY_NOT_NAME, "true");
                             NodeUtil.createPath(deniedRoleNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(userRoleName, userRoleName);
                             log.info("Denying permission for '{}' app to role '{}'. Please add extra permissions to this app if required.", newApps, userRoleName);
                         } else if (!newAppNode.getNode(APP_PERMISSIONS_PATH).hasProperty(PROPERTY_CLASS_NAME)) { // default implementation that needs to be changed to VoterBasedConfiguredAccessDefinition
                             NodeUtil.createPath(newAppNode, APP_PERMISSIONS_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, VoterBasedConfiguredAccessDefinition.class.getName());
-                            NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
+                            NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_VOTERS_PATH + APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
 
                             //move all already set roles to voter
-                            NodeUtil.moveNode(newAppNode.getNode(APP_PERMISSIONS_ROLES_PATH), newAppNode.getNode(APP_PERMISSIONS_PATH + APP_ALLOWED_ROLES_PATH));
+                            NodeUtil.moveNode(newAppNode.getNode(APP_PERMISSIONS_ROLES_PATH), newAppNode.getNode(APP_PERMISSIONS_PATH + APP_VOTERS_PATH + APP_ALLOWED_ROLES_PATH));
 
                             //create denying voter
-                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            Node deniedRoleNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_VOTERS_PATH + APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
                             deniedRoleNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
                             deniedRoleNode.setProperty(PROPERTY_NOT_NAME, "true");
                             NodeUtil.createPath(deniedRoleNode, APP_ROLES_PATH, NodeTypes.ContentNode.NAME).setProperty(userRoleName, userRoleName);
                             log.info("Denying permission for '{}' app to role '{}'. Please add extra permissions to this app if required.", newApps, userRoleName);
                         } else if (newAppNode.getNode(APP_PERMISSIONS_PATH).getProperty(PROPERTY_CLASS_NAME).getString().equals(VoterBasedConfiguredAccessDefinition.class.getName())) { // implementation of VoterBasedConfiguredAccessDefinition, add new denied role
-                            Node deniedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            Node deniedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_VOTERS_PATH + APP_DENIED_ROLES_PATH, NodeTypes.ContentNode.NAME);
                             if (!deniedRolesNode.hasProperty(PROPERTY_CLASS_NAME) || !deniedRolesNode.getProperty(PROPERTY_CLASS_NAME).getString().equals(RoleBaseVoter.class.getName())){
                                 final String warnMsg = "Unknown voter class implementation " + deniedRolesNode.getPath() + " . Cannot convert old permission '" + oldURL + "'.";
                                 installContext.warn(warnMsg);
@@ -158,7 +159,7 @@ public class ConvertAclToAppPermissionTask extends AbstractRepositoryTask {
 
                     } else {
                         if (newAppNode.hasNode(APP_PERMISSIONS_PATH) && newAppNode.getNode(APP_PERMISSIONS_PATH).hasProperty(PROPERTY_CLASS_NAME) && newAppNode.getNode(APP_PERMISSIONS_PATH).getProperty(PROPERTY_CLASS_NAME).getString().equals(VoterBasedConfiguredAccessDefinition.class.getName())) { // VoterBasedConfiguredAccessDefinition implementation used
-                            Node allowedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME);
+                            Node allowedRolesNode = NodeUtil.createPath(newAppNode.getNode(APP_PERMISSIONS_PATH), APP_VOTERS_PATH + APP_ALLOWED_ROLES_PATH, NodeTypes.ContentNode.NAME);
                             if(!allowedRolesNode.hasProperty(PROPERTY_CLASS_NAME)) {
                                 allowedRolesNode.setProperty(PROPERTY_CLASS_NAME, RoleBaseVoter.class.getName());
                             } else if (!allowedRolesNode.getProperty(PROPERTY_CLASS_NAME).getString().equals(RoleBaseVoter.class.getName())){
