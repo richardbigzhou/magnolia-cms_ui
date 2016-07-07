@@ -75,7 +75,7 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
      */
     @Deprecated
     public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem) {
-        this(definition, relatedFieldItem, Components.getComponent(UiContext.class), Components.getComponent(I18NAuthoringSupport.class), Components.getComponent(SimpleTranslator.class), Components.getComponent(Context.class));
+        this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), Components.getComponent(SimpleTranslator.class), Components.getComponent(Context.class));
     }
 
     @Override
