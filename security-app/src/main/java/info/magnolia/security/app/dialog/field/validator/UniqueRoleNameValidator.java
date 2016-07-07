@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -77,7 +78,8 @@ public class UniqueRoleNameValidator extends AbstractStringValidator {
                     return false;
                 }
             }
-            if (securitySupport.getRoleManager().getRole(value) != null) {
+            final String newRoleName = Path.getValidatedLabel(value);
+            if (securitySupport.getRoleManager().getRole(newRoleName) != null) {
                 // role with such name already exists
                 return false;
             }

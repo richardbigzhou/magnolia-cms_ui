@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PrincipalUtil;
 import info.magnolia.cms.security.Role;
@@ -109,7 +110,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             final RoleManager roleManager = securitySupport.getRoleManager();
 
-            final String newRoleName = (String) roleItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
+            final String newRoleName = Path.getValidatedLabel((String) roleItem.getItemProperty(ModelConstants.JCR_NAME).getValue());
 
             Role role;
             Node roleNode;
@@ -122,7 +123,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                 role = roleManager.createRole(parentPath, newRoleName);
                 roleNode = parentNode.getNode(role.getName());
                 // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
-                JcrNodeAdapter newRoleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode);
+                JcrNodeAdapter newRoleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode, newRoleName);
                 roleNode = newRoleItem.applyChanges();
                 // workaround that updates item id of the roleItem so we can use it in OpenAddRoleDialogAction to fire ContentChangedEvent
                 try {
@@ -187,7 +188,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
     }
 
-    private JcrNodeAdapter convertNewNodeAdapterForUpdating(JcrNewNodeAdapter newNodeAdapter, Node node) throws RepositoryException {
+    private JcrNodeAdapter convertNewNodeAdapterForUpdating(JcrNewNodeAdapter newNodeAdapter, Node node, String newRoleName) throws RepositoryException {
 
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
 
@@ -195,6 +196,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             Property property = adapter.getItemProperty(propertyId);
             if (property == null) {
                 adapter.addItemProperty(propertyId, newNodeAdapter.getItemProperty(propertyId));
+            } else if (ModelConstants.JCR_NAME.equals(propertyId) && newRoleName != null) {
+                property.setValue(node.getName());
             } else {
                 property.setValue(newNodeAdapter.getItemProperty(propertyId).getValue());
             }
@@ -206,7 +209,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             if (child instanceof JcrNewNodeAdapter) {
                 if (node.hasNode(child.getNodeName())) {
                     if (child.getNodeName().startsWith("acl_")) {
-                        child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()));
+                        child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()), null);
                     } else {
                         child.setNodeName(getUniqueNodeNameForChild(child.getParent()));
                         child.setItemId(adapter.getItemId());

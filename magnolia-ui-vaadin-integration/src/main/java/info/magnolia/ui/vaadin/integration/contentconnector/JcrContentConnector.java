@@ -109,10 +109,10 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
             String fullFragment = ("/".equals(getRootPath()) ? "" : getRootPath()) + urlFragment;
-            String nodePath = parseNodePath(fullFragment);
+            String nodePath = JcrItemUtil.parseNodeIdentifier(fullFragment);
             nodePath = !StringUtils.isBlank(nodePath) ? nodePath : getRootPath();
             JcrItemId nodeItemId = JcrItemUtil.getItemId(getWorkspace(), nodePath);
-            if (!isPropertyItemId(fullFragment)) {
+            if (nodeItemId == null || !JcrItemUtil.isPropertyItemId(fullFragment)) {
                 return nodeItemId;
             } else {
                 return new JcrPropertyItemId(nodeItemId, parsePropertyName(fullFragment));
@@ -227,22 +227,26 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
     }
 
     /**
-     * String separating property name and node identifier.
+     * @deprecated since 5.4.8 - use {@link JcrItemUtil#parseNodeIdentifier(String)} instead.
      */
-    private static final String PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR = "@";
+    @Deprecated
+    protected final String parseNodePath(final String urlFragment) {
+        return JcrItemUtil.parseNodeIdentifier(urlFragment);
+    }
 
     /**
-     * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
+     * @deprecated since 5.4.8 - use {@link JcrItemUtil#parsePropertyName(String)} instead.
      */
-    protected final String parseNodePath(final String urlFragment) {
-        return isPropertyItemId(urlFragment) ? urlFragment.substring(0, urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR)) : urlFragment;
-    }
-
+    @Deprecated
     protected final String parsePropertyName(final String urlFragment) {
-        return urlFragment.substring(urlFragment.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR) + 1);
+        return JcrItemUtil.parsePropertyName(urlFragment);
     }
 
+    /**
+     * @deprecated since 5.4.8 - use {@link JcrItemUtil#isPropertyItemId(String)} instead.
+     */
+    @Deprecated
     protected final boolean isPropertyItemId(final String urlFragment) {
-        return urlFragment != null && urlFragment.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
+        return JcrItemUtil.isPropertyItemId(urlFragment);
     }
 }
