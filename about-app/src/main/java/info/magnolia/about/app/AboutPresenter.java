@@ -83,23 +83,28 @@ public class AboutPresenter {
     static final String INSTANCE_PUBLIC_I18N_KEY = "about.app.main.instance.public";
     static final String UNKNOWN_PROPERTY_I18N_KEY = "about.app.main.unknown";
 
+    protected final SimpleTranslator i18n;
+    private final String unknownProperty;
+
     private final AboutView view;
+    private final ProductDescriptorExtractor productDescriptorExtractor;
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
-    protected final SimpleTranslator i18n;
-    private final ProductDescriptorExtractor productDescriptorExtractor;
-
-    // Object to transport data prepared in the presenter to the view
+    /**
+     * @deprecated since 5.5, get view data through {@link #getInstallationInfo()}
+     */
+    @Deprecated
     protected Item viewData = new PropertysetItem();
 
     @Inject
     public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n, ProductDescriptorExtractor productDescriptorExtractor) {
         this.view = view;
+        this.productDescriptorExtractor = productDescriptorExtractor;
         this.serverConfiguration = serverConfiguration;
         this.magnoliaProperties = magnoliaProperties;
         this.i18n = i18n;
-        this.productDescriptorExtractor = productDescriptorExtractor;
+        this.unknownProperty = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
     }
 
     /**
@@ -111,15 +116,26 @@ public class AboutPresenter {
     }
 
     public AboutView start() {
+        Item viewData = getInstallationInfo();
+        // preserve compatibility
+        if (!this.viewData.getItemPropertyIds().isEmpty()) {
+            this.viewData.getItemPropertyIds()
+                    .forEach(propertyId -> viewData.addItemProperty(propertyId, AboutPresenter.this.viewData.getItemProperty(propertyId)));
+        }
+        view.setDataSource(viewData);
+        return view;
+    }
 
-        // magnolia information
+    protected Item getInstallationInfo() {
+        PropertysetItem viewData = new PropertysetItem();
+        // Magnolia information
         String mgnlEdition = getEditionName();
         String mgnlVersion = productDescriptorExtractor.get(ProductDescriptorExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ?
                 i18n.translate(INSTANCE_AUTHOR_I18N_KEY) :
                 i18n.translate(INSTANCE_PUBLIC_I18N_KEY);
 
-        // system information
+        // System information
         String osInfo = String.format("%s %s (%s)",
                 magnoliaProperties.getProperty("os.name"),
                 magnoliaProperties.getProperty("os.version"),
@@ -192,26 +208,36 @@ public class AboutPresenter {
         }
 
         // Prepare information for the view
-        addViewProperty(MAGNOLIA_EDITION_KEY, mgnlEdition);
-        addViewProperty(MAGNOLIA_VERSION_KEY, mgnlVersion);
-        addViewProperty(MAGNOLIA_INSTANCE_KEY, authorInstance);
-        addViewProperty(OS_INFO_KEY, osInfo);
-        addViewProperty(JAVA_INFO_KEY, javaInfo);
-        addViewProperty(SERVER_INFO_KEY, serverInfo);
-        addViewProperty(JCR_INFO_KEY, jcrInfo);
-        addViewProperty(DB_INFO_KEY, dbInfo);
-        addViewProperty(DB_DRIVER_INFO_KEY, dbDriverInfo);
-        view.setDataSource(viewData);
+        addItemProperty(viewData, MAGNOLIA_EDITION_KEY, mgnlEdition);
+        addItemProperty(viewData, MAGNOLIA_VERSION_KEY, mgnlVersion);
+        addItemProperty(viewData, MAGNOLIA_INSTANCE_KEY, authorInstance);
+        addItemProperty(viewData, OS_INFO_KEY, osInfo);
+        addItemProperty(viewData, JAVA_INFO_KEY, javaInfo);
+        addItemProperty(viewData, SERVER_INFO_KEY, serverInfo);
+        addItemProperty(viewData, JCR_INFO_KEY, jcrInfo);
+        addItemProperty(viewData, DB_INFO_KEY, dbInfo);
+        addItemProperty(viewData, DB_DRIVER_INFO_KEY, dbDriverInfo);
 
-        return view;
+        return viewData;
     }
 
     /**
-     * Adds a property to the view's Item data-source; blank values will be translated as 'unknown'.
+     * Adds a property to the given Item data-source; blank values will be translated as 'unknown'.
      */
-    protected void addViewProperty(String key, String value) {
-        String unknownProperty = i18n.translate(UNKNOWN_PROPERTY_I18N_KEY);
+    protected void addItemProperty(Item viewData, String key, String value) {
         viewData.addItemProperty(key, new ObjectProperty<>(StringUtils.defaultIfBlank(value, unknownProperty)));
+    }
+
+    /**
+     * @deprecated since 5.5, use {@link #addItemProperty(Item, String, String)} instead
+     */
+    @Deprecated
+    protected void addViewProperty(String key, String value) {
+        viewData.addItemProperty(key, new ObjectProperty<>(StringUtils.defaultIfBlank(value, unknownProperty)));
+    }
+
+    protected AboutView getView() {
+        return view;
     }
 
     /**

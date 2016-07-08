@@ -71,16 +71,16 @@ public class AboutViewImpl implements AboutView {
     private Component createInstallationSection() {
 
         // build and bind fields
-        Component mgnlEdition = buildAndBind(AboutView.MAGNOLIA_EDITION_KEY, i18n.translate("about.app.main.mgnledition"));
-        Component mgnlVersion = buildAndBind(AboutView.MAGNOLIA_VERSION_KEY, i18n.translate("about.app.main.mgnlversion"));
-        Component mgnlInstance = buildAndBind(AboutView.MAGNOLIA_INSTANCE_KEY, i18n.translate("about.app.main.instance"));
+        Component mgnlEdition = buildAndBind(MAGNOLIA_EDITION_KEY, i18n.translate("about.app.main.mgnledition"));
+        Component mgnlVersion = buildAndBind(MAGNOLIA_VERSION_KEY, i18n.translate("about.app.main.mgnlversion"));
+        Component mgnlInstance = buildAndBind(MAGNOLIA_INSTANCE_KEY, i18n.translate("about.app.main.instance"));
 
-        Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, i18n.translate("about.app.main.os"));
-        Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, i18n.translate("about.app.main.java"));
-        Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, i18n.translate("about.app.main.server"));
-        Component dbInfo = buildAndBind(AboutView.DB_INFO_KEY, i18n.translate("about.app.main.dbinfo"));
-        Component dbDriverInfo = buildAndBind(AboutView.DB_DRIVER_INFO_KEY, i18n.translate("about.app.main.dbdriverinfo"));
-        Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, i18n.translate("about.app.main.repository"));
+        Component osInfo = buildAndBind(OS_INFO_KEY, i18n.translate("about.app.main.os"));
+        Component javaInfo = buildAndBind(JAVA_INFO_KEY, i18n.translate("about.app.main.java"));
+        Component serverInfo = buildAndBind(SERVER_INFO_KEY, i18n.translate("about.app.main.server"));
+        Component dbInfo = buildAndBind(DB_INFO_KEY, i18n.translate("about.app.main.dbinfo"));
+        Component dbDriverInfo = buildAndBind(DB_DRIVER_INFO_KEY, i18n.translate("about.app.main.dbdriverinfo"));
+        Component jcrInfo = buildAndBind(JCR_INFO_KEY, i18n.translate("about.app.main.repository"));
 
         // layout
         FormLayout layout = new FormLayout();
