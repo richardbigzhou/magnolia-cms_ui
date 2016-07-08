@@ -77,7 +77,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldFactory.class);
 
-    private List<String> initialSelectedKey = new ArrayList<>();
+    private List<String> initialSelectedKeys = new ArrayList<>();
     private String optionValueName;
     private String optionLabelName;
     private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
@@ -189,7 +189,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             for (SelectFieldOptionDefinition option : definition.getOptions()) {
                 option.setValue(getValue(option));
                 if (option.isSelected()) {
-                    initialSelectedKey.add(getValue(option));
+                    initialSelectedKeys.add(getValue(option));
                 }
                 if (!hasOptionIcon && StringUtils.isNotBlank(option.getIconSrc())) {
                     hasOptionIcon = true;
@@ -250,13 +250,13 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     @Override
     protected Object getConfiguredDefaultValue() {
-        if (initialSelectedKey.isEmpty()) {
+        if (initialSelectedKeys.isEmpty()) {
             return null;
         }
         if (select.isMultiSelect()) {
-            return new HashSet<>(initialSelectedKey);
+            return new HashSet<>(initialSelectedKeys);
         } else {
-            return initialSelectedKey.get(0);
+            return initialSelectedKeys.get(0);
         }
     }
 
@@ -285,7 +285,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
                     if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
                         option.setSelected(true);
-                        initialSelectedKey.add(option.getValue());
+                        initialSelectedKeys.add(option.getValue());
                     }
                     if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
                         option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());
