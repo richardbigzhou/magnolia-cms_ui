@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.column;
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyObject;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.MgnlUserManager;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
 
@@ -112,8 +114,13 @@ public class DateColumnFormatterTest {
         MetaDataColumnDefinition definition = new MetaDataColumnDefinition();
         definition.setTimeFormat("h:mm a Z");
         definition.setDateFormat(StringUtils.EMPTY);
-        formatter = new DateColumnFormatter(definition, context);
 
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                formatter = new DateColumnFormatter(definition, context);
+            }
+        }, throwsNothing());
 
         // WHEN
         Object res = formatter.generateCell(source, definition, null);
@@ -122,4 +129,18 @@ public class DateColumnFormatterTest {
         assertThat(res.toString(), containsString("8:00 PM -0400"));
     }
 
+    @Test
+    public void formatterWithoutDateNorTimeFormatDoesntFail() throws Exception {
+        // GIVEN
+        MetaDataColumnDefinition definition = new MetaDataColumnDefinition();
+        definition.setTimeFormat(StringUtils.EMPTY);
+        definition.setDateFormat(StringUtils.EMPTY);
+
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                formatter = new DateColumnFormatter(definition, context);
+            }
+        }, throwsNothing());
+    }
 }

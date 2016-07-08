@@ -86,8 +86,18 @@ public class DateColumnFormatter extends AbstractColumnFormatter<AbstractColumnD
         }
         if (definition instanceof MetaDataColumnDefinition) {
             MetaDataColumnDefinition metaDataColumnDefinition = (MetaDataColumnDefinition) definition;
-            dateFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getDateFormat(), timeZone, locale);
-            timeFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getTimeFormat(), timeZone, locale);
+
+            // in case a property wasn't specified, set the formatter to null so that generateCell() doesn't use it like it normally would
+            if (StringUtils.isEmpty(metaDataColumnDefinition.getDateFormat())) {
+                dateFormatter = null;
+            } else {
+                dateFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getDateFormat(), timeZone, locale);
+            }
+            if (StringUtils.isEmpty(metaDataColumnDefinition.getTimeFormat())) {
+                timeFormatter = null;
+            } else {
+                timeFormatter = FastDateFormat.getInstance(metaDataColumnDefinition.getTimeFormat(), timeZone, locale);
+            }
         } else {
             dateFormatter = FastDateFormat.getDateInstance(FastDateFormat.MEDIUM, timeZone, locale);
             timeFormatter = FastDateFormat.getTimeInstance(FastDateFormat.SHORT, timeZone, locale);
@@ -109,8 +119,8 @@ public class DateColumnFormatter extends AbstractColumnFormatter<AbstractColumnD
 
         // Need to check prop.getValue() before prop.getType() to avoid NPE if value is null.
         if (prop != null && prop.getValue() != null && Date.class.equals(prop.getType())) {
-            String date = dateFormatter.format(prop.getValue());
-            String time = timeFormatter.format(prop.getValue());
+            String date = dateFormatter == null ? StringUtils.EMPTY : dateFormatter.format(prop.getValue());
+            String time = timeFormatter == null ? StringUtils.EMPTY : timeFormatter.format(prop.getValue());
             String dateHtml = StringUtils.isEmpty(date) ? StringUtils.EMPTY : String.format("<span class=\"datefield\">%s</span>", date);
             String timeHtml = StringUtils.isEmpty(time) ? StringUtils.EMPTY : String.format("<span class=\"timefield\">%s</span>", time);
             String tooltip = timeZone == null ? StringUtils.EMPTY : "title=\"" + date + " " + time + "  (" + timeZone.getDisplayName(context.getLocale()) + ")" + "\"";
