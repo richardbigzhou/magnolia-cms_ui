@@ -1,35 +1,40 @@
 --- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-10-16 02:00:54.000000000 +0200
 +++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2014-11-21 18:58:00.000000000 +0100
-@@ -34,15 +34,15 @@
+@@ -41,11 +41,11 @@
  import com.vaadin.client.WidgetUtil;
- import com.vaadin.client.ui.AbstractHasComponentsConnector;
+ import com.vaadin.client.ui.AbstractFieldConnector;
  import com.vaadin.client.ui.PostLayoutListener;
 -import com.vaadin.client.ui.VScrollTable;
 -import com.vaadin.client.ui.VScrollTable.ContextMenuDetails;
--import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
 +import com.vaadin.client.ui.VScrollTablePatched;
 +import com.vaadin.client.ui.VScrollTablePatched.ContextMenuDetails;
+ import com.vaadin.client.ui.VScrollTable.FooterCell;
+ import com.vaadin.client.ui.VScrollTable.HeaderCell;
+-import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
 +import com.vaadin.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
+ import com.vaadin.shared.MouseEventDetails;
  import com.vaadin.shared.ui.Connect;
  import com.vaadin.shared.ui.table.TableConstants;
+@@ -53,15 +53,15 @@
+ import com.vaadin.shared.ui.table.TableServerRpc;
  import com.vaadin.shared.ui.table.TableState;
 
 -@Connect(com.vaadin.ui.Table.class)
--public class TableConnector extends AbstractHasComponentsConnector implements
+-public class TableConnector extends AbstractFieldConnector implements
 +//@Connect(com.vaadin.ui.Table.class)
-+public class TableConnectorPatched extends AbstractHasComponentsConnector implements
-         Paintable, DirectionalManagedLayout, PostLayoutListener {
++public class TableConnectorPatched extends AbstractFieldConnector implements
+         HasComponentsConnector, ConnectorHierarchyChangeHandler, Paintable,
+         DirectionalManagedLayout, PostLayoutListener,
+         HasChildMeasurementHintConnector {
 
-     @Override
-@@ -145,6 +145,7 @@
+     private List<ComponentConnector> childComponents;
 
-         getWidget().updatePageLength(uidl);
+-    public TableConnector() {
++    public TableConnectorPatched() {
+         addConnectorHierarchyChangeHandler(this);
+     }
 
-+        // MGNLUI-960 Avoid TreeTable jump for the time it repaints
-         getWidget().updateFirstVisibleAndScrollIfNeeded(uidl);
-
-         getWidget().showRowHeaders = uidl.getBooleanAttribute("rowheaders");
-@@ -314,8 +315,8 @@
+@@ -404,8 +404,8 @@
      }
 
      @Override
@@ -40,7 +45,7 @@
      }
 
      @Override
-@@ -335,8 +336,8 @@
+@@ -425,8 +425,8 @@
 
      @Override
      public void postLayout() {
@@ -51,7 +56,7 @@
              table.sizeInit();
              Scheduler.get().scheduleFinally(new ScheduledCommand() {
                  @Override
-@@ -344,14 +345,14 @@
+@@ -434,14 +434,14 @@
                      // IE8 needs some hacks to measure sizes correctly
                      WidgetUtil.forceIE8Redraw(getWidget().getElement());
 
@@ -68,7 +73,7 @@
                      getLayoutManager().layoutNow();
                  }
              });
-@@ -394,7 +395,7 @@
+@@ -484,7 +484,7 @@
          TooltipInfo info = null;
 
          if (element != getWidget().getElement()) {
