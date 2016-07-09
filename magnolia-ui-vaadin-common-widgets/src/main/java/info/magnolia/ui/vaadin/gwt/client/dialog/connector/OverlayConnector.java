@@ -79,12 +79,12 @@ public class OverlayConnector extends AbstractSingleComponentContainerConnector 
     public void removeSelf() {
         final Object lock = new Object();
         getWidget().addStyleName("close");
-        getConnection().suspendReponseHandling(lock);
+        getConnection().getMessageHandler().suspendReponseHandling(lock);
         final Widget w = getWidget();
         Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
-                getConnection().resumeResponseHandling(lock);
+                getConnection().getMessageHandler().resumeResponseHandling(lock);
                 w.removeFromParent();
                 rpc.onClosed();
                 return false;

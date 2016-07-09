@@ -95,7 +95,7 @@ public class AppsTransitionDelegate implements TransitionDelegate {
         protected void onStart() {
             super.onStart();
             setCurtainAttached(false);
-            Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
+            Util.findConnectorFor(viewport).getConnection().getMessageHandler().suspendReponseHandling(lock);
         }
 
         @Override
@@ -103,7 +103,7 @@ public class AppsTransitionDelegate implements TransitionDelegate {
             super.onComplete();
             ShellState.get().setAppStarted();
             log.warning("Switching to 'APP STARTED' state after zoom-in animation");
-            Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
+            Util.findConnectorFor(viewport).getConnection().getMessageHandler().resumeResponseHandling(lock);
         }
     };
 

@@ -221,7 +221,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 }
 
                 if (newFragment.isShellApp()) {
-                    if (!getConnection().hasActiveRequest() || !ShellState.get().isAppStarting()) {
+                    if (!getConnection().getMessageSender().hasActiveRequest() || !ShellState.get().isAppStarting()) {
                         doShowShellApp(newFragment.resolveShellAppType());
                     }
                 } else {
@@ -247,11 +247,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                      * or the new app is requested, so we notify the server about it.
                      */
 
-                    if (!getConnection().hasActiveRequest() || !newFragment.isSameApp(lastHandledFragment)) {
+                    if (!getConnection().getMessageSender().hasActiveRequest() || !newFragment.isSameApp(lastHandledFragment)) {
                         loadApp(newFragment.getAppName());
                     }
 
-                    if (ShellState.get().isAppStarting() || !getConnection().hasActiveRequest()) {
+                    if (ShellState.get().isAppStarting() || !getConnection().getMessageSender().hasActiveRequest()) {
                         rpc.activateApp(newFragment);
                     }
                 }
@@ -310,7 +310,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         // We don't trigger the shell apps via trinity icons and/or 1-3 buttons
         // if there is a request being processed because it will cause another request (fired after transition is done)
         // and eventually could lead to the location change race (so called Disco App effect).
-        if (!getConnection().hasActiveRequest()) {
+        if (!getConnection().getMessageSender().hasActiveRequest()) {
             doShowShellApp(type);
         }
     }

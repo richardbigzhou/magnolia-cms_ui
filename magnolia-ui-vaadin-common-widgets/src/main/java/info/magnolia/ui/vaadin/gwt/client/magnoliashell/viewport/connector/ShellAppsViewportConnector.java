@@ -81,7 +81,7 @@ public class ShellAppsViewportConnector extends ViewportConnector implements She
         eventBus.addHandler(ShellAppRequestedEvent.TYPE, new ShellAppRequestedEvent.Handler() {
             @Override
             public void onShellAppRequested(ShellAppRequestedEvent event) {
-                if (!getWidget().isActive() || !getConnection().hasActiveRequest()) {
+                if (!getWidget().isActive() || !getConnection().getMessageSender().hasActiveRequest()) {
                     showShellApp(event.getType());
                 }
             }
