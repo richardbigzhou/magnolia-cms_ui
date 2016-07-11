@@ -139,7 +139,7 @@ public class JcrContentConnector extends AbstractContentConnector implements Sup
             JcrItemAdapter itemAdapter;
             if (jcrItem.isNode()) {
                 if (itemId instanceof JcrNewNodeItemId) {
-                    itemAdapter = new JcrNewNodeAdapter((Node) jcrItem, ((JcrNewNodeItemId)itemId).getPrimaryNodeType());
+                    itemAdapter = new JcrNewNodeAdapter((Node) jcrItem, ((JcrNewNodeItemId)itemId).getPrimaryNodeType(), ((JcrNewNodeItemId) itemId).getName());
                 } else {
                     itemAdapter = new JcrNodeAdapter((Node) jcrItem);
                 }
