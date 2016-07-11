@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.contentconnector;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import info.magnolia.jcr.util.NodeTypes;
@@ -211,6 +212,20 @@ public class JcrContentConnectorTest extends MgnlTestCase {
         assertTrue(itemId instanceof JcrItemId);
         assertEquals(node.getIdentifier(), ((JcrItemId) itemId).getUuid());
         assertEquals(WORKSPACE, ((JcrItemId) itemId).getWorkspace());
+    }
+
+    @Test
+    public void getItemFromNewItemIdPreservesNodeName() throws Exception {
+        // GIVEN
+        Node node = NodeUtil.createPath(session.getRootNode(), "/r/s", NodeTypes.Content.NAME);
+        JcrNewNodeItemId itemId = new JcrNewNodeItemId(node.getIdentifier(), session.getWorkspace().getName(), NodeTypes.Content.NAME, "new-node");
+
+        // WHEN
+        JcrItemAdapter item = jcrContentConnector.getItem(itemId);
+        Node newNode = (Node) item.applyChanges();
+
+        // THEN
+        assertThat(newNode.getName(), is("new-node"));
     }
 
     /**
