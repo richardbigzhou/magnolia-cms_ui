@@ -60,9 +60,6 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 
-/**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.SelectFieldFactory}.
- */
 public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectFieldDefinition> {
 
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
@@ -96,7 +93,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals(option.getValue(), field.getValue().toString());
+        assertThat(field.getValue().toString(), equalTo(option.getValue()));
     }
 
     @Test
