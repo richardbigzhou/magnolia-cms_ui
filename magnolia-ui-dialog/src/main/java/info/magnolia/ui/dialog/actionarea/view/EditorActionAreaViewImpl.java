@@ -56,7 +56,7 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
 
     private CssLayout toolbarContainer = new CssLayout();
 
-    private Map<String, View> actionNameToView = new HashMap<String, View>();
+    private Map<String, View> actionNameToView = new HashMap<>();
 
     public EditorActionAreaViewImpl() {
         footer.addStyleName("footer");
@@ -65,7 +65,6 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
         footer.addComponent(primaryActionsContainer);
         footer.setExpandRatio(primaryActionsContainer, 2f);
         footer.setExpandRatio(secondaryActionsContainer, 1f);
-
 
         footer.setWidth("100%");
         secondaryActionsContainer.addStyleName("secondary-actions");
