@@ -41,6 +41,7 @@ import java.util.Map;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 
 /**
  * Implementation of {@link EditorActionAreaView}. Composes dialog/editor footer with Vaadin components.
@@ -49,13 +50,13 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
 
     private HorizontalLayout footer = new HorizontalLayout();
 
-    private CssLayout primaryActionsContainer = new CssLayout();
+    private HorizontalLayout primaryActionsContainer = new HorizontalLayout();
 
-    private CssLayout secondaryActionsContainer = new CssLayout();
+    private HorizontalLayout secondaryActionsContainer = new HorizontalLayout();
 
     private CssLayout toolbarContainer = new CssLayout();
 
-    private Map<String, View> actionNameToView = new HashMap<String, View>();
+    private Map<String, View> actionNameToView = new HashMap<>();
 
     public EditorActionAreaViewImpl() {
         footer.addStyleName("footer");
@@ -65,12 +66,26 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
         footer.setExpandRatio(primaryActionsContainer, 2f);
         footer.setExpandRatio(secondaryActionsContainer, 1f);
 
-
         footer.setWidth("100%");
         secondaryActionsContainer.addStyleName("secondary-actions");
         primaryActionsContainer.addStyleName("primary-actions");
         secondaryActionsContainer.setWidth("100%");
         primaryActionsContainer.setWidth("100%");
+
+        prepareLayout();
+    }
+
+    /**
+     * In order for all scenarios (many/few primary/secondary buttons) to look tidy, let's add empty spacer labels to
+     * the layout.
+     */
+    private void prepareLayout() {
+        Label primarySpacer = new Label();
+        Label secondarySpacer = new Label();
+        secondaryActionsContainer.addComponent(secondarySpacer);
+        secondaryActionsContainer.setExpandRatio(secondarySpacer, 1f);
+        primaryActionsContainer.addComponent(primarySpacer);
+        primaryActionsContainer.setExpandRatio(primarySpacer, 1f);
     }
 
     @Override
@@ -81,13 +96,15 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
     @Override
     public void addPrimaryAction(View actionView, String actionName) {
         actionNameToView.put(actionName, actionView);
-        primaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
+        primaryActionsContainer.addComponent(actionView.asVaadinComponent(), 1);
+        actionView.asVaadinComponent().addStyleName("action-shortenable-button");
     }
 
     @Override
     public void addSecondaryAction(View actionView, String actionName) {
         actionNameToView.put(actionName, actionView);
-        secondaryActionsContainer.addComponent(actionView.asVaadinComponent());
+        secondaryActionsContainer.addComponent(actionView.asVaadinComponent(), secondaryActionsContainer.getComponentCount() - 1);
+        actionView.asVaadinComponent().addStyleName("action-shortenable-button");
     }
 
     @Override
@@ -95,6 +112,7 @@ public class EditorActionAreaViewImpl implements EditorActionAreaView {
         primaryActionsContainer.removeAllComponents();
         secondaryActionsContainer.removeAllComponents();
         actionNameToView.clear();
+        prepareLayout();
     }
 
     @Override
