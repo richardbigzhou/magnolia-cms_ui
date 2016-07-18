@@ -65,7 +65,7 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
 
     @Override
     public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionListener listener, UiContext uiContext) {
-        final Map<String,View> secondaryActions = new HashMap<String,View>();
+        final Map<String, View> secondaryActions = new HashMap<>();
         for (ActionDefinition action : actions) {
             ActionRendererDefinition actionRendererDef = definition.getActionRenderers().get(action.getName());
             ActionRenderer actionRenderer = actionRendererDef == null ?
