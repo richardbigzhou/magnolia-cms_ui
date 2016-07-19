@@ -65,7 +65,7 @@ public class SecondaryActionDefinition {
         }
 
         if (o instanceof String) {
-            String oName = (String)o;
+            String oName = (String) o;
             return name == null ? oName == null : name.equals(oName);
         }
 
