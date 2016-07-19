@@ -115,7 +115,7 @@ div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
 }
 
 /*
- * "Children" of an area - (which are actually any siblings or children of siblings
+ * "Children" of an area (which are actually any siblings or children of siblings
  * in the dom structure, which contain a mgnlEditorBar component.)
  */
 div.mgnlEditorBar.area.focus ~ div.mgnlEditorBar.component,
@@ -193,12 +193,49 @@ div.mgnlEditorBarButtons {
  */
 div.editorIcon {
   -webkit-backface-visibility: hidden;
-  padding: 0 0 0 11px !important;
+  padding: 1px 0 0 11px !important;
   cursor: pointer !important;
   font-size: 18px !important;
   float: right !important;
 }
 
+/*
+ * Variant selector.
+ */
+div.editorIcon.icon-has-variants {
+  float: left !important;
+}
+
+div.variantSelector {
+  float: left !important;
+  padding: 3px 0px 0px 4px !important;
+}
+
+select.variantSelector {
+  font-size: 12px;
+  text-transform: inherit;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer !important;
+}
+
+select.variantSelector:focus,
+select.variantSelector:active{
+    outline: none;
+}
+
+select.variantSelector option{
+  background-color: #6a9000;
+}
+
+@-moz-document url-prefix() {
+  div.variantSelector {
+    padding: 1px 0px 0px 0px !important;
+  }
+}
 
 /*
  * Label on bars showing name of component or area.
@@ -245,7 +282,7 @@ div.mgnlLevel-max {
   margin: 0 0 0 20px !important;
 }
 
-/* --- End of edit bars definitions --- */
+/* --End of edit bars definitions --*/
 
 
 /* -------------------------------------
@@ -268,7 +305,7 @@ div#mgnlEditorMoveDiv {
   opacity: 0.7 !important;
 }
 
-/* --- End of DnD definitions --- */
+/* --End of DnD definitions --*/
 
 /* -------------------------------------
  *  Status indicator on bar
@@ -297,4 +334,4 @@ div.mgnlEditorBar.component.mgnlEditorBarStatusIndicator {
   background-color: $cp56 !important;
 }
  
- /* --- End of Status indicator on bar definitions --- */
+ /* --End of Status indicator on bar definitions --*/
