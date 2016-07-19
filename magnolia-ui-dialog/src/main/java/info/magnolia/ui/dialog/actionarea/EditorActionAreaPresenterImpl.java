@@ -65,14 +65,17 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
 
     @Override
     public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionListener listener, UiContext uiContext) {
-        final Map<String,View> secondaryActions = new HashMap<String,View>();
+        final Map<String, View> secondaryActions = new HashMap<>();
         for (ActionDefinition action : actions) {
             ActionRendererDefinition actionRendererDef = definition.getActionRenderers().get(action.getName());
             ActionRenderer actionRenderer = actionRendererDef == null ?
                     componentProvider.getComponent(ActionRenderer.class):
                     componentProvider.newInstance(actionRendererDef.getRendererClass(), action, actionRendererDef, uiContext);
             final View actionView = actionRenderer.start(action, listener);
-            if (definition.getSecondaryActions().contains(new SecondaryActionDefinition(action.getName()))) {
+            // We simply compare secondary actions by name, as comparing the underlying object might not work due to a
+            // wrapped/proxied definition
+            if (definition.getSecondaryActions().stream()
+                    .anyMatch(secondaryActionDefinition -> action.getName().equals(secondaryActionDefinition.getName()))) {
                 // Store rendered secondary action
                 secondaryActions.put(action.getName(), actionView);
             } else {
