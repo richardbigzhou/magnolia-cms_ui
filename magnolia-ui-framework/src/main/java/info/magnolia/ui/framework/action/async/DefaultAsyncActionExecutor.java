@@ -60,12 +60,13 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.TriggerListener;
 import org.quartz.listeners.TriggerListenerSupport;
 
@@ -112,22 +113,28 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
         if (definition.isParallel()) {
             jobName += " (" + idx.getAndIncrement() + ")";
         }
-        SimpleTrigger trigger = new SimpleTrigger(jobName, SchedulerConsts.SCHEDULER_GROUP_NAME, cal.getTime());
-        trigger.addTriggerListener(jobName + "_trigger");
+
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(jobName, SchedulerConsts.SCHEDULER_GROUP_NAME)
+                .startAt(cal.getTime())
+                .build();
+
         // create job definition
-        final JobDetail jd = new JobDetail(jobName, SchedulerConsts.SCHEDULER_GROUP_NAME, info.magnolia.module.scheduler.CommandJob.class);
+        final JobDetail jd = JobBuilder.newJob()
+                .withIdentity(jobName, SchedulerConsts.SCHEDULER_GROUP_NAME)
+                .ofType(info.magnolia.module.scheduler.CommandJob.class)
+                .build();
         jd.getJobDataMap().put(SchedulerConsts.CONFIG_JOB_COMMAND, commandName);
         jd.getJobDataMap().put(SchedulerConsts.CONFIG_JOB_COMMAND_CATALOG, catalogName);
         jd.getJobDataMap().put(SchedulerConsts.CONFIG_JOB_PARAMS, params);
 
         Scheduler scheduler = schedulerModuleProvider.get().getScheduler();
         TriggerListener triggerListener = getListener(jobName, item);
-        scheduler.addTriggerListener(triggerListener);
+        scheduler.getListenerManager().addTriggerListener(triggerListener);
         try {
             scheduler.scheduleJob(jd, trigger);
-        }
-        catch (SchedulerException e) {
-             throw new ParallelExecutionException(e);
+        } catch (SchedulerException e) {
+            throw new ParallelExecutionException(e);
         }
 
         // wait until job has been executed
@@ -162,7 +169,7 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
 
     private boolean isJobRunning(List<JobExecutionContext> jobs, String jobName) {
         for (JobExecutionContext job : jobs) {
-            if (job.getJobDetail().getName().equals(jobName)) {
+            if (StringUtils.equals(job.getJobDetail().getKey().getName(), jobName)) {
                 return true;
             }
         }
@@ -202,7 +209,7 @@ public class DefaultAsyncActionExecutor<D extends CommandActionDefinition> imple
         }
 
         @Override
-        public void triggerComplete(final Trigger trigger, final JobExecutionContext jobExecutionContext, int i) {
+        public void triggerComplete(final Trigger trigger, final JobExecutionContext jobExecutionContext, Trigger.CompletedExecutionInstruction completedExecutionInstruction) {
             if (!definition.isNotifyUser()) {
                 return;
             }
