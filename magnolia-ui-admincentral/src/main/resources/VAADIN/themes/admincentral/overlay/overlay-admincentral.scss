@@ -46,12 +46,6 @@
     vertical-align:middle;
 }
 
-
-
-
-
-
-
 /* transitions for overlays */
 
 /* force curtain to be rendered in 3d to solve flash/flicker at the beginning of transitions with a curtain. */
@@ -107,7 +101,9 @@
 
 .overlay.open .light .dialog-wrapper{
   @include prefix(animation-duration, 0.4s);
-  @include prefix(animation-name, overlay-zoomin-fadein );
+  // Ideally the dialog should zoom-in/fade-in, but w/out proper handling zoom (scaling) animation may interfere with Vaadin
+  // layouting causing components to be rendered in a flawed state (see MGNLUI-3948)
+  @include prefix(animation-name, overlay-fadein );
 }
 .overlay.close .light .dialog-wrapper{
   @include prefix(animation-duration, 0.3s);
@@ -115,7 +111,7 @@
   @include prefix(animation-fill-mode, forwards);
 }
 
-
+@include keyframesTransformOpacity(overlay-fadein, scale(1.0), scale(1.0), 0, 1.0);
 
 @include keyframesTransformOpacity(overlay-fadein-curtain, scale(1.0), scale(1.0), 0, 0.8);
 

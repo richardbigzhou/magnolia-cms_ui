@@ -294,11 +294,19 @@
     cursor: pointer;
   }
 
-  .primary-actions{
-    text-align: right;
+  .action-shortenable-button {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-  .secondary-actions{
+  .primary-actions {
+    text-align: right;
+    overflow: hidden;
+  }
+
+  .secondary-actions {
     text-align: left;
   }
 
