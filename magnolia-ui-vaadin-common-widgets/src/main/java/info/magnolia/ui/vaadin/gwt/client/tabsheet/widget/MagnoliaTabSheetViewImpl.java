@@ -155,19 +155,21 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private void animateHeightChange(MagnoliaTabWidget newActiveTab) {
         final Style tabPanelStyle = tabPanel.getElement().getStyle();
-        int currentTabHeight = tabPanel.getOffsetHeight();
+        int offsetTabHeight = tabPanel.getOffsetHeight();
         tabPanelStyle.clearHeight();
-        int newTabHeight = newActiveTab.getOffsetHeight();
-        final String boundaryHeightPropertyCamelCase = currentTabHeight < newTabHeight ? "maxHeight" : "minHeight";
-        final String boundaryHeightProperty = currentTabHeight < newTabHeight ? "max-height" : "min-height";
+        int newHeight = newActiveTab.getOffsetHeight();
+        final String heightPropertyCC = offsetTabHeight < newHeight ? "maxHeight" : "minHeight";
+        final String heightProperty = offsetTabHeight < newHeight ? "max-height" : "min-height";
 
         final JQueryAnimation animation = new JQueryAnimation();
-        tabPanelStyle.setProperty(boundaryHeightPropertyCamelCase, currentTabHeight + "px");
-        animation.setProperty(boundaryHeightProperty, newTabHeight);
+        tabPanelStyle.setProperty(heightPropertyCC, offsetTabHeight + "px");
+        animation.setProperty(heightProperty, newHeight);
+        tabPanelStyle.setOverflow(Style.Overflow.HIDDEN);
         animation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                tabPanelStyle.clearProperty(boundaryHeightPropertyCamelCase);
+              tabPanelStyle.clearOverflow();
+              tabPanelStyle.clearProperty(heightPropertyCC);
             }
         });
         animation.run(HEIGHT_CHANGE_ANIMATION_DURATION, tabPanel.getElement());
