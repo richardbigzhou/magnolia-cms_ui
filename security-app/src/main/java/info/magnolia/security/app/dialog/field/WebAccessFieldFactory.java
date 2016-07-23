@@ -65,10 +65,9 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Field builder for the web access field.
  *
- * @param <D> definition type
  * @see WebAccessFieldDefinition
  */
-public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends AbstractAccessFieldFactory<D> {
+public class WebAccessFieldFactory extends AbstractAccessFieldFactory<WebAccessFieldDefinition, Object> {
 
     private static final String ACL_NODE_NAME = "acl_uri";
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
@@ -77,7 +76,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
     private final SimpleTranslator i18n;
 
     @Inject
-    public WebAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, SimpleTranslator i18n) {
+    public WebAccessFieldFactory(WebAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, SimpleTranslator i18n) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.i18n = i18n;
     }
@@ -86,7 +85,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
      * @deprecated since 5.4.7 - use {@link #WebAccessFieldFactory(WebAccessFieldDefinition, Item, UiContext, I18NAuthoringSupport, SimpleTranslator)} instead.
      */
     @Deprecated
-    public WebAccessFieldFactory(D definition, Item relatedFieldItem, SimpleTranslator i18n) {
+    public WebAccessFieldFactory(WebAccessFieldDefinition definition, Item relatedFieldItem, SimpleTranslator i18n) {
         this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class), i18n);
     }
 
