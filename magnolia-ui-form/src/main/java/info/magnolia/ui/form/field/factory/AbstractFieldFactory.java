@@ -266,7 +266,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
     @SuppressWarnings("unchecked")
-    private Property<?> initializeProperty() {
+    protected Property<T> initializeProperty() {
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
 
         if (transformerClass == null) {
