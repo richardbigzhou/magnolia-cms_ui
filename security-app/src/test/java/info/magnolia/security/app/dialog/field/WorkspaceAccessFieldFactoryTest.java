@@ -104,7 +104,7 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
 
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n, componentProvider);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -142,7 +142,7 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n, componentProvider);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -180,7 +180,7 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n, componentProvider);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -215,7 +215,7 @@ public class WorkspaceAccessFieldFactoryTest extends AbstractFieldFactoryTestCas
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n, componentProvider);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory(definition, item, null, null, null, i18n, componentProvider);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();

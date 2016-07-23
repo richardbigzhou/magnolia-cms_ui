@@ -52,8 +52,9 @@ import com.vaadin.data.Item;
  * Abstract super class for field builder that provide fields for editing ACLs.
  *
  * @param <D> definition type
+ * @param <T> the field type
  */
-public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<D, Object> {
+public abstract class AbstractAccessFieldFactory<D extends FieldDefinition, T> extends AbstractFieldFactory<D, T> {
 
     protected AbstractAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);

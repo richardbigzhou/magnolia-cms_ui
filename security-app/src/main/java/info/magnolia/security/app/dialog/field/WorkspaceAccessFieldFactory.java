@@ -55,7 +55,6 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -96,11 +95,10 @@ import com.vaadin.ui.VerticalLayout;
  * Field builder for the workspace ACL field.  Adds data to the item in an intermediary format that is transformed to the
  * final format by {@link info.magnolia.security.app.dialog.action.SaveRoleDialogAction}.
  *
- * @param <D> definition type
  * @see WorkspaceAccessFieldDefinition
  * @see info.magnolia.security.app.dialog.action.SaveRoleDialogAction
  */
-public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinition> extends AbstractAccessFieldFactory<D> {
+public class WorkspaceAccessFieldFactory extends AbstractAccessFieldFactory<WorkspaceAccessFieldDefinition, Object> {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceAccessFieldFactory.class);
 
@@ -113,7 +111,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
     @Inject
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.uiContext = uiContext;
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
@@ -125,7 +123,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
      * @deprecated since 5.4.7 - use {@link #WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition, Item, UiContext, I18NAuthoringSupport, ChooseDialogPresenter, SimpleTranslator, ComponentProvider)} instead.
      */
     @Deprecated
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         this(definition, relatedFieldItem, uiContext, componentProvider.getComponent(I18NAuthoringSupport.class), workbenchChooseDialogPresenter, i18n, componentProvider);
     }
 
@@ -133,7 +131,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
      * @deprecated since 5.3.1. {@link ComponentProvider} has to be injected in order to create the choose-dialog specific component provider, with proper bindings for e.g. {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} or {@link info.magnolia.ui.imageprovider.ImageProvider}.
      */
     @Deprecated
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         this(definition, relatedFieldItem, uiContext, Components.getComponent(I18NAuthoringSupport.class), workbenchChooseDialogPresenter, i18n, Components.getComponentProvider());
     }
 
