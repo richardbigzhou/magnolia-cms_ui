@@ -80,6 +80,7 @@ import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.MultiValueFieldFactory;
+import info.magnolia.ui.form.field.factory.RichTextFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.framework.command.CleanTempFilesCommand;
 
@@ -177,6 +178,14 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.4.4", "")
             .addTask(new PartialBootstrapTask("Add JCR node-type selector field", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.fieldTypes.xml", "fieldTypes/nodeTypeField"))
+        );
+
+        register(DeltaBuilder.update("5.4.8", "")
+                .addTask(new IsModuleInstalledOrRegistered("Check if dam-app module is installed", "dam-app", (Task)null,
+                            new NodeExistsDelegateTask("Change AssetsEnabledRichTextFieldFactory to RichTextFieldFactory", "/modules/ui-framework/fieldTypes/textArea",
+                                new CheckAndModifyPropertyValueTask("/modules/ui-framework/fieldTypes/textArea", "factoryClass", "info.magnolia.dam.app.ui.field.factory.AssetsEnabledRichTextFieldFactory", RichTextFieldFactory.class.getName()))))
+                .addTask(new IsModuleInstalledOrRegistered("Check if form module is installed", "form", (Task)null,
+                            new RemoveNodeTask("Remove formStaticField", "/modules/ui-framework/fieldTypes/formStaticField")))
         );
     }
 
