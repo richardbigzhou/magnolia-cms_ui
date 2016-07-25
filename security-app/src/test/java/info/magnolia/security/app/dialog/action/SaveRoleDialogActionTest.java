@@ -85,9 +85,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.vaadin.data.Item;
 
-/**
- * Test case for SaveRoleDialogActionTest.
- */
 public class SaveRoleDialogActionTest extends RepositoryTestCase {
 
     private SecuritySupport securitySupport;
@@ -285,9 +282,13 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         createAction(roleItem).execute();
 
         // THEN
-        assertTrue(session.nodeExists("/testRole/acl_Store/0"));
-        assertEquals("/read", session.getProperty("/testRole/acl_Store/0/path").getString());
-        assertEquals(Permission.READ, session.getProperty("/testRole/acl_Store/0/permissions").getLong());
+        assertThat(roleNode, hasNode(allOf(
+                nodeName("acl_Store"), hasNode(allOf(
+                        nodeName("0"),
+                        hasProperty("path", "/read"),
+                        hasProperty("permissions", Permission.READ)
+                ))
+        )));
     }
 
     @Test
@@ -311,7 +312,7 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testRemoveAclEntry() throws Exception {
+    public void removeAclEntry() throws Exception {
         // GIVEN
         roleManager.createRole("testRole");
         Node roleNode = session.getRootNode().getNode("testRole");
@@ -330,8 +331,8 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         createAction(roleItem).execute();
 
         // THEN
-        assertTrue(session.itemExists("/testRole/acl_data/0"));
-        assertFalse(session.itemExists("/testRole/acl_data/00"));
+        assertThat(aclNode, hasNode("0"));
+        assertThat(aclNode, not(hasNode("00")));
     }
 
     // Workspace permission tests
@@ -517,14 +518,14 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
     public void validRoleNameIsUsedWhenCreatingRole() throws Exception {
         // GIVEN
         JcrNewNodeAdapter roleItem = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Role.NAME);
-        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("test@test"));
+        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<>("test@test"));
 
         // WHEN
         createAction(roleItem).execute();
 
         // THEN
-        assertNull(roleManager.getRole("test@test"));
-        assertNotNull(roleManager.getRole("test-test"));
+        assertThat(roleManager.getRole("test@test"), is(nullValue()));
+        assertThat(roleManager.getRole("test-test"), is(not(nullValue())));
         assertRoleHasReadAccessToItself("test-test");
     }
 
@@ -535,14 +536,14 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         final Node testRoleNode = session.getRootNode().getNode("testRole");
 
         JcrNodeAdapter roleItem = new JcrNodeAdapter(testRoleNode);
-        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<String>("renamed@role"));
+        roleItem.addItemProperty(ModelConstants.JCR_NAME, new DefaultProperty<>("renamed@role"));
 
         // WHEN
         createAction(roleItem).execute();
 
         // THEN
-        assertNull(roleManager.getRole("testRole"));
-        assertNotNull(roleManager.getRole("renamed-role"));
+        assertThat(roleManager.getRole("testRole"), is(nullValue()));
+        assertThat(roleManager.getRole("renamed-role"), is(not(nullValue())));
         assertRoleHasReadAccessToItself("renamed-role");
 
         // Assert that no other node present under '/renamedRole/acl_userroles/' except for the existing one,
