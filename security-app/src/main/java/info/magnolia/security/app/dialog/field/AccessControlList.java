@@ -57,6 +57,85 @@ public class AccessControlList {
     public static final long ACCESS_TYPE_CHILDREN = 2;
     public static final long ACCESS_TYPE_NODE_AND_CHILDREN = ACCESS_TYPE_NODE | ACCESS_TYPE_CHILDREN;
 
+    private LinkedHashMap<EntryKey, Entry> entries = new LinkedHashMap<EntryKey, Entry>();
+
+    public Collection<Entry> getEntries() {
+        return entries.values();
+    }
+
+    public void addEntry(Entry entry) {
+        EntryKey key = entry.createKey();
+        Entry existingEntry = entries.get(key);
+        if (existingEntry == null) {
+            entries.put(key, entry);
+        } else {
+            existingEntry.merge(entry);
+        }
+    }
+
+    public void readEntries(Node aclNode) throws RepositoryException {
+        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+            readEntry(entryNode);
+        }
+    }
+
+    public void readEntry(Node entryNode) throws RepositoryException {
+        addEntry(doGetEntryFromNode(entryNode));
+    }
+
+    public Entry getEntryByNode(Node entryNode) throws RepositoryException {
+        Entry entry = doGetEntryFromNode(entryNode);
+        Entry existingEntry = entries.get(entry.createKey());
+        if (existingEntry != null) {
+            return existingEntry;
+        }
+        return entry;
+    }
+
+    private Entry doGetEntryFromNode(Node entryNode) throws RepositoryException {
+        long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
+        String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
+
+        long accessType;
+
+        if (path.endsWith("/*")) {
+            accessType = ACCESS_TYPE_CHILDREN;
+            path = path.equals("/*") ?  "/" : StringUtils.substringBeforeLast(path, "/*");
+        } else {
+            accessType = ACCESS_TYPE_NODE;
+            path = path.equals("/") ?  path : StringUtils.removeEnd(path, "/");
+        }
+
+        return new Entry(permissions, accessType, path);
+    }
+
+    public void saveEntries(Node aclNode) throws RepositoryException {
+        for (Entry entry : entries.values()) {
+
+            Node entryNode = aclNode.addNode(Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0"), NodeTypes.ContentNode.NAME);
+
+            String path = entry.getPath();
+            long permissions = entry.getPermissions();
+            long accessType = entry.getAccessType();
+
+            String suffixForChildren = path.equals("/") ? "*" : "/*";
+            switch ((int) accessType) {
+            case (int) ACCESS_TYPE_CHILDREN:
+                path += suffixForChildren;
+                break;
+            case (int) ACCESS_TYPE_NODE_AND_CHILDREN:
+                String nodeName = Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0");
+                Node extraEntry = aclNode.addNode(nodeName, NodeTypes.ContentNode.NAME);
+                extraEntry.setProperty(PATH_PROPERTY_NAME, path + suffixForChildren);
+                extraEntry.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
+                break;
+            }
+
+            entryNode.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
+            entryNode.setProperty(PATH_PROPERTY_NAME, path);
+        }
+    }
+
     /**
      * Used for testing equality of entries.
      */
@@ -149,85 +228,6 @@ public class AccessControlList {
         @Override
         public int hashCode() {
             return createKey().hashCode();
-        }
-    }
-
-    private LinkedHashMap<EntryKey, Entry> entries = new LinkedHashMap<EntryKey, Entry>();
-
-    public Collection<Entry> getEntries() {
-        return entries.values();
-    }
-
-    public void addEntry(Entry entry) {
-        EntryKey key = entry.createKey();
-        Entry existingEntry = entries.get(key);
-        if (existingEntry == null) {
-            entries.put(key, entry);
-        } else {
-            existingEntry.merge(entry);
-        }
-    }
-
-    public void readEntries(Node aclNode) throws RepositoryException {
-        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-            readEntry(entryNode);
-        }
-    }
-
-    public void readEntry(Node entryNode) throws RepositoryException {
-        addEntry(doGetEntryFromNode(entryNode));
-    }
-
-    public Entry getEntryByNode(Node entryNode) throws RepositoryException {
-        Entry entry = doGetEntryFromNode(entryNode);
-        Entry existingEntry = entries.get(entry.createKey());
-        if (existingEntry != null) {
-            return existingEntry;
-        }
-        return entry;
-    }
-
-    private Entry doGetEntryFromNode(Node entryNode) throws RepositoryException {
-        long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
-        String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
-
-        long accessType;
-
-        if (path.endsWith("/*")) {
-            accessType = ACCESS_TYPE_CHILDREN;
-            path = path.equals("/*") ?  "/" : StringUtils.substringBeforeLast(path, "/*");
-        } else {
-            accessType = ACCESS_TYPE_NODE;
-            path = path.equals("/") ?  path : StringUtils.removeEnd(path, "/");
-        }
-
-        return new Entry(permissions, accessType, path);
-    }
-
-    public void saveEntries(Node aclNode) throws RepositoryException {
-        for (Entry entry : entries.values()) {
-
-            Node entryNode = aclNode.addNode(Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0"), NodeTypes.ContentNode.NAME);
-
-            String path = entry.getPath();
-            long permissions = entry.getPermissions();
-            long accessType = entry.getAccessType();
-
-            String suffixForChildren = path.equals("/") ? "*" : "/*";
-            switch ((int) accessType) {
-            case (int) ACCESS_TYPE_CHILDREN:
-                path += suffixForChildren;
-                break;
-            case (int) ACCESS_TYPE_NODE_AND_CHILDREN:
-                String nodeName = Path.getUniqueLabel(aclNode.getSession(), aclNode.getPath(), "0");
-                Node extraEntry = aclNode.addNode(nodeName, NodeTypes.ContentNode.NAME);
-                extraEntry.setProperty(PATH_PROPERTY_NAME, path + suffixForChildren);
-                extraEntry.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
-                break;
-            }
-
-            entryNode.setProperty(PERMISSIONS_PROPERTY_NAME, permissions);
-            entryNode.setProperty(PATH_PROPERTY_NAME, path);
         }
     }
 }
