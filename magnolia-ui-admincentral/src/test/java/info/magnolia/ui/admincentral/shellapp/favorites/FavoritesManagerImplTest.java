@@ -36,18 +36,11 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlUserManager;
-import info.magnolia.cms.security.Realm;
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
@@ -66,9 +59,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Tests.
- */
 public class FavoritesManagerImplTest extends RepositoryTestCase {
 
     public static final String TEST_USER = "MickeyMouse";
@@ -99,28 +89,10 @@ public class FavoritesManagerImplTest extends RepositoryTestCase {
         repositoryManager.getRepositoryProvider("magnolia").registerNodeTypes(new ByteArrayInputStream(FAVORITE_NODE_TYPES.getBytes()));
         session = MgnlContext.getJCRSession(FavoriteStore.WORKSPACE_NAME);
 
-        MockContext ctx = new MockContext();
+        MockContext ctx = (MockContext) MgnlContext.getInstance();
         final User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
         ctx.setUser(user);
-        ctx.addSession("magnolia-" + RepositoryConstants.VERSION_STORE, MgnlContext.getJCRSession("magnolia-" + RepositoryConstants.VERSION_STORE));
-        ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
-
-        final SecuritySupportImpl sec = new SecuritySupportImpl();
-
-        MgnlUserManager userMgr = new MgnlUserManager() {
-            {
-                setName(Realm.REALM_SYSTEM.getName());
-            }
-            @Override
-            public User getSystemUser() {
-                return user;
-            }
-        };
-        sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
-        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
-        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
-
         MgnlContext.setInstance(ctx);
 
         favoriteStore = new FavoriteStore();
