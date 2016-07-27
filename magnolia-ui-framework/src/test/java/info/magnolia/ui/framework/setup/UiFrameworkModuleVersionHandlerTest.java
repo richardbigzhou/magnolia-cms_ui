@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.setup;
 import static info.magnolia.test.hamcrest.NodeMatchers.*;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.util.UnicodeNormalizer;
@@ -57,6 +57,7 @@ import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CodeFieldFactory;
+import info.magnolia.ui.form.field.factory.RichTextFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
@@ -464,4 +465,53 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
                 hasProperty("definitionClass", "info.magnolia.ui.framework.field.nodetype.NodeTypeSelectFieldDefinition")));
     }
 
+    @Test
+    public void updateFrom547ChangeAssetsEnabledRichTextFieldFactoryToRichTextFieldFactoryWhenDamAppModuleIsNotInstalled() throws Exception {
+        // GIVEN
+        setupConfigProperty("/modules/ui-framework/fieldTypes/textArea", "factoryClass", "info.magnolia.dam.app.ui.field.factory.AssetsEnabledRichTextFieldFactory");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.7"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes/textArea"), hasProperty("factoryClass", RichTextFieldFactory.class.getName()));
+    }
+
+    @Test
+    public void updateFrom547DoNotChangeAssetsEnabledRichTextFieldFactoryToRichTextFieldFactoryWhenDamAppModuleIsInstalled() throws Exception {
+        // GIVEN
+        setupConfigProperty("/modules/ui-framework/fieldTypes/textArea", "factoryClass", "info.magnolia.dam.app.ui.field.factory.AssetsEnabledRichTextFieldFactory");
+        setupConfigNode("/modules/dam-app");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.7"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes/textArea"), hasProperty("factoryClass", "info.magnolia.dam.app.ui.field.factory.AssetsEnabledRichTextFieldFactory"));
+    }
+
+    @Test
+    public void updateFrom547DoNotRemoveFormStaticFieldWhenFormModuleIsInstalled() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/ui-framework/fieldTypes/formStaticField");
+        setupConfigNode("/modules/form");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.7"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes"), hasNode("formStaticField"));
+    }
+
+    @Test
+    public void updateFrom547RemoveFormStaticFieldWhenFormModuleIsNotInstalled() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/ui-framework/fieldTypes/formStaticField");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.4.7"));
+
+        // THEN
+        assertThat(session.getNode("/modules/ui-framework/fieldTypes"), not(hasNode("formStaticField")));
+    }
 }
