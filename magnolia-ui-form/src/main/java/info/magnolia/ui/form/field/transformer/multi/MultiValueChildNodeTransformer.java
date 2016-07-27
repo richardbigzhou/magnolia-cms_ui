@@ -57,6 +57,7 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
@@ -129,7 +130,9 @@ public class MultiValueChildNodeTransformer extends BasicTransformer<Propertyset
             // get the child item
             JcrNodeAdapter child = getOrCreateChildItem((JcrNodeAdapter) relatedFormItem, childNodeName);
             // Remove all old properties
-            for (Object id : child.getItemPropertyIds()) {
+
+            ImmutableList<Object> propertyIds = ImmutableList.copyOf(child.getItemPropertyIds());
+            for (Object id : propertyIds) {
                 if (newValue.getItemProperty(Integer.valueOf((String) id)) == null) {
                     child.removeItemProperty(id);
                 }
