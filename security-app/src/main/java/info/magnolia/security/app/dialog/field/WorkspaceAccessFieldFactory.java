@@ -36,9 +36,10 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.security.app.dialog.field.AccessControlListField.NewEntryHandler;
+import info.magnolia.security.app.dialog.field.validator.WorkspaceAccessControlValidator;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -51,11 +52,8 @@ import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContent
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -66,9 +64,8 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -79,53 +76,68 @@ import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 /**
- * Field builder for the workspace ACL field.  Adds data to the item in an intermediary format that is transformed to the
- * final format by {@link info.magnolia.security.app.dialog.action.SaveRoleDialogAction}.
+ * Field factory for workspace ACL fields; unlike other field factories, it does not read ACLs straight from the JCR adapter.
  *
- * @param <D> definition type
+ * <p>First, reading and saving entries from/to the role node is delegated to a {@link WorkspaceAccessControlList}.
+ * This typed ACL is then carried over as a property of the dialog item to the save action,
+ * where it gets removed from the item, not to interfere with the JCR adapter.
+ *
  * @see WorkspaceAccessFieldDefinition
  * @see info.magnolia.security.app.dialog.action.SaveRoleDialogAction
  */
-public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinition> extends AbstractAccessFieldFactory<D> {
+public class WorkspaceAccessFieldFactory extends AbstractAccessFieldFactory<WorkspaceAccessFieldDefinition, AccessControlList> {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceAccessFieldFactory.class);
 
+    /**
+     * @deprecated since 5.4.8, not used anymore now that fields operate over ACEs directly.
+     */
+    @Deprecated
     public static final String INTERMEDIARY_FORMAT_PROPERTY_NAME = "__intermediary_format";
-    public static final String ACCESS_TYPE_PROPERTY_NAME = "accessType";
+
+    /**
+     * @deprecated since 5.4.8, constant has been relocated to {@link WorkspaceAccessControlList#ACCESS_TYPE_PROPERTY_NAME}
+     */
+    @Deprecated
+    public static final String ACCESS_TYPE_PROPERTY_NAME = WorkspaceAccessControlList.ACCESS_TYPE_PROPERTY_NAME;
 
     private final UiContext uiContext;
     private final SimpleTranslator i18n;
     private final ComponentProvider componentProvider;
-    private ChooseDialogPresenter workbenchChooseDialogPresenter;
+
+    private final String workspace;
+    private final String aclName;
 
     @Inject
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
         this.uiContext = uiContext;
-        this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
         this.i18n = i18n;
         this.componentProvider = componentProvider;
+
+        workspace = definition.getWorkspace();
+        aclName = "acl_" + workspace;
     }
 
     /**
      * @deprecated since 5.4.7 - use {@link #WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition, Item, UiContext, I18NAuthoringSupport, ChooseDialogPresenter, SimpleTranslator, ComponentProvider)} instead.
      */
     @Deprecated
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n, ComponentProvider componentProvider) {
         this(definition, relatedFieldItem, uiContext, componentProvider.getComponent(I18NAuthoringSupport.class), workbenchChooseDialogPresenter, i18n, componentProvider);
     }
 
@@ -133,128 +145,97 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
      * @deprecated since 5.3.1. {@link ComponentProvider} has to be injected in order to create the choose-dialog specific component provider, with proper bindings for e.g. {@link info.magnolia.ui.vaadin.integration.contentconnector.ContentConnector} or {@link info.magnolia.ui.imageprovider.ImageProvider}.
      */
     @Deprecated
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
+    public WorkspaceAccessFieldFactory(WorkspaceAccessFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         this(definition, relatedFieldItem, uiContext, Components.getComponent(I18NAuthoringSupport.class), workbenchChooseDialogPresenter, i18n, Components.getComponentProvider());
     }
 
     @Override
-    protected Field<Object> createFieldComponent() {
+    protected Field<AccessControlList> createFieldComponent() {
+        final Map<Long, String> permissionItems = ImmutableMap.of(
+                Permission.ALL, i18n.translate("security.workspace.field.readWrite"),
+                Permission.READ, i18n.translate("security.workspace.field.readOnly"),
+                Permission.NONE, i18n.translate("security.workspace.field.denyAccess"));
 
-        final String aclName = "acl_" + getFieldDefinition().getWorkspace();
+        final Map<Long, String> accessTypeItems = ImmutableMap.of(
+                WorkspaceAccessControlList.ACCESS_TYPE_NODE, i18n.translate("security.workspace.field.selected"),
+                WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, i18n.translate("security.workspace.field.subnodes"),
+                WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, i18n.translate("security.workspace.field.selectedSubnodes"));
 
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setSpacing(true);
+        final String chooseCaption = i18n.translate("security.workspace.field.choose");
 
-        try {
-
-            final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
-
-            final VerticalLayout aclLayout = new VerticalLayout();
-
-            final Label emptyLabel = new Label(i18n.translate("security.workspace.field.noAccess"));
-
-            // Since JcrNewNodeAdapter.getJcrItem() returns the parent node we need to skip this step because we don't want to inspect the parent node
-            if (!(roleItem instanceof JcrNewNodeAdapter)) {
-                Node roleNode = roleItem.getJcrItem();
-                if (roleNode.hasNode(aclName)) {
-
-                    final Node aclNode = roleNode.getNode(aclName);
-
-                    AccessControlList acl = new AccessControlList();
-                    acl.readEntries(aclNode);
-
-                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                    roleItem.addChild(aclItem);
-
-                    aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-
-                    final Set<AccessControlList.Entry> uniqueEntries = new HashSet<AccessControlList.Entry>();
-                    for (final Node aclEntryNode : NodeUtil.getNodes(aclNode)) {
-                        AccessControlList.Entry entry = acl.getEntryByNode(aclEntryNode);
-                        if (uniqueEntries.contains(entry)) {
-                            continue;
-                        }
-
-                        uniqueEntries.add(entry);
-                        long permissions = entry.getPermissions();
-                        long accessType = entry.getAccessType();
-                        String path = entry.getPath();
-
-                        JcrNodeAdapter entryItem = new JcrNodeAdapter(aclEntryNode);
-                        entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        final Property<Long> permissionsProperty = DefaultPropertyUtil.newDefaultProperty(Long.class, null);
-                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, permissionsProperty);
-                        final Property<Long> accessProperty = DefaultPropertyUtil.newDefaultProperty(Long.class, null);
-                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, accessProperty);
-                        final Property<String> pathProperty = DefaultPropertyUtil.newDefaultProperty(String.class, null);
-                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, pathProperty);
-
-                        permissionsProperty.setValue(permissions);
-                        accessProperty.setValue(accessType);
-                        pathProperty.setValue(path);
-
-                        aclItem.addChild(entryItem);
-
-                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                        aclLayout.addComponent(ruleRow);
-                    }
-                }
-            }
-
-            if (aclLayout.getComponentCount() == 0) {
-                aclLayout.addComponent(emptyLabel);
-            }
-
-            final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button(i18n.translate("security.workspace.field.addButton"));
-            addButton.addClickListener(new Button.ClickListener() {
-
-                @Override
-                public void buttonClick(Button.ClickEvent event) {
-                    try {
-
-                        AbstractJcrNodeAdapter aclItem = getOrAddAclItem(roleItem, aclName);
-                        if (aclItem.getItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME) == null) {
-                            aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        }
-
-                        JcrNodeAdapter entryItem = addAclEntryItem(aclItem);
-                        entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, Permission.ALL));
-                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN));
-                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, ""));
-
-                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                        aclLayout.removeComponent(emptyLabel);
-                        aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
-                    } catch (RepositoryException e) {
-                        throw new RuntimeRepositoryException(e);
-                    }
-                }
-            });
-            buttons.addComponent(addButton);
-            aclLayout.addComponent(buttons);
-
-            layout.addComponent(aclLayout);
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-
-        return new CustomField<Object>() {
-
+        AccessControlListField aclField = new AccessControlListField(permissionItems, new NewEntryHandler() {
             @Override
-            protected Component initContent() {
-                return layout;
+            public AccessControlList.Entry createEntry() {
+                return new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "");
             }
+        });
 
+        final AccessControlField.PathChooserHandler pathChooserHandler = new AccessControlField.PathChooserHandler() {
             @Override
-            public Class<?> getType() {
-                return Object.class;
+            public void openChooser(final Property<String> pathProperty) {
+                openChooseDialog(pathProperty.getValue(), new ChooseDialogCallback() {
+                    @Override
+                    public void onItemChosen(String actionName, Object value) {
+                        try {
+                            String newPath = value instanceof JcrItemId ? JcrItemUtil.getJcrItem((JcrItemId) value).getPath() : "/";
+                            pathProperty.setValue(newPath);
+                        } catch (RepositoryException e) {
+                            log.error("Failed to read chosen node", e);
+                        }
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
             }
         };
+
+        aclField.setEntryFieldFactory(new AccessControlListField.EntryFieldFactory() {
+            @Override
+            public Field<AccessControlList.Entry> createField(AccessControlList.Entry entry) {
+                AccessControlField entryField = new AccessControlField(permissionItems, accessTypeItems);
+                entryField.setPropertyDataSource(new ObjectProperty<>(entry));
+                entryField.setPathChooserHandler(pathChooserHandler);
+                entryField.setChooseButtonCaption(chooseCaption);
+                entryField.addValidator(new WorkspaceAccessControlValidator(definition.getWorkspace(), i18n.translate("security-app.role.acls.errorMessage")));
+                return entryField;
+            }
+        });
+        aclField.setAddButtonCaption(i18n.translate("security.workspace.field.addButton"));
+        aclField.setRemoveButtonCaption(i18n.translate("security.workspace.field.delete"));
+        aclField.setEmptyPlaceholderCaption(i18n.translate("security.workspace.field.noAccess"));
+
+        return aclField;
     }
 
+    @Override
+    protected Property<AccessControlList> initializeProperty() {
+        // prepare backing WorkspaceAccessControlList bean
+        JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
+        AccessControlList<WorkspaceAccessControlList.Entry> acl = new WorkspaceAccessControlList();
+        roleItem.addItemProperty(aclName, new ObjectProperty<>(acl));
+
+        if (!(roleItem.isNew())) {
+            try {
+                Node roleNode = roleItem.getJcrItem();
+                if (roleNode.hasNode(aclName)) {
+                    final Node aclNode = roleNode.getNode(aclName);
+                    acl.readEntries(aclNode);
+
+                }
+            } catch (RepositoryException e) {
+                throw new RuntimeRepositoryException(e);
+            }
+        }
+
+        return new ObjectProperty<AccessControlList>(acl);
+    }
+
+    /**
+     * @deprecated since 5.4.8 - won't use anymore.
+     */
+    @Deprecated
     protected Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
 
         final HorizontalLayout ruleLayout = new HorizontalLayout();
@@ -281,12 +262,12 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessType.setInvalidAllowed(false);
         accessType.setNewItemsAllowed(false);
         accessType.setWidth("150px");
-        accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, i18n.translate("security.workspace.field.selected"));
-        accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, i18n.translate("security.workspace.field.subnodes"));
-        accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, i18n.translate("security.workspace.field.selectedSubnodes"));
+        accessType.addItem(WorkspaceAccessControlList.ACCESS_TYPE_NODE);
+        accessType.setItemCaption(WorkspaceAccessControlList.ACCESS_TYPE_NODE, i18n.translate("security.workspace.field.selected"));
+        accessType.addItem(WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN);
+        accessType.setItemCaption(WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, i18n.translate("security.workspace.field.subnodes"));
+        accessType.addItem(WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
+        accessType.setItemCaption(WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, i18n.translate("security.workspace.field.selectedSubnodes"));
         Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
@@ -328,28 +309,12 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         return ruleLayout;
     }
 
+    /**
+     * @deprecated since 5.4.8 - won't use anymore.
+     */
+    @Deprecated
     protected void openChooseDialog(final TextField textField) {
-        final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
-        final ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
-        contentConnectorDefinition.setWorkspace(getFieldDefinition().getWorkspace());
-        contentConnectorDefinition.setRootPath("/");
-        contentConnectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
-        // node types
-        contentConnectorDefinition.setNodeTypes(resolveNodeTypes());
-        def.setContentConnector(contentConnectorDefinition);
-
-        final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
-        final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
-        fieldDef.setWorkbench(wbDef);
-        def.setField(fieldDef);
-
-        // create chooseDialogComponentProvider and get new instance of presenter from there
-        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(def, componentProvider);
-        workbenchChooseDialogPresenter = chooseDialogComponentProvider.newInstance(def.getPresenterClass(), chooseDialogComponentProvider);
-
-        // Define selected ItemId
-
-        ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
+        openChooseDialog(textField.getValue(), new ChooseDialogCallback() {
             @Override
             public void onItemChosen(String actionName, Object value) {
                 try {
@@ -367,7 +332,29 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             @Override
             public void onCancel() {
             }
-        }, def, uiContext, textField.getValue());
+        });
+    }
+
+    protected void openChooseDialog(String initialItemId, ChooseDialogCallback callback) {
+        final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
+        final ConfiguredJcrContentConnectorDefinition contentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
+        contentConnectorDefinition.setWorkspace(getFieldDefinition().getWorkspace());
+        contentConnectorDefinition.setRootPath("/");
+        contentConnectorDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+        // node types
+        contentConnectorDefinition.setNodeTypes(resolveNodeTypes());
+        def.setContentConnector(contentConnectorDefinition);
+
+        final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
+        final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
+        fieldDef.setWorkbench(wbDef);
+        def.setField(fieldDef);
+
+        // create chooseDialogComponentProvider and get new instance of presenter from there
+        ComponentProvider chooseDialogComponentProvider = ChooseDialogComponentProviderUtil.createChooseDialogComponentProvider(def, componentProvider);
+        ChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogComponentProvider.newInstance(def.getPresenterClass(), chooseDialogComponentProvider);
+
+        ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(callback, def, uiContext, initialItemId);
         chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));
     }
 
@@ -381,11 +368,10 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         workbenchDefinition.setDialogWorkbench(true);
         workbenchDefinition.setEditable(false);
 
-
         // content views
-        ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();
+        ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<>();
         TreePresenterDefinition treeView = new TreePresenterDefinition();
-        ArrayList<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
+        ArrayList<ColumnDefinition> columns = new ArrayList<>();
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
         column.setDisplayInChooseDialog(true);
@@ -406,7 +392,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             return getFieldDefinition().getNodeTypes();
         }
 
-        ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
+        ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<>();
         ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
         nodeType.setName(JcrConstants.NT_BASE);
         nodeType.setIcon("icon-folder");
@@ -414,5 +400,4 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
         return nodeTypes;
     }
-
 }

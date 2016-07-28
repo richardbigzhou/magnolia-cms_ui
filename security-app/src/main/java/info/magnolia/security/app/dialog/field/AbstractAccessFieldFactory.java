@@ -52,8 +52,9 @@ import com.vaadin.data.Item;
  * Abstract super class for field builder that provide fields for editing ACLs.
  *
  * @param <D> definition type
+ * @param <T> the field type
  */
-public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<D, Object> {
+public abstract class AbstractAccessFieldFactory<D extends FieldDefinition, T extends AccessControlList> extends AbstractFieldFactory<D, T> {
 
     protected AbstractAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport);
@@ -67,6 +68,10 @@ public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> exte
         this(definition, relatedFieldItem, null, Components.getComponent(I18NAuthoringSupport.class));
     }
 
+    /**
+     * @deprecated since 5.4.8 - won't use anymore.
+     */
+    @Deprecated
     protected AbstractJcrNodeAdapter getOrAddAclItem(JcrNodeAdapter roleItem, String aclName) throws RepositoryException {
         AbstractJcrNodeAdapter aclItem = roleItem.getChild(aclName);
         if (aclItem == null) {
@@ -84,6 +89,10 @@ public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> exte
         return aclItem;
     }
 
+    /**
+     * @deprecated since 5.4.8 - won't use anymore.
+     */
+    @Deprecated
     protected JcrNewNodeAdapter addAclEntryItem(AbstractJcrNodeAdapter aclItem) throws RepositoryException {
         JcrNewNodeAdapter newItem = new JcrNewNodeAdapter(aclItem.getJcrItem(), NodeTypes.ContentNode.NAME);
         newItem.setNodeName(getUniqueNodeNameForChild(aclItem));
@@ -91,6 +100,10 @@ public abstract class AbstractAccessFieldFactory<D extends FieldDefinition> exte
         return newItem;
     }
 
+    /**
+     * @deprecated since 5.4.8 - won't use anymore.
+     */
+    @Deprecated
     protected String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem) throws RepositoryException {
 
         // The adapter cannot handle more than one unnamed child, see MGNLUI-1459, so we have to generate unique ones
