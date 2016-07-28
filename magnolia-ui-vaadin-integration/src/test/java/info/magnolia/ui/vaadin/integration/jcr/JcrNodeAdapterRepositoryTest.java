@@ -91,7 +91,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNodeUpdatesNodeWithNewName() throws Exception {
+    public void getNodeUpdatesNodeWithNewName() throws Exception {
         // GIVEN
         String id = ModelConstants.JCR_NAME;
         String value = "newParent";
@@ -115,7 +115,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNodeUpdatesChildNodeOrderExistingNode() throws Exception {
+    public void getNodeUpdatesChildNodeOrderExistingNode() throws Exception {
         // GIVEN
         // Create a rootItem with two child
         node.getNode("child").remove();
@@ -141,7 +141,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNodeUpdatesChildNodeOrderExistingNodeAndNew() throws Exception {
+    public void getNodeUpdatesChildNodeOrderExistingNodeAndNew() throws Exception {
         // GIVEN
         // Create a rootItem with one child and add a newJcrNodeAdapter
         node.getNode("child").remove();
@@ -171,7 +171,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNodeUpdatesChildNodeOrderNewNode() throws Exception {
+    public void getNodeUpdatesChildNodeOrderNewNode() throws Exception {
         // GIVEN
         node.getNode("child").remove();
         JcrNodeAdapter adapterChild_1 = new JcrNewNodeAdapter(node, node.getPrimaryNodeType().getName(), "child_1");
@@ -193,7 +193,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNode_NewProperty() throws Exception {
+    public void getNode_NewProperty() throws Exception {
         // GIVEN
         String id = ModelConstants.JCR_NAME;
         String value = "new Parent { % !";
@@ -216,7 +216,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMultiValueProperty() throws Exception {
+    public void getMultiValueProperty() throws Exception {
         // GIVEN
         String[] values = { "Art", "Dan", "Jen" };
         node.setProperty("multiple", values);
@@ -230,7 +230,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testSetMultiValueProperty() throws Exception {
+    public void setMultiValueProperty() throws Exception {
         // GIVEN
         String[] values = { "Art", "Dan", "Jen" };
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -245,7 +245,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testChangeMultiValueProperty() throws Exception {
+    public void changeMultiValueProperty() throws Exception {
         // GIVEN
         String[] values = { "Art", "Dan", "Jen" };
         node.setProperty("multiple", values);
@@ -261,7 +261,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetJcrItemReturnWrappedVersionedNode() throws Exception {
+    public void getJcrItemReturnWrappedVersionedNode() throws Exception {
         //GIVEN
         VersionManager versionMan = Components.getComponent(VersionManager.class);
         Version version = versionMan.addVersion(node);
@@ -277,7 +277,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetJcrItemReturnWrappedVersionedNodeChild() throws Exception {
+    public void getJcrItemReturnWrappedVersionedNodeChild() throws Exception {
         //GIVEN
         VersionManager versionMan = Components.getComponent(VersionManager.class);
         String childNodeName = "childNode";
@@ -301,7 +301,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetJcrItemReturnWrappedVersionedNodeChildProperty() throws Exception {
+    public void getJcrItemReturnWrappedVersionedNodeChildProperty() throws Exception {
         //GIVEN
         VersionManager versionMan = Components.getComponent(VersionManager.class);
         String childNodeName = "childNode";

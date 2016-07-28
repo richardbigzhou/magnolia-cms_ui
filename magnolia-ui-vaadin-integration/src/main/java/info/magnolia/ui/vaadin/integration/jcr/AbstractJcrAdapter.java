@@ -56,9 +56,9 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
 
     private JcrItemId itemId;
 
-    private final Map<String, Property> changedProperties = new HashMap<String, Property>();
+    private final Map<String, Property> changedProperties = new HashMap<>();
 
-    private final Map<String, Property> removedProperties = new HashMap<String, Property>();
+    private final Map<String, Property> removedProperties = new HashMap<>();
 
     public AbstractJcrAdapter(Item jcrItem) {
         initCommonAttributes(jcrItem);

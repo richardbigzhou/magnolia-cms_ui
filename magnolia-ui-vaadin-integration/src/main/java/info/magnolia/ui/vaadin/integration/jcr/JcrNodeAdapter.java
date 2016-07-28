@@ -124,18 +124,19 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 
     /**
      * Remove a property from an Item.
-     * If the property was already modified, remove it for the changedProperties Map and
-     * add it to the removedProperties Map.
-     * Else fill the removedProperties Map with the retrieved property.
+     * If the property was already modified (or just added), remove it for the changedProperties Map
+     * If the JCR node had the property before, mark it for deletion into the removedProperties Map.
      */
     @Override
     public boolean removeItemProperty(Object id) {
         boolean res = false;
+
         if (getChangedProperties().containsKey(id)) {
-            getRemovedProperties().put((String) id, getChangedProperties().get(id));
+            getChangedProperties().remove(id);
             res = true;
-        } else if (jcrItemHasProperty((String) id)) {
-            getRemovedProperties().put((String) id, super.getItemProperty(id));
+        }
+        if (jcrItemHasProperty((String) id)) {
+            markPropertyForDeletion((String) id);
             res = true;
         }
         return res;
