@@ -43,6 +43,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -70,8 +71,10 @@ import org.junit.Test;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -97,6 +100,7 @@ public class DefaultAsyncActionExecutorTest {
     // current trigger and listener for TriggerListener tests
     private Trigger trigger;
     private TriggerListener triggerListener;
+    private ListenerManager listenerManager = mock(ListenerManager.class);
 
     @Before
     public void setUp() throws Exception {
@@ -116,6 +120,7 @@ public class DefaultAsyncActionExecutorTest {
         given(schedulerModuleProvider.get()).willReturn(schedulerModule);
         scheduler = mock(Scheduler.class);
         given(schedulerModule.getScheduler()).willReturn(scheduler);
+        given(scheduler.getListenerManager()).willReturn(listenerManager);
 
         definition = new CommandActionDefinition();
         i18n = mock(SimpleTranslator.class, new ReturnsArgumentAt(0));
@@ -129,12 +134,12 @@ public class DefaultAsyncActionExecutorTest {
         // mock system context
         MockContext sysCtx = new MockContext();
         User sysUser = mock(User.class);
-        doReturn("superuser").when(sysUser).getName();
+        doReturn(UserManager.SYSTEM_USER).when(sysUser).getName();
         sysCtx.setUser(sysUser);
         ComponentsTestUtil.setInstance(SystemContext.class, sysCtx);
 
         // mock scheduler to get a handle on trigger/triggerListener created by action
-        doAnswer(new TriggerListenerTracker()).when(scheduler).addTriggerListener(any(TriggerListener.class));
+        doAnswer(new TriggerListenerTracker()).when(listenerManager).addTriggerListener(any(TriggerListener.class));
         doAnswer(new TriggerTracker()).when(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
     }
 
@@ -170,8 +175,8 @@ public class DefaultAsyncActionExecutorTest {
         definition.setParallel(false); // parallel execution messes up with job names depending on test-order
 
         JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
-        JobDetail jobDetail = new JobDetail();
-        jobDetail.setName("UI Action triggered execution of [default:qux] by user [" + TEST_USER + "].");
+        JobDetail jobDetail = JobBuilder.newJob(info.magnolia.module.scheduler.CommandJob.class).
+                withIdentity("UI Action triggered execution of [default:qux] by user [" + TEST_USER + "].").build();
         when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
         when(scheduler.getCurrentlyExecutingJobs()).thenReturn(Lists.newArrayList(jobExecutionContext));
 
@@ -215,7 +220,7 @@ public class DefaultAsyncActionExecutorTest {
         // WHEN
         executor.execute(item, null);
         // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
-        triggerListener.triggerComplete(trigger, jec, -1);
+        triggerListener.triggerComplete(trigger, jec, null);
 
         // THEN we only want to make sure message is sent with current user (not system user)
         verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
@@ -237,7 +242,7 @@ public class DefaultAsyncActionExecutorTest {
         // WHEN
         executor.execute(item, null);
         // simulate triggerComplete after execute completed, last parameter (-1) is scheduler internals, we don't use it.
-        triggerListener.triggerComplete(trigger, jec, -1);
+        triggerListener.triggerComplete(trigger, jec, null);
 
         // THEN we only want to make sure message is sent with current user (not system user)
         verify(messagesManager).sendMessage(eq(TEST_USER), any(Message.class));
@@ -258,7 +263,7 @@ public class DefaultAsyncActionExecutorTest {
                          // simulate triggerComplete immediately with error+exception, last parameter (-1) is scheduler internals, we don't use it.
                          JobExecutionContext jec = mock(JobExecutionContext.class);
                          doReturn(new JobResult(false, new QuxException())).when(jec).getResult();
-                         triggerListener.triggerComplete(trigger, jec, -1);
+                         triggerListener.triggerComplete(trigger, jec, null);
                          return answer;
                      }
                  }
