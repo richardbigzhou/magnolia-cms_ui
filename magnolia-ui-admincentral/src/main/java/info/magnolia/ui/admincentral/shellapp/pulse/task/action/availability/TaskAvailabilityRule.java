@@ -37,7 +37,6 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.task.Task;
-import info.magnolia.task.Task.Status;
 import info.magnolia.task.TasksManager;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.vaadin.integration.NullItem;
@@ -80,36 +79,28 @@ public class TaskAvailabilityRule extends AbstractAvailabilityRule {
 
     @Override
     public final boolean isAvailableForItem(Object itemId) {
-        if (itemId == null || itemId instanceof NullItem) {
+        if (itemId == null) {
             log.warn("Got a null task. Availability rule will return false");
             return false;
         }
 
-        Task task;
-        if (itemId instanceof Task) {
-            task = (Task) itemId;
-        } else {
-            task = tasksManager.getTaskById(itemId.toString());
+        if (itemId instanceof NullItem) {
+            return false;
         }
 
-        if (task != null) {
-            boolean statusMatches = false;
+        Task task = (itemId instanceof Task) ? (Task) itemId : tasksManager.getTaskById(itemId.toString());
 
-            for (Status status : definition.getStatus()) {
-                statusMatches = status == task.getStatus();
-                if (statusMatches) {
-                    break;
-                }
-            }
-
-            return statusMatches && isVisibleToUser(task);
+        if (task == null) {
+            return false;
         }
 
-        return false;
+        boolean statusMatches = definition.getStatus().stream()
+                .anyMatch(status -> status.equals(task.getStatus()));
+
+        return statusMatches && isVisibleToUser(task);
     }
 
     protected boolean isVisibleToUser(Task task) {
         return !definition.isAssignee() || context.getUser().getName().equals(task.getActorId());
     }
-
 }
