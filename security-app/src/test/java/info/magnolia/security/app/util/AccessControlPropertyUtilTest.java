@@ -33,10 +33,12 @@
  */
 package info.magnolia.security.app.util;
 
-import static info.magnolia.security.app.util.AccessControlPropertyUtil.findBestMatchingPermissions;
+import static info.magnolia.security.app.util.AccessControlPropertyUtil.*;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionImpl;
@@ -68,14 +70,49 @@ public class AccessControlPropertyUtilTest {
                 pathTestSubNodesReadOnly);
 
         // WHEN-THEN
-        assertThat(findBestMatchingPermissions(permissionList, "/"), is(rootSubNodesReadWrite));
+        assertThat(findBestMatchingPermissions(permissionList, "/"), is(rootReadOnly));
+        assertThat(findBestMatchingPermissions(permissionList, "/*"), is(rootSubNodesReadWrite));
         assertThat(findBestMatchingPermissions(permissionList, "/test"), is(rootSubNodesReadWrite));
         assertThat(findBestMatchingPermissions(permissionList, "/path"), is(pathReadWrite));
+        assertThat(findBestMatchingPermissions(permissionList, "/path/*"), is(pathSubNodesReadWrite));
         assertThat(findBestMatchingPermissions(permissionList, "/path/test"), is(pathSubNodesReadWrite));
         assertThat(findBestMatchingPermissions(permissionList, "/path/testA"), is(pathTestReadWrite));
         assertThat(findBestMatchingPermissions(permissionList, "/path/testA/test"), is(pathTestSubNodesReadOnly));
+        assertThat(findBestMatchingPermissions(permissionList, "/path/testA/*"), is(pathTestSubNodesReadOnly));
 
         assertThat(findBestMatchingPermissions(permissionList, ""), is(nullValue()));
+    }
+
+    @Test
+    public void findViolatedPermissionsWhenPermissionsInterfere() throws Exception {
+        // GIVEN
+        Permission rootReadOnly             = newPermission("/", Permission.READ);
+        Permission rootSubNodesReadWrite    = newPermission("/*", Permission.WRITE);
+        Permission pathReadWrite            = newPermission("/path", Permission.ALL);
+        Permission pathSubNodesNoneAccess   = newPermission("/path/*", Permission.NONE);
+        Permission pathTestReadWrite        = newPermission("/path/testA", Permission.ALL);
+        Permission pathTestSubNodesReadOnly = newPermission("/path/testA/*", Permission.READ);
+
+        List<Permission> permissionList = Arrays.asList(
+                rootReadOnly,
+                rootSubNodesReadWrite,
+                pathReadWrite,
+                pathSubNodesNoneAccess,
+                pathTestReadWrite,
+                pathTestSubNodesReadOnly);
+
+        // WHEN-THEN
+        assertThat(findViolatedPermissions(permissionList, "/", Permission.ALL), hasItems(rootReadOnly));
+        assertThat(findViolatedPermissions(permissionList, "/", Permission.NONE), is(empty()));
+        assertThat(findViolatedPermissions(permissionList, "/*", Permission.WRITE), hasItems(pathSubNodesNoneAccess, pathTestSubNodesReadOnly));
+
+        assertThat(findViolatedPermissions(permissionList, "/path", Permission.ALL), is(empty()));
+        assertThat(findViolatedPermissions(permissionList, "/path/*", Permission.NONE), is(empty()));
+        assertThat(findViolatedPermissions(permissionList, "/path/*", Permission.WRITE), hasItems(pathTestSubNodesReadOnly));
+
+        assertThat(findViolatedPermissions(permissionList, "/path/testA", Permission.WRITE), is(empty()));
+        assertThat(findViolatedPermissions(permissionList, "/path/testA/*", Permission.NONE), is(empty()));
+        assertThat(findViolatedPermissions(permissionList, "/path/testA/*", Permission.WRITE), hasItems(pathTestSubNodesReadOnly));
     }
 
     private Permission newPermission(String pattern, long permission) {

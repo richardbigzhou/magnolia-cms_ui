@@ -57,7 +57,7 @@ import javax.security.auth.Subject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WorkspaceAccessControlValidatorTest{
+public class WorkspaceAccessControlValidatorTest {
     private WorkspaceAccessControlValidator accessControlValidator;
     private Subject subject;
 
@@ -143,6 +143,143 @@ public class WorkspaceAccessControlValidatorTest{
         // WHEN - THEN
         accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
         assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void allowsGivingRecursiveWritePermissionWhenUserHasRecursiveWritePermission() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/path", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/path/*", Permission.ALL);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/path");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertTrue(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingRecursivePermissionWhenUserHasNodeOnlyPermission() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.ALL);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void allowsGivingSubNodeReadPermissionWhenUserHasReadPermission() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.READ);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.READ, WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertTrue(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingSubnodeWritePermissionWhenUserHasReadPermission() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.READ);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingWritePermissionWhenUserHasWritePermissionOnlyOnSubnodes() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/path", Permission.READ);
+        grant(RepositoryConstants.WEBSITE, "/path/*", Permission.ALL);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/path");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingWritePermissionOnRootWhenUserHasWritePermissionOnlyOnSubnodes() throws Exception {
+
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.READ);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.ALL);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingSubNodePermissionWhenUserHasAnIncompatibleSubNodePermission() throws Exception {
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/foo/bar/restricted", Permission.READ);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void deniesGivingSubNodePermissionWhenUserHasAnIncompatibleSubNodePermission1() throws Exception {
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.READ);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/foo/bar/restricted", Permission.READ);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertFalse(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void allowsGivingPermissionsWhenUserHasRestrictedSubNodePermission() throws Exception {
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/foo/bar/restricted", Permission.READ);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.NONE, WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN, "/");
+
+        // WHEN - THEN
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+        assertTrue(accessControlValidator.isValid(entry));
+    }
+
+    @Test
+    public void givingAllPermissionToRootWhenUserHasRecursiveWritePermission() throws Exception {
+        // GIVEN
+        grant(RepositoryConstants.WEBSITE, "/", Permission.ALL);
+        grant(RepositoryConstants.WEBSITE, "/*", Permission.ALL);
+
+        WorkspaceAccessControlList.Entry entry = new WorkspaceAccessControlList.Entry(Permission.ALL, WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "/");
+        accessControlValidator = new WorkspaceAccessControlValidator(RepositoryConstants.WEBSITE, "");
+
+        // WHEN
+        assertTrue(accessControlValidator.isValid(entry));
     }
 
     private void grant(String aclName, String path, long permissions) {

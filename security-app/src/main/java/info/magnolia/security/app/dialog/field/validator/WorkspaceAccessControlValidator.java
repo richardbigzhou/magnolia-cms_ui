@@ -33,7 +33,7 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import static info.magnolia.security.app.util.AccessControlPropertyUtil.findBestMatchingPermissions;
+import static info.magnolia.security.app.util.AccessControlPropertyUtil.*;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PrincipalUtil;
@@ -44,6 +44,7 @@ import info.magnolia.security.app.dialog.field.WorkspaceAccessControlList;
 
 import java.security.AccessControlException;
 import java.text.MessageFormat;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -62,6 +63,7 @@ import com.vaadin.data.validator.AbstractValidator;
  * <ul>
  * <li>Current user must have access to the given workspace
  * <li>Current user needs to have a matching permission to the path he's granting permission for
+ * <li>The path he's granting permission must not interfere with other permissions
  * <li>The user's best matching permission needs to grant equal or greater rights than the ones being granted
  * <li>In order to deny permission, user requires read permission to that path
  * <li>Assigning a recursive permission (ending with '*' wildcard) requires user to also have such recursive permission
@@ -97,6 +99,10 @@ public class WorkspaceAccessControlValidator extends AbstractValidator<Workspace
         long accessType = entryItem.getAccessType();
         long permissions = entryItem.getPermissions();
 
+        if (accessType < WorkspaceAccessControlList.ACCESS_TYPE_NODE || accessType > WorkspaceAccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN) {
+            throw new IllegalArgumentException("Access type should be one of ACCESS_TYPE_NODE (1), ACCESS_TYPE_CHILDREN (2) or ACCESS_TYPE_NODE_AND_CHILDREN (3)");
+        }
+
         try {
             if (!isCurrentUserEntitledToGrantRights(workspace, path, accessType, permissions)) {
                 isValid = !isValid;
@@ -116,7 +122,8 @@ public class WorkspaceAccessControlValidator extends AbstractValidator<Workspace
     }
 
     /**
-     * @return false if current user has no matching permission in the given workspace, or if the matching permission does not grant sufficient rights.
+     * @return false if current user has no matching permission in the given workspace, if the matching permission does not grant sufficient rights,
+     * or if the granted permission conflicts with sub-path restrictions.
      */
     private boolean isCurrentUserEntitledToGrantRights(String workspaceName, String path, long accessType, long permissions) throws RepositoryException {
         // Granting DENY access is only allowed if the user has READ access to the node
@@ -129,18 +136,36 @@ public class WorkspaceAccessControlValidator extends AbstractValidator<Workspace
             return false;
         }
 
-        Permission ownPermissions = findBestMatchingPermissions(acl.getList(), stripWildcardsFromPath(path));
-        if (ownPermissions == null) {
-            return false;
+        String selectedPath = stripWildcardsFromPath(path);
+
+        // validate node permission
+        if ((accessType & WorkspaceAccessControlList.ACCESS_TYPE_NODE) == WorkspaceAccessControlList.ACCESS_TYPE_NODE) {
+            Permission nodePerm = findBestMatchingPermissions(acl.getList(), selectedPath);
+            if (nodePerm == null || !granted(nodePerm, permissions)) {
+                return false;
+            }
         }
 
-        boolean recursive = (accessType & WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN) != 0;
+        // validate sub-node permission
+        if ((accessType & WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN) == WorkspaceAccessControlList.ACCESS_TYPE_CHILDREN) {
 
-        if (recursive && !ownPermissions.getPattern().getPatternString().endsWith("/*")) {
-            return false;
+            String suffixForChildren = selectedPath.equals("/") ? "*" : "/*";
+            String childPath = selectedPath + suffixForChildren;
+
+            // find sub-path restrictions: any permission to a sub-path of the selected path, with lower permission
+            Set<Permission> violatedPerms = findViolatedPermissions(acl.getList(), childPath, permissions);
+            if (!violatedPerms.isEmpty()){
+                return false;
+            }
+
+            Permission childPerm = findBestMatchingPermissions(acl.getList(), childPath);
+            // The child permission must end with /*
+            if (childPerm == null || !granted(childPerm, permissions) || !StringUtils.endsWith(childPerm.getPattern().getPatternString(), "/*")) {
+                return false;
+            }
         }
 
-        return granted(ownPermissions, permissions);
+        return true;
     }
 
     private String stripWildcardsFromPath(String path) {

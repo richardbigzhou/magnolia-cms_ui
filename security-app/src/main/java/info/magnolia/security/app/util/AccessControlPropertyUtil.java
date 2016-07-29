@@ -34,9 +34,13 @@
 package info.magnolia.security.app.util;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.util.SimpleUrlPattern;
+import info.magnolia.cms.util.UrlPattern;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Utility class for finding a matching permission to the path that want to grant permission when validating.
@@ -45,6 +49,7 @@ public class AccessControlPropertyUtil {
 
     /**
      * Return the best matching permission that matches with path and has equal or greater rights than the ones being granted.
+     * The best match permission must have pattern whose length has equal or less than the granted path.
      */
     public static Permission findBestMatchingPermissions(List<Permission> permissions, String path) {
         if (permissions == null) {
@@ -57,11 +62,12 @@ public class AccessControlPropertyUtil {
         temp.addAll(permissions);
         for (Permission p : temp) {
             if (p.match(path)) {
-                int l = p.getPattern().getLength();
+                // Must get the length includes '*' wildcard character
+                int l = p.getPattern().getPatternString().length();
                 if (patternLength == l && (permission < p.getPermissions())) {
                     permission = p.getPermissions();
                     bestMatch = p;
-                } else if (patternLength < l) {
+                } else if (patternLength < l && l <= path.length()) {
                     patternLength = l;
                     permission = p.getPermissions();
                     bestMatch = p;
@@ -69,5 +75,24 @@ public class AccessControlPropertyUtil {
             }
         }
         return bestMatch;
+    }
+
+    /**
+     * Find potential violating permissions, i.e. those to sub-paths of the granted path, with lower permission value (restrictions).
+     */
+    public static Set<Permission> findViolatedPermissions(List<Permission> ownPerms, String grantPath, long grantPermValue) {
+        Set<Permission> violatedPerms = new HashSet<>();
+        UrlPattern grantUrlPattern = new SimpleUrlPattern(grantPath);
+
+        for (Permission ownPerm : ownPerms) {
+
+            String ownPath = ownPerm.getPattern().getPatternString();
+            long ownPermValue = ownPerm.getPermissions();
+
+            if (grantPermValue > ownPermValue && grantUrlPattern.match(ownPath)) {
+                violatedPerms.add(ownPerm);
+            }
+        }
+        return violatedPerms;
     }
 }
