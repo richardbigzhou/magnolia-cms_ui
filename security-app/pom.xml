@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <name>magnolia-security-app</name>
   <properties>
-    <cloverCoverageThreshold>58</cloverCoverageThreshold>
+    <cloverCoverageThreshold>56</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -50,6 +50,14 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
