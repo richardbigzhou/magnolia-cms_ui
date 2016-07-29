@@ -215,8 +215,6 @@ public class WorkspaceAccessControlListTest {
         // WHEN
         acl.saveEntries(aclNode);
 
-//        NodeDebugUtil.logNodeStructureViaJcrUtils(aclNode);
-
         // THEN
         assertThat(NodeUtil.getNodes(aclNode), containsInAnyOrder(
                 allOf(
@@ -238,8 +236,6 @@ public class WorkspaceAccessControlListTest {
 
         // WHEN
         acl.saveEntries(aclNode);
-
-//        NodeDebugUtil.logNodeStructureViaJcrUtils(aclNode);
 
         // THEN
         assertThat(NodeUtil.getNodes(aclNode), containsInAnyOrder(
