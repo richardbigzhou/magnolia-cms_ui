@@ -54,6 +54,7 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
@@ -177,7 +178,8 @@ public class DelegatingMultiValueFieldTransformer extends BasicTransformer<Prope
     @Override
     public void setLocale(Locale locale) {
         super.setLocale(locale);
-        for (Object id : delegateAggregatorItem.getItemPropertyIds()) {
+        ImmutableList<Object> propertyIds = ImmutableList.copyOf(delegateAggregatorItem.getItemPropertyIds());
+        for (Object id : propertyIds) {
             delegateAggregatorItem.removeItemProperty(id);
         }
     }
