@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.LockableScrollPanel;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
@@ -59,7 +60,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -73,9 +73,9 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
-    private final List<MagnoliaTabWidget> tabs = new LinkedList<MagnoliaTabWidget>();
+    private final List<MagnoliaTabWidget> tabs = new LinkedList<>();
 
-    private final ScrollPanel scroller = new ScrollPanel();
+    private final LockableScrollPanel scroller = new LockableScrollPanel();
 
     private final FlowPanel tabPanel = new FlowPanel();
 
@@ -93,11 +93,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private ScheduledCommand removePreloaderCommand;
 
-    private EventBus eventBus;
-
     public MagnoliaTabSheetViewImpl(EventBus eventBus) {
-        super();
-        this.eventBus = eventBus;
         this.tabBar = new TabBarWidget(eventBus);
         this.logo = DOM.createDiv();
         addStyleName("v-shell-tabsheet");
@@ -164,12 +160,12 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         final JQueryAnimation animation = new JQueryAnimation();
         tabPanelStyle.setProperty(heightPropertyCC, offsetTabHeight + "px");
         animation.setProperty(heightProperty, newHeight);
-        tabPanelStyle.setOverflow(Style.Overflow.HIDDEN);
+        scroller.setScrollLocked(true);
         animation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-              tabPanelStyle.clearOverflow();
-              tabPanelStyle.clearProperty(heightPropertyCC);
+                tabPanelStyle.clearProperty(heightPropertyCC);
+                scroller.setScrollLocked(false);
             }
         });
         animation.run(HEIGHT_CHANGE_ANIMATION_DURATION, tabPanel.getElement());
@@ -249,7 +245,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     public void setMaxHeight(int height) {
         int tabBarHeight = getOffsetHeight() - scroller.getOffsetHeight();
         height -= tabBarHeight;
-        final Style scrollerStyle = scroller.getElement().getStyle();;
+        final Style scrollerStyle = scroller.getElement().getStyle();
         scrollerStyle.setPosition(Position.ABSOLUTE);
         scrollerStyle.setOverflow(Style.Overflow.AUTO);
         scrollerStyle.setProperty("zoom", "1");
