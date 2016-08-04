@@ -115,12 +115,12 @@ public class DownloadBinaryActionTest {
 
         VaadinRequest vaadinRequest = mock(VaadinRequest.class);
         VaadinResponse vaadinResponse = mock(VaadinResponse.class);
-
         // WHEN
         downloadStreamResource.getStream().writeResponse(vaadinRequest, vaadinResponse);
 
         // THEN
-        verify(vaadinResponse).setHeader("Content-Disposition", expectedContentDispositionHeaderValue);
+        // At least as of 7.6 Vaadin may set content-disposition header twice with the same value
+        verify(vaadinResponse, atLeastOnce()).setHeader("Content-Disposition", expectedContentDispositionHeaderValue);
     }
 
 }
