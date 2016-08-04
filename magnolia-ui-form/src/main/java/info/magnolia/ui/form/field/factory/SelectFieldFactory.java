@@ -140,7 +140,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private IndexedContainer buildOptions() {
         IndexedContainer optionContainer = new IndexedContainer();
 
-        List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> options = getOptions();
         if (sortOptions) {
             if (definition.getComparatorClass() != null) {
                 Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
@@ -182,8 +182,18 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * Else, if nothing is defined, return an empty list.
      * <b>Default value and i18n of the Label is also part of the responsibility of this method.</b>
      */
+    public List<SelectFieldOptionDefinition> getOptions() {
+        // Method body is kept inside #getSelectFieldOptionDefinition for compatibility
+        // TODO when deprecated method is removed, inline #getSelectFieldOptionDefinition here
+        return getSelectFieldOptionDefinition();
+    }
+
+    /**
+     * @since 5.4.9 renamed to {@link #getOptions}
+     */
+    @Deprecated
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
-        List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
+        List<SelectFieldOptionDefinition> res = new ArrayList<>();
 
         if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
             for (SelectFieldOptionDefinition option : definition.getOptions()) {

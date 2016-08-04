@@ -89,7 +89,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
     @Inject
     public RoleManagementFieldFactory(RoleManagementFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport, componentProvider);
-        definition.setOptions(getSelectFieldOptionDefinition());
+        definition.setOptions(getOptions());
         this.componentProvider = componentProvider;
     }
 
@@ -118,7 +118,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
      * Returns the available roles with those already assigned marked selected, according to the current node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+    public List<SelectFieldOptionDefinition> getOptions() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Role> allRoles = getAllRoles(); // name,uuid
         Set<String> assignedRoles = getAssignedRoles();
