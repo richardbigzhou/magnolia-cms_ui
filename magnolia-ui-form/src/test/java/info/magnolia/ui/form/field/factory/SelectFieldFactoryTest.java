@@ -439,7 +439,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         initializeSelectFieldFactory();
 
         // WHEN
-        List<SelectFieldOptionDefinition> optionDefinition = dialogSelect.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> optionDefinition = dialogSelect.getOptions();
 
         // THEN
         assertThat(optionDefinition, hasSize(1));
