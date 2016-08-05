@@ -20,7 +20,7 @@
     <magnoliaVersion>5.5-SNAPSHOT</magnoliaVersion>
     <magnoliaTasksVersion>1.1</magnoliaTasksVersion>
     <imagingVersion>3.2</imagingVersion>
-    <vaadinVersion>7.4.7</vaadinVersion>
+    <vaadinVersion>7.6.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
 
@@ -329,12 +329,6 @@
         <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
         <artifactId>vaadin-lazyquerycontainer</artifactId>
         <version>7.4.0.1</version>
-      </dependency>
-      <dependency>
-        <!-- Used by vaadin-server, let's keep them in sync -->
-        <groupId>org.jsoup</groupId>
-        <artifactId>jsoup</artifactId>
-        <version>1.8.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

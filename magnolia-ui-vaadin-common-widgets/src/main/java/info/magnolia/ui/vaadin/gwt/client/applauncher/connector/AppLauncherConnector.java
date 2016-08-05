@@ -120,7 +120,7 @@ public class AppLauncherConnector extends AbstractComponentConnector implements 
                     return;
                 }
 
-                if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().hasActiveRequest())) {
+                if ((isTouchOrMouse && eventCode != Event.ONMOUSEOVER && eventCode != Event.ONMOUSEOUT && getConnection().getMessageSender().hasActiveRequest())) {
                     event.cancel();
                 }
             }

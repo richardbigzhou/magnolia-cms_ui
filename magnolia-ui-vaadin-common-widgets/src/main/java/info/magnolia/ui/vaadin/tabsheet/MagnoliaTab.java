@@ -67,7 +67,7 @@ public class MagnoliaTab extends AbstractSingleComponentContainer implements Sel
 
     @Override
     public boolean isRendered(Component childComponent) {
-        return getState().isActive;
+        return getState(false).isActive;
     }
 
     public void setClosable(boolean isClosable) {
