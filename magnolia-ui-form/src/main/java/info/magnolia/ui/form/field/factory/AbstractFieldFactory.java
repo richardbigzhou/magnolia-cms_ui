@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.Classes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -53,6 +54,7 @@ import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.util.EnumCaseInsensitive;
 
 import java.util.Locale;
 
@@ -214,28 +216,39 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
     }
 
-    /**
-     * Create a typed default value.
-     */
     protected Object createDefaultValue(Property property) {
         Object defaultValue = getConfiguredDefaultValue();
+        Class<?> propertyType = property != null ? property.getType() : getFieldType();
+        return createTypedValue(defaultValue, propertyType);
+    }
 
+    /**
+     * Create a typed value from an arbitrary value object to the given property type.
+     * This primarily favors JCR types conversion, but also supports broader conversions via configured converterClass.
+     */
+    protected Object createTypedValue(Object defaultValue, Class<?> propertyType) {
         // favor JCR conversions first via DefaultPropertyUtil
-        if (defaultValue instanceof String && DefaultPropertyUtil.canConvertStringValue(property.getType())) {
-            return DefaultPropertyUtil.createTypedValue(property.getType(), (String) defaultValue);
+        if (defaultValue instanceof String && DefaultPropertyUtil.canConvertStringValue(propertyType)) {
+            return DefaultPropertyUtil.createTypedValue(propertyType, (String) defaultValue);
 
         } else if (defaultValue != null && definition.getConverterClass() != null) {
             // Mirror AbstractField#convertToModel
             // - expect configured value in english locale (resp. number format), no i18n in config
             Converter converter = initializeConverter(definition.getConverterClass());
-            Class<?> modelType = property != null ? property.getType() : converter.getModelType();
+            Class<?> modelType = propertyType != null ? propertyType : converter.getModelType();
             Locale locale = Locale.ENGLISH;
             try {
                 defaultValue = ConverterUtil.convertToModel(defaultValue, modelType, converter, locale);
             } catch (Converter.ConversionException e) {
-                log.error("Default value {} could not be converted to property type {}.", defaultValue, property.getType(), e);
+                log.error("Default value {} could not be converted to property type {}.", defaultValue, propertyType, e);
             }
+
+        } else if (propertyType != null && propertyType.isEnum() && defaultValue instanceof String) {
+            Class<? extends Enum> enumType = (Class<? extends Enum>) propertyType;
+            EnumCaseInsensitive enumFinder = new EnumCaseInsensitive();
+            defaultValue = enumFinder.valueOf(enumType, (String) defaultValue);
         }
+
         return defaultValue;
     }
 
@@ -350,6 +363,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected Class<?> getFieldType() {
         Class<?> type = getDefinitionType();
+        if (type == null && definition.getConverterClass() != null) {
+            Converter converter = initializeConverter(definition.getConverterClass());
+            type = converter.getModelType();
+        }
         if (type == null) {
             type = getDefaultFieldType();
         }
@@ -361,7 +378,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected Class<?> getDefinitionType() {
         if (StringUtils.isNotBlank(definition.getType())) {
-            return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            if (DefaultPropertyUtil.isKnownJcrTypeName(definition.getType())) {
+                return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            } else try {
+                return Classes.getClassFactory().forName(definition.getType());
+            } catch (ClassNotFoundException e) {
+                log.error("Unknown configured type {}", definition.getType());
+            }
         }
         return null;
     }
