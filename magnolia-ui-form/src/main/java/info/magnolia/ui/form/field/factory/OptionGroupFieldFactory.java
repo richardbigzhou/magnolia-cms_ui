@@ -78,11 +78,6 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
         super.createFieldComponent();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
         select.setNullSelectionAllowed(true);
-        if (select.isMultiSelect()) {
-            // In case of MultiSelect, type will be set by the getDefaultFieldType().
-            // In any case it should be set to a simple type (String, Long...)
-            definition.setType(null);
-        }
         if (definition.getLayout() == Layout.horizontal) {
             select.addStyleName("horizontal");
         }
