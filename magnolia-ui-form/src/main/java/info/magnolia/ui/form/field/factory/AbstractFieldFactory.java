@@ -144,7 +144,11 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 final AbstractField field = (AbstractField) this.field;
                 if (definition.getConverterClass() != null) {
                     Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
-                    field.setConverter(converter);
+                    if (!field.getType().isAssignableFrom(converter.getModelType())) {
+                        // only set converter if field doesn't support the model type
+                        // for example text-fields don't support numbers, while selects support anything
+                        field.setConverter(converter);
+                    }
                 }
                 field.setLocale(locale);
             }
