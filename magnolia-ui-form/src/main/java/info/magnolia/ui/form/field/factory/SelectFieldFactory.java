@@ -141,14 +141,8 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         IndexedContainer optionContainer = new IndexedContainer();
 
         List<SelectFieldOptionDefinition> options = getOptions();
-        if (sortOptions) {
-            if (definition.getComparatorClass() != null) {
-                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
-                Collections.sort(options, comparator);
-            } else {
-                Collections.sort(options, new DefaultOptionComparator());
-            }
-        }
+        sortOptions(options);
+
         if (!options.isEmpty()) {
             Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
             optionContainer.addContainerProperty(optionValueName, fieldType, null);
@@ -167,6 +161,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             }
         }
         return optionContainer;
+    }
+
+    private void sortOptions(List<SelectFieldOptionDefinition> options) {
+        if (sortOptions) {
+            if (definition.getComparatorClass() != null) {
+                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
+                Collections.sort(options, comparator);
+            } else {
+                Collections.sort(options, new DefaultOptionComparator());
+            }
+        }
     }
 
     protected Comparator<SelectFieldOptionDefinition> initializeComparator(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
