@@ -452,7 +452,7 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.4.7/*</version>
+      <version>5.4.9/*</version>
     </dependency>
     <dependency>
       <name>config</name>

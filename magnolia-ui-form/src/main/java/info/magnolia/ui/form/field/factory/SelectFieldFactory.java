@@ -40,7 +40,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,14 +144,16 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         sortOptions(options);
 
         if (!options.isEmpty()) {
-            Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            Class<?> resolvedFieldType = getFieldType();
+            // same fallback as in DefaultPropertyUtil#getFieldTypeClass in case of UndefinedPropertyType—keep this compatibility for now
+            Class<?> fieldType = resolvedFieldType != UndefinedPropertyType.class ? resolvedFieldType : String.class;
             optionContainer.addContainerProperty(optionValueName, fieldType, null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Object value = DefaultPropertyUtil.createTypedValue(fieldType, option.getValue());
+                Object value = createTypedValue(option.getValue(), fieldType);
                 Item item = optionContainer.addItem(value);
                 item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());

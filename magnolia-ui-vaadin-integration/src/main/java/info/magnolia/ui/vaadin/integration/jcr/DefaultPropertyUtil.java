@@ -50,6 +50,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Sets;
+
 /**
  * Default Property Utility Class.
  *
@@ -178,6 +180,18 @@ public class DefaultPropertyUtil {
             return true;
         }
         return false;
+    }
+
+    public static boolean isKnownJcrTypeName(String typeName) {
+        return Sets.newHashSet(
+                PropertyType.TYPENAME_STRING,
+                PropertyType.TYPENAME_BINARY,
+                PropertyType.TYPENAME_LONG,
+                PropertyType.TYPENAME_DOUBLE,
+                PropertyType.TYPENAME_DATE,
+                PropertyType.TYPENAME_BOOLEAN,
+                PropertyType.TYPENAME_DECIMAL
+        ).contains(typeName);
     }
 
     /**

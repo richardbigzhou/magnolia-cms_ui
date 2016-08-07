@@ -56,6 +56,10 @@ import javax.jcr.RepositoryException;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.data.util.converter.StringToFloatConverter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
@@ -339,6 +343,56 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         // THEN
         assertThat(field.getValue(), equalTo((Object) 2L));
+    }
+
+    @Test
+    public void preselectsFirstSelectedOptionWithConverter() throws Exception {
+        // GIVEN a factory/field backed by a Float property, with a converter explicitly configured
+        baseItem = new PropertysetItem();
+        ObjectProperty<Float> preTypedProperty = new ObjectProperty<>(null, Float.class);
+        baseItem.addItemProperty("floaty", preTypedProperty);
+
+        // and some float options (with 2.5 and 3.5 marked selected)
+        for (SelectFieldOptionDefinition optionDefinition : definition.getOptions()) {
+            optionDefinition.setValue(optionDefinition.getValue() + ".5");
+        }
+        definition.getOptions().get(1).setSelected(true);
+        definition.getOptions().get(2).setSelected(true);
+        definition.setType(null);
+        definition.setConverterClass(StringToFloatConverter.class);
+
+        initializeSelectFieldFactory();
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertThat(p.getValue(), equalTo((Object) 2.5f));
+    }
+
+    @Test
+    public void preselectsFirstOptionIfNoneSelectedWithConverter() throws Exception {
+        // GIVEN a factory/field backed by a Float property, with a converter explicitly configured
+        baseItem = new PropertysetItem();
+        ObjectProperty<Float> preTypedProperty = new ObjectProperty<>(null, Float.class);
+        baseItem.addItemProperty("floaty", preTypedProperty);
+
+        // and some float options (with none selected)
+        for (SelectFieldOptionDefinition optionDefinition : definition.getOptions()) {
+            optionDefinition.setValue(optionDefinition.getValue() + ".5");
+        }
+        definition.setType(null);
+        definition.setConverterClass(StringToFloatConverter.class);
+
+        initializeSelectFieldFactory();
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN first option is selected
+        Property<?> p = field.getPropertyDataSource();
+        assertThat(p.getValue(), equalTo((Object) 1.5f));
     }
 
     @Test
