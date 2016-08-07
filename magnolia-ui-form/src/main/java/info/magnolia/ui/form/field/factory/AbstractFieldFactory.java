@@ -94,6 +94,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     private ComponentProvider componentProvider;
     private UiContext uiContext;
     private Locale locale;
+    private Converter<?, ?> converter;
 
     @Inject
     public AbstractFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
@@ -223,11 +224,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         if (defaultValue instanceof String && DefaultPropertyUtil.canConvertStringValue(property.getType())) {
             return DefaultPropertyUtil.createTypedValue(property.getType(), (String) defaultValue);
 
-        } else if (defaultValue != null && definition.getConverterClass() != null && field instanceof AbstractField) {
+        } else if (defaultValue != null && definition.getConverterClass() != null) {
             // Mirror AbstractField#convertToModel
-            // - expect converter to be already set by #createField upfront
             // - expect configured value in english locale (resp. number format), no i18n in config
-            Converter converter = ((AbstractField) field).getConverter();
+            Converter converter = initializeConverter(definition.getConverterClass());
             Class<?> modelType = property != null ? property.getType() : converter.getModelType();
             Locale locale = Locale.ENGLISH;
             try {
@@ -335,7 +335,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * This allows to add additional constructor parameter if needed.<br>
      */
     protected Converter<?, ?> initializeConverter(Class<? extends Converter<?, ?>> converterClass) {
-        return this.componentProvider.newInstance(converterClass, item, definition, getFieldType());
+        if (converter == null) {
+            converter = componentProvider.newInstance(converterClass);
+        }
+        return converter;
     }
 
     /**
