@@ -202,7 +202,7 @@ public class FormBuilder {
 
     public FormTab buildFormTab(TabDefinition tabDefinition, Item itemDatasource, Form parentForm) {
         List<FieldDefinition> fields = tabDefinition.getFields();
-        if (fields.isEmpty()) { // skip empty tabs
+        if (fields == null || fields.isEmpty()) { // skip empty tabs
             return null;
         }
         FormTab tab = new FormTab(tabDefinition);
