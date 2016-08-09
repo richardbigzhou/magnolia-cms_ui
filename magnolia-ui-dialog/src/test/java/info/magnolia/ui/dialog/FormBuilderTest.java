@@ -33,11 +33,17 @@
  */
 package info.magnolia.ui.dialog;
 
-import static org.mockito.Matchers.*;
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -189,6 +195,26 @@ public class FormBuilderTest {
         // THEN
         verify(view).addFormSection(eq("nonEmptyTab"), any(FormSection.class));
         verify(view, times(0)).addFormSection(eq("emptyTab"), any(FormSection.class));
+    }
+
+    @Test
+    public void nullFieldDoesNotThrowNPE() throws Exception {
+        // GIVEN
+        final FormBuilder builder = new FormBuilder(fieldFactoryFactory, i18nAuthoringSupport, subAppContext, null);
+        ConfiguredTabDefinition emptyTabDefinition = new ConfiguredTabDefinition();
+        emptyTabDefinition.setLabel("emptyTab");
+        emptyTabDefinition.setFields(null);
+
+        final ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
+        formDefinition.addTab(emptyTabDefinition);
+
+        // WHEN / THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                builder.buildReducedForm(formDefinition, view, null, mock(FormItem.class));
+            }
+        }, throwsNothing());
     }
 
     @After

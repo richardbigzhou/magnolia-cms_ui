@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
@@ -44,12 +45,14 @@ import static org.mockito.Mockito.eq;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.config.FieldConfig;
 import info.magnolia.ui.form.config.FormConfig;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
@@ -72,30 +75,19 @@ import com.vaadin.ui.TextField;
 
 public class FormPresenterImplTest {
 
-    private I18NAuthoringSupport i18NAuthoringSupport;
-
     private ConfiguredFormDefinition formDefinition;
-
     private FormPresenterImpl formPresenter;
-
     private FormViewReduced formView;
-
-    private FormBuilder formBuilder;
-
     private Item item;
-
     private SubAppContext subAppContext;
-
     private FieldFactoryFactory fieldFactoryFactory;
-
     private Locale locale;
-
     private ComponentProvider componentProvider;
 
     @Before
     public void setUp() throws Exception {
         this.locale = Locale.ENGLISH;
-        this.i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
+        I18NAuthoringSupport i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
         final SimpleTranslator i18n = mock(SimpleTranslator.class);
 
         final FieldConfig fieldConfig = new FieldConfig();
@@ -113,7 +105,7 @@ public class FormPresenterImplTest {
         this.componentProvider = mock(ComponentProvider.class);
         doReturn(mock(BasicTransformer.class)).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         this.item = new PropertysetItem();
-        this.formBuilder = new FormBuilder(fieldFactoryFactory, i18NAuthoringSupport, subAppContext, componentProvider);
+        FormBuilder formBuilder = new FormBuilder(fieldFactoryFactory, i18NAuthoringSupport, subAppContext, componentProvider);
         this.formPresenter = new FormPresenterImpl(formBuilder, subAppContext);
         this.formView = new ItemFormView(i18n);
     }
@@ -145,6 +137,25 @@ public class FormPresenterImplTest {
         // THEN
         final List<FormSection> formSections = formView.getFormSections();
         assertThat(formSections.get(0).iterator().next().getLocale(), equalTo(Locale.GERMAN));
+    }
+
+    @Test
+    public void emptyTabsDoNotThrownNPE() throws Exception {
+        // GIVEN
+        final FieldConfig fieldConfig = new FieldConfig();
+        final FormConfig formConfig = new FormConfig();
+        final FormDefinition formDefinition = formConfig.form()
+                .tabs(formConfig.tab("tab1").label("tab1_label").fields(fieldConfig.text("textField")))
+                .tabs(formConfig.tab("tab2").label("tab2_label"))
+                .definition();
+
+        // WHEN / THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                formPresenter.presentView(formView, formDefinition, item, mock(FormItem.class));
+            }
+        }, throwsNothing());
     }
 
     private void prepareFieldFactoryFactory() {

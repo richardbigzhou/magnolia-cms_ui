@@ -60,8 +60,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
@@ -77,8 +75,6 @@ import com.vaadin.ui.TextArea;
  * Builder for forms.
  */
 public class FormBuilder {
-
-    private static final Logger log = LoggerFactory.getLogger(FormBuilder.class);
 
     private final FieldFactoryFactory fieldFactoryFactory;
     private final I18NAuthoringSupport i18nAuthoringSupport;
@@ -131,14 +127,14 @@ public class FormBuilder {
         buildReducedForm(formDefinition, view, item, parent);
 
         if (hasI18nAwareFields(formDefinition)) {
-                List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(item);
-                view.setAvailableLocales(locales);
-                // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
-                if (uiContext instanceof SubAppContext && ((SubAppContext) uiContext).getAuthoringLocale() != null) {
-                    view.setCurrentLocale(((SubAppContext) uiContext).getAuthoringLocale());
-                } else {
-                    view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(item));
-                }
+            List<Locale> locales = i18nAuthoringSupport.getAvailableLocales(item);
+            view.setAvailableLocales(locales);
+            // As of 5.3.9 only subapp context supports tracking current authoring locale, we may expand that to other UiContexts in the future if needed.
+            if (uiContext instanceof SubAppContext && ((SubAppContext) uiContext).getAuthoringLocale() != null) {
+                view.setCurrentLocale(((SubAppContext) uiContext).getAuthoringLocale());
+            } else {
+                view.setCurrentLocale(i18nAuthoringSupport.getDefaultLocale(item));
+            }
         }
     }
 
@@ -191,7 +187,7 @@ public class FormBuilder {
 
             fieldIt = tab.getContainer().iterator();
             if (!firstFieldIsBuilt && fieldIt.hasNext()) {
-                ((Component.Focusable)fieldIt.next()).focus();
+                ((Component.Focusable) fieldIt.next()).focus();
                 firstFieldIsBuilt = true;
             }
 
@@ -202,7 +198,7 @@ public class FormBuilder {
 
     public FormTab buildFormTab(TabDefinition tabDefinition, Item itemDatasource, Form parentForm) {
         List<FieldDefinition> fields = tabDefinition.getFields();
-        if (fields.isEmpty()) { // skip empty tabs
+        if (fields == null || fields.isEmpty()) { // skip empty tabs
             return null;
         }
         FormTab tab = new FormTab(tabDefinition);
@@ -223,17 +219,16 @@ public class FormBuilder {
 
     public Field<?> createField(FieldDefinition fieldDefinition, Item itemDatasource, FormTab parentTab) {
         final FieldFactory fieldFactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, itemDatasource);
-        final FieldFactory formField = fieldFactory;
-        if (formField == null) {
+        if (fieldFactory == null) {
             return null;
         }
 
-        formField.setComponentProvider(componentProvider);
+        fieldFactory.setComponentProvider(componentProvider);
         if (parentTab != null) {
-            formField.setParent(parentTab);
+            fieldFactory.setParent(parentTab);
         }
 
-        final Field<?> field = formField.createField();
+        final Field<?> field = fieldFactory.createField();
         if (field instanceof AbstractComponent) {
             ((AbstractComponent) field).setImmediate(true);
         }
@@ -251,14 +246,9 @@ public class FormBuilder {
     }
 
     private boolean hasI18nAwareFields(FormDefinition formDefinition) {
-        Iterator<TabDefinition> tabs = formDefinition.getTabs().iterator();
 
-        while (tabs.hasNext()) {
-            TabDefinition tab = tabs.next();
-            Iterator<FieldDefinition> fields = tab.getFields().iterator();
-
-            while (fields.hasNext()) {
-                FieldDefinition field = fields.next();
+        for (TabDefinition tab : formDefinition.getTabs()) {
+            for (FieldDefinition field : tab.getFields()) {
                 if (isI18nAware(field)) {
                     return true;
                 }
@@ -272,9 +262,8 @@ public class FormBuilder {
             return true;
         }
         if (field instanceof CompositeFieldDefinition) {
-            Iterator<ConfiguredFieldDefinition> fields = ((CompositeFieldDefinition) field).getFields().iterator();
-            while (fields.hasNext()) {
-                if (isI18nAware(fields.next())) {
+            for (ConfiguredFieldDefinition configuredFieldDefinition : ((CompositeFieldDefinition) field).getFields()) {
+                if (isI18nAware(configuredFieldDefinition)) {
                     return true;
                 }
             }

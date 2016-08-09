@@ -53,6 +53,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.vaadin.data.Item;
@@ -82,8 +83,6 @@ public class FormPresenterImpl implements FormPresenter {
 
     private Locale activeLocale;
 
-    private FormDefinition formDefinition;
-
     private Item itemDatasource;
 
     @Inject
@@ -95,32 +94,40 @@ public class FormPresenterImpl implements FormPresenter {
     @Override
     public void presentView(FormViewReduced formView, FormDefinition formDefinition, Item item, FormItem parent) {
         this.formView = formView;
-        this.formDefinition = formDefinition;
         this.itemDatasource = item;
 
         localeToFormSections.clear();
         // FormBuilder still expects the FormView object to build, so we have to cast here but ideally that should be refactored
-        formBuilder.buildForm((FormView) this.formView, this.formDefinition, item, parent);
+        formBuilder.buildForm((FormView) this.formView, formDefinition, item, parent);
 
         // We should expand locale-awareness onto all the UI contexts.
         if (uiContext instanceof SubAppContext) {
-            this.activeLocale = ((SubAppContext)uiContext).getAuthoringLocale();
+            this.activeLocale = ((SubAppContext) uiContext).getAuthoringLocale();
             formView.setListener(new FormView.Listener() {
                 @Override
                 public void localeChanged(Locale newLocale) {
-                    if (newLocale != null && !ObjectUtils.equals(((SubAppContext)uiContext).getAuthoringLocale(), newLocale)) {
+                    if (newLocale != null && !ObjectUtils.equals(((SubAppContext) uiContext).getAuthoringLocale(), newLocale)) {
                         setLocale(newLocale);
                     }
                 }
             });
 
-            localeToFormSections.put(this.activeLocale, Maps.toMap(formDefinition.getTabs(), new Function<TabDefinition, FormSection>() {
-                @Nullable
-                @Override
-                public FormSection apply(final TabDefinition tabDefinition) {
-                    return Iterables.tryFind(FormPresenterImpl.this.formView.getFormSections(), new FormSectionNameMatches(tabDefinition.getName())).orNull();
-                }
-            }));
+            Map<TabDefinition, FormSection> formSectionsMap = FluentIterable.from(formDefinition.getTabs())
+                    .filter(new Predicate<TabDefinition>() {
+                        @Override
+                        public boolean apply(TabDefinition tabDefinition) {
+                            return tabDefinition.getFields() != null && tabDefinition.getFields().size() > 0;
+                        }
+                    })
+                    .toMap(new Function<TabDefinition, FormSection>() {
+                        @Nullable
+                        @Override
+                        public FormSection apply(TabDefinition tabDefinition) {
+                            return Iterables.tryFind(FormPresenterImpl.this.formView.getFormSections(), new FormSectionNameMatches(tabDefinition.getName())).orNull();
+                        }
+                    });
+
+            localeToFormSections.put(this.activeLocale, formSectionsMap);
         }
     }
 
@@ -134,7 +141,7 @@ public class FormPresenterImpl implements FormPresenter {
         if (uiContext instanceof SubAppContext && !ObjectUtils.equals(locale, this.activeLocale)) {
             final Locale formerLocale = this.activeLocale;
             this.activeLocale = locale;
-            ((SubAppContext)uiContext).setAuthoringLocale(locale);
+            ((SubAppContext) uiContext).setAuthoringLocale(locale);
 
             final Map<TabDefinition, FormSection> currentFormSections = localeToFormSections.get(formerLocale);
             final Map<TabDefinition, FormSection> newFormSections = getLocaleSpecificFormSections(this.activeLocale);
