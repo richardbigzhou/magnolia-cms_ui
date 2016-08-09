@@ -75,30 +75,19 @@ import com.vaadin.ui.TextField;
 
 public class FormPresenterImplTest {
 
-    private I18NAuthoringSupport i18NAuthoringSupport;
-
     private ConfiguredFormDefinition formDefinition;
-
     private FormPresenterImpl formPresenter;
-
     private FormViewReduced formView;
-
-    private FormBuilder formBuilder;
-
     private Item item;
-
     private SubAppContext subAppContext;
-
     private FieldFactoryFactory fieldFactoryFactory;
-
     private Locale locale;
-
     private ComponentProvider componentProvider;
 
     @Before
     public void setUp() throws Exception {
         this.locale = Locale.ENGLISH;
-        this.i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
+        I18NAuthoringSupport i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
         final SimpleTranslator i18n = mock(SimpleTranslator.class);
 
         final FieldConfig fieldConfig = new FieldConfig();
@@ -116,7 +105,7 @@ public class FormPresenterImplTest {
         this.componentProvider = mock(ComponentProvider.class);
         doReturn(mock(BasicTransformer.class)).when(componentProvider).newInstance(eq(BasicTransformer.class), anyVararg());
         this.item = new PropertysetItem();
-        this.formBuilder = new FormBuilder(fieldFactoryFactory, i18NAuthoringSupport, subAppContext, componentProvider);
+        FormBuilder formBuilder = new FormBuilder(fieldFactoryFactory, i18NAuthoringSupport, subAppContext, componentProvider);
         this.formPresenter = new FormPresenterImpl(formBuilder, subAppContext);
         this.formView = new ItemFormView(i18n);
     }
