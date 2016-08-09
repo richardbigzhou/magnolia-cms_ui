@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 
+import static info.magnolia.test.hamcrest.ExecutionMatcher.throwsNothing;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
@@ -44,12 +45,14 @@ import static org.mockito.Mockito.eq;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.hamcrest.Execution;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.config.FieldConfig;
 import info.magnolia.ui.form.config.FormConfig;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
@@ -145,6 +148,25 @@ public class FormPresenterImplTest {
         // THEN
         final List<FormSection> formSections = formView.getFormSections();
         assertThat(formSections.get(0).iterator().next().getLocale(), equalTo(Locale.GERMAN));
+    }
+
+    @Test
+    public void emptyTabsDoNotThrownNPE() throws Exception {
+        // GIVEN
+        final FieldConfig fieldConfig = new FieldConfig();
+        final FormConfig formConfig = new FormConfig();
+        final FormDefinition formDefinition = formConfig.form()
+                .tabs(formConfig.tab("tab1").label("tab1_label").fields(fieldConfig.text("textField")))
+                .tabs(formConfig.tab("tab2").label("tab2_label"))
+                .definition();
+
+        // WHEN / THEN
+        assertThat(new Execution() {
+            @Override
+            public void evaluate() throws Exception {
+                formPresenter.presentView(formView, formDefinition, item, mock(FormItem.class));
+            }
+        }, throwsNothing());
     }
 
     private void prepareFieldFactoryFactory() {
