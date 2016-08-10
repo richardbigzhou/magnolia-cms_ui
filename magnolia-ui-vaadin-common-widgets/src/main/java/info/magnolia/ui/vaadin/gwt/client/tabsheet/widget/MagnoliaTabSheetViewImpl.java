@@ -161,10 +161,12 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         tabPanelStyle.setProperty(heightPropertyCC, offsetTabHeight + "px");
         animation.setProperty(heightProperty, newHeight);
         scroller.setScrollLocked(true);
+        tabPanelStyle.setOverflow(Style.Overflow.HIDDEN);
         animation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
                 tabPanelStyle.clearProperty(heightPropertyCC);
+                tabPanelStyle.clearOverflow();
                 scroller.setScrollLocked(false);
             }
         });
