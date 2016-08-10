@@ -39,6 +39,7 @@ import info.magnolia.jcr.wrapper.ExtendingNodeWrapper;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
@@ -116,7 +117,7 @@ public class UiFrameworkModule implements ModuleLifecycle {
                 if (node.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME)) {
                     node = new ExtendingNodeWrapper(node);
                 }
-                return "apps".equalsIgnoreCase(node.getParent().getName());
+                return DefinitionTypes.APP.getPluralName().equalsIgnoreCase(node.getParent().getName());
             } catch (RepositoryException e) {
                 throw new RuntimeException(e);
             }
