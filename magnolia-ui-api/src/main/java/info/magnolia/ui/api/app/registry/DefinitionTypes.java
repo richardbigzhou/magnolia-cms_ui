@@ -41,11 +41,16 @@ import info.magnolia.ui.api.app.AppDescriptor;
  */
 public enum DefinitionTypes implements DefinitionType {
 
-    APP(AppDescriptor.class);
+    APP(AppDescriptor.class) {
+        @Override
+        public String getName() {
+            return "app";
+        }
+    };
 
     private final Class baseClass;
 
-    private DefinitionTypes(Class baseClass) {
+    DefinitionTypes(Class baseClass) {
         this.baseClass = baseClass;
     }
 

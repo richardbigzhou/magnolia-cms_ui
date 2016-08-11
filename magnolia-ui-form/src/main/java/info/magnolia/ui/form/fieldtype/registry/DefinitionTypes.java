@@ -41,11 +41,16 @@ import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
  */
 public enum DefinitionTypes implements DefinitionType {
 
-    FIELD_TYPE(FieldTypeDefinition.class);
+    FIELD_TYPE(FieldTypeDefinition.class) {
+        @Override
+        public String getName() {
+            return "fieldType";
+        }
+    };
 
     private final Class baseClass;
 
-    private DefinitionTypes(Class baseClass) {
+    DefinitionTypes(Class baseClass) {
         this.baseClass = baseClass;
     }
 

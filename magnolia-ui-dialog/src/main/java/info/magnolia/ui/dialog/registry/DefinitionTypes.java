@@ -41,11 +41,16 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
  */
 public enum DefinitionTypes implements DefinitionType {
 
-    DIALOG(FormDialogDefinition.class);
+    DIALOG(FormDialogDefinition.class) {
+        @Override
+        public String getName() {
+            return "dialog";
+        }
+    };
 
     private final Class baseClass;
 
-    private DefinitionTypes(Class baseClass) {
+    DefinitionTypes(Class baseClass) {
         this.baseClass = baseClass;
     }
 
