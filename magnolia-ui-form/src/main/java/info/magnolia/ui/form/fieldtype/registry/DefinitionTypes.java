@@ -50,7 +50,7 @@ public enum DefinitionTypes implements DefinitionType {
 
     private final Class baseClass;
 
-    private DefinitionTypes(Class baseClass) {
+    DefinitionTypes(Class baseClass) {
         this.baseClass = baseClass;
     }
 
