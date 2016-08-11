@@ -297,7 +297,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 "info.magnolia.security.app.dialog.field.SystemLanguagesFieldFactory")
                 ))
         );
-        register(DeltaBuilder.update("5.4.7", "")
+        register(DeltaBuilder.update("5.4.9", "")
             .addTask(delegateActionForSecuritySubApps)
         );
     }

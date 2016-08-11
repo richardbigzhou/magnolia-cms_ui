@@ -89,21 +89,27 @@ public class DefaultActionToDelegateActionTask extends AbstractRepositoryTask {
     }
 
     private void setupDelegateAction(Session session, String moduleName) throws RepositoryException {
-        Node actionsNode = session.getNode(String.format(ACTIONS_PATH, moduleName, appName, subAppName));
-        Node delegateActionNode = actionsNode.addNode(DELEGATE_BY_NODE_TYPE_ACTION_NAME, NodeTypes.ContentNode.NAME);
-        delegateActionNode.setProperty(CLASS_PROPERTY, DelegateByNodeTypeActionDefinition.class.getCanonicalName());
-        Node mappingsNode = delegateActionNode.addNode(NODE_TYPE_TO_ACTION_MAPPINGS_NAME, NodeTypes.ContentNode.NAME);
-        for (Map.Entry<String, String> entry : nodeTypeToActionMapping.entrySet()) {
-            Node node = mappingsNode.addNode(Path.getValidatedLabel(entry.getKey()), NodeTypes.ContentNode.NAME);
-            node.setProperty(NODE_TYPE, entry.getKey());
-            node.setProperty(ACTION, entry.getValue());
+        String actionsPath = String.format(ACTIONS_PATH, moduleName, appName, subAppName);
+        if (!session.nodeExists(actionsPath + "/" + DELEGATE_BY_NODE_TYPE_ACTION_NAME)) {
+            Node actionsNode = session.getNode(actionsPath);
+            Node delegateActionNode = actionsNode.addNode(DELEGATE_BY_NODE_TYPE_ACTION_NAME, NodeTypes.ContentNode.NAME);
+            delegateActionNode.setProperty(CLASS_PROPERTY, DelegateByNodeTypeActionDefinition.class.getCanonicalName());
+            Node mappingsNode = delegateActionNode.addNode(NODE_TYPE_TO_ACTION_MAPPINGS_NAME, NodeTypes.ContentNode.NAME);
+            for (Map.Entry<String, String> entry : nodeTypeToActionMapping.entrySet()) {
+                Node node = mappingsNode.addNode(Path.getValidatedLabel(entry.getKey()), NodeTypes.ContentNode.NAME);
+                node.setProperty(NODE_TYPE, entry.getKey());
+                node.setProperty(ACTION, entry.getValue());
+            }
         }
     }
 
     private void setupExpandNodeAction(Session session, String moduleName) throws RepositoryException {
-        Node actionsNode = session.getNode(String.format(ACTIONS_PATH, moduleName, appName, subAppName));
-        Node expandActionNode = actionsNode.addNode(EXPAND_NODE_ACTION_NAME, NodeTypes.ContentNode.NAME);
-        expandActionNode.setProperty(CLASS_PROPERTY, ExpandNodeActionDefinition.class.getCanonicalName());
+        String actionsPath = String.format(ACTIONS_PATH, moduleName, appName, subAppName);
+        if (!session.nodeExists(actionsPath + "/" + EXPAND_NODE_ACTION_NAME)) {
+            Node actionsNode = session.getNode(actionsPath);
+            Node expandActionNode = actionsNode.addNode(EXPAND_NODE_ACTION_NAME, NodeTypes.ContentNode.NAME);
+            expandActionNode.setProperty(CLASS_PROPERTY, ExpandNodeActionDefinition.class.getCanonicalName());
+        }
     }
 
     private void linkDefaultActionToDelegateAction(Session session, String moduleName) throws RepositoryException {
