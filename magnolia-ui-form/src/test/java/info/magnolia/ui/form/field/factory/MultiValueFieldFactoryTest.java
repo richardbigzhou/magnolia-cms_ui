@@ -38,8 +38,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
@@ -62,13 +60,11 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-
 public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiValueFieldDefinition> {
 
     private static final EmailValidator EMAIL_VALIDATOR = new EmailValidator("Not a valid email");
     private MultiValueFieldFactory<MultiValueFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
-    private I18NAuthoringSupport i18nAuthoringSupport;
     private MultiField multiField;
     private TextFieldDefinition textFieldDefinition;
 
@@ -76,8 +72,6 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
-        componentProvider.registerInstance(ComponentProvider.class, componentProvider);
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
         subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
@@ -94,7 +88,7 @@ public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<Mul
     @Test
     public void createFieldComponentTest() throws Exception {
         // GIVEN
-        factory = new MultiValueFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
+        factory = new MultiValueFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN

@@ -44,16 +44,25 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Specific MultiSelect field {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
- * For example, the Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
+ * Specific transformer for use with multi-select {@link OptionGroupFieldDefinition}.
+ * <p>
+ * Indeed, Vaadin's {@link com.vaadin.ui.OptionGroup OptionGroup} operates selection with sets, whereas we resolve
+ * JCR multi-value properties as lists.
+ * <p>
+ * Also mind that for single-select definitions, this transformer merely works like a plain {@link BasicTransformer}.
  *
  * @param <T>
  */
 public class ListToSetTransformer<T> extends BasicTransformer<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(ListToSetTransformer.class);
 
     private final boolean multiselect;
 
@@ -67,13 +76,22 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
     public ListToSetTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type, I18NAuthoringSupport i18NAuthoringSupport) {
         super(relatedFormItem, definition, type, i18NAuthoringSupport);
-        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
+        if (definition instanceof OptionGroupFieldDefinition) {
+            multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
+        } else {
+            multiselect = false;
+            log.info("ListToSetTransformer is intended for multiselect OptionGroupFieldDefinition, but definition was of type {}. This may behave like a plain BasicTransformer.", definition);
+        }
     }
 
     @Override
     public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type, false);
+        if (!multiselect) {
+            super.writeToItem(newValue);
+            return;
+        }
 
+        Property<T> p = getOrCreateProperty(type, false);
         if (isCollectionConversionNeeded(newValue, p.getType())) {
             newValue = (T) new LinkedList((Set) newValue);
         }
@@ -90,13 +108,12 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
         return List.class.isAssignableFrom(propertyType) && newValue instanceof Set;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public T readFromItem() {
-
         if (!multiselect) {
             return super.readFromItem();
         }
+
         Property<T> p = getOrCreateProperty(type, false);
         if (definition.isReadOnly()) {
             p.setReadOnly(true);

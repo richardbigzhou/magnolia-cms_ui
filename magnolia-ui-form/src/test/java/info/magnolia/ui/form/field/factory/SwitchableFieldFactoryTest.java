@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
 
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.CodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
@@ -80,7 +80,6 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
     private FieldFactoryFactory subfieldFactory;
-    private I18NAuthoringSupport i18nAuthoringSupport;
     private SwitchableField field;
     private TextFieldDefinition textFieldDefinition;
     private CodeFieldDefinition codeFieldDefinition;
@@ -89,9 +88,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        i18nAuthoringSupport = mock(I18NAuthoringSupport.class);
-        componentProvider.registerInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
-        componentProvider.registerInstance(ComponentProvider.class, componentProvider);
+        ComponentsTestUtil.setInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
+        ComponentsTestUtil.setInstance(ComponentProvider.class, componentProvider);
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistry = createFieldTypeRegistry();
         subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistry, null);
@@ -108,7 +106,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     @Test
     public void createFieldComponentTest() {
         // GIVEN
-        factory = new SwitchableFieldFactory<>(definition, baseItem, null, i18nAuthoringSupport, subfieldFactory, componentProvider);
+        factory = new SwitchableFieldFactory<>(definition, baseItem, null, i18NAuthoringSupport, subfieldFactory, componentProvider);
         factory.setComponentProvider(componentProvider);
 
         // WHEN

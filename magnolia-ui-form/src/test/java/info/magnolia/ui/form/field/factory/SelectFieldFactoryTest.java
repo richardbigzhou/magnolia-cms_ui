@@ -36,9 +36,9 @@ package info.magnolia.ui.form.field.factory;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -50,19 +50,20 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.data.util.converter.StringToFloatConverter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 
-/**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.SelectFieldFactory}.
- */
 public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectFieldDefinition> {
 
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
@@ -96,7 +97,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals(option.getValue(), field.getValue().toString());
+        assertThat(field.getValue().toString(), equalTo(option.getValue()));
     }
 
     @Test
@@ -327,24 +328,77 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void testCreateDefaultValueFromLong() throws Exception {
         // GIVEN
-        initializeSelectFieldFactory();
-        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
-        field.removeAllItems();
-        field.addItem(1L); // long value
-
-        Property<Long> dataSource = new DefaultProperty<Long>(1L);
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        definition.setType(PropertyType.TYPENAME_LONG);
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem, uiContext, i18NAuthoringSupport) {
+            @Override
+            protected Object getConfiguredDefaultValue() {
+                return 2L;
+            }
+        };
+        dialogSelect.setComponentProvider(componentProvider);
 
         // WHEN
-        Object defaultValue = dialogSelect.createDefaultValue(dataSource);
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
 
         // THEN
-        assertThat(defaultValue.toString(), is("1"));
+        assertThat(field.getValue(), equalTo((Object) 2L));
+    }
+
+    @Test
+    public void preselectsFirstSelectedOptionWithConverter() throws Exception {
+        // GIVEN a factory/field backed by a Float property, with a converter explicitly configured
+        baseItem = new PropertysetItem();
+        ObjectProperty<Float> preTypedProperty = new ObjectProperty<>(null, Float.class);
+        baseItem.addItemProperty("floaty", preTypedProperty);
+
+        // and some float options (with 2.5 and 3.5 marked selected)
+        for (SelectFieldOptionDefinition optionDefinition : definition.getOptions()) {
+            optionDefinition.setValue(optionDefinition.getValue() + ".5");
+        }
+        definition.getOptions().get(1).setSelected(true);
+        definition.getOptions().get(2).setSelected(true);
+        definition.setType(null);
+        definition.setConverterClass(StringToFloatConverter.class);
+
+        initializeSelectFieldFactory();
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertThat(p.getValue(), equalTo((Object) 2.5f));
+    }
+
+    @Test
+    public void preselectsFirstOptionIfNoneSelectedWithConverter() throws Exception {
+        // GIVEN a factory/field backed by a Float property, with a converter explicitly configured
+        baseItem = new PropertysetItem();
+        ObjectProperty<Float> preTypedProperty = new ObjectProperty<>(null, Float.class);
+        baseItem.addItemProperty("floaty", preTypedProperty);
+
+        // and some float options (with none selected)
+        for (SelectFieldOptionDefinition optionDefinition : definition.getOptions()) {
+            optionDefinition.setValue(optionDefinition.getValue() + ".5");
+        }
+        definition.setType(null);
+        definition.setConverterClass(StringToFloatConverter.class);
+
+        initializeSelectFieldFactory();
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN first option is selected
+        Property<?> p = field.getPropertyDataSource();
+        assertThat(p.getValue(), equalTo((Object) 1.5f));
     }
 
     @Test
     public void createFieldSortsOptionsByComparator() throws Exception {
         // GIVEN
-        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<>();
 
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("aa");
@@ -380,7 +434,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         definition.setComparatorClass(TestComparator.class);
 
         dialogSelect = new SelectFieldFactory<>(definition, baseItem, uiContext, i18NAuthoringSupport);
-        componentProvider.setImplementation(TestComparator.class, TestComparator.class.getName());
+        ComponentsTestUtil.setImplementation(TestComparator.class, TestComparator.class.getName());
         dialogSelect.setComponentProvider(componentProvider);
 
         // WHEN
@@ -395,7 +449,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     @Test
     public void createFieldSortsOptionsByNullSafeLabelComparator() throws Exception {
         // GIVEN
-        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<>();
 
         SelectFieldOptionDefinition nullOption = new SelectFieldOptionDefinition();
         nullOption.setLabel(null);
@@ -439,7 +493,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         initializeSelectFieldFactory();
 
         // WHEN
-        List<SelectFieldOptionDefinition> optionDefinition = dialogSelect.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> optionDefinition = dialogSelect.getOptions();
 
         // THEN
         assertThat(optionDefinition, hasSize(1));

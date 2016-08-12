@@ -66,7 +66,6 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
     @Override
     protected Field<String> createFieldComponent() {
         TextField field = new TextField();
-        field.setValue(definition.getDefaultValue());
         field.setVisible(false);
         return field;
     }
@@ -75,11 +74,11 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
      * Make sure default value is always used for input hidden if current value is null.
      */
     @Override
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
+        super.setPropertyDataSourceAndDefaultValue(property);
+
         if (property.getValue() == null) {
             setPropertyDataSourceDefaultValue(property);
         }
-        field.setPropertyDataSource(property);
     }
-
 }

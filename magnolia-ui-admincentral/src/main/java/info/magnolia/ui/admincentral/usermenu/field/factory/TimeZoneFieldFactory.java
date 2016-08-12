@@ -71,7 +71,7 @@ public class TimeZoneFieldFactory extends SelectFieldFactory<TimeZoneFieldFactor
     }
 
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+    public List<SelectFieldOptionDefinition> getOptions() {
         final List<SelectFieldOptionDefinition> options = new ArrayList<>();
         SelectFieldOptionDefinition option;
         TimeZone timeZone;
