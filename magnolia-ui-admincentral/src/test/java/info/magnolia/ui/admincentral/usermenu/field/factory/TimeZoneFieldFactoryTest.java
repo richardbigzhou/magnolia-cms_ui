@@ -98,7 +98,7 @@ public class TimeZoneFieldFactoryTest {
         when(browser.getTimezoneOffset()).thenReturn(7200000);
 
         //WHEN
-        List<SelectFieldOptionDefinition> options = factory.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> options = factory.getOptions();
 
         //THEN
         assertThat(options, not(empty()));

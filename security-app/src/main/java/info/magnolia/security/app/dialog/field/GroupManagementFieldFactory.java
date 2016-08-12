@@ -89,7 +89,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
     @Inject
     public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, uiContext, i18nAuthoringSupport, componentProvider);
-        this.definition.setOptions(getSelectFieldOptionDefinition());
+        this.definition.setOptions(getOptions());
         this.componentProvider = componentProvider;
     }
 
@@ -134,7 +134,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
      * according to the current node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+    public List<SelectFieldOptionDefinition> getOptions() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Group> allGroups = getAllGroups(); // name,uuid
         Set<String> assignedGroups = getAssignedGroups();

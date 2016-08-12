@@ -84,7 +84,7 @@ public class NodeTypeSelectFieldFactory extends SelectFieldFactory<NodeTypeSelec
     }
 
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+    public List<SelectFieldOptionDefinition> getOptions() {
         try {
             final NodeTypeManager nodeTypeManager = context.getJCRSession(RepositoryConstants.CONFIG).getWorkspace().getNodeTypeManager();
             final NodeTypeIterator nodeTypes = nodeTypeManager.getPrimaryNodeTypes();
@@ -112,7 +112,7 @@ public class NodeTypeSelectFieldFactory extends SelectFieldFactory<NodeTypeSelec
     }
 
     @Override
-    protected String createDefaultValue(Property<?> dataSource) {
+    protected String createDefaultValue(Property dataSource) {
         return definition.getDefaultValue();
     }
 }

@@ -50,6 +50,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Sets;
+
 /**
  * Default Property Utility Class.
  *
@@ -156,6 +158,40 @@ public class DefaultPropertyUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * DefaultPropertyUtil mainly provides string-based conversion to JCR common property types.
+     * In some cases, client may want to know in advance if this will apply to a given type, to implement alternative
+     * strategies of creating/parsing property values.
+     *
+     * @see #createTypedValue(Class, String)
+     */
+    public static boolean canConvertStringValue(Class<?> type) {
+        // basically mirroring conditions in impl above (as fishy as it is)
+        if (type.getName().equals(String.class.getName())
+                || type.getName().equals(Long.class.getName())
+                || type.isAssignableFrom(Binary.class)
+                || type.getName().equals(Double.class.getName())
+                || type.getName().equals(Date.class.getName())
+                || type.getName().equals(Boolean.class.getName())
+                || type.getName().equals(BigDecimal.class.getName())
+                || type.isAssignableFrom(List.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isKnownJcrTypeName(String typeName) {
+        return Sets.newHashSet(
+                PropertyType.TYPENAME_STRING,
+                PropertyType.TYPENAME_BINARY,
+                PropertyType.TYPENAME_LONG,
+                PropertyType.TYPENAME_DOUBLE,
+                PropertyType.TYPENAME_DATE,
+                PropertyType.TYPENAME_BOOLEAN,
+                PropertyType.TYPENAME_DECIMAL
+        ).contains(typeName);
     }
 
     /**

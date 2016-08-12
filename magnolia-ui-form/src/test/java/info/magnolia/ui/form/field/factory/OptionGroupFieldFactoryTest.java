@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
@@ -46,13 +48,12 @@ import org.junit.Test;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.OptionGroup;
 
-
 public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<OptionGroupFieldDefinition> {
 
     private OptionGroupFieldFactory dialogSelect;
 
     @Test
-    public void simpleRadioFieldTest() throws Exception {
+    public void radioFieldHasConfiguredOptions() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, null, null, componentProvider);
@@ -61,12 +62,13 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field<?> field = dialogSelect.createField();
 
         // THEN
-        assertTrue(field instanceof OptionGroup);
-        assertEquals(3, ((OptionGroup) field).getItemIds().size());
+        assertThat(field, is(instanceOf(OptionGroup.class)));
+        assertThat(((OptionGroup) field).isMultiSelect(), is(false));
+        assertThat(((OptionGroup) field).getItemIds().size(), equalTo(3));
     }
 
     @Test
-    public void testNoPreselectedRadioField() throws Exception {
+    public void radioFieldDoesNotPreselectAnythingByDefault() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, null, null, componentProvider);
@@ -75,11 +77,11 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertNull(field.getValue());
+        assertThat(field.getValue(), is(nullValue()));
     }
 
     @Test
-    public void testSelectedRadioField() throws Exception {
+    public void radioFieldPreselectsOptionConfiguredAsSelected() throws Exception {
         // GIVEN
         baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         definition.getOptions().get(2).setSelected(true);
@@ -89,11 +91,11 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals("3", field.getValue().toString());
+        assertThat(field.getValue().toString(), equalTo("3"));
     }
 
     @Test
-    public void testSelectedRadioFieldOnPreexistingNodeWithNullValue() throws Exception {
+    public void radioFieldPreselectsOptionOnPreexistingNodeWithNullValue() throws Exception {
         // GIVEN
         // we keep baseItem as a regular JcrNodeAdapter here
         definition.getOptions().get(2).setSelected(true);
@@ -103,11 +105,11 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertNull(field.getValue());
+        assertThat(field.getValue(), is(nullValue()));
     }
 
     @Test
-    public void simpleCheckBoxFieldTest() throws Exception {
+    public void checkBoxGroupFieldDoesNotPreselectAnythingByDefault() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, null, null, componentProvider);
@@ -116,14 +118,15 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertTrue(field instanceof OptionGroup);
+        assertThat(field, is(instanceOf(OptionGroup.class)));
+        assertThat(((OptionGroup) field).isMultiSelect(), is(true));
         Collection<?> items = ((OptionGroup) field).getItemIds();
-        assertEquals(3, items.size());
-        assertEquals("[]", field.getValue().toString());
+        assertThat(items.size(), equalTo(3));
+        assertThat(field.getValue().toString(), equalTo("[]"));
     }
 
     @Test
-    public void createFieldSelectsDefaultOption() throws Exception {
+    public void radioFieldSelectsFirstOptionIfMultipleConfigured() throws Exception {
         // GIVEN
         SelectFieldOptionDefinition option1 = definition.getOptions().get(0);
         option1.setSelected(true);
@@ -137,11 +140,11 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals("Option is not multiselect so the first selected is taken ", option1.getValue(), field.getValue().toString());
+        assertThat(field.getValue().toString(), equalTo(option1.getValue()));
     }
 
     @Test
-    public void createFieldSelectsDefaultOptions() throws Exception {
+    public void checkBoxGroupFieldSelectsAllConfiguredDefaultOptions() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         SelectFieldOptionDefinition option1 = definition.getOptions().get(0);
@@ -156,9 +159,9 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         Field field = dialogSelect.createField();
 
         // THEN
-        assertTrue(field.getValue() instanceof Collection);
-        assertTrue(((Collection) field.getValue()).contains("1"));
-        assertTrue(((Collection) field.getValue()).contains("2"));
+        assertThat(field.getValue(), is(instanceOf(Collection.class)));
+        Collection<String> defaultValue = (Collection<String>) field.getValue();
+        assertThat(defaultValue, containsInAnyOrder("1", "2"));
     }
 
     @Override

@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.Classes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -51,7 +52,9 @@ import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.ItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.util.EnumCaseInsensitive;
 
 import java.util.Locale;
 
@@ -63,7 +66,9 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.util.converter.ConverterUtil;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
@@ -91,6 +96,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     private ComponentProvider componentProvider;
     private UiContext uiContext;
     private Locale locale;
+    private Converter<?, ?> converter;
 
     @Inject
     public AbstractFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext, I18NAuthoringSupport i18NAuthoringSupport) {
@@ -141,7 +147,11 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 final AbstractField field = (AbstractField) this.field;
                 if (definition.getConverterClass() != null) {
                     Converter<?, ?> converter = initializeConverter(definition.getConverterClass());
-                    field.setConverter(converter);
+                    if (!field.getType().isAssignableFrom(converter.getModelType())) {
+                        // only set converter if field doesn't support the model type
+                        // for example text-fields don't support numbers, while selects support anything
+                        field.setConverter(converter);
+                    }
                 }
                 field.setLocale(locale);
             }
@@ -184,7 +194,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * - the item is not an instance of {@link ItemAdapter}.<br>
      * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.<br>
      */
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         this.field.setPropertyDataSource(property);
 
         if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew() && property.getValue() == null) || (!(item instanceof ItemAdapter) && property.getValue() == null)) {
@@ -198,23 +208,52 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     protected void setPropertyDataSourceDefaultValue(Property property) {
         Object defaultValue = createDefaultValue(property);
         if (defaultValue != null && !definition.isReadOnly()) {
-            if (defaultValue.getClass().isAssignableFrom(property.getType())) {
+            if (property.getType().isAssignableFrom(defaultValue.getClass())) {
                 property.setValue(defaultValue);
             } else {
-                log.warn("Default value {} is not assignable to the field of type {}.", defaultValue, field.getPropertyDataSource().getType().getName());
+                log.warn("Default value {} cannot be assigned to property of type {}.", defaultValue, property.getType());
             }
         }
     }
 
+    protected Object createDefaultValue(Property property) {
+        Object defaultValue = getConfiguredDefaultValue();
+        Class<?> propertyType = property != null ? property.getType() : getFieldType();
+        return createTypedValue(defaultValue, propertyType);
+    }
+
     /**
-     * Create a typed default value.
+     * Create a typed value from an arbitrary value object to the given property type.
+     * This primarily favors JCR types conversion, but also supports broader conversions via configured converterClass.
      */
-    protected Object createDefaultValue(Property<?> property) {
-        String defaultValue = definition.getDefaultValue();
-        if (StringUtils.isNotBlank(defaultValue)) {
-            return DefaultPropertyUtil.createTypedValue(property.getType(), defaultValue);
+    protected Object createTypedValue(Object defaultValue, Class<?> propertyType) {
+        // favor JCR conversions first via DefaultPropertyUtil
+        if (defaultValue instanceof String && DefaultPropertyUtil.canConvertStringValue(propertyType)) {
+            return DefaultPropertyUtil.createTypedValue(propertyType, (String) defaultValue);
+
+        } else if (defaultValue != null && definition.getConverterClass() != null) {
+            // Mirror AbstractField#convertToModel
+            // - expect configured value in english locale (resp. number format), no i18n in config
+            Converter converter = initializeConverter(definition.getConverterClass());
+            Class<?> modelType = propertyType != null ? propertyType : converter.getModelType();
+            Locale locale = Locale.ENGLISH;
+            try {
+                defaultValue = ConverterUtil.convertToModel(defaultValue, modelType, converter, locale);
+            } catch (Converter.ConversionException e) {
+                log.error("Default value {} could not be converted to property type {}.", defaultValue, propertyType, e);
+            }
+
+        } else if (propertyType != null && propertyType.isEnum() && defaultValue instanceof String) {
+            Class<? extends Enum> enumType = (Class<? extends Enum>) propertyType;
+            EnumCaseInsensitive enumFinder = new EnumCaseInsensitive();
+            defaultValue = enumFinder.valueOf(enumType, (String) defaultValue);
         }
-        return null;
+
+        return defaultValue;
+    }
+
+    protected Object getConfiguredDefaultValue() {
+        return definition.getDefaultValue();
     }
 
     @Override
@@ -267,18 +306,33 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     @SuppressWarnings("unchecked")
     protected Property<T> initializeProperty() {
-        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+        // exclude selectively for now; ultimately we might reduce that to JCR adapters only.
+        boolean useTransformers = !(item instanceof BeanItem);
 
-        if (transformerClass == null) {
-            // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
-            // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
-            // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
-            // At runtime it all works due to type erasure.
-            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+        if (useTransformers) {
+            Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+            if (transformerClass == null) {
+                // Down casting is needed due to API of the #initializeTransformer(Class<? extends Transformer<?>>)
+                // the second wildcard in '? extends Transformer< --> ?>' is unnecessary and only forces compiler
+                // to claim that BasicTransformer.class is not convertible into Class<? extends Transformer<?>>.
+                // At runtime it all works due to type erasure.
+                transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
+            }
+            Transformer<?> transformer = initializeTransformer(transformerClass);
+            transformer.setLocale(locale);
+            return new TransformedProperty(transformer);
+
+        } else {
+            // return property straight from the Item for the field binding, no assumption on conversion/saving strategy here.
+            Property property = item.getItemProperty(definition.getName());
+            if (property == null) {
+                log.warn(String.format("BeanItem doesn't have any property for id %s, returning default property", definition.getName()));
+                Class<?> propertyType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+                property = new DefaultProperty(propertyType, null);
+                item.addItemProperty(definition.getName(), property);
+            }
+            return property;
         }
-        Transformer<?> transformer = initializeTransformer(transformerClass);
-        transformer.setLocale(locale);
-        return new TransformedProperty(transformer);
     }
 
     /**
@@ -294,7 +348,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * This allows to add additional constructor parameter if needed.<br>
      */
     protected Converter<?, ?> initializeConverter(Class<? extends Converter<?, ?>> converterClass) {
-        return this.componentProvider.newInstance(converterClass, item, definition, getFieldType());
+        if (converter == null) {
+            converter = componentProvider.newInstance(converterClass);
+        }
+        return converter;
     }
 
     /**
@@ -306,6 +363,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected Class<?> getFieldType() {
         Class<?> type = getDefinitionType();
+        if (type == null && definition.getConverterClass() != null) {
+            Converter converter = initializeConverter(definition.getConverterClass());
+            type = converter.getModelType();
+        }
         if (type == null) {
             type = getDefaultFieldType();
         }
@@ -317,7 +378,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected Class<?> getDefinitionType() {
         if (StringUtils.isNotBlank(definition.getType())) {
-            return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            if (DefaultPropertyUtil.isKnownJcrTypeName(definition.getType())) {
+                return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            } else try {
+                return Classes.getClassFactory().forName(definition.getType());
+            } catch (ClassNotFoundException e) {
+                log.error("Unknown configured type {}", definition.getType());
+            }
         }
         return null;
     }

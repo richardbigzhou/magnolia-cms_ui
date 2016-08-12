@@ -40,11 +40,9 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -79,7 +77,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldFactory.class);
 
-    private List<String> initialSelectedKey = new ArrayList<String>();
+    private List<String> initialSelectedKeys = new ArrayList<>();
     private String optionValueName;
     private String optionLabelName;
     private final String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
@@ -142,24 +140,20 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private IndexedContainer buildOptions() {
         IndexedContainer optionContainer = new IndexedContainer();
 
-        List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
-        if (sortOptions) {
-            if (definition.getComparatorClass() != null) {
-                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
-                Collections.sort(options, comparator);
-            } else {
-                Collections.sort(options, new DefaultOptionComparator());
-            }
-        }
+        List<SelectFieldOptionDefinition> options = getOptions();
+        sortOptions(options);
+
         if (!options.isEmpty()) {
-            Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            Class<?> resolvedFieldType = getFieldType();
+            // same fallback as in DefaultPropertyUtil#getFieldTypeClass in case of UndefinedPropertyType—keep this compatibility for now
+            Class<?> fieldType = resolvedFieldType != UndefinedPropertyType.class ? resolvedFieldType : String.class;
             optionContainer.addContainerProperty(optionValueName, fieldType, null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Object value = DefaultPropertyUtil.createTypedValue(fieldType, option.getValue());
+                Object value = createTypedValue(option.getValue(), fieldType);
                 Item item = optionContainer.addItem(value);
                 item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());
@@ -169,6 +163,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             }
         }
         return optionContainer;
+    }
+
+    private void sortOptions(List<SelectFieldOptionDefinition> options) {
+        if (sortOptions) {
+            if (definition.getComparatorClass() != null) {
+                Comparator<SelectFieldOptionDefinition> comparator = initializeComparator(definition.getComparatorClass());
+                Collections.sort(options, comparator);
+            } else {
+                Collections.sort(options, new DefaultOptionComparator());
+            }
+        }
     }
 
     protected Comparator<SelectFieldOptionDefinition> initializeComparator(Class<? extends Comparator<SelectFieldOptionDefinition>> comparatorClass) {
@@ -184,14 +189,24 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * Else, if nothing is defined, return an empty list.
      * <b>Default value and i18n of the Label is also part of the responsibility of this method.</b>
      */
+    public List<SelectFieldOptionDefinition> getOptions() {
+        // Method body is kept inside #getSelectFieldOptionDefinition for compatibility
+        // TODO when deprecated method is removed, inline #getSelectFieldOptionDefinition here
+        return getSelectFieldOptionDefinition();
+    }
+
+    /**
+     * @since 5.4.9 renamed to {@link #getOptions}
+     */
+    @Deprecated
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
-        List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
+        List<SelectFieldOptionDefinition> res = new ArrayList<>();
 
         if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
             for (SelectFieldOptionDefinition option : definition.getOptions()) {
                 option.setValue(getValue(option));
                 if (option.isSelected()) {
-                    initialSelectedKey.add(getValue(option));
+                    initialSelectedKeys.add(getValue(option));
                 }
                 if (!hasOptionIcon && StringUtils.isNotBlank(option.getIconSrc())) {
                     hasOptionIcon = true;
@@ -234,53 +249,32 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
-     * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
+     * If value is null but single-select field mandates a non-null value, then pick the first value as default.
      */
     @Override
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
-        if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
-            setPropertyDataSourceDefaultValue(property);
-        }
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         super.setPropertyDataSourceAndDefaultValue(property);
-    }
 
-    /**
-     * Set the value selected.
-     * Set selectedItem to the last stored value.
-     * If not yet stored, set initialSelectedKey as selectedItem
-     * Else, set the first element of the list.
-     */
-    @Override
-    protected Object createDefaultValue(Property<?> dataSource) {
-        Object selectedValue = null;
-        Object datasourceValue = dataSource.getValue();
-
-        if (!initialSelectedKey.isEmpty()) {
-            if (select.isMultiSelect()) {
-                return new HashSet(initialSelectedKey);
+        // whenever previous value is null (i.e. not just for new node adapters)
+        boolean shouldPreselectFirstValue = !select.isNullSelectionAllowed() && !select.isMultiSelect() && property.getValue() == null;
+        if (shouldPreselectFirstValue) {
+            // sanity check — make sure there's a first value up for grabs
+            if (select.getItemIds() != null && !select.getItemIds().isEmpty()) {
+                property.setValue(select.getItemIds().iterator().next());
             }
-            selectedValue = initialSelectedKey.get(0);
-        } else if (!select.isNullSelectionAllowed() && select.getItemIds() != null && !select.getItemIds().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
-            selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
-
-        // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), selectedValue == null ? null : String.valueOf(selectedValue));
-        // Set the selected value (if not null)
-        if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
-            ((Collection) datasourceValue).add(selectedValue);
-            selectedValue = datasourceValue;
-        }
-        return selectedValue;
     }
 
     @Override
-    protected Class<?> getDefinitionType() {
-        Class<?> res = super.getDefinitionType();
-        if (res == null) {
-            res = String.class;
+    protected Object getConfiguredDefaultValue() {
+        if (initialSelectedKeys.isEmpty()) {
+            return null;
         }
-        return res;
+        if (select.isMultiSelect()) {
+            return new HashSet<>(initialSelectedKeys);
+        } else {
+            return initialSelectedKeys.get(0);
+        }
     }
 
     /**
@@ -308,7 +302,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
                     if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
                         option.setSelected(true);
-                        initialSelectedKey.add(option.getValue());
+                        initialSelectedKeys.add(option.getValue());
                     }
                     if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
                         option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());

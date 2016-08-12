@@ -95,7 +95,7 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
      * Returns the languages defined under <code>CONFIG:/server/i18n/system/languages</code>.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+    public List<SelectFieldOptionDefinition> getOptions() {
         List<SelectFieldOptionDefinition> options = new LinkedList<>();
 
         Node systemLanguages = MgnlContext.doInSystemContext(new SilentSessionOp<Node>(RepositoryConstants.CONFIG) {
@@ -136,7 +136,7 @@ public class SystemLanguagesFieldFactory<D extends SystemLanguagesFieldDefinitio
     }
 
     @Override
-    protected Object createDefaultValue(Property<?> dataSource) {
+    protected Object createDefaultValue(Property dataSource) {
         return StringUtils.isNotBlank(selectedLanguage) ? selectedLanguage : super.createDefaultValue(dataSource);
     }
 }

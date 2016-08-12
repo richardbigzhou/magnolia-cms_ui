@@ -42,7 +42,6 @@ import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
@@ -73,14 +72,5 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     @Override
     protected Class<?> getDefaultFieldType() {
         return Boolean.class;
-    }
-
-    @Override
-    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
-        this.field.setPropertyDataSource(property);
-
-        if (property.getValue() == null) {
-            setPropertyDataSourceDefaultValue(property);
-        }
     }
 }

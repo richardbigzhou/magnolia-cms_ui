@@ -104,7 +104,7 @@ public class SystemLanguagesFieldFactoryTest extends AbstractFieldFactoryTestCas
         MgnlContext.setLocale(Locale.ENGLISH);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getOptions();
 
         // THEN
         assertEquals(2, options.size());
@@ -121,7 +121,7 @@ public class SystemLanguagesFieldFactoryTest extends AbstractFieldFactoryTestCas
         MgnlContext.setLocale(Locale.GERMAN);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getOptions();
 
         // THEN
         assertEquals(2, options.size());
@@ -138,7 +138,7 @@ public class SystemLanguagesFieldFactoryTest extends AbstractFieldFactoryTestCas
         MgnlContext.setLocale(Locale.GERMAN);
 
         // WHEN
-        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getSelectFieldOptionDefinition();
+        List<SelectFieldOptionDefinition> options = systemLanguagesFieldFactory.getOptions();
 
         // THEN
         assertTrue(options.get(1).isSelected());
