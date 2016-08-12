@@ -182,7 +182,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             }
         });
         super.start(dialogDefinition, appContext);
-        updatePossibleMoveLocations(getHostCandidate());
+
+        if(!nodesToMove.isEmpty()) {
+            Object firstItemId = contentConnector.getItemId(nodesToMove.get(0));
+            field.setValue(firstItemId);
+        }
 
         getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().addStyleName("commit");
         getView().setClosable(true);
